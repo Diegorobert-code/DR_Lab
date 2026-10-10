@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Weiterleitung</title>
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#07091A;color:#E9ECF5;font:500 16px/1.5 system-ui,sans-serif}a{color:#FFB547}</style>
+<script>
+// Falsche oder alte Adressen: Sense Engine liegt (noch) im Stimmraum, alles andere geht zur DR-Lab-Startseite.
+(function () {
+  var p = location.pathname.toLowerCase();
+  var ziel = /sense|nova|engine/.test(p) ? "/Stimmraum/sense/" : "/DR_Lab/";
+  location.replace(ziel + location.search + location.hash);
+})();
+</script>
+</head>
+<body><p>Einen Moment … <a href="/DR_Lab/">Zu DR Lab</a></p></body>
+</html>
