@@ -1,0 +1,1083 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mondschein">
+<meta name="theme-color" content="#1d2a4f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>Mondschein – Sunny erzählt</title>
+<style>
+:root{
+  --bg:#fff6e3; --bg2:#fde9c0; --ink:#1d2a4f; --muted:#5d6687; --card:#fffdf7; --line:#efdcb5;
+  --moon:#ffd66b; --moon2:#f2b43a; --night:#1d2a4f; --peach:#ffc9a8; --mint:#c9ecc9; --lav:#dcd6f7; --sky:#cfe7ff;
+  --ok:#5fb26b; --shadow:0 5px 0 rgba(29,42,79,.13); --hl:#fff1b8;
+  --font: ui-rounded, "SF Pro Rounded", "Arial Rounded MT Bold", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+:root[data-night="1"]{
+  --bg:#0f1530; --bg2:#151d3c; --ink:#d8d1bd; --muted:#8e95b0; --card:#18213f; --line:#273259;
+  --moon:#cfae55; --moon2:#a8862f; --night:#0b1026; --peach:#4a3a3c; --mint:#2c4239; --lav:#33305a; --sky:#1f2c4f;
+  --ok:#4d8d57; --shadow:0 5px 0 rgba(0,0,0,.35); --hl:#2c3560;
+  color-scheme: dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.45 var(--font);overflow-x:hidden;transition:background .6s,color .6s}
+body{min-height:100vh;padding:calc(env(safe-area-inset-top) + 10px) calc(env(safe-area-inset-right) + 16px) calc(env(safe-area-inset-bottom) + 14px) calc(env(safe-area-inset-left) + 16px)}
+:root[data-night="1"] body{background:radial-gradient(1.5px 1.5px at 12% 18%,#fff8 50%,transparent 51%),radial-gradient(1.5px 1.5px at 78% 9%,#fff7 50%,transparent 51%),radial-gradient(1px 1px at 55% 30%,#fff6 50%,transparent 51%),radial-gradient(1.5px 1.5px at 88% 42%,#fff5 50%,transparent 51%),radial-gradient(1px 1px at 30% 60%,#fff5 50%,transparent 51%),var(--bg);background-attachment:fixed}
+.wrap{max-width:560px;margin:0 auto}
+.screen{display:none;animation:fade .45s ease}
+.screen.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h1,h2,h3{margin:0;line-height:1.15}
+button{font:inherit;color:inherit;cursor:pointer;border:0;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--moon2);outline-offset:2px}
+.btn{min-height:56px;padding:12px 18px;border-radius:20px;background:var(--card);border:2px solid var(--line);font-weight:700;font-size:18px;box-shadow:var(--shadow);display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(29,42,79,.13)}
+.btn.primary{background:var(--moon);border-color:var(--moon2);color:#1d2a4f}
+:root[data-night="1"] .btn.primary{color:#141a33}
+.btn.wide{width:100%}
+.btn.big{min-height:68px;font-size:21px;border-radius:24px}
+.btn:disabled{opacity:.45;pointer-events:none}
+.topbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;min-height:58px}
+.topbar h2{flex:1;font-size:22px;text-align:center}
+.back{min-width:58px;min-height:58px;padding:0 14px;font-size:22px}
+.round{min-width:58px;min-height:58px;padding:0;border-radius:50%;font-size:24px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:24px;padding:16px;margin-bottom:14px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.foot{text-align:center;font-size:12.5px;color:var(--muted);margin:22px 0 4px;line-height:1.5}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 22px);transform:translateX(-50%) translateY(30px);background:var(--night);color:#fff6e3;padding:12px 18px;border-radius:16px;font-size:16px;max-width:calc(100% - 32px);opacity:0;pointer-events:none;transition:.3s;z-index:50;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast.on{opacity:1;transform:translateX(-50%)}
+:root[data-night="1"] .toast{background:#2a3563}
+/* Figuren */
+.fig{display:block;margin:0 auto}
+.float{animation:float 4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.wave{transform-origin:153px 150px;transform-box:view-box;animation:wave .9s ease-in-out infinite alternate}
+@keyframes wave{from{transform:rotate(-14deg)}to{transform:rotate(16deg)}}
+.flap{transform-box:view-box;animation:flap 1.6s ease-in-out infinite alternate}
+.flap.l{transform-origin:72px 118px}.flap.r{transform-origin:128px 118px;animation-direction:alternate-reverse}
+@keyframes flap{from{transform:rotate(-6deg)}to{transform:rotate(8deg)}}
+.zz{animation:zz 3s ease-in-out infinite}
+@keyframes zz{0%{opacity:0;transform:translate(0,6px)}40%{opacity:1}100%{opacity:0;transform:translate(8px,-14px)}}
+:root[data-night="1"] .fig{filter:brightness(.82) saturate(.85)}
+/* Start */
+.hero{position:relative;text-align:center;padding-top:4px}
+.brand{font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.title{font-size:34px;font-weight:800;margin:2px 0 0}
+.title span{color:var(--moon2)}
+.bubble{position:relative;display:inline-block;background:var(--card);border:2px solid var(--line);border-radius:22px;padding:10px 16px;font-size:19px;font-weight:700;margin:12px auto 0;max-width:90%}
+.bubble:after{content:"";position:absolute;left:50%;bottom:-11px;width:18px;height:18px;background:var(--card);border-right:2px solid var(--line);border-bottom:2px solid var(--line);transform:translateX(-50%) rotate(45deg)}
+.sunnybtn{background:none;padding:0;display:block;margin:4px auto 0;border-radius:30px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.tile{min-height:132px;border-radius:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:21px;font-weight:800;box-shadow:var(--shadow);border:2px solid rgba(29,42,79,.08);position:relative;overflow:hidden;padding:10px}
+.tile svg{width:58px;height:58px}
+.tile:active{transform:translateY(3px)}
+.t1{background:var(--moon)} .t2{background:var(--mint)} .t3{background:var(--peach)} .t4{background:var(--lav)}
+:root:not([data-night="1"]) .tile{color:#1d2a4f}
+:root[data-night="1"] .t1{color:#141a33}
+.tile small{font-size:13px;font-weight:600;opacity:.8}
+.hold{--p:0;touch-action:none;-webkit-touch-callout:none}
+.hold:before{content:"";position:absolute;inset:0;background:conic-gradient(rgba(29,42,79,.22) calc(var(--p)*1turn),transparent 0);pointer-events:none}
+/* Geschichten-Liste */
+.slist{display:grid;gap:12px}
+.sitem{display:flex;align-items:center;gap:14px;text-align:left;width:100%;padding:12px 14px;min-height:96px;border-radius:24px;background:var(--card);border:2px solid var(--line);box-shadow:var(--shadow)}
+.sitem .ic{width:72px;height:72px;flex:none;border-radius:20px;background:var(--sky);display:grid;place-items:center;overflow:hidden}
+.sitem .ic svg{width:70px;height:70px}
+.sitem b{display:block;font-size:19px;color:var(--ink)}
+.sitem .sub{display:block;font-size:15px;color:var(--muted)}
+.star{color:var(--moon2);font-size:18px}
+/* Leser */
+.stage{display:flex;justify-content:center;align-items:flex-end;gap:4px;min-height:170px;background:linear-gradient(var(--sky),transparent);border-radius:28px;padding:10px 6px 0;margin-bottom:12px}
+.stage svg{width:150px;height:158px}
+.stage.two svg{width:124px;height:132px}
+.story-text{font-size:21px;line-height:1.6;min-height:150px}
+.story-text .s{border-radius:8px;transition:background .3s;padding:1px 2px}
+.story-text .s.cur{background:var(--hl)}
+.q{font-size:22px;font-weight:800;margin:0 0 12px;text-align:center}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.opts.n2{grid-template-columns:repeat(2,1fr)}
+.opt{min-height:124px;border-radius:24px;background:var(--card);border:3px solid var(--line);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-weight:800;font-size:15.5px;line-height:1.2;padding:8px 4px;text-align:center}
+.opt .em{font-size:44px;line-height:1.15}
+.opt.sel{border-color:var(--moon2);background:var(--hl)}
+.mic{margin-top:12px}
+.mic.listening{background:#ffb3a1;border-color:#e98b74;animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.03)}}
+.prog{display:flex;align-items:center;gap:10px;margin:14px 0 10px;font-size:15px;font-weight:700;color:var(--muted)}
+.bar{flex:1;height:14px;border-radius:10px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--moon),var(--moon2));border-radius:10px;transition:width .5s}
+.ctrl{display:grid;grid-template-columns:1fr 2fr 1fr;gap:10px}
+.ctrl .btn{padding:10px 8px;font-size:19px;min-height:64px}
+.ctrl .nav{font-size:26px}
+.endbox{text-align:center}
+.endbox h3{font-size:28px;margin:6px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* Meine Idee */
+.l{display:block;font-weight:800;font-size:18px;margin:4px 0 8px}
+.row{display:flex;gap:10px}
+input.in,textarea.in,select.in{width:100%;min-height:60px;padding:14px 16px;border-radius:18px;border:2px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:20px;-webkit-appearance:none;appearance:none}
+textarea.in{min-height:120px;font-size:17px;resize:vertical}
+select.in{font-size:17px}
+.pick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pick.four{grid-template-columns:repeat(4,1fr)}
+.pk{min-height:96px;border-radius:20px;background:var(--bg);border:3px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:15px;padding:6px 2px}
+.pk svg{width:58px;height:58px}
+.pk .em{font-size:36px}
+.pk.sel{border-color:var(--moon2);background:var(--hl)}
+.hint{background:var(--hl);border-radius:14px;padding:10px 12px;font-size:15px;margin-top:10px}
+/* Memory */
+.mem{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;perspective:900px}
+.mc{aspect-ratio:1/1;position:relative;border-radius:22px;background:none;padding:0;transform-style:preserve-3d;transition:transform .45s}
+.mc.up{transform:rotateY(180deg)}
+.mc .face,.mc .backs{position:absolute;inset:0;border-radius:22px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:grid;place-items:center;box-shadow:var(--shadow)}
+.mc .backs{background:radial-gradient(circle at 70% 30%,#ffd66b 0 9%,transparent 10%),radial-gradient(1.5px 1.5px at 25% 25%,#fff 60%,transparent 61%),radial-gradient(2px 2px at 30% 70%,#fff 60%,transparent 61%),radial-gradient(1.5px 1.5px at 75% 75%,#fff 60%,transparent 61%),linear-gradient(145deg,#2c3c70,#1d2a4f);border:3px solid #3b4c86}
+.mc .face{background:var(--card);border:3px solid var(--line);transform:rotateY(180deg)}
+.mc .face svg{width:84%;height:84%}
+.mc.done .face{border-color:var(--ok);background:var(--mint)}
+.stats{display:flex;justify-content:space-between;font-weight:700;color:var(--muted);font-size:15px;margin-bottom:10px}
+.win{position:fixed;inset:0;background:rgba(15,21,48,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:40}
+.win.on{display:flex}
+.win .card{max-width:420px;width:100%;text-align:center;margin:0}
+/* Eltern */
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button{min-height:52px;min-width:0;padding:8px 10px;border-radius:16px;background:var(--bg);border:2px solid var(--line);font-weight:700;font-size:16px;flex:1}
+.seg button.sel{background:var(--moon);border-color:var(--moon2);color:#1d2a4f}
+input[type=range]{width:100%;height:44px;accent-color:var(--moon2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{min-height:44px;padding:8px 12px;border-radius:999px;background:var(--bg);border:2px dashed var(--line);font-size:14.5px;font-weight:600}
+.idea{border-top:2px solid var(--line);padding:12px 0 2px}
+.idea p{margin:4px 0 8px;white-space:pre-wrap;word-break:break-word}
+.idea .row .btn{flex:1;min-height:52px;font-size:16px}
+.priv{display:flex;gap:10px;align-items:center;font-weight:700;background:var(--mint);border-radius:18px;padding:12px 14px;margin-bottom:14px}
+:root:not([data-night="1"]) .priv{color:#1d3a26}
+h3.ch{font-size:19px;margin-bottom:10px}
+/* Gute Nacht */
+#s-night{text-align:center}
+#s-night h2{font-size:30px;margin:8px 0}
+.holdbtn{position:relative;overflow:hidden}
+</style>
+</head>
+<body>
+<!-- gemeinsame Farbverläufe für alle Figuren -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="g-spike" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#6b4226"/><stop offset=".55" stop-color="#8d5b36"/><stop offset="1" stop-color="#f4e2be"/></linearGradient>
+    <radialGradient id="g-sbody" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#a6744a"/><stop offset="1" stop-color="#7a4c2c"/></radialGradient>
+    <linearGradient id="g-nova" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4e45e"/><stop offset=".55" stop-color="#93d36a"/><stop offset="1" stop-color="#5fb862"/></linearGradient>
+    <radialGradient id="g-nglow"><stop offset="0" stop-color="#ffe680" stop-opacity=".55"/><stop offset="1" stop-color="#ffe680" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g-kiki" cx="45%" cy="35%" r="65%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#d6f0ff"/><stop offset="1" stop-color="#9dd5fb"/></radialGradient>
+    <radialGradient id="g-kglow"><stop offset="0" stop-color="#bfeaff" stop-opacity=".75"/><stop offset="1" stop-color="#bfeaff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="g-moon" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0a8"/><stop offset="1" stop-color="#f5bf3c"/></linearGradient>
+    <radialGradient id="g-mglow"><stop offset="0" stop-color="#ffe27a" stop-opacity=".5"/><stop offset="1" stop-color="#ffe27a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g-fglow"><stop offset="0" stop-color="#fff27a" stop-opacity=".9"/><stop offset="1" stop-color="#fff27a" stop-opacity="0"/></radialGradient>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+<!-- START -->
+<section class="screen on" id="s-home" aria-label="Start">
+  <div class="hero">
+    <div class="brand">DR Lab</div>
+    <h1 class="title">Mondschein <span>·</span> Sunny erzählt</h1>
+    <div class="bubble" id="greet">Hallo! Schön, dass du da bist.</div>
+    <button class="sunnybtn" id="homeSunny" aria-label="Sunny sagt Hallo"></button>
+  </div>
+  <div class="tiles">
+    <button class="tile t1" data-go="stories"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 16q12-6 24 2v36q-12-8-24-2z" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M56 16q-12-6-24 2v36q12-8 24-2z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M47 22a7 7 0 1 0 5 10 5.5 5.5 0 1 1-5-10z" fill="#f2b43a"/></svg>Geschichte</button>
+    <button class="tile t2" data-go="game"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="14" width="26" height="36" rx="6" transform="rotate(-10 21 32)" fill="#2c3c70" stroke="#1d2a4f" stroke-width="3"/><rect x="28" y="12" width="26" height="36" rx="6" transform="rotate(8 41 30)" fill="#fff" stroke="#1d2a4f" stroke-width="3"/><circle cx="41" cy="30" r="7" fill="#e8584f"/><circle cx="18" cy="26" r="2" fill="#ffd66b"/></svg>Spiel</button>
+    <button class="tile t3" data-go="idea"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 6l6 15 16 1-12 10 4 16-14-9-14 9 4-16-12-10 16-1z" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><circle cx="26" cy="30" r="2.4" fill="#1d2a4f"/><circle cx="38" cy="30" r="2.4" fill="#1d2a4f"/><path d="M27 36q5 4 10 0" stroke="#1d2a4f" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>Meine Idee</button>
+    <button class="tile t4 hold" id="parentsHold" aria-label="Für Eltern – 3 Sekunden gedrückt halten"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="28" width="36" height="28" rx="7" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M22 28v-7a10 10 0 0 1 20 0v7" fill="none" stroke="#1d2a4f" stroke-width="4"/><circle cx="32" cy="41" r="4" fill="#1d2a4f"/></svg>Für Eltern<small>3 Sek. halten</small></button>
+  </div>
+  <p class="foot">DR Lab · Testphase<br>Deine Daten bleiben auf deinem Handy.</p>
+</section>
+
+<!-- GESCHICHTEN -->
+<section class="screen" id="s-stories" aria-label="Geschichten">
+  <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>Geschichten</h2><button class="btn round" data-night-toggle aria-label="Nachtmodus umschalten">🌙</button></div>
+  <div class="slist" id="slist"></div>
+  <p class="foot">DR Lab · Testphase</p>
+</section>
+
+<!-- LESER -->
+<section class="screen" id="s-reader" aria-label="Geschichte">
+  <div class="topbar"><button class="btn back" id="readerBack" aria-label="Zurück">←</button><h2 id="rTitle">Geschichte</h2><button class="btn round" data-night-toggle aria-label="Nachtmodus umschalten">🌙</button></div>
+  <div id="rBody">
+    <div class="stage" id="rStage"></div>
+    <div class="card">
+      <div id="rContent"></div>
+      <div class="prog"><span id="rStep">1/6</span><div class="bar"><i id="rBar"></i></div><span id="rPct">0%</span></div>
+      <div class="ctrl">
+        <button class="btn nav" id="rPrev" aria-label="Vorherige Seite">◀</button>
+        <button class="btn primary" id="rPlay">▶ Vorlesen</button>
+        <button class="btn nav" id="rNext" aria-label="Nächste Seite">▶</button>
+      </div>
+      <p class="small muted" id="rNoTts" hidden style="margin:10px 0 0">Vorlesen geht auf diesem Gerät leider nicht – lies einfach selbst vor.</p>
+    </div>
+  </div>
+  <div id="rEnd" hidden>
+    <div class="card endbox">
+      <div id="rEndFig"></div>
+      <h3>Ende</h3>
+      <p id="rEndText">Gute Nacht und schlaf schön.</p>
+      <div class="grid2">
+        <button class="btn big" id="rAgain">↺ Nochmal</button>
+        <button class="btn big primary" id="rOther">📖 Andere</button>
+      </div>
+      <button class="btn wide" style="margin-top:10px" data-go="home">🏠 Zum Start</button>
+    </div>
+  </div>
+</section>
+
+<!-- MEINE IDEE -->
+<section class="screen" id="s-idea" aria-label="Meine Idee">
+  <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>Meine Idee</h2><span style="width:58px"></span></div>
+  <div class="card">
+    <label class="l" for="kName">Wie heisst du?</label>
+    <div class="row"><input class="in" id="kName" maxlength="24" autocomplete="off" placeholder="Dein Name"><button class="btn round mic-btn" data-mic="kName" aria-label="Namen sagen">🎤</button></div>
+  </div>
+  <div class="card">
+    <label class="l" for="kThing">Was ist dein Lieblingsding?</label>
+    <div class="row"><input class="in" id="kThing" maxlength="40" autocomplete="off" placeholder="z. B. Teddy, Ball, Muschel"><button class="btn round mic-btn" data-mic="kThing" aria-label="Lieblingsding sagen">🎤</button></div>
+  </div>
+  <div class="card">
+    <div class="l">Wer kommt mit?</div>
+    <div class="pick" id="pFriend"></div>
+  </div>
+  <div class="card">
+    <div class="l">Wohin geht die Reise?</div>
+    <div class="pick four" id="pPlace"></div>
+  </div>
+  <p class="hint" id="micHint" hidden>Sprechen geht hier nicht direkt. Tipp: Auf der iPhone-Tastatur das Mikrofon antippen und diktieren.</p>
+  <button class="btn big primary wide" id="makeStory" style="margin-top:6px">✨ Geschichte erfinden</button>
+  <p class="foot">DR Lab · Testphase · Deine Daten bleiben auf deinem Handy.</p>
+</section>
+
+<!-- SPIEL -->
+<section class="screen" id="s-game" aria-label="Memory">
+  <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>Memory</h2><button class="btn round" id="gRestart" aria-label="Neu mischen">↺</button></div>
+  <div class="stats"><span id="gMoves">Züge: 0</span><span id="gPairs">Paare: 0 von 6</span></div>
+  <div class="prog" style="margin-top:0"><span>Fortschritt</span><div class="bar"><i id="gBar"></i></div><span id="gPct">0%</span></div>
+  <div class="mem" id="mem"></div>
+  <p class="foot">DR Lab · Testphase</p>
+</section>
+<div class="win" id="gWin" role="dialog" aria-modal="true" aria-label="Gewonnen">
+  <div class="card">
+    <div id="gWinFig"></div>
+    <h3 style="font-size:28px;margin:6px 0">Super gemacht!</h3>
+    <p id="gWinText">Alle Paare gefunden.</p>
+    <div class="prog"><span>Fortschritt</span><div class="bar"><i style="width:100%"></i></div><span>100%</span></div>
+    <div class="grid2"><button class="btn big primary" id="gAgain">↺ Nochmal</button><button class="btn big" id="gHome">🏠 Start</button></div>
+  </div>
+</div>
+
+<!-- ELTERN -->
+<section class="screen" id="s-parents" aria-label="Für Eltern">
+  <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Kinderbereich">←</button><h2>Für Eltern</h2><span style="width:58px"></span></div>
+  <div class="priv">🔒 Deine Daten bleiben auf deinem Handy. Kein Konto, kein Server, keine Werbung.</div>
+
+  <div class="card">
+    <h3 class="ch">Zeit heute</h3>
+    <div class="prog" style="margin-top:0"><span id="tUsed">0 Min.</span><div class="bar"><i id="tBar"></i></div><span id="tPct">–</span></div>
+    <p class="small muted" id="tInfo" style="margin:0 0 10px">Kein Zeitlimit eingestellt.</p>
+    <div class="grid2"><button class="btn" id="tPlus">+10 Min. heute</button><button class="btn" id="tReset">Zeit heute auf 0</button></div>
+  </div>
+
+  <div class="card">
+    <h3 class="ch">Zeitlimit pro Tag</h3>
+    <div class="seg" id="segLimit"></div>
+    <p class="small muted" style="margin:10px 0 0">Ist die Zeit um, sagt Sunny «Gute Nacht» und die App ruht bis morgen (oder bis du hier mehr Zeit gibst).</p>
+  </div>
+
+  <div class="card">
+    <h3 class="ch">Vorlesen</h3>
+    <label class="small muted" for="rate">Tempo: <b id="rateLbl">ruhig</b></label>
+    <input type="range" id="rate" min="0.6" max="1.15" step="0.05">
+    <label class="small muted" for="voiceSel" style="display:block;margin-top:6px">Stimme</label>
+    <select class="in" id="voiceSel"><option value="">Automatisch (Deutsch)</option></select>
+    <button class="btn wide" id="rateTest" style="margin-top:10px">🔊 Probe hören</button>
+  </div>
+
+  <div class="card">
+    <h3 class="ch">Nachtmodus</h3>
+    <div class="seg" id="segNight"></div>
+    <p class="small muted" style="margin:10px 0 0">Automatisch: gedimmte Farben von 19 bis 7 Uhr.</p>
+  </div>
+
+  <div class="card">
+    <h3 class="ch">Name des Kindes (freiwillig)</h3>
+    <div class="row"><input class="in" id="pName" maxlength="24" autocomplete="off" placeholder="z. B. Mila"><button class="btn" id="pNameSave">Speichern</button></div>
+    <p class="small muted" style="margin:8px 0 0">Sunny begrüsst dann mit Namen. Bleibt nur auf diesem Handy.</p>
+  </div>
+
+  <div class="card">
+    <h3 class="ch">Idee an DR Lab</h3>
+    <p class="small muted" style="margin:0 0 6px">Wünsche, Kritik, Ideen – alles willkommen. Wird nur hier gespeichert. Mit «Teilen» schickst du sie selbst als Text (z. B. per Nachricht oder Mail).</p>
+    <div class="chips" id="chips"></div>
+    <textarea class="in" id="ideaText" maxlength="1500" placeholder="Deine Idee …"></textarea>
+    <div class="row" style="margin-top:10px">
+      <button class="btn mic-btn" data-mic="ideaText" data-append="1" aria-label="Idee sprechen" style="flex:none;min-width:64px">🎤</button>
+      <button class="btn primary" id="ideaSave" style="flex:1">Idee speichern</button>
+    </div>
+    <p class="hint" id="micHint2" hidden>Sprechen geht hier nicht direkt. Tipp: Auf der iPhone-Tastatur das Mikrofon antippen und diktieren.</p>
+    <div id="ideaList"></div>
+    <button class="btn wide" id="ideaShareAll" style="margin-top:10px" hidden>📤 Alle Ideen teilen</button>
+  </div>
+
+  <button class="btn big primary wide" data-go="home">← Zurück zum Kinderbereich</button>
+  <p class="foot">DR Lab · Testphase<br>Kein Medizinprodukt. Geschichten sind vorgefertigt, keine KI im Hintergrund.</p>
+</section>
+
+<!-- GUTE NACHT -->
+<section class="screen" id="s-night" aria-label="Gute Nacht">
+  <div style="padding-top:24px"></div>
+  <div id="nMoon"></div>
+  <div id="nFig"></div>
+  <h2 id="nTitle">Gute Nacht!</h2>
+  <p id="nText" style="font-size:20px">Für heute ist Schluss. Sunny schläft jetzt auch.<br>Bis morgen!</p>
+  <button class="btn wide holdbtn hold" id="nightHold" style="margin-top:22px" aria-label="Für Eltern – 3 Sekunden gedrückt halten">🔒 Für Eltern (3 Sek. halten)</button>
+  <p class="foot">DR Lab · Testphase</p>
+</section>
+
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+/* ---------- Speicher (Präfix ms_) ---------- */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem('ms_'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('ms_'+k, JSON.stringify(v)); }catch(e){} }
+};
+const S = Object.assign({rate:0.85, limit:0, night:'auto', voice:'', name:''}, store.get('settings', {}));
+const saveS = () => store.set('settings', S);
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let toastT;
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'), 2600); }
+
+/* ---------- Figuren (eigene SVG-Zeichnungen) ---------- */
+const EYES = (lx, rx, y, rxE, ryE) => `
+  <g style="opacity:var(--eo,1)">
+    <ellipse cx="${lx}" cy="${y}" rx="${rxE}" ry="${ryE}" fill="#2a1b12"/><circle cx="${lx+3}" cy="${y-4}" r="3.6" fill="#fff"/><circle cx="${lx-2.5}" cy="${y+5}" r="1.7" fill="#fff"/>
+    <ellipse cx="${rx}" cy="${y}" rx="${rxE}" ry="${ryE}" fill="#2a1b12"/><circle cx="${rx+3}" cy="${y-4}" r="3.6" fill="#fff"/><circle cx="${rx-2.5}" cy="${y+5}" r="1.7" fill="#fff"/>
+  </g>`;
+const SLEEPY = (lx, rx, y) => `<g fill="none" stroke="#2a1b12" stroke-width="3" stroke-linecap="round"><path d="M${lx-10} ${y} Q${lx} ${y+8} ${lx+10} ${y}"/><path d="M${rx-10} ${y} Q${rx} ${y+8} ${rx+10} ${y}"/></g>`;
+const ZZ = `<g class="zz" fill="#5d6687" font-family="system-ui" font-weight="800"><text x="150" y="60" font-size="22">z</text><text x="166" y="42" font-size="16">z</text></g>`;
+let spikeCache = '';
+function spikes(){
+  if (spikeCache) return spikeCache;
+  let out = '';
+  for (let a=-128; a<=128; a+=10.5) out += `<polygon points="-9,6 9,6 0,-30" fill="url(#g-spike)" transform="translate(100 114) rotate(${a.toFixed(1)}) translate(0 -58)"/>`;
+  for (let a=-112; a<=112; a+=12.5) out += `<polygon points="-8,6 8,6 0,-24" fill="url(#g-spike)" transform="translate(100 116) rotate(${(a+5).toFixed(1)}) translate(0 -54)"/>`;
+  return spikeCache = out;
+}
+function sunnySVG(o={}){
+  const wave = o.wave, sleep = o.sleep;
+  return `<svg class="fig ${o.cls||''}" viewBox="0 0 200 210" role="img" aria-label="Sunny, der kleine Igel">
+  ${spikes()}
+  <circle cx="64" cy="70" r="12" fill="#7a4c2c"/><circle cx="64" cy="70" r="6.5" fill="#e9a99a"/>
+  <circle cx="136" cy="70" r="12" fill="#7a4c2c"/><circle cx="136" cy="70" r="6.5" fill="#e9a99a"/>
+  <ellipse cx="44" cy="152" rx="10" ry="19" transform="rotate(22 44 152)" fill="#7a4c2c"/>
+  <ellipse cx="100" cy="124" rx="62" ry="60" fill="url(#g-sbody)"/>
+  <ellipse cx="78" cy="188" rx="15" ry="8" fill="#6b4226"/><ellipse cx="122" cy="188" rx="15" ry="8" fill="#6b4226"/>
+  <ellipse cx="100" cy="168" rx="34" ry="22" fill="#fbefd6"/>
+  <ellipse cx="100" cy="114" rx="46" ry="38" fill="#f2dcb8"/>
+  ${sleep ? SLEEPY(82,118,108) : EYES(82,118,106,9,11)}
+  <ellipse cx="70" cy="126" rx="8" ry="5" fill="#f19b93" opacity=".55"/><ellipse cx="130" cy="126" rx="8" ry="5" fill="#f19b93" opacity=".55"/>
+  <ellipse cx="100" cy="124" rx="14" ry="10" fill="#f9ecd5"/>
+  <ellipse cx="100" cy="119" rx="6.5" ry="5" fill="#2a1b12"/><ellipse cx="98" cy="117.5" rx="2" ry="1.3" fill="#fff"/>
+  <path d="${sleep ? 'M94 131 Q100 135 106 131' : 'M90 129 Q101 140 111 127'}" fill="none" stroke="#5b3a24" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M54 142 Q100 168 146 142 L146 155 Q100 183 54 155 Z" fill="#ffc934" stroke="#e8a91a" stroke-width="2"/>
+  <path d="M118 166 Q130 182 123 198 L110 193 Q117 181 110 169 Z" fill="#ffc934" stroke="#e8a91a" stroke-width="2"/>
+  <ellipse cx="120" cy="164" rx="9" ry="8" fill="#ffd34f" stroke="#e8a91a" stroke-width="2"/>
+  <g class="${wave ? 'wave' : ''}">
+    <rect x="144" y="${wave?100:132}" width="18" height="${wave?52:36}" rx="9" fill="#7a4c2c" transform="rotate(${wave?28:-24} 153 150)"/>
+    <circle cx="153" cy="${wave?104:136}" r="10.5" fill="#ecd0a8" transform="rotate(${wave?28:-24} 153 150)"/>
+  </g>
+  ${sleep ? ZZ : ''}
+</svg>`;
+}
+function novaSVG(o={}){
+  return `<svg class="fig ${o.cls||''}" viewBox="0 0 200 210" role="img" aria-label="Nova, der kleine Drache">
+  <circle cx="100" cy="118" r="94" fill="url(#g-nglow)"/>
+  <path d="M136 170 Q182 172 178 140 Q176 122 160 126 Q172 136 165 149 Q156 162 130 158 Z" fill="url(#g-nova)"/>
+  <path d="M158 124 l8 -10 l2 13 z" fill="#f2c94c"/>
+  <path class="flap l" d="M70 128 Q28 98 36 66 Q50 86 60 82 Q56 104 78 112 Z" fill="#a9e07f" stroke="#e8c446" stroke-width="2.5" stroke-linejoin="round"/>
+  <path class="flap r" d="M130 128 Q172 98 164 66 Q150 86 140 82 Q144 104 122 112 Z" fill="#a9e07f" stroke="#e8c446" stroke-width="2.5" stroke-linejoin="round"/>
+  <ellipse cx="100" cy="150" rx="44" ry="42" fill="url(#g-nova)"/>
+  <ellipse cx="100" cy="158" rx="27" ry="29" fill="#f7efb8"/>
+  <g fill="none" stroke="#e3d27f" stroke-width="2" stroke-linecap="round"><path d="M80 144 Q100 150 120 144"/><path d="M77 158 Q100 164 123 158"/><path d="M81 172 Q100 177 119 172"/></g>
+  <ellipse cx="62" cy="152" rx="8" ry="13" transform="rotate(20 62 152)" fill="#7fca66"/><ellipse cx="138" cy="152" rx="8" ry="13" transform="rotate(-20 138 152)" fill="#7fca66"/>
+  <ellipse cx="80" cy="190" rx="14" ry="8" fill="#5fb862"/><ellipse cx="120" cy="190" rx="14" ry="8" fill="#5fb862"/>
+  <path d="M76 56 Q68 32 82 26 Q84 42 92 50 Z" fill="#f2c94c"/><path d="M124 56 Q132 32 118 26 Q116 42 108 50 Z" fill="#f2c94c"/>
+  <circle cx="100" cy="43" r="6.5" fill="#f2c94c"/><circle cx="88" cy="46" r="4.5" fill="#f2c94c"/><circle cx="112" cy="46" r="4.5" fill="#f2c94c"/>
+  <circle cx="100" cy="84" r="40" fill="url(#g-nova)"/>
+  <ellipse cx="100" cy="102" rx="24" ry="15" fill="#c6eb93"/>
+  <ellipse cx="92" cy="98" rx="2.6" ry="2" fill="#4c7d3c"/><ellipse cx="108" cy="98" rx="2.6" ry="2" fill="#4c7d3c"/>
+  ${o.sleep ? SLEEPY(84,116,80) : EYES(84,116,78,8,10)}
+  <ellipse cx="70" cy="94" rx="7" ry="4.5" fill="#f19b93" opacity=".55"/><ellipse cx="130" cy="94" rx="7" ry="4.5" fill="#f19b93" opacity=".55"/>
+  <path d="M90 107 Q100 115 110 107" fill="none" stroke="#3f6b33" stroke-width="2.6" stroke-linecap="round"/>
+  <g fill="#ffe27a"><path d="M36 40 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z"/><path d="M168 30 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/></g>
+</svg>`;
+}
+function kikiSVG(o={}){
+  return `<svg class="fig ${o.cls||''}" viewBox="0 0 200 200" role="img" aria-label="Kiki, die kleine leuchtende KI">
+  <circle cx="100" cy="110" r="94" fill="url(#g-kglow)"/>
+  <line x1="100" y1="62" x2="100" y2="40" stroke="#8fcaf0" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="100" cy="34" r="14" fill="url(#g-fglow)"/><circle cx="100" cy="34" r="8" fill="#ffe27a"/>
+  <ellipse cx="48" cy="126" rx="10" ry="13" transform="rotate(-20 48 126)" fill="#b9e2fc"/><ellipse cx="152" cy="126" rx="10" ry="13" transform="rotate(20 152 126)" fill="#b9e2fc"/>
+  <ellipse cx="100" cy="112" rx="56" ry="52" fill="url(#g-kiki)" stroke="#9dd5fb" stroke-width="2"/>
+  <circle cx="100" cy="78" r="3" fill="#fff"/><circle cx="90" cy="82" r="2" fill="#fff" opacity=".8"/><circle cx="110" cy="82" r="2" fill="#fff" opacity=".8"/>
+  ${o.sleep ? SLEEPY(82,118,108).replace(/#2a1b12/g,'#23305a') : EYES(82,118,106,10,12).replace(/#2a1b12/g,'#23305a')}
+  <ellipse cx="68" cy="124" rx="8" ry="5" fill="#f7a6b5" opacity=".6"/><ellipse cx="132" cy="124" rx="8" ry="5" fill="#f7a6b5" opacity=".6"/>
+  <path d="M93 126 Q100 133 107 126" fill="none" stroke="#23305a" stroke-width="2.6" stroke-linecap="round"/>
+</svg>`;
+}
+function moonSVG(o={}){
+  return `<svg class="fig ${o.cls||''}" viewBox="0 0 100 100" role="img" aria-label="Mond">
+  <circle cx="50" cy="50" r="48" fill="url(#g-mglow)"/>
+  <path d="M60 14 A36 36 0 1 0 86 64 A29 29 0 0 1 60 14 Z" fill="url(#g-moon)"/>
+  <path d="M34 46 Q39 50 44 46" fill="none" stroke="#b07c1c" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M38 60 Q44 64 50 60" fill="none" stroke="#b07c1c" stroke-width="2.4" stroke-linecap="round"/>
+  <circle cx="31" cy="55" r="3.5" fill="#f19b93" opacity=".5"/>
+</svg>`;
+}
+function mushSVG(o={}){
+  return `<svg class="fig ${o.cls||''}" viewBox="0 0 100 100" role="img" aria-label="Pilz">
+  <rect x="37" y="48" width="26" height="40" rx="11" fill="#fbefd6" stroke="#e5d3ae" stroke-width="2"/>
+  <circle cx="45" cy="66" r="2.6" fill="#2a1b12"/><circle cx="55" cy="66" r="2.6" fill="#2a1b12"/>
+  <path d="M45 73 Q50 77 55 73" fill="none" stroke="#2a1b12" stroke-width="2" stroke-linecap="round"/>
+  <path d="M12 56 Q12 16 50 14 Q88 16 88 56 Q50 64 12 56 Z" fill="#e8584f"/>
+  <g fill="#fff"><circle cx="32" cy="36" r="6.5"/><circle cx="56" cy="26" r="5"/><circle cx="72" cy="42" r="5.5"/><circle cx="48" cy="48" r="4"/></g>
+</svg>`;
+}
+function flySVG(o={}){
+  return `<svg class="fig ${o.cls||''}" viewBox="0 0 100 100" role="img" aria-label="Glühwürmchen">
+  <circle cx="50" cy="70" r="30" fill="url(#g-fglow)"/>
+  <ellipse cx="34" cy="44" rx="17" ry="10" transform="rotate(-30 34 44)" fill="#e6f2ff" opacity=".85" stroke="#b8cde8" stroke-width="1.5"/>
+  <ellipse cx="66" cy="44" rx="17" ry="10" transform="rotate(30 66 44)" fill="#e6f2ff" opacity=".85" stroke="#b8cde8" stroke-width="1.5"/>
+  <path d="M44 24 Q38 12 32 12 M56 24 Q62 12 68 12" fill="none" stroke="#3d4a7a" stroke-width="2.5" stroke-linecap="round"/>
+  <ellipse cx="50" cy="56" rx="13" ry="15" fill="#4a5a8f"/>
+  <ellipse cx="50" cy="74" rx="12" ry="11" fill="#ffe76a"/>
+  <circle cx="50" cy="34" r="12" fill="#3d4a7a"/>
+  <circle cx="45.5" cy="32" r="3" fill="#fff"/><circle cx="54.5" cy="32" r="3" fill="#fff"/>
+  <path d="M46 39 Q50 42 54 39" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
+</svg>`;
+}
+const FIG = {sunny:sunnySVG, nova:novaSVG, kiki:kikiSVG, moon:moonSVG, mush:mushSVG, fly:flySVG};
+
+/* ---------- Nachtmodus ---------- */
+function isNight(){ if (S.night==='on') return true; if (S.night==='off') return false; const h=new Date().getHours(); return h>=19 || h<7; }
+function applyNight(){ document.documentElement.dataset.night = isNight() ? '1' : '0'; const m=document.querySelector('meta[name=theme-color]'); m.content = isNight() ? '#0b1026' : '#1d2a4f'; }
+$$('[data-night-toggle]').forEach(b => b.addEventListener('click', () => { S.night = isNight() ? 'off' : 'on'; saveS(); applyNight(); renderParents(); toast(isNight() ? 'Nachtmodus an 🌙' : 'Tagmodus an ☀️'); }));
+
+/* ---------- Vorlesen (speechSynthesis) ---------- */
+const TTS = {
+  ok: 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined',
+  token: 0, timer: null,
+  voices(){ if(!this.ok) return []; return speechSynthesis.getVoices().filter(v => /^de/i.test(v.lang)); },
+  voice(){ const vs=this.voices(); if(!vs.length) return null; return vs.find(v=>v.name===S.voice) || vs.find(v=>/de[-_]CH/i.test(v.lang)) || vs.find(v=>/Anna|Petra|Helena|Katja|Marlene|Vicki/i.test(v.name)) || vs.find(v=>/de[-_]DE/i.test(v.lang)) || vs[0]; },
+  clean(t){ return t.replace(/[«»„“"]/g,'').replace(/–/g,',').replace(/…/g,'...'); },
+  stop(){ this.token++; clearTimeout(this.timer); if(this.ok){ try{ speechSynthesis.cancel(); }catch(e){} } },
+  speak(list, o={}){
+    this.stop();
+    if (typeof list === 'string') list = [list];
+    const tok = this.token; let i = o.start || 0;
+    if (!this.ok){ if(o.onEnd) setTimeout(()=>{ if(tok===this.token) o.onEnd(); }, 50); return; }
+    const next = () => {
+      if (tok !== this.token) return;
+      if (i >= list.length){ o.onEnd && o.onEnd(); return; }
+      o.onSentence && o.onSentence(i);
+      const text = this.clean(list[i]);
+      const u = new SpeechSynthesisUtterance(text);
+      const v = this.voice(); if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'de-DE';
+      u.rate = S.rate * (o.rateMul || 1); u.pitch = 1.05;
+      let done = false;
+      const fin = () => { if (done || tok !== this.token) return; done = true; clearTimeout(this.timer); i++; setTimeout(next, o.gap || 320); };
+      u.onend = fin; u.onerror = fin;
+      const guard = () => { if (tok !== this.token || done) return; if (speechSynthesis.speaking) this.timer = setTimeout(guard, 1500); else fin(); };
+      clearTimeout(this.timer);
+      this.timer = setTimeout(guard, 1200 + text.length * 95 / S.rate);
+      speechSynthesis.speak(u);
+    };
+    next();
+  }
+};
+if (TTS.ok && speechSynthesis.addEventListener) speechSynthesis.addEventListener('voiceschanged', fillVoices);
+function splitSentences(t){
+  const out=[]; let cur='';
+  for (let i=0;i<t.length;i++){
+    const c=t[i]; cur+=c;
+    if ('.!?…'.includes(c)){
+      let j=i+1;
+      while (j<t.length && '»"“'.includes(t[j])){ cur+=t[j]; j++; }
+      if (j>=t.length || (t[j]===' ' && /[«„A-ZÄÖÜ]/.test(t[j+1]||''))){ out.push(cur.trim()); cur=''; i=j; continue; }
+      i=j-1;
+    }
+  }
+  if (cur.trim()) out.push(cur.trim());
+  return out;
+}
+
+/* ---------- Sprechen (Spracherkennung) ---------- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null;
+function listen(onText, btn){
+  if (!SR){ return false; }
+  TTS.stop();
+  if (rec){ try{ rec.abort(); }catch(e){} rec=null; }
+  let triedDE = false, got = false;
+  const r = new SR(); rec = r;
+  r.lang = 'de-CH'; r.interimResults = false; r.maxAlternatives = 3; r.continuous = false;
+  const off = () => btn && btn.classList.remove('listening');
+  r.onresult = e => { got = true; const alts = Array.from(e.results[0]).map(a=>a.transcript); off(); onText(alts); };
+  r.onerror = e => {
+    if (!triedDE && (e.error==='language-not-supported' || e.error==='bad-grammar')){ triedDE=true; r.lang='de-DE'; try{ r.start(); return; }catch(x){} }
+    off();
+    if (e.error==='not-allowed' || e.error==='service-not-allowed') toast('Mikrofon ist nicht erlaubt. Tippe lieber auf ein Bild.');
+    else if (e.error==='no-speech') toast('Ich habe nichts gehört. Nochmal?');
+  };
+  r.onend = () => { off(); if (rec===r) rec=null; };
+  try{ r.start(); btn && btn.classList.add('listening'); toast('Ich höre zu …'); }catch(e){ off(); return false; }
+  return true;
+}
+
+/* ---------- Navigation ---------- */
+let current = 'home';
+function go(id){
+  TTS.stop();
+  if (rec){ try{ rec.abort(); }catch(e){} }
+  if (id !== 'parents' && id !== 'night' && limitReached()){ id = 'night'; }
+  $$('.screen').forEach(s => s.classList.toggle('on', s.id === 's-'+id));
+  current = id;
+  window.scrollTo(0,0);
+  if (id==='home') renderHome();
+  if (id==='stories') renderStoryList();
+  if (id==='game' && !game.cards.length) newGame();
+  if (id==='idea') renderIdea();
+  if (id==='parents') renderParents();
+  if (id==='night') showNight();
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); });
+
+/* ---------- Start ---------- */
+function greeting(){
+  const h = new Date().getHours();
+  const g = h<11 ? 'Guten Morgen' : h<17 ? 'Hallo' : h<21 ? 'Guten Abend' : 'Psst, gute Nacht';
+  return `${g}${S.name ? ', '+S.name : ''}! Schön, dass du da bist.`;
+}
+function renderHome(){
+  $('#greet').textContent = greeting();
+  $('#homeSunny').innerHTML = sunnySVG({wave:true, cls:'float'});
+  $('#homeSunny svg').style.width = '210px'; $('#homeSunny svg').style.height = '220px';
+}
+const sunnyLines = ['Na, wollen wir eine Geschichte hören?', 'Ich bin Sunny. Meine Stacheln sind ganz weich – fast.', 'Kiki und Nova warten schon auf dich!', 'Weisst du, was ich am liebsten mag? Walderdbeeren!', 'Hihi, das kitzelt!'];
+let sunnyIdx = 0;
+$('#homeSunny').addEventListener('click', () => {
+  const line = sunnyIdx === 0 ? greeting() : sunnyLines[(sunnyIdx-1) % sunnyLines.length];
+  sunnyIdx++;
+  $('#greet').textContent = line;
+  TTS.speak(line);
+});
+
+/* ---------- Eltern-Sperre: 3 Sek. halten ---------- */
+function holdButton(el, onDone){
+  let start = 0, raf = 0, active = false;
+  const reset = () => { active=false; cancelAnimationFrame(raf); el.style.setProperty('--p', 0); };
+  const tick = () => {
+    if (!active) return;
+    const p = Math.min(1, (performance.now()-start)/3000);
+    el.style.setProperty('--p', p.toFixed(3));
+    if (p >= 1){ reset(); if (navigator.vibrate) try{ navigator.vibrate(30); }catch(e){} onDone(); return; }
+    raf = requestAnimationFrame(tick);
+  };
+  const begin = e => { if (active) return; if (e.type==='pointerdown' && e.button>0) return; active=true; start=performance.now(); raf=requestAnimationFrame(tick); };
+  const end = e => { if (!active) return; const held = performance.now()-start; reset(); if (held < 2900) toast('Für Eltern: bitte 3 Sekunden gedrückt halten.'); };
+  el.addEventListener('pointerdown', e => { try{ el.setPointerCapture(e.pointerId); }catch(x){} begin(e); });
+  el.addEventListener('pointerup', end);
+  el.addEventListener('pointercancel', reset);
+  el.addEventListener('lostpointercapture', () => { if (active) end(); });
+  el.addEventListener('contextmenu', e => e.preventDefault());
+  el.addEventListener('keydown', e => { if ((e.key===' '||e.key==='Enter') && !e.repeat){ e.preventDefault(); begin(e); } });
+  el.addEventListener('keyup', e => { if (e.key===' '||e.key==='Enter') end(e); });
+  el.addEventListener('click', e => e.preventDefault());
+}
+holdButton($('#parentsHold'), () => go('parents'));
+holdButton($('#nightHold'), () => go('parents'));
+
+/* ---------- Geschichten ---------- */
+const STORIES = [
+ { id:'mondstrahl', title:'Sunny und der kleine Mondstrahl', sub:'Ein Mondstrahl ist vom Himmel gepurzelt.', pic:['sunny','moon'], parts:[
+  {t:'Es war ein warmer Abend im Mondschein-Wald. Sunny, der kleine Igel mit dem gelben Halstuch, sass vor seiner Höhle und gähnte. Da sah er etwas Helles zwischen den Blättern blinken.', pic:['sunny']},
+  {t:'«Nanu?», flüsterte Sunny. «Was glitzert denn da?» Er tapste näher. Es war ein kleiner Mondstrahl! Er war vom Himmel gepurzelt und hatte sich versteckt.', pic:['sunny','moon']},
+  {q:'Wo hat sich der Mondstrahl versteckt? Was meinst du?', opts:[
+    {e:'🍄', l:'Unter dem Pilz', k:['pilz'], v:{ort:'unter dem roten Pilz'}},
+    {e:'🌸', l:'In einer Blume', k:['blume','blüte'], v:{ort:'in einer duftenden Blume'}},
+    {e:'🪨', l:'Hinter dem Stein', k:['stein'], v:{ort:'hinter dem moosigen Stein'}}],
+   after:'Sunny schaute {ort} nach. Und tatsächlich! Da sass der Mondstrahl, ganz klein und ein bisschen traurig.', pic:['sunny','mush']},
+  {t:'«Ich möchte wieder nach Hause zum Mond», piepste der Mondstrahl. «Aber der Himmel ist so hoch.» Sunny kratzte sich an der Nase. «Hm. Da brauchen wir Hilfe.»', pic:['sunny','moon']},
+  {q:'Wen soll Sunny um Hilfe bitten?', opts:[
+    {e:'🐉', l:'Nova', k:['nova','drache'], v:{helfer:'Nova', how:'Nova, der kleine Drache, breitete seine goldgrünen Flügel aus. «Steigt auf!», rief er fröhlich. Und schon flogen sie los.', hp:'nova'}},
+    {e:'✨', l:'Kiki', k:['kiki'], v:{helfer:'Kiki', how:'Kiki blinkte vor Freude. «Ich kann leuchten! Ich zeige euch den Weg!» Kiki flog voraus – zuerst ein bisschen in die falsche Richtung. «Hoppla», kicherte Kiki und drehte um.', hp:'kiki'}},
+    {e:'🦉', l:'Frau Eule', k:['eule'], v:{helfer:'Frau Eule', how:'Frau Eule plusterte sich auf. «Haltet euch gut an meinen Federn fest», sagte sie ruhig. Und leise wie ein Blatt flog sie mit ihnen los.', hp:'moon'}}],
+   after:'{how}', pic:['sunny','{hp}']},
+  {t:'Hinauf ging es, an den schlafenden Bäumen vorbei, höher und höher. Die Luft war kühl und still. Unten leuchteten die Glühwürmchen wie kleine Lampen.', pic:['fly','moon']},
+  {q:'Was soll Sunny dem Mond mitbringen?', opts:[
+    {e:'🍓', l:'Eine Erdbeere', k:['erdbeer','beere'], v:{gift:'eine süsse Walderdbeere'}},
+    {e:'🎵', l:'Ein Lied', k:['lied','singen','musik'], v:{gift:'ein leises Lied'}},
+    {e:'🍂', l:'Ein Blatt', k:['blatt'], v:{gift:'ein goldenes Herbstblatt'}}],
+   after:'Sunny hatte {gift} dabei. «Das ist für dich, lieber Mond», sagte er.', pic:['sunny','moon']},
+  {t:'Der Mond lächelte so warm, dass der ganze Himmel ein bisschen heller wurde. Der kleine Mondstrahl hüpfte zurück an seinen Platz und funkelte. «Danke, Sunny! Danke, {helfer}!»', pic:['moon']},
+  {t:'Dann ging es sanft wieder hinunter in den Wald. Sunny kuschelte sich in sein Moosbett. Durchs Fenster schien der Mondstrahl, extra für ihn. «Gute Nacht, kleiner Mondstrahl», flüsterte Sunny. Und schon schlief er ein.', pic:['sunny-sleep','moon']}
+ ]},
+ { id:'kiki', title:'Kiki zählt die Sterne', sub:'Kiki lernt – und Fehler sind erlaubt.', pic:['kiki'], parts:[
+  {t:'Kiki war noch ganz neu im Mondschein-Land. Kiki war eine kleine, leuchtende KI und wollte alles lernen. Heute Abend wollte Kiki etwas Besonderes: alle Sterne zählen!', pic:['kiki']},
+  {t:'«Eins, zwei, drei …», zählte Kiki. «Vier, fünf … sieben!» Sunny lachte. «Kiki, du hast die Sechs vergessen!» Kiki blinkte rosa. «Oh! Ich darf Fehler machen, oder?» «Klar», sagte Sunny. «So lernt man.»', pic:['kiki','sunny']},
+  {q:'Kiki entdeckt einen ganz hellen Stern. Wie soll er heissen?', opts:[
+    {e:'⭐', l:'Funkel', k:['funkel'], v:{stern:'Funkel'}},
+    {e:'💛', l:'Goldi', k:['goldi','gold'], v:{stern:'Goldi'}},
+    {e:'🫧', l:'Blubb', k:['blubb','blub'], v:{stern:'Blubb'}}],
+   after:'«Du heisst ab jetzt {stern}!», rief Kiki. Und der Stern blinkte zurück, als ob er sich freuen würde.', pic:['kiki','moon']},
+  {t:'Da flog etwas Kleines, Leuchtendes vorbei. «Noch ein Stern!», rief Kiki. «Achtzehn!» Nova kicherte. «Das ist doch ein Glühwürmchen, Kiki!» Das Glühwürmchen winkte freundlich.', pic:['fly','nova']},
+  {t:'Kiki überlegte. «Sterne sind weit weg und Glühwürmchen sind ganz nah. Jetzt weiss ich es!» Kiki war stolz. Nachfragen hatte geholfen.', pic:['kiki']},
+  {q:'Wie viele Sterne gibt es wohl? Was glaubst du?', opts:[
+    {e:'🌟', l:'Ganz viele', k:['viele','ganz'], v:{tipp:'ganz, ganz viele'}},
+    {e:'♾️', l:'Unendlich viele', k:['unendlich'], v:{tipp:'unendlich viele'}},
+    {e:'🤔', l:'Weiss niemand', k:['niemand','weiss nicht','keine ahnung'], v:{tipp:'so viele, dass es niemand genau weiss'}}],
+   after:'«Ich glaube, es gibt {tipp}», sagte Kiki. «Genau», sagte Sunny und gähnte. «Und wir müssen nicht alle heute zählen.»', pic:['kiki','sunny']},
+  {t:'Kiki machte die Lichter ganz klein, nur noch ein sanftes Glimmen. «Morgen zähle ich weiter. Pausen sind auch schön.» Über ihnen funkelte {stern} am Himmel.', pic:['kiki-sleep','moon']},
+  {t:'«Gute Nacht, {stern}», flüsterte Kiki. «Gute Nacht, Sunny. Gute Nacht, Nova.» Und dann wurde es ganz still im Mondschein-Land.', pic:['kiki-sleep','sunny-sleep']}
+ ]},
+ { id:'nova', title:'Nova kann nicht einschlafen', sub:'Ein kleiner Drache mit Schluckauf.', pic:['nova'], parts:[
+  {t:'Nova, der kleine Drache, lag in seiner Höhle aus weichem Moos. Seine Schuppen leuchteten goldgrün. Aber Nova konnte einfach nicht einschlafen.', pic:['nova']},
+  {t:'«Hicks!», machte Nova. Und aus seiner Nase flog ein winziger, warmer Funke. «Hicks!» Noch ein Funke. Da kam Sunny vorbei. «Oje, Nova, du hast ja Schluckauf!»', pic:['nova','sunny']},
+  {q:'Was hilft Nova gegen den Schluckauf?', opts:[
+    {e:'🌬️', l:'Tief atmen', k:['atmen','atem','luft'], v:{hilfe:'Nova atmete tief ein … und ganz langsam wieder aus. Einmal, zweimal, dreimal.'}},
+    {e:'💧', l:'Wasser trinken', k:['wasser','trinken'], v:{hilfe:'Nova trank drei kleine Schlucke Wasser aus dem Bach. Gluck, gluck, gluck.'}},
+    {e:'🙃', l:'Kopfstand', k:['kopf','stand'], v:{hilfe:'Nova versuchte einen Kopfstand und plumpste kichernd ins weiche Moos.'}}],
+   after:'{hilfe} Und dann … war der Schluckauf weg!', pic:['nova']},
+  {t:'«Danke!», sagte Nova. «Aber jetzt bin ich hellwach.» Sunny setzte sich neben ihn. «Weisst du was? Ich kenne einen Trick zum Einschlafen.»', pic:['nova','sunny']},
+  {q:'Welchen Trick soll Sunny zeigen?', opts:[
+    {e:'🐑', l:'Schäfchen zählen', k:['schaf','zählen'], v:{trick:'Die beiden zählten Schäfchen, die über einen kleinen Zaun hüpften. Eins … zwei … drei …'}},
+    {e:'🎶', l:'Lied summen', k:['lied','summen','singen'], v:{trick:'Sunny summte ein leises Lied, so leise wie der Wind in den Blättern. Mmm … mmm …'}},
+    {e:'☁️', l:'An Wolken denken', k:['wolke'], v:{trick:'Die beiden stellten sich vor, sie lägen auf einer weichen Wolke, die ganz langsam über den Himmel schwebt.'}}],
+   after:'{trick}', pic:['sunny','nova']},
+  {t:'Novas Augen wurden schwer. Seine Schuppen leuchteten nur noch ganz sanft, wie eine kleine Nachtlampe.', pic:['nova-sleep']},
+  {q:'Womit soll Sunny Nova zudecken?', opts:[
+    {e:'🍃', l:'Mit Blättern', k:['blatt','blätter'], v:{decke:'einer Decke aus weichen Blättern'}},
+    {e:'🌸', l:'Mit Blüten', k:['blüte','blume'], v:{decke:'lauter duftenden Blütenblättern'}},
+    {e:'☁️', l:'Mit einer Wolke', k:['wolke'], v:{decke:'einem kleinen Stück Wolke'}}],
+   after:'Sunny deckte Nova mit {decke} zu. «So, jetzt ist es gemütlich», sagte er leise.', pic:['sunny','nova-sleep']},
+  {t:'«Bleibst du noch ein bisschen?», murmelte Nova. «Natürlich», sagte Sunny und kuschelte sich an Novas warmen Bauch. Draussen schien der Mond, und die Glühwürmchen machten ihre Lichter aus. Bald schliefen der kleine Drache und der kleine Igel tief und fest.', pic:['sunny-sleep','nova-sleep']}
+ ]},
+ { id:'meer', title:'Sunny fährt ans Meer', sub:'Ferien! Mit Kiki und Nova.', pic:['sunny','kiki'], parts:[
+  {t:'Heute war ein besonderer Tag: Sunny hatte Ferien! Er packte seinen kleinen Rucksack. Sein gelbes Halstuch flatterte vor Freude.', pic:['sunny']},
+  {q:'Was packt Sunny ein?', opts:[
+    {e:'🧸', l:'Kuscheltier', k:['kuschel','teddy','bär'], v:{pack:'sein Kuscheltier'}},
+    {e:'🪣', l:'Schaufel', k:['schaufel','kessel','eimer'], v:{pack:'die Schaufel mit dem Kessel'}},
+    {e:'📕', l:'Bilderbuch', k:['buch'], v:{pack:'sein liebstes Bilderbuch'}}],
+   after:'Natürlich kam {pack} mit. «Ohne geht es nicht», sagte Sunny und machte den Rucksack zu.', pic:['sunny']},
+  {t:'Kiki und Nova warteten schon. «Wohin geht die Reise?», fragte Kiki und blinkte neugierig. «Ans Meer!», rief Sunny.', pic:['kiki','nova']},
+  {q:'Wie reisen die drei ans Meer?', opts:[
+    {e:'🚂', l:'Mit dem Zug', k:['zug','bahn'], v:{reise:'Der kleine Zug ratterte gemütlich durch Wiesen und Wälder. Tschu-tschu!'}},
+    {e:'⛵', l:'Mit dem Boot', k:['boot','schiff'], v:{reise:'Das kleine Boot schaukelte sanft den Fluss hinunter, bis ans Meer.'}},
+    {e:'🐉', l:'Auf Nova', k:['nova','drache','fliegen'], v:{reise:'Nova flog mit allen auf dem Rücken über Berge und Seen. Unten glitzerte das Wasser.'}}],
+   after:'{reise}', pic:['sunny','nova']},
+  {t:'Am Meer roch es nach Salz und Sonne. Die Wellen machten: Schschsch … schschsch … Sunny grub seine Füsse in den warmen Sand.', pic:['sunny']},
+  {q:'Was finden sie am Strand?', opts:[
+    {e:'🐚', l:'Eine Muschel', k:['muschel'], v:{fund:'eine Muschel, die leise rauschte, wenn man sie ans Ohr hielt'}},
+    {e:'⭐', l:'Einen Seestern', k:['seestern','stern'], v:{fund:'einen kleinen Seestern, der freundlich winkte'}},
+    {e:'🦀', l:'Einen Krebs', k:['krebs','krabbe'], v:{fund:'einen kleinen Krebs, der seitwärts Hallo sagte'}}],
+   after:'Sie fanden {fund}. «Wie schön», staunte Kiki.', pic:['kiki','sunny']},
+  {t:'Am Abend wurde der Himmel rosa und orange. Die Sonne ging langsam im Meer schlafen. Die drei Freunde legten sich auf eine weiche Decke, und die Wellen sangen ihr Schschsch-Lied.', pic:['kiki','moon']},
+  {t:'Über dem Meer ging der Mond auf, rund und hell. «Ferien sind schön», flüsterte Sunny. «Am schönsten mit Freunden.» Dann fielen ihm die Augen zu. Gute Nacht, Sunny. Gute Nacht, Meer.', pic:['sunny-sleep','moon']}
+ ]}
+];
+
+function fill(t, vars){ return String(t).replace(/\{(\w+)\}/g, (m,k) => vars[k] != null ? vars[k] : ''); }
+function figHTML(key, vars){
+  key = fill(key, vars||{});
+  const [name, mode] = key.split('-');
+  const f = FIG[name] || FIG.sunny;
+  return f({sleep: mode==='sleep', cls:'float'});
+}
+function renderStoryList(){
+  const done = store.get('done', {});
+  $('#slist').innerHTML = STORIES.map((s,i) => `
+    <button class="sitem" data-story="${i}">
+      <span class="ic">${figHTML(s.pic[0])}</span>
+      <span><b>${esc(s.title)} ${done[s.id] ? '<span class="star" title="schon gehört">★</span>' : ''}</b><span class="sub">${esc(s.sub)}</span></span>
+    </button>`).join('');
+}
+$('#slist').addEventListener('click', e => { const b=e.target.closest('[data-story]'); if (b) openStory(STORIES[+b.dataset.story]); });
+
+const R = { story:null, seq:[], idx:0, vars:{}, sent:0, reading:false, started:false, sents:[] };
+function buildSeq(story){
+  const seq=[];
+  story.parts.forEach(p => { seq.push(p); if (p.q && p.after) seq.push({t:p.after, pic:p.pic, afterOf:p}); });
+  return seq;
+}
+function openStory(story, autoplay=true){
+  R.story = story; R.seq = buildSeq(story); R.idx = 0; R.vars = {}; R.sent = 0; R.started = false;
+  R.seq.forEach(p => { if (p.q) p._chosen = null; });
+  $('#rTitle').textContent = story.title;
+  $('#rBody').hidden = false; $('#rEnd').hidden = true;
+  go('reader');
+  if (current !== 'reader') return;
+  R.reading = TTS.ok && autoplay;
+  renderPart();
+  if (R.reading) playCurrent();
+}
+function renderPart(){
+  const p = R.seq[R.idx];
+  const pics = (p.pic || R.story.pic || ['sunny']);
+  const st = $('#rStage');
+  st.classList.toggle('two', pics.length > 1);
+  st.innerHTML = pics.map(k => figHTML(k, R.vars)).join('');
+  const c = $('#rContent');
+  if (p.q){
+    c.innerHTML = `<p class="q">${esc(p.q)}</p>
+      <div class="opts ${p.opts.length===2?'n2':''}">${p.opts.map((o,i)=>`<button class="opt ${p._chosen===i?'sel':''}" data-opt="${i}"><span class="em" aria-hidden="true">${o.e}</span>${esc(o.l)}</button>`).join('')}</div>
+      ${SR ? `<button class="btn wide mic" id="rMic">🎤 Sag es Sunny</button>` :
+        `<p class="hint">Sprechen geht hier nicht direkt – tippe auf ein Bild. Oder schreib/diktiere es hier:</p><div class="row"><input class="in" id="rType" placeholder="Dein Wort" autocomplete="off"><button class="btn" id="rTypeOk">OK</button></div>`}`;
+    R.sents = [];
+  } else {
+    R.sents = splitSentences(fill(p.t, R.vars));
+    c.innerHTML = `<div class="story-text">${R.sents.map((s,i)=>`<span class="s" data-i="${i}">${esc(s)}</span>`).join(' ')}</div>`;
+  }
+  const n = R.seq.length, pct = Math.round((R.idx+1)/n*100);
+  $('#rStep').textContent = `${R.idx+1}/${n}`;
+  $('#rBar').style.width = pct+'%';
+  $('#rPct').textContent = pct+'%';
+  $('#rPrev').disabled = R.idx === 0;
+  $('#rNext').disabled = !!(p.q && p._chosen == null);
+  $('#rNext').textContent = R.idx === n-1 ? '✓' : '▶';
+  $('#rNext').setAttribute('aria-label', R.idx === n-1 ? 'Ende' : 'Nächste Seite');
+  $('#rNoTts').hidden = TTS.ok;
+  $('#rPlay').hidden = !TTS.ok;
+  updatePlay();
+}
+function updatePlay(){
+  const b = $('#rPlay');
+  b.textContent = R.reading ? '⏸ Pause' : (R.started ? '▶ Weiter' : '▶ Vorlesen');
+  b.setAttribute('aria-label', R.reading ? 'Vorlesen pausieren' : 'Vorlesen');
+}
+function highlight(i){ $$('#rContent .s').forEach(s => s.classList.toggle('cur', +s.dataset.i === i)); }
+function playCurrent(){
+  if (!R.reading) return;
+  R.started = true; updatePlay();
+  const p = R.seq[R.idx];
+  if (p.q){
+    const opts = p.opts.map(o=>o.l);
+    const say = [p.q, opts.slice(0,-1).join(', ') + ' oder ' + opts[opts.length-1] + '?'];
+    TTS.speak(say, { onEnd: () => { /* wartet auf Wahl */ } });
+    return;
+  }
+  TTS.speak(R.sents, {
+    start: R.sent,
+    onSentence: i => { R.sent = i; highlight(i); },
+    onEnd: () => {
+      highlight(-1); R.sent = 0;
+      if (!R.reading) return;
+      setTimeout(() => {
+        if (!R.reading || current !== 'reader') return;
+        if (R.idx < R.seq.length-1){ R.idx++; renderPart(); playCurrent(); }
+        else finishStory();
+      }, 1300);
+    }
+  });
+}
+$('#rPlay').addEventListener('click', () => {
+  if (R.reading){ R.reading = false; TTS.stop(); updatePlay(); }
+  else { R.reading = true; playCurrent(); }
+});
+function nav(d){
+  TTS.stop(); R.sent = 0;
+  const n = R.seq.length;
+  if (d > 0 && R.idx === n-1){ finishStory(); return; }
+  R.idx = Math.max(0, Math.min(n-1, R.idx + d));
+  renderPart();
+  if (R.reading) playCurrent();
+}
+$('#rPrev').addEventListener('click', () => nav(-1));
+$('#rNext').addEventListener('click', () => nav(1));
+function choose(i){
+  const p = R.seq[R.idx]; if (!p || !p.q) return;
+  p._chosen = i; Object.assign(R.vars, p.opts[i].v);
+  $$('#rContent .opt').forEach((b,j) => b.classList.toggle('sel', j===i));
+  $('#rNext').disabled = false;
+  TTS.stop();
+  setTimeout(() => { if (current==='reader' && R.seq[R.idx]===p){ R.idx++; R.sent=0; renderPart(); if (R.reading) playCurrent(); } }, 650);
+}
+function matchOpt(texts){
+  const p = R.seq[R.idx]; if (!p || !p.q) return -1;
+  const nums = [['eins','erste','ersten','1'],['zwei','zweite','zweiten','2'],['drei','dritte','dritten','3']];
+  for (const raw of texts){
+    const t = raw.toLowerCase();
+    for (let i=0;i<p.opts.length;i++){
+      const o = p.opts[i];
+      if (o.k.some(k => t.includes(k)) || t.includes(o.l.toLowerCase())) return i;
+    }
+    for (let i=0;i<p.opts.length;i++) if (nums[i].some(w => new RegExp('(^|\\s)'+w+'(\\s|$)').test(t))) return i;
+  }
+  return -1;
+}
+$('#rContent').addEventListener('click', e => {
+  const o = e.target.closest('[data-opt]'); if (o){ choose(+o.dataset.opt); return; }
+  if (e.target.closest('#rMic')){
+    const btn = $('#rMic');
+    listen(texts => { const i = matchOpt(texts); if (i>=0){ toast('Sunny hat «'+texts[0]+'» verstanden.'); choose(i); } else { toast('Hmm, das habe ich nicht verstanden. Tippe auf ein Bild.'); } }, btn);
+  }
+  if (e.target.closest('#rTypeOk')){
+    const v = $('#rType').value.trim(); if (!v) return;
+    const i = matchOpt([v]); if (i>=0) choose(i); else toast('Das passt zu keinem Bild. Tippe auf ein Bild.');
+  }
+});
+$('#rContent').addEventListener('keydown', e => { if (e.target.id==='rType' && e.key==='Enter') $('#rTypeOk').click(); });
+function finishStory(){
+  TTS.stop(); R.reading = false;
+  if (R.story.id){ const d = store.get('done', {}); d[R.story.id] = Date.now(); store.set('done', d); }
+  $('#rBody').hidden = true; $('#rEnd').hidden = false;
+  const f = $('#rEndFig'); f.innerHTML = sunnySVG({sleep:true, cls:'float'}); f.firstElementChild.style.width='170px'; f.firstElementChild.style.height='180px';
+  const nm = (R.story.kid || S.name);
+  const txt = `Gute Nacht${nm ? ', '+nm : ''}. Schlaf schön und träum etwas Liebes.`;
+  $('#rEndText').textContent = txt;
+  $('#rOther').textContent = R.story.mine ? '✨ Neue Version' : '📖 Andere';
+  TTS.speak(['Ende.', txt], {rateMul:.92});
+  window.scrollTo(0,0);
+}
+$('#rAgain').addEventListener('click', () => openStory(R.story));
+$('#rOther').addEventListener('click', () => { if (R.story.mine) makeStory(); else go('stories'); });
+$('#readerBack').addEventListener('click', () => go(R.story && R.story.mine ? 'idea' : 'stories'));
+
+/* ---------- Meine Idee: personalisierte Geschichte ---------- */
+const FRIENDS = {
+  sunny:{l:'Sunny', intro:'Da raschelte es im Gras, und Sunny, der kleine Igel mit dem gelben Halstuch, streckte frech die Nase heraus. «Darf ich mitkommen?», fragte er und zwinkerte.'},
+  kiki:{l:'Kiki', intro:'Da blinkte es neben {N}: Kiki, die kleine leuchtende KI, schwebte heran. «Ich will mit! Ich lerne so gern Neues», piepste Kiki.'},
+  nova:{l:'Nova', intro:'Da leuchtete es goldgrün am Himmel: Nova, der kleine Drache, landete sanft neben {N}. «Ein Abenteuer? Ich bin dabei!», rief er.'}
+};
+const PLACES = {
+  wald:{e:'🌲', l:'Wald', intro:['ging {N} in den Mondschein-Wald, wo die Bäume leise rauschen','spazierte {N} zum Rand des Mondschein-Waldes'],
+    adv:['Zwischen den Bäumen tanzten Glühwürmchen. Ein Eichhörnchen winkte von einem Ast, und es duftete nach Moos und Tannen.','Auf einer Lichtung wuchsen rote Pilze im Kreis, und in der Mitte lag ein Teppich aus weichem Moos.'],
+    prob:[['ein kleines Glühwürmchen hatte sich verirrt und fand den Heimweg nicht mehr','fand das Glühwürmchen den Weg nach Hause und blinkte vor Freude'],['der Bach war zu breit, um hinüberzuspringen','entdeckten sie eine Reihe flacher Steine, über die man trocken hinübergehen konnte']]},
+  meer:{e:'🌊', l:'Meer', intro:['ging {N} an den Strand, wo die Wellen leise rauschen','lief {N} barfuss über den warmen Sand am Meer'],
+    adv:['Die Wellen machten schschsch, und kleine Muscheln glänzten im Sand. Ein Seestern winkte freundlich.','Ein kleines Boot schaukelte am Ufer. Sie stiegen ein und liessen sich sanft von den Wellen tragen.'],
+    prob:[['ein kleiner Krebs hatte seine Muschel-Mütze verloren','fanden sie die Muschel-Mütze hinter einem Stein, und der Krebs tanzte vor Freude'],['der Nebel kam, und man sah das Ufer nicht mehr','sahen sie den Weg zurück zum Strand, ganz deutlich']]},
+  mond:{e:'🌙', l:'Mond', intro:['schaute {N} aus dem Fenster zum Mond hinauf','sass {N} im Garten und zählte die Sterne'],
+    adv:['Eine Leiter aus Sternen führte hinauf zum Mond. Stufe um Stufe stiegen sie hoch, und der Mond lächelte ihnen entgegen.','Sie schwebten auf einer weichen Wolke hinauf, bis zum Mond. Dort war der Boden ganz weich, wie Puderzucker.'],
+    prob:[['ein kleiner Stern hatte sein Licht verloren und war ganz traurig','begann der kleine Stern wieder zu funkeln, heller als je zuvor'],['der Mond hatte seine Schlafmütze verlegt und konnte nicht einschlafen','fanden sie die Schlafmütze hinter einem Mondkrater, und der Mond gähnte zufrieden']]},
+  berge:{e:'🏔️', l:'Berge', intro:['wanderte {N} hinauf in die Berge, wo die Luft so frisch ist','ging {N} auf eine Bergwiese voller Blumen'],
+    adv:['Murmeltiere pfiffen zur Begrüssung, und eine Kuh mit einer grossen Glocke machte bim-bam.','Oben auf dem Gipfel sah man weit über alle Täler. Die Wolken lagen unten wie weisse Kissen.'],
+    prob:[['ein kleines Murmeltier fand seinen Bau nicht mehr','fand das Murmeltier seinen Bau und pfiff ein fröhliches Danke'],['ein Wind wehte die Wolken durcheinander, und alles war grau','teilten sich die Wolken, und die Sonne schaute freundlich hervor']]}
+};
+const pickR = a => a[Math.floor(Math.random()*a.length)];
+const gen = n => /[sßxz]$/i.test(n) ? n+'’' : n+'s';
+const sel = { friend: store.get('lastFriend','sunny'), place: store.get('lastPlace','wald') };
+function renderIdea(){
+  const kid = store.get('kid', {name:S.name||'', thing:''});
+  if (!$('#kName').value) $('#kName').value = kid.name || S.name || '';
+  if (!$('#kThing').value) $('#kThing').value = kid.thing || '';
+  $('#pFriend').innerHTML = Object.entries(FRIENDS).map(([k,f]) => `<button class="pk ${sel.friend===k?'sel':''}" data-friend="${k}" aria-pressed="${sel.friend===k}">${FIG[k]({})}${f.l}</button>`).join('');
+  $('#pPlace').innerHTML = Object.entries(PLACES).map(([k,p]) => `<button class="pk ${sel.place===k?'sel':''}" data-place="${k}" aria-pressed="${sel.place===k}"><span class="em" aria-hidden="true">${p.e}</span>${p.l}</button>`).join('');
+  $('#micHint').hidden = !!SR;
+}
+$('#pFriend').addEventListener('click', e => { const b=e.target.closest('[data-friend]'); if(!b) return; sel.friend=b.dataset.friend; store.set('lastFriend', sel.friend); renderIdea(); });
+$('#pPlace').addEventListener('click', e => { const b=e.target.closest('[data-place]'); if(!b) return; sel.place=b.dataset.place; store.set('lastPlace', sel.place); renderIdea(); });
+function cleanName(t){ t = t.trim().replace(/^(ich heisse|ich heiße|ich bin|mein name ist|ich heiss)\s+/i,'').replace(/[.!?]+$/,'').trim(); return t.charAt(0).toUpperCase()+t.slice(1); }
+function cleanThing(t){ return t.trim().replace(/^(mein lieblingsding ist|mein lieblingsding|ich mag|am liebsten mag ich|am liebsten)\s+/i,'').replace(/[.!?]+$/,'').trim(); }
+function makeStory(){
+  const N = cleanName($('#kName').value).slice(0,24);
+  const D = cleanThing($('#kThing').value).slice(0,40);
+  if (!N){ toast('Sag mir zuerst deinen Namen.'); TTS.speak('Wie heisst du? Sag mir zuerst deinen Namen.'); $('#kName').focus(); return; }
+  if (!D){ toast('Was ist dein Lieblingsding?'); TTS.speak('Und was ist dein Lieblingsding?'); $('#kThing').focus(); return; }
+  store.set('kid', {name:N, thing:D});
+  const F = FRIENDS[sel.friend], P = PLACES[sel.place], prob = pickR(P.prob);
+  const v = {N, D, F:F.l};
+  const fig = sel.friend;
+  const parts = [
+    {t:`Es war einmal ein Kind, das hiess ${N}. An einem ruhigen Abend ${fill(pickR(P.intro), v)}.`, pic:[fig==='sunny'?'moon':'sunny']},
+    {t:pickR([`${N} hatte das Lieblingsding dabei: ${D}. Ohne das ging ${N} nirgendwo hin.`, `Und natürlich war das Lieblingsding mit dabei: ${D}. ${N} hielt es gut fest.`]), pic:['moon']},
+    {t:fill(F.intro, v), pic:[fig]},
+    {t:pickR(P.adv) + ` «Wie schön es hier ist», flüsterte ${N}.`, pic:[fig, 'fly']},
+    {t:`Doch plötzlich … ${prob[0]}. ${F.l} schaute ${N} fragend an. ${N} überlegte kurz – und hatte eine Idee!`, pic:[fig]},
+    {t:`${N} hielt das Lieblingsding hoch: ${D}. Und weisst du was? Es begann ganz sanft zu leuchten. In seinem warmen Licht ${prob[1]}. «Du bist toll, ${N}!», rief ${F.l}.`, pic:[fig,'moon']},
+    {t:`Müde und glücklich kehrten ${N} und ${F.l} nach Hause zurück. ${N} kuschelte sich ins Bett, das Lieblingsding ganz nah. Gute Nacht, ${N}. Schlaf gut und träum etwas Schönes.`, pic:[fig+'-sleep','moon']}
+  ];
+  openStory({ title: gen(N)+' Geschichte', pic:[fig], parts, mine:true, kid:N });
+}
+$('#makeStory').addEventListener('click', makeStory);
+
+/* Mikrofon-Knöpfe für Textfelder */
+$$('.mic-btn').forEach(b => {
+  if (!SR){ b.hidden = true; return; }
+  b.addEventListener('click', () => {
+    const target = $('#'+b.dataset.mic);
+    listen(texts => {
+      let t = texts[0] || '';
+      if (b.dataset.mic==='kName') t = cleanName(t);
+      if (b.dataset.mic==='kThing') t = cleanThing(t);
+      target.value = b.dataset.append && target.value ? (target.value.trim()+' '+t) : t;
+      target.dispatchEvent(new Event('input'));
+    }, b);
+  });
+});
+
+/* ---------- Memory ---------- */
+const MEM = [['sunny','Sunny'],['kiki','Kiki'],['nova','Nova'],['moon','Mond'],['mush','Pilz'],['fly','Glühwürmchen']];
+const game = { cards:[], open:[], moves:0, pairs:0, lock:false };
+function newGame(){
+  const deck = MEM.flatMap(([k,l]) => [{k,l},{k,l}]);
+  for (let i=deck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]]; }
+  game.cards = deck.map(c => ({...c, up:false, done:false}));
+  game.open = []; game.moves = 0; game.pairs = 0; game.lock = false;
+  $('#mem').innerHTML = game.cards.map((c,i) => `<button class="mc" data-card="${i}" aria-label="Karte ${i+1}, verdeckt"><span class="backs" aria-hidden="true"></span><span class="face" aria-hidden="true">${FIG[c.k]({})}</span></button>`).join('');
+  $('#gWin').classList.remove('on');
+  updateGame();
+}
+function updateGame(){
+  const pct = Math.round(game.pairs/MEM.length*100);
+  $('#gMoves').textContent = 'Züge: '+game.moves;
+  $('#gPairs').textContent = `Paare: ${game.pairs} von ${MEM.length}`;
+  $('#gBar').style.width = pct+'%'; $('#gPct').textContent = pct+'%';
+}
+function flip(i){
+  const c = game.cards[i];
+  if (game.lock || c.up || c.done) return;
+  c.up = true;
+  const el = $(`[data-card="${i}"]`); el.classList.add('up'); el.setAttribute('aria-label', 'Karte '+(i+1)+': '+c.l);
+  game.open.push(i);
+  if (game.open.length === 2){
+    game.moves++; game.lock = true;
+    const [a,b] = game.open, A = game.cards[a], B = game.cards[b];
+    if (A.k === B.k){
+      setTimeout(() => {
+        A.done = B.done = true; game.pairs++; game.open = []; game.lock = false;
+        $(`[data-card="${a}"]`).classList.add('done'); $(`[data-card="${b}"]`).classList.add('done');
+        updateGame();
+        if (game.pairs === MEM.length) setTimeout(winGame, 500); else TTS.speak(A.l+'!', {rateMul:1.1});
+      }, 450);
+    } else {
+      setTimeout(() => {
+        A.up = B.up = false; game.open = []; game.lock = false;
+        [a,b].forEach(x => { const e=$(`[data-card="${x}"]`); e.classList.remove('up'); e.setAttribute('aria-label','Karte '+(x+1)+', verdeckt'); });
+        updateGame();
+      }, 1100);
+    }
+  }
+  updateGame();
+}
+function winGame(){
+  $('#gWinFig').innerHTML = sunnySVG({wave:true, cls:'float'});
+  const s = $('#gWinFig svg'); s.style.width='150px'; s.style.height='160px';
+  $('#gWinText').textContent = `Alle 6 Paare gefunden – in ${game.moves} Zügen!`;
+  $('#gWin').classList.add('on');
+  TTS.speak(`Super gemacht${S.name ? ', '+S.name : ''}! Du hast alle Paare gefunden.`);
+}
+$('#mem').addEventListener('click', e => { const b=e.target.closest('[data-card]'); if (b) flip(+b.dataset.card); });
+$('#gRestart').addEventListener('click', () => { newGame(); toast('Neu gemischt!'); });
+$('#gAgain').addEventListener('click', newGame);
+$('#gHome').addEventListener('click', () => { $('#gWin').classList.remove('on'); newGame(); go('home'); });
+
+/* ---------- Zeitlimit ---------- */
+const today = () => { const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+function usage(){ let u = store.get('usage', null); if (!u || u.date !== today()) u = {date:today(), ms:0, bonus:0}; return u; }
+function limitMs(u){ return S.limit ? (S.limit*60000 + (u.bonus||0)) : 0; }
+function limitReached(){ const u=usage(); const L=limitMs(u); return L>0 && u.ms >= L; }
+let lastTick = Date.now();
+setInterval(() => {
+  const now = Date.now(), dt = Math.min(now-lastTick, 10000); lastTick = now;
+  if (document.visibilityState !== 'visible' || current==='parents' || current==='night') return;
+  const u = usage(); u.ms += dt; store.set('usage', u);
+  if (limitReached()) go('night');
+}, 5000);
+document.addEventListener('visibilitychange', () => { lastTick = Date.now(); if (document.visibilityState==='visible'){ applyNight(); if (current!=='parents' && current!=='night' && limitReached()) go('night'); } else { TTS.stop(); if (R.reading){ R.reading=false; updatePlay(); } } });
+function showNight(){
+  $('#nMoon').innerHTML = moonSVG({cls:'float'}); $('#nMoon svg').style.width='90px'; $('#nMoon svg').style.height='90px';
+  $('#nFig').innerHTML = sunnySVG({sleep:true}); $('#nFig svg').style.width='200px'; $('#nFig svg').style.height='210px';
+  $('#nTitle').textContent = `Gute Nacht${S.name ? ', '+S.name : ''}!`;
+  const say = `Gute Nacht${S.name ? ', '+S.name : ''}! Für heute haben wir genug gespielt. Ich bin auch schon ganz müde. Schlaf schön, bis morgen.`;
+  setTimeout(() => { if (current==='night') TTS.speak(say, {rateMul:.9}); }, 400);
+}
+
+/* ---------- Eltern ---------- */
+const LIMITS = [0,10,15,20,30,45,60];
+const NIGHTS = [['off','Aus'],['on','An'],['auto','Automatisch']];
+const CHIPS = ['Geschichte weniger gruselig','Sunny langsamer sprechen lassen','Grössere Knöpfe','Mehr Geschichten mit Nova','Neues Spiel: '];
+function rateLabel(r){ return r < 0.75 ? 'sehr ruhig' : r < 0.9 ? 'ruhig' : r < 1.02 ? 'normal' : 'etwas schneller'; }
+function fillVoices(){
+  const vs = TTS.voices(), s = $('#voiceSel');
+  s.innerHTML = '<option value="">Automatisch (Deutsch)</option>' + vs.map(v => `<option value="${esc(v.name)}" ${v.name===S.voice?'selected':''}>${esc(v.name)} (${esc(v.lang)})</option>`).join('');
+}
+function renderParents(){
+  const u = usage(), L = limitMs(u), used = Math.floor(u.ms/60000);
+  $('#tUsed').textContent = used + ' Min.';
+  if (L){ const pct = Math.min(100, Math.round(u.ms/L*100)); $('#tBar').style.width = pct+'%'; $('#tPct').textContent = pct+'%'; $('#tInfo').textContent = `Heute erlaubt: ${Math.round(L/60000)} Min. · noch ${Math.max(0, Math.ceil((L-u.ms)/60000))} Min.`; }
+  else { $('#tBar').style.width = '0%'; $('#tPct').textContent = '–'; $('#tInfo').textContent = 'Kein Zeitlimit eingestellt.'; }
+  $('#tPlus').disabled = !S.limit;
+  $('#segLimit').innerHTML = LIMITS.map(m => `<button data-limit="${m}" class="${S.limit===m?'sel':''}" aria-pressed="${S.limit===m}">${m ? m+' Min.' : 'Aus'}</button>`).join('');
+  $('#segNight').innerHTML = NIGHTS.map(([k,l]) => `<button data-nightset="${k}" class="${S.night===k?'sel':''}" aria-pressed="${S.night===k}">${l}</button>`).join('');
+  $('#rate').value = S.rate; $('#rateLbl').textContent = rateLabel(S.rate);
+  fillVoices();
+  if (document.activeElement !== $('#pName')) $('#pName').value = S.name || '';
+  $('#chips').innerHTML = CHIPS.map(c => `<button class="chip" data-chip="${esc(c)}">${esc(c)}</button>`).join('');
+  $('#micHint2').hidden = !!SR;
+  renderIdeas();
+}
+$('#segLimit').addEventListener('click', e => { const b=e.target.closest('[data-limit]'); if(!b) return; S.limit=+b.dataset.limit; saveS(); renderParents(); toast(S.limit ? `Zeitlimit: ${S.limit} Min. pro Tag` : 'Kein Zeitlimit'); });
+$('#segNight').addEventListener('click', e => { const b=e.target.closest('[data-nightset]'); if(!b) return; S.night=b.dataset.nightset; saveS(); applyNight(); renderParents(); });
+$('#tPlus').addEventListener('click', () => { const u=usage(); u.bonus=(u.bonus||0)+600000; store.set('usage',u); renderParents(); toast('+10 Minuten für heute'); });
+$('#tReset').addEventListener('click', () => { const u=usage(); u.ms=0; u.bonus=0; store.set('usage',u); renderParents(); toast('Zeit für heute auf 0 gesetzt'); });
+$('#rate').addEventListener('input', e => { S.rate = +e.target.value; $('#rateLbl').textContent = rateLabel(S.rate); saveS(); });
+$('#voiceSel').addEventListener('change', e => { S.voice = e.target.value; saveS(); });
+$('#rateTest').addEventListener('click', () => { if (!TTS.ok){ toast('Vorlesen geht auf diesem Gerät nicht.'); return; } TTS.speak('Hallo, ich bin Sunny. So schnell lese ich dir vor. Gute Nacht!'); });
+$('#pNameSave').addEventListener('click', () => { S.name = cleanName($('#pName').value).slice(0,24); saveS(); $('#pName').value = S.name; toast(S.name ? `Gespeichert: ${S.name}` : 'Name gelöscht'); });
+$('#chips').addEventListener('click', e => { const b=e.target.closest('[data-chip]'); if(!b) return; const t=$('#ideaText'); t.value = (t.value.trim() ? t.value.trim()+'\n' : '') + b.dataset.chip; t.focus(); });
+function ideas(){ return store.get('ideas', []); }
+function fmtDate(ts){ const d=new Date(ts); return d.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'}); }
+function renderIdeas(){
+  const list = ideas();
+  $('#ideaList').innerHTML = list.length ? list.map(i => `<div class="idea"><div class="small muted">${fmtDate(i.ts)}</div><p>${esc(i.text)}</p><div class="row"><button class="btn" data-share="${i.ts}">📤 Teilen</button><button class="btn" data-del="${i.ts}">🗑 Löschen</button></div></div>`).join('') : '<p class="small muted" style="margin:12px 0 0">Noch keine Ideen gespeichert.</p>';
+  $('#ideaShareAll').hidden = list.length < 2;
+}
+$('#ideaSave').addEventListener('click', () => {
+  const t = $('#ideaText').value.trim();
+  if (!t){ toast('Schreib zuerst deine Idee.'); $('#ideaText').focus(); return; }
+  const list = ideas(); list.unshift({ts:Date.now(), text:t}); store.set('ideas', list);
+  $('#ideaText').value = ''; renderIdeas(); toast('Idee gespeichert – mit «Teilen» schickst du sie an DR Lab.');
+});
+async function shareText(text){
+  if (navigator.share){ try{ await navigator.share({title:'Idee für Mondschein (DR Lab)', text}); return; }catch(e){ if (e && e.name==='AbortError') return; } }
+  try{ await navigator.clipboard.writeText(text); toast('Text kopiert – jetzt in eine Nachricht oder Mail einfügen.'); return; }catch(e){}
+  const ta = document.createElement('textarea'); ta.value = text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast('Text kopiert – jetzt einfügen.'); }catch(e){ toast('Kopieren ging nicht. Bitte Text markieren und kopieren.'); }
+  ta.remove();
+}
+const ideaMsg = i => `Idee für Mondschein (DR Lab), ${fmtDate(i.ts)}:\n${i.text}`;
+$('#ideaList').addEventListener('click', e => {
+  const s = e.target.closest('[data-share]'), d = e.target.closest('[data-del]');
+  if (s){ const i = ideas().find(x => String(x.ts)===s.dataset.share); if (i) shareText(ideaMsg(i)); }
+  if (d){ if (!confirm('Diese Idee löschen?')) return; store.set('ideas', ideas().filter(x => String(x.ts)!==d.dataset.del)); renderIdeas(); toast('Gelöscht'); }
+});
+$('#ideaShareAll').addEventListener('click', () => shareText(ideas().map(ideaMsg).join('\n\n')));
+
+/* ---------- Start ---------- */
+applyNight();
+setInterval(applyNight, 60000);
+renderHome();
+if (limitReached()) go('night');
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(()=>{});
+window.__ms = { go, STORIES, game, S, R };
+})();
+</script>
+</body>
+</html>

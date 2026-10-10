@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Fotowissen">
+<meta name="theme-color" content="#2b2622">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>Fotowissen</title>
+<style>
+:root{
+  --bg:#f6f1ea; --card:#fffdf9; --ink:#2b2622; --muted:#7a6f66; --line:#e6ddd1;
+  --accent:#c98b4a; --accent-d:#a96f33; --soft:#f0e6d8; --ok:#5b8a5e; --danger:#b4533f;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:16px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  -webkit-text-size-adjust:100%;overflow-x:hidden}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px 32px}
+header{padding:18px 0 10px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{width:44px;height:44px;border-radius:11px}
+h1{font-family:Georgia,"Times New Roman",serif;font-weight:600;font-size:26px;margin:0;letter-spacing:.2px}
+.sub{color:var(--muted);font-size:14px;margin:2px 0 0}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0 10px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;border-bottom:1px solid var(--line)}
+nav button{min-height:52px;border:1px solid var(--line);background:var(--card);border-radius:14px;font:600 13px/1.15 -apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;color:var(--ink);padding:4px 2px;cursor:pointer}
+nav button[aria-selected="true"]{background:var(--ink);color:#f6f1ea;border-color:var(--ink)}
+section{display:none;padding-top:16px}
+section.on{display:block}
+h2{font-family:Georgia,serif;font-weight:600;font-size:21px;margin:4px 0 10px}
+h3{font-size:16px;margin:0 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:0 0 14px}
+.mic{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:100%;min-height:150px;border:0;border-radius:24px;
+  background:linear-gradient(160deg,#3a332e,#2b2622);color:#f6f1ea;font:600 19px/1.3 -apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;cursor:pointer;padding:18px;box-shadow:0 8px 24px rgba(43,38,34,.18)}
+.mic .dot{width:64px;height:64px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center}
+.mic.rec .dot{animation:pulse 1.2s infinite;background:#d0663f}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(208,102,63,.6)}70%{box-shadow:0 0 0 18px rgba(208,102,63,0)}100%{box-shadow:0 0 0 0 rgba(208,102,63,0)}}
+.hint{font-size:14px;color:var(--muted);margin:8px 0 0}
+.note{background:var(--soft);border-radius:12px;padding:10px 12px;font-size:14px;margin:10px 0 0}
+textarea,input,select{width:100%;font:16px/1.4 -apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
+textarea{min-height:120px;resize:vertical}
+label{display:block;font-size:14px;font-weight:600;margin:12px 0 6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:44px;padding:8px 14px;border-radius:22px;border:1px solid var(--line);background:#fff;font:600 14px -apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;color:var(--ink);cursor:pointer}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border-radius:14px;border:0;background:var(--accent);color:#fff;font:700 16px -apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;cursor:pointer;margin-top:12px;padding:10px 14px;text-align:center}
+.btn:active{transform:scale(.99)}
+.btn.dark{background:var(--ink)}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.small{min-height:52px;font-size:15px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row .btn{margin-top:0}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{background:var(--soft);color:var(--accent-d);font-size:13px;font-weight:600;padding:3px 10px;border-radius:12px}
+.entry{border-top:1px solid var(--line);padding:12px 0}
+.entry:first-of-type{border-top:0}
+.meta{font-size:13px;color:var(--muted)}
+.entry p{margin:4px 0 0;white-space:pre-wrap;word-wrap:break-word}
+.eacts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.eacts .btn{margin:0;min-height:52px;font-size:14px}
+.bar{height:12px;background:var(--soft);border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#ddb07d);border-radius:8px;transition:width .4s}
+.cathead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.pct{font-weight:700;font-size:14px;color:var(--accent-d);white-space:nowrap}
+.catbtn{width:100%;text-align:left;background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;min-height:52px}
+.total{display:flex;align-items:center;gap:12px}
+.total .big{font:700 32px Georgia,serif}
+.out{white-space:pre-wrap;background:#fff;border:1px dashed var(--line);border-radius:12px;padding:12px;font-size:14px;margin-top:12px;max-height:340px;overflow:auto;word-wrap:break-word}
+.privacy{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--ok);font-weight:600;margin:6px 0 0}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;opacity:0;transition:.25s;pointer-events:none;z-index:20;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:20px 0 8px}
+.empty{color:var(--muted);font-size:15px;text-align:center;padding:10px 0}
+details summary{min-height:52px;display:flex;align-items:center;font-weight:700;cursor:pointer;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"＋";margin-left:auto;color:var(--accent-d)}
+details[open] summary::after{content:"–"}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand">
+    <img src="icon.svg" alt="">
+    <div>
+      <h1>Fotowissen</h1>
+      <p class="sub" id="who">Stefan Weiss Fotografie × DR Lab</p>
+    </div>
+  </div>
+  <p class="privacy">🔒 Deine Daten bleiben auf deinem Handy.</p>
+</header>
+
+<nav role="tablist">
+  <button role="tab" data-tab="erz" aria-selected="true">Erzählen</button>
+  <button role="tab" data-tab="buch" aria-selected="false">Wissens&shy;buch</button>
+  <button role="tab" data-tab="ki" aria-selected="false">KI-Helfer</button>
+  <button role="tab" data-tab="send" aria-selected="false">An DR Lab</button>
+</nav>
+
+<!-- ERZÄHLEN -->
+<section id="erz" class="on">
+  <button class="mic" id="micBtn" type="button" aria-label="Erzähl mir einen Profi-Tipp">
+    <span class="dot"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>
+    <span id="micLabel">Erzähl mir einen Profi-Tipp</span>
+  </button>
+  <p class="hint" id="micHint">Tippen, sprechen, nochmals tippen zum Stoppen.</p>
+
+  <div class="card" style="margin-top:14px">
+    <label for="tipText" style="margin-top:0">Dein Tipp</label>
+    <textarea id="tipText" placeholder="z. B. Bei Gegenlicht stelle ich die Person so, dass die Sonne die Haare streift, und helle das Gesicht mit einem weissen Reflektor auf …"></textarea>
+    <label>Kategorie <span class="meta" id="autoCat"></span></label>
+    <div class="chips" id="catChips"></div>
+    <label>Stichworte (automatisch)</label>
+    <div class="tags" id="previewTags"><span class="meta">erscheinen beim Schreiben</span></div>
+    <button class="btn" id="saveBtn" type="button">Tipp ins Wissensbuch speichern</button>
+  </div>
+  <div class="card">
+    <h3>Ideen, worüber du erzählen kannst</h3>
+    <p class="meta" id="promptIdea" style="font-size:15px;color:var(--ink)"></p>
+    <button class="btn ghost small" id="ideaBtn" type="button">Andere Idee</button>
+  </div>
+</section>
+
+<!-- WISSENSBUCH -->
+<section id="buch">
+  <h2>Wissensbuch</h2>
+  <div class="card">
+    <div class="total"><span class="big" id="totPct">0%</span><div style="flex:1"><div class="meta" id="totTxt">0 von 70 Tipps</div><div class="bar" style="margin-top:6px"><i id="totBar" style="width:0"></i></div></div></div>
+    <p class="hint">Ziel: je 10 Tipps pro Kategorie.</p>
+  </div>
+  <div id="catList"></div>
+</section>
+
+<!-- KI-HELFER -->
+<section id="ki">
+  <h2>KI-Helfer</h2>
+  <p class="hint" style="margin-top:-4px">Vorlagen zum Ausfüllen. Deine eigenen Tipps aus dem Wissensbuch fliessen automatisch mit ein.</p>
+  <div class="card">
+    <label for="hName" style="margin-top:0">Kundin / Kunde</label>
+    <input id="hName" placeholder="z. B. Anna Muster" autocomplete="off">
+    <div class="row">
+      <div><label for="hDate">Datum Shooting</label><input id="hDate" type="date"></div>
+      <div><label for="hType">Art</label>
+        <select id="hType"><option>Portrait</option><option>Paare</option><option>Familie</option><option>Hochzeit</option><option>Business</option><option>Produkt</option><option>Event</option></select></div>
+    </div>
+    <label for="hPlace">Ort</label>
+    <input id="hPlace" placeholder="z. B. Studio oder Seeufer Zürich" autocomplete="off">
+    <label for="hLink">Galerie-Link</label>
+    <input id="hLink" type="url" placeholder="https://…" autocomplete="off">
+  </div>
+  <div class="chips" id="tplChips" style="margin-bottom:10px"></div>
+  <div class="card">
+    <h3 id="tplTitle"></h3>
+    <div class="out" id="tplOut"></div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" id="copyTpl" type="button">Kopieren</button>
+      <button class="btn ghost" id="shareTpl" type="button">Teilen</button>
+    </div>
+  </div>
+</section>
+
+<!-- SENDEN -->
+<section id="send">
+  <h2>An DR Lab senden</h2>
+  <div class="card">
+    <label for="sendCat" style="margin-top:0">Was senden?</label>
+    <select id="sendCat"></select>
+    <label for="sendName">Absender</label>
+    <input id="sendName" autocomplete="off">
+    <p class="hint" id="sendInfo"></p>
+    <button class="btn" id="shareBtn" type="button">Teilen (WhatsApp, Mail, …)</button>
+    <button class="btn dark" id="mailBtn" type="button">Per Mail an DR Lab</button>
+    <div class="row" style="margin-top:12px">
+      <button class="btn ghost" id="copyJson" type="button">JSON kopieren</button>
+      <button class="btn ghost" id="dlJson" type="button">JSON speichern</button>
+    </div>
+    <p class="note">Nichts geht automatisch weg. Du entscheidest, was du mit DR Lab teilst. Wir verbessern die App laufend mit deinem Wissen.</p>
+  </div>
+  <details class="card">
+    <summary>Vorschau</summary>
+    <div class="out" id="sendPreview"></div>
+  </details>
+  <details class="card">
+    <summary>Daten verwalten</summary>
+    <p class="hint">Sicherung einspielen (JSON aus «JSON speichern»):</p>
+    <input type="file" id="importFile" accept="application/json,.json" style="margin-top:8px">
+    <button class="btn ghost" id="clearBtn" type="button" style="color:var(--danger)">Alle Tipps löschen</button>
+  </details>
+</section>
+
+<footer>DR Lab · Testphase</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+var P="fw_";
+var CATS=["Licht","Posing","Bearbeitung","Kundenkontakt","Ablauf Shooting","Preise/Angebot","Technik"];
+var GOAL=10;
+var LEX={
+ "Licht":["licht","sonne","gegenlicht","schatten","reflektor","blitz","softbox","fenster","golden","stunde","dämmerung","hell","dunkel","kontrast","lichtquelle","diffus","seitenlicht","abend","morgen","weissabgleich","lampe","dauerlicht"],
+ "Posing":["pose","posing","haltung","hände","hand","kinn","schulter","blick","lächeln","stehen","sitzen","gewicht","bein","arme","natürlich","locker","bewegung","paar","umarmen","anweisung","entspannt","gesicht"],
+ "Bearbeitung":["bearbeitung","lightroom","photoshop","retusche","preset","farbe","farben","look","haut","export","schärfe","rauschen","maske","kurve","sättigung","bearbeiten","raw","grading","filter","zuschnitt","capture"],
+ "Kundenkontakt":["kunde","kundin","kunden","mail","anruf","vertrauen","gespräch","nachricht","whatsapp","feedback","bewertung","empfehlung","beziehung","erwartung","kommunikation","termin","freundlich","danke","antwort"],
+ "Ablauf Shooting":["ablauf","shooting","vorbereitung","start","pause","location","ort","zeitplan","checkliste","warm","aufwärmen","ankommen","dauer","stunde","outfit","wechsel","planung","briefing","ende","musik"],
+ "Preise/Angebot":["preis","preise","angebot","paket","franken","chf","rabatt","kosten","rechnung","anzahlung","bezahlen","verkaufen","verkauf","upsell","album","druck","wert","buchung","gutschein","offerte"],
+ "Technik":["kamera","objektiv","blende","iso","verschlusszeit","brennweite","autofokus","fokus","sensor","stativ","akku","speicherkarte","festbrennweite","zoom","mm","f/","belichtung","einstellung","modus","backup"]
+};
+var STOP=("aber alle allem allen aller alles also am an andere anderen auch auf aus bei beim bin bis bist da dabei damit dann das dass dein deine dem den denn der des dich die dies diese diesem diesen dieser dir doch dort du durch ein eine einem einen einer eines einfach er es etwas euch für gar geht gibt ganz gut hab habe haben hat hatte hier ich ihm ihn ihr ihre im immer in ins ist ja je jede jeden jeder jetzt kann kannst kein keine man mal mehr mein meine meist mich mir mit muss nach nicht nichts noch nur ob oder ohne schon sehr sich sie sind so sollte sondern sonst über um und uns unser unter viel vom von vor war was weil wenn wer werden wie wieder wir wird wirklich wo zu zum zur zwar zwischen sein seine selbst lassen lasse lässt mache machen macht wichtig dann denn eben eher erst gleich danach davor oft also halt dabei darauf dazu weiter wäre würde kommt kommen tipp tipps gerne").split(" ");
+var STOPSET={};STOP.forEach(function(w){STOPSET[w]=1});
+
+function load(k,d){try{var v=localStorage.getItem(P+k);return v?JSON.parse(v):d}catch(e){return d}}
+function save(k,v){try{localStorage.setItem(P+k,JSON.stringify(v))}catch(e){}}
+var entries=load("entries",[]);
+var $=function(id){return document.getElementById(id)};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function toast(t){var el=$("toast");el.textContent=t;el.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(function(){el.classList.remove("show")},2200)}
+function fmtDate(iso){var d=new Date(iso);return d.toLocaleDateString("de-CH",{day:"2-digit",month:"2-digit",year:"numeric"})}
+
+/* ---------- Tabs ---------- */
+var tabs=document.querySelectorAll("nav button");
+function showTab(id){
+  tabs.forEach(function(b){b.setAttribute("aria-selected",b.dataset.tab===id?"true":"false")});
+  document.querySelectorAll("section").forEach(function(s){s.classList.toggle("on",s.id===id)});
+  if(id==="buch")renderBook();
+  if(id==="send")renderSend();
+  if(id==="ki")renderTpl();
+  save("tab",id);window.scrollTo(0,0);
+}
+tabs.forEach(function(b){b.addEventListener("click",function(){showTab(b.dataset.tab)})});
+
+/* ---------- Stichworte & Kategorie ---------- */
+function words(t){return (t.toLowerCase().match(/[a-zäöüéèàç0-9\/]+/g)||[])}
+function keywords(t){
+  var ws=words(t),freq={},first={};
+  ws.forEach(function(w,i){
+    if(w.length<4||STOPSET[w]||/^\d+$/.test(w))return;
+    freq[w]=(freq[w]||0)+1; if(!(w in first))first[w]=i;
+  });
+  var allLex={};CATS.forEach(function(c){LEX[c].forEach(function(x){allLex[x]=1})});
+  var list=Object.keys(freq).map(function(w){
+    var s=freq[w]*3+Math.min(w.length,12)*0.25+(allLex[w]?4:0);return {w:w,s:s,i:first[w]};
+  });
+  list.sort(function(a,b){return b.s-a.s||a.i-b.i});
+  return list.slice(0,3).map(function(o){return o.w.charAt(0).toUpperCase()+o.w.slice(1)});
+}
+function guessCat(t){
+  var ws=words(t),best=null,bs=0,txt=" "+t.toLowerCase()+" ";
+  CATS.forEach(function(c){
+    var s=0;LEX[c].forEach(function(k){ws.forEach(function(w){if(w===k||(k.length>4&&w.indexOf(k)===0))s++});if(k.indexOf("/")>=0&&txt.indexOf(k)>=0)s++});
+    if(s>bs){bs=s;best=c}
+  });
+  return best;
+}
+
+/* ---------- Erzählen ---------- */
+var chosenCat=null,manualCat=false;
+function renderChips(){
+  $("catChips").innerHTML=CATS.map(function(c){return '<button type="button" class="chip'+(c===chosenCat?" on":"")+'" data-c="'+esc(c)+'">'+esc(c)+'</button>'}).join("");
+}
+$("catChips").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;chosenCat=b.dataset.c;manualCat=true;$("autoCat").textContent="";renderChips()});
+function onTextChange(){
+  var t=$("tipText").value;save("draft",t);
+  var k=keywords(t);
+  $("previewTags").innerHTML=k.length?k.map(function(x){return '<span class="tag">#'+esc(x)+'</span>'}).join(""):'<span class="meta">erscheinen beim Schreiben</span>';
+  if(!manualCat){var g=guessCat(t);if(g){chosenCat=g;$("autoCat").textContent="– Vorschlag: "+g}else{$("autoCat").textContent=""}renderChips()}
+}
+$("tipText").addEventListener("input",onTextChange);
+$("saveBtn").addEventListener("click",function(){
+  var t=$("tipText").value.trim();
+  if(t.length<5){toast("Bitte zuerst einen Tipp sprechen oder schreiben.");$("tipText").focus();return}
+  if(!chosenCat){toast("Bitte eine Kategorie wählen.");return}
+  if(rec&&listening)rec.stop();
+  entries.unshift({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),cat:chosenCat,text:t,date:new Date().toISOString(),tags:keywords(t)});
+  save("entries",entries);
+  var n=entries.filter(function(e){return e.cat===chosenCat}).length;
+  toast("Gespeichert in «"+chosenCat+"» ("+Math.min(100,Math.round(n/GOAL*100))+"%)");
+  $("tipText").value="";chosenCat=null;manualCat=false;$("autoCat").textContent="";onTextChange();
+});
+
+var IDEAS=["Wie bringst du nervöse Menschen in den ersten fünf Minuten zum Lachen?","Welches Licht suchst du draussen zuerst – und warum?","Was ist dein Trick, damit Hände auf Fotos natürlich aussehen?","Wie bearbeitest du Haut, ohne dass es künstlich wirkt?","Was schreibst du Kunden am Tag nach dem Shooting?","Wie erklärst du deine Preise, ohne dich zu rechtfertigen?","Welche Kameraeinstellung nutzt du bei Familien mit kleinen Kindern?","Was gehört in deine Fototasche, das andere vergessen?","Wie planst du einen Shooting-Ablauf von 60 Minuten?","Welchen Fehler hast du am Anfang gemacht, den du heute nie mehr machst?","Wie wählst du aus 400 Bildern die besten 40 aus?","Wie verkaufst du ein Album oder Drucke, ohne aufdringlich zu sein?"];
+var ideaI=Math.floor(Math.random()*IDEAS.length);
+function showIdea(){$("promptIdea").textContent=IDEAS[ideaI%IDEAS.length]}
+$("ideaBtn").addEventListener("click",function(){ideaI++;showIdea()});
+
+/* ---------- Sprache ---------- */
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition,rec=null,listening=false,langTry="de-CH",baseText="";
+function setMic(on){listening=on;$("micBtn").classList.toggle("rec",on);$("micLabel").textContent=on?"Ich höre zu … tippen zum Stoppen":"Erzähl mir einen Profi-Tipp"}
+function startRec(){
+  rec=new SR();rec.lang=langTry;rec.interimResults=true;rec.continuous=true;
+  baseText=$("tipText").value?($("tipText").value.replace(/\s+$/,"")+" "):"";
+  rec.onresult=function(ev){var fin="",inter="";for(var i=0;i<ev.results.length;i++){var r=ev.results[i];if(r.isFinal)fin+=r[0].transcript;else inter+=r[0].transcript}
+    $("tipText").value=baseText+fin+inter;onTextChange()};
+  rec.onerror=function(ev){
+    if(ev.error==="language-not-supported"&&langTry==="de-CH"){langTry="de-DE";setMic(false);try{startRec()}catch(e){}return}
+    setMic(false);
+    if(ev.error==="not-allowed"||ev.error==="service-not-allowed")micFallback("Mikrofon nicht erlaubt. Tippe ins Textfeld und nutze das Diktier-Mikrofon der iPhone-Tastatur.");
+    else if(ev.error!=="aborted"&&ev.error!=="no-speech")toast("Spracherkennung: "+ev.error);
+  };
+  rec.onend=function(){setMic(false)};
+  try{rec.start();setMic(true)}catch(e){setMic(false);micFallback()}
+}
+function micFallback(msg){$("micHint").textContent=msg||"Spracherkennung ist hier nicht verfügbar. Tippe ins Textfeld und nutze das Mikrofon der iPhone-Tastatur – das funktioniert immer.";$("tipText").focus()}
+$("micBtn").addEventListener("click",function(){
+  if(!SR){micFallback();return}
+  if(listening){rec&&rec.stop();setMic(false);return}
+  startRec();
+});
+if(!SR)$("micHint").textContent="Tipp: Auf diesem Gerät ins Textfeld tippen und das Tastatur-Mikrofon nutzen.";
+
+function speak(t){
+  if(!("speechSynthesis" in window)){toast("Vorlesen ist hier nicht verfügbar.");return}
+  speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="de-CH";
+  var v=speechSynthesis.getVoices().filter(function(x){return /^de/i.test(x.lang)});
+  var ch=v.filter(function(x){return /CH/i.test(x.lang)})[0]||v[0];if(ch){u.voice=ch;u.lang=ch.lang}
+  speechSynthesis.speak(u);
+}
+
+/* ---------- Wissensbuch ---------- */
+var openCat=load("openCat",null);
+function renderBook(){
+  var tot=0;
+  var html=CATS.map(function(c){
+    var list=entries.filter(function(e){return e.cat===c}),n=list.length,pct=Math.min(100,Math.round(n/GOAL*100));tot+=Math.min(n,GOAL);
+    var body="";
+    if(openCat===c){
+      body=list.length?list.map(function(e){
+        return '<div class="entry"><div class="meta">'+fmtDate(e.date)+'</div><p>'+esc(e.text)+'</p><div class="tags">'+(e.tags||[]).map(function(t){return '<span class="tag">#'+esc(t)+'</span>'}).join("")+'</div>'+
+        '<div class="eacts"><button class="btn ghost" type="button" data-act="speak" data-id="'+e.id+'">Vorlesen</button><button class="btn ghost" type="button" data-act="del" data-id="'+e.id+'" style="color:var(--danger)">Löschen</button></div></div>';
+      }).join(""):'<p class="empty">Noch keine Tipps hier. Erzähl den ersten!</p><button class="btn small" type="button" data-act="add" data-c="'+esc(c)+'">Tipp zu «'+esc(c)+'» erzählen</button>';
+    }
+    return '<div class="card"><button class="catbtn" type="button" data-act="toggle" data-c="'+esc(c)+'"><div class="cathead"><h3 style="margin:0">'+esc(c)+' <span class="meta">('+n+'/'+GOAL+')</span></h3><span class="pct">'+pct+'% '+(openCat===c?"▲":"▼")+'</span></div><div class="bar"><i style="width:'+pct+'%"></i></div></button>'+body+'</div>';
+  }).join("");
+  $("catList").innerHTML=html;
+  var max=CATS.length*GOAL,p=Math.round(tot/max*100);
+  $("totPct").textContent=p+"%";$("totBar").style.width=p+"%";
+  $("totTxt").textContent=entries.length+" Tipps gesamt · "+tot+" von "+max+" fürs Ziel";
+}
+$("catList").addEventListener("click",function(e){
+  var b=e.target.closest("[data-act]");if(!b)return;var a=b.dataset.act;
+  if(a==="toggle"){openCat=openCat===b.dataset.c?null:b.dataset.c;save("openCat",openCat);renderBook()}
+  else if(a==="speak"){var en=entries.filter(function(x){return x.id===b.dataset.id})[0];if(en)speak(en.cat+". "+en.text)}
+  else if(a==="del"){if(confirm("Diesen Tipp wirklich löschen?")){entries=entries.filter(function(x){return x.id!==b.dataset.id});save("entries",entries);renderBook();toast("Gelöscht")}}
+  else if(a==="add"){chosenCat=b.dataset.c;manualCat=true;renderChips();showTab("erz");$("tipText").focus()}
+});
+
+/* ---------- KI-Helfer ---------- */
+var TPLS=["Shooting-Briefing","Kundenmail nach Shooting","Bildauswahl-Checkliste","Angebot-Vorlage"];
+var curTpl=load("tpl",TPLS[0]);if(TPLS.indexOf(curTpl)<0)curTpl=TPLS[0];
+var hf=load("helper",{});
+["hName","hDate","hType","hPlace","hLink"].forEach(function(id){if(hf[id])$(id).value=hf[id];var up=function(){hf[id]=$(id).value;save("helper",hf);$("tplOut").textContent=tplText()};$(id).addEventListener("input",up);$(id).addEventListener("change",up)});
+function myTips(cats,n){var l=entries.filter(function(e){return cats.indexOf(e.cat)>=0}).slice(0,n);return l.map(function(e){return "• "+e.text.replace(/\s+/g," ").slice(0,160)+(e.text.length>160?" …":"")})}
+function studio(){return (load("name","")||"Stefan Weiss Fotografie")}
+function tplText(){
+  var name=$("hName").value.trim()||"[Name]",first=name.split(" ")[0],d=$("hDate").value?fmtDate($("hDate").value):"[Datum]",
+      typ=$("hType").value,place=$("hPlace").value.trim()||"[Ort]",link=$("hLink").value.trim()||"[Galerie-Link]",st=studio(),t;
+  if(curTpl==="Shooting-Briefing"){
+    t="SHOOTING-BRIEFING\n"+typ+"-Shooting · "+name+"\nDatum: "+d+" · Ort: "+place+"\n\n"+
+      "1. Ziel & Verwendung\n   Wofür sind die Bilder? (privat, Website, Social Media, Druck)\n   Gewünschte Stimmung in 3 Worten: ______\n\n"+
+      "2. Personen & Wünsche\n   Wer ist dabei? Besondere Wünsche oder Unsicherheiten?\n\n"+
+      "3. Outfits\n   2–3 Outfits, ruhige Farben, wenig Muster und Logos. Etwas, worin du dich wohlfühlst.\n\n"+
+      "4. Ablauf (ca. 60 Min.)\n   10 Min. Ankommen & locker werden\n   35 Min. Fotografieren, 1–2 Outfitwechsel\n   10 Min. Lieblingsbilder kurz anschauen\n   5 Min. Nächste Schritte & Galerie\n\n"+
+      "5. Mitbringen\n   Outfits, Wasser, evtl. Requisiten mit persönlicher Bedeutung\n\n"+
+      "6. Nach dem Shooting\n   Vorauswahl und sanfte, natürliche Bearbeitung. Online-Galerie mit Download.";
+    var tips=myTips(["Ablauf Shooting","Posing","Licht"],3);if(tips.length)t+="\n\nMeine Profi-Notizen dazu:\n"+tips.join("\n");
+  }else if(curTpl==="Kundenmail nach Shooting"){
+    t="Betreff: Deine Bilder sind da – "+typ+"-Shooting vom "+d+"\n\nLiebe/r "+first+"\n\nHerzlichen Dank für das schöne Shooting in "+place+". Es hat mir grosse Freude gemacht.\n\n"+
+      "Deine Galerie ist bereit:\n"+link+"\n\nDort kannst du alle Bilder anschauen, deine Favoriten markieren und in voller Auflösung herunterladen.\n\n"+
+      "Ein paar Tipps:\n• Speichere die Bilder an einem zweiten Ort (z. B. Cloud oder Festplatte).\n• Für Drucke, ein Album oder Wandbilder berate ich dich gern.\n• Wenn du ein Bild teilst, freue ich mich über eine Erwähnung.\n\n"+
+      "Ich würde mich riesig über ein kurzes Feedback oder eine Bewertung freuen – das hilft mir sehr.\n\nHerzliche Grüsse\n"+st;
+  }else if(curTpl==="Bildauswahl-Checkliste"){
+    t="BILDAUSWAHL-CHECKLISTE · "+name+" ("+typ+", "+d+")\n\nRunde 1 – Schnell aussortieren\n☐ Augen offen, Schärfe auf dem nächsten Auge\n☐ Keine Bewegungsunschärfe\n☐ Keine Doppelten – das Beste aus jeder Serie\n☐ Belichtung rettbar\n\n"+
+      "Runde 2 – Ausdruck\n☐ Echter Ausdruck, entspannte Hände und Schultern\n☐ Blick und Stimmung passen zum Ziel\n☐ Hintergrund ruhig, nichts wächst aus dem Kopf\n\n"+
+      "Runde 3 – Geschichte\n☐ Mischung: nah, halbnah, weit\n☐ Hoch- und Querformat (auch für Social Media)\n☐ Anfang, Höhepunkt, Detail – die Serie erzählt etwas\n☐ Menge passend zum Paket\n\n"+
+      "Vor der Lieferung\n☐ Einheitlicher, natürlicher Look\n☐ Haut sanft, Struktur bleibt\n☐ Export in Web- und Druckgrösse\n☐ Galerie getestet (Link, Download)";
+    var tb=myTips(["Bearbeitung"],3);if(tb.length)t+="\n\nMeine Profi-Notizen dazu:\n"+tb.join("\n");
+  }else{
+    t="ANGEBOT · "+st+"\nfür "+name+"\n\nShooting: "+typ+"\nWunschdatum: "+d+" · Ort: "+place+"\n\n"+
+      "Paket S – Kompakt\n• ca. 45 Min. Shooting, 1 Outfit\n• __ bearbeitete Bilder, Online-Galerie mit Download\n• Preis: CHF ____\n\n"+
+      "Paket M – Beliebt\n• ca. 90 Min. Shooting, 2–3 Outfits\n• __ bearbeitete Bilder, Online-Galerie mit Download\n• Vorab-Briefing, Lieferung am selben oder nächsten Tag\n• Preis: CHF ____\n\n"+
+      "Paket L – Rundum\n• bis 3 Std., mehrere Orte\n• __ bearbeitete Bilder, Galerie + kleines Album\n• Kurzclip für Social Media\n• Preis: CHF ____\n\n"+
+      "Zusätzlich möglich: weitere Bilder, Drucke, Wandbilder, Album.\n\nBuchung: mit Bestätigung per Mail; Anzahlung ___ %. Verschiebung bis __ Tage vorher kostenlos.\n\nIch freue mich auf dich!\n"+st;
+    var tp=myTips(["Preise/Angebot"],3);if(tp.length)t+="\n\nMeine Profi-Notizen dazu:\n"+tp.join("\n");
+  }
+  return t;
+}
+function renderTpl(){
+  $("tplChips").innerHTML=TPLS.map(function(x){return '<button type="button" class="chip'+(x===curTpl?" on":"")+'" data-t="'+esc(x)+'">'+esc(x)+'</button>'}).join("");
+  $("tplTitle").textContent=curTpl;$("tplOut").textContent=tplText();
+}
+$("tplChips").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;curTpl=b.dataset.t;save("tpl",curTpl);renderTpl()});
+
+function copyText(t,okMsg){
+  function fb(){var ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.top="-1000px";document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,t.length);var ok=false;try{ok=document.execCommand("copy")}catch(e){}document.body.removeChild(ta);toast(ok?(okMsg||"Kopiert ✓"):"Kopieren nicht möglich – bitte Text markieren.")}
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(function(){toast(okMsg||"Kopiert ✓")},fb)}else fb();
+}
+function shareText(title,t){
+  if(navigator.share){navigator.share({title:title,text:t}).catch(function(err){if(err&&err.name!=="AbortError")copyText(t,"Teilen ging nicht – Text kopiert ✓")})}
+  else copyText(t,"Teilen nicht verfügbar – Text kopiert ✓");
+}
+$("copyTpl").addEventListener("click",function(){copyText(tplText())});
+$("shareTpl").addEventListener("click",function(){shareText(curTpl,tplText())});
+
+/* ---------- Senden ---------- */
+$("sendName").value=studio();
+$("sendName").addEventListener("input",function(){save("name",$("sendName").value.trim());$("who").textContent=studio()+" × DR Lab";renderSend()});
+$("who").textContent=studio()+" × DR Lab";
+$("sendCat").addEventListener("change",renderSend);
+function selected(){var c=$("sendCat").value;return c==="all"?entries.slice():entries.filter(function(e){return e.cat===c})}
+function asText(list){
+  var head="Fotowissen von "+studio()+"\n"+fmtDate(new Date().toISOString())+" · "+list.length+" Tipp"+(list.length===1?"":"s")+"\n";
+  var body=CATS.map(function(c){var l=list.filter(function(e){return e.cat===c});if(!l.length)return "";
+    return "\n== "+c.toUpperCase()+" ==\n"+l.map(function(e){return "• ("+fmtDate(e.date)+") "+e.text.replace(/\s+/g," ")+"\n  Stichworte: "+(e.tags||[]).join(", ")}).join("\n")}).join("\n");
+  return head+body+"\n\n– gesendet mit der Fotowissen-App (DR Lab)";
+}
+function asJson(list){return JSON.stringify({app:"Fotowissen",version:1,from:studio(),exported:new Date().toISOString(),count:list.length,entries:list},null,2)}
+function renderSend(){
+  var cur=$("sendCat").value||"all";
+  $("sendCat").innerHTML='<option value="all">Alle Kategorien ('+entries.length+')</option>'+CATS.map(function(c){return '<option value="'+esc(c)+'">'+esc(c)+' ('+entries.filter(function(e){return e.cat===c}).length+')</option>'}).join("");
+  $("sendCat").value=cur;
+  var l=selected(),last=load("lastSent",null);
+  $("sendInfo").textContent=l.length+" Tipp"+(l.length===1?"":"s")+" ausgewählt."+(last?" Zuletzt gesendet: "+fmtDate(last)+".":"");
+  $("sendPreview").textContent=l.length?asText(l):"Noch keine Tipps.";
+}
+function need(){var l=selected();if(!l.length){toast("Noch keine Tipps zum Senden.");return null}return l}
+function markSent(){save("lastSent",new Date().toISOString());renderSend()}
+$("shareBtn").addEventListener("click",function(){var l=need();if(!l)return;shareText("Fotowissen für DR Lab",asText(l));markSent()});
+$("mailBtn").addEventListener("click",function(){
+  var l=need();if(!l)return;var t=asText(l);
+  if(t.length>1800){t=t.slice(0,1800)+"\n\n[… gekürzt – vollständige Datei bitte über «JSON speichern» anhängen]";copyText(asText(l),"Langer Text: komplett kopiert ✓ – im Mail einfügen")}
+  location.href="mailto:drobert@gmx.ch?subject="+encodeURIComponent("Fotowissen von "+studio())+"&body="+encodeURIComponent(t);
+  markSent();
+});
+$("copyJson").addEventListener("click",function(){var l=need();if(!l)return;copyText(asJson(l),"JSON kopiert ✓")});
+$("dlJson").addEventListener("click",function(){
+  var l=need();if(!l)return;var blob=new Blob([asJson(l)],{type:"application/json"}),a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download="fotowissen-"+new Date().toISOString().slice(0,10)+".json";document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000);toast("Datei gespeichert ✓");
+});
+$("importFile").addEventListener("change",function(){
+  var f=this.files[0];if(!f)return;var r=new FileReader();
+  r.onload=function(){try{var d=JSON.parse(r.result),l=Array.isArray(d)?d:d.entries;if(!Array.isArray(l))throw 0;
+    var ids={};entries.forEach(function(e){ids[e.id]=1});var add=l.filter(function(e){return e&&e.text&&CATS.indexOf(e.cat)>=0&&!ids[e.id]});
+    entries=add.concat(entries).sort(function(a,b){return a.date<b.date?1:-1});save("entries",entries);renderSend();toast(add.length+" Tipps eingespielt ✓")}
+    catch(e){toast("Datei konnte nicht gelesen werden.")}};
+  r.readAsText(f);this.value="";
+});
+$("clearBtn").addEventListener("click",function(){if(!entries.length){toast("Es sind keine Tipps gespeichert.");return}
+  if(confirm("Alle "+entries.length+" Tipps löschen? Das kann nicht rückgängig gemacht werden.")){entries=[];save("entries",entries);renderSend();toast("Alle Tipps gelöscht")}});
+
+/* ---------- Start ---------- */
+$("tipText").value=load("draft","");
+renderChips();onTextChange();showIdea();
+var startTab=load("tab","erz");if(["erz","buch","ki","send"].indexOf(startTab)<0)startTab="erz";showTab(startTab);
+window.__fw={keywords:keywords,guessCat:guessCat,showTab:showTab};
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,755 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Jackie's Advice">
+<meta name="theme-color" content="#e8735a">
+<meta name="description" content="Deine Begleiterin im Familienalltag – warm wie eine Freundin.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Jackie's Advice</title>
+<style>
+:root{
+  --bg:#fff7ef; --card:#ffffff; --ink:#3b2a24; --muted:#7a6359;
+  --coral:#e8735a; --coral-d:#cf5a41; --coral-l:#fde3da;
+  --sun:#ffc94d; --sun-l:#fff1c9;
+  --mint:#6fb59c; --mint-l:#dcf0e8;
+  --sky:#7aa7d9; --sky-l:#e2edf9;
+  --lila:#a98bd1; --lila-l:#efe7f8;
+  --line:#f0dfd3; --red:#c7372f; --red-l:#fde4e2;
+  --r:20px;
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+  --sal:env(safe-area-inset-left,0px); --sar:env(safe-area-inset-right,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.5;overflow-x:hidden;-webkit-text-size-adjust:100%}
+.wrap{max-width:560px;margin:0 auto;padding:calc(12px + var(--sat)) calc(16px + var(--sar)) calc(24px + var(--sab)) calc(16px + var(--sal))}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}
+.brand img{width:38px;height:38px;border-radius:10px}
+.iconbtn{min-height:52px;min-width:52px;border:0;border-radius:16px;background:var(--card);color:var(--ink);font:inherit;font-weight:700;font-size:15px;padding:0 14px;box-shadow:0 1px 0 var(--line),0 2px 10px rgba(120,70,40,.06);cursor:pointer}
+h1{font-size:27px;line-height:1.2;margin:10px 0 4px;font-weight:800}
+h2{font-size:21px;line-height:1.25;margin:0 0 10px;font-weight:800}
+p{margin:0 0 10px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+button{font-family:inherit}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;border:0;border-radius:18px;font-size:17px;font-weight:800;padding:12px 18px;cursor:pointer;background:var(--coral);color:#fff;box-shadow:0 4px 0 var(--coral-d)}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--coral-d)}
+.btn.soft{background:var(--card);color:var(--ink);box-shadow:0 2px 0 var(--line),0 2px 10px rgba(120,70,40,.06)}
+.btn.mint{background:var(--mint);box-shadow:0 4px 0 #4f957d}
+.btn.danger{background:var(--red-l);color:var(--red);box-shadow:0 2px 0 #f2c3bf}
+.btn:disabled{opacity:.5}
+.row{display:flex;gap:10px}
+.row>.btn{flex:1}
+.mic{position:relative;width:100%;min-height:150px;border:0;border-radius:28px;background:linear-gradient(160deg,#f08a70,#e8735a 55%,#d9604a);color:#fff;font-size:22px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;box-shadow:0 6px 0 var(--coral-d),0 14px 30px rgba(232,115,90,.3);margin:14px 0 10px}
+.mic:active{transform:translateY(3px);box-shadow:0 3px 0 var(--coral-d)}
+.mic svg{width:52px;height:52px}
+.mic .sub{font-size:14px;font-weight:600;opacity:.9}
+.mic.listening{background:linear-gradient(160deg,#6fb59c,#4f957d)}
+.mic.listening::after{content:"";position:absolute;inset:-6px;border-radius:32px;border:3px solid var(--mint);animation:ring 1.3s ease-out infinite}
+@keyframes ring{from{opacity:.9;transform:scale(1)}to{opacity:0;transform:scale(1.06)}}
+textarea{width:100%;min-height:96px;border:2px solid var(--line);border-radius:18px;padding:14px;font:inherit;font-size:17px;color:var(--ink);background:var(--card);resize:vertical}
+textarea:focus{outline:none;border-color:var(--coral)}
+.hint{background:var(--sun-l);border-radius:14px;padding:10px 14px;font-size:15px;margin:8px 0}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 14px}
+.tile{min-height:96px;border:0;border-radius:var(--r);padding:14px;text-align:left;font-size:17px;font-weight:800;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;gap:6px}
+.tile span.e{font-size:28px;line-height:1}
+.tile small{font-weight:600;font-size:13px;color:var(--muted)}
+.tile:active{transform:scale(.98)}
+.t-streit{background:var(--coral-l)} .t-schule{background:var(--sky-l)} .t-behoerden{background:var(--lila-l)} .t-teen{background:var(--sun-l)} .t-pause{background:var(--mint-l);grid-column:1/-1;min-height:80px;flex-direction:row;align-items:center;justify-content:flex-start;gap:14px}
+.card{background:var(--card);border-radius:var(--r);padding:18px;margin:12px 0;box-shadow:0 1px 0 var(--line),0 4px 16px rgba(120,70,40,.06)}
+.card.step{border:3px solid var(--coral);background:#fffdfb}
+.label{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--coral-d);margin-bottom:6px}
+.quote{background:var(--coral-l);border-radius:16px;padding:12px 14px;font-style:italic;margin:6px 0 4px;word-wrap:break-word}
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.opt{min-height:56px;border:2px solid var(--line);background:var(--card);border-radius:18px;font:inherit;font-weight:700;font-size:17px;color:var(--ink);text-align:left;padding:12px 16px;cursor:pointer}
+.opt.best{border-color:var(--coral);background:#fff3ee}
+.opt .tag{display:block;font-size:12px;font-weight:800;color:var(--coral-d);text-transform:uppercase;letter-spacing:.04em}
+.opt:active{transform:scale(.99)}
+.prog{display:flex;align-items:center;gap:10px;margin:6px 0 4px;font-size:14px;font-weight:700;color:var(--muted)}
+.bar{flex:1;height:12px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;width:0;background:var(--coral);border-radius:99px;transition:width .4s}
+.bar.mint>i{background:var(--mint)}
+ul.alts{margin:6px 0 0;padding:0;list-style:none}
+ul.alts li{padding:10px 0 10px 30px;position:relative;border-top:1px solid var(--line)}
+ul.alts li:first-child{border-top:0}
+ul.alts li::before{content:"↳";position:absolute;left:6px;top:9px;color:var(--coral);font-weight:800}
+.letter textarea{min-height:230px;font-size:15px;line-height:1.45;background:#fffdf8}
+.sos{background:var(--red-l);border-radius:var(--r);padding:16px;margin:12px 0;color:#6b1e19}
+.sos b{color:var(--red)}
+.sos a{color:var(--red);font-weight:800}
+.callrow{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
+.call{display:flex;align-items:center;gap:12px;min-height:56px;border-radius:16px;background:#fff;padding:8px 14px;text-decoration:none;color:var(--ink)!important;font-weight:700}
+.call strong{font-size:22px;color:var(--red);min-width:52px}
+.info{background:var(--sky-l);border-radius:16px;padding:12px 14px;font-size:15px;margin:10px 0}
+.disc{font-size:13px;color:var(--muted);margin:16px 0 4px}
+footer{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);text-align:center}
+footer a{color:var(--coral-d);font-weight:800;text-decoration:none}
+footer .nums{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 14px;margin:6px 0}
+.hide{display:none!important}
+/* Pause */
+.breath{display:flex;flex-direction:column;align-items:center;padding:10px 0}
+.circle-wrap{position:relative;width:260px;height:260px;max-width:78vw;max-height:78vw;display:flex;align-items:center;justify-content:center;margin:10px auto}
+.halo{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,var(--mint-l) 0%,rgba(220,240,232,0) 70%)}
+.circle{width:46%;height:46%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#a6d8c5,var(--mint) 70%);box-shadow:0 10px 40px rgba(79,149,125,.35);transform:scale(1);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px;text-align:center;will-change:transform}
+.phase{font-size:24px;font-weight:800;margin:4px 0 0;min-height:36px;text-align:center}
+.timer{font-size:15px;color:var(--muted);font-weight:700}
+/* history */
+.hitem{display:flex;gap:10px;align-items:stretch;margin:10px 0}
+.hopen{flex:1;min-height:64px;text-align:left;border:0;background:var(--card);border-radius:18px;padding:12px 14px;font:inherit;color:var(--ink);cursor:pointer;box-shadow:0 1px 0 var(--line),0 2px 10px rgba(120,70,40,.06);min-width:0}
+.hopen b{display:block;font-size:16px}
+.hopen span{display:block;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdel{min-width:56px;border:0;border-radius:18px;background:var(--red-l);color:var(--red);font-size:20px;font-weight:800;cursor:pointer}
+/* onboarding */
+.ob{position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;flex-direction:column;justify-content:center;padding:calc(24px + var(--sat)) calc(20px + var(--sar)) calc(24px + var(--sab)) calc(20px + var(--sal))}
+.ob-in{max-width:480px;margin:0 auto;width:100%;text-align:center}
+.ob-art{font-size:76px;line-height:1;margin-bottom:18px}
+.dots{display:flex;justify-content:center;gap:8px;margin:20px 0}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--coral);width:26px;border-radius:99px}
+.toast{position:fixed;left:50%;bottom:calc(24px + var(--sab));transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-weight:700;font-size:15px;z-index:60;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.on{opacity:1}
+.backrow{margin:4px 0 6px}
+.backrow .iconbtn{padding:0 16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><img src="icon.svg" alt=""><span>Jackie's Advice</span></div>
+    <button class="iconbtn" id="btnHistory" aria-label="Verlauf öffnen">Verlauf</button>
+  </header>
+
+  <!-- HOME -->
+  <section id="vHome">
+    <h1>Hallo du. Wie geht's?</h1>
+    <p class="muted">Ich bin da wie eine gute Freundin – ohne Belehrungen. Erzähl einfach drauflos.</p>
+    <button class="mic" id="btnMic" aria-label="Erzähl mir, was los ist">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v1a7 7 0 0 0 14 0v-1"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
+      <span id="micLabel">Erzähl mir, was los ist</span>
+      <span class="sub" id="micSub">Tippen und sprechen</span>
+    </button>
+    <div class="hint hide" id="micHint">Sprechen geht hier leider nicht direkt. Tipp ins Feld – oder nutze das Mikrofon auf deiner iPhone-Tastatur 🎙️.</div>
+    <label for="txt" class="small muted">Oder schreib es hier hin:</label>
+    <textarea id="txt" placeholder="z. B. «Meine Tochter redet nicht mehr mit mir» oder «Ich verstehe den Brief vom Steueramt nicht»"></textarea>
+    <div class="row" style="margin-top:10px">
+      <button class="btn soft" id="btnClear" style="flex:0 0 auto;width:auto;padding:0 18px">Leeren</button>
+      <button class="btn" id="btnGo">Weiter</button>
+    </div>
+
+    <h2 style="margin-top:22px">Oder wähl ein Thema</h2>
+    <div class="tiles">
+      <button class="tile t-streit" data-topic="streit"><span class="e">🌩️</span><span>Streit zuhause<br><small>Geschwister, Wut, Zoff</small></span></button>
+      <button class="tile t-schule" data-topic="schule"><span class="e">🎒</span><span>Schule<br><small>Noten, Lehrer, Mobbing</small></span></button>
+      <button class="tile t-behoerden" data-topic="behoerden"><span class="e">📄</span><span>Behörden<br><small>Briefe, Fristen, Geld</small></span></button>
+      <button class="tile t-teen" data-topic="teen"><span class="e">🎧</span><span>Teenager<br><small>Rückzug, Handy, Ausgang</small></span></button>
+      <button class="tile t-pause" data-topic="pause"><span class="e">🌿</span><span>Pause für mich<br><small>2 Minuten nur atmen</small></span></button>
+    </div>
+    <p class="small muted">🔒 Deine Daten bleiben auf deinem Handy.</p>
+  </section>
+
+  <!-- QUESTION -->
+  <section id="vAsk" class="hide">
+    <div class="backrow"><button class="iconbtn" data-home>← Zurück</button></div>
+    <div class="prog"><span id="askStep">Frage 1 von 2</span><div class="bar"><i id="askBar"></i></div><span id="askPct">0 %</span></div>
+    <div class="quote hide" id="askQuote"></div>
+    <div id="askSos"></div>
+    <div class="card">
+      <h2 id="askQ"></h2>
+      <p class="muted small" id="askSub"></p>
+      <div class="opts" id="askOpts"></div>
+    </div>
+  </section>
+
+  <!-- ANSWER -->
+  <section id="vAnswer" class="hide">
+    <div class="backrow"><button class="iconbtn" data-home>← Neu anfangen</button></div>
+    <div class="prog"><span>Fertig</span><div class="bar"><i style="width:100%"></i></div><span>100 %</span></div>
+    <div id="ansBody"></div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn soft" id="btnSpeak">🔊 Vorlesen</button>
+      <button class="btn" data-home>Neu anfangen</button>
+    </div>
+    <p class="disc">Jackie's Advice gibt allgemeine Orientierung – keine Rechtsberatung, keine Diagnosen. Du entscheidest, was du davon nimmst.</p>
+  </section>
+
+  <!-- PAUSE -->
+  <section id="vPause" class="hide">
+    <div class="backrow"><button class="iconbtn" id="pauseBack">← Zurück</button></div>
+    <h1>Pause für dich 🌿</h1>
+    <p class="muted">Zwei Minuten. Nichts müssen. Nur ein, nur aus. Die Wäsche wartet – sie ist geduldig.</p>
+    <div class="breath">
+      <div class="circle-wrap"><div class="halo"></div><div class="circle" id="circle"></div></div>
+      <div class="phase" id="phase">Bereit, wenn du es bist</div>
+      <div class="timer" id="ptime">2:00</div>
+    </div>
+    <div class="prog"><span>Fortschritt</span><div class="bar mint"><i id="pBar"></i></div><span id="pPct">0 %</span></div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn mint" id="pStart">Start</button>
+      <button class="btn soft" id="pReset">Neu</button>
+    </div>
+    <label class="small muted" style="display:flex;align-items:center;gap:10px;min-height:52px;margin-top:6px">
+      <input type="checkbox" id="pVoice" style="width:24px;height:24px"> Ansage mit Stimme («Einatmen», «Ausatmen»)
+    </label>
+    <div class="card hide" id="pDone">
+      <h2>Schön, dass du dir das gegönnt hast. 💛</h2>
+      <p>Spür kurz nach: Wo ist es jetzt ein bisschen weicher? Mehr braucht es gerade nicht.</p>
+      <div class="row"><button class="btn soft" id="pAgain">Nochmals</button><button class="btn" data-home>Zum Start</button></div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section id="vHistory" class="hide">
+    <div class="backrow"><button class="iconbtn" data-home>← Zurück</button></div>
+    <h1>Dein Verlauf</h1>
+    <p class="muted small">🔒 Nur auf diesem Handy gespeichert. Du kannst jederzeit löschen.</p>
+    <div id="hList"></div>
+    <button class="btn danger" id="btnDelAll" style="margin-top:14px">Alles löschen</button>
+  </section>
+
+  <footer>
+    <div><b>Notfall Schweiz</b> – du bist nicht allein:</div>
+    <div class="nums">
+      <a href="tel:144">144 Sanität</a>
+      <a href="tel:147">147 Pro Juventute</a>
+      <a href="tel:143">143 Dargebotene Hand</a>
+    </div>
+    <div>Keine Rechtsberatung · keine Diagnosen · Deine Daten bleiben auf deinem Handy.</div>
+    <div style="margin-top:6px">DR Lab · Testphase</div>
+  </footer>
+</div>
+
+<!-- ONBOARDING -->
+<div class="ob hide" id="ob">
+  <div class="ob-in">
+    <div class="ob-art" id="obArt">💬</div>
+    <h1 id="obTitle"></h1>
+    <p class="muted" id="obText"></p>
+    <div class="dots" id="obDots"><i></i><i></i><i></i></div>
+    <button class="btn" id="obNext">Weiter</button>
+    <button class="btn soft" id="obSkip" style="margin-top:10px">Überspringen</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Speicher (ja_) ---------- */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem('ja_'+k); return v===null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('ja_'+k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem('ja_'+k); }catch(e){} }
+};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),2200); }
+
+/* ---------- Inhalte ---------- */
+const TOPICS = {
+  streit:   {name:'Streit zuhause', emoji:'🌩️'},
+  schule:   {name:'Schule', emoji:'🎒'},
+  behoerden:{name:'Behörden', emoji:'📄'},
+  teen:     {name:'Teenager', emoji:'🎧'},
+  pause:    {name:'Pause für mich', emoji:'🌿'}
+};
+
+/* Zweite Frage pro Thema – verändert Ton, Tipp und Briefentwurf */
+const MODS = {
+  streit:{ q:'Wie alt sind die Kinder ungefähr?', opts:[
+    {id:'klein', label:'Klein (0–5)', tip:'Bei den Kleinen gilt: weniger Worte, mehr Nähe. Auf Augenhöhe gehen, ruhig benennen («Du bist richtig wütend»), dann erst lösen.'},
+    {id:'schul', label:'Schulkind (6–12)', tip:'Schulkinder lieben Fairness. Gemeinsam abgemachte Regeln wirken viel besser als solche, die von oben kommen.'},
+    {id:'teen',  label:'Teenager (13+)', tip:'Bei Teenagern hilft es, das Gespräch auf später zu verschieben – im Auto oder beim Kochen redet es sich oft leichter als am Tisch gegenüber.'}
+  ]},
+  schule:{ q:'Wen möchtest du ansprechen?', opts:[
+    {id:'lp', label:'Die Lehrperson', an:'Liebe Frau … / Lieber Herr …', tip:'Die Lehrperson ist fast immer die erste und beste Adresse. Meistens klärt sich viel schon im ersten Gespräch.'},
+    {id:'sl', label:'Die Schulleitung', an:'Sehr geehrte Schulleitung', tip:'Zur Schulleitung gehst du, wenn es mit der Lehrperson nicht weitergeht oder es um etwas Grundsätzliches geht. Schreib kurz, was ihr schon versucht habt.'},
+    {id:'ssa', label:'Die Schulsozialarbeit', an:'Liebe Schulsozialarbeiterin / Lieber Schulsozialarbeiter', tip:'Die Schulsozialarbeit ist vertraulich und kostenlos – für Kinder und für Eltern. Eine gute, neutrale Anlaufstelle.'}
+  ]},
+  behoerden:{ q:'Gibt es eine Frist?', opts:[
+    {id:'bald', label:'Ja, und sie ist bald', tip:'Wichtig zuerst: Frist im Kalender eintragen. Wenn du es nicht rechtzeitig schaffst, frag VOR Ablauf schriftlich um Fristerstreckung – das ist üblich und oft möglich.', frist:true},
+    {id:'zeit', label:'Ja, aber ich habe noch Zeit', tip:'Gut! Trag dir eine Erinnerung eine Woche vor Ablauf ein. Dann hast du Luft, falls noch etwas fehlt.', frist:true},
+    {id:'weiss', label:'Weiss ich nicht', tip:'Schau auf dem Brief nach Wörtern wie «innert», «bis spätestens» oder «Frist». Steht nichts da, ruf kurz an und frag nach – das ist völlig normal.'}
+  ]},
+  teen:{ q:'Wie geht\'s dir gerade dabei?', opts:[
+    {id:'wut', label:'Ich bin wütend', tip:'Wut ist okay – sie zeigt, dass dir etwas wichtig ist. Klär die Sache aber erst, wenn du wieder auf 5 von 10 runter bist. Vorher darf man sagen: «Ich brauch kurz.»'},
+    {id:'traurig', label:'Traurig oder hilflos', tip:'Das fühlen viele Mütter in dieser Phase. Dein Teenager braucht dich noch – nur anders. Sei sanft mit dir.'},
+    {id:'sorge', label:'Ich mache mir Sorgen', tip:'Sorgen sind ein gutes Frühwarnsystem. Hör darauf, ohne in Panik zu kommen – und hol dir Unterstützung, wenn das Gefühl bleibt.'}
+  ]}
+};
+
+/* Situationen: mind. 4 pro Thema */
+const SITS = [
+/* ===== STREIT ===== */
+{id:'geschwister', topic:'streit', title:'Geschwister streiten dauernd',
+ kw:['geschwister','bruder','schwester','streiten sich','hauen sich','eifersücht','beide kinder','die kinder streiten','zanken'],
+ intro:'Geschwisterstreit kann einen echt mürbe machen. Gut zu wissen: Streiten ist auch Üben – Kinder lernen dabei Grenzen und Versöhnen.',
+ step:{t:'Nicht Richterin spielen – beschreiben, was du siehst', x:'Statt «Wer hat angefangen?» sag ruhig: «Ich sehe zwei Kinder, die beide das Lego wollen. Was machen wir?» Dann gib ihnen eine Minute, selbst eine Lösung zu finden. Du schützt nur, wenn jemand weh getan wird.'},
+ alts:['Jedem Kind täglich 10 Minuten Exklusiv-Zeit geben – das nimmt viel Eifersucht raus.','Eine «Streit-Pause-Ecke» abmachen, wo jeder hin darf, um runterzukommen – ohne Strafe.']},
+{id:'partner', topic:'streit', title:'Streit mit Partner/in – auch vor den Kindern',
+ kw:['partner','mein mann','meine frau','mein freund','meine freundin','papa','vater der kinder','ex','uneinig','wir streiten','vor den kindern'],
+ intro:'Paare streiten – das ist menschlich. Für Kinder ist nicht der Streit das Schlimmste, sondern wenn er nie sichtbar gelöst wird.',
+ step:{t:'Ein ruhiges 15-Minuten-Gespräch abmachen – ohne Kinder dabei', x:'Sag deinem Gegenüber: «Mir ist es wichtig, dass wir das klären. Können wir heute Abend 15 Minuten reden?» Sprich in Ich-Sätzen («Ich fühle mich allein, wenn …»). Und wenn die Kinder den Streit mitbekommen haben: Zeigt ihnen auch die Versöhnung.'},
+ alts:['Ein gemeinsames Stopp-Wort abmachen, wenn ein Streit vor den Kindern hochkocht – und später weiterreden.','Eine Paar- oder Familienberatung in deiner Region anfragen (viele Gemeinden haben günstige Angebote).']},
+{id:'wut', topic:'streit', title:'Kind tobt, schreit, hat Wutanfälle',
+ kw:['wut','tobt','schreit','trotz','ausraster','wutanfall','schlägt um sich','wirft','rastet aus','flippt aus'],
+ intro:'Wutanfälle sind anstrengend – für alle. Ein Kind im Sturm kann gerade nicht denken. Es braucht zuerst Ruhe, dann Worte.',
+ step:{t:'Erst du ruhig, dann das Kind', x:'Atme einmal tief aus, geh in die Hocke und bleib in der Nähe. Sag wenig: «Ich bin da. Du darfst wütend sein. Ich lass nicht zu, dass du haust.» Erklären und Abmachungen kommen erst, wenn der Sturm vorbei ist.'},
+ alts:['Gemeinsam ein «Wut-Kissen» oder einen Ort bestimmen, wo Wut raus darf, ohne dass etwas kaputt geht.','Nach dem Sturm ein kurzes Reparatur-Ritual: Umarmung, ein Satz wie «Das war schwer. Jetzt ist es vorbei.»']},
+{id:'bildschirm', topic:'streit', title:'Dauerzoff um Handy, Tablet oder Ämtli',
+ kw:['handy','bildschirm','tablet','gamen','game','fernseh','tv','ämtli','aufräumen','zimmer','hausarbeit','mithelfen'],
+ intro:'Ah, der Klassiker. Fast jede Familie hat dieses Thema. Die gute Nachricht: Mit klaren, gemeinsamen Abmachungen wird es deutlich ruhiger.',
+ step:{t:'Einen Familien-Deal machen – zusammen, schriftlich', x:'Setzt euch 15 Minuten hin und schreibt gemeinsam auf: Wann ist Bildschirmzeit? Was passiert vorher (z. B. Ämtli)? Was gilt, wenn es nicht klappt? Alle unterschreiben, Zettel an den Kühlschrank. Dann musst du nicht mehr diskutieren – nur noch auf den Zettel zeigen.'},
+ alts:['Mit einem Timer arbeiten, den das Kind selbst stellt – dann ist der Timer «schuld», nicht du.','Einen bildschirmfreien Familienabend pro Woche einführen – mit Spiel oder Pizza.']},
+{id:'morgen', topic:'streit', title:'Morgenstress und Hektik',
+ kw:['morgen','zu spät','anziehen','hektik','stress am morgen','aus dem haus','frühstück','trödelt','trödeln'],
+ intro:'Morgens um 7.30 Uhr Geduld zu haben ist Hochleistungssport. Du bist nicht allein damit.',
+ step:{t:'Den Morgen am Abend vorbereiten', x:'Macht am Abend zusammen einen 5-Minuten-Check: Kleider bereit, Thek gepackt, Znüni-Box im Kühlschrank. Für Kleine hilft eine Bilder-Liste an der Tür («Anziehen – Zähne – Schuhe»). So musst du morgens weniger antreiben.'},
+ alts:['10 Minuten früher aufstehen – und diese Zeit nur für dich und einen Kaffee nutzen.','Ein Lied als Zeitmesser: Wenn das Lied vorbei ist, sind die Schuhe an. Macht oft mehr Spass als Mahnen.']},
+
+/* ===== SCHULE ===== */
+{id:'noten', topic:'schule', title:'Schlechte Noten oder Leistungsdruck',
+ kw:['noten','note','prüfung','test','schlecht in','ungenügend','repetieren','sitzenbleiben','mathe','franz','lernen','druck'],
+ intro:'Eine schlechte Note fühlt sich für Kinder (und Eltern) oft grösser an, als sie ist. Wichtig ist, herauszufinden, woran es liegt.',
+ step:{t:'Mit dem Kind schauen, wo es hängt – dann die Lehrperson fragen', x:'Frag dein Kind ohne Vorwurf: «Was war schwierig?» Dann bitte die Lehrperson um ein kurzes Gespräch: Wo steht mein Kind? Was können wir zu Hause tun? Gibt es Förderangebote an der Schule?'},
+ alts:['Kurze, regelmässige Übungszeiten (10–15 Minuten) statt stundenlangem Büffeln vor der Prüfung.','Nachhilfe oder Lernbegleitung prüfen – oft vermittelt die Schule günstige Angebote.'],
+ letter:'{an}\n\nIch melde mich wegen {kind}. Mir ist aufgefallen, dass es in letzter Zeit bei den Noten schwieriger geworden ist, und ich möchte {kind} gerne gut unterstützen.\n\nHätten Sie Zeit für ein kurzes Gespräch (gerne auch telefonisch)? Mich interessiert, wie Sie {kind} im Unterricht erleben und was wir zu Hause tun können.\n\nIch bin {zeit} gut erreichbar.\n\nHerzliche Grüsse\n{name}'},
+{id:'mobbing', topic:'schule', title:'Mein Kind wird gemobbt oder ausgeschlossen',
+ kw:['mobbing','gemobbt','ausgeschlossen','plagen','geplagt','ausgelacht','niemand spielt','keine freunde','gehänselt','beleidigt in der schule'],
+ intro:'Das tut weh, auch dir als Mama. Gut, dass dein Kind sich dir anvertraut hat – oder dass du es gemerkt hast. Das ist schon viel.',
+ step:{t:'Zuhören, aufschreiben, Schule informieren', x:'Sag deinem Kind: «Gut, dass du es mir erzählst. Du bist nicht schuld.» Schreib auf, was wann passiert ist (Datum, wer, was). Dann informiere die Lehrperson schriftlich und bitte um ein Gespräch. Mobbing ist Aufgabe der Schule – du musst das nicht allein lösen.'},
+ alts:['Die Schulsozialarbeit einbeziehen – sie kennt Methoden gegen Mobbing und ist vertraulich.','Wenn es online passiert: Screenshots sichern. Rat und Hilfe auch bei Pro Juventute (147) – für Kinder und Eltern.'],
+ letter:'{an}\n\nIch wende mich an Sie, weil {kind} mir erzählt hat, dass es in der Schule immer wieder ausgeschlossen bzw. geplagt wird. Ich habe mir einige Situationen notiert (Daten und Beschreibung lege ich gerne bei).\n\nMir ist wichtig, dass wir das gemeinsam anschauen. Könnten wir zeitnah ein Gespräch vereinbaren?\n\nIch bin {zeit} erreichbar.\n\nVielen Dank und freundliche Grüsse\n{name}'},
+{id:'lehrer', topic:'schule', title:'Konflikt mit der Lehrperson',
+ kw:['lehrer','lehrerin','lehrperson','ungerecht','unfair','klassenlehr','mag mein kind nicht','strafe von der lehr'],
+ intro:'Wenn man das Gefühl hat, die Lehrperson sei ungerecht, wird man schnell zur Löwin. Verständlich! Am meisten erreichst du aber mit ruhiger Klarheit.',
+ step:{t:'Um ein Gespräch bitten – mit Fragen statt Vorwürfen', x:'Schreib der Lehrperson kurz und freundlich, dass du gerne ihre Sicht hören möchtest. Im Gespräch: zuerst zuhören, dann deine Beobachtung schildern («Mein Kind erzählt mir, dass …»). Ziel: eine gemeinsame Abmachung, nicht Recht bekommen.'},
+ alts:['Vorher 3 Punkte aufschreiben, die dir wichtig sind – so bleibst du im Gespräch klar.','Wenn es nicht besser wird: die Schulleitung einbeziehen und das bisherige Gespräch erwähnen.'],
+ letter:'{an}\n\n{kind} hat mir von einer Situation im Unterricht erzählt, die {kind} beschäftigt. Ich möchte gerne auch Ihre Sicht hören, damit wir es gut miteinander klären können.\n\nHätten Sie in den nächsten Tagen Zeit für ein kurzes Gespräch?\n\nIch bin {zeit} erreichbar.\n\nFreundliche Grüsse\n{name}'},
+{id:'schulangst', topic:'schule', title:'Kind will nicht in die Schule',
+ kw:['will nicht in die schule','will nicht zur schule','bauchweh','bauchschmerzen','angst vor der schule','schwänzt','schwänzen','weint am morgen','schulangst'],
+ intro:'Wenn ein Kind morgens weint oder Bauchweh hat, ist das ein Signal, das ernst genommen werden darf – ohne gleich Alarm zu schlagen.',
+ step:{t:'Am Abend in Ruhe fragen, was schwer ist', x:'Nicht morgens im Stress, sondern abends beim Zubettgehen: «Was ist in der Schule gerade schwer? Und was ist gut?» Oft kommt so heraus, ob es um Freunde, eine Lehrperson oder Leistung geht. Dann informiere die Lehrperson. Bei anhaltenden körperlichen Beschwerden lass es ärztlich anschauen.'},
+ alts:['Einen kleinen «Mutmacher» mitgeben (Zettel in der Znüni-Box, Glücksstein).','Die Schulsozialarbeit fragen – sie kann mit dem Kind auch allein sprechen.'],
+ letter:'{an}\n\nIch möchte Sie informieren, dass {kind} in letzter Zeit morgens oft nicht in die Schule gehen möchte und dabei recht belastet wirkt. Ich weiss noch nicht genau, woran es liegt.\n\nIst Ihnen im Unterricht oder in der Pause etwas aufgefallen? Ich würde mich über ein kurzes Gespräch freuen.\n\nIch bin {zeit} erreichbar.\n\nHerzliche Grüsse\n{name}'},
+{id:'hausaufgaben', topic:'schule', title:'Jeden Tag Kampf um die Hausaufgaben',
+ kw:['hausaufgaben','ufzgi','aufgaben machen','lernt nicht','will nicht lernen','hausi'],
+ intro:'Hausaufgaben können den schönsten Nachmittag sprengen. Du bist nicht die Hilfslehrerin – und das darfst du auch nicht sein müssen.',
+ step:{t:'Fester Ort, feste Zeit, kurze Portionen', x:'Macht eine fixe Hausaufgaben-Zeit ab (z. B. nach dem Zvieri), am gleichen Platz, mit Timer: 20 Minuten arbeiten, 5 Minuten Pause. Du bist in der Nähe, aber nicht daneben. Wenn es regelmässig über 30–45 Minuten geht, sag es der Lehrperson.'},
+ alts:['Wenn es zu Hause immer kracht: Aufgabenhilfe oder Tagesschule nachfragen.','Mit der Lehrperson abmachen, wie viel Zeit für Hausaufgaben realistisch ist.'],
+ letter:'{an}\n\nIch melde mich wegen der Hausaufgaben von {kind}. Zu Hause brauchen wir dafür zurzeit sehr viel Zeit, und es gibt oft Tränen. Ich möchte gerne wissen, wie viel Zeit Sie ungefähr vorsehen und wie Sie {kind} im Unterricht erleben.\n\nHätten Sie Zeit für einen kurzen Austausch?\n\nIch bin {zeit} erreichbar.\n\nFreundliche Grüsse\n{name}'},
+
+/* ===== BEHÖRDEN ===== */
+{id:'brief', topic:'behoerden', title:'Brief oder Formular nicht verstanden',
+ kw:['brief','formular','verstehe nicht','versteh nicht','amt','gemeinde','ausfüllen','amtsdeutsch','verfügung','post bekommen'],
+ intro:'Amtsdeutsch ist eine eigene Sprache. Es ist absolut normal, dass man nicht alles versteht – und völlig okay, nachzufragen.',
+ step:{t:'Drei Dinge markieren – dann anrufen oder schreiben', x:'Markier auf dem Brief: 1. Wer schreibt? 2. Was wollen sie von dir? 3. Bis wann? Dann ruf die angegebene Nummer an oder schreib kurz. Sachbearbeitende erklären es dir – das ist ihre Aufgabe.'},
+ alts:['Eine Vertrauensperson oder die Gemeinde (Einwohnerkontrolle/Sozialdienst) um Hilfe beim Ausfüllen bitten.','Bei Fremdsprache: Viele Kantone haben Beratungsstellen für Migrantinnen und Migranten, oft auch mit Übersetzung.'],
+ info:'Verbindliche Auskunft gibt immer die Stelle, die den Brief geschickt hat. Unterstützung findest du bei deiner Gemeinde oder einer Sozialberatung.',
+ letter:'{an}\n\nIch habe Ihr Schreiben vom [Datum] mit der Referenz [Nummer] erhalten. Leider ist mir nicht ganz klar, was ich genau tun muss.\n\nKönnten Sie mir bitte kurz erklären, welche Unterlagen Sie von mir brauchen und bis wann?{frist}\n\nSie erreichen mich {zeit}.\n\nVielen Dank und freundliche Grüsse\n{name}'},
+{id:'betreuung', topic:'behoerden', title:'Kita, Hort oder Tagesschule finden',
+ kw:['kita','krippe','hort','betreuung','tagesschule','tagesstruktur','mittagstisch','tagesmutter','tagesfamilie','betreuungsplatz'],
+ intro:'Einen Betreuungsplatz zu finden, kann sich wie eine Schatzsuche anfühlen. Du bist früh dran, wenn du jetzt anfängst – das ist gut.',
+ step:{t:'Bei der Gemeinde nach Angebot und Subventionen fragen', x:'Viele Gemeinden haben eine Übersicht über Kitas, Horte und Tagesfamilien – und oft gibt es Beiträge je nach Einkommen. Frag bei der Gemeinde (Abteilung Bildung/Soziales) nach: Welche Angebote gibt es? Wie melde ich mich an? Gibt es Subventionen?'},
+ alts:['Gleichzeitig bei 2–3 Kitas auf die Warteliste setzen lassen.','Tagesfamilien-Vermittlung in deiner Region anfragen – oft flexibler als eine Kita.'],
+ info:'Verbindlich zu Plätzen und Beiträgen ist deine Wohngemeinde.',
+ letter:'{an}\n\nIch suche ab [Monat/Jahr] einen Betreuungsplatz für mein Kind (Jahrgang [Jahr]) für [Anzahl] Tage pro Woche.\n\nKönnen Sie mir bitte mitteilen, welche Angebote es in unserer Gemeinde gibt, wie die Anmeldung funktioniert und ob Betreuungsbeiträge möglich sind?{frist}\n\nSie erreichen mich {zeit}.\n\nFreundliche Grüsse\n{name}'},
+{id:'geld', topic:'behoerden', title:'Krankenkasse, Prämien, Geld wird knapp',
+ kw:['krankenkasse','prämie','prämienverbilligung','verbilligung','geld','rechnung','rechnungen','schulden','knapp','budget','kann nicht zahlen','teuer'],
+ intro:'Wenn das Geld knapp wird, sitzt die Sorge oft tief im Bauch. Gut, dass du hinschaust – es gibt in der Schweiz Unterstützung, die viele nicht kennen.',
+ step:{t:'Prämienverbilligung prüfen', x:'In jedem Kanton gibt es individuelle Prämienverbilligung (IPV) für die Krankenkasse. Such auf der Website deines Kantons nach «Prämienverbilligung» oder frag bei der Gemeinde. Je nach Kanton läuft das automatisch über die Steuern oder du musst einen Antrag stellen – manchmal mit Frist.'},
+ alts:['Eine kostenlose Budgetberatung nutzen (z. B. Budgetberatung Schweiz, Caritas, kantonale Stellen).','Bei Rechnungen, die du nicht zahlen kannst: frühzeitig um Ratenzahlung bitten – bevor Mahnungen kommen.'],
+ info:'Verbindliche Auskunft zur Prämienverbilligung gibt dein Kanton bzw. die zuständige Stelle (oft SVA/Ausgleichskasse). Budgetberatungen sind meist kostenlos.',
+ letter:'{an}\n\nIch habe die Rechnung vom [Datum] über CHF [Betrag] erhalten (Referenz [Nummer]). Zurzeit ist es mir leider nicht möglich, den ganzen Betrag auf einmal zu bezahlen.\n\nWäre eine Ratenzahlung möglich, zum Beispiel CHF [Betrag] pro Monat?{frist}\n\nSie erreichen mich {zeit}.\n\nVielen Dank für Ihr Verständnis und freundliche Grüsse\n{name}'},
+{id:'trennung', topic:'behoerden', title:'Trennung, Sorgerecht, Unterhalt, KESB',
+ kw:['kesb','sorgerecht','unterhalt','trennung','scheidung','alimente','obhut','besuchsrecht','getrennt','beistand'],
+ intro:'Trennung und alles, was dazugehört, ist eine riesige Belastung. Du musst das nicht allein und nicht auf einmal lösen.',
+ step:{t:'Eine kostenlose Beratungsstelle kontaktieren', x:'Für Fragen zu Obhut, Besuchsrecht und Unterhalt gibt es in jedem Kanton Familien- oder Eheberatungen, oft gratis oder günstig. Die KESB ist für Kindesschutz zuständig – man kann sich dort auch selbst melden und beraten lassen. Notiere vorher deine wichtigsten Fragen.'},
+ alts:['Bei Unterhalt: Frag bei der Gemeinde nach Alimentenbevorschussung und Inkassohilfe.','Für rechtlich verbindliche Fragen: unentgeltliche Rechtsauskunft (viele Kantone, Anwaltsverbände) oder Anwältin.'],
+ info:'Wichtig: Das hier ist keine Rechtsberatung. Verbindlich beraten Familienberatungsstellen, die KESB, die unentgeltliche Rechtsauskunft deines Kantons oder eine Anwältin.',
+ letter:'{an}\n\nIch lebe seit [Datum] getrennt und habe Fragen zur Regelung für unser Kind / unsere Kinder (Obhut, Besuchsrecht, Unterhalt).\n\nIch würde gerne einen Beratungstermin vereinbaren. Können Sie mir sagen, wie ich vorgehen soll und welche Unterlagen ich mitbringen soll?{frist}\n\nSie erreichen mich {zeit}.\n\nFreundliche Grüsse\n{name}'},
+{id:'frist', topic:'behoerden', title:'Frist, Mahnung, Steuern oder Betreibung',
+ kw:['frist','mahnung','steuern','steuererklärung','betreibung','zahlungsbefehl','abgelaufen','verpasst','zu spät'],
+ intro:'Fristen und Mahnungen machen Druck – aber fast immer gibt es einen nächsten Schritt. Kopf in den Sand wäre das Einzige, was es schlimmer macht.',
+ step:{t:'Heute noch reagieren – schriftlich', x:'Schau, bis wann die Frist läuft. Bei der Steuererklärung kannst du fast immer eine Fristerstreckung beantragen (oft online, manchmal mit kleiner Gebühr). Bei einer Mahnung: anrufen oder schreiben und eine Lösung vorschlagen. Bei einem Zahlungsbefehl lass dich bitte rasch beraten, denn dort gibt es eine kurze Frist für einen Rechtsvorschlag.'},
+ alts:['Eine Schuldenberatung kontaktieren (z. B. Schuldenberatung Schweiz) – kostenlos und vertraulich.','Alle Briefe in einen Ordner, sortiert nach Datum – das gibt sofort mehr Überblick.'],
+ info:'Keine Rechtsberatung: Verbindliche Auskunft gibt das zuständige Steueramt, Betreibungsamt oder eine Schuldenberatung.',
+ letter:'{an}\n\nBetreff: Gesuch um Fristerstreckung – [Referenz/Nummer]\n\nIch bitte Sie freundlich um eine Verlängerung der Frist für [z. B. die Steuererklärung 2025 / die Zahlung] bis zum [neues Datum].\n\nGrund: [kurz, z. B. Unterlagen fehlen noch / familiäre Belastung].{frist}\n\nSie erreichen mich {zeit}.\n\nVielen Dank und freundliche Grüsse\n{name}'},
+
+/* ===== TEENAGER ===== */
+{id:'schweigt', topic:'teen', title:'Redet nicht mehr mit mir',
+ kw:['redet nicht','spricht nicht','zieht sich zurück','verschlossen','sagt nichts','nur im zimmer','will nicht reden','ignoriert mich','antwortet nicht','redet nicht mehr'],
+ intro:'Das tut weh, ich weiss. Rückzug gehört oft zur Pubertät – dein Kind baut gerade sein eigenes Ich. Die Verbindung zu dir ist trotzdem da.',
+ step:{t:'Nebenbei da sein statt grosse Gespräche', x:'Biete Momente ohne Blickkontakt an: Autofahrt, zusammen kochen, ein Snack ans Bett bringen. Frag nicht «Wie war die Schule?», sondern sag etwas wie: «Ich bin da, wenn du reden magst. Kein Druck.» Und dann: wirklich keinen Druck machen.'},
+ alts:['Ein kleines Ritual nur für euch zwei (z. B. Sonntag Zmorge auswärts, Serie zusammen schauen).','Interesse an seiner/ihrer Welt zeigen: Musik, Games, Serien – ohne zu bewerten.']},
+{id:'regeln', topic:'teen', title:'Handy, Gamen, Ausgang – Regeln',
+ kw:['handy','gamen','game','ausgang','nach hause','nachts','party','social media','tiktok','instagram','zu lange','bildschirmzeit','heimkommen'],
+ intro:'Regeln mit Teenagern sind Verhandlungssache – und das ist eigentlich gut so. Sie lernen dabei, Verantwortung zu übernehmen.',
+ step:{t:'Verhandeln statt verordnen', x:'Lade dein Kind zu einem «Deal-Gespräch» ein: «Was findest du fair? Was brauche ich, damit ich mir keine Sorgen mache?» Haltet das Ergebnis fest – mit einer klaren Abmachung, was passiert, wenn es nicht klappt. Nach einem Monat gemeinsam überprüfen.'},
+ alts:['Handys nachts ausserhalb der Schlafzimmer laden – für alle in der Familie, auch für dich.','Beim Ausgang: Abmachen, dass dein Kind dich jederzeit anrufen darf, um abgeholt zu werden – ohne Fragen, ohne Strafe.']},
+{id:'respekt', topic:'teen', title:'Frech, respektlos, Türen knallen',
+ kw:['frech','respektlos','beleidigt','beschimpft','türe','tür knallen','knallt','schreit mich an','unverschämt','genervt','augenrollen'],
+ intro:'Wer schon mal eine Tür hat knallen hören, kennt das Herzklopfen danach. Hinter Frechheit steckt oft Überforderung – das heisst aber nicht, dass du alles schlucken musst.',
+ step:{t:'Grenze ruhig setzen – Gespräch später', x:'Sag in dem Moment kurz und klar: «So möchte ich nicht mit mir reden lassen. Wir sprechen später.» Dann gehen. Später, wenn beide ruhig sind: «Was war vorhin los?» So zeigst du Respekt und forderst ihn gleichzeitig ein.'},
+ alts:['Auf Augenrollen und kleine Sticheleien bewusst nicht reagieren – Kraft sparen für die wichtigen Dinge.','Selbst vorleben: sich entschuldigen, wenn man selbst laut geworden ist. Das wirkt stärker als jede Predigt.']},
+{id:'risiko', topic:'teen', title:'Sorgen wegen Alkohol, Kiffen, falschen Freunden',
+ kw:['alkohol','betrunken','kiffen','gras','cannabis','rauchen','vape','drogen','falsche freunde','schlechter umgang','clique'],
+ intro:'Diese Sorge kennen viele Eltern. Ausprobieren gehört für manche Teenager dazu – trotzdem ist es richtig, hinzuschauen und das Gespräch zu suchen.',
+ step:{t:'Ruhig ansprechen, interessiert fragen', x:'Wähle einen ruhigen Moment, nicht direkt nach einer Party. Sag, was du beobachtet hast, und frag nach: «Mir ist aufgefallen … Wie ist das für dich?» Mach klar, dass Sicherheit an erster Stelle steht: «Du kannst mich immer anrufen, wenn etwas schiefläuft.»'},
+ alts:['Fachstellen für Suchtprävention deines Kantons bieten kostenlose Elternberatung an.','Die Freunde kennenlernen: Einladen statt verbieten – so weisst du, mit wem dein Kind unterwegs ist.']},
+{id:'traurig', topic:'teen', title:'Liebeskummer, traurig, schlechte Stimmung',
+ kw:['liebeskummer','traurig','weint','stimmung','down','deprimiert','schlecht drauf','lustlos','einsam','schläft viel','ritzt','ritzen','verletzt sich','angst um mein kind'],
+ intro:'Wenn das eigene Kind traurig ist, möchte man es am liebsten in Watte packen. Oft hilft schon, dass du die Gefühle aushältst, ohne sie wegzumachen.',
+ step:{t:'Gefühle ernst nehmen – nicht klein reden', x:'Statt «Das wird schon wieder» lieber: «Das tut echt weh. Ich bin da.» Bleib dran mit kleinen Gesten (Lieblingsessen, gemeinsamer Spaziergang). Wenn die Stimmung über Wochen gedrückt bleibt oder du dir Sorgen um die Sicherheit machst, hol Hilfe – z. B. bei der Hausärztin oder bei 147.'},
+ alts:['Dein Kind auf 147 (Pro Juventute) hinweisen – Jugendliche können dort anonym anrufen, chatten oder schreiben.','Für dich selbst: Elternberatung von Pro Juventute oder die Dargebotene Hand (143), wenn es dir zu viel wird.']}
+];
+
+/* Pause-Situation (für Freitext-Erkennung) */
+const PAUSE_KW = ['erschöpft','keine kraft','kaputt','müde','überfordert','ausgebrannt','kann nicht mehr','alles zu viel','zu viel','pause','durchatmen','gestresst','nerven am ende'];
+
+/* Notfall-Erkennung */
+const SOS_KW = ['umbringen','suizid','selbstmord','nicht mehr leben','will sterben','ritzt','ritzen','verletzt sich','schlägt mich','schlägt mein kind','geschlagen','gewalt','missbrauch','missbraucht','bedroht','gefahr','notfall','bewusstlos','vergiftet','blutet'];
+
+/* ---------- Erkennung ---------- */
+function norm(s){ return ' '+String(s||'').toLowerCase().replace(/ß/g,'ss').replace(/[.,!?;:«»"()]/g,' ').replace(/\s+/g,' ')+' '; }
+function hasKw(t, kw){ return t.indexOf(kw.toLowerCase())>-1; }
+function analyse(text){
+  const t = norm(text);
+  const sos = SOS_KW.some(k=>hasKw(t,k));
+  const scores = {}; const sitScores = {};
+  SITS.forEach(s=>{
+    let sc=0; s.kw.forEach(k=>{ if(hasKw(t,k)) sc += k.indexOf(' ')>-1 ? 2 : 1; });
+    sitScores[s.id]=sc; scores[s.topic]=(scores[s.topic]||0)+sc;
+  });
+  /* Teenager-Signale verstärken */
+  if(/(teenager|pubertät|sohn \(1[3-9]|tochter \(1[3-9]|1[3-9]-jährig|1[3-9] jahre|teenie|jugendlich)/.test(t)) scores.teen=(scores.teen||0)+2;
+  if(/(schule|klasse|lehr)/.test(t)) scores.schule=(scores.schule||0)+1;
+  if(/(amt|behörde|gemeinde|kanton|formular)/.test(t)) scores.behoerden=(scores.behoerden||0)+1;
+  let pause=0; PAUSE_KW.forEach(k=>{ if(hasKw(t,k)) pause++; });
+  let topic=null, best=0;
+  Object.keys(scores).forEach(k=>{ if(scores[k]>best){best=scores[k];topic=k;} });
+  if(pause>0 && pause>=best) topic='pause';
+  return {topic, sos, sitScores};
+}
+
+/* ---------- Ansichten ---------- */
+const VIEWS=['vHome','vAsk','vAnswer','vPause','vHistory'];
+function show(v){ VIEWS.forEach(id=>$(id).classList.toggle('hide', id!==v)); window.scrollTo(0,0); if(v!=='vPause') stopBreath(true); if(v!=='vAnswer') stopSpeak(); }
+
+/* ---------- Ablauf ---------- */
+let flow = null;  // {text, topic, sos, sitScores, sitId, modId, step, total}
+
+function startFromText(){
+  const text = $('txt').value.trim();
+  if(!text){ toast('Erzähl mir zuerst kurz, was los ist 🙂'); $('txt').focus(); return; }
+  const a = analyse(text);
+  if(a.topic==='pause'){ flow={text, topic:'pause', sos:a.sos}; renderPauseAnswer(); return; }
+  flow = {text, topic:a.topic, sos:a.sos, sitScores:a.sitScores, sitId:null, modId:null};
+  flow.total = a.topic ? 2 : 3;   // ohne erkanntes Thema: zuerst Thema wählen
+  flow.step = 1;
+  if(a.topic) askSituation(); else askTopic();
+}
+function startFromTopic(topic){
+  if(topic==='pause'){ openPause('vHome'); return; }
+  flow = {text:'', topic, sos:false, sitScores:{}, sitId:null, modId:null, total:2, step:1};
+  askSituation();
+}
+
+function setProgress(){
+  const pct = Math.round(((flow.step-1)/flow.total)*100);
+  $('askStep').textContent = 'Frage '+flow.step+' von '+flow.total;
+  $('askBar').style.width = pct+'%';
+  $('askPct').textContent = pct+' %';
+  const q=$('askQuote');
+  if(flow.text){ q.textContent='«'+flow.text+'»'; q.classList.remove('hide'); } else q.classList.add('hide');
+  $('askSos').innerHTML = flow.sos ? sosHtml() : '';
+}
+
+function renderOpts(list){
+  const box=$('askOpts'); box.innerHTML='';
+  list.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='opt'+(o.best?' best':'');
+    b.innerHTML=(o.best?'<span class="tag">passt wohl am besten</span>':'')+esc(o.label);
+    b.addEventListener('click', o.onClick);
+    box.appendChild(b);
+  });
+}
+
+function askTopic(){
+  setProgress();
+  $('askQ').textContent='Ich will dich richtig verstehen. Worum geht\'s am ehesten?';
+  $('askSub').textContent='Tipp einfach an, was am besten passt.';
+  renderOpts(['streit','schule','behoerden','teen','pause'].map(k=>({
+    label: TOPICS[k].emoji+'  '+TOPICS[k].name,
+    onClick: ()=>{
+      if(k==='pause'){ renderPauseAnswer(); return; }
+      flow.topic=k; flow.step++; askSituation();
+    }
+  })));
+  show('vAsk');
+}
+
+function askSituation(){
+  setProgress();
+  const sits = SITS.filter(s=>s.topic===flow.topic);
+  let bestId=null, bestSc=0;
+  sits.forEach(s=>{ const sc=flow.sitScores[s.id]||0; if(sc>bestSc){bestSc=sc;bestId=s.id;} });
+  const ordered = sits.slice().sort((a,b)=>(a.id===bestId?-1:b.id===bestId?1:0));
+  $('askQ').textContent = bestId ? 'Ich glaube, es geht um das hier. Stimmt das?' : TOPICS[flow.topic].emoji+' Was passt am ehesten?';
+  $('askSub').textContent = bestId ? 'Sonst tipp einfach etwas anderes an.' : 'Kein perfektes Wort nötig – das Naheliegendste reicht.';
+  renderOpts(ordered.map(s=>({label:s.title, best:s.id===bestId, onClick:()=>{ flow.sitId=s.id; flow.step++; askMod(); }})));
+  show('vAsk');
+}
+
+function askMod(){
+  setProgress();
+  const m = MODS[flow.topic];
+  $('askQ').textContent = m.q;
+  $('askSub').textContent = 'Damit ich es noch passender machen kann.';
+  renderOpts(m.opts.map(o=>({label:o.label, onClick:()=>{ flow.modId=o.id; finish(); }})));
+  show('vAsk');
+}
+
+function finish(){
+  const entry = {id:Date.now(), date:new Date().toISOString(), text:flow.text, topic:flow.topic, sitId:flow.sitId, modId:flow.modId, sos:!!flow.sos};
+  const h = store.get('history', []); h.unshift(entry); store.set('history', h.slice(0,100));
+  renderAnswer(entry);
+}
+
+/* ---------- Antwort ---------- */
+let speakText='';
+function sosHtml(){
+  return '<div class="sos"><b>Wenn jemand in Gefahr ist: Bitte hol sofort Hilfe.</b><div class="callrow">'+
+    '<a class="call" href="tel:144"><strong>144</strong> Sanität / Notruf</a>'+
+    '<a class="call" href="tel:147"><strong>147</strong> Pro Juventute – für Kinder, Jugendliche & Eltern</a>'+
+    '<a class="call" href="tel:143"><strong>143</strong> Dargebotene Hand – Tag und Nacht</a>'+
+    '<a class="call" href="tel:117"><strong>117</strong> Polizei</a></div></div>';
+}
+function fillLetter(tpl, sit, mod){
+  const kind = '[Name des Kindes]';
+  let an = 'Sehr geehrte Damen und Herren';
+  if(sit.topic==='schule' && mod && mod.an) an = mod.an;
+  const frist = (sit.topic==='behoerden' && mod && mod.id==='bald') ? '\n\nDa die Frist bald abläuft, wäre ich um eine rasche Antwort sehr dankbar.' : '';
+  return tpl.replace('{an}',an).replace(/\{kind\}/g, kind).replace('{zeit}','unter [Telefonnummer] oder per E-Mail').replace('{name}','[Dein Name]').replace('{frist}',frist)
+    ;
+}
+function renderAnswer(e){
+  const sit = SITS.find(s=>s.id===e.sitId);
+  if(!sit){ show('vHome'); return; }
+  const mod = (MODS[sit.topic].opts||[]).find(o=>o.id===e.modId);
+  let html='';
+  if(e.sos) html+=sosHtml();
+  if(e.text) html+='<div class="quote">«'+esc(e.text)+'»</div>';
+  html+='<div class="card"><span class="label">'+TOPICS[sit.topic].emoji+' '+esc(sit.title)+'</span><p>'+esc(sit.intro)+'</p>'+(mod?'<p class="muted">'+esc(mod.tip)+'</p>':'')+'</div>';
+  const stepX = sit.step.x.replace(/\{kind\}/g,'dein Kind');
+  html+='<div class="card step"><span class="label">Dein nächster Schritt</span><h2>'+esc(sit.step.t)+'</h2><p>'+esc(stepX)+'</p></div>';
+  html+='<div class="card"><span class="label">Oder auch</span><ul class="alts">'+sit.alts.map(a=>'<li>'+esc(a)+'</li>').join('')+'</ul></div>';
+  if(sit.info) html+='<div class="info">ℹ️ '+esc(sit.info)+'</div>';
+  if(sit.topic==='schule') html+='<div class="info">ℹ️ Bei schulischen Fragen gibt die Schule (Lehrperson, Schulleitung) verbindlich Auskunft; die Schulsozialarbeit berät vertraulich.</div>';
+  if(sit.letter){
+    html+='<div class="card letter"><span class="label">Entwurf zum Kopieren</span><p class="small muted">Die Stellen in [Klammern] ersetzt du mit deinen Angaben. Du kannst direkt hier drin ändern.</p>'+
+      '<textarea id="letterTxt" aria-label="Briefentwurf">'+esc(fillLetter(sit.letter, sit, mod))+'</textarea>'+
+      '<button class="btn" id="btnCopy" style="margin-top:10px">📋 Text kopieren</button></div>';
+  }
+  $('ansBody').innerHTML=html;
+  if(sit.letter) $('btnCopy').addEventListener('click', copyLetter);
+  speakText = sit.intro+' '+(mod?mod.tip+' ':'')+'Dein nächster Schritt: '+sit.step.t+'. '+stepX;
+  show('vAnswer');
+}
+function renderPauseAnswer(){
+  const entry = {id:Date.now(), date:new Date().toISOString(), text:flow.text||'', topic:'pause', sitId:null, modId:null, sos:!!flow.sos};
+  const h = store.get('history', []); h.unshift(entry); store.set('history', h.slice(0,100));
+  renderPauseEntry(entry);
+}
+function renderPauseEntry(e){
+  let html='';
+  if(e.sos) html+=sosHtml();
+  if(e.text) html+='<div class="quote">«'+esc(e.text)+'»</div>';
+  html+='<div class="card"><span class="label">🌿 Pause für mich</span><p>Das klingt nach ganz viel auf einmal. Du trägst gerade viel – und es ist okay, wenn nicht alles perfekt läuft.</p></div>';
+  html+='<div class="card step"><span class="label">Dein nächster Schritt</span><h2>Zwei Minuten nur für dich</h2><p>Bevor du irgendetwas löst: einmal durchatmen. Ich begleite dich.</p><button class="btn mint" id="btnToPause">🌿 Atemübung starten</button></div>';
+  html+='<div class="card"><span class="label">Oder auch</span><ul class="alts"><li>Eine Sache von heute streichen. Wirklich. Die Welt dreht sich weiter – versprochen.</li><li>Jemandem eine Nachricht schreiben: «Kannst du mir heute mit … helfen?» Um Hilfe bitten ist Stärke.</li></ul></div>';
+  html+='<div class="info">Wenn es dir über längere Zeit zu viel ist: Die Dargebotene Hand (143) hört zu, Tag und Nacht. Auch die Elternberatung von Pro Juventute (147 / 058 261 61 61) ist für dich da.</div>';
+  $('ansBody').innerHTML=html;
+  $('btnToPause').addEventListener('click', ()=>openPause('vAnswer'));
+  speakText='Das klingt nach ganz viel auf einmal. Bevor du irgendetwas löst: einmal durchatmen. Zwei Minuten nur für dich.';
+  show('vAnswer');
+}
+
+function copyLetter(){
+  const ta=$('letterTxt'); const txt=ta.value;
+  const ok=()=>toast('Kopiert ✓ – jetzt einfügen, wo du willst');
+  const fallback=()=>{ ta.focus(); ta.select(); ta.setSelectionRange(0, txt.length); let s=false; try{ s=document.execCommand('copy'); }catch(e){} s?ok():toast('Bitte Text markieren und kopieren'); };
+  if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(txt).then(ok, fallback); } else fallback();
+}
+
+/* ---------- Vorlesen ---------- */
+function germanVoice(){
+  const vs = ('speechSynthesis' in window) ? speechSynthesis.getVoices() : [];
+  return vs.find(v=>/de[-_]CH/i.test(v.lang)) || vs.find(v=>/^de/i.test(v.lang)) || null;
+}
+function say(text, opts){
+  if(!('speechSynthesis' in window)) return false;
+  const u=new SpeechSynthesisUtterance(text); u.lang='de-CH'; const v=germanVoice(); if(v){u.voice=v;u.lang=v.lang;}
+  u.rate=(opts&&opts.rate)||0.95; if(opts&&opts.onend) u.onend=opts.onend;
+  speechSynthesis.speak(u); return true;
+}
+function stopSpeak(){ try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){} const b=$('btnSpeak'); if(b) b.textContent='🔊 Vorlesen'; }
+$('btnSpeak').addEventListener('click', ()=>{
+  const b=$('btnSpeak');
+  if(!('speechSynthesis' in window)){ toast('Vorlesen geht auf diesem Gerät leider nicht'); return; }
+  if(speechSynthesis.speaking){ stopSpeak(); return; }
+  b.textContent='⏹ Stopp';
+  say(speakText,{onend:()=>{ b.textContent='🔊 Vorlesen'; }});
+});
+
+/* ---------- Mikrofon ---------- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec=null, listening=false, baseText='', triedFallback=false;
+function setMic(on){
+  listening=on; $('btnMic').classList.toggle('listening',on);
+  $('micLabel').textContent = on ? 'Ich höre zu …' : 'Erzähl mir, was los ist';
+  $('micSub').textContent = on ? 'Tippen, wenn du fertig bist' : 'Tippen und sprechen';
+}
+function startRec(lang){
+  rec = new SR(); rec.lang=lang; rec.interimResults=true; rec.continuous=true;
+  baseText = $('txt').value.trim();
+  rec.onresult = ev=>{
+    let fin='', interim='';
+    for(let i=0;i<ev.results.length;i++){ const r=ev.results[i]; if(r.isFinal) fin+=r[0].transcript; else interim+=r[0].transcript; }
+    $('txt').value = (baseText?baseText+' ':'') + fin + interim;
+  };
+  rec.onerror = ev=>{
+    if(ev.error==='language-not-supported' && !triedFallback){ triedFallback=true; try{rec.abort();}catch(e){} startRec('de-DE'); return; }
+    setMic(false);
+    if(ev.error==='not-allowed' || ev.error==='service-not-allowed') { $('micHint').classList.remove('hide'); toast('Mikrofon nicht erlaubt – schreib einfach ins Feld'); }
+    else if(ev.error!=='aborted' && ev.error!=='no-speech') toast('Hat nicht geklappt – versuch es nochmal oder schreib');
+  };
+  rec.onend = ()=>{ setMic(false); if($('txt').value.trim()) toast('Gut! Tipp auf «Weiter», wenn alles drin ist'); };
+  try{ rec.start(); setMic(true); }catch(e){ setMic(false); $('micHint').classList.remove('hide'); $('txt').focus(); }
+}
+$('btnMic').addEventListener('click', ()=>{
+  if(!SR){ $('micHint').classList.remove('hide'); $('txt').focus(); return; }
+  if(listening){ try{ rec.stop(); }catch(e){} setMic(false); return; }
+  triedFallback=false; startRec('de-CH');
+});
+if(!SR){ $('micSub').textContent='Tippen zum Schreiben'; }
+
+/* ---------- Start-Knöpfe ---------- */
+$('btnGo').addEventListener('click', ()=>{ if(listening){ try{rec.stop();}catch(e){} setMic(false);} startFromText(); });
+$('btnClear').addEventListener('click', ()=>{ $('txt').value=''; $('txt').focus(); });
+document.querySelectorAll('.tile').forEach(t=>t.addEventListener('click', ()=>startFromTopic(t.dataset.topic)));
+document.addEventListener('click', ev=>{ const h=ev.target.closest('[data-home]'); if(h){ resetHome(); } });
+function resetHome(){ flow=null; show('vHome'); }
+
+/* ---------- Pause / Atmen ---------- */
+const TOTAL=120, IN=4, OUT=6; // 12 Runden à 10 s
+let pRun=false, pElapsed=0, pLast=0, pRaf=null, pBackTo='vHome', pLastPhase='';
+function openPause(from){ pBackTo=from||'vHome'; resetBreath(); show('vPause'); }
+$('pauseBack').addEventListener('click', ()=>{ stopBreath(true); show(pBackTo==='vAnswer' && $('ansBody').innerHTML ? 'vAnswer' : 'vHome'); });
+function fmt(s){ s=Math.max(0,Math.ceil(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+function drawBreath(){
+  const cyc = pElapsed % (IN+OUT);
+  let scale, phase;
+  if(cyc<IN){ const k=cyc/IN; scale=1+1.05*easeInOut(k); phase='Einatmen'; }
+  else { const k=(cyc-IN)/OUT; scale=2.05-1.05*easeInOut(k); phase='Ausatmen'; }
+  $('circle').style.transform='scale('+scale.toFixed(3)+')';
+  if(pRun){ $('phase').textContent=phase; if(phase!==pLastPhase){ pLastPhase=phase; if($('pVoice').checked) say(phase,{rate:0.85}); } }
+  const pct=Math.min(100,Math.round(pElapsed/TOTAL*100));
+  $('pBar').style.width=pct+'%'; $('pPct').textContent=pct+' %';
+  $('ptime').textContent=fmt(TOTAL-pElapsed);
+}
+function easeInOut(k){ return k<.5 ? 2*k*k : 1-Math.pow(-2*k+2,2)/2; }
+function tick(ts){
+  if(!pRun) return;
+  if(pLast) pElapsed += (ts-pLast)/1000;
+  pLast=ts;
+  if(pElapsed>=TOTAL){ pElapsed=TOTAL; drawBreath(); breathDone(); return; }
+  drawBreath(); pRaf=requestAnimationFrame(tick);
+}
+function startBreath(){
+  if(pElapsed>=TOTAL) resetBreath();
+  pRun=true; pLast=0; pLastPhase=''; $('pStart').textContent='Pause'; $('pDone').classList.add('hide');
+  pRaf=requestAnimationFrame(tick);
+}
+function stopBreath(silent){
+  pRun=false; if(pRaf) cancelAnimationFrame(pRaf); pRaf=null;
+  if($('pStart')) $('pStart').textContent = pElapsed>0 && pElapsed<TOTAL ? 'Weiter' : 'Start';
+  if(!silent && pElapsed<TOTAL) $('phase').textContent='Pausiert – du hast Zeit';
+}
+function resetBreath(){ stopBreath(true); pElapsed=0; pLastPhase=''; $('pStart').textContent='Start'; $('phase').textContent='Bereit, wenn du es bist'; $('pDone').classList.add('hide'); drawBreath(); }
+function breathDone(){
+  pRun=false; $('pStart').textContent='Start'; $('phase').textContent='Fertig. Gut gemacht. 💛'; $('pDone').classList.remove('hide');
+  $('circle').style.transform='scale(1)';
+  const n=store.get('pauses',0)+1; store.set('pauses',n);
+  if($('pVoice').checked) say('Fertig. Gut gemacht.');
+}
+$('pStart').addEventListener('click', ()=>{ pRun ? stopBreath(false) : startBreath(); });
+$('pReset').addEventListener('click', resetBreath);
+$('pAgain').addEventListener('click', ()=>{ resetBreath(); startBreath(); });
+$('pVoice').addEventListener('change', ()=>store.set('voice', $('pVoice').checked));
+$('pVoice').checked = !!store.get('voice', false);
+/* Test-Hilfe (nur für automatische Tests) */
+window.__ja = {setElapsed:(s)=>{ pElapsed=s; drawBreath(); }};
+
+/* ---------- Verlauf ---------- */
+function renderHistory(){
+  const h=store.get('history',[]); const box=$('hList');
+  if(!h.length){ box.innerHTML='<div class="card"><p>Noch nichts hier. Was du erzählst, erscheint hier – und nur hier, auf deinem Handy.</p></div>'; $('btnDelAll').classList.add('hide'); return; }
+  $('btnDelAll').classList.remove('hide');
+  box.innerHTML='';
+  h.forEach(e=>{
+    const sit=SITS.find(s=>s.id===e.sitId);
+    const title = e.topic==='pause' ? 'Pause für mich' : (sit?sit.title:'Gespräch');
+    const d=new Date(e.date);
+    const when=d.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'})+', '+d.toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'});
+    const row=document.createElement('div'); row.className='hitem';
+    row.innerHTML='<button class="hopen"><b>'+(TOPICS[e.topic]?TOPICS[e.topic].emoji+' ':'')+esc(title)+'</b><span>'+esc(when)+(e.text?' · «'+esc(e.text)+'»':'')+'</span></button><button class="hdel" aria-label="Eintrag löschen">✕</button>';
+    row.querySelector('.hopen').addEventListener('click', ()=>{ e.topic==='pause' ? renderPauseEntry(e) : renderAnswer(e); });
+    row.querySelector('.hdel').addEventListener('click', ()=>{
+      store.set('history', store.get('history',[]).filter(x=>x.id!==e.id)); renderHistory(); toast('Gelöscht');
+    });
+    box.appendChild(row);
+  });
+}
+$('btnHistory').addEventListener('click', ()=>{ renderHistory(); show('vHistory'); });
+$('btnDelAll').addEventListener('click', ()=>{
+  if(confirm('Wirklich den ganzen Verlauf löschen? Das kann man nicht rückgängig machen.')){ store.del('history'); renderHistory(); toast('Alles gelöscht'); }
+});
+
+/* ---------- Onboarding ---------- */
+const OB=[
+  {a:'💬', t:'Einfach reden wie mit einer Freundin', x:'Kein Fachwort nötig. Erzähl so, wie es dir gerade kommt – gesprochen oder getippt.'},
+  {a:'🤔', t:'Ich frage nach, wenn ich etwas nicht verstehe', x:'Ein, zwei kurze Fragen zum Antippen – dann bekommst du einen klaren nächsten Schritt.'},
+  {a:'💛', t:'Du entscheidest, was du davon nimmst', x:'Du kennst deine Familie am besten. Ich bin nur Begleiterin. Deine Daten bleiben auf deinem Handy.'}
+];
+let obI=0;
+function obRender(){
+  $('obArt').textContent=OB[obI].a; $('obTitle').textContent=OB[obI].t; $('obText').textContent=OB[obI].x;
+  [...$('obDots').children].forEach((d,i)=>d.classList.toggle('on',i===obI));
+  $('obNext').textContent = obI===OB.length-1 ? 'Los geht\'s' : 'Weiter';
+}
+function obClose(){ store.set('onboarded',true); $('ob').classList.add('hide'); }
+$('obNext').addEventListener('click', ()=>{ if(obI<OB.length-1){obI++;obRender();} else obClose(); });
+$('obSkip').addEventListener('click', obClose);
+if(!store.get('onboarded',false)){ obRender(); $('ob').classList.remove('hide'); }
+
+if('speechSynthesis' in window){ try{ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=()=>{}; }catch(e){} }
+drawBreath();
+})();
+</script>
+</body>
+</html>

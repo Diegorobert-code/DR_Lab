@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="HumanSpark">
+<meta name="theme-color" content="#1f3a4d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>HumanSpark</title>
+<style>
+:root{
+  --bg:#f6f3ee; --card:#fffdf9; --ink:#1d2b35; --muted:#5f6d76; --line:#e2dcd2;
+  --navy:#1f3a4d; --navy2:#2d5a6b; --coral:#e8896b; --coral2:#c96a4e; --soft:#ece6dc;
+  --s1:#4f8a8b; --s2:#6f9e86; --s3:#b9a256; --s4:#d98f5c; --s5:#c96a4e;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.45 var(--font);overflow-x:hidden}
+body{padding:calc(env(safe-area-inset-top) + 12px) calc(env(safe-area-inset-right) + 16px) calc(env(safe-area-inset-bottom) + 16px) calc(env(safe-area-inset-left) + 16px)}
+.wrap{max-width:560px;margin:0 auto}
+header{display:flex;align-items:center;gap:12px;margin:4px 0 12px}
+header img{width:46px;height:46px;border-radius:12px}
+h1{font-size:25px;margin:0;color:var(--navy);letter-spacing:.2px}
+header p{margin:0;color:var(--muted);font-size:14px}
+.intro{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#f6f3ee;border-radius:20px;padding:16px 16px 14px;margin-bottom:14px}
+.intro p{margin:0 0 8px;font-size:16px}
+.intro .vision{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;background:rgba(255,255,255,.14);border-radius:99px;padding:3px 10px;margin-bottom:8px}
+.intro .safe{font-size:14px;opacity:.92;margin:0}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--soft);padding:5px;border-radius:16px;margin-bottom:14px;position:sticky;top:calc(env(safe-area-inset-top) + 4px);z-index:5}
+.tab{min-height:52px;border:0;border-radius:12px;background:transparent;font:600 16px/1 var(--font);color:var(--muted);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--card);color:var(--navy);box-shadow:0 1px 4px rgba(20,40,60,.12)}
+section.panel{display:none}
+section.panel.on{display:block}
+.box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
+.box h2{font-size:19px;margin:0 0 8px;color:var(--navy)}
+.box p{margin:0 0 10px}
+.muted{color:var(--muted);font-size:14px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;padding:12px 16px;border-radius:14px;border:0;font:600 17px/1.2 var(--font);cursor:pointer;margin-top:10px}
+.btn.primary{background:var(--navy);color:#fff}
+.btn.coral{background:var(--coral);color:#fff}
+.btn.ghost{background:var(--soft);color:var(--navy)}
+.btn.danger{background:#f3e0da;color:#9a3d27}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:active:not(:disabled){transform:scale(.985)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row .btn{margin-top:10px}
+.prog{height:14px;background:var(--soft);border-radius:99px;overflow:hidden;margin:8px 0 4px}
+.prog>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--navy2),var(--coral));border-radius:99px;transition:width .2s linear}
+.progline{display:flex;justify-content:space-between;font-size:14px;color:var(--muted)}
+.progline b{color:var(--navy);font-size:16px}
+#camWrap{display:flex;gap:12px;align-items:center;margin:10px 0}
+#video{width:64px;height:64px;border-radius:50%;object-fit:cover;background:#2b1b18;flex:none}
+#dot{width:64px;height:64px;border-radius:50%;flex:none;background:radial-gradient(circle at 40% 35%,#ff9a8a,#a3241b);display:none}
+#status{font-size:16px;font-weight:600;color:var(--navy)}
+#wave{width:100%;height:70px;display:block;background:#faf7f2;border-radius:12px;border:1px solid var(--line)}
+.notice{background:#fbf1e8;border:1px solid #f0d9c6;border-radius:14px;padding:12px 14px;font-size:15px;margin-top:10px}
+.notice.warn{background:#fdecea;border-color:#f3c9c2}
+.big{display:flex;gap:10px;margin:8px 0}
+.big div{flex:1;background:#faf7f2;border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.big b{display:block;font-size:30px;color:var(--navy);line-height:1.1}
+.big span{font-size:13px;color:var(--muted)}
+.stagebar{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:10px 0 4px}
+.stagebar i{height:12px;border-radius:6px;background:var(--soft)}
+.stagelabels{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.stagename{font-size:24px;font-weight:700;margin:6px 0 2px}
+.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#1f3a4d;color:#f6f3ee;border-radius:10px;padding:8px 10px;font-size:15px;word-break:break-word}
+.ex{background:#f3f7f6;border:1px solid #d7e5e2;border-radius:14px;padding:12px 14px;margin-top:10px}
+.ex h3{margin:0 0 4px;font-size:17px;color:var(--navy)}
+.ex p{margin:0;font-size:15px}
+#breath{display:none;text-align:center;margin-top:10px}
+#breathCircle{width:120px;height:120px;border-radius:50%;margin:8px auto;background:radial-gradient(circle,#cfe3df,#4f8a8b);transform:scale(.6);transition:transform 4s ease-in-out}
+#breathText{font-size:20px;font-weight:700;color:var(--navy)}
+#breathTime{font-size:14px;color:var(--muted)}
+.cmp{width:100%;border-collapse:collapse;margin-top:6px;font-size:15px}
+.cmp th,.cmp td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:center}
+.cmp th:first-child,.cmp td:first-child{text-align:left}
+textarea{width:100%;min-height:120px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit;color:var(--ink);resize:vertical}
+textarea:focus{outline:2px solid var(--navy2);outline-offset:1px}
+.check{display:flex;align-items:center;gap:10px;min-height:52px;font-size:15px}
+.check input{width:24px;height:24px;flex:none}
+.mic{background:var(--coral);color:#fff;min-height:64px;font-size:18px}
+.mic.on{background:#9a3d27;animation:pulse 1.4s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(232,137,107,.25)}}
+.entry{border-bottom:1px solid var(--line);padding:12px 0}
+.entry:last-child{border-bottom:0}
+.entry .top{display:flex;justify-content:space-between;gap:8px;font-size:14px;color:var(--muted)}
+.entry .st{font-weight:700}
+.entry .txt{margin:4px 0;font-size:15px}
+.pill{display:inline-block;font-size:12px;font-weight:700;border-radius:99px;padding:2px 8px;color:#fff;margin-left:4px}
+#chart{width:100%;height:auto;display:block}
+footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="icon.svg" alt="">
+    <div><h1>HumanSpark</h1><p>Körper und Kosmos · DR Lab</p></div>
+  </header>
+
+  <div class="intro">
+    <span class="vision">Entwicklungsvision von DR Lab</span>
+    <p>HumanSpark liest deinen Körper und übersetzt ihn in eine kurze Sprache für die KI.</p>
+    <p class="safe">Deine Daten bleiben auf deinem Handy. HumanSpark ist kein medizinisches Gerät und stellt keine Diagnosen.</p>
+  </div>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" data-tab="messen" aria-selected="true">Messen</button>
+    <button class="tab" role="tab" data-tab="reden" aria-selected="false">Reinreden</button>
+    <button class="tab" role="tab" data-tab="verlauf" aria-selected="false">Verlauf</button>
+  </nav>
+
+  <!-- MESSEN -->
+  <section class="panel on" id="p-messen">
+    <div class="box" id="startBox">
+      <h2 id="startTitle">Puls und Ruhe messen</h2>
+      <p>Lege die Fingerkuppe sanft auf die Rückkamera und halte still. Die Messung dauert etwa 30 Sekunden.</p>
+      <p class="muted">Die Taschenlampe lässt sich im iPhone-Browser nicht einschalten. Miss deshalb bei hellem Licht (z.&nbsp;B. am Fenster oder unter einer Lampe), damit der Finger rot durchleuchtet wird.</p>
+      <button class="btn primary" id="btnStart">Messung starten</button>
+      <button class="btn ghost" id="btnDemo">Demo ohne Kamera</button>
+      <div class="notice hidden" id="camErr"></div>
+    </div>
+
+    <div class="box hidden" id="measureBox">
+      <h2 id="measureTitle">Messung läuft</h2>
+      <div id="camWrap">
+        <video id="video" playsinline muted autoplay></video>
+        <div id="dot"></div>
+        <div id="status">Finger auflegen …</div>
+      </div>
+      <canvas id="wave" width="600" height="140"></canvas>
+      <div class="prog"><i id="progBar"></i></div>
+      <div class="progline"><b id="progPct">0 %</b><span id="progInfo">noch ca. 32 s</span></div>
+      <button class="btn ghost" id="btnStop">Abbrechen</button>
+    </div>
+
+    <div class="box hidden" id="resultBox">
+      <h2>Dein Ergebnis</h2>
+      <div class="stagebar" id="stageBar"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="stagelabels"><span>Ruhe</span><span>Ladung</span></div>
+      <div class="stagename" id="stageName"></div>
+      <p id="stageDesc"></p>
+      <div class="big">
+        <div><b id="resBpm">–</b><span>Puls (Schläge/Min)</span></div>
+        <div><b id="resRmssd">–</b><span>RMSSD (ms, Schätzung)</span></div>
+      </div>
+      <p class="muted" id="resNote"></p>
+      <div id="cmpWrap" class="hidden">
+        <h2 style="margin-top:12px">Vorher / Nachher</h2>
+        <table class="cmp" id="cmpTable"></table>
+      </div>
+      <div class="ex" id="exBox">
+        <h3 id="exTitle"></h3>
+        <p id="exText"></p>
+      </div>
+      <div id="breath">
+        <div id="breathCircle"></div>
+        <div id="breathText">Bereit</div>
+        <div id="breathTime"></div>
+      </div>
+      <button class="btn coral" id="btnExercise">Übung starten (1 Minute)</button>
+      <div class="row">
+        <button class="btn primary" id="btnRemeasure">Nachmessen</button>
+        <button class="btn ghost" id="btnSpeak">Vorlesen</button>
+      </div>
+      <button class="btn ghost" id="btnToTalk">Dazu reinreden</button>
+      <button class="btn ghost" id="btnNew">Neue Messung</button>
+    </div>
+  </section>
+
+  <!-- REINREDEN -->
+  <section class="panel" id="p-reden">
+    <div class="box">
+      <h2>Wie geht es dir?</h2>
+      <p>Sprich ein paar Sätze, so wie es gerade ist. HumanSpark macht daraus einen Eintrag und eine kurze Kodierung.</p>
+      <button class="btn mic" id="btnMic">🎙 Reinreden</button>
+      <div class="notice hidden" id="micNote"></div>
+      <textarea id="talkText" placeholder="Oder hier schreiben – auch das Diktat der iPhone-Tastatur funktioniert."></textarea>
+      <label class="check"><input type="checkbox" id="attachMeas"> <span id="attachLabel">Letzte Messung anhängen</span></label>
+      <div class="muted">Kurze Kodierung (Vorschau):</div>
+      <div class="code" id="codePreview">–</div>
+      <button class="btn primary" id="btnSaveTalk">Als Eintrag speichern</button>
+      <div class="notice hidden" id="talkSaved"></div>
+    </div>
+  </section>
+
+  <!-- VERLAUF -->
+  <section class="panel" id="p-verlauf">
+    <div class="box">
+      <h2>Deine Stufen</h2>
+      <div id="chartWrap"></div>
+    </div>
+    <div class="box">
+      <h2>Einträge</h2>
+      <div id="list"></div>
+    </div>
+    <div class="box">
+      <h2>Daten</h2>
+      <p class="muted">Alles liegt nur in diesem Browser auf deinem Handy. Exportieren kannst du es selbst, z. B. für dich oder deine Therapeutin.</p>
+      <button class="btn primary" id="btnExport">Export (JSON teilen)</button>
+      <button class="btn danger" id="btnClear">Alles löschen</button>
+    </div>
+  </section>
+
+  <footer>DR Lab · Testphase</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $ = function(id){ return document.getElementById(id); };
+var KEY = 'hs_entries';
+var params = new URLSearchParams(location.search);
+var FAST = params.has('demofast'); // nur für Tests: Demo läuft schneller
+
+/* ---------- Speicher ---------- */
+function load(){ try { return JSON.parse(localStorage.getItem(KEY) || '[]') || []; } catch(e){ return []; } }
+function save(list){ try { localStorage.setItem(KEY, JSON.stringify(list)); return true; } catch(e){ return false; } }
+function addEntry(e){ var l = load(); l.push(e); save(l); return e; }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+/* ---------- Stufen ---------- */
+var STAGES = [
+  {n:1, name:'Ruhe', color:'var(--s1)', hex:'#4f8a8b',
+   desc:'Dein Körper wirkt gerade sehr ruhig. Ein guter Moment, um einfach da zu sein.',
+   ex:{t:'Füsse wahrnehmen', k:'feet', p:'Stell beide Füsse auf den Boden. Spür die Fersen, die Ballen, die Zehen. Lass das Gewicht nach unten sinken – nichts machen, nur wahrnehmen.'}},
+  {n:2, name:'Gelassen', color:'var(--s2)', hex:'#6f9e86',
+   desc:'Ruhig und präsent. Dein System scheint gut zwischen Spannung und Entspannung zu pendeln.',
+   ex:{t:'Füsse wahrnehmen', k:'feet', p:'Spür, wo deine Füsse den Boden berühren. Atme ruhig weiter und folge dem Kontakt von der Ferse bis zu den Zehen.'}},
+  {n:3, name:'Wach', color:'var(--s3)', hex:'#b9a256',
+   desc:'Wach und aktiv. Etwas Energie ist da – das ist gut zum Handeln.',
+   ex:{t:'Überkreuzbewegung', k:'cross', p:'Im Stehen oder Sitzen: rechte Hand zum linken Knie, dann linke Hand zum rechten Knie. Langsam und im eigenen Rhythmus, eine Minute lang.'}},
+  {n:4, name:'Angeregt', color:'var(--s4)', hex:'#d98f5c',
+   desc:'Dein Körper ist angeregt. Vielleicht ist gerade viel los – ein paar ruhige Atemzüge können helfen, wieder anzukommen.',
+   ex:{t:'Atmen 4-6', k:'breath', p:'Vier Sekunden durch die Nase einatmen, sechs Sekunden langsam ausatmen. Der Kreis zeigt dir den Rhythmus.'}},
+  {n:5, name:'Ladung', color:'var(--s5)', hex:'#c96a4e',
+   desc:'Viel Ladung im System. Das ist kein Fehler, sondern eine Information. Gönn dir einen Moment für einen langen Ausatem.',
+   ex:{t:'Atmen 4-6 und Füsse spüren', k:'breath', p:'Füsse auf den Boden, dann vier Sekunden ein, sechs Sekunden aus. Mit jedem Ausatmen etwas mehr Gewicht in die Füsse sinken lassen.'}}
+];
+
+function stageFrom(bpm, rmssd){
+  var h = bpm < 60 ? 0 : bpm < 70 ? 1 : bpm < 80 ? 2 : bpm < 92 ? 3 : 4;
+  if (rmssd == null) return h + 1;
+  var r = rmssd > 60 ? 0 : rmssd > 40 ? 1 : rmssd > 25 ? 2 : rmssd > 15 ? 3 : 4;
+  return Math.min(5, Math.max(1, Math.round((h + r) / 2) + 1));
+}
+
+/* ---------- Tabs ---------- */
+function showTab(name){
+  document.querySelectorAll('.tab').forEach(function(b){ b.setAttribute('aria-selected', b.dataset.tab === name ? 'true' : 'false'); });
+  document.querySelectorAll('section.panel').forEach(function(s){ s.classList.toggle('on', s.id === 'p-' + name); });
+  if (name === 'verlauf') renderHistory();
+  if (name === 'reden') refreshAttach();
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.tab').forEach(function(b){ b.addEventListener('click', function(){ showTab(b.dataset.tab); }); });
+
+/* ---------- Messung ---------- */
+var WARMUP = 2, MEASURE = 30, TOTAL = WARMUP + MEASURE;
+var state = null; // laufende Messung
+var lastResult = null; // letzte Messung (Objekt)
+var pendingPairOf = null; // id der Vorher-Messung beim Nachmessen
+var resultShown = false;
+
+var video = $('video'), cv = document.createElement('canvas'); cv.width = 40; cv.height = 30;
+var cx = cv.getContext('2d', {willReadFrequently:true});
+var wave = $('wave'), wx = wave.getContext('2d');
+
+function setStatus(t){ $('status').textContent = t; }
+function setProgress(sec){
+  var p = Math.max(0, Math.min(100, Math.round(sec / TOTAL * 100)));
+  $('progBar').style.width = p + '%';
+  $('progPct').textContent = p + ' %';
+  $('progInfo').textContent = p >= 100 ? 'wird ausgewertet …' : 'noch ca. ' + Math.max(0, Math.ceil(TOTAL - sec)) + ' s';
+}
+function showBox(which){
+  ['startBox','measureBox','resultBox'].forEach(function(id){ $(id).classList.toggle('hidden', id !== which); });
+}
+
+function startMeasure(demo){
+  $('camErr').classList.add('hidden');
+  state = {demo:demo, t0:null, samples:[], lostSince:null, timer:null, stream:null, demoT:0, demoGen:null, covered:0};
+  showBox('measureBox');
+  $('measureTitle').textContent = (pendingPairOf ? 'Nachmessung' : 'Messung') + (demo ? ' (Demo)' : '') + ' läuft';
+  setProgress(0); drawWave([]);
+  if (demo){
+    video.style.display = 'none'; $('dot').style.display = 'block';
+    state.demoGen = makeDemoGen(!!pendingPairOf);
+    setStatus('Demo: simulierter Finger');
+    state.timer = setInterval(tickDemo, 33);
+    return;
+  }
+  video.style.display = 'block'; $('dot').style.display = 'none';
+  setStatus('Kamera wird geöffnet …');
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    camFail('Dieser Browser gibt keinen Kamerazugriff. Öffne die Seite in Safari (über https) oder probiere die Demo.');
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}, width:{ideal:320}, height:{ideal:240}, frameRate:{ideal:30}}, audio:false})
+  .then(function(stream){
+    if (!state) { stream.getTracks().forEach(function(t){t.stop();}); return; }
+    state.stream = stream;
+    video.srcObject = stream;
+    var p = video.play(); if (p && p.catch) p.catch(function(){});
+    // Licht: nur wo der Browser es erlaubt (z. B. Android Chrome). Im iPhone-Browser nicht möglich.
+    try {
+      var track = stream.getVideoTracks()[0];
+      var caps = track.getCapabilities ? track.getCapabilities() : {};
+      if (caps.torch) track.applyConstraints({advanced:[{torch:true}]}).catch(function(){});
+    } catch(e){}
+    setStatus('Finger auflegen …');
+    state.timer = setInterval(tickCam, 33);
+  })
+  .catch(function(err){
+    camFail('Kamera nicht verfügbar' + (err && err.name === 'NotAllowedError' ? ' – der Zugriff wurde nicht erlaubt. Du kannst ihn in den Einstellungen von Safari freigeben.' : '.') + ' Du kannst die Demo ausprobieren.');
+  });
+}
+
+function camFail(msg){
+  stopMeasure();
+  showBox('startBox');
+  var n = $('camErr'); n.textContent = msg; n.classList.remove('hidden');
+}
+
+function stopMeasure(){
+  if (!state) return;
+  clearInterval(state.timer);
+  if (state.stream) state.stream.getTracks().forEach(function(t){ t.stop(); });
+  video.srcObject = null;
+  state = null;
+}
+
+function tickCam(){
+  if (!state || video.readyState < 2) return;
+  cx.drawImage(video, 0, 0, cv.width, cv.height);
+  var d = cx.getImageData(0, 0, cv.width, cv.height).data, r = 0, g = 0, b = 0, n = d.length / 4;
+  for (var i = 0; i < d.length; i += 4){ r += d[i]; g += d[i+1]; b += d[i+2]; }
+  r /= n; g /= n; b /= n;
+  var covered = r > 40 && r > g * 1.5 && r > b * 1.5;
+  pushSample(performance.now() / 1000, r, covered);
+}
+
+function tickDemo(){
+  if (!state) return;
+  var steps = FAST ? 12 : 1;
+  for (var k = 0; k < steps && state; k++){
+    state.demoT += 1/30;
+    pushSample(state.demoT, state.demoGen(state.demoT), true);
+  }
+}
+
+// Simulierter Finger mit Herzschlag und leichter Atemschwankung
+function makeDemoGen(calmer){
+  var hr = calmer && lastResult ? Math.max(56, lastResult.bpm - 4 - Math.random()*5) : 60 + Math.random() * 30;
+  var nextBeat = 0.3, beats = [], drift = 0;
+  return function(t){
+    while (nextBeat < t + 1){
+      beats.push(nextBeat);
+      var ibi = 60 / hr * (1 + 0.05 * Math.sin(2 * Math.PI * nextBeat / 5.5) + (Math.random() - 0.5) * 0.03);
+      nextBeat += ibi;
+    }
+    while (beats.length && beats[0] < t - 2) beats.shift();
+    var v = 0;
+    beats.forEach(function(bt){ var dt = t - bt; if (dt >= 0) v += (dt < 0.12 ? dt / 0.12 : Math.exp(-(dt - 0.12) / 0.18)); });
+    drift += (Math.random() - 0.5) * 0.05;
+    return 150 - 3 * v + 1.5 * Math.sin(t * 0.7) + drift + (Math.random() - 0.5) * 0.4;
+  };
+}
+
+function pushSample(t, r, covered){
+  var s = state;
+  if (!covered){
+    if (s.lostSince == null) s.lostSince = t;
+    setStatus(s.samples.length ? 'Finger wieder auflegen und still halten' : 'Finger auf die Kamera legen');
+    if (t - s.lostSince > 1 && s.samples.length){ s.samples = []; s.t0 = null; setProgress(0); setStatus('Finger verrutscht – wir starten neu'); }
+    return;
+  }
+  s.lostSince = null;
+  if (s.t0 == null) s.t0 = t;
+  s.samples.push([t - s.t0, r]);
+  var el = t - s.t0;
+  if (!s.demo) setStatus(el < WARMUP ? 'Finger erkannt – still halten …' : 'Ruhig weiteratmen …');
+  setProgress(el);
+  if (s.samples.length % 3 === 0) drawWave(s.samples);
+  if (el >= TOTAL) finishMeasure();
+}
+
+function drawWave(samples){
+  var W = wave.width, H = wave.height;
+  wx.clearRect(0, 0, W, H);
+  var pts = samples.slice(-150);
+  if (pts.length < 10) return;
+  // für die Anzeige: Trend entfernen, invertieren (Puls nach oben)
+  var vals = pts.map(function(p){ return p[1]; });
+  var sm = movAvg(vals, 15), y = vals.map(function(v,i){ return -(v - sm[i]); });
+  var mn = Math.min.apply(null, y), mx = Math.max.apply(null, y), rg = (mx - mn) || 1;
+  wx.strokeStyle = '#c96a4e'; wx.lineWidth = 3; wx.lineJoin = 'round'; wx.beginPath();
+  y.forEach(function(v, i){ var X = i / 149 * W, Y = H - 10 - (v - mn) / rg * (H - 20); i ? wx.lineTo(X, Y) : wx.moveTo(X, Y); });
+  wx.stroke();
+}
+
+function movAvg(a, w){
+  var out = new Array(a.length), h = Math.floor(w / 2), sum = 0, cnt = 0, lo = 0, hi = -1;
+  for (var i = 0; i < a.length; i++){
+    var L = Math.max(0, i - h), R = Math.min(a.length - 1, i + h);
+    while (hi < R){ hi++; sum += a[hi]; cnt++; }
+    while (lo < L){ sum -= a[lo]; lo++; cnt--; }
+    out[i] = sum / cnt;
+  }
+  return out;
+}
+
+// Auswertung: gleichmässig abtasten, Trend weg, glätten, Spitzen finden, Abstände prüfen
+function analyse(samples){
+  var raw = samples.filter(function(p){ return p[0] >= WARMUP; });
+  if (raw.length < 200) return {ok:false, why:'zu wenig Bilder'};
+  var FS = 30, t0 = raw[0][0], t1 = raw[raw.length-1][0], n = Math.floor((t1 - t0) * FS), u = [], j = 0;
+  for (var i = 0; i < n; i++){
+    var t = t0 + i / FS;
+    while (j < raw.length - 2 && raw[j+1][0] < t) j++;
+    var a = raw[j], b = raw[j+1], f = (b[0] - a[0]) ? (t - a[0]) / (b[0] - a[0]) : 0;
+    u.push(-(a[1] + (b[1] - a[1]) * Math.max(0, Math.min(1, f)))); // invertiert: Pulswelle = Spitze
+  }
+  var base = movAvg(u, 31), x = u.map(function(v,i){ return v - base[i]; });
+  x = movAvg(x, 5);
+  var mean = x.reduce(function(s,v){return s+v;},0) / x.length;
+  var sd = Math.sqrt(x.reduce(function(s,v){return s+(v-mean)*(v-mean);},0) / x.length);
+  if (sd < 0.05) return {ok:false, why:'kaum Signal'};
+  var minDist = Math.round(0.33 * FS), peaks = [];
+  for (i = 2; i < x.length - 2; i++){
+    if (x[i] > 0.3 * sd && x[i] >= x[i-1] && x[i] >= x[i+1] && x[i] > x[i-2] && x[i] > x[i+2]){
+      if (peaks.length && i - peaks[peaks.length-1] < minDist){
+        if (x[i] > x[peaks[peaks.length-1]]) peaks[peaks.length-1] = i;
+      } else peaks.push(i);
+    }
+  }
+  // Spitzen genauer: parabolische Interpolation
+  var pt = peaks.map(function(p){ var y0=x[p-1], y1=x[p], y2=x[p+1], den=(y0-2*y1+y2); return (p + (den ? 0.5*(y0-y2)/den : 0)) / FS; });
+  var ibis = [];
+  for (i = 1; i < pt.length; i++) ibis.push(pt[i] - pt[i-1]);
+  if (ibis.length < 12) return {ok:false, why:'zu wenige Herzschläge erkannt'};
+  var sorted = ibis.slice().sort(function(a,b){return a-b;}), med = sorted[Math.floor(sorted.length/2)];
+  var good = ibis.map(function(v){ return v >= 0.33 && v <= 1.5 && Math.abs(v - med) / med < 0.25; });
+  var nGood = good.filter(Boolean).length;
+  if (nGood < 12 || nGood / ibis.length < 0.65) return {ok:false, why:'unruhiges Signal'};
+  var gv = ibis.filter(function(v,i){ return good[i]; });
+  var bpm = 60 / (gv.reduce(function(s,v){return s+v;},0) / gv.length);
+  var diffs = [];
+  for (i = 1; i < ibis.length; i++) if (good[i] && good[i-1]) diffs.push((ibis[i] - ibis[i-1]) * 1000);
+  var rmssd = null;
+  if (diffs.length >= 8 && nGood / ibis.length >= 0.8){
+    rmssd = Math.sqrt(diffs.reduce(function(s,v){return s+v*v;},0) / diffs.length);
+    if (rmssd > 200) rmssd = null; // unplausibel
+  }
+  return {ok:true, bpm:Math.round(bpm), rmssd: rmssd == null ? null : Math.round(rmssd), quality:Math.round(nGood / ibis.length * 100)};
+}
+
+function finishMeasure(){
+  var s = state, demo = s.demo, res = analyse(s.samples);
+  stopMeasure();
+  if (!res.ok){
+    showBox('startBox');
+    var n = $('camErr');
+    n.innerHTML = '<b>Das Signal war leider nicht sauber genug</b> (' + res.why + '). Kein Problem – das passiert oft. Halte den Finger ganz ruhig und ohne Druck auf der Linse, such helleres Licht und probier es nochmals.';
+    n.classList.remove('hidden');
+    $('btnStart').textContent = 'Nochmals messen';
+    return;
+  }
+  var stage = stageFrom(res.bpm, res.rmssd);
+  var e = {id:uid(), t:Date.now(), type:'messung', bpm:res.bpm, rmssd:res.rmssd, stage:stage, quality:res.quality, demo:demo, pairOf:pendingPairOf};
+  addEntry(e);
+  var before = pendingPairOf ? load().filter(function(x){ return x.id === pendingPairOf; })[0] : null;
+  pendingPairOf = null;
+  lastResult = e;
+  showResult(e, before);
+}
+
+function showResult(e, before){
+  var st = STAGES[e.stage - 1];
+  resultShown = true;
+  showBox('resultBox');
+  document.querySelectorAll('#stageBar i').forEach(function(el, i){ el.style.background = i < e.stage ? STAGES[i].hex : ''; });
+  $('stageName').textContent = 'Stufe ' + e.stage + ' · ' + st.name + (e.demo ? ' (Demo)' : '');
+  $('stageName').style.color = st.hex;
+  $('stageDesc').textContent = st.desc;
+  $('resBpm').textContent = e.bpm;
+  $('resRmssd').textContent = e.rmssd == null ? '–' : e.rmssd;
+  $('resNote').textContent = (e.rmssd == null ? 'Für die Herzraten-Variabilität war das Signal nicht ruhig genug – die Stufe stützt sich auf den Puls. ' : '') +
+    'Signalqualität ' + e.quality + ' %. Schätzung über die Kamera, kein Medizinprodukt.';
+  $('exTitle').textContent = 'Sanfte Übung: ' + st.ex.t;
+  $('exText').textContent = st.ex.p;
+  stopExercise();
+  if (before){
+    var row = function(lbl, a, b, unit){ return '<tr><td>' + lbl + '</td><td>' + a + '</td><td>' + b + '</td></tr>'; };
+    $('cmpTable').innerHTML = '<tr><th></th><th>Vorher</th><th>Nachher</th></tr>' +
+      row('Stufe', before.stage + ' ' + STAGES[before.stage-1].name, e.stage + ' ' + st.name) +
+      row('Puls', before.bpm, e.bpm) +
+      row('RMSSD', before.rmssd == null ? '–' : before.rmssd + ' ms', e.rmssd == null ? '–' : e.rmssd + ' ms');
+    $('cmpWrap').classList.remove('hidden');
+  } else $('cmpWrap').classList.add('hidden');
+  window.scrollTo(0, 0);
+}
+
+/* ---------- Übung mit Timer ---------- */
+var exTimer = null;
+function stopExercise(){
+  clearInterval(exTimer); exTimer = null;
+  $('breath').style.display = 'none';
+  $('btnExercise').textContent = 'Übung starten (1 Minute)';
+}
+function startExercise(){
+  if (exTimer){ stopExercise(); return; }
+  var st = STAGES[(lastResult ? lastResult.stage : 3) - 1], kind = st.ex.k, left = 60, ph = 0;
+  var circle = $('breathCircle'), txt = $('breathText');
+  $('breath').style.display = 'block';
+  $('btnExercise').textContent = 'Übung beenden';
+  circle.style.display = kind === 'breath' ? 'block' : 'none';
+  var cross = ['Rechte Hand → linkes Knie', 'Linke Hand → rechtes Knie'], ci = 0;
+  function step(){
+    $('breathTime').textContent = 'noch ' + left + ' s';
+    if (kind === 'breath'){
+      var cyc = (60 - left) % 10;
+      if (cyc === 0){ txt.textContent = 'Einatmen … 4'; circle.style.transitionDuration = '4s'; circle.style.transform = 'scale(1)'; }
+      else if (cyc < 4){ txt.textContent = 'Einatmen … ' + (4 - cyc); }
+      else if (cyc === 4){ txt.textContent = 'Ausatmen … 6'; circle.style.transitionDuration = '6s'; circle.style.transform = 'scale(.6)'; }
+      else { txt.textContent = 'Ausatmen … ' + (10 - cyc); }
+    } else if (kind === 'cross'){
+      if (left % 2 === 0){ txt.textContent = cross[ci]; ci = 1 - ci; }
+    } else {
+      var feet = ['Fersen spüren', 'Fussballen spüren', 'Zehen spüren', 'Ganze Fusssohle spüren', 'Gewicht sinken lassen'];
+      txt.textContent = feet[Math.floor((60 - left) / 12) % feet.length];
+    }
+    if (left <= 0){
+      clearInterval(exTimer); exTimer = null;
+      txt.textContent = 'Fertig. Spür kurz nach.';
+      $('breathTime').textContent = 'Jetzt kannst du nachmessen.';
+      circle.style.transform = 'scale(.6)';
+      $('btnExercise').textContent = 'Übung nochmals starten';
+      return;
+    }
+    left--;
+  }
+  step();
+  exTimer = setInterval(step, 1000);
+}
+
+/* ---------- Vorlesen ---------- */
+function speak(text){
+  if (!('speechSynthesis' in window)){ alert('Vorlesen wird von diesem Browser nicht unterstützt.'); return; }
+  speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'de-CH';
+  var v = speechSynthesis.getVoices().filter(function(x){ return /^de/i.test(x.lang); });
+  if (v.length){ u.voice = v.filter(function(x){ return /CH/i.test(x.lang); })[0] || v[0]; u.lang = u.voice.lang; }
+  u.rate = 0.95;
+  speechSynthesis.speak(u);
+}
+
+/* ---------- Knöpfe Messen ---------- */
+$('btnStart').addEventListener('click', function(){ pendingPairOf = null; startMeasure(false); });
+$('btnDemo').addEventListener('click', function(){ pendingPairOf = null; startMeasure(true); });
+$('btnStop').addEventListener('click', function(){ stopMeasure(); pendingPairOf = null; showBox(resultShown ? 'resultBox' : 'startBox'); });
+$('btnRemeasure').addEventListener('click', function(){ if (!lastResult) return; stopExercise(); pendingPairOf = lastResult.id; startMeasure(lastResult.demo); });
+$('btnNew').addEventListener('click', function(){ stopExercise(); resultShown = false; pendingPairOf = null; $('btnStart').textContent = 'Messung starten'; $('camErr').classList.add('hidden'); showBox('startBox'); });
+$('btnExercise').addEventListener('click', startExercise);
+$('btnSpeak').addEventListener('click', function(){
+  if (!lastResult) return;
+  var st = STAGES[lastResult.stage - 1];
+  speak('Stufe ' + lastResult.stage + ', ' + st.name + '. ' + st.desc + ' Übung: ' + st.ex.t + '. ' + st.ex.p);
+});
+$('btnToTalk').addEventListener('click', function(){ stopExercise(); showTab('reden'); $('attachMeas').checked = true; updateCode(); });
+
+/* ---------- Reinreden ---------- */
+var STOP = ('aber alle allem allen aller alles also am an andere anderen auch auf aus bei bin bis bist da dabei damit dann das dass dein deine dem den denn der des dich die dies diese dieser dir doch dort du durch ein eine einem einen einer eines einfach er es etwas euch für gar gegen gerade gewesen gibt ging gut habe haben hat hatte hier hin ich ihm ihn ihr im immer in ist ja jetzt kann kein keine man mal mehr mein meine meinem meinen mich mir mit muss nach nicht nichts noch nun nur ob oder ohne schon sehr sein seine sich sie sind so soll sowie über um und uns unter viel vom von vor war waren was weil weiss wenn wer werde werden wie wieder wir wird wo wohl zu zum zur zwar ganz geht gehts heute wirklich bisschen irgendwie eigentlich glaube denke fühle fühl fühlt mich mir halt eben echt ziemlich momentan grad gerade weiß sei bin').split(' ');
+var FEEL = ('müde erschöpft gestresst stress angespannt anspannung ruhig entspannt nervös unruhig traurig froh glücklich wütend ärger ärgerlich ängstlich angst sorge sorgen leicht schwer leer voll klar wach dankbar zufrieden überfordert druck kopfschmerzen kopf nacken rücken schulter schultern bauch magen herz atem schlaf schlecht geschlafen kalt warm schmerz schmerzen energie kraft freude liebe einsam verbunden hoffnung zuversicht arbeit familie beziehung kinder kind partner freund freunde körper bewegung natur sonne regen').split(' ');
+function keywords(text){
+  var words = (text || '').toLowerCase().replace(/[^a-zäöüéèàß0-9\s-]/g, ' ').split(/\s+/).filter(function(w){ return w.length > 2 && STOP.indexOf(w) < 0 && !/^\d+$/.test(w); });
+  var score = {}, first = {};
+  words.forEach(function(w, i){
+    if (!(w in score)){ score[w] = 0; first[w] = i; }
+    score[w] += 1 + (FEEL.indexOf(w) >= 0 ? 3 : 0) + (w.length >= 6 ? 0.5 : 0);
+  });
+  return Object.keys(score).sort(function(a,b){ return score[b] - score[a] || first[a] - first[b]; }).slice(0, 3);
+}
+function recentMeasurement(){
+  var l = load().filter(function(e){ return e.type === 'messung'; });
+  var m = l[l.length - 1];
+  return m && Date.now() - m.t < 3 * 3600 * 1000 ? m : null;
+}
+function makeCode(stage, kw){ return 'HS1|S' + (stage || '?') + '|' + (kw.length ? kw.join(',') : '-'); }
+function refreshAttach(){
+  var m = recentMeasurement(), cb = $('attachMeas');
+  cb.disabled = !m;
+  if (!m){ cb.checked = false; $('attachLabel').textContent = 'Keine Messung der letzten 3 Stunden – miss zuerst, wenn du sie anhängen willst'; }
+  else $('attachLabel').textContent = 'Letzte Messung anhängen (Stufe ' + m.stage + ' · ' + STAGES[m.stage-1].name + ', Puls ' + m.bpm + ', ' + fmtTime(m.t) + ')';
+  updateCode();
+}
+function updateCode(){
+  var m = $('attachMeas').checked ? recentMeasurement() : null;
+  var kw = keywords($('talkText').value);
+  $('codePreview').textContent = ($('talkText').value.trim() || m) ? makeCode(m && m.stage, kw) : '–';
+}
+$('talkText').addEventListener('input', updateCode);
+$('attachMeas').addEventListener('change', updateCode);
+
+$('btnSaveTalk').addEventListener('click', function(){
+  var text = $('talkText').value.trim();
+  var note = $('talkSaved');
+  if (!text){ note.textContent = 'Sag oder schreib zuerst ein paar Worte.'; note.className = 'notice warn'; return; }
+  var m = $('attachMeas').checked ? recentMeasurement() : null, kw = keywords(text);
+  var e = {id:uid(), t:Date.now(), type:'eintrag', text:text, keywords:kw, code:makeCode(m && m.stage, kw)};
+  if (m){ e.stage = m.stage; e.bpm = m.bpm; e.rmssd = m.rmssd; e.measurementId = m.id; e.demo = m.demo; }
+  addEntry(e);
+  if (recog && listening) recog.stop();
+  $('talkText').value = '';
+  note.innerHTML = 'Gespeichert. Kodierung: <b>' + esc(e.code) + '</b>';
+  note.className = 'notice';
+  updateCode();
+});
+
+// Spracherkennung
+var SR = window.SpeechRecognition || window.webkitSpeechRecognition, recog = null, listening = false, baseText = '', langTry = 'de-CH';
+function micNote(t){ var n = $('micNote'); n.textContent = t; n.classList.toggle('hidden', !t); }
+function setMic(on){ listening = on; $('btnMic').classList.toggle('on', on); $('btnMic').textContent = on ? '■ Stopp' : '🎙 Reinreden'; }
+function startRecog(){
+  recog = new SR();
+  recog.lang = langTry; recog.continuous = true; recog.interimResults = true;
+  baseText = $('talkText').value ? $('talkText').value.replace(/\s*$/, ' ') : '';
+  recog.onresult = function(ev){
+    var fin = '', interim = '';
+    for (var i = 0; i < ev.results.length; i++){ var r = ev.results[i]; if (r.isFinal) fin += r[0].transcript + ' '; else interim += r[0].transcript; }
+    $('talkText').value = (baseText + fin + interim).replace(/\s+/g, ' ').trimStart();
+    updateCode();
+  };
+  recog.onerror = function(ev){
+    if (ev.error === 'language-not-supported' && langTry === 'de-CH'){ langTry = 'de-DE'; setMic(false); startRecog(); return; }
+    if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') micNote('Mikrofon nicht erlaubt. Du kannst die Freigabe in den Safari-Einstellungen geben – oder einfach das Diktat der Tastatur nutzen.');
+    else if (ev.error !== 'no-speech' && ev.error !== 'aborted') micNote('Spracherkennung unterbrochen (' + ev.error + '). Tipp nochmals auf «Reinreden» oder nutz das Tastatur-Diktat.');
+  };
+  recog.onend = function(){ setMic(false); };
+  try { recog.start(); setMic(true); micNote(''); } catch(e){ micNote('Spracherkennung konnte nicht starten. Nutz das Diktat der Tastatur.'); }
+}
+$('btnMic').addEventListener('click', function(){
+  if (!SR){ micNote('Spracherkennung ist in diesem Browser nicht verfügbar. Tipp ins Textfeld und nutz das Mikrofon der iPhone-Tastatur – das funktioniert immer.'); $('talkText').focus(); return; }
+  if (listening){ recog.stop(); return; }
+  startRecog();
+});
+
+/* ---------- Verlauf ---------- */
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function fmtTime(t){ var d = new Date(t); return d.toLocaleDateString('de-CH', {day:'2-digit', month:'2-digit'}) + ' ' + d.toLocaleTimeString('de-CH', {hour:'2-digit', minute:'2-digit'}); }
+
+function renderHistory(){
+  var l = load();
+  // Kurve
+  var pts = l.filter(function(e){ return e.type === 'messung'; }).slice(-30);
+  var cw = $('chartWrap');
+  if (pts.length < 2){ cw.innerHTML = '<p class="muted">Ab zwei Messungen siehst du hier deine Linie.</p>'; }
+  else {
+    var W = 520, H = 210, L = 88, R = 12, T = 12, B = 26;
+    var X = function(i){ return L + i / (pts.length - 1) * (W - L - R); }, Y = function(s){ return T + (5 - s) / 4 * (H - T - B); };
+    var g = '';
+    for (var s = 1; s <= 5; s++) g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(s) + '" y2="' + Y(s) + '" stroke="#e2dcd2"/><text x="' + (L - 8) + '" y="' + (Y(s) + 5) + '" text-anchor="end" font-size="17" fill="#5f6d76">' + STAGES[s-1].name + '</text>';
+    var path = pts.map(function(e, i){ return (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(e.stage).toFixed(1); }).join(' ');
+    var dots = pts.map(function(e, i){ return '<circle cx="' + X(i).toFixed(1) + '" cy="' + Y(e.stage).toFixed(1) + '" r="6" fill="' + STAGES[e.stage-1].hex + '" stroke="#fff" stroke-width="2"/>'; }).join('');
+    var lbl = '<text x="' + L + '" y="' + (H - 6) + '" font-size="15" fill="#5f6d76">' + fmtTime(pts[0].t) + '</text><text x="' + (W - R) + '" y="' + (H - 6) + '" font-size="15" fill="#5f6d76" text-anchor="end">' + fmtTime(pts[pts.length-1].t) + '</text>';
+    cw.innerHTML = '<svg id="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Verlauf der Stufen">' + g + '<path d="' + path + '" fill="none" stroke="#1f3a4d" stroke-width="3" stroke-linejoin="round"/>' + dots + lbl + '</svg>';
+  }
+  // Liste
+  var list = $('list');
+  if (!l.length){ list.innerHTML = '<p class="muted">Noch keine Einträge. Starte mit einer Messung oder rede rein.</p>'; return; }
+  list.innerHTML = l.slice().reverse().map(function(e){
+    var st = e.stage ? STAGES[e.stage-1] : null;
+    var head = e.type === 'messung' ? (e.pairOf ? 'Nachmessung' : 'Messung') : 'Reinreden';
+    var vals = e.bpm ? 'Puls ' + e.bpm + (e.rmssd != null ? ' · RMSSD ' + e.rmssd + ' ms' : '') : '';
+    return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · ' + head + (e.demo ? ' · Demo' : '') + '</span>' +
+      (st ? '<span class="pill" style="background:' + st.hex + '">' + e.stage + ' ' + st.name + '</span>' : '') + '</div>' +
+      (e.text ? '<div class="txt">' + esc(e.text) + '</div>' : '') +
+      (vals ? '<div class="muted">' + vals + '</div>' : '') +
+      (e.code ? '<div class="code" style="margin-top:6px">' + esc(e.code) + '</div>' : '') + '</div>';
+  }).join('');
+}
+
+$('btnExport').addEventListener('click', function(){
+  var data = {app:'HumanSpark', marke:'DR Lab', version:1, exportiert:new Date().toISOString(),
+    hinweis:'Schätzwerte aus der Kamera, kein Medizinprodukt. Kodierung: HS1|S<Stufe 1-5>|<3 Stichworte>.', eintraege:load()};
+  var json = JSON.stringify(data, null, 2), name = 'humanspark-' + new Date().toISOString().slice(0,10) + '.json';
+  var blob = new Blob([json], {type:'application/json'});
+  try {
+    var file = new File([blob], name, {type:'application/json'});
+    if (navigator.canShare && navigator.canShare({files:[file]})){
+      navigator.share({files:[file], title:'HumanSpark Export'}).catch(function(){});
+      return;
+    }
+  } catch(e){}
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+});
+
+$('btnClear').addEventListener('click', function(){
+  if (!load().length){ alert('Es gibt noch nichts zu löschen.'); return; }
+  if (!confirm('Wirklich alle Messungen und Einträge auf diesem Handy löschen? Das lässt sich nicht rückgängig machen.')) return;
+  try { localStorage.removeItem(KEY); } catch(e){}
+  lastResult = null; resultShown = false;
+  showBox('startBox');
+  renderHistory();
+});
+
+// Start: letzte Messung merken (für Nachmessen / Anhängen)
+(function(){ var m = load().filter(function(e){ return e.type === 'messung'; }); lastResult = m[m.length - 1] || null; })();
+})();
+</script>
+</body>
+</html>
