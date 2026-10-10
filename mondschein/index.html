@@ -57,17 +57,36 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .toast.on{opacity:1;transform:translateX(-50%)}
 :root[data-night="1"] .toast{background:#2a3563}
 /* Figuren */
-.fig{display:block;margin:0 auto}
-.float{animation:float 4s ease-in-out infinite}
+.fig{display:block;margin:0 auto;overflow:visible}
+.float{animation:float 4.5s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.wave{transform-origin:153px 150px;transform-box:view-box;animation:wave .9s ease-in-out infinite alternate}
+.fig .breathe{transform-box:view-box;transform-origin:100px 198px;animation:breathe 3.6s ease-in-out infinite}
+.fig.asleep .breathe{animation-duration:5.2s}
+@keyframes breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(1.018,1.035)}}
+.fig .blink{transform-box:fill-box;transform-origin:center;animation:blink 5.5s infinite}
+@keyframes blink{0%,91%,97%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}}
+.wave{transform-origin:154px 152px;transform-box:view-box;animation:wave .9s ease-in-out infinite alternate}
 @keyframes wave{from{transform:rotate(-14deg)}to{transform:rotate(16deg)}}
-.flap{transform-box:view-box;animation:flap 1.6s ease-in-out infinite alternate}
-.flap.l{transform-origin:72px 118px}.flap.r{transform-origin:128px 118px;animation-direction:alternate-reverse}
-@keyframes flap{from{transform:rotate(-6deg)}to{transform:rotate(8deg)}}
+.kwave{transform-origin:146px 130px;transform-box:view-box;animation:wave .8s ease-in-out infinite alternate}
+.flap{transform-box:view-box;animation:flap 1.8s ease-in-out infinite alternate}
+.flap.l{transform-origin:78px 130px}.flap.r{transform-origin:122px 130px;animation-direction:alternate-reverse}
+@keyframes flap{from{transform:rotate(-7deg)}to{transform:rotate(9deg)}}
+.tail{transform-box:view-box;transform-origin:132px 166px;animation:tail 2.6s ease-in-out infinite alternate}
+@keyframes tail{from{transform:rotate(-5deg)}to{transform:rotate(6deg)}}
+.glow{animation:glow 3s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:.75}50%{opacity:1}}
+.bob{transform-box:view-box;transform-origin:100px 64px;animation:bob 2.4s ease-in-out infinite alternate}
+@keyframes bob{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+.heart{transform-box:fill-box;transform-origin:center;animation:heart 1.8s ease-in-out infinite}
+@keyframes heart{0%,100%{transform:scale(1)}15%{transform:scale(1.18)}30%{transform:scale(1)}}
+.twinkle{transform-box:fill-box;transform-origin:center;animation:twinkle 2.2s ease-in-out infinite}
+.twinkle.t2{animation-delay:-1.1s}
+@keyframes twinkle{0%,100%{opacity:.4;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
 .zz{animation:zz 3s ease-in-out infinite}
 @keyframes zz{0%{opacity:0;transform:translate(0,6px)}40%{opacity:1}100%{opacity:0;transform:translate(8px,-14px)}}
-:root[data-night="1"] .fig{filter:brightness(.82) saturate(.85)}
+.mc .fig *{animation:none!important}
+:root[data-night="1"] .fig{filter:brightness(.88) saturate(.9)}
+@media (prefers-reduced-motion:reduce){.fig,.fig *{animation:none!important}}
 /* Start */
 .hero{position:relative;text-align:center;padding-top:4px}
 .brand{font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
@@ -158,6 +177,22 @@ input[type=range]{width:100%;height:44px;accent-color:var(--moon2)}
 .priv{display:flex;gap:10px;align-items:center;font-weight:700;background:var(--mint);border-radius:18px;padding:12px 14px;margin-bottom:14px}
 :root:not([data-night="1"]) .priv{color:#1d3a26}
 h3.ch{font-size:19px;margin-bottom:10px}
+/* Brief */
+.letterbtn{display:flex;align-items:center;gap:12px;width:100%;margin:14px 0 0;padding:12px 16px;min-height:76px;border-radius:24px;background:linear-gradient(135deg,#ffe3ec,#fff1c9);border:2px solid #f4c2cf;box-shadow:var(--shadow);text-align:left;color:#1d2a4f;animation:fade .45s ease}
+.letterbtn .env{flex:none;width:58px;height:46px;animation:float 3.5s ease-in-out infinite}
+.letterbtn .env svg{width:100%;height:100%}
+.letterbtn b{display:block;font-size:19px;line-height:1.2}
+.letterbtn small{display:block;font-size:14px;font-weight:600;opacity:.75;margin-top:2px}
+:root[data-night="1"] .letterbtn{background:linear-gradient(135deg,#3a2c4c,#33305a);border-color:#544a78;color:var(--ink)}
+.sitem.lt .ic{background:#ffe3ec}
+:root[data-night="1"] .sitem.lt .ic{background:#3a2c4c}
+.letter-card{border-color:#f4c2cf}
+:root[data-night="1"] .letter-card{border-color:#544a78}
+.idea.letter .row .btn,.letter-card>.row .btn{flex:1;padding:10px 8px;font-size:16.5px;white-space:nowrap}
+.idea.letter.on p{background:var(--hl);border-radius:12px;padding:8px 10px}
+.badge{display:inline-block;background:var(--moon);color:#1d2a4f;border-radius:999px;padding:1px 8px;font-weight:700;font-size:12.5px}
+.story-text .s.letter{font-style:italic}
+#lFromSeg button{flex:1 1 20%}
 /* Gute Nacht */
 #s-night{text-align:center}
 #s-night h2{font-size:30px;margin:8px 0}
@@ -168,8 +203,9 @@ h3.ch{font-size:19px;margin-bottom:10px}
 <!-- gemeinsame Farbverläufe für alle Figuren -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
-    <linearGradient id="g-spike" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#6b4226"/><stop offset=".55" stop-color="#8d5b36"/><stop offset="1" stop-color="#f4e2be"/></linearGradient>
-    <radialGradient id="g-sbody" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#a6744a"/><stop offset="1" stop-color="#7a4c2c"/></radialGradient>
+    <linearGradient id="g-spike" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#6b4226"/><stop offset=".6" stop-color="#8d5b36"/><stop offset="1" stop-color="#d9b88c"/></linearGradient>
+    <linearGradient id="g-spike2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#7a4c2c"/><stop offset="1" stop-color="#b98a5c"/></linearGradient>
+    <radialGradient id="g-sbody" cx="50%" cy="38%" r="62%"><stop offset="0" stop-color="#b07e52"/><stop offset="1" stop-color="#7f5030"/></radialGradient>
     <linearGradient id="g-nova" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4e45e"/><stop offset=".55" stop-color="#93d36a"/><stop offset="1" stop-color="#5fb862"/></linearGradient>
     <radialGradient id="g-nglow"><stop offset="0" stop-color="#ffe680" stop-opacity=".55"/><stop offset="1" stop-color="#ffe680" stop-opacity="0"/></radialGradient>
     <radialGradient id="g-kiki" cx="45%" cy="35%" r="65%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#d6f0ff"/><stop offset="1" stop-color="#9dd5fb"/></radialGradient>
@@ -190,6 +226,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
     <div class="bubble" id="greet">Hallo! Schön, dass du da bist.</div>
     <button class="sunnybtn" id="homeSunny" aria-label="Sunny sagt Hallo"></button>
   </div>
+  <button class="letterbtn" id="homeLetter" hidden><span class="env" aria-hidden="true"><svg viewBox="0 0 64 48"><rect x="3" y="5" width="58" height="40" rx="8" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M5 9 L32 29 L59 9" fill="none" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M32 22 C27 18 26 14 29 13 C31 12.5 32 14.5 32 15 C32 14.5 33 12.5 35 13 C38 14 37 18 32 22 Z" fill="#ff7c9c"/></svg></span><span><b id="homeLetterT">Ein Brief für dich</b><small>Sunny liest dir eine Gutenachtgeschichte vor</small></span></button>
   <div class="tiles">
     <button class="tile t1" data-go="stories"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 16q12-6 24 2v36q-12-8-24-2z" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M56 16q-12-6-24 2v36q12-8 24-2z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M47 22a7 7 0 1 0 5 10 5.5 5.5 0 1 1-5-10z" fill="#f2b43a"/></svg>Geschichte</button>
     <button class="tile t2" data-go="game"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="14" width="26" height="36" rx="6" transform="rotate(-10 21 32)" fill="#2c3c70" stroke="#1d2a4f" stroke-width="3"/><rect x="28" y="12" width="26" height="36" rx="6" transform="rotate(8 41 30)" fill="#fff" stroke="#1d2a4f" stroke-width="3"/><circle cx="41" cy="30" r="7" fill="#e8584f"/><circle cx="18" cy="26" r="2" fill="#ffd66b"/></svg>Spiel</button>
@@ -283,6 +320,23 @@ h3.ch{font-size:19px;margin-bottom:10px}
   <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Kinderbereich">←</button><h2>Für Eltern</h2><span style="width:58px"></span></div>
   <div class="priv">🔒 Deine Daten bleiben auf deinem Handy. Kein Konto, kein Server, keine Werbung.</div>
 
+  <div class="card letter-card" id="letterCard">
+    <h3 class="ch">💌 Für mein Kind reinreden</h3>
+    <p class="small muted" style="margin:0 0 12px">Sprich oder tippe eine kleine Botschaft: was heute schön war, worauf sich dein Kind freut, was du ihm sagen möchtest. Sunny baut sie liebevoll in eine Gutenachtgeschichte ein und liest sie vor.</p>
+    <label class="l" for="lFrom">Von wem?</label>
+    <div class="seg" id="lFromSeg"></div>
+    <input class="in" id="lFrom" maxlength="30" autocomplete="off" placeholder="oder Name eintippen, z. B. Mama und Papa" style="margin-top:8px">
+    <label class="l" for="lText" style="margin-top:14px">Deine Botschaft</label>
+    <div class="chips" id="lChips" style="margin-top:0"></div>
+    <textarea class="in" id="lText" maxlength="400" placeholder="z. B. Heute war so schön, wie du im Wald den Frosch gefunden hast. Morgen gehen wir zu Oma."></textarea>
+    <div class="row" style="margin-top:10px">
+      <button class="btn" id="lMic">🎤 Sprechen</button>
+      <button class="btn primary" id="lSave">💾 Speichern</button>
+    </div>
+    <p class="hint" id="micHint3" hidden>Sprechen geht hier nicht direkt. Tipp: Ins Textfeld tippen und auf der iPhone-Tastatur das Mikrofon antippen, dann diktieren.</p>
+    <div id="letterList"></div>
+  </div>
+
   <div class="card">
     <h3 class="ch">Zeit heute</h3>
     <div class="prog" style="margin-top:0"><span id="tUsed">0 Min.</span><div class="bar"><i id="tBar"></i></div><span id="tPct">–</span></div>
@@ -332,7 +386,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
   </div>
 
   <button class="btn big primary wide" data-go="home">← Zurück zum Kinderbereich</button>
-  <p class="foot">DR Lab · Testphase<br>Kein Medizinprodukt. Geschichten sind vorgefertigt, keine KI im Hintergrund.</p>
+  <p class="foot">DR Lab · Testphase<br>Kein Medizinprodukt. Geschichten entstehen aus Vorlagen auf dem Handy, keine KI im Hintergrund.</p>
 </section>
 
 <!-- GUTE NACHT -->
@@ -366,81 +420,110 @@ let toastT;
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'), 2600); }
 
 /* ---------- Figuren (eigene SVG-Zeichnungen) ---------- */
-const EYES = (lx, rx, y, rxE, ryE) => `
-  <g style="opacity:var(--eo,1)">
-    <ellipse cx="${lx}" cy="${y}" rx="${rxE}" ry="${ryE}" fill="#2a1b12"/><circle cx="${lx+3}" cy="${y-4}" r="3.6" fill="#fff"/><circle cx="${lx-2.5}" cy="${y+5}" r="1.7" fill="#fff"/>
-    <ellipse cx="${rx}" cy="${y}" rx="${rxE}" ry="${ryE}" fill="#2a1b12"/><circle cx="${rx+3}" cy="${y-4}" r="3.6" fill="#fff"/><circle cx="${rx-2.5}" cy="${y+5}" r="1.7" fill="#fff"/>
+const rnd = (a,b) => (a + Math.random()*(b-a)).toFixed(2);
+/* grosses, warmes Auge: dunkle Pupille, farbige Iris unten, zwei Glanzpunkte; blinzelt */
+const EYE = (x, y, rx, ry, dark, iris, delay) => `
+  <g class="blink" style="animation-delay:-${delay}s">
+    <ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${dark}"/>
+    <ellipse cx="${x}" cy="${y+ry*.38}" rx="${rx*.72}" ry="${ry*.5}" fill="${iris}" opacity=".85"/>
+    <circle cx="${x+rx*.32}" cy="${y-ry*.38}" r="${rx*.38}" fill="#fff"/>
+    <circle cx="${x-rx*.34}" cy="${y+ry*.3}" r="${rx*.17}" fill="#fff" opacity=".9"/>
   </g>`;
-const SLEEPY = (lx, rx, y) => `<g fill="none" stroke="#2a1b12" stroke-width="3" stroke-linecap="round"><path d="M${lx-10} ${y} Q${lx} ${y+8} ${lx+10} ${y}"/><path d="M${rx-10} ${y} Q${rx} ${y+8} ${rx+10} ${y}"/></g>`;
-const ZZ = `<g class="zz" fill="#5d6687" font-family="system-ui" font-weight="800"><text x="150" y="60" font-size="22">z</text><text x="166" y="42" font-size="16">z</text></g>`;
+const EYES2 = (lx, rx, y, w, h, dark, iris) => { const d = rnd(0,5); return EYE(lx,y,w,h,dark,iris,d) + EYE(rx,y,w,h,dark,iris,d); };
+const SLEEPY = (lx, rx, y, col='#3b2416') => `<g fill="none" stroke="${col}" stroke-width="3.2" stroke-linecap="round"><path d="M${lx-10} ${y} Q${lx} ${y+8} ${lx+10} ${y}"/><path d="M${rx-10} ${y} Q${rx} ${y+8} ${rx+10} ${y}"/></g>`;
+const ZZ = `<g class="zz" fill="#8e95b0" font-family="system-ui" font-weight="800"><text x="152" y="58" font-size="22">z</text><text x="168" y="40" font-size="16">z</text></g>`;
 let spikeCache = '';
 function spikes(){
   if (spikeCache) return spikeCache;
   let out = '';
-  for (let a=-128; a<=128; a+=10.5) out += `<polygon points="-9,6 9,6 0,-30" fill="url(#g-spike)" transform="translate(100 114) rotate(${a.toFixed(1)}) translate(0 -58)"/>`;
-  for (let a=-112; a<=112; a+=12.5) out += `<polygon points="-8,6 8,6 0,-24" fill="url(#g-spike)" transform="translate(100 116) rotate(${(a+5).toFixed(1)}) translate(0 -54)"/>`;
+  /* weiche, abgerundete Stacheln: gleiche Farbe als dicke Kontur mit runden Ecken */
+  for (let a=-126; a<=126; a+=14) out += `<polygon points="-11,8 11,8 0,-26" fill="url(#g-spike)" stroke="url(#g-spike)" stroke-width="7" stroke-linejoin="round" transform="translate(100 120) rotate(${a}) translate(0 -62)"/>`;
+  for (let a=-119; a<=119; a+=14) out += `<polygon points="-10,8 10,8 0,-20" fill="url(#g-spike2)" stroke="url(#g-spike2)" stroke-width="7" stroke-linejoin="round" transform="translate(100 122) rotate(${a}) translate(0 -58)"/>`;
   return spikeCache = out;
 }
 function sunnySVG(o={}){
   const wave = o.wave, sleep = o.sleep;
-  return `<svg class="fig ${o.cls||''}" viewBox="0 0 200 210" role="img" aria-label="Sunny, der kleine Igel">
+  return `<svg class="fig ${o.cls||''} ${sleep?'asleep':''}" viewBox="0 0 200 210" role="img" aria-label="Sunny, der kleine Igel">
+  <ellipse cx="100" cy="200" rx="56" ry="6" fill="#000" opacity=".08"/>
+  <g class="breathe">
   ${spikes()}
-  <circle cx="64" cy="70" r="12" fill="#7a4c2c"/><circle cx="64" cy="70" r="6.5" fill="#e9a99a"/>
-  <circle cx="136" cy="70" r="12" fill="#7a4c2c"/><circle cx="136" cy="70" r="6.5" fill="#e9a99a"/>
-  <ellipse cx="44" cy="152" rx="10" ry="19" transform="rotate(22 44 152)" fill="#7a4c2c"/>
-  <ellipse cx="100" cy="124" rx="62" ry="60" fill="url(#g-sbody)"/>
-  <ellipse cx="78" cy="188" rx="15" ry="8" fill="#6b4226"/><ellipse cx="122" cy="188" rx="15" ry="8" fill="#6b4226"/>
-  <ellipse cx="100" cy="168" rx="34" ry="22" fill="#fbefd6"/>
-  <ellipse cx="100" cy="114" rx="46" ry="38" fill="#f2dcb8"/>
-  ${sleep ? SLEEPY(82,118,108) : EYES(82,118,106,9,11)}
-  <ellipse cx="70" cy="126" rx="8" ry="5" fill="#f19b93" opacity=".55"/><ellipse cx="130" cy="126" rx="8" ry="5" fill="#f19b93" opacity=".55"/>
-  <ellipse cx="100" cy="124" rx="14" ry="10" fill="#f9ecd5"/>
-  <ellipse cx="100" cy="119" rx="6.5" ry="5" fill="#2a1b12"/><ellipse cx="98" cy="117.5" rx="2" ry="1.3" fill="#fff"/>
-  <path d="${sleep ? 'M94 131 Q100 135 106 131' : 'M90 129 Q101 140 111 127'}" fill="none" stroke="#5b3a24" stroke-width="2.6" stroke-linecap="round"/>
-  <path d="M54 142 Q100 168 146 142 L146 155 Q100 183 54 155 Z" fill="#ffc934" stroke="#e8a91a" stroke-width="2"/>
-  <path d="M118 166 Q130 182 123 198 L110 193 Q117 181 110 169 Z" fill="#ffc934" stroke="#e8a91a" stroke-width="2"/>
-  <ellipse cx="120" cy="164" rx="9" ry="8" fill="#ffd34f" stroke="#e8a91a" stroke-width="2"/>
+  <circle cx="100" cy="122" r="62" fill="url(#g-sbody)"/>
+  <circle cx="60" cy="76" r="13" fill="#8a5a35"/><circle cx="60" cy="77" r="7" fill="#f2b8a8"/>
+  <circle cx="140" cy="76" r="13" fill="#8a5a35"/><circle cx="140" cy="77" r="7" fill="#f2b8a8"/>
+  <ellipse cx="78" cy="192" rx="16" ry="9" fill="#6b4226"/><ellipse cx="122" cy="192" rx="16" ry="9" fill="#6b4226"/>
+  <ellipse cx="100" cy="166" rx="36" ry="26" fill="#fbefd6"/>
+  <path d="M100 76 C128 76 150 96 150 120 C150 146 128 160 100 160 C72 160 50 146 50 120 C50 96 72 76 100 76 Z" fill="#f6e3c3"/>
+  <path d="M94 77 Q100 70 106 77 Q101 82 98 88 Q96 82 94 77 Z" fill="#8a5a35"/>
+  ${sleep ? SLEEPY(80,120,114) : EYES2(80,120,111,11.5,13.5,'#3b2416','#8a5230')}
+  ${sleep ? '' : `<g fill="none" stroke="#8a5a35" stroke-width="2.6" stroke-linecap="round" opacity=".8"><path d="M71 92 Q78 88 86 91"/><path d="M114 91 Q122 88 129 92"/></g>`}
+  <ellipse cx="65" cy="132" rx="9" ry="5.5" fill="#f4978e" opacity=".5"/><ellipse cx="135" cy="132" rx="9" ry="5.5" fill="#f4978e" opacity=".5"/>
+  <ellipse cx="100" cy="131" rx="15" ry="10.5" fill="#fbf0dc"/>
+  <ellipse cx="100" cy="126" rx="7" ry="5.4" fill="#3b2416"/><ellipse cx="97.6" cy="124.4" rx="2.3" ry="1.4" fill="#fff" opacity=".9"/>
+  ${sleep ? `<path d="M94 138 Q100 142 106 138" fill="none" stroke="#6b3a24" stroke-width="2.6" stroke-linecap="round"/>`
+          : `<path d="M90 137 Q100 150 110 137 Q100 141 90 137 Z" fill="#8b3a2e" stroke="#6b3a24" stroke-width="2" stroke-linejoin="round"/><path d="M95 142 Q100 147 105 142 Q100 140 95 142 Z" fill="#f08a80"/>`}
+  <path d="M54 148 Q100 172 146 148 L146 160 Q100 186 54 160 Z" fill="#ffc934" stroke="#e8a91a" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M117 170 Q129 184 122 199 L110 194 Q116 183 109 172 Z" fill="#ffc934" stroke="#e8a91a" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="119" cy="168" r="8.5" fill="#ffd34f" stroke="#e8a91a" stroke-width="2"/>
+  <ellipse cx="45" cy="158" rx="11" ry="18" transform="rotate(24 45 158)" fill="#8a5a35"/><ellipse cx="40" cy="170" rx="8" ry="7" fill="#ecd0a8"/>
   <g class="${wave ? 'wave' : ''}">
-    <rect x="144" y="${wave?100:132}" width="18" height="${wave?52:36}" rx="9" fill="#7a4c2c" transform="rotate(${wave?28:-24} 153 150)"/>
-    <circle cx="153" cy="${wave?104:136}" r="10.5" fill="#ecd0a8" transform="rotate(${wave?28:-24} 153 150)"/>
+    <rect x="144" y="${wave?100:134}" width="20" height="${wave?54:36}" rx="10" fill="#8a5a35" transform="rotate(${wave?28:-24} 154 152)"/>
+    <circle cx="154" cy="${wave?104:138}" r="11" fill="#ecd0a8" transform="rotate(${wave?28:-24} 154 152)"/>
+  </g>
   </g>
   ${sleep ? ZZ : ''}
 </svg>`;
 }
 function novaSVG(o={}){
-  return `<svg class="fig ${o.cls||''}" viewBox="0 0 200 210" role="img" aria-label="Nova, der kleine Drache">
-  <circle cx="100" cy="118" r="94" fill="url(#g-nglow)"/>
-  <path d="M136 170 Q182 172 178 140 Q176 122 160 126 Q172 136 165 149 Q156 162 130 158 Z" fill="url(#g-nova)"/>
-  <path d="M158 124 l8 -10 l2 13 z" fill="#f2c94c"/>
-  <path class="flap l" d="M70 128 Q28 98 36 66 Q50 86 60 82 Q56 104 78 112 Z" fill="#a9e07f" stroke="#e8c446" stroke-width="2.5" stroke-linejoin="round"/>
-  <path class="flap r" d="M130 128 Q172 98 164 66 Q150 86 140 82 Q144 104 122 112 Z" fill="#a9e07f" stroke="#e8c446" stroke-width="2.5" stroke-linejoin="round"/>
-  <ellipse cx="100" cy="150" rx="44" ry="42" fill="url(#g-nova)"/>
-  <ellipse cx="100" cy="158" rx="27" ry="29" fill="#f7efb8"/>
-  <g fill="none" stroke="#e3d27f" stroke-width="2" stroke-linecap="round"><path d="M80 144 Q100 150 120 144"/><path d="M77 158 Q100 164 123 158"/><path d="M81 172 Q100 177 119 172"/></g>
-  <ellipse cx="62" cy="152" rx="8" ry="13" transform="rotate(20 62 152)" fill="#7fca66"/><ellipse cx="138" cy="152" rx="8" ry="13" transform="rotate(-20 138 152)" fill="#7fca66"/>
-  <ellipse cx="80" cy="190" rx="14" ry="8" fill="#5fb862"/><ellipse cx="120" cy="190" rx="14" ry="8" fill="#5fb862"/>
-  <path d="M76 56 Q68 32 82 26 Q84 42 92 50 Z" fill="#f2c94c"/><path d="M124 56 Q132 32 118 26 Q116 42 108 50 Z" fill="#f2c94c"/>
-  <circle cx="100" cy="43" r="6.5" fill="#f2c94c"/><circle cx="88" cy="46" r="4.5" fill="#f2c94c"/><circle cx="112" cy="46" r="4.5" fill="#f2c94c"/>
-  <circle cx="100" cy="84" r="40" fill="url(#g-nova)"/>
-  <ellipse cx="100" cy="102" rx="24" ry="15" fill="#c6eb93"/>
-  <ellipse cx="92" cy="98" rx="2.6" ry="2" fill="#4c7d3c"/><ellipse cx="108" cy="98" rx="2.6" ry="2" fill="#4c7d3c"/>
-  ${o.sleep ? SLEEPY(84,116,80) : EYES(84,116,78,8,10)}
-  <ellipse cx="70" cy="94" rx="7" ry="4.5" fill="#f19b93" opacity=".55"/><ellipse cx="130" cy="94" rx="7" ry="4.5" fill="#f19b93" opacity=".55"/>
-  <path d="M90 107 Q100 115 110 107" fill="none" stroke="#3f6b33" stroke-width="2.6" stroke-linecap="round"/>
-  <g fill="#ffe27a"><path d="M36 40 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z"/><path d="M168 30 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/></g>
+  const sleep = o.sleep;
+  return `<svg class="fig ${o.cls||''} ${sleep?'asleep':''}" viewBox="0 0 200 210" role="img" aria-label="Nova, der kleine Drache">
+  <circle cx="100" cy="120" r="92" fill="url(#g-nglow)"/>
+  <ellipse cx="100" cy="202" rx="50" ry="6" fill="#000" opacity=".08"/>
+  <g class="tail"><path d="M132 172 Q176 178 178 148 Q179 130 164 128 Q172 140 166 152 Q158 164 128 160 Z" fill="url(#g-nova)"/><path d="M162 126 Q170 112 178 116 Q172 124 172 134 Z" fill="#f2c94c"/></g>
+  <path class="flap l" d="M72 140 Q30 120 34 84 Q48 98 58 94 Q56 116 80 124 Z" fill="#b6e690" stroke="#e8c446" stroke-width="3" stroke-linejoin="round"/>
+  <path class="flap r" d="M128 140 Q170 120 166 84 Q152 98 142 94 Q144 116 120 124 Z" fill="#b6e690" stroke="#e8c446" stroke-width="3" stroke-linejoin="round"/>
+  <g class="breathe">
+  <ellipse cx="100" cy="160" rx="42" ry="38" fill="url(#g-nova)"/>
+  <ellipse cx="100" cy="167" rx="26" ry="27" fill="#f9f1c4"/>
+  <g fill="none" stroke="#e8d888" stroke-width="2" stroke-linecap="round"><path d="M82 155 Q100 160 118 155"/><path d="M79 168 Q100 173 121 168"/><path d="M83 181 Q100 185 117 181"/></g>
+  <ellipse cx="62" cy="160" rx="9" ry="13" transform="rotate(22 62 160)" fill="#86cf6a"/><ellipse cx="138" cy="160" rx="9" ry="13" transform="rotate(-22 138 160)" fill="#86cf6a"/>
+  <ellipse cx="80" cy="196" rx="15" ry="8" fill="#5fb862"/><ellipse cx="120" cy="196" rx="15" ry="8" fill="#5fb862"/>
+  <path d="M74 56 Q66 34 78 28 Q82 42 90 50 Z" fill="#f2c94c" stroke="#f2c94c" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M126 56 Q134 34 122 28 Q118 42 110 50 Z" fill="#f2c94c" stroke="#f2c94c" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M52 92 Q34 84 38 70 Q50 78 60 82 Z" fill="#b6e690" stroke="#e8c446" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M148 92 Q166 84 162 70 Q150 78 140 82 Z" fill="#b6e690" stroke="#e8c446" stroke-width="2.5" stroke-linejoin="round"/>
+  <circle cx="100" cy="92" r="47" fill="url(#g-nova)"/>
+  <circle cx="100" cy="47" r="7" fill="#f2c94c"/><circle cx="88" cy="50" r="5" fill="#f2c94c"/><circle cx="112" cy="50" r="5" fill="#f2c94c"/>
+  <ellipse cx="100" cy="114" rx="28" ry="17" fill="#cdee9f"/>
+  <ellipse cx="91" cy="109" rx="2.8" ry="2.1" fill="#4c7d3c"/><ellipse cx="109" cy="109" rx="2.8" ry="2.1" fill="#4c7d3c"/>
+  ${sleep ? SLEEPY(80,120,90,'#2e4a24') : EYES2(80,120,88,12,14,'#26331f','#a8741a')}
+  ${sleep ? '' : `<g fill="none" stroke="#4f8a3c" stroke-width="2.6" stroke-linecap="round" opacity=".7"><path d="M70 68 Q78 64 86 67"/><path d="M114 67 Q122 64 130 68"/></g>`}
+  <ellipse cx="66" cy="106" rx="8" ry="5" fill="#f4978e" opacity=".55"/><ellipse cx="134" cy="106" rx="8" ry="5" fill="#f4978e" opacity=".55"/>
+  ${sleep ? `<path d="M93 120 Q100 124 107 120" fill="none" stroke="#3f6b33" stroke-width="2.6" stroke-linecap="round"/>`
+          : `<path d="M89 118 Q100 130 111 118 Q100 122 89 118 Z" fill="#7a3a2e" stroke="#3f6b33" stroke-width="2" stroke-linejoin="round"/><path d="M93 119.5 l2.5 4 l2.5 -3.4 z" fill="#fff"/>`}
+  </g>
+  <g fill="#ffe27a"><path class="twinkle" d="M30 40 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z"/><path class="twinkle t2" d="M170 28 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/></g>
+  ${sleep ? ZZ : ''}
 </svg>`;
 }
 function kikiSVG(o={}){
-  return `<svg class="fig ${o.cls||''}" viewBox="0 0 200 200" role="img" aria-label="Kiki, die kleine leuchtende KI">
-  <circle cx="100" cy="110" r="94" fill="url(#g-kglow)"/>
-  <line x1="100" y1="62" x2="100" y2="40" stroke="#8fcaf0" stroke-width="5" stroke-linecap="round"/>
-  <circle cx="100" cy="34" r="14" fill="url(#g-fglow)"/><circle cx="100" cy="34" r="8" fill="#ffe27a"/>
-  <ellipse cx="48" cy="126" rx="10" ry="13" transform="rotate(-20 48 126)" fill="#b9e2fc"/><ellipse cx="152" cy="126" rx="10" ry="13" transform="rotate(20 152 126)" fill="#b9e2fc"/>
-  <ellipse cx="100" cy="112" rx="56" ry="52" fill="url(#g-kiki)" stroke="#9dd5fb" stroke-width="2"/>
-  <circle cx="100" cy="78" r="3" fill="#fff"/><circle cx="90" cy="82" r="2" fill="#fff" opacity=".8"/><circle cx="110" cy="82" r="2" fill="#fff" opacity=".8"/>
-  ${o.sleep ? SLEEPY(82,118,108).replace(/#2a1b12/g,'#23305a') : EYES(82,118,106,10,12).replace(/#2a1b12/g,'#23305a')}
-  <ellipse cx="68" cy="124" rx="8" ry="5" fill="#f7a6b5" opacity=".6"/><ellipse cx="132" cy="124" rx="8" ry="5" fill="#f7a6b5" opacity=".6"/>
-  <path d="M93 126 Q100 133 107 126" fill="none" stroke="#23305a" stroke-width="2.6" stroke-linecap="round"/>
+  const sleep = o.sleep, wave = o.wave;
+  return `<svg class="fig ${o.cls||''} ${sleep?'asleep':''}" viewBox="0 0 200 200" role="img" aria-label="Kiki, die kleine leuchtende KI">
+  <circle class="glow" cx="100" cy="112" r="92" fill="url(#g-kglow)"/>
+  <ellipse cx="100" cy="192" rx="40" ry="5" fill="#000" opacity=".07"/>
+  <g class="breathe">
+  <g class="bob"><path d="M100 64 Q96 50 106 38" fill="none" stroke="#8fcaf0" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="107" cy="34" r="15" fill="url(#g-fglow)"/><path d="M107 25 l2.6 6 6 2.6 -6 2.6 -2.6 6 -2.6 -6 -6 -2.6 6 -2.6z" fill="#ffe27a" stroke="#f2c94c" stroke-width="1.5" stroke-linejoin="round"/></g>
+  <ellipse cx="46" cy="128" rx="11" ry="14" transform="rotate(-24 46 128)" fill="#b9e2fc" stroke="#9dd5fb" stroke-width="2"/>
+  <g class="${wave?'kwave':''}"><ellipse cx="154" cy="${wave?112:128}" rx="11" ry="14" transform="rotate(${wave?-30:24} 154 ${wave?112:128})" fill="#b9e2fc" stroke="#9dd5fb" stroke-width="2"/></g>
+  <path d="M100 58 C138 58 158 86 158 116 C158 148 132 166 100 166 C68 166 42 148 42 116 C42 86 62 58 100 58 Z" fill="url(#g-kiki)" stroke="#9dd5fb" stroke-width="2"/>
+  <ellipse cx="74" cy="80" rx="14" ry="8" transform="rotate(-30 74 80)" fill="#fff" opacity=".75"/>
+  ${sleep ? SLEEPY(80,120,108,'#23305a') : EYES2(80,120,105,12.5,14.5,'#23305a','#3f7fd0')}
+  <ellipse cx="64" cy="124" rx="9" ry="5.5" fill="#f7a6b5" opacity=".6"/><ellipse cx="136" cy="124" rx="9" ry="5.5" fill="#f7a6b5" opacity=".6"/>
+  ${sleep ? `<path d="M94 128 Q100 132 106 128" fill="none" stroke="#23305a" stroke-width="2.6" stroke-linecap="round"/>`
+          : `<path d="M91 125 Q100 137 109 125 Q100 129 91 125 Z" fill="#3a3f78" stroke="#23305a" stroke-width="2" stroke-linejoin="round"/>`}
+  <path class="heart" d="M100 156 C92 150 90 143 95 141 C98 140 100 143 100 144 C100 143 102 140 105 141 C110 143 108 150 100 156 Z" fill="#ff8fb1"/>
+  </g>
+  ${sleep ? ZZ : ''}
 </svg>`;
 }
 function moonSVG(o={}){
@@ -487,7 +570,7 @@ const TTS = {
   token: 0, timer: null,
   voices(){ if(!this.ok) return []; return speechSynthesis.getVoices().filter(v => /^de/i.test(v.lang)); },
   voice(){ const vs=this.voices(); if(!vs.length) return null; return vs.find(v=>v.name===S.voice) || vs.find(v=>/de[-_]CH/i.test(v.lang)) || vs.find(v=>/Anna|Petra|Helena|Katja|Marlene|Vicki/i.test(v.name)) || vs.find(v=>/de[-_]DE/i.test(v.lang)) || vs[0]; },
-  clean(t){ return t.replace(/[«»„“"]/g,'').replace(/–/g,',').replace(/…/g,'...'); },
+  clean(t){ return t.replace(/[«»„“"‹›]/g,'').replace(/\s*–\s*/g,', ').replace(/\s*…\s*/g,' ... ').trim(); },
   stop(){ this.token++; clearTimeout(this.timer); if(this.ok){ try{ speechSynthesis.cancel(); }catch(e){} } },
   speak(list, o={}){
     this.stop();
@@ -503,7 +586,7 @@ const TTS = {
       const v = this.voice(); if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'de-DE';
       u.rate = S.rate * (o.rateMul || 1); u.pitch = 1.05;
       let done = false;
-      const fin = () => { if (done || tok !== this.token) return; done = true; clearTimeout(this.timer); i++; setTimeout(next, o.gap || 320); };
+      const fin = () => { if (done || tok !== this.token) return; done = true; clearTimeout(this.timer); i++; setTimeout(next, o.gap || 480); };
       u.onend = fin; u.onerror = fin;
       const guard = () => { if (tok !== this.token || done) return; if (speechSynthesis.speaking) this.timer = setTimeout(guard, 1500); else fin(); };
       clearTimeout(this.timer);
@@ -557,6 +640,7 @@ let current = 'home';
 function go(id){
   TTS.stop();
   if (rec){ try{ rec.abort(); }catch(e){} }
+  if (typeof stopLong === 'function') stopLong();
   if (id !== 'parents' && id !== 'night' && limitReached()){ id = 'night'; }
   $$('.screen').forEach(s => s.classList.toggle('on', s.id === 's-'+id));
   current = id;
@@ -579,10 +663,14 @@ function greeting(){
 function renderHome(){
   $('#greet').textContent = greeting();
   $('#homeSunny').innerHTML = sunnySVG({wave:true, cls:'float'});
-  $('#homeSunny svg').style.width = '210px'; $('#homeSunny svg').style.height = '220px';
+  $('#homeSunny svg').style.width = '200px'; $('#homeSunny svg').style.height = '210px';
+  const L = letterSel();
+  $('#homeLetter').hidden = !L;
+  if (L) $('#homeLetterT').textContent = 'Ein Brief von ' + L.from;
 }
 const sunnyLines = ['Na, wollen wir eine Geschichte hören?', 'Ich bin Sunny. Meine Stacheln sind ganz weich – fast.', 'Kiki und Nova warten schon auf dich!', 'Weisst du, was ich am liebsten mag? Walderdbeeren!', 'Hihi, das kitzelt!'];
 let sunnyIdx = 0;
+$('#homeLetter').addEventListener('click', () => { const L = letterSel(); if (L) openLetter(L, 'home'); });
 $('#homeSunny').addEventListener('click', () => {
   const line = sunnyIdx === 0 ? greeting() : sunnyLines[(sunnyIdx-1) % sunnyLines.length];
   sunnyIdx++;
@@ -618,89 +706,89 @@ holdButton($('#nightHold'), () => go('parents'));
 /* ---------- Geschichten ---------- */
 const STORIES = [
  { id:'mondstrahl', title:'Sunny und der kleine Mondstrahl', sub:'Ein Mondstrahl ist vom Himmel gepurzelt.', pic:['sunny','moon'], parts:[
-  {t:'Es war ein warmer Abend im Mondschein-Wald. Sunny, der kleine Igel mit dem gelben Halstuch, sass vor seiner Höhle und gähnte. Da sah er etwas Helles zwischen den Blättern blinken.', pic:['sunny']},
-  {t:'«Nanu?», flüsterte Sunny. «Was glitzert denn da?» Er tapste näher. Es war ein kleiner Mondstrahl! Er war vom Himmel gepurzelt und hatte sich versteckt.', pic:['sunny','moon']},
+  {t:'Im Mondschein-Wald wurde es Abend. Die Vögel sangen ihr letztes Lied, und die Blumen machten ihre Blüten zu. Sunny, der kleine Igel mit dem gelben Halstuch, sass vor seiner Höhle und gähnte ein grosses Igel-Gähnen. Da … blinkte etwas zwischen den Blättern.', pic:['sunny']},
+  {t:'«Nanu?», flüsterte Sunny. «Was glitzert denn da?» Tapp, tapp, tapp. Ganz leise schlich er näher. Es war ein kleiner Mondstrahl! Er war vom Himmel gepurzelt und hatte sich schnell versteckt.', pic:['sunny','moon']},
   {q:'Wo hat sich der Mondstrahl versteckt? Was meinst du?', opts:[
     {e:'🍄', l:'Unter dem Pilz', k:['pilz'], v:{ort:'unter dem roten Pilz'}},
     {e:'🌸', l:'In einer Blume', k:['blume','blüte'], v:{ort:'in einer duftenden Blume'}},
     {e:'🪨', l:'Hinter dem Stein', k:['stein'], v:{ort:'hinter dem moosigen Stein'}}],
-   after:'Sunny schaute {ort} nach. Und tatsächlich! Da sass der Mondstrahl, ganz klein und ein bisschen traurig.', pic:['sunny','mush']},
-  {t:'«Ich möchte wieder nach Hause zum Mond», piepste der Mondstrahl. «Aber der Himmel ist so hoch.» Sunny kratzte sich an der Nase. «Hm. Da brauchen wir Hilfe.»', pic:['sunny','moon']},
+   after:'Sunny schaute {ort} nach. Und tatsächlich! Da sass der Mondstrahl. Er war ganz klein, und er leuchtete ein bisschen traurig.', pic:['sunny','mush']},
+  {t:'«Ich möchte nach Hause zum Mond», piepste der Mondstrahl. «Aber der Himmel ist so hoch, und ich bin so klein.» Sunny kratzte sich an der Nase. «Hm», sagte er. «Allein ist es schwer. Aber zusammen geht es leichter.»', pic:['sunny','moon']},
   {q:'Wen soll Sunny um Hilfe bitten?', opts:[
-    {e:'🐉', l:'Nova', k:['nova','drache'], v:{helfer:'Nova', how:'Nova, der kleine Drache, breitete seine goldgrünen Flügel aus. «Steigt auf!», rief er fröhlich. Und schon flogen sie los.', hp:'nova'}},
-    {e:'✨', l:'Kiki', k:['kiki'], v:{helfer:'Kiki', how:'Kiki blinkte vor Freude. «Ich kann leuchten! Ich zeige euch den Weg!» Kiki flog voraus – zuerst ein bisschen in die falsche Richtung. «Hoppla», kicherte Kiki und drehte um.', hp:'kiki'}},
-    {e:'🦉', l:'Frau Eule', k:['eule'], v:{helfer:'Frau Eule', how:'Frau Eule plusterte sich auf. «Haltet euch gut an meinen Federn fest», sagte sie ruhig. Und leise wie ein Blatt flog sie mit ihnen los.', hp:'moon'}}],
+    {e:'🐉', l:'Nova', k:['nova','drache'], v:{helfer:'Nova', how:'Nova, der kleine Drache, breitete seine goldgrünen Flügel aus. «Steigt auf!», rief er fröhlich. Sunny hielt sich gut fest, der Mondstrahl kuschelte sich in sein Halstuch. Und schon flogen sie los.', hp:'nova'}},
+    {e:'✨', l:'Kiki', k:['kiki'], v:{helfer:'Kiki', how:'Kiki blinkte vor Freude. «Ich kann leuchten! Ich zeige euch den Weg!» Kiki flog voraus, zuerst ein bisschen in die falsche Richtung. «Hoppla», kicherte Kiki, drehte um und leuchtete den Weg ganz hell.', hp:'kiki'}},
+    {e:'🦉', l:'Frau Eule', k:['eule'], v:{helfer:'Frau Eule', how:'Frau Eule plusterte ihre Federn auf. «Haltet euch gut fest», sagte sie mit ihrer ruhigen, tiefen Stimme. Und leise wie ein fallendes Blatt flog sie mit ihnen los.', hp:'moon'}}],
    after:'{how}', pic:['sunny','{hp}']},
-  {t:'Hinauf ging es, an den schlafenden Bäumen vorbei, höher und höher. Die Luft war kühl und still. Unten leuchteten die Glühwürmchen wie kleine Lampen.', pic:['fly','moon']},
+  {t:'Hinauf ging es, an den schlafenden Bäumen vorbei. Höher und höher. Die Luft war kühl und still. Unten im Gras leuchteten die Glühwürmchen wie kleine Laternen. Und oben funkelten die Sterne, als wollten sie sagen: Gute Reise!', pic:['fly','moon']},
   {q:'Was soll Sunny dem Mond mitbringen?', opts:[
     {e:'🍓', l:'Eine Erdbeere', k:['erdbeer','beere'], v:{gift:'eine süsse Walderdbeere'}},
     {e:'🎵', l:'Ein Lied', k:['lied','singen','musik'], v:{gift:'ein leises Lied'}},
     {e:'🍂', l:'Ein Blatt', k:['blatt'], v:{gift:'ein goldenes Herbstblatt'}}],
-   after:'Sunny hatte {gift} dabei. «Das ist für dich, lieber Mond», sagte er.', pic:['sunny','moon']},
-  {t:'Der Mond lächelte so warm, dass der ganze Himmel ein bisschen heller wurde. Der kleine Mondstrahl hüpfte zurück an seinen Platz und funkelte. «Danke, Sunny! Danke, {helfer}!»', pic:['moon']},
-  {t:'Dann ging es sanft wieder hinunter in den Wald. Sunny kuschelte sich in sein Moosbett. Durchs Fenster schien der Mondstrahl, extra für ihn. «Gute Nacht, kleiner Mondstrahl», flüsterte Sunny. Und schon schlief er ein.', pic:['sunny-sleep','moon']}
+   after:'Sunny hatte {gift} dabei. «Das ist für dich, lieber Mond», sagte er und lächelte.', pic:['sunny','moon']},
+  {t:'Da lächelte der Mond so warm, dass der ganze Himmel ein bisschen heller wurde. Der kleine Mondstrahl hüpfte zurück an seinen Platz und funkelte vor Glück. «Danke, Sunny! Danke, {helfer}! Ihr seid die besten Freunde der Welt!»', pic:['moon']},
+  {t:'Dann ging es sanft wieder hinunter in den Wald. Sunny kuschelte sich in sein weiches Moosbett. Durchs Fenster schien ein feiner Mondstrahl, extra für ihn. «Gute Nacht, kleiner Mondstrahl», flüsterte Sunny. Und der Mondstrahl flüsterte zurück: «Gute Nacht, Sunny. Schlaf schön.»', pic:['sunny-sleep','moon']}
  ]},
  { id:'kiki', title:'Kiki zählt die Sterne', sub:'Kiki lernt – und Fehler sind erlaubt.', pic:['kiki'], parts:[
-  {t:'Kiki war noch ganz neu im Mondschein-Land. Kiki war eine kleine, leuchtende KI und wollte alles lernen. Heute Abend wollte Kiki etwas Besonderes: alle Sterne zählen!', pic:['kiki']},
-  {t:'«Eins, zwei, drei …», zählte Kiki. «Vier, fünf … sieben!» Sunny lachte. «Kiki, du hast die Sechs vergessen!» Kiki blinkte rosa. «Oh! Ich darf Fehler machen, oder?» «Klar», sagte Sunny. «So lernt man.»', pic:['kiki','sunny']},
+  {t:'Kiki war noch ganz neu im Mondschein-Land. Kiki war eine kleine, leuchtende KI, rund wie ein Wassertropfen und neugierig wie ein Kätzchen. Kiki wollte alles lernen. Und heute Abend wollte Kiki etwas ganz Besonderes: alle Sterne zählen!', pic:['kiki']},
+  {t:'«Eins, zwei, drei …», zählte Kiki. «Vier, fünf … sieben!» Sunny musste lachen. «Kiki, du hast die Sechs vergessen!» Kiki blinkte rosa. «Blink, blink, ich lerne noch!», sagte Kiki. «Fehler machen darf man, oder?» «Klar», sagte Sunny. «So lernt man.»', pic:['kiki','sunny']},
   {q:'Kiki entdeckt einen ganz hellen Stern. Wie soll er heissen?', opts:[
     {e:'⭐', l:'Funkel', k:['funkel'], v:{stern:'Funkel'}},
     {e:'💛', l:'Goldi', k:['goldi','gold'], v:{stern:'Goldi'}},
     {e:'🫧', l:'Blubb', k:['blubb','blub'], v:{stern:'Blubb'}}],
-   after:'«Du heisst ab jetzt {stern}!», rief Kiki. Und der Stern blinkte zurück, als ob er sich freuen würde.', pic:['kiki','moon']},
-  {t:'Da flog etwas Kleines, Leuchtendes vorbei. «Noch ein Stern!», rief Kiki. «Achtzehn!» Nova kicherte. «Das ist doch ein Glühwürmchen, Kiki!» Das Glühwürmchen winkte freundlich.', pic:['fly','nova']},
-  {t:'Kiki überlegte. «Sterne sind weit weg und Glühwürmchen sind ganz nah. Jetzt weiss ich es!» Kiki war stolz. Nachfragen hatte geholfen.', pic:['kiki']},
+   after:'«Du heisst ab jetzt {stern}!», rief Kiki. Und der Stern blinkte zurück, ganz hell, als ob er sich freuen würde.', pic:['kiki','moon']},
+  {t:'Da schwebte etwas Kleines, Leuchtendes vorbei. «Noch ein Stern!», rief Kiki. «Achtzehn!» Nova kicherte. «Kiki, das ist doch ein Glühwürmchen!» Das Glühwürmchen winkte freundlich und flog weiter.', pic:['fly','nova']},
+  {t:'Kiki blinkte nachdenklich. «Sterne sind weit, weit weg. Glühwürmchen sind ganz nah. Jetzt weiss ich es!» Kiki leuchtete vor Stolz. «Blink, blink, ich lerne noch. Und Fragen hilft!»', pic:['kiki-wave']},
   {q:'Wie viele Sterne gibt es wohl? Was glaubst du?', opts:[
     {e:'🌟', l:'Ganz viele', k:['viele','ganz'], v:{tipp:'ganz, ganz viele'}},
     {e:'♾️', l:'Unendlich viele', k:['unendlich'], v:{tipp:'unendlich viele'}},
     {e:'🤔', l:'Weiss niemand', k:['niemand','weiss nicht','keine ahnung'], v:{tipp:'so viele, dass es niemand genau weiss'}}],
-   after:'«Ich glaube, es gibt {tipp}», sagte Kiki. «Genau», sagte Sunny und gähnte. «Und wir müssen nicht alle heute zählen.»', pic:['kiki','sunny']},
-  {t:'Kiki machte die Lichter ganz klein, nur noch ein sanftes Glimmen. «Morgen zähle ich weiter. Pausen sind auch schön.» Über ihnen funkelte {stern} am Himmel.', pic:['kiki-sleep','moon']},
-  {t:'«Gute Nacht, {stern}», flüsterte Kiki. «Gute Nacht, Sunny. Gute Nacht, Nova.» Und dann wurde es ganz still im Mondschein-Land.', pic:['kiki-sleep','sunny-sleep']}
+   after:'«Ich glaube, es gibt {tipp}», sagte Kiki. «Genau», sagte Sunny und gähnte. «Und weisst du was? Wir müssen nicht alle heute zählen.»', pic:['kiki','sunny']},
+  {t:'Kiki machte die Lichter ganz klein, bis nur noch ein sanftes Glimmen übrig war. «Morgen zähle ich weiter», flüsterte Kiki. «Pausen sind auch schön.» Hoch oben funkelte {stern}, als wollte er sagen: Ich passe auf dich auf.', pic:['kiki-sleep','moon']},
+  {t:'«Gute Nacht, {stern}», flüsterte Kiki. «Gute Nacht, Sunny. Gute Nacht, Nova.» Blink … blink … Und dann wurde es ganz still im Mondschein-Land.', pic:['kiki-sleep','sunny-sleep']}
  ]},
  { id:'nova', title:'Nova kann nicht einschlafen', sub:'Ein kleiner Drache mit Schluckauf.', pic:['nova'], parts:[
-  {t:'Nova, der kleine Drache, lag in seiner Höhle aus weichem Moos. Seine Schuppen leuchteten goldgrün. Aber Nova konnte einfach nicht einschlafen.', pic:['nova']},
-  {t:'«Hicks!», machte Nova. Und aus seiner Nase flog ein winziger, warmer Funke. «Hicks!» Noch ein Funke. Da kam Sunny vorbei. «Oje, Nova, du hast ja Schluckauf!»', pic:['nova','sunny']},
+  {t:'Nova, der kleine Drache, lag in seiner Höhle aus weichem Moos. Seine Schuppen schimmerten goldgrün, wie Blätter in der Abendsonne. Draussen war es schon dunkel. Aber Nova konnte einfach nicht einschlafen.', pic:['nova']},
+  {t:'«Hicks!», machte Nova. Und aus seiner Nase flog ein winziger, warmer Funke. «Hicks!» Noch ein Fünkchen. «Hicks!» Und noch eins. Da kam Sunny vorbei. «Oje, Nova», sagte er. «Du hast ja Schluckauf!»', pic:['nova','sunny']},
   {q:'Was hilft Nova gegen den Schluckauf?', opts:[
-    {e:'🌬️', l:'Tief atmen', k:['atmen','atem','luft'], v:{hilfe:'Nova atmete tief ein … und ganz langsam wieder aus. Einmal, zweimal, dreimal.'}},
-    {e:'💧', l:'Wasser trinken', k:['wasser','trinken'], v:{hilfe:'Nova trank drei kleine Schlucke Wasser aus dem Bach. Gluck, gluck, gluck.'}},
-    {e:'🙃', l:'Kopfstand', k:['kopf','stand'], v:{hilfe:'Nova versuchte einen Kopfstand und plumpste kichernd ins weiche Moos.'}}],
-   after:'{hilfe} Und dann … war der Schluckauf weg!', pic:['nova']},
-  {t:'«Danke!», sagte Nova. «Aber jetzt bin ich hellwach.» Sunny setzte sich neben ihn. «Weisst du was? Ich kenne einen Trick zum Einschlafen.»', pic:['nova','sunny']},
+    {e:'🌬️', l:'Tief atmen', k:['atmen','atem','luft'], v:{hilfe:'Nova atmete tief ein, so tief, dass sein Bauch ganz rund wurde. Und dann ganz langsam wieder aus. Magst du mitmachen? Einatmen … und ausatmen. Einmal. Zweimal. Dreimal.'}},
+    {e:'💧', l:'Wasser trinken', k:['wasser','trinken'], v:{hilfe:'Nova trank drei kleine Schlucke Wasser aus dem Bach. Gluck. Gluck. Gluck.'}},
+    {e:'🙃', l:'Kopfstand', k:['kopf','stand'], v:{hilfe:'Nova versuchte einen Kopfstand. Er wackelte hin und her und plumpste kichernd ins weiche Moos.'}}],
+   after:'{hilfe} Nova horchte. Kein Hicks mehr. Der Schluckauf war weg!', pic:['nova']},
+  {t:'«Danke, Sunny!», sagte Nova. «Aber jetzt bin ich hellwach.» Sunny setzte sich neben ihn ins Moos. «Weisst du was?», sagte er. «Ich kenne einen Trick zum Einschlafen.»', pic:['nova','sunny']},
   {q:'Welchen Trick soll Sunny zeigen?', opts:[
-    {e:'🐑', l:'Schäfchen zählen', k:['schaf','zählen'], v:{trick:'Die beiden zählten Schäfchen, die über einen kleinen Zaun hüpften. Eins … zwei … drei …'}},
-    {e:'🎶', l:'Lied summen', k:['lied','summen','singen'], v:{trick:'Sunny summte ein leises Lied, so leise wie der Wind in den Blättern. Mmm … mmm …'}},
-    {e:'☁️', l:'An Wolken denken', k:['wolke'], v:{trick:'Die beiden stellten sich vor, sie lägen auf einer weichen Wolke, die ganz langsam über den Himmel schwebt.'}}],
+    {e:'🐑', l:'Schäfchen zählen', k:['schaf','zählen'], v:{trick:'Die beiden zählten Schäfchen, die über einen kleinen Zaun hüpften. Eins … zwei … drei … Ein Schäfchen gähnte sogar.'}},
+    {e:'🎶', l:'Lied summen', k:['lied','summen','singen'], v:{trick:'Sunny summte ein leises Lied, so leise wie der Wind in den Blättern. Mmm … mmm … mmm …'}},
+    {e:'☁️', l:'An Wolken denken', k:['wolke'], v:{trick:'Die beiden stellten sich eine weiche Wolke vor. Sie legten sich darauf, und die Wolke schwebte ganz langsam über den Himmel.'}}],
    after:'{trick}', pic:['sunny','nova']},
-  {t:'Novas Augen wurden schwer. Seine Schuppen leuchteten nur noch ganz sanft, wie eine kleine Nachtlampe.', pic:['nova-sleep']},
+  {t:'Novas Augen wurden schwer. Seine Schuppen leuchteten nur noch ganz sanft, wie eine kleine Nachtlampe. Sein Schwanz rollte sich um ihn herum, rund wie ein Schneckenhaus.', pic:['nova-sleep']},
   {q:'Womit soll Sunny Nova zudecken?', opts:[
     {e:'🍃', l:'Mit Blättern', k:['blatt','blätter'], v:{decke:'einer Decke aus weichen Blättern'}},
     {e:'🌸', l:'Mit Blüten', k:['blüte','blume'], v:{decke:'lauter duftenden Blütenblättern'}},
     {e:'☁️', l:'Mit einer Wolke', k:['wolke'], v:{decke:'einem kleinen Stück Wolke'}}],
-   after:'Sunny deckte Nova mit {decke} zu. «So, jetzt ist es gemütlich», sagte er leise.', pic:['sunny','nova-sleep']},
-  {t:'«Bleibst du noch ein bisschen?», murmelte Nova. «Natürlich», sagte Sunny und kuschelte sich an Novas warmen Bauch. Draussen schien der Mond, und die Glühwürmchen machten ihre Lichter aus. Bald schliefen der kleine Drache und der kleine Igel tief und fest.', pic:['sunny-sleep','nova-sleep']}
+   after:'Sunny deckte Nova mit {decke} zu. «So», sagte er leise. «Jetzt ist es gemütlich.»', pic:['sunny','nova-sleep']},
+  {t:'«Bleibst du noch ein bisschen?», murmelte Nova. «Natürlich», sagte Sunny und kuschelte sich an Novas warmen Bauch. Draussen schien der Mond. Die Glühwürmchen machten ihre Lichter aus, eins nach dem anderen. Und bald schliefen der kleine Drache und der kleine Igel tief und fest.', pic:['sunny-sleep','nova-sleep']}
  ]},
  { id:'meer', title:'Sunny fährt ans Meer', sub:'Ferien! Mit Kiki und Nova.', pic:['sunny','kiki'], parts:[
-  {t:'Heute war ein besonderer Tag: Sunny hatte Ferien! Er packte seinen kleinen Rucksack. Sein gelbes Halstuch flatterte vor Freude.', pic:['sunny']},
+  {t:'Heute war ein besonderer Tag: Sunny hatte Ferien! Er packte seinen kleinen Rucksack und summte dabei ein Lied. Sein gelbes Halstuch flatterte vor Freude.', pic:['sunny-wave']},
   {q:'Was packt Sunny ein?', opts:[
     {e:'🧸', l:'Kuscheltier', k:['kuschel','teddy','bär'], v:{pack:'sein Kuscheltier'}},
     {e:'🪣', l:'Schaufel', k:['schaufel','kessel','eimer'], v:{pack:'die Schaufel mit dem Kessel'}},
     {e:'📕', l:'Bilderbuch', k:['buch'], v:{pack:'sein liebstes Bilderbuch'}}],
-   after:'Natürlich kam {pack} mit. «Ohne geht es nicht», sagte Sunny und machte den Rucksack zu.', pic:['sunny']},
-  {t:'Kiki und Nova warteten schon. «Wohin geht die Reise?», fragte Kiki und blinkte neugierig. «Ans Meer!», rief Sunny.', pic:['kiki','nova']},
+   after:'Natürlich kam {pack} mit. «Ohne geht es nicht», sagte Sunny und machte den Rucksack zu. Klick.', pic:['sunny']},
+  {t:'Kiki und Nova warteten schon draussen. «Wohin geht die Reise?», fragte Kiki und blinkte neugierig. «Ans Meer!», rief Sunny.', pic:['kiki-wave','nova']},
   {q:'Wie reisen die drei ans Meer?', opts:[
-    {e:'🚂', l:'Mit dem Zug', k:['zug','bahn'], v:{reise:'Der kleine Zug ratterte gemütlich durch Wiesen und Wälder. Tschu-tschu!'}},
-    {e:'⛵', l:'Mit dem Boot', k:['boot','schiff'], v:{reise:'Das kleine Boot schaukelte sanft den Fluss hinunter, bis ans Meer.'}},
-    {e:'🐉', l:'Auf Nova', k:['nova','drache','fliegen'], v:{reise:'Nova flog mit allen auf dem Rücken über Berge und Seen. Unten glitzerte das Wasser.'}}],
+    {e:'🚂', l:'Mit dem Zug', k:['zug','bahn'], v:{reise:'Der kleine Zug ratterte gemütlich durch Wiesen und Wälder. Tschu-tschu, tschu-tschu.'}},
+    {e:'⛵', l:'Mit dem Boot', k:['boot','schiff'], v:{reise:'Das kleine Boot schaukelte sanft den Fluss hinunter, immer weiter, bis ans Meer.'}},
+    {e:'🐉', l:'Auf Nova', k:['nova','drache','fliegen'], v:{reise:'Nova flog mit allen auf dem Rücken über Berge und Seen. Unten glitzerte das Wasser wie tausend kleine Sterne.'}}],
    after:'{reise}', pic:['sunny','nova']},
-  {t:'Am Meer roch es nach Salz und Sonne. Die Wellen machten: Schschsch … schschsch … Sunny grub seine Füsse in den warmen Sand.', pic:['sunny']},
+  {t:'Am Meer roch es nach Salz und Sonne. Die Wellen kamen und gingen. Schschsch, sang das Meer. Schschsch. Sunny grub seine Füsse in den warmen Sand und kicherte, weil es kitzelte.', pic:['sunny']},
   {q:'Was finden sie am Strand?', opts:[
     {e:'🐚', l:'Eine Muschel', k:['muschel'], v:{fund:'eine Muschel, die leise rauschte, wenn man sie ans Ohr hielt'}},
     {e:'⭐', l:'Einen Seestern', k:['seestern','stern'], v:{fund:'einen kleinen Seestern, der freundlich winkte'}},
     {e:'🦀', l:'Einen Krebs', k:['krebs','krabbe'], v:{fund:'einen kleinen Krebs, der seitwärts Hallo sagte'}}],
-   after:'Sie fanden {fund}. «Wie schön», staunte Kiki.', pic:['kiki','sunny']},
-  {t:'Am Abend wurde der Himmel rosa und orange. Die Sonne ging langsam im Meer schlafen. Die drei Freunde legten sich auf eine weiche Decke, und die Wellen sangen ihr Schschsch-Lied.', pic:['kiki','moon']},
-  {t:'Über dem Meer ging der Mond auf, rund und hell. «Ferien sind schön», flüsterte Sunny. «Am schönsten mit Freunden.» Dann fielen ihm die Augen zu. Gute Nacht, Sunny. Gute Nacht, Meer.', pic:['sunny-sleep','moon']}
+   after:'Sie fanden {fund}. «Wie schön», staunte Kiki und blinkte ganz hell.', pic:['kiki','sunny']},
+  {t:'Am Abend wurde der Himmel rosa und orange. Die Sonne ging langsam im Meer schlafen. Die drei Freunde legten sich auf eine weiche Decke. Schschsch, sang das Meer. Schschsch.', pic:['kiki','moon']},
+  {t:'Über dem Wasser ging der Mond auf, rund und hell. «Ferien sind schön», flüsterte Sunny. «Am schönsten mit Freunden.» Dann fielen ihm die Augen zu. Gute Nacht, Sunny. Gute Nacht, Kiki und Nova. Gute Nacht, liebes Meer.', pic:['sunny-sleep','moon']}
  ]}
 ];
 
@@ -709,17 +797,25 @@ function figHTML(key, vars){
   key = fill(key, vars||{});
   const [name, mode] = key.split('-');
   const f = FIG[name] || FIG.sunny;
-  return f({sleep: mode==='sleep', cls:'float'});
+  return f({sleep: mode==='sleep', wave: mode==='wave', cls:'float'});
 }
 function renderStoryList(){
   const done = store.get('done', {});
-  $('#slist').innerHTML = STORIES.map((s,i) => `
+  const L = letterSel();
+  $('#slist').innerHTML = (L ? `
+    <button class="sitem lt" data-letter="1">
+      <span class="ic"><svg viewBox="0 0 64 48" style="width:52px;height:40px" aria-hidden="true"><rect x="3" y="5" width="58" height="40" rx="8" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M5 9 L32 29 L59 9" fill="none" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M32 22 C27 18 26 14 29 13 C31 12.5 32 14.5 32 15 C32 14.5 33 12.5 35 13 C38 14 37 18 32 22 Z" fill="#ff7c9c"/></svg></span>
+      <span><b>${esc('Ein Brief von '+L.from)}</b><span class="sub">Eine Gutenachtgeschichte nur für dich.</span></span>
+    </button>` : '') + STORIES.map((s,i) => `
     <button class="sitem" data-story="${i}">
       <span class="ic">${figHTML(s.pic[0])}</span>
       <span><b>${esc(s.title)} ${done[s.id] ? '<span class="star" title="schon gehört">★</span>' : ''}</b><span class="sub">${esc(s.sub)}</span></span>
     </button>`).join('');
 }
-$('#slist').addEventListener('click', e => { const b=e.target.closest('[data-story]'); if (b) openStory(STORIES[+b.dataset.story]); });
+$('#slist').addEventListener('click', e => {
+  if (e.target.closest('[data-letter]')){ const L = letterSel(); if (L) openLetter(L, 'stories'); return; }
+  const b=e.target.closest('[data-story]'); if (b) openStory(STORIES[+b.dataset.story]);
+});
 
 const R = { story:null, seq:[], idx:0, vars:{}, sent:0, reading:false, started:false, sents:[] };
 function buildSeq(story){
@@ -753,7 +849,7 @@ function renderPart(){
     R.sents = [];
   } else {
     R.sents = splitSentences(fill(p.t, R.vars));
-    c.innerHTML = `<div class="story-text">${R.sents.map((s,i)=>`<span class="s" data-i="${i}">${esc(s)}</span>`).join(' ')}</div>`;
+    c.innerHTML = `<div class="story-text">${R.sents.map((s,i)=>`<span class="s${p.letter?' letter':''}" data-i="${i}">${esc(s)}</span>`).join(' ')}</div>`;
   }
   const n = R.seq.length, pct = Math.round((R.idx+1)/n*100);
   $('#rStep').textContent = `${R.idx+1}/${n}`;
@@ -784,7 +880,7 @@ function playCurrent(){
     return;
   }
   TTS.speak(R.sents, {
-    start: R.sent,
+    start: R.sent, rateMul: p.slow ? .88 : 1, gap: p.slow ? 900 : 600,
     onSentence: i => { R.sent = i; highlight(i); },
     onEnd: () => {
       highlight(-1); R.sent = 0;
@@ -793,7 +889,7 @@ function playCurrent(){
         if (!R.reading || current !== 'reader') return;
         if (R.idx < R.seq.length-1){ R.idx++; renderPart(); playCurrent(); }
         else finishStory();
-      }, 1300);
+      }, 1800);
     }
   });
 }
@@ -850,15 +946,19 @@ function finishStory(){
   $('#rBody').hidden = true; $('#rEnd').hidden = false;
   const f = $('#rEndFig'); f.innerHTML = sunnySVG({sleep:true, cls:'float'}); f.firstElementChild.style.width='170px'; f.firstElementChild.style.height='180px';
   const nm = (R.story.kid || S.name);
-  const txt = `Gute Nacht${nm ? ', '+nm : ''}. Schlaf schön und träum etwas Liebes.`;
+  const txt = R.story.letter ? `Gute Nacht${nm ? ', '+nm : ''}. Träum etwas Liebes. ${R.story.letter.from} ${/\bund\b|eltern|familie|\bwir\b/i.test(R.story.letter.from)?'sind':'ist'} ganz nah.` : `Gute Nacht${nm ? ', '+nm : ''}. Schlaf schön und träum etwas Liebes.`;
   $('#rEndText').textContent = txt;
-  $('#rOther').textContent = R.story.mine ? '✨ Neue Version' : '📖 Andere';
+  $('#rOther').textContent = (R.story.mine || R.story.letter) ? '✨ Neue Version' : '📖 Andere';
   TTS.speak(['Ende.', txt], {rateMul:.92});
   window.scrollTo(0,0);
 }
 $('#rAgain').addEventListener('click', () => openStory(R.story));
-$('#rOther').addEventListener('click', () => { if (R.story.mine) makeStory(); else go('stories'); });
-$('#readerBack').addEventListener('click', () => go(R.story && R.story.mine ? 'idea' : 'stories'));
+$('#rOther').addEventListener('click', () => {
+  if (R.story.mine) makeStory();
+  else if (R.story.letter){ const st = letterStory(R.story.letter, (R.story.ver||0)+1); st.back = R.story.back; openStory(st); }
+  else go('stories');
+});
+$('#readerBack').addEventListener('click', () => go(R.story && R.story.back ? R.story.back : (R.story && R.story.mine ? 'idea' : 'stories')));
 
 /* ---------- Meine Idee: personalisierte Geschichte ---------- */
 const FRIENDS = {
@@ -905,13 +1005,13 @@ function makeStory(){
   const v = {N, D, F:F.l};
   const fig = sel.friend;
   const parts = [
-    {t:`Es war einmal ein Kind, das hiess ${N}. An einem ruhigen Abend ${fill(pickR(P.intro), v)}.`, pic:[fig==='sunny'?'moon':'sunny']},
+    {t:`Es war einmal ein Kind, das hiess ${N}. An einem ruhigen Abend, als der Mond schon leise lächelte, ${fill(pickR(P.intro), v)}.`, pic:[fig==='sunny'?'moon':'sunny']},
     {t:pickR([`${N} hatte das Lieblingsding dabei: ${D}. Ohne das ging ${N} nirgendwo hin.`, `Und natürlich war das Lieblingsding mit dabei: ${D}. ${N} hielt es gut fest.`]), pic:['moon']},
     {t:fill(F.intro, v), pic:[fig]},
     {t:pickR(P.adv) + ` «Wie schön es hier ist», flüsterte ${N}.`, pic:[fig, 'fly']},
-    {t:`Doch plötzlich … ${prob[0]}. ${F.l} schaute ${N} fragend an. ${N} überlegte kurz – und hatte eine Idee!`, pic:[fig]},
+    {t:`Doch plötzlich … ${prob[0]}. ${F.l} schaute ${N} mit grossen Augen an. ${N} überlegte. Hm … hm … Und dann hatte ${N} eine Idee!`, pic:[fig]},
     {t:`${N} hielt das Lieblingsding hoch: ${D}. Und weisst du was? Es begann ganz sanft zu leuchten. In seinem warmen Licht ${prob[1]}. «Du bist toll, ${N}!», rief ${F.l}.`, pic:[fig,'moon']},
-    {t:`Müde und glücklich kehrten ${N} und ${F.l} nach Hause zurück. ${N} kuschelte sich ins Bett, das Lieblingsding ganz nah. Gute Nacht, ${N}. Schlaf gut und träum etwas Schönes.`, pic:[fig+'-sleep','moon']}
+    {t:`Müde und glücklich gingen ${N} und ${F.l} nach Hause, Schritt für Schritt, ganz langsam. ${N} kuschelte sich ins Bett, das Lieblingsding ganz nah. ${F.l} flüsterte: «Das war ein schönes Abenteuer.» Gute Nacht, ${N}. Schlaf gut und träum etwas Schönes.`, pic:[fig+'-sleep','moon']}
   ];
   openStory({ title: gen(N)+' Geschichte', pic:[fig], parts, mine:true, kid:N });
 }
@@ -1031,6 +1131,8 @@ function renderParents(){
   if (document.activeElement !== $('#pName')) $('#pName').value = S.name || '';
   $('#chips').innerHTML = CHIPS.map(c => `<button class="chip" data-chip="${esc(c)}">${esc(c)}</button>`).join('');
   $('#micHint2').hidden = !!SR;
+  if (!$('#lFrom').value) $('#lFrom').value = store.get('lastFrom', '');
+  renderLetters();
   renderIdeas();
 }
 $('#segLimit').addEventListener('click', e => { const b=e.target.closest('[data-limit]'); if(!b) return; S.limit=+b.dataset.limit; saveS(); renderParents(); toast(S.limit ? `Zeitlimit: ${S.limit} Min. pro Tag` : 'Kein Zeitlimit'); });
@@ -1070,13 +1172,128 @@ $('#ideaList').addEventListener('click', e => {
 });
 $('#ideaShareAll').addEventListener('click', () => shareText(ideas().map(ideaMsg).join('\n\n')));
 
+
+/* ---------- Für mein Kind reinreden: Botschaft -> persönliche Gutenachtgeschichte ---------- */
+function letters(){ return store.get('letters', []); }
+function letterSel(){ const ts = store.get('letterSel', 0); return letters().find(l => l.ts === ts) || null; }
+function seeded(n){ let a = (n >>> 0) || 1; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function cleanMsg(t){
+  t = String(t).replace(/\s+/g,' ').replace(/[«»„“”"]/g,'').trim();
+  if (!t) return '';
+  t = t.charAt(0).toUpperCase() + t.slice(1);
+  if (!/[.!?…]$/.test(t)) t += '.';
+  return t;
+}
+function cleanFrom(t){ t = String(t).replace(/\s+/g,' ').replace(/[«»„“”".!?]/g,'').trim(); return t ? t.charAt(0).toUpperCase()+t.slice(1) : ''; }
+function letterStory(L, ver=0){
+  const rnd = seeded(L.ts + ver*7919), pick = a => a[Math.floor(rnd()*a.length)];
+  const kid = S.name || (store.get('kid', {}).name) || '';
+  const voc = kid ? ', '+kid : '';
+  const forK = kid || 'dich';
+  const from = L.from;
+  const plural = /\bund\b|eltern|familie|\bwir\b/i.test(from);
+  const hat = plural ? 'haben' : 'hat', denkt = plural ? 'denken' : 'denkt';
+  const msg = cleanMsg(L.text);
+  const low = msg.toLowerCase();
+  const first = splitSentences(msg)[0] || msg;
+  const segs = [];
+  if (/\b(heute|war|warst|waren|hast|habt|haben|gemacht|gespielt|gelacht|zusammen)\b/.test(low)) segs.push('heute');
+  if (/(morgen|freu|bald|wochenende|nächst|geburtstag|ferien|ausflug)/.test(low)) segs.push('morgen');
+  if (/(lieb|stolz|mutig|toll|schatz|herz|kuss|knuddel|umarm)/.test(low)) segs.push('lieb');
+  const SEG = {
+    heute: {t:`Sunny lächelte bis zu den Ohren. «Oh${voc}, das klingt nach einem schönen Tag!» Er holte sein kleines Glas aus der Höhle. Darin sammelt Sunny schöne Momente. Und als er an deinen Tag dachte, begann es im Glas zu leuchten, golden wie Honig.`, pic:['sunny-wave','moon']},
+    morgen:{t:`«Juhui!», rief Sunny und hüpfte einmal im Kreis. «Darauf darfst du dich freuen${voc}!» Kiki blinkte vor Aufregung. «Vorfreude ist wie ein kleines Licht im Bauch», sagte Kiki. «Es kitzelt ein bisschen. Und es wärmt ganz fest.»`, pic:['sunny','kiki-wave']},
+    lieb:  {t:`Sunny legte seine kleine Pfote aufs Herz. «Hast du das gehört${voc}? Du wirst so fest lieb gehabt.» Nova rollte sich glücklich zusammen. «Das ist das Schönste, was in einem Brief stehen kann», brummte er leise.`, pic:['sunny','nova']},
+    plain: {t:`Sunny lächelte ganz warm. «Was für ein schöner Brief», sagte er. «${from} ${hat} ihn nur für dich geschrieben${voc}.» Kiki und Nova kamen näher und hörten mit grossen Augen zu.`, pic:['sunny','kiki']}
+  };
+  const mid = (segs.length ? segs.slice(0,2) : ['plain']).map(k => SEG[k]);
+  const parts = [
+    {t:pick([
+      'Es war Abend im Mondschein-Wald. Die Vögel sangen ihr letztes Lied, und der Mond schaute schon hinter dem Berg hervor. Sunny machte es sich vor seiner Höhle gemütlich. Da kam ein kleines Glühwürmchen geflogen. Es trug einen Brief, so klein wie ein Blatt.',
+      'Im Mondschein-Wald wurde es still. Die Blumen machten ihre Blüten zu, und der erste Stern ging auf. Sunny sass gerade auf seinem Lieblingsstein. Da flatterte ein Glühwürmchen heran. In seinen Beinchen hielt es einen kleinen Brief.'
+    ]), pic:['sunny','fly']},
+    {t:`«Ein Brief für ${forK}!», piepste das Glühwürmchen. «Von ${from}. Mit ganz viel Liebe drin.» Sunny machte grosse Augen. Ganz vorsichtig faltete er den Brief auf. Dann las er langsam vor:`, pic:['sunny','fly']},
+    {t:`«${msg}»`, pic:['sunny-wave'], slow:true, letter:true},
+    ...mid,
+    {t:pick([
+      'Dann stiegen Sunny, Kiki und Nova auf den kleinen Hügel hinter dem Wald. Von dort oben ist der Himmel ganz nah. Sunny faltete den Brief zu einem kleinen Papiervogel. Er hielt ihn hoch in den Wind … und liess ihn los.',
+      'Später sassen Sunny, Kiki und Nova zusammen auf der Wiese und schauten in den Himmel. Sunny faltete den Brief zu einem kleinen Papiervogel. Nova pustete ganz sanft … und der Papiervogel flog los.'
+    ]), pic:['sunny','kiki']},
+    {t:`Der Papiervogel flog hinauf, höher und höher, bis zu den Sternen. Dort oben wurde er selbst zu einem kleinen Stern. Er funkelt jetzt über deinem Fenster${voc}. Und immer, wenn du ihn siehst, weisst du: ${from} ${denkt} an dich.`, pic:['moon','kiki']},
+    {t:`Sunny gähnte ein grosses Igel-Gähnen. Er kuschelte sich in sein Moosbett und flüsterte noch einmal ${first.length <= 140 ? `die schönsten Worte aus dem Brief: «${first}»` : 'die Worte aus dem Brief.'} Dann wurde es ganz still im Wald. Gute Nacht${voc}. ${from} ${hat} dich lieb. Und Sunny auch.`, pic:['sunny-sleep','moon'], slow:true}
+  ];
+  return { title:'Ein Brief von '+from, pic:['sunny'], parts, letter:L, ver, kid };
+}
+function openLetter(L, back){ const st = letterStory(L, 0); st.back = back; openStory(st); }
+
+const FROMS = ['Mama','Papa','Oma','Opa'];
+const LCHIPS = ['Heute war schön, dass ','Morgen freust du dich auf ','Ich bin stolz auf dich, weil ','Ich hab dich lieb, weil '];
+function renderLetters(){
+  const list = letters(), selTs = store.get('letterSel', 0);
+  const fromNow = $('#lFrom').value.trim();
+  $('#lFromSeg').innerHTML = FROMS.map(f => `<button data-from="${f}" class="${fromNow===f?'sel':''}" aria-pressed="${fromNow===f}">${f}</button>`).join('');
+  $('#lChips').innerHTML = LCHIPS.map(c => `<button class="chip" data-lchip="${esc(c)}">${esc(c.trim())} …</button>`).join('');
+  $('#micHint3').hidden = !!SR;
+  $('#letterList').innerHTML = list.length ? list.map(l => `
+    <div class="idea letter ${l.ts===selTs?'on':''}">
+      <div class="small muted">${fmtDate(l.ts)} · von <b>${esc(l.from)}</b>${l.ts===selTs ? ' <span class="badge">⭐ Heute Abend</span>' : ''}</div>
+      <p>${esc(l.text)}</p>
+      <button class="btn primary wide" data-lplay="${l.ts}">▶ Jetzt als Geschichte vorlesen</button>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" data-lsel="${l.ts}" aria-pressed="${l.ts===selTs}">${l.ts===selTs ? '✓ Heute Abend' : '⭐ Heute Abend'}</button>
+        <button class="btn" data-ldel="${l.ts}">🗑 Löschen</button>
+      </div>
+    </div>`).join('') : '<p class="small muted" style="margin:12px 0 0">Noch keine Botschaft gespeichert.</p>';
+}
+$('#lFromSeg').addEventListener('click', e => { const b=e.target.closest('[data-from]'); if(!b) return; $('#lFrom').value = b.dataset.from; renderLetters(); });
+$('#lFrom').addEventListener('input', () => { $$('#lFromSeg button').forEach(b => { const on = b.dataset.from === $('#lFrom').value.trim(); b.classList.toggle('sel', on); b.setAttribute('aria-pressed', on); }); });
+$('#lChips').addEventListener('click', e => { const b=e.target.closest('[data-lchip]'); if(!b) return; const t=$('#lText'); t.value = (t.value.trim() ? t.value.trim()+' ' : '') + b.dataset.lchip; t.focus(); try{ t.setSelectionRange(t.value.length, t.value.length); }catch(x){} });
+$('#lSave').addEventListener('click', () => {
+  const from = cleanFrom($('#lFrom').value).slice(0,30);
+  const text = String($('#lText').value).replace(/\s+/g,' ').trim().slice(0,400);
+  if (!from){ toast('Bitte noch sagen, von wem die Botschaft ist.'); $('#lFrom').focus(); return; }
+  if (text.length < 3){ toast('Schreib oder sprich zuerst eine kleine Botschaft.'); $('#lText').focus(); return; }
+  const list = letters(); const ts = Date.now();
+  list.unshift({ts, from, text}); store.set('letters', list.slice(0,30)); store.set('letterSel', ts); store.set('lastFrom', from);
+  $('#lText').value = ''; stopLong(); renderLetters();
+  toast('Gespeichert – Sunny liest sie heute Abend vor. 💌');
+});
+$('#letterList').addEventListener('click', e => {
+  const p = e.target.closest('[data-lplay]'), s = e.target.closest('[data-lsel]'), d = e.target.closest('[data-ldel]');
+  const find = v => letters().find(l => String(l.ts) === v);
+  if (p){ const L = find(p.dataset.lplay); if (L) openLetter(L, 'parents'); }
+  if (s){ const cur = store.get('letterSel', 0); const ts = +s.dataset.lsel; store.set('letterSel', cur===ts ? 0 : ts); renderLetters(); toast(cur===ts ? 'Keine Botschaft für heute Abend' : 'Diese Botschaft ist für heute Abend gewählt ⭐'); }
+  if (d){ if (!confirm('Diese Botschaft löschen?')) return; const ts = +d.dataset.ldel; store.set('letters', letters().filter(l => l.ts !== ts)); if (store.get('letterSel',0)===ts) store.set('letterSel', 0); renderLetters(); toast('Gelöscht'); }
+});
+/* längeres Sprechen: Knopf startet, nochmal tippen beendet */
+let longRec = null;
+function stopLong(){ if (longRec){ try{ longRec.stop(); }catch(e){} } }
+$('#lMic').addEventListener('click', () => {
+  const btn = $('#lMic'), ta = $('#lText');
+  if (!SR){ $('#micHint3').hidden = false; ta.focus(); return; }
+  if (longRec){ stopLong(); return; }
+  TTS.stop(); if (rec){ try{ rec.abort(); }catch(e){} }
+  const r = new SR(); longRec = r; let triedDE = false;
+  r.lang = 'de-CH'; r.continuous = true; r.interimResults = false;
+  const off = () => { btn.classList.remove('listening'); btn.textContent = '🎤 Sprechen'; };
+  r.onresult = e => { for (let i=e.resultIndex; i<e.results.length; i++){ if (e.results[i].isFinal){ const t = e.results[i][0].transcript.trim(); if (t) ta.value = (ta.value.trim() ? ta.value.trim()+' ' : '') + t; } } };
+  r.onerror = e => {
+    if (!triedDE && (e.error==='language-not-supported' || e.error==='bad-grammar')){ triedDE = true; r.lang = 'de-DE'; try{ r.start(); return; }catch(x){} }
+    if (e.error==='not-allowed' || e.error==='service-not-allowed'){ toast('Mikrofon ist nicht erlaubt. Tipp: Auf der Tastatur das Mikrofon antippen und diktieren.'); $('#micHint3').hidden = false; }
+    else if (e.error==='no-speech') toast('Ich habe nichts gehört. Nochmal?');
+  };
+  r.onend = () => { if (longRec === r) longRec = null; off(); };
+  try{ r.start(); btn.classList.add('listening'); btn.textContent = '⏹ Fertig'; toast('Ich höre zu … Tippe auf «Fertig», wenn du fertig bist.'); }
+  catch(e){ longRec = null; off(); $('#micHint3').hidden = false; }
+});
+
 /* ---------- Start ---------- */
 applyNight();
 setInterval(applyNight, 60000);
 renderHome();
 if (limitReached()) go('night');
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(()=>{});
-window.__ms = { go, STORIES, game, S, R };
+window.__ms = { go, STORIES, game, S, R, FIG };
 })();
 </script>
 </body>
