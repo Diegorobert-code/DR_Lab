@@ -221,6 +221,9 @@ h3.ch{font-size:19px;margin-bottom:10px}
 .check input{width:30px;height:30px;flex:none;accent-color:var(--moon2);margin:0}
 .info p{margin:0 0 6px}
 .gateq{font-size:30px;font-weight:800;margin:6px 0 12px}
+.fig.nova-film{display:block;width:100%;height:auto;max-width:100%;max-height:100%;margin:auto;aspect-ratio:1;object-fit:cover;border-radius:50%;overflow:hidden;box-shadow:0 0 0 3px #bfefff,0 0 22px rgba(111,228,255,.45);background:#fdf6e6}
+.pk .nova-film{width:58px;height:58px}.sitem .ic .nova-film{width:70px;height:70px}.stage .nova-film{width:150px;height:150px}.stage.two .nova-film{width:124px;height:124px}.mc .face .nova-film{width:84%;height:84%}
+.fig.nova-film.asleep{filter:brightness(.75) saturate(.8)}
 </style>
 </head>
 <body>
@@ -612,34 +615,8 @@ function sunnySVG(o={}){
 </svg>`;
 }
 function novaSVG(o={}){
-  const sleep = o.sleep, wave = o.wave;
-  const eye = (x, d) => sleep
-    ? `<path d="M${x-9} 94 Q${x} 101 ${x+9} 94" fill="none" stroke="#6fe4ff" stroke-width="4.5" stroke-linecap="round"/>`
-    : `<g class="blink" style="animation-delay:-${d}s"><circle cx="${x}" cy="92" r="11" fill="#0f2a3d"/><circle cx="${x}" cy="92" r="9.5" fill="none" stroke="#6fe4ff" stroke-width="5"/><circle cx="${x+3}" cy="88.5" r="2.2" fill="#e8fdff"/></g>`;
-  const d = rnd(0,5);
-  return `<svg class="fig ${o.cls||''} ${sleep?'asleep':''}" viewBox="0 0 200 210" role="img" aria-label="Nova, der kleine weisse Roboter">
-  <circle class="glow" cx="100" cy="128" r="88" fill="url(#g-nglow)"/>
-  <ellipse cx="100" cy="202" rx="42" ry="6" fill="#2fb8e8" opacity=".18"/>
-  <g class="breathe">
-  <ellipse cx="84" cy="194" rx="13" ry="7" fill="#cdd7e4" stroke="#b3c0d2" stroke-width="2"/><ellipse cx="116" cy="194" rx="13" ry="7" fill="#cdd7e4" stroke="#b3c0d2" stroke-width="2"/>
-  <g><path d="M66 150 Q50 156 50 172" fill="none" stroke="#e3e9f1" stroke-width="11" stroke-linecap="round"/><circle cx="50" cy="176" r="8" fill="#ffffff" stroke="#c4cfdd" stroke-width="2"/></g>
-  <g class="${wave?'kwave':''}"><path d="M134 150 Q150 ${wave?140:156} 152 ${wave?122:172}" fill="none" stroke="#e3e9f1" stroke-width="11" stroke-linecap="round"/><circle cx="152" cy="${wave?118:176}" r="8" fill="#ffffff" stroke="#c4cfdd" stroke-width="2"/></g>
-  <path d="M100 136 C128 136 140 152 140 168 C140 186 124 194 100 194 C76 194 60 186 60 168 C60 152 72 136 100 136 Z" fill="url(#g-nova)" stroke="#c4cfdd" stroke-width="2"/>
-  <ellipse class="glow" cx="100" cy="170" rx="21" ry="14" fill="url(#g-ncyan)"/>
-  <ellipse cx="100" cy="170" rx="9" ry="5" fill="#e8fdff" opacity=".8"/>
-  <rect x="88" y="128" width="24" height="12" rx="6" fill="#dfe6ef"/>
-  <circle cx="53" cy="92" r="13" fill="#e3e9f1" stroke="#c4cfdd" stroke-width="2"/><circle cx="53" cy="92" r="6.5" fill="#cdd7e4"/>
-  <circle cx="147" cy="92" r="13" fill="#e3e9f1" stroke="#c4cfdd" stroke-width="2"/><circle cx="147" cy="92" r="6.5" fill="#cdd7e4"/>
-  <circle cx="100" cy="90" r="46" fill="url(#g-nova)" stroke="#c4cfdd" stroke-width="2"/>
-  <ellipse cx="80" cy="58" rx="15" ry="7" transform="rotate(-24 80 58)" fill="#fff" opacity=".9"/>
-  <rect x="64" y="70" width="72" height="46" rx="23" fill="url(#g-nvisor)"/>
-  <rect x="70" y="73" width="30" height="7" rx="3.5" fill="#fff" opacity=".1"/>
-  ${eye(85, d)}${eye(115, d)}
-  ${sleep ? '' : `<path d="M93 106 Q100 111 107 106" fill="none" stroke="#6fe4ff" stroke-width="3" stroke-linecap="round" opacity=".85"/>`}
-  </g>
-  <g fill="#9fefff"><path class="twinkle" d="M30 46 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z"/><path class="twinkle t2" d="M170 30 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/></g>
-  ${sleep ? ZZ : ''}
-</svg>`;
+  // Nova aus dem Film «Otti und Nova»
+  return `<img class="fig nova-film ${o.cls||''} ${o.sleep?'asleep':''}" src="nova.jpg" alt="Nova, der kleine weisse Roboter">`;
 }
 function kikiSVG(o={}){
   const sleep = o.sleep, wave = o.wave;
