@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# DR Lab: Hermes auf einem frischen Ubuntu-Server einrichten.
-# Aufruf in der Server-Konsole:
+# DR Lab: Papa Hermes auf seinem eigenen Ubuntu-Server einrichten.
+# Hermes redet nur mit Sense Engine; die Apps reden nur mit Sense Engine.
+# Aufruf in der Konsole des Hermes-Servers:
 #   curl -fsSL https://raw.githubusercontent.com/Diegorobert-code/DR_Lab/hermes-server/server/hermes-install.sh | sudo bash
 set -euo pipefail
 
@@ -33,7 +34,6 @@ API_SERVER_ENABLED=true
 API_SERVER_KEY=$API_KEY
 API_SERVER_HOST=127.0.0.1
 API_SERVER_PORT=8642
-API_SERVER_CORS_ORIGINS=https://diegorobert-code.github.io,https://drlab.ch,https://www.drlab.ch,https://headless-zewdelhstzx-diegoroberttherapy-1412.wix-site-host.com
 EOF
 chmod 600 "$ENV_FILE"
 hermes gateway install --system
@@ -55,9 +55,9 @@ ufw --force enable >/dev/null
 
 echo
 echo "=============================================="
-echo " Fertig."
-echo " Adresse:   https://$HOST"
-echo " Passwort:  $API_KEY"
-echo " Adresse an Claude schicken (darf in den Chat)."
-echo " Passwort NICHT in den Chat, nur in Project settings eintragen."
+echo " Papa Hermes ist bereit."
+echo " Hermes-Adresse:   https://$HOST"
+echo " Hermes-Passwort:  $API_KEY"
+echo " Beides brauchst du gleich in der Konsole des Sense-Engine-Servers."
+echo " Passwort NICHT in den Chat schreiben."
 echo "=============================================="
