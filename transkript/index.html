@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Transkript – DR Lab</title>
+<meta name="theme-color" content="#2f4f6f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Transkript">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>
+:root{--bg:#f4f1ea;--card:#fff;--ink:#1d1f24;--muted:#646a75;--accent:#2f4f6f;--rec:#d94c16;--line:#e3ddd2;--ok:#3d7a4a;--f:-apple-system,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#16181c;--card:#20242a;--ink:#eceae6;--muted:#9aa0aa;--accent:#7fa6cc;--rec:#ff7a45;--line:#2f343c;--ok:#7fc28c}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:400 17px/1.5 var(--f);padding:max(16px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom))}
+.w{max-width:640px;margin:0 auto;display:grid;gap:14px}
+h1{font-size:24px;margin:4px 0 0}
+.sub{color:var(--muted);margin:0;font-size:15px}
+.mic{justify-self:center;width:150px;height:150px;border-radius:50%;border:0;background:var(--accent);color:#fff;font:600 18px/1.2 var(--f);display:grid;place-items:center;gap:4px;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.18);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.mic svg{width:46px;height:46px}
+.mic.on{background:var(--rec);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(217,76,22,.45)}50%{box-shadow:0 0 0 22px rgba(217,76,22,0)}}
+.state{text-align:center;color:var(--muted);font-size:15px;min-height:22px;margin:0}
+textarea{width:100%;min-height:42vh;resize:vertical;border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);font:400 18px/1.55 var(--f);padding:14px}
+.interim{color:var(--muted);font-style:italic;min-height:24px;margin:-6px 4px 0;font-size:16px}
+.row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.btn{min-height:52px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 16px var(--f);cursor:pointer}
+.btn.main{background:var(--accent);border-color:var(--accent);color:#fff}
+.note{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:15px}
+.hidden{display:none}
+.opts{display:flex;gap:16px;flex-wrap:wrap;font-size:15px;color:var(--muted)}
+.opts label{display:flex;align-items:center;gap:6px}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+summary{font-weight:600;cursor:pointer}
+.hist{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
+.hist li{border-top:1px solid var(--line);padding-top:8px;font-size:15px;cursor:pointer}
+.hist time{display:block;color:var(--muted);font-size:13px}
+.foot{color:var(--muted);font-size:13px;text-align:center}
+.toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ok);color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="w">
+  <div>
+    <h1>Transkript</h1>
+    <p class="sub">Tippen, reinreden, fertig. Der Text bleibt auf deinem Handy.</p>
+  </div>
+
+  <button class="mic" id="mic" aria-label="Reinreden starten">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg>
+    <span id="micLabel">Reinreden</span>
+  </button>
+  <p class="state" id="state"></p>
+
+  <textarea id="text" placeholder="Hier erscheint dein Text. Du kannst ihn auch direkt bearbeiten."></textarea>
+  <div class="interim" id="interim"></div>
+
+  <div class="row">
+    <button class="btn main" id="copy">Kopieren</button>
+    <button class="btn" id="share">Teilen</button>
+    <button class="btn" id="new">Neu</button>
+  </div>
+
+  <div class="note hidden" id="note"></div>
+
+  <div class="opts">
+    <label><input type="checkbox" id="fix" checked> Verhörer korrigieren</label>
+    <label><input type="checkbox" id="punct" checked> Satzzeichen per Wort</label>
+  </div>
+
+  <details id="histBox">
+    <summary>Verlauf</summary>
+    <ul class="hist" id="hist"></ul>
+  </details>
+
+  <p class="foot">DR Lab · Testphase · Spracherkennung des Browsers</p>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+var $ = function(id){ return document.getElementById(id); };
+var ta = $('text'), KEY = 'drlab-transkript-aktuell', HKEY = 'drlab-transkript-verlauf';
+
+function get(k, d){ try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch(e){ return d; } }
+function put(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+
+ta.value = get(KEY, '');
+ta.addEventListener('input', function(){ put(KEY, ta.value); });
+$('fix').checked = get('drlab-transkript-fix', true);
+$('punct').checked = get('drlab-transkript-punct', true);
+$('fix').addEventListener('change', function(){ put('drlab-transkript-fix', this.checked); });
+$('punct').addEventListener('change', function(){ put('drlab-transkript-punct', this.checked); });
+
+/* Verhörer aus Diegos Glossar */
+var FIXES = [
+  [/\b(golfing|rolling)\b/gi, 'Rolfing'],
+  [/\bversen\b/gi, 'Fersen'],
+  [/\bchrüzbei\b/gi, 'Kreuzbein'],
+  [/\bjuman sparks?\b/gi, 'Human Sparks'],
+  [/\bkine\b/gi, 'Kinesiologie'],
+  [/\b(dear lab|air ?lab|ir[- ]lab|gr[- ]lab|dia ?lab|di ar lab|dr läb|d r lab|doktor lab)\b/gi, 'DR Lab'],
+  [/\b(v ?com|wipe code|wild ?code|vibe code)\b/gi, 'Vibecode'],
+  [/\b(sense engine|sens engine|sense ensch[ie]n)\b/gi, 'Sense Engine'],
+  [/ß/g, 'ss']
+];
+var PUNCT = [
+  [/\s*\b(punkt)\b/gi, '.'], [/\s*\b(komma)\b/gi, ','], [/\s*\b(fragezeichen)\b/gi, '?'],
+  [/\s*\b(ausrufezeichen)\b/gi, '!'], [/\s*\b(doppelpunkt)\b/gi, ':'],
+  [/\s*\b(neue zeile|neuer absatz|absatz)\b\s*/gi, '\n']
+];
+function clean(s){
+  if ($('fix').checked) FIXES.forEach(function(f){ s = s.replace(f[0], f[1]); });
+  if ($('punct').checked) PUNCT.forEach(function(f){ s = s.replace(f[0], f[1]); });
+  return s;
+}
+function cap(s){ return s.replace(/(^|[.!?\n]\s*)([a-zäöü])/g, function(m, a, b){ return a + b.toUpperCase(); }); }
+
+/* Spracherkennung, läuft weiter, bis man Stopp tippt */
+var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+var rec = null, want = false, lang = 'de-CH', lock = null, restarts = 0;
+
+function note(t){ var n = $('note'); n.textContent = t || ''; n.classList.toggle('hidden', !t); }
+function state(t){ $('state').textContent = t || ''; }
+function ui(on){
+  $('mic').classList.toggle('on', on);
+  $('micLabel').textContent = on ? 'Stopp' : 'Reinreden';
+  $('mic').setAttribute('aria-label', on ? 'Aufnahme stoppen' : 'Reinreden starten');
+  state(on ? 'Ich höre zu …' : (ta.value ? 'Gespeichert auf diesem Handy.' : ''));
+}
+function append(t){
+  t = clean(t.trim());
+  if (!t) return;
+  var v = ta.value;
+  var sep = !v || /\n$/.test(v) || /^[.,?!:\n]/.test(t) ? '' : ' ';
+  ta.value = cap(v + sep + t);
+  put(KEY, ta.value);
+  ta.scrollTop = ta.scrollHeight;
+}
+function wake(on){
+  try {
+    if (on && navigator.wakeLock && !lock) navigator.wakeLock.request('screen').then(function(l){ lock = l; l.addEventListener('release', function(){ lock = null; }); }).catch(function(){});
+    if (!on && lock){ lock.release(); lock = null; }
+  } catch(e){}
+}
+function start(){
+  rec = new SR();
+  rec.lang = lang; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
+  rec.onresult = function(ev){
+    var interim = '';
+    for (var i = ev.resultIndex; i < ev.results.length; i++){
+      var r = ev.results[i];
+      if (r.isFinal) append(r[0].transcript); else interim += r[0].transcript;
+    }
+    $('interim').textContent = interim;
+    restarts = 0;
+  };
+  rec.onerror = function(ev){
+    if (ev.error === 'language-not-supported' && lang === 'de-CH'){ lang = 'de-DE'; return; }
+    if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed'){
+      want = false;
+      note('Mikrofon ist nicht erlaubt. Erlaube es in den Browser-Einstellungen für diese Seite. Oder tippe ins Textfeld und nutze das Mikrofon der Tastatur.');
+    } else if (ev.error === 'network'){
+      note('Keine Verbindung zur Spracherkennung. Prüfe das Internet.');
+    }
+  };
+  rec.onend = function(){
+    $('interim').textContent = '';
+    if (want && restarts < 20){ restarts++; try { rec.start(); return; } catch(e){} }
+    want = false; ui(false); wake(false);
+  };
+  try { rec.start(); ui(true); wake(true); note(''); }
+  catch(e){ want = false; ui(false); note('Spracherkennung konnte nicht starten. Tippe ins Textfeld und nutze das Mikrofon der Tastatur.'); }
+}
+$('mic').addEventListener('click', function(){
+  if (!SR){
+    note('Dieser Browser hat keine Spracherkennung. Öffne die Seite in Safari (iPhone) oder Chrome (Android). Oder tippe ins Textfeld und nutze das Mikrofon der Tastatur.');
+    ta.focus(); return;
+  }
+  if (want){ want = false; if (rec) rec.stop(); return; }
+  want = true; restarts = 0; start();
+});
+document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'visible' && want) wake(true); });
+
+/* Kopieren, Teilen, Neu */
+function toast(t){ var e = $('toast'); e.textContent = t; e.classList.add('show'); setTimeout(function(){ e.classList.remove('show'); }, 1600); }
+$('copy').addEventListener('click', function(){
+  var t = ta.value.trim(); if (!t) return;
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(function(){ toast('Kopiert'); }, fallback);
+  } else fallback();
+  function fallback(){ ta.focus(); ta.select(); try { document.execCommand('copy'); toast('Kopiert'); } catch(e){ toast('Text ist markiert'); } }
+});
+$('share').addEventListener('click', function(){
+  var t = ta.value.trim(); if (!t) return;
+  if (navigator.share) navigator.share({ text: t }).catch(function(){});
+  else $('copy').click();
+});
+function saveHist(){
+  var t = ta.value.trim(); if (!t) return;
+  var h = get(HKEY, []);
+  if (h.length && h[0].t === t) return;
+  h.unshift({ d: Date.now(), t: t });
+  put(HKEY, h.slice(0, 50));
+}
+$('new').addEventListener('click', function(){
+  if (want){ want = false; if (rec) rec.stop(); }
+  saveHist(); ta.value = ''; put(KEY, ''); renderHist(); ui(false); toast('Im Verlauf gespeichert');
+});
+
+/* Verlauf */
+function fmt(d){ d = new Date(d); return d.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' }); }
+function renderHist(){
+  var ul = $('hist'), h = get(HKEY, []);
+  ul.textContent = '';
+  if (!h.length){ var e = document.createElement('li'); e.textContent = 'Noch leer.'; ul.appendChild(e); return; }
+  h.forEach(function(x){
+    var li = document.createElement('li'), tm = document.createElement('time'), p = document.createElement('span');
+    tm.textContent = fmt(x.d); p.textContent = x.t.length > 140 ? x.t.slice(0, 140) + ' …' : x.t;
+    li.appendChild(tm); li.appendChild(p);
+    li.addEventListener('click', function(){ saveHist(); ta.value = x.t; put(KEY, x.t); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    ul.appendChild(li);
+  });
+}
+renderHist();
+ui(false);
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
+})();
+</script>
+</body>
+</html>
