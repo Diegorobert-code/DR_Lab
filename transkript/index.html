@@ -43,6 +43,7 @@ summary{font-weight:600;cursor:pointer}
 .cfg small{color:var(--muted)}
 .hist{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
 .hist li{border-top:1px solid var(--line);padding-top:8px;font-size:15px;cursor:pointer}
+.hist .hdel{min-height:44px;margin-top:6px;padding:0 14px;font-size:14px}
 .hist time{display:block;color:var(--muted);font-size:13px}
 .foot{color:var(--muted);font-size:13px;text-align:center}
 .toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ok);color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none}
@@ -53,7 +54,7 @@ summary{font-weight:600;cursor:pointer}
 <div class="w">
   <div>
     <h1>Sense Engine · Transkript</h1>
-    <p class="sub">Tippen, reinreden, fertig. Der Text bleibt auf deinem Handy.</p>
+    <p class="sub">Tippen, reinreden, fertig. Der Text bleibt auf deinem Handy. <a href="https://diegorobert-code.github.io/Stimmraum/sense/">Zur Sense Engine</a> · <a href="../apps/">Alle Apps</a></p>
   </div>
 
   <button class="mic" id="mic" aria-label="Reinreden starten">
@@ -345,13 +346,19 @@ function renderHist(){
   var ul = $('hist'), h = get(HKEY, []);
   ul.textContent = '';
   if (!h.length){ var e = document.createElement('li'); e.textContent = 'Noch leer.'; ul.appendChild(e); return; }
-  h.forEach(function(x){
-    var li = document.createElement('li'), tm = document.createElement('time'), p = document.createElement('span');
+  h.forEach(function(x, i){
+    var li = document.createElement('li'), tm = document.createElement('time'), p = document.createElement('span'), del = document.createElement('button');
     tm.textContent = fmt(x.d); p.textContent = x.t.length > 140 ? x.t.slice(0, 140) + ' …' : x.t;
-    li.appendChild(tm); li.appendChild(p);
+    del.className = 'btn hdel'; del.textContent = 'Löschen'; del.setAttribute('aria-label', 'Eintrag löschen');
+    del.addEventListener('click', function(ev){ ev.stopPropagation(); var all = get(HKEY, []); all.splice(i, 1); put(HKEY, all); renderHist(); toast('Gelöscht'); });
+    li.appendChild(tm); li.appendChild(p); li.appendChild(del);
     li.addEventListener('click', function(){ saveHist(); ta.value = x.t; put(KEY, x.t); base = x.t; skip = raw.length; window.scrollTo({ top: 0, behavior: 'smooth' }); });
     ul.appendChild(li);
   });
+  var all = document.createElement('li'), b = document.createElement('button');
+  b.className = 'btn'; b.textContent = 'Ganzen Verlauf löschen';
+  b.addEventListener('click', function(){ if (confirm('Ganzen Verlauf löschen?')){ put(HKEY, []); renderHist(); } });
+  all.appendChild(b); ul.appendChild(all);
 }
 renderHist();
 ui(false);
