@@ -28,6 +28,7 @@ textarea{width:100%;min-height:42vh;resize:vertical;border:1px solid var(--line)
 .interim{color:var(--muted);font-style:italic;min-height:24px;margin:-6px 4px 0;font-size:16px}
 .row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .btn{min-height:52px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 16px var(--f);cursor:pointer}
+.send{display:grid;gap:8px}.send p{margin:0;color:var(--muted);font-size:14px}
 .btn.main{background:var(--accent);border-color:var(--accent);color:#fff}
 .note{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:15px}
 .hidden{display:none}
@@ -46,7 +47,7 @@ summary{font-weight:600;cursor:pointer}
 <body>
 <div class="w">
   <div>
-    <h1>Transkript</h1>
+    <h1>Sense Engine · Transkript</h1>
     <p class="sub">Tippen, reinreden, fertig. Der Text bleibt auf deinem Handy.</p>
   </div>
 
@@ -62,6 +63,15 @@ summary{font-weight:600;cursor:pointer}
     <button class="btn main" id="copy">Kopieren</button>
     <button class="btn" id="share">Teilen</button>
     <button class="btn" id="new">Neu</button>
+  </div>
+
+  <div class="send">
+    <p>Direkt senden (Text wird auch kopiert):</p>
+    <div class="row">
+      <button class="btn main" data-to="claude">An Claude</button>
+      <button class="btn" data-to="chatgpt">An ChatGPT</button>
+      <button class="btn" data-to="hermes">An Hermes</button>
+    </div>
   </div>
 
   <div class="note hidden" id="note"></div>
@@ -241,6 +251,22 @@ function saveHist(){
 $('new').addEventListener('click', function(){
   if (want){ want = false; clearTimeout(watch); if (rec){ var o = rec; rec = null; try { o.abort(); } catch(e){} } wake(false); }
   saveHist(); ta.value = ''; put(KEY, ''); base = ''; raw = ''; skip = 0; renderHist(); ui(false); toast('Im Verlauf gespeichert');
+});
+
+/* Direkt senden: öffnet die App mit dem Text, kopiert ihn zusätzlich */
+var TARGETS = {
+  claude: function(t){ return 'https://claude.ai/new?q=' + encodeURIComponent(t); },
+  chatgpt: function(t){ return 'https://chatgpt.com/?q=' + encodeURIComponent(t); },
+  hermes: function(t){ return 'https://t.me/share/url?url=' + encodeURIComponent(t); }
+};
+Array.prototype.forEach.call(document.querySelectorAll('[data-to]'), function(b){
+  b.addEventListener('click', function(){
+    if (want){ stopAll(''); if (rec) try { rec.stop(); } catch(e){} }
+    var t = ta.value.trim(); if (!t){ toast('Noch kein Text'); return; }
+    try { if (navigator.clipboard) navigator.clipboard.writeText(t).catch(function(){}); } catch(e){}
+    saveHist(); renderHist();
+    window.open(TARGETS[b.getAttribute('data-to')](t.slice(0, 6000)), '_blank');
+  });
 });
 
 /* Verlauf */
