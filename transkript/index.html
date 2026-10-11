@@ -313,13 +313,18 @@ $('hTest').addEventListener('click', function(){
   callHermes('Antworte nur mit: Verbindung steht.').then(function(a){ showAnswer(a); toast('Verbindung steht'); }, function(e){ showAnswer('Keine Verbindung: ' + e.message); });
 });
 function showAnswer(t){ var el = $('answer'); el.textContent = ''; var h = document.createElement('b'); h.textContent = 'Hermes'; el.appendChild(h); el.appendChild(document.createTextNode(t)); el.classList.remove('hidden'); }
+// Novas Persönlichkeit für diese App kommt aus nova/seelen.js.
+function novaNachrichten(text){
+  var seele = (window.NOVA_SEELEN || {})['Transkript'];
+  return (seele ? [{ role: 'system', content: seele }] : []).concat([{ role: 'user', content: text }]);
+}
 function callHermes(text){
   var ctrl = window.AbortController ? new AbortController() : null;
   var timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, 120000) : null;
   return fetch(hAddr() + '/v1/chat/completions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + get(HKEYS.key, '') },
-    body: JSON.stringify({ model: 'hermes-agent', messages: [{ role: 'user', content: text }] }),
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + get(HKEYS.key, ''), 'X-Nova-App': 'Transkript' },
+    body: JSON.stringify({ model: 'hermes-agent', messages: novaNachrichten(text) }),
     signal: ctrl ? ctrl.signal : undefined
   }).then(function(r){
     if (r.status === 401 || r.status === 403) throw new Error('Passwort stimmt nicht.');
@@ -365,5 +370,6 @@ ui(false);
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
 })();
 </script>
+<script src="../nova/seelen.js" defer></script>
 </body>
 </html>
