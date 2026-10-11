@@ -197,6 +197,30 @@ h3.ch{font-size:19px;margin-bottom:10px}
 #s-night{text-align:center}
 #s-night h2{font-size:30px;margin:8px 0}
 .holdbtn{position:relative;overflow:hidden}
+/* Neue Bereiche */
+.tile.big4{min-height:150px;font-size:22px}
+.tile.big4 svg{width:64px;height:64px}
+.parentbtn{margin-top:16px;min-height:64px;font-size:17px;color:var(--muted);gap:10px}
+.parentbtn svg{width:30px;height:30px}
+.move-step{font-size:25px;font-weight:800;text-align:center;min-height:110px;display:flex;align-items:center;justify-content:center;line-height:1.3;padding:4px 6px}
+.count{font-size:52px;font-weight:800;text-align:center;color:var(--moon2);line-height:1}
+.talkbtn{width:100%;min-height:104px;border-radius:999px;font-size:24px;margin-top:12px}
+.talklog{display:grid;gap:8px;margin-top:12px}
+.msg{padding:10px 14px;border-radius:18px;font-size:18px;max-width:88%;word-break:break-word}
+.msg.me{justify-self:end;background:var(--sky)}
+.msg.you{justify-self:start;background:var(--hl);display:block;margin:0}
+.gcard{transition:background .3s,border-color .3s}
+.gcard.cur{border-color:var(--moon2);background:var(--hl)}
+.gcard h3{font-size:21px;margin-bottom:8px}
+.gcard p{font-size:19px;line-height:1.55;margin:0 0 12px}
+.stb{display:inline-block;border-radius:999px;padding:2px 10px;font-weight:800;font-size:13px;margin-left:6px}
+.st-eingereicht{background:#cfe0ff;color:#1d2a4f}.st-pruefung{background:#ffe08a;color:#5a3d00}.st-umgesetzt{background:#bfe8c4;color:#1d3a26}.st-nicht{background:#f6c6c6;color:#5a1d1d}
+.built{background:var(--mint);border-radius:14px;padding:10px 12px;margin:6px 0 8px;font-weight:700}
+:root:not([data-night="1"]) .built{color:#1d3a26}
+.check{display:flex;gap:12px;align-items:flex-start;font-size:15.5px;margin-top:12px;font-weight:600}
+.check input{width:30px;height:30px;flex:none;accent-color:var(--moon2);margin:0}
+.info p{margin:0 0 6px}
+.gateq{font-size:30px;font-weight:800;margin:6px 0 12px}
 </style>
 </head>
 <body>
@@ -206,8 +230,10 @@ h3.ch{font-size:19px;margin-bottom:10px}
     <linearGradient id="g-spike" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#6b4226"/><stop offset=".6" stop-color="#8d5b36"/><stop offset="1" stop-color="#d9b88c"/></linearGradient>
     <linearGradient id="g-spike2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#7a4c2c"/><stop offset="1" stop-color="#b98a5c"/></linearGradient>
     <radialGradient id="g-sbody" cx="50%" cy="38%" r="62%"><stop offset="0" stop-color="#b07e52"/><stop offset="1" stop-color="#7f5030"/></radialGradient>
-    <linearGradient id="g-nova" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4e45e"/><stop offset=".55" stop-color="#93d36a"/><stop offset="1" stop-color="#5fb862"/></linearGradient>
-    <radialGradient id="g-nglow"><stop offset="0" stop-color="#ffe680" stop-opacity=".55"/><stop offset="1" stop-color="#ffe680" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g-nova" cx="40%" cy="30%" r="75%"><stop offset="0" stop-color="#ffffff"/><stop offset=".65" stop-color="#f1f5fa"/><stop offset="1" stop-color="#cdd7e4"/></radialGradient>
+    <radialGradient id="g-nglow"><stop offset="0" stop-color="#7fe8ff" stop-opacity=".45"/><stop offset="1" stop-color="#7fe8ff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g-ncyan"><stop offset="0" stop-color="#d8fbff"/><stop offset=".5" stop-color="#6fe4ff"/><stop offset="1" stop-color="#2fb8e8" stop-opacity=".2"/></radialGradient>
+    <linearGradient id="g-nvisor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a3352"/><stop offset="1" stop-color="#121830"/></linearGradient>
     <radialGradient id="g-kiki" cx="45%" cy="35%" r="65%"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#d6f0ff"/><stop offset="1" stop-color="#9dd5fb"/></radialGradient>
     <radialGradient id="g-kglow"><stop offset="0" stop-color="#bfeaff" stop-opacity=".75"/><stop offset="1" stop-color="#bfeaff" stop-opacity="0"/></radialGradient>
     <linearGradient id="g-moon" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0a8"/><stop offset="1" stop-color="#f5bf3c"/></linearGradient>
@@ -228,11 +254,12 @@ h3.ch{font-size:19px;margin-bottom:10px}
   </div>
   <button class="letterbtn" id="homeLetter" hidden><span class="env" aria-hidden="true"><svg viewBox="0 0 64 48"><rect x="3" y="5" width="58" height="40" rx="8" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M5 9 L32 29 L59 9" fill="none" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M32 22 C27 18 26 14 29 13 C31 12.5 32 14.5 32 15 C32 14.5 33 12.5 35 13 C38 14 37 18 32 22 Z" fill="#ff7c9c"/></svg></span><span><b id="homeLetterT">Ein Brief für dich</b><small>Otti liest dir eine Gutenachtgeschichte vor</small></span></button>
   <div class="tiles">
-    <button class="tile t1" data-go="stories"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 16q12-6 24 2v36q-12-8-24-2z" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M56 16q-12-6-24 2v36q12-8 24-2z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M47 22a7 7 0 1 0 5 10 5.5 5.5 0 1 1-5-10z" fill="#f2b43a"/></svg>Geschichte</button>
-    <button class="tile t2" data-go="game"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="14" width="26" height="36" rx="6" transform="rotate(-10 21 32)" fill="#2c3c70" stroke="#1d2a4f" stroke-width="3"/><rect x="28" y="12" width="26" height="36" rx="6" transform="rotate(8 41 30)" fill="#fff" stroke="#1d2a4f" stroke-width="3"/><circle cx="41" cy="30" r="7" fill="#e8584f"/><circle cx="18" cy="26" r="2" fill="#ffd66b"/></svg>Spiel</button>
-    <button class="tile t3" data-go="idea"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 6l6 15 16 1-12 10 4 16-14-9-14 9 4-16-12-10 16-1z" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><circle cx="26" cy="30" r="2.4" fill="#1d2a4f"/><circle cx="38" cy="30" r="2.4" fill="#1d2a4f"/><path d="M27 36q5 4 10 0" stroke="#1d2a4f" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>Meine Idee</button>
-    <button class="tile t4 hold" id="parentsHold" aria-label="Für Eltern – 3 Sekunden gedrückt halten"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="28" width="36" height="28" rx="7" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M22 28v-7a10 10 0 0 1 20 0v7" fill="none" stroke="#1d2a4f" stroke-width="4"/><circle cx="32" cy="41" r="4" fill="#1d2a4f"/></svg>Für Eltern<small>3 Sek. halten</small></button>
+    <button class="tile t2 big4" data-go="games"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="12" r="7" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3"/><path d="M32 20v18M32 38l-10 16M32 38l10 16M32 26l-14-8M32 26l14-8" stroke="#1d2a4f" stroke-width="4.5" stroke-linecap="round" fill="none"/><path d="M8 58h48" stroke="#5fb26b" stroke-width="4" stroke-linecap="round"/></svg>Spiele<small>bewegen &amp; Memory</small></button>
+    <button class="tile t1 big4" data-go="stories"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 16q12-6 24 2v36q-12-8-24-2z" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M56 16q-12-6-24 2v36q12-8 24-2z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M47 22a7 7 0 1 0 5 10 5.5 5.5 0 1 1-5-10z" fill="#f2b43a"/></svg>Geschichten<small>hören &amp; erfinden</small></button>
+    <button class="tile t3 big4" data-go="talk"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 14h34a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6H24l-10 9v-9H8a6 6 0 0 1-6-6V20a6 6 0 0 1 6-6z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M50 26h6a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6h-2v7l-8-7h-6" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><circle cx="16" cy="27" r="2.6" fill="#1d2a4f"/><circle cx="25" cy="27" r="2.6" fill="#1d2a4f"/><circle cx="34" cy="27" r="2.6" fill="#1d2a4f"/></svg>Reden<small>mit Otti, Kiki &amp; Nova</small></button>
+    <button class="tile t4 big4" data-go="guide"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M40 8a22 22 0 1 0 16 34A18 18 0 0 1 40 8z" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="14" r="2.4" fill="#fff"/><path d="M14 52q4 4 8 0M26 54q4 4 8 0" stroke="#1d2a4f" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>KI-Leitfaden<small>zum Einschlafen</small></button>
   </div>
+  <button class="btn wide holdbtn hold parentbtn" id="parentsHold" aria-label="Für Eltern – 3 Sekunden gedrückt halten"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="28" width="36" height="28" rx="7" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M22 28v-7a10 10 0 0 1 20 0v7" fill="none" stroke="#1d2a4f" stroke-width="4"/><circle cx="32" cy="41" r="4" fill="#1d2a4f"/></svg>Für Eltern (3 Sek. halten)</button>
   <p class="foot">DR Lab · Testphase<br>Deine Daten bleiben auf deinem Handy.</p>
 </section>
 
@@ -275,7 +302,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 
 <!-- MEINE IDEE -->
 <section class="screen" id="s-idea" aria-label="Meine Idee">
-  <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>Meine Idee</h2><span style="width:58px"></span></div>
+  <div class="topbar"><button class="btn back" data-go="stories" aria-label="Zurück zu den Geschichten">←</button><h2>Meine Idee</h2><span style="width:58px"></span></div>
   <div class="card">
     <label class="l" for="kName">Wie heisst du?</label>
     <div class="row"><input class="in" id="kName" maxlength="24" autocomplete="off" placeholder="Dein Name"><button class="btn round mic-btn" data-mic="kName" aria-label="Namen sagen">🎤</button></div>
@@ -298,8 +325,81 @@ h3.ch{font-size:19px;margin-bottom:10px}
 </section>
 
 <!-- SPIEL -->
+<section class="screen" id="s-games" aria-label="Spiele">
+  <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>Spiele</h2><button class="btn round" data-night-toggle aria-label="Nachtmodus umschalten">🌙</button></div>
+  <div class="slist" id="glist"></div>
+  <div class="card" style="margin-top:14px">
+    <label class="l" for="gIdea">💡 Spiel ausdenken</label>
+    <p class="small muted" style="margin:0 0 8px">Sag oder schreib eine Idee, z. B. «hüpfen wie ein Frosch» oder «Zauberer». Otti macht daraus ein Bewegungsspiel.</p>
+    <div class="row"><input class="in" id="gIdea" maxlength="80" autocomplete="off" placeholder="Deine Spiel-Idee"><button class="btn round mic-btn" data-mic="gIdea" aria-label="Spiel-Idee sagen">🎤</button></div>
+    <button class="btn big primary wide" id="gIdeaGo" style="margin-top:10px">✨ Spiel bauen</button>
+  </div>
+  <p class="foot">DR Lab · Testphase · Spiele entstehen aus Vorlagen auf dem Handy.</p>
+</section>
+
+<!-- BEWEGUNGSSPIEL -->
+<section class="screen" id="s-move" aria-label="Bewegungsspiel">
+  <div class="topbar"><button class="btn back" data-go="games" aria-label="Zurück zu den Spielen">←</button><h2 id="mvTitle">Spiel</h2><span style="width:58px"></span></div>
+  <div class="stage" id="mvStage"></div>
+  <div class="card">
+    <div class="move-step" id="mvText">Bereit?</div>
+    <div class="count" id="mvCount" aria-live="polite"></div>
+    <div class="prog"><span id="mvStep">0/0</span><div class="bar"><i id="mvBar"></i></div><span id="mvPct">0%</span></div>
+    <div class="ctrl">
+      <button class="btn nav" id="mvAgain" aria-label="Von vorne">↺</button>
+      <button class="btn primary" id="mvPlay">▶ Los geht's</button>
+      <button class="btn nav" id="mvNext" aria-label="Nächster Schritt">▶</button>
+    </div>
+  </div>
+  <button class="btn wide" data-go="games">🎲 Anderes Spiel</button>
+</section>
+
+<!-- MEINE GESCHICHTE -->
+<section class="screen" id="s-mystory" aria-label="Meine Geschichte">
+  <div class="topbar"><button class="btn back" data-go="stories" aria-label="Zurück zu den Geschichten">←</button><h2>Meine Geschichte</h2><span style="width:58px"></span></div>
+  <div class="stage" id="msStage"></div>
+  <div class="card">
+    <label class="l" for="msText">Wie fängt deine Geschichte an?</label>
+    <div class="chips" id="msChips" style="margin-top:0"></div>
+    <textarea class="in" id="msText" maxlength="300" placeholder="z. B. Es war einmal ein kleiner Bär, der wollte fliegen."></textarea>
+    <div class="row" style="margin-top:10px">
+      <button class="btn mic-btn" data-mic="msText" data-append="1" aria-label="Anfang sagen" style="flex:none;min-width:64px">🎤</button>
+      <button class="btn big primary" id="msGo" style="flex:1">📖 Otti erzählt weiter</button>
+    </div>
+    <p class="hint" id="micHint4" hidden>Sprechen geht hier nicht direkt. Tipp: Auf der iPhone-Tastatur das Mikrofon antippen und diktieren.</p>
+  </div>
+  <p class="foot">DR Lab · Testphase · Die Fortsetzung entsteht aus Vorlagen auf dem Handy.</p>
+</section>
+
+<!-- REDEN -->
+<section class="screen" id="s-talk" aria-label="Reden">
+  <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>Reden</h2><button class="btn round" data-night-toggle aria-label="Nachtmodus umschalten">🌙</button></div>
+  <div class="pick" id="tkPick"></div>
+  <div class="stage" id="tkStage" style="margin-top:12px"></div>
+  <div class="card">
+    <p class="msg you" id="tkSay">Hallo! Drück auf den grossen Knopf und sag mir etwas.</p>
+    <button class="btn primary talkbtn" id="tkMic">🎤 Sprich mit Otti</button>
+    <div class="row" style="margin-top:12px"><input class="in" id="tkText" maxlength="160" autocomplete="off" placeholder="oder hier schreiben"><button class="btn" id="tkSend" style="min-width:72px">Sagen</button></div>
+    <div class="talklog" id="tkLog"></div>
+  </div>
+  <div class="card">
+    <div class="l">Sprechtempo</div>
+    <div class="seg" id="tkRate"></div>
+  </div>
+  <p class="foot">DR Lab · Testphase · Antworten aus Vorlagen auf dem Handy, keine echte KI. Es wird nichts gespeichert.</p>
+</section>
+
+<!-- KI-LEITFADEN -->
+<section class="screen" id="s-guide" aria-label="KI-Leitfaden">
+  <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>KI-Leitfaden</h2><button class="btn round" data-night-toggle aria-label="Nachtmodus umschalten">🌙</button></div>
+  <div class="stage" id="gdStage"></div>
+  <button class="btn big primary wide" id="gdAll" style="margin-bottom:14px">▶ Alles vorlesen</button>
+  <div id="gdCards"></div>
+  <p class="foot">DR Lab · Testphase</p>
+</section>
+
 <section class="screen" id="s-game" aria-label="Memory">
-  <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>Memory</h2><button class="btn round" id="gRestart" aria-label="Neu mischen">↺</button></div>
+  <div class="topbar"><button class="btn back" data-go="games" aria-label="Zurück zu den Spielen">←</button><h2>Memory</h2><button class="btn round" id="gRestart" aria-label="Neu mischen">↺</button></div>
   <div class="stats"><span id="gMoves">Züge: 0</span><span id="gPairs">Paare: 0 von 6</span></div>
   <div class="prog" style="margin-top:0"><span>Fortschritt</span><div class="bar"><i id="gBar"></i></div><span id="gPct">0%</span></div>
   <div class="mem" id="mem"></div>
@@ -312,6 +412,15 @@ h3.ch{font-size:19px;margin-bottom:10px}
     <p id="gWinText">Alle Paare gefunden.</p>
     <div class="prog"><span>Fortschritt</span><div class="bar"><i style="width:100%"></i></div><span>100%</span></div>
     <div class="grid2"><button class="btn big primary" id="gAgain">↺ Nochmal</button><button class="btn big" id="gHome">🏠 Start</button></div>
+  </div>
+</div>
+<div class="win" id="gate" role="dialog" aria-modal="true" aria-label="Elternsperre">
+  <div class="card">
+    <h3 style="font-size:22px;margin:4px 0">🔒 Nur für Eltern</h3>
+    <p class="small muted" style="margin:4px 0 0">Bitte diese Rechenaufgabe lösen:</p>
+    <div class="gateq" id="gateQ">? + ?</div>
+    <input class="in" id="gateIn" type="number" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="Ergebnis" style="text-align:center;font-size:26px">
+    <div class="grid2" style="margin-top:12px"><button class="btn big" id="gateNo">Abbrechen</button><button class="btn big primary" id="gateOk">OK</button></div>
   </div>
 </div>
 
@@ -354,6 +463,8 @@ h3.ch{font-size:19px;margin-bottom:10px}
     <h3 class="ch">Vorlesen</h3>
     <label class="small muted" for="rate">Tempo: <b id="rateLbl">ruhig</b></label>
     <input type="range" id="rate" min="0.6" max="1.15" step="0.05">
+    <label class="small muted" for="vol" style="display:block;margin-top:6px">Lautstärke: <b id="volLbl">100%</b></label>
+    <input type="range" id="vol" min="0.1" max="1" step="0.05">
     <label class="small muted" for="voiceSel" style="display:block;margin-top:6px">Stimme</label>
     <select class="in" id="voiceSel"><option value="">Automatisch (Deutsch)</option></select>
     <button class="btn wide" id="rateTest" style="margin-top:10px">🔊 Probe hören</button>
@@ -372,17 +483,44 @@ h3.ch{font-size:19px;margin-bottom:10px}
   </div>
 
   <div class="card">
-    <h3 class="ch">Idee an DR Lab</h3>
-    <p class="small muted" style="margin:0 0 6px">Wünsche, Kritik, Ideen – alles willkommen. Wird nur hier gespeichert. Mit «Teilen» schickst du sie selbst als Text (z. B. per Nachricht oder Mail).</p>
+    <h3 class="ch">Idee einreichen</h3>
+    <p class="small muted" style="margin:0 0 6px">Wünsche, Kritik, Ideen – alles willkommen. So geht's: Idee sprechen oder tippen, Häkchen setzen, einreichen. Die Idee wird auf diesem Handy gespeichert. Mit «Teilen» schickst du sie selbst als Text an DR Lab (z. B. per Nachricht oder Mail). Bitte keine Namen oder persönlichen Daten hineinschreiben.</p>
     <div class="chips" id="chips"></div>
     <textarea class="in" id="ideaText" maxlength="1500" placeholder="Deine Idee …"></textarea>
+    <label class="check"><input type="checkbox" id="ideaOk"> <span>Ich bin einverstanden, dass DR Lab meine Idee lesen und für die App verwenden darf.</span></label>
     <div class="row" style="margin-top:10px">
       <button class="btn mic-btn" data-mic="ideaText" data-append="1" aria-label="Idee sprechen" style="flex:none;min-width:64px">🎤</button>
-      <button class="btn primary" id="ideaSave" style="flex:1">Idee speichern</button>
+      <button class="btn primary" id="ideaSave" style="flex:1">Idee einreichen</button>
     </div>
     <p class="hint" id="micHint2" hidden>Sprechen geht hier nicht direkt. Tipp: Auf der iPhone-Tastatur das Mikrofon antippen und diktieren.</p>
+  </div>
+
+  <div class="card" id="myIdeas">
+    <h3 class="ch">Meine Ideen</h3>
+    <p class="small muted" style="margin:0">Status: <span class="stb st-eingereicht">eingereicht</span><span class="stb st-pruefung">in Prüfung</span><span class="stb st-umgesetzt">umgesetzt</span><span class="stb st-nicht">nicht umgesetzt</span></p>
     <div id="ideaList"></div>
     <button class="btn wide" id="ideaShareAll" style="margin-top:10px" hidden>📤 Alle Ideen teilen</button>
+  </div>
+
+  <div class="card info">
+    <h3 class="ch">🔒 Datenschutz</h3>
+    <p>Alles bleibt auf diesem Handy: Einstellungen, Botschaften, Ideen. Es gibt kein Konto, keinen Server und keine Werbung. Mondschein sendet nichts ins Internet.</p>
+    <p class="small muted">Gesprochenes wird nur zum Verstehen kurz vom Gerät (z. B. Apple-Diktat) umgewandelt und nicht gespeichert.</p>
+  </div>
+  <div class="card info">
+    <h3 class="ch">✉️ Kontakt</h3>
+    <p>DR Lab, Zürich<br>E-Mail: drobert@gmx.ch</p>
+  </div>
+  <div class="card info">
+    <h3 class="ch">⭐ Abo-Info</h3>
+    <p>Testphase gratis.</p>
+    <p>Später: 1 Monat gratis, dann CHF 4.90 pro Monat.</p>
+    <p class="small muted">Nur zur Information – hier kann man nichts kaufen.</p>
+  </div>
+  <div class="card info">
+    <h3 class="ch">💡 Kauf mit deinen Ideen</h3>
+    <p>Bald kannst du auch mit deinen Ideen bezahlen.</p>
+    <p class="small muted">Nur zur Information.</p>
   </div>
 
   <button class="btn big primary wide" data-go="home">← Zurück zum Kinderbereich</button>
@@ -411,7 +549,7 @@ const store = {
   get(k, d){ try{ const v = localStorage.getItem('ms_'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
   set(k, v){ try{ localStorage.setItem('ms_'+k, JSON.stringify(v)); }catch(e){} }
 };
-const S = Object.assign({rate:0.85, limit:0, night:'auto', voice:'', name:''}, store.get('settings', {}));
+const S = Object.assign({rate:0.85, vol:1, limit:0, night:'auto', voice:'', name:''}, store.get('settings', {}));
 const saveS = () => store.set('settings', S);
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
@@ -474,34 +612,32 @@ function sunnySVG(o={}){
 </svg>`;
 }
 function novaSVG(o={}){
-  const sleep = o.sleep;
-  return `<svg class="fig ${o.cls||''} ${sleep?'asleep':''}" viewBox="0 0 200 210" role="img" aria-label="Nova, der kleine Drache">
-  <circle cx="100" cy="120" r="92" fill="url(#g-nglow)"/>
-  <ellipse cx="100" cy="202" rx="50" ry="6" fill="#000" opacity=".08"/>
-  <g class="tail"><path d="M132 172 Q176 178 178 148 Q179 130 164 128 Q172 140 166 152 Q158 164 128 160 Z" fill="url(#g-nova)"/><path d="M162 126 Q170 112 178 116 Q172 124 172 134 Z" fill="#f2c94c"/></g>
-  <path class="flap l" d="M72 140 Q30 120 34 84 Q48 98 58 94 Q56 116 80 124 Z" fill="#b6e690" stroke="#e8c446" stroke-width="3" stroke-linejoin="round"/>
-  <path class="flap r" d="M128 140 Q170 120 166 84 Q152 98 142 94 Q144 116 120 124 Z" fill="#b6e690" stroke="#e8c446" stroke-width="3" stroke-linejoin="round"/>
+  const sleep = o.sleep, wave = o.wave;
+  const eye = (x, d) => sleep
+    ? `<path d="M${x-9} 94 Q${x} 101 ${x+9} 94" fill="none" stroke="#6fe4ff" stroke-width="4.5" stroke-linecap="round"/>`
+    : `<g class="blink" style="animation-delay:-${d}s"><circle cx="${x}" cy="92" r="11" fill="#0f2a3d"/><circle cx="${x}" cy="92" r="9.5" fill="none" stroke="#6fe4ff" stroke-width="5"/><circle cx="${x+3}" cy="88.5" r="2.2" fill="#e8fdff"/></g>`;
+  const d = rnd(0,5);
+  return `<svg class="fig ${o.cls||''} ${sleep?'asleep':''}" viewBox="0 0 200 210" role="img" aria-label="Nova, der kleine weisse Roboter">
+  <circle class="glow" cx="100" cy="128" r="88" fill="url(#g-nglow)"/>
+  <ellipse cx="100" cy="202" rx="42" ry="6" fill="#2fb8e8" opacity=".18"/>
   <g class="breathe">
-  <ellipse cx="100" cy="160" rx="42" ry="38" fill="url(#g-nova)"/>
-  <ellipse cx="100" cy="167" rx="26" ry="27" fill="#f9f1c4"/>
-  <g fill="none" stroke="#e8d888" stroke-width="2" stroke-linecap="round"><path d="M82 155 Q100 160 118 155"/><path d="M79 168 Q100 173 121 168"/><path d="M83 181 Q100 185 117 181"/></g>
-  <ellipse cx="62" cy="160" rx="9" ry="13" transform="rotate(22 62 160)" fill="#86cf6a"/><ellipse cx="138" cy="160" rx="9" ry="13" transform="rotate(-22 138 160)" fill="#86cf6a"/>
-  <ellipse cx="80" cy="196" rx="15" ry="8" fill="#5fb862"/><ellipse cx="120" cy="196" rx="15" ry="8" fill="#5fb862"/>
-  <path d="M74 56 Q66 34 78 28 Q82 42 90 50 Z" fill="#f2c94c" stroke="#f2c94c" stroke-width="5" stroke-linejoin="round"/>
-  <path d="M126 56 Q134 34 122 28 Q118 42 110 50 Z" fill="#f2c94c" stroke="#f2c94c" stroke-width="5" stroke-linejoin="round"/>
-  <path d="M52 92 Q34 84 38 70 Q50 78 60 82 Z" fill="#b6e690" stroke="#e8c446" stroke-width="2.5" stroke-linejoin="round"/>
-  <path d="M148 92 Q166 84 162 70 Q150 78 140 82 Z" fill="#b6e690" stroke="#e8c446" stroke-width="2.5" stroke-linejoin="round"/>
-  <circle cx="100" cy="92" r="47" fill="url(#g-nova)"/>
-  <circle cx="100" cy="47" r="7" fill="#f2c94c"/><circle cx="88" cy="50" r="5" fill="#f2c94c"/><circle cx="112" cy="50" r="5" fill="#f2c94c"/>
-  <ellipse cx="100" cy="114" rx="28" ry="17" fill="#cdee9f"/>
-  <ellipse cx="91" cy="109" rx="2.8" ry="2.1" fill="#4c7d3c"/><ellipse cx="109" cy="109" rx="2.8" ry="2.1" fill="#4c7d3c"/>
-  ${sleep ? SLEEPY(80,120,90,'#2e4a24') : EYES2(80,120,88,12,14,'#26331f','#a8741a')}
-  ${sleep ? '' : `<g fill="none" stroke="#4f8a3c" stroke-width="2.6" stroke-linecap="round" opacity=".7"><path d="M70 68 Q78 64 86 67"/><path d="M114 67 Q122 64 130 68"/></g>`}
-  <ellipse cx="66" cy="106" rx="8" ry="5" fill="#f4978e" opacity=".55"/><ellipse cx="134" cy="106" rx="8" ry="5" fill="#f4978e" opacity=".55"/>
-  ${sleep ? `<path d="M93 120 Q100 124 107 120" fill="none" stroke="#3f6b33" stroke-width="2.6" stroke-linecap="round"/>`
-          : `<path d="M89 118 Q100 130 111 118 Q100 122 89 118 Z" fill="#7a3a2e" stroke="#3f6b33" stroke-width="2" stroke-linejoin="round"/><path d="M93 119.5 l2.5 4 l2.5 -3.4 z" fill="#fff"/>`}
+  <ellipse cx="84" cy="194" rx="13" ry="7" fill="#cdd7e4" stroke="#b3c0d2" stroke-width="2"/><ellipse cx="116" cy="194" rx="13" ry="7" fill="#cdd7e4" stroke="#b3c0d2" stroke-width="2"/>
+  <g><path d="M66 150 Q50 156 50 172" fill="none" stroke="#e3e9f1" stroke-width="11" stroke-linecap="round"/><circle cx="50" cy="176" r="8" fill="#ffffff" stroke="#c4cfdd" stroke-width="2"/></g>
+  <g class="${wave?'kwave':''}"><path d="M134 150 Q150 ${wave?140:156} 152 ${wave?122:172}" fill="none" stroke="#e3e9f1" stroke-width="11" stroke-linecap="round"/><circle cx="152" cy="${wave?118:176}" r="8" fill="#ffffff" stroke="#c4cfdd" stroke-width="2"/></g>
+  <path d="M100 136 C128 136 140 152 140 168 C140 186 124 194 100 194 C76 194 60 186 60 168 C60 152 72 136 100 136 Z" fill="url(#g-nova)" stroke="#c4cfdd" stroke-width="2"/>
+  <ellipse class="glow" cx="100" cy="170" rx="21" ry="14" fill="url(#g-ncyan)"/>
+  <ellipse cx="100" cy="170" rx="9" ry="5" fill="#e8fdff" opacity=".8"/>
+  <rect x="88" y="128" width="24" height="12" rx="6" fill="#dfe6ef"/>
+  <circle cx="53" cy="92" r="13" fill="#e3e9f1" stroke="#c4cfdd" stroke-width="2"/><circle cx="53" cy="92" r="6.5" fill="#cdd7e4"/>
+  <circle cx="147" cy="92" r="13" fill="#e3e9f1" stroke="#c4cfdd" stroke-width="2"/><circle cx="147" cy="92" r="6.5" fill="#cdd7e4"/>
+  <circle cx="100" cy="90" r="46" fill="url(#g-nova)" stroke="#c4cfdd" stroke-width="2"/>
+  <ellipse cx="80" cy="58" rx="15" ry="7" transform="rotate(-24 80 58)" fill="#fff" opacity=".9"/>
+  <rect x="64" y="70" width="72" height="46" rx="23" fill="url(#g-nvisor)"/>
+  <rect x="70" y="73" width="30" height="7" rx="3.5" fill="#fff" opacity=".1"/>
+  ${eye(85, d)}${eye(115, d)}
+  ${sleep ? '' : `<path d="M93 106 Q100 111 107 106" fill="none" stroke="#6fe4ff" stroke-width="3" stroke-linecap="round" opacity=".85"/>`}
   </g>
-  <g fill="#ffe27a"><path class="twinkle" d="M30 40 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z"/><path class="twinkle t2" d="M170 28 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/></g>
+  <g fill="#9fefff"><path class="twinkle" d="M30 46 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z"/><path class="twinkle t2" d="M170 30 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/></g>
   ${sleep ? ZZ : ''}
 </svg>`;
 }
@@ -584,7 +720,7 @@ const TTS = {
       const text = this.clean(list[i]);
       const u = new SpeechSynthesisUtterance(text);
       const v = this.voice(); if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'de-DE';
-      u.rate = S.rate * (o.rateMul || 1); u.pitch = 1.05;
+      u.rate = S.rate * (o.rateMul || 1); u.pitch = o.pitch || 1.05; u.volume = Math.max(0, Math.min(1, S.vol == null ? 1 : +S.vol));
       let done = false;
       const fin = () => { if (done || tok !== this.token) return; done = true; clearTimeout(this.timer); i++; setTimeout(next, o.gap || 480); };
       u.onend = fin; u.onerror = fin;
@@ -641,6 +777,8 @@ function go(id){
   TTS.stop();
   if (rec){ try{ rec.abort(); }catch(e){} }
   if (typeof stopLong === 'function') stopLong();
+  if (typeof stopMove === 'function') stopMove();
+  if (typeof gdStop === 'function') gdStop();
   if (id !== 'parents' && id !== 'night' && limitReached()){ id = 'night'; }
   $$('.screen').forEach(s => s.classList.toggle('on', s.id === 's-'+id));
   current = id;
@@ -648,6 +786,10 @@ function go(id){
   if (id==='home') renderHome();
   if (id==='stories') renderStoryList();
   if (id==='game' && !game.cards.length) newGame();
+  if (id==='games') renderGames();
+  if (id==='mystory') renderMyStory();
+  if (id==='talk') renderTalk();
+  if (id==='guide') renderGuide();
   if (id==='idea') renderIdea();
   if (id==='parents') renderParents();
   if (id==='night') showNight();
@@ -700,8 +842,21 @@ function holdButton(el, onDone){
   el.addEventListener('keyup', e => { if (e.key===' '||e.key==='Enter') end(e); });
   el.addEventListener('click', e => e.preventDefault());
 }
-holdButton($('#parentsHold'), () => go('parents'));
-holdButton($('#nightHold'), () => go('parents'));
+/* danach: kleine Rechenaufgabe */
+const gate = {a:0, b:0};
+function newGateQ(){ gate.a = 6 + Math.floor(Math.random()*10); gate.b = 3 + Math.floor(Math.random()*7); $('#gateQ').textContent = `${gate.a} + ${gate.b} = ?`; $('#gateIn').value = ''; }
+function openGate(){ TTS.stop(); newGateQ(); $('#gate').classList.add('on'); setTimeout(() => { try{ $('#gateIn').focus(); }catch(e){} }, 80); }
+function closeGate(){ $('#gate').classList.remove('on'); }
+function checkGate(){
+  const v = parseInt($('#gateIn').value, 10);
+  if (v === gate.a + gate.b){ closeGate(); go('parents'); }
+  else { toast('Leider nicht richtig – hier ist eine neue Aufgabe.'); newGateQ(); $('#gateIn').focus(); }
+}
+$('#gateOk').addEventListener('click', checkGate);
+$('#gateNo').addEventListener('click', closeGate);
+$('#gateIn').addEventListener('keydown', e => { if (e.key === 'Enter') checkGate(); });
+holdButton($('#parentsHold'), openGate);
+holdButton($('#nightHold'), openGate);
 
 /* ---------- Geschichten ---------- */
 const STORIES = [
@@ -715,7 +870,7 @@ const STORIES = [
    after:'Otti schaute {ort} nach. Und tatsächlich! Da sass der Mondstrahl. Er war ganz klein, und er leuchtete ein bisschen traurig.', pic:['sunny','mush']},
   {t:'«Ich möchte nach Hause zum Mond», piepste der Mondstrahl. «Aber der Himmel ist so hoch, und ich bin so klein.» Otti kratzte sich an der Nase. «Hm», sagte er. «Allein ist es schwer. Aber zusammen geht es leichter.»', pic:['sunny','moon']},
   {q:'Wen soll Otti um Hilfe bitten?', opts:[
-    {e:'🐉', l:'Nova', k:['nova','drache'], v:{helfer:'Nova', how:'Nova, der kleine Drache, breitete seine goldgrünen Flügel aus. «Steigt auf!», rief er fröhlich. Otti hielt sich gut fest, der Mondstrahl kuschelte sich in sein Halstuch. Und schon flogen sie los.', hp:'nova'}},
+    {e:'🤖', l:'Nova', k:['nova','roboter'], v:{helfer:'Nova', how:'Nova, der kleine weisse Roboter, liess aus seinem Helm einen kleinen Propeller wachsen. Surr, surr. «Haltet euch fest!», piepste er fröhlich, und seine runden Augen leuchteten hellblau. Otti hielt sich gut fest, der Mondstrahl kuschelte sich in sein Halstuch. Und ganz sanft schwebten sie los.', hp:'nova'}},
     {e:'✨', l:'Kiki', k:['kiki'], v:{helfer:'Kiki', how:'Kiki blinkte vor Freude. «Ich kann leuchten! Ich zeige euch den Weg!» Kiki flog voraus, zuerst ein bisschen in die falsche Richtung. «Hoppla», kicherte Kiki, drehte um und leuchtete den Weg ganz hell.', hp:'kiki'}},
     {e:'🦉', l:'Frau Eule', k:['eule'], v:{helfer:'Frau Eule', how:'Frau Eule plusterte ihre Federn auf. «Haltet euch gut fest», sagte sie mit ihrer ruhigen, tiefen Stimme. Und leise wie ein fallendes Blatt flog sie mit ihnen los.', hp:'moon'}}],
    after:'{how}', pic:['sunny','{hp}']},
@@ -736,7 +891,7 @@ const STORIES = [
     {e:'💛', l:'Goldi', k:['goldi','gold'], v:{stern:'Goldi'}},
     {e:'🫧', l:'Blubb', k:['blubb','blub'], v:{stern:'Blubb'}}],
    after:'«Du heisst ab jetzt {stern}!», rief Kiki. Und der Stern blinkte zurück, ganz hell, als ob er sich freuen würde.', pic:['kiki','moon']},
-  {t:'Da schwebte etwas Kleines, Leuchtendes vorbei. «Noch ein Stern!», rief Kiki. «Achtzehn!» Nova kicherte. «Kiki, das ist doch ein Glühwürmchen!» Das Glühwürmchen winkte freundlich und flog weiter.', pic:['fly','nova']},
+  {t:'Da schwebte etwas Kleines, Leuchtendes vorbei. «Noch ein Stern!», rief Kiki. «Achtzehn!» Nova kicherte leise. «Piep! Kiki, das ist doch ein Glühwürmchen!» Das Glühwürmchen winkte freundlich und flog weiter.', pic:['fly','nova']},
   {t:'Kiki blinkte nachdenklich. «Sterne sind weit, weit weg. Glühwürmchen sind ganz nah. Jetzt weiss ich es!» Kiki leuchtete vor Stolz. «Blink, blink, ich lerne noch. Und Fragen hilft!»', pic:['kiki-wave']},
   {q:'Wie viele Sterne gibt es wohl? Was glaubst du?', opts:[
     {e:'🌟', l:'Ganz viele', k:['viele','ganz'], v:{tipp:'ganz, ganz viele'}},
@@ -746,27 +901,27 @@ const STORIES = [
   {t:'Kiki machte die Lichter ganz klein, bis nur noch ein sanftes Glimmen übrig war. «Morgen zähle ich weiter», flüsterte Kiki. «Pausen sind auch schön.» Hoch oben funkelte {stern}, als wollte er sagen: Ich passe auf dich auf.', pic:['kiki-sleep','moon']},
   {t:'«Gute Nacht, {stern}», flüsterte Kiki. «Gute Nacht, Otti. Gute Nacht, Nova.» Blink … blink … Und dann wurde es ganz still im Mondschein-Land.', pic:['kiki-sleep','sunny-sleep']}
  ]},
- { id:'nova', title:'Nova kann nicht einschlafen', sub:'Ein kleiner Drache mit Schluckauf.', pic:['nova'], parts:[
-  {t:'Nova, der kleine Drache, lag in seiner Höhle aus weichem Moos. Seine Schuppen schimmerten goldgrün, wie Blätter in der Abendsonne. Draussen war es schon dunkel. Aber Nova konnte einfach nicht einschlafen.', pic:['nova']},
-  {t:'«Hicks!», machte Nova. Und aus seiner Nase flog ein winziger, warmer Funke. «Hicks!» Noch ein Fünkchen. «Hicks!» Und noch eins. Da kam Otti vorbei. «Oje, Nova», sagte er. «Du hast ja Schluckauf!»', pic:['nova','sunny']},
-  {q:'Was hilft Nova gegen den Schluckauf?', opts:[
-    {e:'🌬️', l:'Tief atmen', k:['atmen','atem','luft'], v:{hilfe:'Nova atmete tief ein, so tief, dass sein Bauch ganz rund wurde. Und dann ganz langsam wieder aus. Magst du mitmachen? Einatmen … und ausatmen. Einmal. Zweimal. Dreimal.'}},
-    {e:'💧', l:'Wasser trinken', k:['wasser','trinken'], v:{hilfe:'Nova trank drei kleine Schlucke Wasser aus dem Bach. Gluck. Gluck. Gluck.'}},
-    {e:'🙃', l:'Kopfstand', k:['kopf','stand'], v:{hilfe:'Nova versuchte einen Kopfstand. Er wackelte hin und her und plumpste kichernd ins weiche Moos.'}}],
-   after:'{hilfe} Nova horchte. Kein Hicks mehr. Der Schluckauf war weg!', pic:['nova']},
+ { id:'nova', title:'Nova kann nicht einschlafen', sub:'Ein kleiner Roboter mit Piep-Schluckauf.', pic:['nova'], parts:[
+  {t:'Nova, der kleine weisse Roboter, lag in seinem Körbchen aus weichem Moos. Sein runder Helm glänzte wie ein Kieselstein im Mondlicht, und auf seinem Bauch schimmerte ein sanftes blaues Licht. Draussen war es schon dunkel. Aber Nova konnte einfach nicht einschlafen.', pic:['nova']},
+  {t:'«Piep!», machte Nova. Und seine Augen blinkten ganz schnell: blink-blink. «Piep!» Noch einmal. «Piep-piep!» Und noch einmal. Da kam Otti vorbei und musste lächeln. «Oje, Nova», sagte er. «Du hast ja einen Piep-Schluckauf!»', pic:['nova','sunny']},
+  {q:'Was hilft Nova gegen den Piep-Schluckauf?', opts:[
+    {e:'🌬️', l:'Tief atmen', k:['atmen','atem','luft'], v:{hilfe:'Nova tat so, als würde er ganz tief einatmen. Sein Bauchlicht wurde dabei hell und rund. Und dann ganz langsam wieder dunkler. Magst du mitmachen? Einatmen … und ausatmen. Einmal. Zweimal. Dreimal.'}},
+    {e:'🔘', l:'Neu starten', k:['neu','start','knopf'], v:{hilfe:'Nova drückte den kleinen Knopf an seinem Ohr. Summ … sein Licht ging ganz kurz aus. Und dann wieder an. Blink.'}},
+    {e:'🙃', l:'Kopfstand', k:['kopf','stand'], v:{hilfe:'Nova versuchte einen Kopfstand. Er wackelte hin und her und plumpste kichernd ins weiche Moos. Piep-hihi!'}}],
+   after:'{hilfe} Nova horchte. Kein Hicks mehr. Der Piep-Schluckauf war weg!', pic:['nova']},
   {t:'«Danke, Otti!», sagte Nova. «Aber jetzt bin ich hellwach.» Otti setzte sich neben ihn ins Moos. «Weisst du was?», sagte er. «Ich kenne einen Trick zum Einschlafen.»', pic:['nova','sunny']},
   {q:'Welchen Trick soll Otti zeigen?', opts:[
     {e:'🐑', l:'Schäfchen zählen', k:['schaf','zählen'], v:{trick:'Die beiden zählten Schäfchen, die über einen kleinen Zaun hüpften. Eins … zwei … drei … Ein Schäfchen gähnte sogar.'}},
     {e:'🎶', l:'Lied summen', k:['lied','summen','singen'], v:{trick:'Otti summte ein leises Lied, so leise wie der Wind in den Blättern. Mmm … mmm … mmm …'}},
     {e:'☁️', l:'An Wolken denken', k:['wolke'], v:{trick:'Die beiden stellten sich eine weiche Wolke vor. Sie legten sich darauf, und die Wolke schwebte ganz langsam über den Himmel.'}}],
    after:'{trick}', pic:['sunny','nova']},
-  {t:'Novas Augen wurden schwer. Seine Schuppen leuchteten nur noch ganz sanft, wie eine kleine Nachtlampe. Sein Schwanz rollte sich um ihn herum, rund wie ein Schneckenhaus.', pic:['nova-sleep']},
+  {t:'Novas runde Augen wurden ganz schmal. Sein Bauchlicht leuchtete nur noch ganz sanft, wie eine kleine Nachtlampe. Er zog seine Ärmchen ein und machte sich klein und rund, wie ein Kieselstein.', pic:['nova-sleep']},
   {q:'Womit soll Otti Nova zudecken?', opts:[
     {e:'🍃', l:'Mit Blättern', k:['blatt','blätter'], v:{decke:'einer Decke aus weichen Blättern'}},
     {e:'🌸', l:'Mit Blüten', k:['blüte','blume'], v:{decke:'lauter duftenden Blütenblättern'}},
     {e:'☁️', l:'Mit einer Wolke', k:['wolke'], v:{decke:'einem kleinen Stück Wolke'}}],
    after:'Otti deckte Nova mit {decke} zu. «So», sagte er leise. «Jetzt ist es gemütlich.»', pic:['sunny','nova-sleep']},
-  {t:'«Bleibst du noch ein bisschen?», murmelte Nova. «Natürlich», sagte Otti und kuschelte sich an Novas warmen Bauch. Draussen schien der Mond. Die Glühwürmchen machten ihre Lichter aus, eins nach dem anderen. Und bald schliefen der kleine Drache und der kleine Igel tief und fest.', pic:['sunny-sleep','nova-sleep']}
+  {t:'«Bleibst du noch ein bisschen?», murmelte Nova. «Natürlich», sagte Otti und kuschelte sich an Novas warm leuchtenden Bauch. Draussen schien der Mond. Die Glühwürmchen machten ihre Lichter aus, eins nach dem anderen. Und bald schliefen der kleine Roboter und der kleine Igel tief und fest.', pic:['sunny-sleep','nova-sleep']}
  ]},
  { id:'meer', title:'Otti fährt ans Meer', sub:'Ferien! Mit Kiki und Nova.', pic:['sunny','kiki'], parts:[
   {t:'Heute war ein besonderer Tag: Otti hatte Ferien! Er packte seinen kleinen Rucksack und summte dabei ein Lied. Sein gelbes Halstuch flatterte vor Freude.', pic:['sunny-wave']},
@@ -779,7 +934,7 @@ const STORIES = [
   {q:'Wie reisen die drei ans Meer?', opts:[
     {e:'🚂', l:'Mit dem Zug', k:['zug','bahn'], v:{reise:'Der kleine Zug ratterte gemütlich durch Wiesen und Wälder. Tschu-tschu, tschu-tschu.'}},
     {e:'⛵', l:'Mit dem Boot', k:['boot','schiff'], v:{reise:'Das kleine Boot schaukelte sanft den Fluss hinunter, immer weiter, bis ans Meer.'}},
-    {e:'🐉', l:'Auf Nova', k:['nova','drache','fliegen'], v:{reise:'Nova flog mit allen auf dem Rücken über Berge und Seen. Unten glitzerte das Wasser wie tausend kleine Sterne.'}}],
+    {e:'🚀', l:'Mit Novas Rakete', k:['nova','roboter','rakete','fliegen'], v:{reise:'Nova klappte eine kleine, runde Rakete auf. Alle stiegen ein, und ganz sanft schwebten sie über Berge und Seen. Unten glitzerte das Wasser wie tausend kleine Sterne. Piep, piep, sang Nova.'}}],
    after:'{reise}', pic:['sunny','nova']},
   {t:'Am Meer roch es nach Salz und Sonne. Die Wellen kamen und gingen. Schschsch, sang das Meer. Schschsch. Otti grub seine Füsse in den warmen Sand und kicherte, weil es kitzelte.', pic:['sunny']},
   {q:'Was finden sie am Strand?', opts:[
@@ -806,7 +961,9 @@ function renderStoryList(){
     <button class="sitem lt" data-letter="1">
       <span class="ic"><svg viewBox="0 0 64 48" style="width:52px;height:40px" aria-hidden="true"><rect x="3" y="5" width="58" height="40" rx="8" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M5 9 L32 29 L59 9" fill="none" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M32 22 C27 18 26 14 29 13 C31 12.5 32 14.5 32 15 C32 14.5 33 12.5 35 13 C38 14 37 18 32 22 Z" fill="#ff7c9c"/></svg></span>
       <span><b>${esc('Ein Brief von '+L.from)}</b><span class="sub">Eine Gutenachtgeschichte nur für dich.</span></span>
-    </button>` : '') + STORIES.map((s,i) => `
+    </button>` : '') + `
+    <button class="sitem" data-go="mystory"><span class="ic" style="background:var(--peach)"><span style="font-size:42px" aria-hidden="true">🗣️</span></span><span><b>Meine Geschichte</b><span class="sub">Du fängst an – Otti erzählt weiter.</span></span></button>
+    <button class="sitem" data-go="idea"><span class="ic" style="background:var(--mint)"><span style="font-size:42px" aria-hidden="true">⭐</span></span><span><b>Meine Idee</b><span class="sub">Name, Lieblingsding, Freund und Ort wählen.</span></span></button>` + STORIES.map((s,i) => `
     <button class="sitem" data-story="${i}">
       <span class="ic">${figHTML(s.pic[0])}</span>
       <span><b>${esc(s.title)} ${done[s.id] ? '<span class="star" title="schon gehört">★</span>' : ''}</b><span class="sub">${esc(s.sub)}</span></span>
@@ -948,13 +1105,14 @@ function finishStory(){
   const nm = (R.story.kid || S.name);
   const txt = R.story.letter ? `Gute Nacht${nm ? ', '+nm : ''}. Träum etwas Liebes. ${R.story.letter.from} ${/\bund\b|eltern|familie|\bwir\b/i.test(R.story.letter.from)?'sind':'ist'} ganz nah.` : `Gute Nacht${nm ? ', '+nm : ''}. Schlaf schön und träum etwas Liebes.`;
   $('#rEndText').textContent = txt;
-  $('#rOther').textContent = (R.story.mine || R.story.letter) ? '✨ Neue Version' : '📖 Andere';
+  $('#rOther').textContent = (R.story.mine || R.story.letter || R.story.my) ? '✨ Neue Version' : '📖 Andere';
   TTS.speak(['Ende.', txt], {rateMul:.92});
   window.scrollTo(0,0);
 }
 $('#rAgain').addEventListener('click', () => openStory(R.story));
 $('#rOther').addEventListener('click', () => {
   if (R.story.mine) makeStory();
+  else if (R.story.my) openStory(myStory(R.story.my, (R.story.ver||0)+1));
   else if (R.story.letter){ const st = letterStory(R.story.letter, (R.story.ver||0)+1); st.back = R.story.back; openStory(st); }
   else go('stories');
 });
@@ -964,7 +1122,7 @@ $('#readerBack').addEventListener('click', () => go(R.story && R.story.back ? R.
 const FRIENDS = {
   sunny:{l:'Otti', intro:'Da raschelte es im Gras, und Otti, der kleine Igel mit dem gelben Halstuch, streckte frech die Nase heraus. «Darf ich mitkommen?», fragte er und zwinkerte.'},
   kiki:{l:'Kiki', intro:'Da blinkte es neben {N}: Kiki, die kleine leuchtende KI, schwebte heran. «Ich will mit! Ich lerne so gern Neues», piepste Kiki.'},
-  nova:{l:'Nova', intro:'Da leuchtete es goldgrün am Himmel: Nova, der kleine Drache, landete sanft neben {N}. «Ein Abenteuer? Ich bin dabei!», rief er.'}
+  nova:{l:'Nova', intro:'Da leuchtete es hellblau: Nova, der kleine weisse Roboter, rollte leise surrend neben {N}. Seine runden Augen blinkten. «Ein Abenteuer? Piep! Ich bin dabei!», rief er.'}
 };
 const PLACES = {
   wald:{e:'🌲', l:'Wald', intro:['ging {N} in den Mondschein-Wald, wo die Bäume leise rauschen','spazierte {N} zum Rand des Mondschein-Waldes'],
@@ -1088,6 +1246,289 @@ $('#gRestart').addEventListener('click', () => { newGame(); toast('Neu gemischt!
 $('#gAgain').addEventListener('click', newGame);
 $('#gHome').addEventListener('click', () => { $('#gWin').classList.remove('on'); newGame(); go('home'); });
 
+/* ---------- Spiele: Bewegungsspiele ---------- */
+const MOVES = [
+ {id:'rollen', title:'Rollen wie Otti', fig:'sunny', sub:'Klein machen, rollen, strecken.', steps:[
+  ['Hallo, ich bin Otti! Wir machen uns ganz klein, wie eine Igelkugel. Kopf runter, Arme um die Knie.', 8],
+  ['Jetzt rollen wir ganz sanft hin und her. Hin … und her.', 10],
+  ['Und jetzt strecken wir uns ganz gross, wie ein Igel am Morgen. Arme hoch!', 8],
+  ['Noch einmal klein wie eine Kugel. Schön rund und kuschelig.', 6],
+  ['Und langsam wieder aufstehen. Super gemacht!', 3]]},
+ {id:'robotanz', title:'Roboter-Tanz mit Nova', fig:'nova', sub:'Eckig tanzen, piep!', steps:[
+  ['Piep! Ich bin Nova. Wir tanzen wie Roboter. Mach die Arme ganz eckig, so wie ich.', 8],
+  ['Kopf nach links. Piep. Kopf nach rechts. Piep.', 8],
+  ['Jetzt kleine Roboter-Schritte auf der Stelle. Tapp, tapp, tapp.', 10],
+  ['Einfrieren! Ganz still stehen, wie ein Roboter in der Pause.', 5],
+  ['Und wieder an: Arme wackeln, Bauch leuchtet! Piep-piep!', 8],
+  ['Tanz fertig. Du bist ein super Roboter!', 3]]},
+ {id:'mondsprung', title:'Mondsprung', fig:'moon', sub:'Hüpfen wie auf dem Mond.', steps:[
+  ['Auf dem Mond ist alles ganz leicht. Wir hüpfen langsam, wie in Zeitlupe.', 10],
+  ['Jetzt grosse Mondsprünge nach vorne … und wieder zurück.', 10],
+  ['Hüpf auf einem Bein, ganz leicht.', 6],
+  ['Und jetzt auf dem anderen Bein.', 6],
+  ['Landen! Ganz weich in die Knie. Willkommen zurück auf der Erde.', 4]]},
+ {id:'leise', title:'Leise wie Kiki', fig:'kiki', sub:'Schleichen und leuchten.', steps:[
+  ['Blink, blink. Ich bin Kiki. Wir schleichen ganz leise auf Zehenspitzen.', 10],
+  ['Jetzt leuchten wir: Arme auf, Finger auseinander, wie kleine Sterne.', 6],
+  ['Und Licht aus: Hände zu, ganz klein machen.', 5],
+  ['Noch einmal leuchten … und Licht aus.', 6],
+  ['Jetzt atmen wir zusammen: einatmen … und ausatmen.', 8],
+  ['Wunderbar leise. Danke fürs Mitmachen!', 3]]}
+];
+function renderGames(){
+  $('#glist').innerHTML = MOVES.map((g,i) => `
+    <button class="sitem" data-move="${i}"><span class="ic">${figHTML(g.fig)}</span><span><b>${esc(g.title)}</b><span class="sub">${esc(g.sub)}</span></span></button>`).join('') + `
+    <button class="sitem" data-go="game"><span class="ic" style="background:var(--mint)"><span style="font-size:42px" aria-hidden="true">🃏</span></span><span><b>Memory</b><span class="sub">Finde die Paare.</span></span></button>`;
+}
+$('#glist').addEventListener('click', e => { const b = e.target.closest('[data-move]'); if (b) startMove(MOVES[+b.dataset.move]); });
+
+const MV = { game:null, i:-1, left:0, timer:null, running:false, done:false };
+function stopMove(){ clearInterval(MV.timer); MV.timer = null; MV.running = false; if ($('#mvPlay')) mvButtons(); }
+function startMove(g){
+  go('move');
+  if (current !== 'move') return;
+  MV.game = g; MV.i = -1; MV.done = false;
+  $('#mvTitle').textContent = g.title;
+  const pics = g.fig === 'moon' ? ['sunny-wave','moon'] : [g.fig + (g.fig==='kiki'||g.fig==='nova' ? '-wave' : '-wave')];
+  $('#mvStage').classList.toggle('two', pics.length > 1);
+  $('#mvStage').innerHTML = pics.map(k => figHTML(k)).join('');
+  $('#mvText').textContent = 'Bereit? Drück auf «Los geht\'s».';
+  $('#mvCount').textContent = '';
+  mvProg(); mvButtons();
+}
+function mvProg(){
+  const n = MV.game ? MV.game.steps.length : 0, k = Math.max(0, MV.done ? n : MV.i + 1);
+  const pct = n ? Math.round(k / n * 100) : 0;
+  $('#mvStep').textContent = `${k}/${n}`; $('#mvBar').style.width = pct + '%'; $('#mvPct').textContent = pct + '%';
+}
+function mvButtons(){
+  const b = $('#mvPlay');
+  b.textContent = MV.running ? '⏸ Pause' : (MV.done ? '↺ Nochmal' : (MV.i < 0 ? '▶ Los geht\'s' : '▶ Weiter'));
+  $('#mvNext').disabled = MV.done || !MV.game;
+}
+function mvStep(i){
+  clearInterval(MV.timer); TTS.stop();
+  const steps = MV.game.steps;
+  if (i >= steps.length){ mvFinish(); return; }
+  MV.i = i; MV.running = true; MV.done = false;
+  const [text, sec] = steps[i];
+  $('#mvText').textContent = text; MV.left = sec;
+  $('#mvCount').textContent = '⏱ ' + sec;
+  mvProg(); mvButtons();
+  const count = () => {
+    if (!MV.running || MV.i !== i) return;
+    clearInterval(MV.timer);
+    MV.timer = setInterval(() => {
+      if (!MV.running) return;
+      MV.left--;
+      $('#mvCount').textContent = MV.left > 0 ? '⏱ ' + MV.left : '✓';
+      if (MV.left <= 0){ clearInterval(MV.timer); setTimeout(() => { if (MV.running && MV.i === i && current === 'move') mvStep(i + 1); }, 600); }
+    }, 1000);
+  };
+  if (TTS.ok) TTS.speak(text, { onEnd: count, pitch: MV.game.fig==='kiki' ? 1.25 : MV.game.fig==='nova' ? 1.15 : 1.05 });
+  else count();
+}
+function mvFinish(){
+  clearInterval(MV.timer); MV.running = false; MV.done = true;
+  const say = `Geschafft${S.name ? ', '+S.name : ''}! Das hast du toll gemacht.`;
+  $('#mvText').textContent = '🎉 ' + say; $('#mvCount').textContent = '';
+  mvProg(); mvButtons();
+  TTS.speak(say);
+}
+$('#mvPlay').addEventListener('click', () => {
+  if (!MV.game) return;
+  if (MV.running){ MV.running = false; clearInterval(MV.timer); TTS.stop(); mvButtons(); return; }
+  if (MV.done || MV.i < 0){ mvStep(0); return; }
+  mvStep(MV.i);
+});
+$('#mvNext').addEventListener('click', () => { if (MV.game && !MV.done) mvStep(MV.i + 1); });
+$('#mvAgain').addEventListener('click', () => { if (MV.game) mvStep(0); });
+
+/* Spiel ausdenken: Idee -> spielbare Variante aus Vorlagen */
+const IDEA_MOVES = [
+  {re:/frosch/i, act:'Hüpf wie ein Frosch: in die Hocke … und hopp! Quak!', small:'Jetzt ein ganz kleiner Frosch mit Mini-Hüpfern.'},
+  {re:/hase|häschen/i, act:'Hoppel wie ein Hase: Hände als Ohren an den Kopf, und hüpfen!', small:'Jetzt schnuppert der Hase ganz leise. Schnupper, schnupper.'},
+  {re:/katze|kätzchen/i, act:'Schleich wie eine Katze und mach einen grossen Katzenbuckel. Miau!', small:'Jetzt rollt sich die Katze ganz klein zusammen. Schnurr.'},
+  {re:/elefant/i, act:'Stampf wie ein Elefant und schwing den Arm wie einen Rüssel.', small:'Jetzt ein Baby-Elefant, ganz leise stampfen.'},
+  {re:/vogel|adler|eule|flieg/i, act:'Breite die Arme aus und flieg wie ein Vogel durchs Zimmer.', small:'Jetzt landet der Vogel und putzt sich die Federn.'},
+  {re:/schlange/i, act:'Schlängel dich wie eine Schlange. Sssss.', small:'Jetzt ist die Schlange ganz still und sonnt sich.'},
+  {re:/bär/i, act:'Tapse wie ein grosser Bär und brumm dabei. Brumm, brumm.', small:'Jetzt kratzt sich der Bär am Rücken, ganz gemütlich.'},
+  {re:/dino|saurier/i, act:'Stampf wie ein Dino mit grossen Schritten.', small:'Jetzt ein winziger Dino, der gerade aus dem Ei schlüpft.'},
+  {re:/pinguin/i, act:'Watschel wie ein Pinguin, Arme eng am Körper.', small:'Jetzt rutscht der Pinguin auf dem Bauch, natürlich nur in Gedanken.'},
+  {re:/fisch|schwimm|meer/i, act:'Schwimm wie ein Fisch: Arme nach vorne und schlängeln.', small:'Jetzt macht der Fisch Blubberblasen. Blubb, blubb.'},
+  {re:/pferd|pony/i, act:'Galoppier wie ein Pferd. Klipp-klapp, klipp-klapp.', small:'Jetzt frisst das Pony ganz ruhig Gras.'},
+  {re:/affe/i, act:'Spring wie ein Affe und kratz dich am Kopf. Uh-uh!', small:'Jetzt schaukelt der Affe ganz langsam an einem Ast.'},
+  {re:/roboter/i, act:'Beweg dich wie ein Roboter: eckig und mit Piep!', small:'Jetzt ist die Batterie fast leer: ganz langsam bewegen.'},
+  {re:/zauber|hexe|fee/i, act:'Schwing deinen Zauberstab im grossen Kreis. Simsalabim!', small:'Jetzt zauberst du ganz leise kleine Funken. Pling.'},
+  {re:/rakete|weltall|astronaut/i, act:'Countdown: drei, zwei, eins, und hoch in die Luft springen!', small:'Jetzt schweben wir ganz langsam durchs Weltall.'},
+  {re:/tanz|musik|ballett/i, act:'Tanz, wie du magst! Dreh dich, wackle, hüpf!', small:'Jetzt ein ganz leiser Tanz nur mit den Fingern.'}
+];
+function cleanIdea(t){ return String(t).replace(/[{}<>«»"„“]/g,'').replace(/^(ich will|ich möchte|wir spielen|spielen wir|mein spiel ist|mein spiel)\s+/i,'').replace(/[.!?]+$/,'').replace(/\s+/g,' ').trim().slice(0,60); }
+function ideaGame(raw, ver=0){
+  const idea = cleanIdea(raw);
+  const r = seeded(idea.length * 131 + Date.now() % 100000 + ver), pick = a => a[Math.floor(r()*a.length)];
+  const m = IDEA_MOVES.find(x => x.re.test(idea));
+  const steps = [
+    [`Super Idee! Wir spielen: ${idea}. Ich bin Otti und sage an.`, 2],
+    [m ? m.act : pick([`Zeig mir «${idea}», ganz gross und stark!`, `Mach «${idea}» mit dem ganzen Körper!`]), 10],
+    [m ? m.small : `Jetzt «${idea}» ganz klein und leise.`, 8],
+    [pick(['Jetzt ganz langsam, wie in Zeitlupe.', 'Jetzt ganz langsam, wie eine Schnecke.']), 8],
+    ['Und jetzt schnell! … Und Stopp! Einfrieren!', 6],
+    [pick(['Zum Schluss einmal im Kreis drehen, mit Kiki und Nova zusammen.', 'Zum Schluss hüpfen wir dreimal, wie beim Mondsprung.']), 6],
+    ['Geschafft! Das war dein eigenes Spiel.', 2]
+  ];
+  return { id:'idee', title: idea.length > 22 ? 'Mein Spiel' : idea.charAt(0).toUpperCase() + idea.slice(1), fig:'sunny', sub:'Dein Spiel', steps };
+}
+$('#gIdeaGo').addEventListener('click', () => {
+  const t = cleanIdea($('#gIdea').value);
+  if (t.length < 2){ toast('Sag oder schreib zuerst deine Spiel-Idee.'); TTS.speak('Welches Spiel möchtest du spielen? Sag es mir.'); $('#gIdea').focus(); return; }
+  startMove(ideaGame(t));
+  setTimeout(() => { if (current === 'move') mvStep(0); }, 300);
+});
+$('#gIdea').addEventListener('keydown', e => { if (e.key === 'Enter') $('#gIdeaGo').click(); });
+
+/* ---------- Meine Geschichte: Kind erzählt den Anfang ---------- */
+const MSCHIPS = ['Es war einmal ein kleiner Bär, ', 'Eine Maus fand einen goldenen Schlüssel. ', 'Ein Hase wollte zum Mond fliegen. ', 'Heute Nacht hat ein Stern an mein Fenster geklopft. '];
+function renderMyStory(){
+  $('#msStage').classList.add('two');
+  $('#msStage').innerHTML = figHTML('sunny-wave') + figHTML('kiki');
+  $('#msChips').innerHTML = MSCHIPS.map(c => `<button class="chip" data-mschip="${esc(c)}">${esc(c.trim())} …</button>`).join('');
+  $('#micHint4').hidden = !!SR;
+}
+$('#msChips').addEventListener('click', e => { const b = e.target.closest('[data-mschip]'); if (!b) return; const t = $('#msText'); t.value = (t.value.trim() ? t.value.trim()+' ' : '') + b.dataset.mschip; t.focus(); });
+const NEUTER = /^(kind|mädchen|pferd|schaf|eichhörnchen|kaninchen|einhorn|schwein|küken|lamm|reh|zebra|krokodil|nilpferd|gespenst|monster|auto|boot|schiff|sternchen|häschen|kätzchen|männchen)$/i;
+function heroOf(text){
+  const m = text.match(/\b([Ee]in(?:e|en)?|[Dd]er|[Dd]ie|[Dd]as)\s+(?:(?:[Kk]leine[rns]?|[Gg]rosse[rns]?|[Ll]iebe[rns]?|[Mm]utige[rns]?|[Aa]lte[rns]?|[Jj]unge[rns]?|[Ll]ustige[rns]?)\s+)?([A-ZÄÖÜ][a-zäöü]+)/);
+  if (!m) return {H:'unser kleiner Held', P:'er'};
+  const art = m[1].toLowerCase(), noun = m[2];
+  let g = (art === 'eine' || art === 'die') ? 'f' : (art === 'das' || NEUTER.test(noun)) ? 'n' : 'm';
+  if (/chen$|lein$/.test(noun)) g = 'n';
+  return { H: ({m:'der', f:'die', n:'das'})[g] + ' kleine ' + noun, P: ({m:'er', f:'sie', n:'es'})[g] };
+}
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const MSFRIENDS = {
+  sunny:{acc:'Otti, den kleinen Igel mit dem gelben Halstuch', l:'Otti', say:'«Darf ich mitkommen?», fragte Otti und zwinkerte.'},
+  kiki:{acc:'Kiki, die kleine leuchtende KI', l:'Kiki', say:'«Blink, blink! Ich komme mit und leuchte den Weg», piepste Kiki.'},
+  nova:{acc:'Nova, den kleinen weissen Roboter', l:'Nova', say:'«Piep! Ein Abenteuer? Ich bin dabei!», rief Nova, und seine runden Augen leuchteten hellblau.'}
+};
+const PLACE_TO = {wald:'in den Mondschein-Wald', meer:'ans glitzernde Meer', mond:'hinauf zum lächelnden Mond', berge:'hinauf in die stillen Berge'};
+function myStory(text, ver=0){
+  let start = cleanMsg(String(text).replace(/[{}<>]/g,'')).slice(0,300);
+  let h = 0; for (const c of start) h = (h*31 + c.charCodeAt(0)) >>> 0;
+  const r = seeded(h + ver*7919), pick = a => a[Math.floor(r()*a.length)];
+  const {H, P} = heroOf(start), Hc = cap(H), Pc = cap(P);
+  const fk = pick(Object.keys(MSFRIENDS)), F = MSFRIENDS[fk];
+  const pk = pick(Object.keys(PLACES)), PL = PLACES[pk], prob = pick(PL.prob);
+  const voc = S.name ? ', ' + S.name : '';
+  const parts = [
+    {t:`«${start}»`, pic:['sunny-wave'], letter:true, slow:true},
+    {t:pick(['«Oh, wie spannend!», sagte Otti und spitzte die Ohren. «Hör gut zu, ich erzähle weiter.»', '«Was für ein schöner Anfang!», flüsterte Otti. «Weisst du, wie es weitergeht? Ich erzähle es dir.»']), pic:['sunny','kiki']},
+    {t:`${Hc} machte sich auf den Weg, ${PLACE_TO[pk]}. ${pick(PL.adv)}`, pic:['moon']},
+    {t:`Unterwegs traf ${H} ${F.acc}. ${F.say}`, pic:[fk]},
+    {t:`Doch plötzlich … ${prob[0]}. ${Hc} überlegte. Und ${F.l} überlegte auch. Hm … hm …`, pic:[fk, 'moon']},
+    {t:`Da hatte ${H} eine Idee! Zusammen mit ${F.l} ging es ganz vorsichtig weiter, Schritt für Schritt. Und so ${prob[1]}. «Wir sind ein gutes Team», sagte ${F.l}.`, pic:[fk, 'fly']},
+    {q:`Was soll ${H} zum Schluss tun?`, opts:[
+      {e:'🤗', l:'Alle umarmen', k:['umarm','drück'], v:{end:`${Hc} umarmte alle ganz fest. Das war warm und weich.`}},
+      {e:'🎶', l:'Ein Lied singen', k:['lied','sing','summ'], v:{end:`${Hc} sang ein leises Lied, und alle summten mit.`}},
+      {e:'🌟', l:'Sterne anschauen', k:['stern','himmel'], v:{end:`${Hc} legte sich ins weiche Gras und schaute zu den Sternen hinauf.`}}],
+     after:'{end}', pic:[fk,'moon']},
+    {t:`Dann wurde ${H} ganz müde. ${Pc} gähnte, kuschelte sich in ein weiches Bett und schloss die Augen. «Das war ein schönes Abenteuer», flüsterte ${F.l}. Gute Nacht${voc}. Schlaf schön.`, pic:[fk + '-sleep', 'moon'], slow:true}
+  ];
+  return { title:'Meine Geschichte', pic:['sunny'], parts, my:text, ver, back:'mystory' };
+}
+$('#msGo').addEventListener('click', () => {
+  const t = $('#msText').value.trim();
+  if (t.length < 3){ toast('Erzähl mir zuerst, wie deine Geschichte anfängt.'); TTS.speak('Wie fängt deine Geschichte an? Erzähl es mir.'); $('#msText').focus(); return; }
+  openStory(myStory(t));
+});
+
+/* ---------- Reden mit Otti, Kiki und Nova (Antworten aus Vorlagen) ---------- */
+const TALKERS = {
+  sunny:{l:'Otti', pitch:1.05, pre:'', hi:'Hallo! Ich bin Otti, der kleine Igel. Schön, dass du mit mir redest.', me:'Ich bin Otti, ein kleiner Igel mit einem gelben Halstuch. Meine Stacheln sind ganz weich, fast.', fav:'Am liebsten mag ich Walderdbeeren und weiches Moos.', joke:'Weisst du, warum Igel nie streiten? Weil sie immer alles piksfein machen. Hihi!'},
+  kiki:{l:'Kiki', pitch:1.3, pre:'Blink, blink! ', hi:'Hallo! Ich bin Kiki, die kleine leuchtende KI.', me:'Ich bin Kiki, eine kleine Spiel-KI. Ich lerne noch, und manchmal irre ich mich. Das ist okay.', fav:'Am liebsten zähle ich Sterne. Manchmal verzähle ich mich.', joke:'Was sagt ein Stern zum anderen? Du strahlst heute aber! Hihi.'},
+  nova:{l:'Nova', pitch:1.15, pre:'Piep! ', hi:'Hallo! Ich bin Nova, der kleine weisse Roboter.', me:'Ich bin Nova, ein kleiner Roboter. Mein Bauch leuchtet hellblau, wenn ich mich freue.', fav:'Am liebsten tanze ich den Roboter-Tanz. Piep-piep!', joke:'Warum ist der Roboter so ruhig? Er hat gerade Pause. Piep, hihi.'}
+};
+const TK = { who:'sunny', log:[] };
+const TK_RATES = [[0.7,'Langsam'],[0.85,'Ruhig'],[1.0,'Normal']];
+function renderTalk(){
+  $('#tkPick').innerHTML = Object.entries(TALKERS).map(([k,f]) => `<button class="pk ${TK.who===k?'sel':''}" data-talker="${k}" aria-pressed="${TK.who===k}">${FIG[k]({})}${f.l}</button>`).join('');
+  $('#tkStage').innerHTML = figHTML(TK.who + '-wave');
+  $('#tkMic').textContent = '🎤 Sprich mit ' + TALKERS[TK.who].l;
+  $('#tkRate').innerHTML = TK_RATES.map(([v,l]) => `<button data-tkrate="${v}" class="${Math.abs(S.rate-v)<0.03?'sel':''}" aria-pressed="${Math.abs(S.rate-v)<0.03}">${l}</button>`).join('');
+  $('#tkLog').innerHTML = TK.log.slice(-7, -1).map(m => `<p class="msg ${m.me?'me':'you'}">${m.me ? '' : '<b>'+esc(m.who)+':</b> '}${esc(m.t)}</p>`).join('');
+}
+$('#tkPick').addEventListener('click', e => {
+  const b = e.target.closest('[data-talker]'); if (!b) return;
+  TK.who = b.dataset.talker; renderTalk();
+  const f = TALKERS[TK.who]; $('#tkSay').textContent = f.pre + f.hi; TTS.speak(f.pre + f.hi, {pitch:f.pitch});
+});
+$('#tkRate').addEventListener('click', e => {
+  const b = e.target.closest('[data-tkrate]'); if (!b) return;
+  S.rate = +b.dataset.tkrate; saveS(); renderTalk();
+  const f = TALKERS[TK.who]; TTS.speak(f.pre + 'So schnell spreche ich jetzt.', {pitch:f.pitch});
+});
+function talkReply(who, raw){
+  const f = TALKERS[who], t = String(raw||'').toLowerCase().trim();
+  const r = Math.random, pick = a => a[Math.floor(r()*a.length)];
+  let a;
+  if (!t) a = 'Ich habe nichts gehört. Magst du es nochmal sagen?';
+  else if (/traurig|weinen|wein |angst|fürcht|allein|wütend|böse|weh|schlimm/.test(t)) a = 'Oh, das klingt schwer. Gut, dass du es sagst. Magst du es auch Mama, Papa oder jemandem erzählen, den du lieb hast? Die können dich ganz fest drücken.';
+  else if (/^(hallo|hoi|hi|hey|grüezi|guten (tag|morgen|abend)|sali)\b/.test(t)) a = f.hi + ' Was möchtest du mir erzählen?';
+  else if (/wie heisst du|wer bist du|was bist du/.test(t)) a = f.me;
+  else if (/\bki\b|künstlich|computer|roboter|maschine/.test(t)) a = 'Eine KI ist ein Computer, der sprechen und antworten kann. Ich bin ein Spiel-Freund: Meine Antworten habe ich schon vorher gelernt. Und weisst du was? Auch eine KI kann sich irren.';
+  else if (/müde|schlaf|gute nacht|bett|gähn/.test(t)) a = pick(['Ich bin auch schon ein bisschen müde. Sollen wir zusammen tief einatmen … und ausatmen?', 'Kuschel dich gemütlich ein. Im KI-Leitfaden lese ich dir etwas Ruhiges vor.']);
+  else if (/witz|lach/.test(t)) a = f.joke;
+  else if (/lieblings|was magst du|was isst du|was spielst du/.test(t)) a = f.fav + ' Und du, was magst du am liebsten?';
+  else if (/froh|glücklich|schön|toll|super|freu|lustig|spass/.test(t)) a = pick(['Das freut mich so! Erzähl mir mehr davon.', 'Juhui! Da hüpft mein Herz vor Freude.']);
+  else if (/spiel/.test(t)) a = 'Spielen ist toll! Unter «Spiele» können wir uns zusammen bewegen. Magst du es probieren?';
+  else if (/geschicht|erzähl/.test(t)) a = 'Ich liebe Geschichten! Unter «Geschichten» kannst du sogar deine eigene anfangen.';
+  else if (/\?|warum|wieso|weshalb|^wie |^was |^wo |^wer /.test(t)) a = 'Das ist eine gute Frage! Das weiss ich nicht genau. Frag doch Mama oder Papa, zusammen findet ihr es heraus.';
+  else a = pick(['Erzähl mir mehr davon!', 'Oh, spannend! Und dann?', 'Schön, dass du mir das erzählst.', 'Hm, das gefällt mir. Was passiert als Nächstes?']);
+  return f.pre + a;
+}
+function talkTo(text){
+  const f = TALKERS[TK.who];
+  const clean = String(text||'').replace(/\s+/g,' ').trim().slice(0,160);
+  const a = talkReply(TK.who, clean);
+  if (clean) TK.log.push({me:true, t:clean});
+  TK.log.push({me:false, who:f.l, t:a}); TK.log = TK.log.slice(-12);
+  $('#tkSay').textContent = a; renderTalk();
+  TTS.speak(a, {pitch:f.pitch});
+}
+$('#tkMic').addEventListener('click', () => {
+  if (!SR){ toast('Sprechen geht hier nicht direkt. Tipp: Ins Feld tippen und auf der Tastatur das Mikrofon antippen.'); $('#tkText').focus(); return; }
+  listen(texts => talkTo(texts[0] || ''), $('#tkMic'));
+});
+$('#tkSend').addEventListener('click', () => { const v = $('#tkText').value.trim(); if (!v){ $('#tkText').focus(); return; } $('#tkText').value = ''; talkTo(v); });
+$('#tkText').addEventListener('keydown', e => { if (e.key === 'Enter') $('#tkSend').click(); });
+
+/* ---------- KI-Leitfaden zum Einschlafen (Otti liest vor) ---------- */
+const GUIDE = [
+  {e:'💡', h:'KI hilft', t:'Es gibt Computer, die sprechen und antworten können. Man nennt das KI. Kiki ist so eine kleine KI. Eine KI kann beim Suchen helfen, beim Erklären und beim Ideen-Finden. Ein bisschen wie ein Buch, das antworten kann.'},
+  {e:'🌀', h:'KI kann sich irren', t:'Weisst du was? Auch eine KI weiss nicht alles. Manchmal sagt sie etwas, das gar nicht stimmt. So wie Kiki, die einmal ein Glühwürmchen für einen Stern gehalten hat. Das ist nicht schlimm. Alle irren sich mal.'},
+  {e:'🙋', h:'Nachfragen ist gut', t:'Wenn dir etwas komisch vorkommt, darfst du nachfragen. Bei Mama, bei Papa oder bei jemandem, den du lieb hast. Fragen ist klug. Durch Fragen lernen wir alle, auch Kiki und Nova.'},
+  {e:'🌙', h:'Pausen sind gut', t:'Und das Schönste zum Schluss: Pausen. Auch Kiki macht am Abend die Lichter ganz klein, und Nova ruht sich aus. Wenn wir ausruhen, wird der Kopf ganz still und weich. Jetzt atmen wir zusammen ein … und aus. Gute Nacht.'}
+];
+const GD = { reading:false };
+function renderGuide(){
+  $('#gdStage').classList.add('two');
+  $('#gdStage').innerHTML = figHTML('sunny') + figHTML('kiki-sleep');
+  $('#gdCards').innerHTML = GUIDE.map((g,i) => `<div class="card gcard" data-gd="${i}"><h3>${g.e} ${esc(g.h)}</h3><p>${esc(g.t)}</p><button class="btn wide" data-gdread="${i}">🔊 Vorlesen</button></div>`).join('');
+  gdButtons();
+}
+function gdMark(i){ $$('#gdCards .gcard').forEach(c => c.classList.toggle('cur', +c.dataset.gd === i)); }
+function gdStop(){ GD.reading = false; if ($('#gdCards')) gdMark(-1); gdButtons(); }
+function gdButtons(){ const b = $('#gdAll'); if (b) b.textContent = GD.reading ? '⏸ Stopp' : '▶ Alles vorlesen'; }
+function gdRead(from, to){
+  if (!TTS.ok){ toast('Vorlesen geht auf diesem Gerät leider nicht – lies einfach selbst vor.'); return; }
+  const list = [], map = [];
+  for (let i = from; i <= to; i++){ const ss = ['Otti erzählt: ' + GUIDE[i].h + '.', ...splitSentences(GUIDE[i].t)]; ss.forEach(s => { list.push(s); map.push(i); }); }
+  GD.reading = true; gdButtons();
+  TTS.speak(list, { rateMul:.92, gap:700, onSentence: k => { gdMark(map[k]); const c = $(`#gdCards [data-gd="${map[k]}"]`); if (c && k && map[k] !== map[k-1]) c.scrollIntoView({behavior:'smooth', block:'center'}); }, onEnd: () => gdStop() });
+}
+$('#gdAll').addEventListener('click', () => { if (GD.reading){ TTS.stop(); gdStop(); } else gdRead(0, GUIDE.length - 1); });
+$('#gdCards').addEventListener('click', e => { const b = e.target.closest('[data-gdread]'); if (!b) return; const i = +b.dataset.gdread; TTS.stop(); gdRead(i, i); });
+
 /* ---------- Zeitlimit ---------- */
 const today = () => { const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
 function usage(){ let u = store.get('usage', null); if (!u || u.date !== today()) u = {date:today(), ms:0, bonus:0}; return u; }
@@ -1131,6 +1572,7 @@ function renderParents(){
   if (document.activeElement !== $('#pName')) $('#pName').value = S.name || '';
   $('#chips').innerHTML = CHIPS.map(c => `<button class="chip" data-chip="${esc(c)}">${esc(c)}</button>`).join('');
   $('#micHint2').hidden = !!SR;
+  $('#vol').value = S.vol; $('#volLbl').textContent = Math.round(S.vol*100)+'%';
   if (!$('#lFrom').value) $('#lFrom').value = store.get('lastFrom', '');
   renderLetters();
   renderIdeas();
@@ -1140,22 +1582,47 @@ $('#segNight').addEventListener('click', e => { const b=e.target.closest('[data-
 $('#tPlus').addEventListener('click', () => { const u=usage(); u.bonus=(u.bonus||0)+600000; store.set('usage',u); renderParents(); toast('+10 Minuten für heute'); });
 $('#tReset').addEventListener('click', () => { const u=usage(); u.ms=0; u.bonus=0; store.set('usage',u); renderParents(); toast('Zeit für heute auf 0 gesetzt'); });
 $('#rate').addEventListener('input', e => { S.rate = +e.target.value; $('#rateLbl').textContent = rateLabel(S.rate); saveS(); });
+$('#vol').addEventListener('input', e => { S.vol = +e.target.value; $('#volLbl').textContent = Math.round(S.vol*100)+'%'; saveS(); });
 $('#voiceSel').addEventListener('change', e => { S.voice = e.target.value; saveS(); });
 $('#rateTest').addEventListener('click', () => { if (!TTS.ok){ toast('Vorlesen geht auf diesem Gerät nicht.'); return; } TTS.speak('Hallo, ich bin Otti. So schnell lese ich dir vor. Gute Nacht!'); });
 $('#pNameSave').addEventListener('click', () => { S.name = cleanName($('#pName').value).slice(0,24); saveS(); $('#pName').value = S.name; toast(S.name ? `Gespeichert: ${S.name}` : 'Name gelöscht'); });
 $('#chips').addEventListener('click', e => { const b=e.target.closest('[data-chip]'); if(!b) return; const t=$('#ideaText'); t.value = (t.value.trim() ? t.value.trim()+'\n' : '') + b.dataset.chip; t.focus(); });
 function ideas(){ return store.get('ideas', []); }
 function fmtDate(ts){ const d=new Date(ts); return d.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'}); }
+/* Status: ohne Server prüft die App selbst, ob es die gewünschte Funktion schon gibt */
+const BUILT = [
+  {re:/nacht ?modus|dunkel|nachtlicht/i, go:'parents', el:'#segNight', what:'Nachtmodus'},
+  {re:/langsam|tempo|schnell sprech/i, go:'talk', el:'#tkRate', what:'Sprechtempo'},
+  {re:/knöpfe|knoepfe|knopf|grösser|groesser/i, go:'home', el:'.tiles', what:'grosse Bildknöpfe'},
+  {re:/gruselig|angst|unheimlich/i, go:'guide', el:'#gdCards', what:'ruhige Einschlaf-Seite'},
+  {re:/bewegung|hüpf|tanz|turnen/i, go:'games', el:'#glist', what:'Bewegungsspiele'},
+  {re:/eigene geschichte|selbst erzähl|weitererzähl|geschichte erfinden/i, go:'mystory', el:'#msText', what:'Meine Geschichte'},
+  {re:/reden|sprechen mit|unterhalten|gespräch/i, go:'talk', el:'#tkMic', what:'Reden mit Otti, Kiki und Nova'},
+  {re:/lautstärke|lauter|leiser/i, go:'parents', el:'#vol', what:'Lautstärke'}
+];
+const STATUS = {eingereicht:['eingereicht','st-eingereicht'], pruefung:['in Prüfung','st-pruefung'], umgesetzt:['umgesetzt','st-umgesetzt'], nicht:['nicht umgesetzt','st-nicht']};
+function ideaStatus(i){
+  if (i.status && STATUS[i.status] && i.status !== 'eingereicht') return {st:i.status, target:i.target, el:i.el};
+  const m = BUILT.find(b => b.re.test(i.text));
+  return m ? {st:'umgesetzt', target:m.go, el:m.el} : {st:'eingereicht'};
+}
 function renderIdeas(){
-  const list = ideas();
-  $('#ideaList').innerHTML = list.length ? list.map(i => `<div class="idea"><div class="small muted">${fmtDate(i.ts)}</div><p>${esc(i.text)}</p><div class="row"><button class="btn" data-share="${i.ts}">📤 Teilen</button><button class="btn" data-del="${i.ts}">🗑 Löschen</button></div></div>`).join('') : '<p class="small muted" style="margin:12px 0 0">Noch keine Ideen gespeichert.</p>';
+  const list = ideas().slice().sort((x,y) => y.ts - x.ts);
+  $('#ideaList').innerHTML = list.length ? list.map(i => {
+    const st = ideaStatus(i), lab = STATUS[st.st];
+    return `<div class="idea"><div class="small muted">${fmtDate(i.ts)} <span class="stb ${lab[1]}">${lab[0]}</span></div><p>${esc(i.text)}</p>${st.st==='umgesetzt' ? `<div class="built">Du hattest eine Idee. Wir haben sie gebaut. Schau, was sich verändert hat.</div><button class="btn primary wide" data-show="${esc(st.target)}" data-el="${esc(st.el||'')}" style="margin-bottom:8px">👀 Zeig mir die Änderung</button>` : ''}<div class="row"><button class="btn" data-share="${i.ts}">📤 Teilen</button><button class="btn" data-del="${i.ts}">🗑 Löschen</button></div></div>`;
+  }).join('') : '<p class="small muted" style="margin:12px 0 0">Noch keine Ideen eingereicht.</p>';
   $('#ideaShareAll').hidden = list.length < 2;
 }
 $('#ideaSave').addEventListener('click', () => {
   const t = $('#ideaText').value.trim();
   if (!t){ toast('Schreib zuerst deine Idee.'); $('#ideaText').focus(); return; }
-  const list = ideas(); list.unshift({ts:Date.now(), text:t}); store.set('ideas', list);
-  $('#ideaText').value = ''; renderIdeas(); toast('Idee gespeichert – mit «Teilen» schickst du sie an DR Lab.');
+  if (!$('#ideaOk').checked){ toast('Bitte zuerst das Häkchen setzen.'); $('#ideaOk').focus(); return; }
+  const it = {ts:Date.now(), text:t, status:'eingereicht'};
+  const m = BUILT.find(b => b.re.test(t)); if (m){ it.status = 'umgesetzt'; it.target = m.go; it.el = m.el; }
+  const list = ideas(); list.unshift(it); store.set('ideas', list);
+  $('#ideaText').value = ''; $('#ideaOk').checked = false; renderIdeas();
+  toast(m ? 'Idee eingereicht – das gibt es schon! Schau bei «Meine Ideen».' : 'Idee eingereicht – mit «Teilen» schickst du sie an DR Lab.');
 });
 async function shareText(text){
   if (navigator.share){ try{ await navigator.share({title:'Idee für Mondschein (DR Lab)', text}); return; }catch(e){ if (e && e.name==='AbortError') return; } }
@@ -1166,7 +1633,8 @@ async function shareText(text){
 }
 const ideaMsg = i => `Idee für Mondschein (DR Lab), ${fmtDate(i.ts)}:\n${i.text}`;
 $('#ideaList').addEventListener('click', e => {
-  const s = e.target.closest('[data-share]'), d = e.target.closest('[data-del]');
+  const s = e.target.closest('[data-share]'), d = e.target.closest('[data-del]'), sh = e.target.closest('[data-show]');
+  if (sh){ const el = sh.dataset.el; go(sh.dataset.show); if (el) setTimeout(() => { const x = $(el); if (x){ x.scrollIntoView({behavior:'smooth', block:'center'}); x.style.outline = '4px solid var(--moon2)'; x.style.outlineOffset = '4px'; x.style.borderRadius = '18px'; setTimeout(() => { x.style.outline = ''; }, 2600); } }, 250); return; }
   if (s){ const i = ideas().find(x => String(x.ts)===s.dataset.share); if (i) shareText(ideaMsg(i)); }
   if (d){ if (!confirm('Diese Idee löschen?')) return; store.set('ideas', ideas().filter(x => String(x.ts)!==d.dataset.del)); renderIdeas(); toast('Gelöscht'); }
 });
@@ -1203,7 +1671,7 @@ function letterStory(L, ver=0){
   const SEG = {
     heute: {t:`Otti lächelte bis zu den Ohren. «Oh${voc}, das klingt nach einem schönen Tag!» Er holte sein kleines Glas aus der Höhle. Darin sammelt Otti schöne Momente. Und als er an deinen Tag dachte, begann es im Glas zu leuchten, golden wie Honig.`, pic:['sunny-wave','moon']},
     morgen:{t:`«Juhui!», rief Otti und hüpfte einmal im Kreis. «Darauf darfst du dich freuen${voc}!» Kiki blinkte vor Aufregung. «Vorfreude ist wie ein kleines Licht im Bauch», sagte Kiki. «Es kitzelt ein bisschen. Und es wärmt ganz fest.»`, pic:['sunny','kiki-wave']},
-    lieb:  {t:`Otti legte seine kleine Pfote aufs Herz. «Hast du das gehört${voc}? Du wirst so fest lieb gehabt.» Nova rollte sich glücklich zusammen. «Das ist das Schönste, was in einem Brief stehen kann», brummte er leise.`, pic:['sunny','nova']},
+    lieb:  {t:`Otti legte seine kleine Pfote aufs Herz. «Hast du das gehört${voc}? Du wirst so fest lieb gehabt.» Novas Bauchlicht leuchtete ganz warm. «Das ist das Schönste, was in einem Brief stehen kann», piepste er leise.`, pic:['sunny','nova']},
     plain: {t:`Otti lächelte ganz warm. «Was für ein schöner Brief», sagte er. «${from} ${hat} ihn nur für dich geschrieben${voc}.» Kiki und Nova kamen näher und hörten mit grossen Augen zu.`, pic:['sunny','kiki']}
   };
   const mid = (segs.length ? segs.slice(0,2) : ['plain']).map(k => SEG[k]);
@@ -1217,7 +1685,7 @@ function letterStory(L, ver=0){
     ...mid,
     {t:pick([
       'Dann stiegen Otti, Kiki und Nova auf den kleinen Hügel hinter dem Wald. Von dort oben ist der Himmel ganz nah. Otti faltete den Brief zu einem kleinen Papiervogel. Er hielt ihn hoch in den Wind … und liess ihn los.',
-      'Später sassen Otti, Kiki und Nova zusammen auf der Wiese und schauten in den Himmel. Otti faltete den Brief zu einem kleinen Papiervogel. Nova pustete ganz sanft … und der Papiervogel flog los.'
+      'Später sassen Otti, Kiki und Nova zusammen auf der Wiese und schauten in den Himmel. Otti faltete den Brief zu einem kleinen Papiervogel. Nova liess seinen kleinen Propeller ganz sanft surren … und der Papiervogel flog los.'
     ]), pic:['sunny','kiki']},
     {t:`Der Papiervogel flog hinauf, höher und höher, bis zu den Sternen. Dort oben wurde er selbst zu einem kleinen Stern. Er funkelt jetzt über deinem Fenster${voc}. Und immer, wenn du ihn siehst, weisst du: ${from} ${denkt} an dich.`, pic:['moon','kiki']},
     {t:`Otti gähnte ein grosses Igel-Gähnen. Er kuschelte sich in sein Moosbett und flüsterte noch einmal ${first.length <= 140 ? `die schönsten Worte aus dem Brief: «${first}»` : 'die Worte aus dem Brief.'} Dann wurde es ganz still im Wald. Gute Nacht${voc}. ${from} ${hat} dich lieb. Und Otti auch.`, pic:['sunny-sleep','moon'], slow:true}
