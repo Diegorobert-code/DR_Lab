@@ -33,7 +33,7 @@ API_SERVER_ENABLED=true
 API_SERVER_KEY=$API_KEY
 API_SERVER_HOST=127.0.0.1
 API_SERVER_PORT=8642
-API_SERVER_CORS_ORIGINS=https://diegorobert-code.github.io,https://drlab.ch
+API_SERVER_CORS_ORIGINS=https://diegorobert-code.github.io,https://drlab.ch,https://www.drlab.ch,https://headless-zewdelhstzx-diegoroberttherapy-1412.wix-site-host.com
 EOF
 chmod 600 "$ENV_FILE"
 hermes gateway install --system
