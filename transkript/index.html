@@ -57,7 +57,6 @@ summary{font-weight:600;cursor:pointer}
   <p class="state" id="state"></p>
 
   <textarea id="text" placeholder="Hier erscheint dein Text. Du kannst ihn auch direkt bearbeiten."></textarea>
-  <div class="interim" id="interim"></div>
 
   <div class="row">
     <button class="btn main" id="copy">Kopieren</button>
@@ -123,6 +122,7 @@ function cap(s){ return s.replace(/(^|[.!?\n]\s*)([a-zäöü])/g, function(m, a,
 /* Spracherkennung, läuft weiter, bis man Stopp tippt */
 var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 var rec = null, want = false, lang = 'de-CH', lock = null, restarts = 0;
+var base = '', raw = '', skip = 0, heard = false, watch = null;
 
 function note(t){ var n = $('note'); n.textContent = t || ''; n.classList.toggle('hidden', !t); }
 function state(t){ $('state').textContent = t || ''; }
@@ -132,58 +132,89 @@ function ui(on){
   $('mic').setAttribute('aria-label', on ? 'Aufnahme stoppen' : 'Reinreden starten');
   state(on ? 'Ich höre zu …' : (ta.value ? 'Gespeichert auf diesem Handy.' : ''));
 }
-function append(t){
-  t = clean(t.trim());
-  if (!t) return;
-  var v = ta.value;
-  var sep = !v || /\n$/.test(v) || /^[.,?!:\n]/.test(t) ? '' : ' ';
-  ta.value = cap(v + sep + t);
-  put(KEY, ta.value);
+/* Text live ins Feld schreiben: fester Teil + was gerade gesprochen wird */
+function render(){
+  var t = clean(raw.slice(skip).trim());
+  var v = base;
+  if (t){
+    var sep = !v || /\n$/.test(v) || /^[.,?!:\n]/.test(t) ? '' : ' ';
+    v = cap(v + sep + t);
+  }
+  ta.value = v;
+  put(KEY, v);
   ta.scrollTop = ta.scrollHeight;
 }
+function commit(){ base = ta.value; raw = ''; skip = 0; }
 function wake(on){
   try {
     if (on && navigator.wakeLock && !lock) navigator.wakeLock.request('screen').then(function(l){ lock = l; l.addEventListener('release', function(){ lock = null; }); }).catch(function(){});
     if (!on && lock){ lock.release(); lock = null; }
   } catch(e){}
 }
+function stopAll(msg){
+  want = false; clearTimeout(watch); commit(); ui(false); wake(false);
+  if (msg) note(msg);
+}
 function start(){
-  rec = new SR();
-  rec.lang = lang; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
-  rec.onresult = function(ev){
-    var interim = '';
-    for (var i = ev.resultIndex; i < ev.results.length; i++){
-      var r = ev.results[i];
-      if (r.isFinal) append(r[0].transcript); else interim += r[0].transcript;
+  commit();
+  var r = new SR();
+  rec = r;
+  r.lang = lang; r.continuous = true; r.interimResults = true; r.maxAlternatives = 1;
+  r.onresult = function(ev){
+    if (r !== rec) return;
+    var fin = '', interim = '';
+    for (var i = 0; i < ev.results.length; i++){
+      var t = (ev.results[i][0].transcript || '').trim();
+      if (!t) continue;
+      if (ev.results[i].isFinal){
+        /* manche Handys liefern den ganzen Text nochmals statt nur das neue Stück */
+        fin = fin && t.toLowerCase().indexOf(fin.toLowerCase()) === 0 ? t : (fin ? fin + ' ' + t : t);
+      } else interim += (interim ? ' ' : '') + t;
     }
-    $('interim').textContent = interim;
-    restarts = 0;
+    raw = fin + (fin && interim ? ' ' : '') + interim;
+    if (raw){ heard = true; restarts = 0; clearTimeout(watch); note(''); }
+    render();
   };
-  rec.onerror = function(ev){
-    if (ev.error === 'language-not-supported' && lang === 'de-CH'){ lang = 'de-DE'; return; }
-    if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed'){
-      want = false;
-      note('Mikrofon ist nicht erlaubt. Erlaube es in den Browser-Einstellungen für diese Seite. Oder tippe ins Textfeld und nutze das Mikrofon der Tastatur.');
-    } else if (ev.error === 'network'){
+  r.onerror = function(ev){
+    if (r !== rec) return;
+    var e = ev.error;
+    if (e === 'language-not-supported' && lang === 'de-CH'){ lang = 'de-DE'; return; }
+    if (e === 'no-speech' || e === 'aborted') return;
+    if (e === 'not-allowed' || e === 'service-not-allowed'){
+      stopAll('Mikrofon oder Spracherkennung ist nicht erlaubt. iPhone: Einstellungen → Apps → Safari → Mikrofon erlauben, und Einstellungen → Allgemein → Tastatur → «Diktierfunktion aktivieren» einschalten. Solange: ins Textfeld tippen und das Mikrofon auf der Tastatur nutzen.');
+    } else if (e === 'network'){
       note('Keine Verbindung zur Spracherkennung. Prüfe das Internet.');
+    } else if (e === 'audio-capture'){
+      stopAll('Das Mikrofon ist gerade besetzt oder nicht erreichbar. Schliesse andere Apps, die zuhören, und tippe nochmals auf Reinreden.');
+    } else {
+      note('Spracherkennung meldet: ' + e + '. Tippe ins Textfeld und nutze das Mikrofon auf der Tastatur.');
     }
   };
-  rec.onend = function(){
-    $('interim').textContent = '';
-    if (want && restarts < 20){ restarts++; try { rec.start(); return; } catch(e){} }
-    want = false; ui(false); wake(false);
+  r.onend = function(){
+    if (r !== rec) return;
+    commit();
+    if (want && restarts < 20){ restarts++; setTimeout(function(){ if (want) start(); }, 250); return; }
+    if (want) stopAll(heard ? '' : 'Die Spracherkennung hat sich beendet. Tippe nochmals auf Reinreden, oder tippe ins Textfeld und nutze das Mikrofon auf der Tastatur.');
+    else stopAll('');
   };
-  try { rec.start(); ui(true); wake(true); note(''); }
-  catch(e){ want = false; ui(false); note('Spracherkennung konnte nicht starten. Tippe ins Textfeld und nutze das Mikrofon der Tastatur.'); }
+  try { r.start(); ui(true); wake(true); }
+  catch(e){ stopAll('Spracherkennung konnte nicht starten. Tippe ins Textfeld und nutze das Mikrofon auf der Tastatur.'); }
 }
 $('mic').addEventListener('click', function(){
   if (!SR){
-    note('Dieser Browser hat keine Spracherkennung. Öffne die Seite in Safari (iPhone) oder Chrome (Android). Oder tippe ins Textfeld und nutze das Mikrofon der Tastatur.');
+    note('Dieser Browser hat keine Spracherkennung. Öffne die Seite in Safari (iPhone) oder Chrome (Android). Oder tippe ins Textfeld und nutze das Mikrofon auf der Tastatur.');
     ta.focus(); return;
   }
-  if (want){ want = false; if (rec) rec.stop(); return; }
-  want = true; restarts = 0; start();
+  if (want){ want = false; clearTimeout(watch); if (rec) rec.stop(); ui(false); return; }
+  want = true; restarts = 0; heard = false; note('');
+  clearTimeout(watch);
+  watch = setTimeout(function(){
+    if (want && !heard) note('Ich höre noch nichts. Sprich nah am Handy. Kommt weiter nichts: ins Textfeld tippen und das Mikrofon auf der Tastatur nutzen.');
+  }, 7000);
+  start();
 });
+/* von Hand im Feld korrigieren, während die Aufnahme läuft */
+ta.addEventListener('input', function(){ base = ta.value; skip = raw.length; });
 document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'visible' && want) wake(true); });
 
 /* Kopieren, Teilen, Neu */
@@ -208,8 +239,8 @@ function saveHist(){
   put(HKEY, h.slice(0, 50));
 }
 $('new').addEventListener('click', function(){
-  if (want){ want = false; if (rec) rec.stop(); }
-  saveHist(); ta.value = ''; put(KEY, ''); renderHist(); ui(false); toast('Im Verlauf gespeichert');
+  if (want){ want = false; clearTimeout(watch); if (rec){ var o = rec; rec = null; try { o.abort(); } catch(e){} } wake(false); }
+  saveHist(); ta.value = ''; put(KEY, ''); base = ''; raw = ''; skip = 0; renderHist(); ui(false); toast('Im Verlauf gespeichert');
 });
 
 /* Verlauf */
@@ -222,7 +253,7 @@ function renderHist(){
     var li = document.createElement('li'), tm = document.createElement('time'), p = document.createElement('span');
     tm.textContent = fmt(x.d); p.textContent = x.t.length > 140 ? x.t.slice(0, 140) + ' …' : x.t;
     li.appendChild(tm); li.appendChild(p);
-    li.addEventListener('click', function(){ saveHist(); ta.value = x.t; put(KEY, x.t); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    li.addEventListener('click', function(){ saveHist(); ta.value = x.t; put(KEY, x.t); base = x.t; skip = raw.length; window.scrollTo({ top: 0, behavior: 'smooth' }); });
     ul.appendChild(li);
   });
 }
