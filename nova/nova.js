@@ -1,5 +1,8 @@
 /* Nova für alle DR-Lab-Apps.
    Einbinden: <script src="../nova/nova.js" data-nova-app="Mondschein" defer></script>
+   Optional: data-nova-unten="90" (Knopf höher, z. B. über einer Leiste),
+             data-nova-kind="1" (Kinder-App: keine Einstellungen, keine Bauwünsche).
+   Persönlichkeit je App: nova/seelen.js vor nova.js laden (window.NOVA_SEELEN).
    Nova redet nur mit Sense Engine (eigener Server, eigene Datenbank). Sense Engine
    fragt Papa Hermes und speichert jede Erfahrung selbst.
    Adresse und Passwort teilen sich alle Apps (gleiche Schlüssel wie Transkript). */
@@ -9,6 +12,12 @@
 
   var me = document.currentScript;
   var APP = (me && me.getAttribute('data-nova-app')) || document.title || 'DR Lab';
+  // Kinder-Apps: keine Verbindungs-Einstellungen und keine Bauwünsche sichtbar.
+  var KIND = !!(me && me.getAttribute('data-nova-kind') === '1');
+  // Abstand des Knopfs vom unteren Rand in px, z. B. über einer Leiste.
+  var UNTEN = parseInt((me && me.getAttribute('data-nova-unten')) || '16', 10) || 16;
+  // Novas Gesicht kommt immer aus dem Film (nova.jpg neben diesem Skript), nie gezeichnet.
+  var BILD = me && me.src ? new URL('nova.jpg', me.src).href : '../nova/nova.jpg';
   var K = { addr: 'drlab-hermes-adresse', key: 'drlab-hermes-passwort' };
 
   function get(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }
@@ -23,12 +32,12 @@
   function ready() { return /^https:\/\//.test(addr()) && !!get(K.key, ''); }
 
   var css = '' +
-    '.nova-btn{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:2147483000;width:60px;height:60px;border-radius:50%;border:0;padding:0;background:#1e5bd8;box-shadow:0 6px 18px rgba(20,40,110,.35);cursor:pointer;display:grid;place-items:center}' +
+    '.nova-btn{position:fixed;right:16px;bottom:calc(' + UNTEN + 'px + env(safe-area-inset-bottom,0px));z-index:2147483000;width:60px;height:60px;border-radius:50%;border:0;padding:0;background:#1e5bd8;box-shadow:0 6px 18px rgba(20,40,110,.35);cursor:pointer;display:grid;place-items:center;overflow:hidden}' +
     '.nova-btn:focus-visible{outline:3px solid #ffd34d;outline-offset:3px}' +
-    '.nova-btn svg{width:46px;height:46px}' +
+    '.nova-btn img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}' +
     '.nova-btn[data-wach="0"]{filter:saturate(.45)}' +
-    '.nova-panel{position:fixed;right:12px;left:12px;bottom:calc(86px + env(safe-area-inset-bottom,0px));z-index:2147483000;max-width:420px;margin-left:auto;max-height:70vh;display:flex;flex-direction:column;background:#f6f8ff;color:#14213d;border-radius:18px;box-shadow:0 12px 40px rgba(20,40,110,.3);font:15px/1.45 system-ui,-apple-system,sans-serif;overflow:hidden}' +
-    '.nova-panel[hidden]{display:none!important}' +
+    '.nova-panel{position:fixed;right:12px;left:12px;bottom:calc(' + (UNTEN + 70) + 'px + env(safe-area-inset-bottom,0px));z-index:2147483000;max-width:420px;margin-left:auto;max-height:70vh;display:flex;flex-direction:column;background:#f6f8ff;color:#14213d;border-radius:18px;box-shadow:0 12px 40px rgba(20,40,110,.3);font:15px/1.45 system-ui,-apple-system,sans-serif;overflow:hidden}' +
+    '.nova-panel[hidden],.nova-panel [hidden]{display:none!important}' +
     '.nova-head{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#1e5bd8;color:#fff}' +
     '.nova-head b{font-size:17px}.nova-head small{opacity:.85;margin-left:auto}' +
     '.nova-log{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px}' +
@@ -43,17 +52,10 @@
     '.nova-set input{font:inherit;padding:8px 10px;border:1px solid #c5d0ee;border-radius:9px;background:#fff;color:#14213d}' +
     '.nova-set summary{cursor:pointer;color:#4a5679}' +
     '@media (prefers-color-scheme:dark){.nova-panel{background:#101a33;color:#e8edff}.nova-msg.du{background:#24386e}.nova-msg.nova{background:#16244a;border-color:#2b3d70}.nova-row,.nova-opt{background:#16244a;border-color:#2b3d70;color:#aab6da}.nova-row input,.nova-set input{background:#0c1530;color:#e8edff;border-color:#2b3d70}.nova-set{background:#13203f;border-color:#2b3d70}.nova-row button.mic{background:#24386e;color:#cfe0ff}}' +
-    '@media (prefers-reduced-motion:no-preference){.nova-btn[data-wach="1"] svg .glow{animation:novaGlow 2.6s ease-in-out infinite}}' +
-    '@keyframes novaGlow{50%{opacity:.35}}';
+    '@media (prefers-reduced-motion:no-preference){.nova-btn[data-wach="1"]{animation:novaGlow 2.6s ease-in-out infinite}}' +
+    '@keyframes novaGlow{50%{box-shadow:0 0 0 6px rgba(127,178,255,.45),0 6px 18px rgba(20,40,110,.35)}}';
 
-  var face = '<svg viewBox="0 0 48 48" aria-hidden="true">' +
-    '<circle class="glow" cx="24" cy="24" r="22" fill="#7fb2ff" opacity=".7"/>' +
-    '<path d="M8 25a16 16 0 0 1 32 0z" fill="#3d7cf0"/>' +
-    '<circle cx="24" cy="28" r="12" fill="#ffe3cf"/>' +
-    '<circle cx="19.5" cy="28" r="2.2" fill="#14213d"/><circle cx="28.5" cy="28" r="2.2" fill="#14213d"/>' +
-    '<circle cx="20.2" cy="27.2" r=".7" fill="#fff"/><circle cx="29.2" cy="27.2" r=".7" fill="#fff"/>' +
-    '<path d="M21 33q3 2.4 6 0" stroke="#d0606e" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
-    '<circle cx="24" cy="10" r="2.4" fill="#ffd34d"/></svg>';
+  var face = '<img src="' + BILD + '" alt="">';
 
   function el(tag, attrs, html) {
     var e = document.createElement(tag);
@@ -83,6 +85,8 @@
 
     var $ = function (s) { return panel.querySelector(s); };
     var log = $('.nova-log'), input = $('.nova-in');
+    if (KIND) { $('.nova-opt').hidden = true; $('.nova-set').hidden = true; }
+    var SCHLAF = KIND ? 'Ich schlafe noch. Bald bin ich wach.' : 'Ich schlafe noch. Trag unten die Verbindung zu Sense Engine ein.';
 
     function state() {
       var w = ready();
@@ -102,7 +106,7 @@
       btn.setAttribute('aria-expanded', String(!panel.hidden));
       if (!panel.hidden) {
         state();
-        if (!log.children.length) say('nova', ready() ? 'Hallo, ich bin Nova. Wie kann ich helfen?' : 'Ich schlafe noch. Sobald Sense Engine läuft, trag unten die Verbindung ein.');
+        if (!log.children.length) say('nova', ready() ? 'Hallo, ich bin Nova. Wie kann ich helfen?' : SCHLAF);
         input.focus();
       }
     });
@@ -124,18 +128,25 @@
       }).then(function (r) { if (!r.ok) throw new Error('Sense Engine meldet Fehler ' + r.status + '.'); });
     }
 
+    // Gesprächsverlauf dieser Sitzung; die Persönlichkeit je App kommt aus nova/seelen.js.
+    var verlauf = [];
     function ask(text) {
+      var seele = (window.NOVA_SEELEN || {})[APP];
+      verlauf.push({ role: 'user', content: text });
+      var messages = (seele ? [{ role: 'system', content: seele }] : []).concat(verlauf.slice(-12));
       return fetch(addr() + '/v1/chat/completions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + get(K.key, ''), 'X-Nova-App': APP },
-        body: JSON.stringify({ model: 'hermes-agent', messages: [{ role: 'user', content: text }] })
+        body: JSON.stringify({ model: 'hermes-agent', messages: messages })
       }).then(function (r) {
         if (r.status === 401 || r.status === 403) throw new Error('Das Passwort stimmt nicht.');
         if (!r.ok) throw new Error('Nova erreicht Papa Hermes gerade nicht (Fehler ' + r.status + ').');
         return r.json();
       }).then(function (j) {
-        return (j && j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || '…';
-      });
+        var a = (j && j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || '…';
+        verlauf.push({ role: 'assistant', content: a });
+        return a;
+      }, function (e) { verlauf.pop(); throw e; });
     }
 
     $('.nova-row').addEventListener('submit', function (ev) {
@@ -144,8 +155,8 @@
       if (!text) return;
       input.value = '';
       say('du', text);
-      var wunsch = $('#nova-wunsch').checked;
-      if (!ready()) { say('nova', 'Ich schlafe noch. Trag unten die Verbindung zu Sense Engine ein.'); return; }
+      var wunsch = !KIND && $('#nova-wunsch').checked;
+      if (!ready()) { say('nova', SCHLAF); return; }
       if (wunsch) {
         wish(text).then(function () { say('nova', 'Dein Bauwunsch liegt in Sense Engine. Mama Claudine holt ihn dort ab.'); },
           function (e) { say('nova', e.message); });
