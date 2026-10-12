@@ -678,11 +678,21 @@ function applyNight(){ document.documentElement.dataset.night = isNight() ? '1' 
 $$('[data-night-toggle]').forEach(b => b.addEventListener('click', () => { S.night = isNight() ? 'off' : 'on'; saveS(); applyNight(); renderParents(); toast(isNight() ? 'Nachtmodus an 🌙' : 'Tagmodus an ☀️'); }));
 
 /* ---------- Vorlesen (speechSynthesis) ---------- */
+const OTTI = { pitch: 1.55, tempo: 1.12 };
 const TTS = {
   ok: 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined',
   token: 0, timer: null,
   voices(){ if(!this.ok) return []; return speechSynthesis.getVoices().filter(v => /^de/i.test(v.lang)); },
-  voice(){ const vs=this.voices(); if(!vs.length) return null; return vs.find(v=>v.name===S.voice) || vs.find(v=>/de[-_]CH/i.test(v.lang)) || vs.find(v=>/Anna|Petra|Helena|Katja|Marlene|Vicki/i.test(v.name)) || vs.find(v=>/de[-_]DE/i.test(v.lang)) || vs[0]; },
+  // Beste Stimme zuerst: neuronale/erweiterte Stimmen klingen flüssig, Kompaktstimmen wie Roboter.
+  rank(v){ const n=v.name; let r=0;
+    if (/premium|erweitert|enhanced|natural|neural|online/i.test(n)) r+=50;
+    if (/google/i.test(n)) r+=30;
+    if (/Anna|Petra|Helena|Katja|Marlene|Vicki|Amala|Seraphina|Leni|Ingrid/i.test(n)) r+=12;
+    if (/de[-_]DE/i.test(v.lang)) r+=6; else if (/de[-_](CH|AT)/i.test(v.lang)) r+=4;
+    if (/compact|kompakt|eSpeak/i.test(n)) r-=40;
+    if (v.localService===false) r+=3;
+    return r; },
+  voice(){ const vs=this.voices(); if(!vs.length) return null; return vs.find(v=>v.name===S.voice) || vs.slice().sort((a,b)=>this.rank(b)-this.rank(a))[0]; },
   clean(t){ return t.replace(/[«»„“"‹›]/g,'').replace(/\s*–\s*/g,', ').replace(/\s*…\s*/g,' ... ').trim(); },
   stop(){ this.token++; clearTimeout(this.timer); if(this.ok){ try{ speechSynthesis.cancel(); }catch(e){} } },
   speak(list, o={}){
@@ -697,9 +707,11 @@ const TTS = {
       const text = this.clean(list[i]);
       const u = new SpeechSynthesisUtterance(text);
       const v = this.voice(); if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'de-DE';
-      u.rate = S.rate * (o.rateMul || 1); u.pitch = o.pitch || 1.05; u.volume = Math.max(0, Math.min(1, S.vol == null ? 1 : +S.vol));
+      // Ottis Stimme: hell, flink, verschmitzt. Fragen und Ausrufe etwas höher, damit es lebendig klingt.
+      const lift = /\?\s*$/.test(text) ? .12 : /!\s*$/.test(text) ? .07 : (i % 2 ? .04 : 0);
+      u.rate = Math.min(1.6, S.rate * (o.rateMul || 1) * (o.flat ? 1 : OTTI.tempo)); u.pitch = Math.min(2, (o.pitch || OTTI.pitch) + (o.flat ? 0 : lift)); u.volume = Math.max(0, Math.min(1, S.vol == null ? 1 : +S.vol));
       let done = false;
-      const fin = () => { if (done || tok !== this.token) return; done = true; clearTimeout(this.timer); i++; setTimeout(next, o.gap || 480); };
+      const fin = () => { if (done || tok !== this.token) return; done = true; clearTimeout(this.timer); i++; setTimeout(next, o.gap || 170); };
       u.onend = fin; u.onerror = fin;
       const guard = () => { if (tok !== this.token || done) return; if (speechSynthesis.speaking) this.timer = setTimeout(guard, 1500); else fin(); };
       clearTimeout(this.timer);
@@ -1302,7 +1314,7 @@ function mvStep(i){
       if (MV.left <= 0){ clearInterval(MV.timer); setTimeout(() => { if (MV.running && MV.i === i && current === 'move') mvStep(i + 1); }, 600); }
     }, 1000);
   };
-  if (TTS.ok) TTS.speak(text, { onEnd: count, pitch: MV.game.fig==='kiki' ? 1.25 : MV.game.fig==='nova' ? 1.15 : 1.05 });
+  if (TTS.ok) TTS.speak(text, { onEnd: count, pitch: MV.game.fig==='kiki' ? 1.8 : MV.game.fig==='nova' ? 1.3 : OTTI.pitch });
   else count();
 }
 function mvFinish(){
@@ -1421,9 +1433,9 @@ $('#msGo').addEventListener('click', () => {
 
 /* ---------- Reden mit Otti, Kiki und Nova (Antworten aus Vorlagen) ---------- */
 const TALKERS = {
-  sunny:{l:'Otti', pitch:1.05, pre:'', hi:'Hallo! Ich bin Otti, der kleine Igel. Schön, dass du mit mir redest.', me:'Ich bin Otti, ein kleiner Igel mit einem gelben Halstuch. Meine Stacheln sind ganz weich, fast.', fav:'Am liebsten mag ich Walderdbeeren und weiches Moos.', joke:'Weisst du, warum Igel nie streiten? Weil sie immer alles piksfein machen. Hihi!'},
-  kiki:{l:'Kiki', pitch:1.3, pre:'Blink, blink! ', hi:'Hallo! Ich bin Kiki, die kleine leuchtende KI.', me:'Ich bin Kiki, eine kleine Spiel-KI. Ich lerne noch, und manchmal irre ich mich. Das ist okay.', fav:'Am liebsten zähle ich Sterne. Manchmal verzähle ich mich.', joke:'Was sagt ein Stern zum anderen? Du strahlst heute aber! Hihi.'},
-  nova:{l:'Nova', pitch:1.15, pre:'Piep! ', hi:'Hallo! Ich bin Nova, der kleine blaue Roboter.', me:'Ich bin Nova, ein kleiner Roboter. Mein Bauch leuchtet hellblau, wenn ich mich freue.', fav:'Am liebsten tanze ich den Roboter-Tanz. Piep-piep!', joke:'Warum ist der Roboter so ruhig? Er hat gerade Pause. Piep, hihi.'}
+  sunny:{l:'Otti', pitch:OTTI.pitch, pre:'', hi:'Hallo! Ich bin Otti, der kleine Igel. Schön, dass du mit mir redest.', me:'Ich bin Otti, ein kleiner Igel mit einem gelben Halstuch. Meine Stacheln sind ganz weich, fast.', fav:'Am liebsten mag ich Walderdbeeren und weiches Moos.', joke:'Weisst du, warum Igel nie streiten? Weil sie immer alles piksfein machen. Hihi!'},
+  kiki:{l:'Kiki', pitch:1.8, pre:'Blink, blink! ', hi:'Hallo! Ich bin Kiki, die kleine leuchtende KI.', me:'Ich bin Kiki, eine kleine Spiel-KI. Ich lerne noch, und manchmal irre ich mich. Das ist okay.', fav:'Am liebsten zähle ich Sterne. Manchmal verzähle ich mich.', joke:'Was sagt ein Stern zum anderen? Du strahlst heute aber! Hihi.'},
+  nova:{l:'Nova', pitch:1.3, pre:'Piep! ', hi:'Hallo! Ich bin Nova, der kleine blaue Roboter.', me:'Ich bin Nova, ein kleiner Roboter. Mein Bauch leuchtet hellblau, wenn ich mich freue.', fav:'Am liebsten tanze ich den Roboter-Tanz. Piep-piep!', joke:'Warum ist der Roboter so ruhig? Er hat gerade Pause. Piep, hihi.'}
 };
 const TK = { who:'sunny', log:[] };
 const TK_RATES = [[0.7,'Langsam'],[0.85,'Ruhig'],[1.0,'Normal']];
@@ -1501,7 +1513,7 @@ function gdRead(from, to){
   const list = [], map = [];
   for (let i = from; i <= to; i++){ const ss = ['Otti erzählt: ' + GUIDE[i].h + '.', ...splitSentences(GUIDE[i].t)]; ss.forEach(s => { list.push(s); map.push(i); }); }
   GD.reading = true; gdButtons();
-  TTS.speak(list, { rateMul:.92, gap:700, onSentence: k => { gdMark(map[k]); const c = $(`#gdCards [data-gd="${map[k]}"]`); if (c && k && map[k] !== map[k-1]) c.scrollIntoView({behavior:'smooth', block:'center'}); }, onEnd: () => gdStop() });
+  TTS.speak(list, { rateMul:.92, gap:700, pitch:1, flat:true, onSentence: k => { gdMark(map[k]); const c = $(`#gdCards [data-gd="${map[k]}"]`); if (c && k && map[k] !== map[k-1]) c.scrollIntoView({behavior:'smooth', block:'center'}); }, onEnd: () => gdStop() });
 }
 $('#gdAll').addEventListener('click', () => { if (GD.reading){ TTS.stop(); gdStop(); } else gdRead(0, GUIDE.length - 1); });
 $('#gdCards').addEventListener('click', e => { const b = e.target.closest('[data-gdread]'); if (!b) return; const i = +b.dataset.gdread; TTS.stop(); gdRead(i, i); });
