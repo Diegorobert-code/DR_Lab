@@ -31,8 +31,8 @@ header p{margin:0;color:var(--muted);font-size:14px}
 .intro p{margin:0 0 8px;font-size:16px}
 .intro .vision{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;background:rgba(255,255,255,.14);border-radius:99px;padding:3px 10px;margin-bottom:8px}
 .intro .safe{font-size:14px;opacity:.92;margin:0}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--soft);padding:5px;border-radius:16px;margin-bottom:14px;position:sticky;top:calc(env(safe-area-inset-top) + 4px);z-index:5}
-.tab{min-height:52px;border:0;border-radius:12px;background:transparent;font:600 16px/1 var(--font);color:var(--muted);cursor:pointer}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;background:var(--soft);padding:5px;border-radius:16px;margin-bottom:14px;position:sticky;top:calc(env(safe-area-inset-top) + 4px);z-index:5}
+.tab{min-height:50px;border:0;border-radius:12px;background:transparent;font:600 14px/1 var(--font);color:var(--muted);cursor:pointer;padding:0 2px}
 .tab[aria-selected="true"]{background:var(--card);color:var(--navy);box-shadow:0 1px 4px rgba(20,40,60,.12)}
 section.panel{display:none}
 section.panel.on{display:block}
@@ -53,10 +53,10 @@ section.panel.on{display:block}
 .prog>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--navy2),var(--coral));border-radius:99px;transition:width .2s linear}
 .progline{display:flex;justify-content:space-between;font-size:14px;color:var(--muted)}
 .progline b{color:var(--navy);font-size:16px}
-#camWrap{display:flex;gap:12px;align-items:center;margin:10px 0}
-#video{width:64px;height:64px;border-radius:50%;object-fit:cover;background:#2b1b18;flex:none}
+#camWrap,.camwrap{display:flex;gap:12px;align-items:center;margin:10px 0}
+#video,#sVideo{width:64px;height:64px;border-radius:50%;object-fit:cover;background:#2b1b18;flex:none}
 #dot{width:64px;height:64px;border-radius:50%;flex:none;background:radial-gradient(circle at 40% 35%,#ff9a8a,#a3241b);display:none}
-#status{font-size:16px;font-weight:600;color:var(--navy)}
+#status,#sSig{font-size:16px;font-weight:600;color:var(--navy)}
 #wave{width:100%;height:70px;display:block;background:#faf7f2;border-radius:12px;border:1px solid var(--line)}
 .notice{background:#fbf1e8;border:1px solid #f0d9c6;border-radius:14px;padding:12px 14px;font-size:15px;margin-top:10px}
 .notice.warn{background:#fdecea;border-color:#f3c9c2}
@@ -72,6 +72,11 @@ section.panel.on{display:block}
 .ex{background:#f3f7f6;border:1px solid #d7e5e2;border-radius:14px;padding:12px 14px;margin-top:10px}
 .ex h3{margin:0 0 4px;font-size:17px;color:var(--navy)}
 .ex p{margin:0;font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+.chip{border:1px solid #c9dcd8;background:#fff;color:var(--navy);border-radius:99px;padding:8px 12px;min-height:40px;font:600 14px/1.1 var(--font);cursor:pointer}
+.chip small{display:block;font-weight:500;font-size:11px;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.chip[aria-pressed="true"] small{color:#d6e2e8}
 #breath{display:none;text-align:center;margin-top:10px}
 #breathCircle{width:120px;height:120px;border-radius:50%;margin:8px auto;background:radial-gradient(circle,#cfe3df,#4f8a8b);transform:scale(.6);transition:transform 4s ease-in-out}
 #breathText{font-size:20px;font-weight:700;color:var(--navy)}
@@ -80,7 +85,9 @@ section.panel.on{display:block}
 .cmp th,.cmp td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:center}
 .cmp th:first-child,.cmp td:first-child{text-align:left}
 textarea{width:100%;min-height:120px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit;color:var(--ink);resize:vertical}
-textarea:focus{outline:2px solid var(--navy2);outline-offset:1px}
+textarea:focus,.inp:focus,select:focus{outline:2px solid var(--navy2);outline-offset:1px}
+.inp,select{width:100%;min-height:50px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit;color:var(--ink)}
+.lbl{display:block;font-weight:600;font-size:15px;color:var(--navy);margin:12px 0 6px}
 .check{display:flex;align-items:center;gap:10px;min-height:52px;font-size:15px}
 .check input{width:24px;height:24px;flex:none}
 .mic{background:var(--coral);color:#fff;min-height:64px;font-size:18px}
@@ -91,8 +98,38 @@ textarea:focus{outline:2px solid var(--navy2);outline-offset:1px}
 .entry .top{display:flex;justify-content:space-between;gap:8px;font-size:14px;color:var(--muted)}
 .entry .st{font-weight:700}
 .entry .txt{margin:4px 0;font-size:15px}
-.pill{display:inline-block;font-size:12px;font-weight:700;border-radius:99px;padding:2px 8px;color:#fff;margin-left:4px}
+.pill{display:inline-block;font-size:12px;font-weight:700;border-radius:99px;padding:2px 8px;color:#fff;margin-left:4px;white-space:nowrap}
 #chart{width:100%;height:auto;display:block}
+svg.chart{width:100%;height:auto;display:block}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--soft);padding:4px;border-radius:14px;margin:10px 0 4px}
+.seg button{min-height:46px;border:0;border-radius:10px;background:transparent;font:600 15px/1.1 var(--font);color:var(--muted);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--navy);box-shadow:0 1px 4px rgba(20,40,60,.12)}
+input[type=range]{width:100%;height:36px;accent-color:var(--navy)}
+.rangelbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+#sig{width:100%;height:auto;aspect-ratio:600/220;display:block;background:#fff;border:1px dashed #b9b0a3;border-radius:12px;touch-action:none;cursor:crosshair}
+.phase{font-size:14px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--coral2)}
+.clock{font-size:44px;font-weight:700;color:var(--navy);line-height:1.1;font-variant-numeric:tabular-nums}
+.sub{font-size:15px;color:var(--navy);margin:14px 0 4px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mbtn{min-height:58px;border:0;border-radius:14px;font:600 15px/1.15 var(--font);color:#fff;cursor:pointer;padding:6px 8px;transition:transform .1s}
+.mbtn.flash{transform:scale(.95);box-shadow:0 0 0 4px rgba(31,58,77,.25)}
+.talk{background:#e9eef0;color:var(--navy)}
+.talk.on{background:#9aa3a8;color:#fff}
+.minrow{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px;align-items:center;margin-top:10px}
+.minrow span{font-size:15px;font-weight:600;color:var(--navy)}
+.minrow button{min-height:50px;border-radius:12px;border:1px solid var(--line);background:#fff;font:600 16px var(--font);color:var(--navy);cursor:pointer}
+.minrow button[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.noteline{display:grid;grid-template-columns:1fr 64px;gap:8px;margin-top:10px}
+.noteline .btn{margin-top:0;min-height:50px;padding:0}
+.feed{margin-top:10px;font-size:14px}
+.feed div,.tl div{padding:6px 0;border-bottom:1px solid var(--line)}
+.feed b,.tl b{color:var(--navy);font-variant-numeric:tabular-nums;margin-right:6px}
+.strip{display:flex;gap:2px;margin:6px 0}
+.strip i{flex:1;height:16px;border-radius:3px;background:var(--soft)}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted);margin-top:4px}
+.legend span{display:inline-flex;align-items:center;gap:4px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px}
+.badge{display:inline-block;font-size:12px;font-weight:700;border-radius:99px;padding:2px 9px;background:#e4eef0;color:var(--navy2)}
 footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
 .hidden{display:none!important}
 </style>
@@ -112,16 +149,25 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
 
   <nav class="tabs" role="tablist">
     <button class="tab" role="tab" data-tab="messen" aria-selected="true">Messen</button>
-    <button class="tab" role="tab" data-tab="reden" aria-selected="false">Reinreden</button>
+    <button class="tab" role="tab" data-tab="sitzung" aria-selected="false">Sitzung</button>
+    <button class="tab" role="tab" data-tab="reden" aria-selected="false">Reden</button>
     <button class="tab" role="tab" data-tab="verlauf" aria-selected="false">Verlauf</button>
+    <button class="tab" role="tab" data-tab="ideen" aria-selected="false">Ideen</button>
   </nav>
 
   <!-- MESSEN -->
   <section class="panel on" id="p-messen">
     <div class="box" id="startBox">
       <h2 id="startTitle">Puls und Ruhe messen</h2>
-      <p>Lege die Fingerkuppe sanft auf die Rückkamera und halte still. Die Messung dauert etwa 30 Sekunden.</p>
-      <p class="muted">Die Taschenlampe lässt sich im iPhone-Browser nicht einschalten. Miss deshalb bei hellem Licht (z.&nbsp;B. am Fenster oder unter einer Lampe), damit der Finger rot durchleuchtet wird.</p>
+      <div class="seg" id="srcSeg">
+        <button data-src="kamera" aria-pressed="true">Finger (Kamera)</button>
+        <button data-src="polar" aria-pressed="false">Polar H10</button>
+      </div>
+      <div id="camHelp">
+        <p>Lege die Fingerkuppe sanft auf die Rückkamera und halte still. Die Messung dauert etwa 60 Sekunden.</p>
+        <p class="muted">Die Taschenlampe lässt sich im iPhone-Browser nicht einschalten. Miss deshalb bei hellem Licht (z.&nbsp;B. am Fenster oder unter einer Lampe), damit der Finger rot durchleuchtet wird.</p>
+      </div>
+      <div class="notice hidden" id="polarNote"></div>
       <button class="btn primary" id="btnStart">Messung starten</button>
       <button class="btn ghost" id="btnDemo">Demo ohne Kamera</button>
       <div class="notice hidden" id="camErr"></div>
@@ -136,14 +182,14 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
       </div>
       <canvas id="wave" width="600" height="140"></canvas>
       <div class="prog"><i id="progBar"></i></div>
-      <div class="progline"><b id="progPct">0 %</b><span id="progInfo">noch ca. 32 s</span></div>
+      <div class="progline"><b id="progPct">0 %</b><span id="progInfo">noch ca. 62 s</span></div>
       <button class="btn ghost" id="btnStop">Abbrechen</button>
     </div>
 
     <div class="box hidden" id="resultBox">
       <h2>Dein Ergebnis</h2>
       <div class="stagebar" id="stageBar"><i></i><i></i><i></i><i></i><i></i></div>
-      <div class="stagelabels"><span>Ruhe</span><span>Ladung</span></div>
+      <div class="stagelabels"><span>1 Sehr ruhig</span><span>5 Stark geladen</span></div>
       <div class="stagename" id="stageName"></div>
       <p id="stageDesc"></p>
       <div class="big">
@@ -156,6 +202,8 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
         <table class="cmp" id="cmpTable"></table>
       </div>
       <div class="ex" id="exBox">
+        <div class="muted">Passende Übungen – wähle eine:</div>
+        <div class="chips" id="exChips"></div>
         <h3 id="exTitle"></h3>
         <p id="exText"></p>
       </div>
@@ -171,6 +219,95 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
       </div>
       <button class="btn ghost" id="btnToTalk">Dazu reinreden</button>
       <button class="btn ghost" id="btnNew">Neue Messung</button>
+    </div>
+  </section>
+
+  <!-- SITZUNG -->
+  <section class="panel" id="p-sitzung">
+    <div class="box" id="sStartBox">
+      <h2>Sitzung begleiten</h2>
+      <p>Für Therapeutinnen und Therapeuten: Ruhemessung am Anfang und am Ende, laufende Messung während der Behandlung, Diktat und Marker mit Zeitstempel.</p>
+      <label class="lbl" for="sKuerzel">Klienten-Kürzel (nur Initialen, keine Namen)</label>
+      <input id="sKuerzel" class="inp" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="z. B. AB">
+      <div class="muted" id="sConsentInfo" style="margin-top:4px"></div>
+      <label class="lbl">Modus</label>
+      <div class="seg" id="sModeSeg">
+        <button data-mode="messung" aria-pressed="true">Mit Messung</button>
+        <button data-mode="reden" aria-pressed="false">Nur Reden</button>
+      </div>
+      <div id="sSrcWrap">
+        <p class="muted" id="sSrcInfo" style="margin:6px 0 0"></p>
+        <button class="btn ghost" id="sPolarBtn">Polar H10 verbinden</button>
+      </div>
+      <label class="lbl" for="sBefVor">Befinden vorher: <b id="sBefVorV">5</b> / 10</label>
+      <input type="range" id="sBefVor" min="0" max="10" step="1" value="5">
+      <div class="rangelbl"><span>0 sehr schlecht</span><span>10 sehr gut</span></div>
+      <button class="btn primary" id="sStart">Sitzung starten</button>
+      <button class="btn ghost" id="sDemo">Demo-Sitzung (ohne Kamera)</button>
+      <div class="notice hidden" id="sErr"></div>
+    </div>
+
+    <div class="box hidden" id="sConsentBox">
+      <h2>Einwilligung · <span id="sConsK"></span></h2>
+      <p>Ich bin einverstanden, dass während meiner Sitzungen Puls und Herzraten-Variabilität geschätzt sowie Notizen und Marker mit Zeitstempel aufgezeichnet werden. Gespeichert wird nur unter meinem Kürzel, ohne Namen, und nur lokal auf diesem Gerät. Ich kann die Einwilligung jederzeit widerrufen; dann werden meine Daten gelöscht.</p>
+      <p class="muted">HumanSpark ist kein medizinisches Gerät und stellt keine Diagnosen.</p>
+      <p class="muted" style="margin-bottom:6px">Bitte hier mit dem Finger unterschreiben:</p>
+      <canvas id="sig" width="600" height="220" aria-label="Unterschriftsfeld"></canvas>
+      <div class="row">
+        <button class="btn ghost" id="sigClear">Löschen</button>
+        <button class="btn primary" id="sigOk">OK, einverstanden</button>
+      </div>
+      <button class="btn ghost" id="sigCancel">Zurück</button>
+      <div class="notice warn hidden" id="sigErr"></div>
+    </div>
+
+    <div class="box hidden" id="sRunBox">
+      <div class="phase" id="sPhase">Ruhephase Anfang</div>
+      <div class="clock" id="sClock">02:00</div>
+      <div class="muted" id="sPhaseHint"></div>
+      <div class="prog" id="sProgWrap"><i id="sProg"></i></div>
+      <div id="sMeasWrap">
+        <div class="camwrap" id="sCamWrap"><video id="sVideo" playsinline muted autoplay></video><div id="sSig">Kamera …</div></div>
+        <div class="big">
+          <div><b id="sBpm">–</b><span>Puls (letzte Minute)</span></div>
+          <div><b id="sRm">–</b><span>RMSSD (letzte stille Minute)</span></div>
+        </div>
+      </div>
+      <button class="btn mic" id="sDict">🎙 Diktat</button>
+      <div class="muted" id="sInterim"></div>
+      <div class="notice hidden" id="sDictNote"></div>
+      <div class="noteline"><input id="sNote" class="inp" placeholder="Oder Notiz tippen …" autocomplete="off"><button class="btn ghost" id="sNoteAdd" aria-label="Notiz hinzufügen">+</button></div>
+      <h3 class="sub">Marker</h3>
+      <div class="mgrid" id="sMarkers"></div>
+      <button class="btn talk" id="sTalk">Stille · tippen, wenn Klient spricht</button>
+      <label class="lbl" for="sLage">Lage</label>
+      <select id="sLage">
+        <option value="">– wählen –</option>
+        <option>Rücken</option><option>Bauch</option><option>Seite</option><option>Sitzen</option>
+      </select>
+      <div class="minrow"><span id="sMinLbl">Minute 1</span><button data-oz="offen" aria-pressed="false">offen</button><button data-oz="zu" aria-pressed="false">zu</button></div>
+      <div class="feed" id="sFeed"></div>
+      <button class="btn coral" id="sNext">Sitzung beenden</button>
+      <button class="btn ghost" id="sSkip">Ruhephase überspringen</button>
+      <button class="btn danger" id="sAbort">Sitzung abbrechen</button>
+    </div>
+
+    <div class="box hidden" id="sEndBox">
+      <h2>Abschluss</h2>
+      <label class="lbl" for="sBefNach">Befinden nachher: <b id="sBefNachV">5</b> / 10</label>
+      <input type="range" id="sBefNach" min="0" max="10" step="1" value="5">
+      <div class="rangelbl"><span>0 sehr schlecht</span><span>10 sehr gut</span></div>
+      <label class="lbl" for="sSchluss">Schlusssatz der Klientin / des Klienten</label>
+      <button class="btn mic" id="sSchlussDict">🎙 Schlusssatz diktieren</button>
+      <div class="notice hidden" id="sSchlussNote"></div>
+      <textarea id="sSchluss" placeholder="Was nimmst du mit? – oder hier tippen" style="margin-top:10px;min-height:90px"></textarea>
+      <button class="btn primary" id="sFinish">Auswertung zeigen</button>
+    </div>
+
+    <div class="box hidden" id="sOutBox">
+      <div id="sOut"></div>
+      <button class="btn primary" id="sNew">Neue Sitzung</button>
+      <button class="btn ghost" id="sToHist">Verlauf dieses Kürzels</button>
     </div>
   </section>
 
@@ -193,8 +330,21 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
   <!-- VERLAUF -->
   <section class="panel" id="p-verlauf">
     <div class="box">
+      <label class="lbl" for="hFilter" style="margin-top:0">Anzeigen</label>
+      <select id="hFilter"></select>
+    </div>
+    <div class="box" id="hStagesBox">
       <h2>Deine Stufen</h2>
       <div id="chartWrap"></div>
+    </div>
+    <div class="box" id="hWeekBox">
+      <h2>Wochenkurve</h2>
+      <div id="weekWrap"></div>
+    </div>
+    <div class="box hidden" id="hKBox">
+      <h2 id="hKTitle">Sitzungen</h2>
+      <div id="hKWrap"></div>
+      <button class="btn danger" id="hKDel">Einwilligung widerrufen und Daten dieses Kürzels löschen</button>
     </div>
     <div class="box">
       <h2>Einträge</h2>
@@ -202,9 +352,32 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
     </div>
     <div class="box">
       <h2>Daten</h2>
-      <p class="muted">Alles liegt nur in diesem Browser auf deinem Handy. Exportieren kannst du es selbst, z. B. für dich oder deine Therapeutin.</p>
+      <p class="muted">Alles liegt nur in diesem Browser auf deinem Handy: Messungen, Sitzungen, Einwilligungen und Ideen. Exportieren kannst du es selbst, z. B. für dich oder deine Therapeutin.</p>
       <button class="btn primary" id="btnExport">Export (JSON teilen)</button>
       <button class="btn danger" id="btnClear">Alles löschen</button>
+    </div>
+  </section>
+
+  <!-- IDEEN -->
+  <section class="panel" id="p-ideen">
+    <div class="box">
+      <h2>Kauf mit deinen Ideen</h2>
+      <p>Bald kannst du auch mit deinen Ideen bezahlen.</p>
+      <p class="muted">Hast du eine Idee, die HumanSpark besser macht? Schreib sie auf. Gute Ideen sollen später als Guthaben zählen – zum Beispiel für die App-Version oder für Sitzungen.</p>
+    </div>
+    <div class="box">
+      <h2>Idee einreichen</h2>
+      <label class="lbl" for="iTitle" style="margin-top:0">Titel</label>
+      <input id="iTitle" class="inp" maxlength="80" placeholder="z. B. Erinnerung zum Nachmessen">
+      <label class="lbl" for="iText">Beschreibung</label>
+      <textarea id="iText" placeholder="Was soll HumanSpark können? Für wen ist es hilfreich?"></textarea>
+      <label class="check"><input type="checkbox" id="iConsent"> <span>Ich bin einverstanden, dass DR Lab meine Idee lesen und für die Weiterentwicklung verwenden darf.</span></label>
+      <button class="btn primary" id="iSubmit">Idee einreichen</button>
+      <div class="notice hidden" id="iMsg"></div>
+    </div>
+    <div class="box">
+      <h2>Meine Ideen</h2>
+      <div id="iList"></div>
     </div>
   </section>
 
@@ -215,7 +388,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
 (function(){
 'use strict';
 var $ = function(id){ return document.getElementById(id); };
-var KEY = 'hs_entries';
+var KEY = 'hs_entries', CKEY = 'hs_consents', IKEY = 'hs_ideas';
 var params = new URLSearchParams(location.search);
 var FAST = params.has('demofast'); // nur für Tests: Demo läuft schneller
 
@@ -223,25 +396,43 @@ var FAST = params.has('demofast'); // nur für Tests: Demo läuft schneller
 function load(){ try { return JSON.parse(localStorage.getItem(KEY) || '[]') || []; } catch(e){ return []; } }
 function save(list){ try { localStorage.setItem(KEY, JSON.stringify(list)); return true; } catch(e){ return false; } }
 function addEntry(e){ var l = load(); l.push(e); save(l); return e; }
+function loadObj(k, d){ try { return JSON.parse(localStorage.getItem(k) || 'null') || d; } catch(e){ return d; } }
+function saveObj(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e){ return false; } }
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+/* ---------- Übungen ---------- */
+var EX = {
+  atem46:{cat:'Atem', t:'Atmen 4-6', kind:'breath', inS:4, outS:6, dur:60,
+    p:'Vier Sekunden durch die Nase einatmen, sechs Sekunden langsam ausatmen. Der Kreis zeigt dir den Rhythmus.'},
+  atem55:{cat:'Atem', t:'Gleichmässig atmen 5-5', kind:'breath', inS:5, outS:5, dur:60,
+    p:'Fünf Sekunden ein, fünf Sekunden aus. Ohne Anstrengung, einfach im Rhythmus des Kreises.'},
+  fuesse:{cat:'Wahrnehmung', t:'Füsse wahrnehmen', kind:'steps', dur:60,
+    steps:['Fersen spüren', 'Fussballen spüren', 'Zehen spüren', 'Ganze Fusssohle spüren', 'Gewicht sinken lassen'],
+    p:'Stell beide Füsse auf den Boden. Spür die Fersen, die Ballen, die Zehen. Lass das Gewicht nach unten sinken – nichts machen, nur wahrnehmen.'},
+  raum:{cat:'Wahrnehmung', t:'Raum und Geräusche', kind:'steps', dur:60,
+    steps:['Schau dich langsam im Raum um', 'Finde drei Farben', 'Hör auf das entfernteste Geräusch', 'Hör auf das nächste Geräusch', 'Spür, wo du sitzt oder stehst'],
+    p:'Lass den Blick langsam durch den Raum wandern und hör hin, was da ist. Nichts verändern, nur bemerken.'},
+  kreuz:{cat:'Überkreuz', t:'Überkreuzbewegung', kind:'cross', every:2, dur:60,
+    p:'Im Stehen oder Sitzen: rechte Hand zum linken Knie, dann linke Hand zum rechten Knie. Im eigenen Rhythmus, eine Minute lang.'},
+  kreuzLangsam:{cat:'Überkreuz', t:'Langsames Überkreuz', kind:'cross', every:4, dur:60,
+    p:'Rechte Hand zum linken Knie, linke Hand zum rechten Knie – sehr langsam, mit einem langen Ausatmen pro Bewegung.'},
+  reise:{cat:'Körperreise', t:'Kurze Körperreise', kind:'steps', dur:90, prefix:'Spür: ',
+    steps:['Füsse', 'Unterschenkel und Knie', 'Oberschenkel', 'Becken', 'Bauch', 'Brust und Atem', 'Schultern', 'Arme und Hände', 'Nacken', 'Gesicht', 'den ganzen Körper'],
+    p:'Wandere mit der Aufmerksamkeit von den Füssen bis zum Kopf. Bei jeder Stelle kurz verweilen, nichts verändern.'}
+};
 
 /* ---------- Stufen ---------- */
 var STAGES = [
-  {n:1, name:'Ruhe', color:'var(--s1)', hex:'#4f8a8b',
-   desc:'Dein Körper wirkt gerade sehr ruhig. Ein guter Moment, um einfach da zu sein.',
-   ex:{t:'Füsse wahrnehmen', k:'feet', p:'Stell beide Füsse auf den Boden. Spür die Fersen, die Ballen, die Zehen. Lass das Gewicht nach unten sinken – nichts machen, nur wahrnehmen.'}},
-  {n:2, name:'Gelassen', color:'var(--s2)', hex:'#6f9e86',
-   desc:'Ruhig und präsent. Dein System scheint gut zwischen Spannung und Entspannung zu pendeln.',
-   ex:{t:'Füsse wahrnehmen', k:'feet', p:'Spür, wo deine Füsse den Boden berühren. Atme ruhig weiter und folge dem Kontakt von der Ferse bis zu den Zehen.'}},
+  {n:1, name:'Sehr ruhig', color:'var(--s1)', hex:'#4f8a8b',
+   desc:'Dein Körper wirkt gerade sehr ruhig. Ein guter Moment, um einfach da zu sein.', ex:['reise','raum','fuesse']},
+  {n:2, name:'Ruhig', color:'var(--s2)', hex:'#6f9e86',
+   desc:'Ruhig und präsent. Dein Körper pendelt gut zwischen Spannung und Entspannung.', ex:['reise','atem55','fuesse']},
   {n:3, name:'Wach', color:'var(--s3)', hex:'#b9a256',
-   desc:'Wach und aktiv. Etwas Energie ist da – das ist gut zum Handeln.',
-   ex:{t:'Überkreuzbewegung', k:'cross', p:'Im Stehen oder Sitzen: rechte Hand zum linken Knie, dann linke Hand zum rechten Knie. Langsam und im eigenen Rhythmus, eine Minute lang.'}},
+   desc:'Wach und aktiv. Etwas Energie ist da – das ist gut zum Handeln.', ex:['kreuz','fuesse','atem55']},
   {n:4, name:'Angeregt', color:'var(--s4)', hex:'#d98f5c',
-   desc:'Dein Körper ist angeregt. Vielleicht ist gerade viel los – ein paar ruhige Atemzüge können helfen, wieder anzukommen.',
-   ex:{t:'Atmen 4-6', k:'breath', p:'Vier Sekunden durch die Nase einatmen, sechs Sekunden langsam ausatmen. Der Kreis zeigt dir den Rhythmus.'}},
-  {n:5, name:'Ladung', color:'var(--s5)', hex:'#c96a4e',
-   desc:'Viel Ladung im System. Das ist kein Fehler, sondern eine Information. Gönn dir einen Moment für einen langen Ausatem.',
-   ex:{t:'Atmen 4-6 und Füsse spüren', k:'breath', p:'Füsse auf den Boden, dann vier Sekunden ein, sechs Sekunden aus. Mit jedem Ausatmen etwas mehr Gewicht in die Füsse sinken lassen.'}}
+   desc:'Dein Körper ist angeregt. Vielleicht ist gerade viel los – ein paar ruhige Atemzüge helfen, wieder anzukommen.', ex:['atem46','kreuz','fuesse']},
+  {n:5, name:'Stark geladen', color:'var(--s5)', hex:'#c96a4e',
+   desc:'Viel Ladung im Körper. Das ist kein Fehler, sondern eine Information. Gönn dir einen langen Ausatem.', ex:['atem46','kreuzLangsam','fuesse']}
 ];
 
 function stageFrom(bpm, rmssd){
@@ -257,16 +448,53 @@ function showTab(name){
   document.querySelectorAll('section.panel').forEach(function(s){ s.classList.toggle('on', s.id === 'p-' + name); });
   if (name === 'verlauf') renderHistory();
   if (name === 'reden') refreshAttach();
+  if (name === 'sitzung') sRefreshStart();
+  if (name === 'ideen') renderIdeas();
   window.scrollTo(0,0);
 }
 document.querySelectorAll('.tab').forEach(function(b){ b.addEventListener('click', function(){ showTab(b.dataset.tab); }); });
 
+/* ---------- Polar H10 (Web Bluetooth, Herzfrequenz-Dienst 0x180D / 0x2A37) ---------- */
+var HAS_BT = !!(navigator.bluetooth && navigator.bluetooth.requestDevice);
+var POLAR_NO_BT = 'Polar H10 geht im iPhone-Browser nicht (kein Bluetooth im Safari). Kommt mit der App-Version. Am Mac/Android-Chrome geht es.';
+var polar = {dev:null, connected:false, onData:null, lastHr:null};
+function parseHR(dv){
+  var flags = dv.getUint8(0), i = 1, hr;
+  if (flags & 1){ hr = dv.getUint16(i, true); i += 2; } else { hr = dv.getUint8(i); i += 1; }
+  if (flags & 0x08) i += 2; // Energie
+  var rrs = [];
+  if (flags & 0x10){ while (i + 1 < dv.byteLength){ rrs.push(dv.getUint16(i, true) / 1024); i += 2; } }
+  return {hr:hr, rrs:rrs};
+}
+function polarConnect(){
+  if (polar.connected) return Promise.resolve();
+  if (!HAS_BT) return Promise.reject(new Error('kein Bluetooth'));
+  return navigator.bluetooth.requestDevice({filters:[{services:[0x180D]}], optionalServices:[0x180D]})
+  .then(function(dev){
+    polar.dev = dev;
+    dev.addEventListener('gattserverdisconnected', function(){ polar.connected = false; polarUi(); });
+    return dev.gatt.connect();
+  })
+  .then(function(server){ return server.getPrimaryService(0x180D); })
+  .then(function(svc){ return svc.getCharacteristic(0x2A37); })
+  .then(function(ch){
+    ch.addEventListener('characteristicvaluechanged', function(ev){
+      var d = parseHR(ev.target.value);
+      polar.lastHr = d.hr;
+      if (polar.onData) polar.onData(d.hr, d.rrs);
+    });
+    return ch.startNotifications();
+  })
+  .then(function(){ polar.connected = true; polarUi(); });
+}
+
 /* ---------- Messung ---------- */
-var WARMUP = 2, MEASURE = 30, TOTAL = WARMUP + MEASURE;
+var WARMUP = 2, MEASURE = 60, TOTAL = WARMUP + MEASURE;
 var state = null; // laufende Messung
 var lastResult = null; // letzte Messung (Objekt)
 var pendingPairOf = null; // id der Vorher-Messung beim Nachmessen
 var resultShown = false;
+var src = 'kamera';
 
 var video = $('video'), cv = document.createElement('canvas'); cv.width = 40; cv.height = 30;
 var cx = cv.getContext('2d', {willReadFrequently:true});
@@ -283,8 +511,33 @@ function showBox(which){
   ['startBox','measureBox','resultBox'].forEach(function(id){ $(id).classList.toggle('hidden', id !== which); });
 }
 
+function polarUi(){
+  // Messen
+  document.querySelectorAll('#srcSeg button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.src === src ? 'true' : 'false'); });
+  $('camHelp').classList.toggle('hidden', src !== 'kamera');
+  var pn = $('polarNote');
+  if (src === 'polar'){
+    pn.classList.remove('hidden');
+    pn.className = HAS_BT ? 'notice' : 'notice warn';
+    pn.textContent = !HAS_BT ? POLAR_NO_BT : polar.connected ? 'Polar H10 ist verbunden (Puls ' + (polar.lastHr || '–') + '). Die Messung dauert etwa 60 Sekunden.' :
+      'Brustgurt anfeuchten und anlegen. Beim Start wählst du den Polar H10 in der Bluetooth-Liste aus. Die Messung dauert etwa 60 Sekunden.';
+    $('btnStart').disabled = !HAS_BT;
+  } else { pn.classList.add('hidden'); $('btnStart').disabled = false; }
+  // Sitzung
+  if ($('sSrcInfo')) sSrcInfo();
+}
+document.querySelectorAll('#srcSeg button').forEach(function(b){ b.addEventListener('click', function(){ src = b.dataset.src; $('camErr').classList.add('hidden'); polarUi(); }); });
+
 function startMeasure(demo){
   $('camErr').classList.add('hidden');
+  if (sess){ camFail('Während einer laufenden Sitzung ist die Einzelmessung gesperrt.'); return; }
+  if (!demo && src === 'polar'){
+    if (!HAS_BT){ camFail(POLAR_NO_BT); return; }
+    polarConnect().then(startPolarMeasure).catch(function(err){
+      camFail('Polar H10 konnte nicht verbunden werden' + (err && err.name === 'NotFoundError' ? ' (keine Auswahl getroffen)' : '') + '. Gurt anfeuchten, anlegen und nochmals versuchen.');
+    });
+    return;
+  }
   state = {demo:demo, t0:null, samples:[], lostSince:null, timer:null, stream:null, demoT:0, demoGen:null, covered:0};
   showBox('measureBox');
   $('measureTitle').textContent = (pendingPairOf ? 'Nachmessung' : 'Messung') + (demo ? ' (Demo)' : '') + ' läuft';
@@ -302,24 +555,51 @@ function startMeasure(demo){
     camFail('Dieser Browser gibt keinen Kamerazugriff. Öffne die Seite in Safari (über https) oder probiere die Demo.');
     return;
   }
-  navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}, width:{ideal:320}, height:{ideal:240}, frameRate:{ideal:30}}, audio:false})
-  .then(function(stream){
+  openCam().then(function(stream){
     if (!state) { stream.getTracks().forEach(function(t){t.stop();}); return; }
     state.stream = stream;
     video.srcObject = stream;
     var p = video.play(); if (p && p.catch) p.catch(function(){});
-    // Licht: nur wo der Browser es erlaubt (z. B. Android Chrome). Im iPhone-Browser nicht möglich.
-    try {
-      var track = stream.getVideoTracks()[0];
-      var caps = track.getCapabilities ? track.getCapabilities() : {};
-      if (caps.torch) track.applyConstraints({advanced:[{torch:true}]}).catch(function(){});
-    } catch(e){}
     setStatus('Finger auflegen …');
     state.timer = setInterval(tickCam, 33);
   })
   .catch(function(err){
     camFail('Kamera nicht verfügbar' + (err && err.name === 'NotAllowedError' ? ' – der Zugriff wurde nicht erlaubt. Du kannst ihn in den Einstellungen von Safari freigeben.' : '.') + ' Du kannst die Demo ausprobieren.');
   });
+}
+
+function openCam(){
+  return navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}, width:{ideal:320}, height:{ideal:240}, frameRate:{ideal:30}}, audio:false})
+  .then(function(stream){
+    // Licht: nur wo der Browser es erlaubt (z. B. Android Chrome). Im iPhone-Browser nicht möglich.
+    try {
+      var track = stream.getVideoTracks()[0];
+      var caps = track.getCapabilities ? track.getCapabilities() : {};
+      if (caps.torch) track.applyConstraints({advanced:[{torch:true}]}).catch(function(){});
+    } catch(e){}
+    return stream;
+  });
+}
+
+function startPolarMeasure(){
+  state = {polar:true, demo:false, t0:performance.now() / 1000, rrs:[], timer:null, hr:null};
+  showBox('measureBox');
+  $('measureTitle').textContent = (pendingPairOf ? 'Nachmessung' : 'Messung') + ' mit Polar H10 läuft';
+  video.style.display = 'none'; $('dot').style.display = 'block';
+  setProgress(0); drawWave([]);
+  setStatus('Polar H10 verbunden – ruhig sitzen');
+  polar.onData = function(hr, rrs){
+    if (!state || !state.polar) return;
+    state.hr = hr;
+    if (performance.now() / 1000 - state.t0 >= WARMUP) rrs.forEach(function(r){ state.rrs.push(r); });
+  };
+  state.timer = setInterval(function(){
+    if (!state) return;
+    var el = performance.now() / 1000 - state.t0;
+    setProgress(el);
+    setStatus('Polar H10 · Puls ' + (state.hr || '–') + ' · ' + state.rrs.length + ' Schläge');
+    if (el >= TOTAL) finishMeasure();
+  }, 200);
 }
 
 function camFail(msg){
@@ -332,18 +612,23 @@ function stopMeasure(){
   if (!state) return;
   clearInterval(state.timer);
   if (state.stream) state.stream.getTracks().forEach(function(t){ t.stop(); });
+  if (state.polar) polar.onData = null;
   video.srcObject = null;
   state = null;
 }
 
-function tickCam(){
-  if (!state || video.readyState < 2) return;
-  cx.drawImage(video, 0, 0, cv.width, cv.height);
+function readRed(v){
+  cx.drawImage(v, 0, 0, cv.width, cv.height);
   var d = cx.getImageData(0, 0, cv.width, cv.height).data, r = 0, g = 0, b = 0, n = d.length / 4;
   for (var i = 0; i < d.length; i += 4){ r += d[i]; g += d[i+1]; b += d[i+2]; }
   r /= n; g /= n; b /= n;
-  var covered = r > 40 && r > g * 1.5 && r > b * 1.5;
-  pushSample(performance.now() / 1000, r, covered);
+  return {r:r, covered: r > 40 && r > g * 1.5 && r > b * 1.5};
+}
+
+function tickCam(){
+  if (!state || video.readyState < 2) return;
+  var x = readRed(video);
+  pushSample(performance.now() / 1000, x.r, x.covered);
 }
 
 function tickDemo(){
@@ -377,8 +662,8 @@ function pushSample(t, r, covered){
   var s = state;
   if (!covered){
     if (s.lostSince == null) s.lostSince = t;
-    setStatus(s.samples.length ? 'Finger wieder auflegen und still halten' : 'Finger auf die Kamera legen');
-    if (t - s.lostSince > 1 && s.samples.length){ s.samples = []; s.t0 = null; setProgress(0); setStatus('Finger verrutscht – wir starten neu'); }
+    setStatus(s.samples.length ? 'Finger ruhig halten – wieder auflegen' : 'Finger auf die Kamera legen');
+    if (t - s.lostSince > 1 && s.samples.length){ s.samples = []; s.t0 = null; setProgress(0); setStatus('Finger verrutscht – Finger ruhig halten, wir starten neu'); }
     return;
   }
   s.lostSince = null;
@@ -417,8 +702,9 @@ function movAvg(a, w){
 }
 
 // Auswertung: gleichmässig abtasten, Trend weg, glätten, Spitzen finden, Abstände prüfen
-function analyse(samples){
-  var raw = samples.filter(function(p){ return p[0] >= WARMUP; });
+function analyse(samples, skip){
+  var sk = skip == null ? WARMUP : skip;
+  var raw = samples.filter(function(p){ return p[0] >= sk; });
   if (raw.length < 200) return {ok:false, why:'zu wenig Bilder'};
   var FS = 30, t0 = raw[0][0], t1 = raw[raw.length-1][0], n = Math.floor((t1 - t0) * FS), u = [], j = 0;
   for (var i = 0; i < n; i++){
@@ -461,19 +747,42 @@ function analyse(samples){
   return {ok:true, bpm:Math.round(bpm), rmssd: rmssd == null ? null : Math.round(rmssd), quality:Math.round(nGood / ibis.length * 100)};
 }
 
+// Auswertung aus RR-Abständen (Polar H10 oder Demo), Sekunden
+function analyseRR(rrs, minN){
+  minN = minN || 20;
+  var v = rrs.filter(function(r){ return r >= 0.3 && r <= 2; });
+  if (v.length < minN) return {ok:false, why:'zu wenige Herzschläge erkannt'};
+  var sorted = v.slice().sort(function(a,b){return a-b;}), med = sorted[Math.floor(sorted.length/2)];
+  var good = v.map(function(r){ return Math.abs(r - med) / med < 0.25; });
+  var nGood = good.filter(Boolean).length;
+  if (nGood / v.length < 0.7) return {ok:false, why:'unruhiges Signal'};
+  var gv = v.filter(function(r,i){ return good[i]; });
+  var bpm = 60 / (gv.reduce(function(s,r){return s+r;},0) / gv.length);
+  var diffs = [];
+  for (var i = 1; i < v.length; i++) if (good[i] && good[i-1] && Math.abs(v[i] - v[i-1]) / v[i-1] < 0.2) diffs.push((v[i] - v[i-1]) * 1000);
+  var rmssd = null;
+  if (diffs.length >= Math.min(10, minN - 2)){
+    rmssd = Math.sqrt(diffs.reduce(function(s,x){return s+x*x;},0) / diffs.length);
+    if (rmssd > 250) rmssd = null;
+  }
+  return {ok:true, bpm:Math.round(bpm), rmssd: rmssd == null ? null : Math.round(rmssd), quality:Math.round(nGood / rrs.length * 100)};
+}
+
 function finishMeasure(){
-  var s = state, demo = s.demo, res = analyse(s.samples);
+  var s = state, demo = s.demo, isPolar = !!s.polar, res = isPolar ? analyseRR(s.rrs) : analyse(s.samples);
   stopMeasure();
   if (!res.ok){
     showBox('startBox');
     var n = $('camErr');
-    n.innerHTML = '<b>Das Signal war leider nicht sauber genug</b> (' + res.why + '). Kein Problem – das passiert oft. Halte den Finger ganz ruhig und ohne Druck auf der Linse, such helleres Licht und probier es nochmals.';
+    n.innerHTML = isPolar ?
+      '<b>Das Polar-Signal war nicht sauber genug</b> (' + res.why + '). Gurt anfeuchten, etwas fester anlegen, ruhig sitzen und nochmals messen.' :
+      '<b>Finger ruhig halten</b> – das Signal war nicht sauber genug (' + res.why + '). Kein Problem, das passiert oft. Leg den Finger ohne Druck auf die Linse, such helleres Licht und miss nochmals.';
     n.classList.remove('hidden');
     $('btnStart').textContent = 'Nochmals messen';
     return;
   }
   var stage = stageFrom(res.bpm, res.rmssd);
-  var e = {id:uid(), t:Date.now(), type:'messung', bpm:res.bpm, rmssd:res.rmssd, stage:stage, quality:res.quality, demo:demo, pairOf:pendingPairOf};
+  var e = {id:uid(), t:Date.now(), type:'messung', bpm:res.bpm, rmssd:res.rmssd, stage:stage, quality:res.quality, demo:demo, source: isPolar ? 'polar' : demo ? 'demo' : 'kamera', pairOf:pendingPairOf};
   addEntry(e);
   var before = pendingPairOf ? load().filter(function(x){ return x.id === pendingPairOf; })[0] : null;
   pendingPairOf = null;
@@ -481,6 +790,7 @@ function finishMeasure(){
   showResult(e, before);
 }
 
+var curEx = null;
 function showResult(e, before){
   var st = STAGES[e.stage - 1];
   resultShown = true;
@@ -492,12 +802,11 @@ function showResult(e, before){
   $('resBpm').textContent = e.bpm;
   $('resRmssd').textContent = e.rmssd == null ? '–' : e.rmssd;
   $('resNote').textContent = (e.rmssd == null ? 'Für die Herzraten-Variabilität war das Signal nicht ruhig genug – die Stufe stützt sich auf den Puls. ' : '') +
-    'Signalqualität ' + e.quality + ' %. Schätzung über die Kamera, kein Medizinprodukt.';
-  $('exTitle').textContent = 'Sanfte Übung: ' + st.ex.t;
-  $('exText').textContent = st.ex.p;
+    'Signalqualität ' + e.quality + ' %. ' + (e.source === 'polar' ? 'Gemessen mit Polar H10' : 'Schätzung über die Kamera') + ', kein Medizinprodukt.';
   stopExercise();
+  renderExChooser(st);
   if (before){
-    var row = function(lbl, a, b, unit){ return '<tr><td>' + lbl + '</td><td>' + a + '</td><td>' + b + '</td></tr>'; };
+    var row = function(lbl, a, b){ return '<tr><td>' + lbl + '</td><td>' + a + '</td><td>' + b + '</td></tr>'; };
     $('cmpTable').innerHTML = '<tr><th></th><th>Vorher</th><th>Nachher</th></tr>' +
       row('Stufe', before.stage + ' ' + STAGES[before.stage-1].name, e.stage + ' ' + st.name) +
       row('Puls', before.bpm, e.bpm) +
@@ -507,34 +816,51 @@ function showResult(e, before){
   window.scrollTo(0, 0);
 }
 
+function renderExChooser(st){
+  if (st.ex.indexOf(curEx) < 0) curEx = st.ex[0];
+  $('exChips').innerHTML = st.ex.map(function(k){
+    return '<button class="chip" data-ex="' + k + '" aria-pressed="' + (k === curEx) + '"><small>' + EX[k].cat + '</small>' + esc(EX[k].t) + '</button>';
+  }).join('');
+  $('exChips').querySelectorAll('.chip').forEach(function(b){
+    b.addEventListener('click', function(){ stopExercise(); curEx = b.dataset.ex; renderExChooser(st); });
+  });
+  var x = EX[curEx];
+  $('exTitle').textContent = x.cat + ': ' + x.t;
+  $('exText').textContent = x.p;
+  $('btnExercise').textContent = exLabel();
+}
+function exLabel(){ var d = EX[curEx || 'atem46'].dur; return 'Übung starten (' + (d === 60 ? '1 Minute' : (d / 60).toString().replace('.', ',') + ' Minuten') + ')'; }
+
 /* ---------- Übung mit Timer ---------- */
 var exTimer = null;
 function stopExercise(){
   clearInterval(exTimer); exTimer = null;
   $('breath').style.display = 'none';
-  $('btnExercise').textContent = 'Übung starten (1 Minute)';
+  $('btnExercise').textContent = exLabel();
 }
 function startExercise(){
   if (exTimer){ stopExercise(); return; }
-  var st = STAGES[(lastResult ? lastResult.stage : 3) - 1], kind = st.ex.k, left = 60, ph = 0;
+  if (!curEx) curEx = STAGES[(lastResult ? lastResult.stage : 3) - 1].ex[0];
+  var x = EX[curEx], dur = x.dur, left = dur;
   var circle = $('breathCircle'), txt = $('breathText');
   $('breath').style.display = 'block';
   $('btnExercise').textContent = 'Übung beenden';
-  circle.style.display = kind === 'breath' ? 'block' : 'none';
+  circle.style.display = x.kind === 'breath' ? 'block' : 'none';
   var cross = ['Rechte Hand → linkes Knie', 'Linke Hand → rechtes Knie'], ci = 0;
   function step(){
+    var el = dur - left;
     $('breathTime').textContent = 'noch ' + left + ' s';
-    if (kind === 'breath'){
-      var cyc = (60 - left) % 10;
-      if (cyc === 0){ txt.textContent = 'Einatmen … 4'; circle.style.transitionDuration = '4s'; circle.style.transform = 'scale(1)'; }
-      else if (cyc < 4){ txt.textContent = 'Einatmen … ' + (4 - cyc); }
-      else if (cyc === 4){ txt.textContent = 'Ausatmen … 6'; circle.style.transitionDuration = '6s'; circle.style.transform = 'scale(.6)'; }
-      else { txt.textContent = 'Ausatmen … ' + (10 - cyc); }
-    } else if (kind === 'cross'){
-      if (left % 2 === 0){ txt.textContent = cross[ci]; ci = 1 - ci; }
+    if (x.kind === 'breath'){
+      var cycle = x.inS + x.outS, cyc = el % cycle;
+      if (cyc === 0){ txt.textContent = 'Einatmen … ' + x.inS; circle.style.transitionDuration = x.inS + 's'; circle.style.transform = 'scale(1)'; }
+      else if (cyc < x.inS){ txt.textContent = 'Einatmen … ' + (x.inS - cyc); }
+      else if (cyc === x.inS){ txt.textContent = 'Ausatmen … ' + x.outS; circle.style.transitionDuration = x.outS + 's'; circle.style.transform = 'scale(.6)'; }
+      else { txt.textContent = 'Ausatmen … ' + (cycle - cyc); }
+    } else if (x.kind === 'cross'){
+      if (el % (x.every || 2) === 0){ txt.textContent = cross[ci]; ci = 1 - ci; }
     } else {
-      var feet = ['Fersen spüren', 'Fussballen spüren', 'Zehen spüren', 'Ganze Fusssohle spüren', 'Gewicht sinken lassen'];
-      txt.textContent = feet[Math.floor((60 - left) / 12) % feet.length];
+      var idx = Math.min(x.steps.length - 1, Math.floor(el / (dur / x.steps.length)));
+      txt.textContent = (x.prefix || '') + x.steps[idx];
     }
     if (left <= 0){
       clearInterval(exTimer); exTimer = null;
@@ -571,16 +897,16 @@ $('btnNew').addEventListener('click', function(){ stopExercise(); resultShown = 
 $('btnExercise').addEventListener('click', startExercise);
 $('btnSpeak').addEventListener('click', function(){
   if (!lastResult) return;
-  var st = STAGES[lastResult.stage - 1];
-  speak('Stufe ' + lastResult.stage + ', ' + st.name + '. ' + st.desc + ' Übung: ' + st.ex.t + '. ' + st.ex.p);
+  var st = STAGES[lastResult.stage - 1], x = EX[curEx || st.ex[0]];
+  speak('Stufe ' + lastResult.stage + ', ' + st.name + '. ' + st.desc + ' Übung: ' + x.t + '. ' + x.p);
 });
 $('btnToTalk').addEventListener('click', function(){ stopExercise(); showTab('reden'); $('attachMeas').checked = true; updateCode(); });
 
 /* ---------- Reinreden ---------- */
-var STOP = ('aber alle allem allen aller alles also am an andere anderen auch auf aus bei bin bis bist da dabei damit dann das dass dein deine dem den denn der des dich die dies diese dieser dir doch dort du durch ein eine einem einen einer eines einfach er es etwas euch für gar gegen gerade gewesen gibt ging gut habe haben hat hatte hier hin ich ihm ihn ihr im immer in ist ja jetzt kann kein keine man mal mehr mein meine meinem meinen mich mir mit muss nach nicht nichts noch nun nur ob oder ohne schon sehr sein seine sich sie sind so soll sowie über um und uns unter viel vom von vor war waren was weil weiss wenn wer werde werden wie wieder wir wird wo wohl zu zum zur zwar ganz geht gehts heute wirklich bisschen irgendwie eigentlich glaube denke fühle fühl fühlt mich mir halt eben echt ziemlich momentan grad gerade weiß sei bin').split(' ');
+var STOP = ('aber alle allem allen aller alles also am an andere anderen auch auf aus bei bin bis bist da dabei damit dann das dass dein deine dem den denn der des dich die dies diese dieser dir doch dort du durch ein eine einem einen einer eines einfach er es etwas euch für gar gegen gerade gewesen gibt ging gut habe haben hat hatte hier hin ich ihm ihn ihr im immer in ist ja jetzt kann kein keine man mal mehr mein meine meinem meinen mich mir mit muss nach nicht nichts noch nun nur ob oder ohne schon sehr sein seine sich sie sind so soll sowie über um und uns unter viel vom von vor war waren was weil weiss wenn wer werde werden wie wieder wir wird wo wohl zu zum zur zwar ganz geht gehts heute wirklich bisschen irgendwie eigentlich glaube denke fühle fühl fühlt mich mir halt eben echt ziemlich momentan grad gerade sei bin').split(' ');
 var FEEL = ('müde erschöpft gestresst stress angespannt anspannung ruhig entspannt nervös unruhig traurig froh glücklich wütend ärger ärgerlich ängstlich angst sorge sorgen leicht schwer leer voll klar wach dankbar zufrieden überfordert druck kopfschmerzen kopf nacken rücken schulter schultern bauch magen herz atem schlaf schlecht geschlafen kalt warm schmerz schmerzen energie kraft freude liebe einsam verbunden hoffnung zuversicht arbeit familie beziehung kinder kind partner freund freunde körper bewegung natur sonne regen').split(' ');
 function keywords(text){
-  var words = (text || '').toLowerCase().replace(/[^a-zäöüéèàß0-9\s-]/g, ' ').split(/\s+/).filter(function(w){ return w.length > 2 && STOP.indexOf(w) < 0 && !/^\d+$/.test(w); });
+  var words = (text || '').toLowerCase().replace(/\u00df/g, 'ss').replace(/[^a-zäöüéèà0-9\s-]/g, ' ').split(/\s+/).filter(function(w){ return w.length > 2 && STOP.indexOf(w) < 0 && !/^\d+$/.test(w); });
   var score = {}, first = {};
   words.forEach(function(w, i){
     if (!(w in score)){ score[w] = 0; first[w] = i; }
@@ -652,32 +978,473 @@ $('btnMic').addEventListener('click', function(){
   startRecog();
 });
 
+// Allgemeines Diktat (Sitzung, Schlusssatz)
+function Dictation(o){
+  var r = null, on = false, lang = 'de-CH';
+  function start(){
+    if (!SR){ o.err('Spracherkennung ist in diesem Browser nicht verfügbar. Tipp ins Textfeld und nutz das Mikrofon der Tastatur.'); return; }
+    if (recog && listening) recog.stop();
+    r = new SR(); r.lang = lang; r.continuous = true; r.interimResults = true;
+    r.onresult = function(ev){
+      var interim = '';
+      for (var i = ev.resultIndex; i < ev.results.length; i++){ var x = ev.results[i]; if (x.isFinal){ var t = x[0].transcript.trim(); if (t) o.final(t); } else interim += x[0].transcript; }
+      if (o.interim) o.interim(interim);
+    };
+    r.onerror = function(ev){
+      if (ev.error === 'language-not-supported' && lang === 'de-CH'){ lang = 'de-DE'; setTimeout(start, 50); return; }
+      if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') o.err('Mikrofon nicht erlaubt. Gib die Freigabe in den Browser-Einstellungen – oder tipp die Notiz.');
+      else if (ev.error !== 'no-speech' && ev.error !== 'aborted') o.err('Spracherkennung unterbrochen (' + ev.error + '). Tipp nochmals auf den Knopf oder tipp die Notiz.');
+    };
+    r.onend = function(){ on = false; o.state(false); if (o.interim) o.interim(''); };
+    try { r.start(); on = true; o.state(true); o.err(''); } catch(e){ o.err('Spracherkennung konnte nicht starten. Tipp die Notiz ins Feld.'); }
+  }
+  return {
+    toggle:function(){ if (on){ try { r.stop(); } catch(e){} } else start(); },
+    stop:function(){ if (on){ try { r.stop(); } catch(e){} } }
+  };
+}
+
+/* ---------- Sitzung ---------- */
+var REST = 120, WIN = 60;
+var MARKERS = [
+  {k:'tuer', l:'Tür geht auf', c:'#c96a4e'},
+  {k:'offen', l:'Gewebe offen', c:'#4f8a8b'},
+  {k:'regul', l:'Gewebe regulierend', c:'#6f9e86'},
+  {k:'beweg', l:'Gewebe bewegend', c:'#b9a256'}
+];
+function markerOf(k){ return MARKERS.filter(function(m){ return m.k === k; })[0]; }
+var sess = null, sMode = 'messung', sPending = null, sLastOut = null;
+
+function sShow(which){ ['sStartBox','sConsentBox','sRunBox','sEndBox','sOutBox'].forEach(function(id){ $(id).classList.toggle('hidden', id !== which); }); window.scrollTo(0, 0); }
+function kuerzel(){ return ($('sKuerzel').value || '').toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g, '').slice(0, 4); }
+function consents(){ return loadObj(CKEY, {}); }
+function fmtClock(s){ s = Math.max(0, Math.floor(s)); var h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : String(m).padStart(2, '0')) + ':' + String(x).padStart(2, '0'); }
+
+function sSrcInfo(){
+  var info = $('sSrcInfo'), btn = $('sPolarBtn');
+  $('sSrcWrap').classList.toggle('hidden', sMode !== 'messung');
+  if (polar.connected){ info.textContent = 'Messquelle: Polar H10 (verbunden). Für lange Sitzungen die beste Quelle.'; btn.classList.add('hidden'); }
+  else if (HAS_BT){ info.textContent = 'Messquelle: Finger auf der Kamera. Für lange Sitzungen ist der Polar H10 Brustgurt verlässlicher.'; btn.classList.remove('hidden'); }
+  else { info.textContent = 'Messquelle: Finger auf der Kamera (für eine lange Sitzung nur als Notlösung). ' + POLAR_NO_BT; btn.classList.add('hidden'); }
+}
+function sRefreshStart(){
+  var k = kuerzel(), c = consents()[k];
+  $('sConsentInfo').textContent = !k ? 'Nur Initialen eingeben (1–4 Zeichen).' : c ? 'Einwilligung von ' + k + ' liegt vor (unterschrieben am ' + fmtTime(c.t) + ').' : 'Für ' + k + ' fehlt noch die Einwilligung – sie wird vor dem Start einmal unterschrieben.';
+  document.querySelectorAll('#sModeSeg button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.mode === sMode ? 'true' : 'false'); });
+  sSrcInfo();
+}
+$('sKuerzel').addEventListener('input', function(){ var v = kuerzel(); if ($('sKuerzel').value !== v) $('sKuerzel').value = v; sRefreshStart(); });
+document.querySelectorAll('#sModeSeg button').forEach(function(b){ b.addEventListener('click', function(){ sMode = b.dataset.mode; sRefreshStart(); }); });
+$('sBefVor').addEventListener('input', function(){ $('sBefVorV').textContent = $('sBefVor').value; });
+$('sBefNach').addEventListener('input', function(){ $('sBefNachV').textContent = $('sBefNach').value; });
+$('sPolarBtn').addEventListener('click', function(){
+  polarConnect().then(sSrcInfo).catch(function(){ sErr('Polar H10 konnte nicht verbunden werden. Gurt anfeuchten, anlegen und nochmals versuchen.'); });
+});
+function sErr(t){ var n = $('sErr'); n.textContent = t; n.classList.toggle('hidden', !t); }
+
+function sRequestStart(demo){
+  sErr('');
+  var k = kuerzel();
+  if (!k){ sErr('Bitte zuerst ein Kürzel eingeben (nur Initialen, z. B. AB).'); $('sKuerzel').focus(); return; }
+  if (state){ sErr('Bitte zuerst die laufende Einzelmessung beenden.'); return; }
+  sPending = {demo:demo, k:k, mode:sMode, befVor:+$('sBefVor').value};
+  if (!consents()[k]){ $('sConsK').textContent = k; sigReset(); $('sigErr').classList.add('hidden'); sShow('sConsentBox'); return; }
+  sBegin(sPending);
+}
+$('sStart').addEventListener('click', function(){ sRequestStart(false); });
+$('sDemo').addEventListener('click', function(){ sRequestStart(true); });
+
+// Unterschrift
+var sig = $('sig'), sgx = sig.getContext('2d'), sigDrawing = false, sigLen = 0, sigLast = null;
+function sigReset(){ sgx.clearRect(0, 0, sig.width, sig.height); sgx.fillStyle = '#fff'; sgx.fillRect(0, 0, sig.width, sig.height); sigLen = 0; }
+function sigPos(ev){ var r = sig.getBoundingClientRect(); return [(ev.clientX - r.left) * sig.width / r.width, (ev.clientY - r.top) * sig.height / r.height]; }
+sig.addEventListener('pointerdown', function(ev){ ev.preventDefault(); sigDrawing = true; sigLast = sigPos(ev); try { sig.setPointerCapture(ev.pointerId); } catch(e){} });
+sig.addEventListener('pointermove', function(ev){
+  if (!sigDrawing) return; ev.preventDefault();
+  var p = sigPos(ev);
+  sgx.strokeStyle = '#1f3a4d'; sgx.lineWidth = 3.5; sgx.lineCap = 'round'; sgx.lineJoin = 'round';
+  sgx.beginPath(); sgx.moveTo(sigLast[0], sigLast[1]); sgx.lineTo(p[0], p[1]); sgx.stroke();
+  sigLen += Math.hypot(p[0] - sigLast[0], p[1] - sigLast[1]); sigLast = p;
+});
+['pointerup','pointercancel','pointerleave'].forEach(function(n){ sig.addEventListener(n, function(){ sigDrawing = false; }); });
+$('sigClear').addEventListener('click', sigReset);
+$('sigCancel').addEventListener('click', function(){ sPending = null; sShow('sStartBox'); });
+$('sigOk').addEventListener('click', function(){
+  if (!sPending) { sShow('sStartBox'); return; }
+  if (sigLen < 60){ var n = $('sigErr'); n.textContent = 'Bitte zuerst im Feld unterschreiben.'; n.classList.remove('hidden'); return; }
+  var c = consents(); c[sPending.k] = {t:Date.now(), sig:sig.toDataURL('image/png')};
+  if (!saveObj(CKEY, c)){ var m = $('sigErr'); m.textContent = 'Speichern nicht möglich (Speicher voll oder blockiert).'; m.classList.remove('hidden'); return; }
+  sBegin(sPending);
+});
+
+// Marker-Knöpfe
+$('sMarkers').innerHTML = MARKERS.map(function(m){ return '<button class="mbtn" data-m="' + m.k + '" style="background:' + m.c + '">' + m.l + '</button>'; }).join('');
+$('sMarkers').querySelectorAll('.mbtn').forEach(function(b){
+  b.addEventListener('click', function(){
+    if (!sess) return;
+    sEvent('marker', b.dataset.m);
+    b.classList.add('flash'); setTimeout(function(){ b.classList.remove('flash'); }, 180);
+  });
+});
+
+function sEvent(k, v){
+  if (!sess) return;
+  var ev = {t:Math.round(sess.clock * 10) / 10, k:k, v:v};
+  sess.events.push(ev);
+  sFeed(); sUpdate();
+  return ev;
+}
+function evLabel(e){
+  if (e.k === 'marker') return markerOf(e.v) ? markerOf(e.v).l : e.v;
+  if (e.k === 'diktat') return '«' + e.v + '»';
+  if (e.k === 'sprechen') return 'Klient spricht';
+  if (e.k === 'stille') return 'Stille';
+  if (e.k === 'lage') return 'Lage: ' + e.v;
+  if (e.k === 'minute') return 'Minute ' + (e.v.m + 1) + ': ' + e.v.s;
+  if (e.k === 'phase') return {ruhe1:'Ruhephase Anfang', sitzung:'Sitzung läuft', ruhe2:'Ruhephase Ende', ende:'Ende'}[e.v] || e.v;
+  return e.k;
+}
+function sFeed(){
+  if (!sess) return;
+  $('sFeed').innerHTML = sess.events.filter(function(e){ return e.k !== 'phase'; }).slice(-6).reverse().map(function(e){ return '<div><b>' + fmtClock(e.t) + '</b>' + esc(evLabel(e)) + '</div>'; }).join('');
+}
+
+// Diktat in der Sitzung
+var sDict = Dictation({
+  final:function(t){ if (sess) sEvent('diktat', t); },
+  interim:function(t){ $('sInterim').textContent = t ? '… ' + t : ''; },
+  state:function(on){ $('sDict').classList.toggle('on', on); $('sDict').textContent = on ? '■ Diktat stoppen' : '🎙 Diktat'; },
+  err:function(t){ var n = $('sDictNote'); n.textContent = t; n.classList.toggle('hidden', !t); if (t && !SR) $('sNote').focus(); }
+});
+$('sDict').addEventListener('click', function(){ sDict.toggle(); });
+function sAddNote(){ var v = $('sNote').value.trim(); if (!v || !sess) return; sEvent('diktat', v); $('sNote').value = ''; }
+$('sNoteAdd').addEventListener('click', sAddNote);
+$('sNote').addEventListener('keydown', function(ev){ if (ev.key === 'Enter'){ ev.preventDefault(); sAddNote(); } });
+
+$('sTalk').addEventListener('click', function(){ if (!sess) return; sSetSpeaking(!sess.speaking); });
+function sSetSpeaking(on){
+  sess.speaking = on;
+  if (on) sess.winSpeak = true;
+  sEvent(on ? 'sprechen' : 'stille', '');
+  $('sTalk').classList.toggle('on', on);
+  $('sTalk').textContent = on ? '🗣 Klient spricht · tippen für Stille' : 'Stille · tippen, wenn Klient spricht';
+}
+$('sLage').addEventListener('change', function(){ if (sess && $('sLage').value) sEvent('lage', $('sLage').value); });
+document.querySelectorAll('.minrow button').forEach(function(b){
+  b.addEventListener('click', function(){
+    if (!sess) return;
+    var m = Math.floor(sess.clock / 60);
+    sess.minutes[m] = b.dataset.oz;
+    sEvent('minute', {m:m, s:b.dataset.oz});
+  });
+});
+
+function sBegin(p){
+  sPending = null;
+  var measuring = p.mode === 'messung';
+  sess = {id:uid(), t:Date.now(), kuerzel:p.k, mode:p.mode, demo:p.demo, befVor:p.befVor,
+    source: !measuring ? 'keine' : p.demo ? 'demo' : polar.connected ? 'polar' : 'kamera',
+    events:[], windows:[], minutes:{}, speaking:false, winSpeak:false,
+    phase:null, phaseStart:0, clock:0, winStart:0, cam:[], rr:[], lastHr:null, lostSince:null,
+    real0:performance.now(), speed: p.demo ? (FAST ? 150 : 20) : 1, timer:null, stream:null, wl:null, uiN:0,
+    demoNext:0.4, demoDone:{}};
+  $('sLage').value = ''; $('sNote').value = ''; $('sInterim').textContent = ''; $('sDictNote').classList.add('hidden');
+  $('sTalk').classList.remove('on'); $('sTalk').textContent = 'Stille · tippen, wenn Klient spricht';
+  $('sFeed').innerHTML = '';
+  sSetPhase(sess.source === 'keine' ? 'sitzung' : 'ruhe1');
+  $('sMeasWrap').classList.toggle('hidden', sess.source === 'keine');
+  $('sCamWrap').classList.toggle('hidden', sess.source !== 'kamera');
+  $('sBpm').textContent = '–'; $('sRm').textContent = '–';
+  sShow('sRunBox');
+  try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function(l){ if (sess) sess.wl = l; else l.release(); }).catch(function(){}); } catch(e){}
+  if (sess.source === 'polar'){
+    polar.onData = function(hr, rrs){ if (!sess) return; sess.lastHr = hr; rrs.forEach(function(r){ sess.rr.push([sess.clock, r]); }); };
+  }
+  if (sess.source === 'kamera'){
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ sCamFallback('Dieser Browser gibt keinen Kamerazugriff.'); }
+    else {
+      $('sSig').textContent = 'Kamera wird geöffnet …';
+      var me = sess;
+      openCam().then(function(stream){
+        if (sess !== me){ stream.getTracks().forEach(function(t){ t.stop(); }); return; }
+        sess.stream = stream; $('sVideo').srcObject = stream;
+        var pl = $('sVideo').play(); if (pl && pl.catch) pl.catch(function(){});
+      }).catch(function(err){ if (sess === me) sCamFallback('Kamera nicht verfügbar' + (err && err.name === 'NotAllowedError' ? ' (Zugriff nicht erlaubt)' : '') + '.'); });
+    }
+  }
+  sess.timer = setInterval(sTick, 33);
+  sUpdate();
+}
+function sCamFallback(msg){
+  sess.source = 'keine';
+  $('sMeasWrap').classList.add('hidden');
+  var n = $('sDictNote'); n.textContent = msg + ' Die Sitzung läuft ohne Messung weiter – Diktat und Marker funktionieren.'; n.classList.remove('hidden');
+  if (sess.phase === 'ruhe1'){ sSetPhase('sitzung'); }
+}
+function sSetPhase(ph){
+  sess.phase = ph; sess.phaseStart = sess.clock; sess.winStart = sess.clock; sess.winSpeak = sess.speaking;
+  sEvent('phase', ph);
+}
+
+function sTick(){
+  if (!sess) return;
+  var s = sess;
+  s.clock = (performance.now() - s.real0) / 1000 * s.speed;
+  if (s.source === 'demo'){ demoRR(s); demoAuto(s); }
+  if (s.source === 'kamera'){
+    var v = $('sVideo');
+    if (v.readyState >= 2){
+      var x = readRed(v);
+      if (x.covered){ s.cam.push([s.clock, x.r]); s.lostSince = null; s.sigTxt = 'Finger erkannt – ruhig liegen lassen'; }
+      else { if (s.lostSince == null) s.lostSince = s.clock; s.sigTxt = s.cam.length ? 'Finger ruhig halten – wieder auflegen' : 'Finger auf die Kamera legen'; }
+    }
+  }
+  if (s.speaking) s.winSpeak = true;
+  if (s.source !== 'keine') while (s.clock - s.winStart >= WIN) sCloseWindow(s.winStart + WIN);
+  if (s.phase === 'ruhe1' && s.clock - s.phaseStart >= REST){ sCloseWindow(s.clock); sSetPhase('sitzung'); }
+  else if (s.phase === 'ruhe2' && s.clock - s.phaseStart >= REST){ sCloseWindow(s.clock); sToEnd(); return; }
+  if (++s.uiN % 6 === 0) sUpdate();
+}
+
+function sCloseWindow(tEnd){
+  var s = sess, t0 = s.winStart, len = tEnd - t0;
+  if (s.source === 'keine' || len < 20){ s.winStart = tEnd; s.winSpeak = s.speaking; return; }
+  var res;
+  if (s.source === 'kamera'){
+    var smp = s.cam.filter(function(p){ return p[0] >= t0 && p[0] < tEnd; }).map(function(p){ return [p[0] - t0, p[1]]; });
+    res = analyse(smp, 0);
+    s.cam = s.cam.filter(function(p){ return p[0] >= tEnd; });
+  } else {
+    var rrs = s.rr.filter(function(p){ return p[0] >= t0 && p[0] < tEnd; }).map(function(p){ return p[1]; });
+    res = analyseRR(rrs, Math.max(10, Math.round(len * 0.33)));
+    s.rr = s.rr.filter(function(p){ return p[0] >= tEnd; });
+  }
+  s.windows.push({t0:Math.round(t0), t1:Math.round(tEnd), phase:s.phase, speaking:!!s.winSpeak, ok:!!res.ok,
+    bpm: res.ok ? res.bpm : null, rmssd: res.ok && !s.winSpeak ? res.rmssd : null});
+  s.winStart = tEnd; s.winSpeak = s.speaking;
+}
+
+// Demo: simulierte Herzschläge (RR) und ein paar automatische Ereignisse
+function demoRR(s){
+  while (s.demoNext < s.clock){
+    var tt = s.demoNext, prog = Math.min(1, Math.max(0, (tt - REST) / 900));
+    var hr = 76 - 9 * prog + (s.speaking ? 7 : 0) + (s.phase === 'ruhe2' ? -2 : 0);
+    var amp = s.speaking ? 0.015 : 0.035 + 0.03 * prog;
+    var rr = 60 / hr * (1 + amp * Math.sin(2 * Math.PI * tt / 5) + (Math.random() - 0.5) * 0.02);
+    s.rr.push([tt, rr]); s.demoNext += rr; s.lastHr = Math.round(60 / rr);
+  }
+}
+function demoAuto(s){
+  if (s.phase !== 'sitzung') return;
+  var t = s.clock - s.phaseStart, d = s.demoDone;
+  function once(k, at, fn){ if (!d[k] && t >= at){ d[k] = 1; fn(); } }
+  once('lage', 5, function(){ $('sLage').value = 'Rücken'; sEvent('lage', 'Rücken'); });
+  once('sp1', 180, function(){ if (!s.speaking) sSetSpeaking(true); });
+  once('st1', 290, function(){ if (s.speaking) sSetSpeaking(false); });
+  once('tuer', 360, function(){ sEvent('marker', 'tuer'); });
+  once('dk', 380, function(){ sEvent('diktat', 'Demo: Atem wird tiefer, Schultern sinken'); });
+  once('of', 420, function(){ sEvent('marker', 'offen'); });
+}
+
+function sUpdate(){
+  var s = sess; if (!s) return;
+  var inRest = s.phase === 'ruhe1' || s.phase === 'ruhe2', el = s.clock - s.phaseStart;
+  $('sPhase').textContent = (s.phase === 'ruhe1' ? 'Ruhephase Anfang' : s.phase === 'ruhe2' ? 'Ruhephase Ende' : 'Sitzung läuft') + ' · ' + s.kuerzel + (s.demo ? ' · Demo' : '') + (s.mode === 'reden' ? ' · Nur Reden' : '');
+  $('sClock').textContent = inRest ? fmtClock(Math.ceil(REST - el)) : fmtClock(el);
+  $('sPhaseHint').textContent = inRest ? 'Ruhig liegen, nicht sprechen. Gesamt ' + fmtClock(s.clock) + '.' : 'Gesamtzeit ' + fmtClock(s.clock) + (s.source === 'keine' ? ' · ohne Messung' : ' · RMSSD nur aus stillen Minuten');
+  $('sProgWrap').classList.toggle('hidden', !inRest);
+  $('sProg').style.width = Math.min(100, el / REST * 100) + '%';
+  var lw = s.windows.filter(function(w){ return w.bpm != null; }).slice(-1)[0];
+  var lr = s.windows.filter(function(w){ return w.rmssd != null; }).slice(-1)[0];
+  $('sBpm').textContent = (s.source === 'kamera' ? (lw ? lw.bpm : '–') : (s.lastHr || '–'));
+  $('sRm').textContent = lr ? lr.rmssd : '–';
+  if (s.source === 'kamera') $('sSig').textContent = s.sigTxt || 'Finger auf die Kamera legen';
+  var m = Math.floor(s.clock / 60), cur = s.minutes[m];
+  $('sMinLbl').textContent = 'Minute ' + (m + 1) + (cur ? ': ' + cur : '');
+  document.querySelectorAll('.minrow button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.oz === cur ? 'true' : 'false'); });
+  var nT = s.events.filter(function(e){ return e.k === 'marker' && e.v === 'tuer'; }).length;
+  var tb = $('sMarkers').querySelector('[data-m="tuer"]'); if (tb) tb.textContent = 'Tür geht auf' + (nT ? ' (' + nT + ')' : '');
+  var measuring = s.source !== 'keine';
+  $('sNext').classList.toggle('hidden', s.phase !== 'sitzung');
+  $('sNext').textContent = measuring ? 'Sitzung beenden → Ruhephase Ende' : 'Sitzung beenden';
+  $('sSkip').classList.toggle('hidden', !inRest);
+}
+
+$('sNext').addEventListener('click', function(){
+  if (!sess) return;
+  if (sess.source === 'keine'){ sToEnd(); return; }
+  sCloseWindow(sess.clock); sSetPhase('ruhe2'); sUpdate();
+});
+$('sSkip').addEventListener('click', function(){
+  if (!sess) return;
+  sCloseWindow(sess.clock);
+  if (sess.phase === 'ruhe1') sSetPhase('sitzung'); else sToEnd();
+  sUpdate();
+});
+$('sAbort').addEventListener('click', function(){
+  if (!sess) return;
+  if (!confirm('Sitzung abbrechen? Die Daten dieser Sitzung werden nicht gespeichert.')) return;
+  sStop(); sess = null; sShow('sStartBox'); sRefreshStart();
+});
+
+function sStop(){
+  var s = sess; if (!s) return;
+  clearInterval(s.timer); s.timer = null;
+  if (s.stream) s.stream.getTracks().forEach(function(t){ t.stop(); });
+  $('sVideo').srcObject = null;
+  if (s.source === 'polar') polar.onData = null;
+  if (s.wl) try { s.wl.release(); } catch(e){}
+  sDict.stop();
+}
+function sToEnd(){
+  var s = sess;
+  sEvent('phase', 'ende');
+  s.dur = Math.round(s.clock);
+  sStop();
+  $('sBefNach').value = s.befVor; $('sBefNachV').textContent = s.befVor;
+  $('sSchluss').value = ''; $('sSchlussNote').classList.add('hidden');
+  sShow('sEndBox');
+}
+
+var schlussDict = Dictation({
+  final:function(t){ var a = $('sSchluss'); a.value = (a.value ? a.value.replace(/\s*$/, ' ') : '') + t; },
+  state:function(on){ $('sSchlussDict').classList.toggle('on', on); $('sSchlussDict').textContent = on ? '■ Stopp' : '🎙 Schlusssatz diktieren'; },
+  err:function(t){ var n = $('sSchlussNote'); n.textContent = t; n.classList.toggle('hidden', !t); if (t && !SR) $('sSchluss').focus(); }
+});
+$('sSchlussDict').addEventListener('click', function(){ schlussDict.toggle(); });
+
+function aggW(ws){
+  var b = ws.filter(function(w){ return w.bpm != null; }), r = ws.filter(function(w){ return w.rmssd != null; });
+  var avg = function(a, k){ return a.length ? Math.round(a.reduce(function(s, w){ return s + w[k]; }, 0) / a.length) : null; };
+  return {bpm:avg(b, 'bpm'), rmssd:avg(r, 'rmssd')};
+}
+$('sFinish').addEventListener('click', function(){
+  var s = sess; if (!s) return;
+  schlussDict.stop();
+  var ws = s.windows, main = ws.filter(function(w){ return w.phase === 'sitzung'; });
+  var st = aggW(ws.filter(function(w){ return w.phase === 'ruhe1'; })), en = aggW(ws.filter(function(w){ return w.phase === 'ruhe2'; }));
+  if (st.bpm == null && main.length) st = aggW(main.slice(0, 2));
+  if (en.bpm == null && main.length) en = aggW(main.slice(-2));
+  var e = {id:s.id, t:s.t, type:'sitzung', kuerzel:s.kuerzel, mode:s.mode, source:s.source, demo:s.demo, dur:s.dur,
+    befVor:s.befVor, befNach:+$('sBefNach').value, schluss:$('sSchluss').value.trim(),
+    start:st, end:en, tuer:s.events.filter(function(x){ return x.k === 'marker' && x.v === 'tuer'; }).length,
+    windows:ws, events:s.events, minutes:Object.keys(s.minutes).map(function(m){ return [+m, s.minutes[m]]; })};
+  addEntry(e);
+  sess = null;
+  renderOutcome(e);
+});
+
+function renderOutcome(e){
+  sLastOut = e;
+  var dash = function(v, u){ return v == null ? '–' : v + (u || ''); };
+  var h = '<h2>Auswertung · ' + esc(e.kuerzel) + '</h2><p class="muted">' + fmtTime(e.t) + ' · ' + Math.round(e.dur / 60) + ' Min' +
+    (e.mode === 'reden' ? ' · Nur Reden' : e.source === 'keine' ? ' · ohne Messung' : ' · Quelle ' + ({kamera:'Kamera', polar:'Polar H10', demo:'Demo'}[e.source] || e.source)) + (e.demo ? ' · Demo' : '') + '</p>';
+  h += '<div class="big"><div><b>' + e.tuer + '</b><span>× «Tür geht auf»</span></div><div><b>' + e.befVor + ' → ' + e.befNach + '</b><span>Befinden 0–10</span></div></div>';
+  if (e.source !== 'keine'){
+    h += '<table class="cmp"><tr><th></th><th>Start</th><th>Ende</th></tr>' +
+      '<tr><td>Puls</td><td>' + dash(e.start.bpm) + '</td><td>' + dash(e.end.bpm) + '</td></tr>' +
+      '<tr><td>RMSSD</td><td>' + dash(e.start.rmssd, ' ms') + '</td><td>' + dash(e.end.rmssd, ' ms') + '</td></tr></table>';
+  }
+  h += '<h3 class="sub">Verlauf der Sitzung</h3>' + sessionSvg(e);
+  h += '<div class="legend">' + (e.source !== 'keine' ? '<span><i style="background:#1f3a4d"></i>RMSSD</span><span><i style="background:#e8896b"></i>Puls</span><span><i style="background:#cfccc6"></i>Klient spricht</span><span><i style="background:#e3eeec"></i>Ruhephase</span>' : '') +
+    MARKERS.map(function(m){ return '<span><i style="background:' + m.c + '"></i>' + m.l + '</span>'; }).join('') + '</div>';
+  if (e.minutes && e.minutes.length){
+    var nMin = Math.max(1, Math.ceil(e.dur / 60)), mm = {};
+    e.minutes.forEach(function(x){ mm[x[0]] = x[1]; });
+    var cells = ''; for (var i = 0; i < nMin; i++) cells += '<i title="Minute ' + (i + 1) + '" style="background:' + (mm[i] === 'offen' ? '#4f8a8b' : mm[i] === 'zu' ? '#c96a4e' : '') + '"></i>';
+    var nO = e.minutes.filter(function(x){ return x[1] === 'offen'; }).length, nZ = e.minutes.filter(function(x){ return x[1] === 'zu'; }).length;
+    h += '<h3 class="sub">Pro Minute offen / zu</h3><div class="strip">' + cells + '</div><div class="muted">' + nO + ' Min offen · ' + nZ + ' Min zu</div>';
+  }
+  h += '<h3 class="sub">Schlusssatz</h3><p>' + (e.schluss ? '«' + esc(e.schluss) + '»' : '<span class="muted">–</span>') + '</p>';
+  var tl = e.events.filter(function(x){ return x.k !== 'phase' || x.v !== 'sitzung' || x.t > 0; });
+  h += '<h3 class="sub">Zeitleiste</h3><div class="tl">' + (tl.length ? tl.map(function(x){ return '<div><b>' + fmtClock(x.t) + '</b>' + (x.k === 'diktat' ? esc(evLabel(x)) : '<span class="muted">' + esc(evLabel(x)) + '</span>') + '</div>'; }).join('') : '<p class="muted">Keine Einträge.</p>') + '</div>';
+  h += '<p class="muted" style="margin-top:10px">RMSSD nur aus stillen 60-Sekunden-Fenstern; graue Fenster: Klient spricht. Schätzwerte. HumanSpark ist kein medizinisches Gerät und stellt keine Diagnosen.</p>';
+  $('sOut').innerHTML = h;
+  sShow('sOutBox');
+}
+
+function sessionSvg(e){
+  var W = 520, H = 220, L = 40, R = 40, T = 22, B = 26, dur = Math.max(60, e.dur || 60);
+  var X = function(t){ return L + t / dur * (W - L - R); };
+  var g = '';
+  // Ruhephasen
+  var ph = e.events.filter(function(x){ return x.k === 'phase'; });
+  ph.forEach(function(p, i){
+    if (p.v !== 'ruhe1' && p.v !== 'ruhe2') return;
+    var t1 = ph[i + 1] ? ph[i + 1].t : dur;
+    g += '<rect x="' + X(p.t).toFixed(1) + '" y="' + T + '" width="' + Math.max(1, X(t1) - X(p.t)).toFixed(1) + '" height="' + (H - T - B) + '" fill="#e3eeec"/>';
+  });
+  // Sprechfenster grau
+  (e.windows || []).forEach(function(w){ if (w.speaking) g += '<rect x="' + X(w.t0).toFixed(1) + '" y="' + T + '" width="' + Math.max(1, X(w.t1) - X(w.t0)).toFixed(1) + '" height="' + (H - T - B) + '" fill="#cfccc6" opacity=".75"/>'; });
+  // Achse Zeit
+  var step = dur > 3600 ? 900 : dur > 1200 ? 600 : dur > 600 ? 300 : 60;
+  for (var t = 0; t <= dur; t += step) g += '<line x1="' + X(t).toFixed(1) + '" x2="' + X(t).toFixed(1) + '" y1="' + T + '" y2="' + (H - B) + '" stroke="#ece6dc"/><text x="' + X(t).toFixed(1) + '" y="' + (H - 8) + '" font-size="13" fill="#5f6d76" text-anchor="middle">' + Math.round(t / 60) + '\'</text>';
+  var ws = (e.windows || []);
+  var rm = ws.filter(function(w){ return w.rmssd != null; }), bp = ws.filter(function(w){ return w.bpm != null; });
+  if (rm.length){
+    var rMax = Math.max(40, Math.max.apply(null, rm.map(function(w){ return w.rmssd; })) * 1.15);
+    var Yr = function(v){ return H - B - v / rMax * (H - T - B); };
+    g += '<text x="' + (L - 6) + '" y="' + (T + 10) + '" font-size="12" fill="#1f3a4d" text-anchor="end">' + Math.round(rMax) + '</text><text x="' + (L - 6) + '" y="' + (H - B) + '" font-size="12" fill="#1f3a4d" text-anchor="end">0</text>';
+    g += '<path d="' + rm.map(function(w, i){ return (i ? 'L' : 'M') + X((w.t0 + w.t1) / 2).toFixed(1) + ' ' + Yr(w.rmssd).toFixed(1); }).join(' ') + '" fill="none" stroke="#1f3a4d" stroke-width="3" stroke-linejoin="round"/>';
+    g += rm.map(function(w){ return '<circle cx="' + X((w.t0 + w.t1) / 2).toFixed(1) + '" cy="' + Yr(w.rmssd).toFixed(1) + '" r="4" fill="#1f3a4d"/>'; }).join('');
+  }
+  if (bp.length){
+    var bMin = Math.min.apply(null, bp.map(function(w){ return w.bpm; })) - 5, bMax = Math.max.apply(null, bp.map(function(w){ return w.bpm; })) + 5;
+    var Yb = function(v){ return H - B - (v - bMin) / (bMax - bMin) * (H - T - B); };
+    g += '<text x="' + (W - R + 6) + '" y="' + (T + 10) + '" font-size="12" fill="#c96a4e">' + bMax + '</text><text x="' + (W - R + 6) + '" y="' + (H - B) + '" font-size="12" fill="#c96a4e">' + bMin + '</text>';
+    g += '<path d="' + bp.map(function(w, i){ return (i ? 'L' : 'M') + X((w.t0 + w.t1) / 2).toFixed(1) + ' ' + Yb(w.bpm).toFixed(1); }).join(' ') + '" fill="none" stroke="#e8896b" stroke-width="2" stroke-dasharray="5 4"/>';
+  }
+  if (!rm.length && !bp.length) g += '<text x="' + (W / 2) + '" y="' + (H / 2) + '" font-size="14" fill="#5f6d76" text-anchor="middle">' + (e.source === 'keine' ? 'Ohne Messung – nur Marker' : 'Keine auswertbaren Minuten') + '</text>';
+  // Marker
+  e.events.filter(function(x){ return x.k === 'marker'; }).forEach(function(x){
+    var m = markerOf(x.v) || {c:'#888'}, xx = X(x.t).toFixed(1);
+    g += '<line x1="' + xx + '" x2="' + xx + '" y1="' + T + '" y2="' + (H - B) + '" stroke="' + m.c + '" stroke-width="2"/>' +
+      (x.v === 'tuer' ? '<path d="M' + (xx - 6) + ' 6 L' + (+xx + 6) + ' 6 L' + xx + ' ' + (T - 2) + ' Z" fill="' + m.c + '"/>' : '<circle cx="' + xx + '" cy="' + (T - 6) + '" r="4" fill="' + m.c + '"/>');
+  });
+  return '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Sitzungskurve mit Markern">' + g + '</svg>';
+}
+
+$('sNew').addEventListener('click', function(){ sShow('sStartBox'); sRefreshStart(); });
+$('sToHist').addEventListener('click', function(){ hFilter = sLastOut ? 'K:' + sLastOut.kuerzel : 'alle'; showTab('verlauf'); });
+
 /* ---------- Verlauf ---------- */
 function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 function fmtTime(t){ var d = new Date(t); return d.toLocaleDateString('de-CH', {day:'2-digit', month:'2-digit'}) + ' ' + d.toLocaleTimeString('de-CH', {hour:'2-digit', minute:'2-digit'}); }
+function isoWeek(t){
+  var d = new Date(t); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+  var w1 = new Date(d.getFullYear(), 0, 4);
+  return {y:d.getFullYear(), w:1 + Math.round(((d - w1) / 864e5 - 3 + (w1.getDay() + 6) % 7) / 7)};
+}
+var hFilter = 'alle';
+$('hFilter').addEventListener('change', function(){ hFilter = $('hFilter').value; renderHistory(); });
 
 function renderHistory(){
-  var l = load();
-  // Kurve
-  var pts = l.filter(function(e){ return e.type === 'messung'; }).slice(-30);
-  var cw = $('chartWrap');
-  if (pts.length < 2){ cw.innerHTML = '<p class="muted">Ab zwei Messungen siehst du hier deine Linie.</p>'; }
-  else {
-    var W = 520, H = 210, L = 88, R = 12, T = 12, B = 26;
-    var X = function(i){ return L + i / (pts.length - 1) * (W - L - R); }, Y = function(s){ return T + (5 - s) / 4 * (H - T - B); };
-    var g = '';
-    for (var s = 1; s <= 5; s++) g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(s) + '" y2="' + Y(s) + '" stroke="#e2dcd2"/><text x="' + (L - 8) + '" y="' + (Y(s) + 5) + '" text-anchor="end" font-size="17" fill="#5f6d76">' + STAGES[s-1].name + '</text>';
-    var path = pts.map(function(e, i){ return (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(e.stage).toFixed(1); }).join(' ');
-    var dots = pts.map(function(e, i){ return '<circle cx="' + X(i).toFixed(1) + '" cy="' + Y(e.stage).toFixed(1) + '" r="6" fill="' + STAGES[e.stage-1].hex + '" stroke="#fff" stroke-width="2"/>'; }).join('');
-    var lbl = '<text x="' + L + '" y="' + (H - 6) + '" font-size="15" fill="#5f6d76">' + fmtTime(pts[0].t) + '</text><text x="' + (W - R) + '" y="' + (H - 6) + '" font-size="15" fill="#5f6d76" text-anchor="end">' + fmtTime(pts[pts.length-1].t) + '</text>';
-    cw.innerHTML = '<svg id="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Verlauf der Stufen">' + g + '<path d="' + path + '" fill="none" stroke="#1f3a4d" stroke-width="3" stroke-linejoin="round"/>' + dots + lbl + '</svg>';
-  }
+  var all = load();
+  var ks = []; all.forEach(function(e){ if (e.type === 'sitzung' && ks.indexOf(e.kuerzel) < 0) ks.push(e.kuerzel); });
+  Object.keys(consents()).forEach(function(k){ if (ks.indexOf(k) < 0) ks.push(k); });
+  ks.sort();
+  if (hFilter.indexOf('K:') === 0 && ks.indexOf(hFilter.slice(2)) < 0) hFilter = 'alle';
+  $('hFilter').innerHTML = '<option value="alle">Alles</option><option value="mine">Meine Messungen und Einträge</option>' +
+    ks.map(function(k){ return '<option value="K:' + esc(k) + '">Sitzungen ' + esc(k) + '</option>'; }).join('');
+  $('hFilter').value = hFilter;
+  var K = hFilter.indexOf('K:') === 0 ? hFilter.slice(2) : null;
+  $('hStagesBox').classList.toggle('hidden', !!K); $('hWeekBox').classList.toggle('hidden', !!K); $('hKBox').classList.toggle('hidden', !K);
+  var l = all.filter(function(e){ return K ? e.type === 'sitzung' && e.kuerzel === K : hFilter === 'mine' ? e.type !== 'sitzung' : true; });
+  var meas = all.filter(function(e){ return e.type === 'messung'; });
+  if (!K){ renderStages(meas.slice(-30)); renderWeeks(meas); }
+  else renderK(K, l);
   // Liste
   var list = $('list');
-  if (!l.length){ list.innerHTML = '<p class="muted">Noch keine Einträge. Starte mit einer Messung oder rede rein.</p>'; return; }
+  if (!l.length){ list.innerHTML = '<p class="muted">Noch keine Einträge. Starte mit einer Messung, einer Sitzung oder rede rein.</p>'; return; }
   list.innerHTML = l.slice().reverse().map(function(e){
+    if (e.type === 'sitzung'){
+      return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · Sitzung ' + esc(e.kuerzel) + (e.mode === 'reden' ? ' · Nur Reden' : '') + (e.demo ? ' · Demo' : '') + '</span><span class="pill" style="background:#2d5a6b">' + Math.round(e.dur / 60) + ' Min</span></div>' +
+        '<div class="muted">Befinden ' + e.befVor + ' → ' + e.befNach + ' · «Tür geht auf» ' + e.tuer + '×' + (e.start && e.start.rmssd != null ? ' · RMSSD ' + e.start.rmssd + ' → ' + (e.end.rmssd == null ? '–' : e.end.rmssd) + ' ms' : '') + '</div>' +
+        (e.schluss ? '<div class="txt">«' + esc(e.schluss) + '»</div>' : '') +
+        '<button class="btn ghost" data-open="' + e.id + '" style="min-height:44px;margin-top:6px">Auswertung öffnen</button></div>';
+    }
     var st = e.stage ? STAGES[e.stage-1] : null;
-    var head = e.type === 'messung' ? (e.pairOf ? 'Nachmessung' : 'Messung') : 'Reinreden';
+    var head = e.type === 'messung' ? (e.pairOf ? 'Nachmessung' : 'Messung') + (e.source === 'polar' ? ' (Polar)' : '') : 'Reinreden';
     var vals = e.bpm ? 'Puls ' + e.bpm + (e.rmssd != null ? ' · RMSSD ' + e.rmssd + ' ms' : '') : '';
     return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · ' + head + (e.demo ? ' · Demo' : '') + '</span>' +
       (st ? '<span class="pill" style="background:' + st.hex + '">' + e.stage + ' ' + st.name + '</span>' : '') + '</div>' +
@@ -685,11 +1452,78 @@ function renderHistory(){
       (vals ? '<div class="muted">' + vals + '</div>' : '') +
       (e.code ? '<div class="code" style="margin-top:6px">' + esc(e.code) + '</div>' : '') + '</div>';
   }).join('');
+  list.querySelectorAll('[data-open]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var e = load().filter(function(x){ return x.id === b.dataset.open; })[0];
+      if (!e) return;
+      if (sess){ alert('Während einer laufenden Sitzung kann keine andere Auswertung geöffnet werden.'); return; }
+      showTab('sitzung'); renderOutcome(e);
+    });
+  });
 }
 
+function renderStages(pts){
+  var cw = $('chartWrap');
+  if (pts.length < 2){ cw.innerHTML = '<p class="muted">Ab zwei Messungen siehst du hier deine Linie.</p>'; return; }
+  var W = 520, H = 210, L = 118, R = 12, T = 12, B = 26;
+  var X = function(i){ return L + i / (pts.length - 1) * (W - L - R); }, Y = function(s){ return T + (5 - s) / 4 * (H - T - B); };
+  var g = '';
+  for (var s = 1; s <= 5; s++) g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(s) + '" y2="' + Y(s) + '" stroke="#e2dcd2"/><text x="' + (L - 8) + '" y="' + (Y(s) + 5) + '" text-anchor="end" font-size="15" fill="#5f6d76">' + STAGES[s-1].name + '</text>';
+  var path = pts.map(function(e, i){ return (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(e.stage).toFixed(1); }).join(' ');
+  var dots = pts.map(function(e, i){ return '<circle cx="' + X(i).toFixed(1) + '" cy="' + Y(e.stage).toFixed(1) + '" r="6" fill="' + STAGES[e.stage-1].hex + '" stroke="#fff" stroke-width="2"/>'; }).join('');
+  var lbl = '<text x="' + L + '" y="' + (H - 6) + '" font-size="14" fill="#5f6d76">' + fmtTime(pts[0].t) + '</text><text x="' + (W - R) + '" y="' + (H - 6) + '" font-size="14" fill="#5f6d76" text-anchor="end">' + fmtTime(pts[pts.length-1].t) + '</text>';
+  cw.innerHTML = '<svg id="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Verlauf der Stufen">' + g + '<path d="' + path + '" fill="none" stroke="#1f3a4d" stroke-width="3" stroke-linejoin="round"/>' + dots + lbl + '</svg>';
+}
+
+function renderWeeks(meas){
+  var ww = $('weekWrap');
+  if (!meas.length){ ww.innerHTML = '<p class="muted">Sobald du misst, siehst du hier den Durchschnitt pro Kalenderwoche.</p>'; return; }
+  var groups = {}, order = [];
+  meas.forEach(function(e){
+    var w = isoWeek(e.t), k = w.y + '-' + String(w.w).padStart(2, '0');
+    if (!groups[k]){ groups[k] = {y:w.y, w:w.w, st:[], bpm:[], rm:[]}; order.push(k); }
+    groups[k].st.push(e.stage); groups[k].bpm.push(e.bpm); if (e.rmssd != null) groups[k].rm.push(e.rmssd);
+  });
+  order.sort();
+  var avg = function(a){ return a.length ? a.reduce(function(s, v){ return s + v; }, 0) / a.length : null; };
+  var wk = order.slice(-12).map(function(k){ var g = groups[k]; return {lbl:'KW ' + g.w, st:avg(g.st), bpm:avg(g.bpm), rm:avg(g.rm), n:g.st.length}; });
+  var W = 520, H = 190, L = 34, R = 14, T = 14, B = 30, n = wk.length;
+  var X = function(i){ return n === 1 ? (L + W - R) / 2 : L + i / (n - 1) * (W - L - R); }, Y = function(s){ return T + (5 - s) / 4 * (H - T - B); };
+  var g = '';
+  for (var s = 1; s <= 5; s++) g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(s) + '" y2="' + Y(s) + '" stroke="#e2dcd2"/><text x="' + (L - 8) + '" y="' + (Y(s) + 5) + '" text-anchor="end" font-size="14" fill="#5f6d76">' + s + '</text>';
+  if (n > 1) g += '<path d="' + wk.map(function(w, i){ return (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(w.st).toFixed(1); }).join(' ') + '" fill="none" stroke="#2d5a6b" stroke-width="3" stroke-linejoin="round"/>';
+  wk.forEach(function(w, i){
+    g += '<circle cx="' + X(i).toFixed(1) + '" cy="' + Y(w.st).toFixed(1) + '" r="6" fill="' + STAGES[Math.round(w.st) - 1].hex + '" stroke="#fff" stroke-width="2"/>';
+    if (n <= 8 || i % 2 === 0 || i === n - 1) g += '<text x="' + X(i).toFixed(1) + '" y="' + (H - 8) + '" font-size="13" fill="#5f6d76" text-anchor="middle">' + w.lbl + '</text>';
+  });
+  var last = wk[n - 1];
+  ww.innerHTML = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Wochenkurve der Stufen">' + g + '</svg>' +
+    '<p class="muted" style="margin:6px 0 0">Durchschnitt pro Kalenderwoche (Stufe 1 sehr ruhig bis 5 stark geladen). ' + last.lbl + ': Ø Stufe ' + last.st.toFixed(1).replace('.', ',') + ' · Puls ' + Math.round(last.bpm) + (last.rm != null ? ' · RMSSD ' + Math.round(last.rm) + ' ms' : '') + ' · ' + last.n + ' Messung' + (last.n === 1 ? '' : 'en') + '.</p>';
+}
+
+function renderK(K, l){
+  $('hKTitle').textContent = 'Sitzungen ' + K;
+  var c = consents()[K];
+  var h = c ? '<p class="muted">Einwilligung unterschrieben am ' + fmtTime(c.t) + '.</p><img src="' + c.sig + '" alt="Unterschrift ' + esc(K) + '" style="width:100%;max-width:300px;border:1px solid #e2dcd2;border-radius:10px;display:block;margin-bottom:10px">' : '<p class="muted">Keine Einwilligung gespeichert.</p>';
+  if (l.length){
+    h += '<table class="cmp"><tr><th>Datum</th><th>Befinden</th><th>RMSSD</th><th>Tür</th></tr>' + l.map(function(e){
+      return '<tr><td>' + fmtTime(e.t).slice(0, 5) + '</td><td>' + e.befVor + '→' + e.befNach + '</td><td>' + (e.start && e.start.rmssd != null ? e.start.rmssd + '→' + (e.end.rmssd == null ? '–' : e.end.rmssd) : '–') + '</td><td>' + e.tuer + '</td></tr>';
+    }).join('') + '</table>';
+  } else h += '<p class="muted">Noch keine Sitzungen.</p>';
+  $('hKWrap').innerHTML = h;
+}
+$('hKDel').addEventListener('click', function(){
+  var K = hFilter.slice(2); if (!K) return;
+  if (!confirm('Einwilligung von ' + K + ' widerrufen und alle Sitzungen von ' + K + ' löschen?')) return;
+  save(load().filter(function(e){ return !(e.type === 'sitzung' && e.kuerzel === K); }));
+  var c = consents(); delete c[K]; saveObj(CKEY, c);
+  hFilter = 'alle'; renderHistory();
+});
+
 $('btnExport').addEventListener('click', function(){
-  var data = {app:'HumanSpark', marke:'DR Lab', version:1, exportiert:new Date().toISOString(),
-    hinweis:'Schätzwerte aus der Kamera, kein Medizinprodukt. Kodierung: HS1|S<Stufe 1-5>|<3 Stichworte>.', eintraege:load()};
+  var data = {app:'HumanSpark', marke:'DR Lab', version:2, exportiert:new Date().toISOString(),
+    hinweis:'Schätzwerte aus Kamera oder Polar H10, kein Medizinprodukt. Kodierung: HS1|S<Stufe 1-5>|<3 Stichworte>. Sitzungen: RMSSD nur aus stillen 60-s-Fenstern.',
+    eintraege:load(), einwilligungen:consents(), ideen:loadObj(IKEY, [])};
   var json = JSON.stringify(data, null, 2), name = 'humanspark-' + new Date().toISOString().slice(0,10) + '.json';
   var blob = new Blob([json], {type:'application/json'});
   try {
@@ -704,17 +1538,41 @@ $('btnExport').addEventListener('click', function(){
 });
 
 $('btnClear').addEventListener('click', function(){
-  if (!load().length){ alert('Es gibt noch nichts zu löschen.'); return; }
-  if (!confirm('Wirklich alle Messungen und Einträge auf diesem Handy löschen? Das lässt sich nicht rückgängig machen.')) return;
-  try { localStorage.removeItem(KEY); } catch(e){}
-  lastResult = null; resultShown = false;
+  if (!load().length && !Object.keys(consents()).length && !loadObj(IKEY, []).length){ alert('Es gibt noch nichts zu löschen.'); return; }
+  if (!confirm('Wirklich alle Messungen, Sitzungen, Einwilligungen, Einträge und Ideen auf diesem Handy löschen? Das lässt sich nicht rückgängig machen.')) return;
+  try { localStorage.removeItem(KEY); localStorage.removeItem(CKEY); localStorage.removeItem(IKEY); } catch(e){}
+  lastResult = null; resultShown = false; hFilter = 'alle';
   showBox('startBox');
   renderHistory();
 });
 
+/* ---------- Ideen ---------- */
+function renderIdeas(){
+  var l = loadObj(IKEY, []);
+  $('iList').innerHTML = !l.length ? '<p class="muted">Noch keine Ideen eingereicht.</p>' : l.slice().reverse().map(function(i){
+    return '<div class="entry"><div class="top"><span>' + fmtTime(i.t) + '</span><span class="badge">' + esc(i.status) + '</span></div><div class="txt"><b>' + esc(i.titel) + '</b></div>' + (i.text ? '<div class="muted">' + esc(i.text) + '</div>' : '') + '</div>';
+  }).join('');
+}
+$('iSubmit').addEventListener('click', function(){
+  var t = $('iTitle').value.trim(), x = $('iText').value.trim(), n = $('iMsg');
+  n.classList.remove('hidden');
+  if (!t && !x){ n.className = 'notice warn'; n.textContent = 'Schreib zuerst deine Idee auf.'; return; }
+  if (!$('iConsent').checked){ n.className = 'notice warn'; n.textContent = 'Bitte bestätige die Einwilligung, damit wir deine Idee verwenden dürfen.'; return; }
+  var l = loadObj(IKEY, []);
+  l.push({id:uid(), t:Date.now(), titel:t || x.slice(0, 60), text:x, einwilligung:true, status:'eingereicht'});
+  saveObj(IKEY, l);
+  $('iTitle').value = ''; $('iText').value = ''; $('iConsent').checked = false;
+  n.className = 'notice'; n.textContent = 'Danke! Deine Idee ist gespeichert (Status: eingereicht). Sie liegt vorerst auf diesem Handy und geht mit der App-Version an DR Lab – oder du schickst sie per Export.';
+  renderIdeas();
+});
+
 // Start: letzte Messung merken (für Nachmessen / Anhängen)
 (function(){ var m = load().filter(function(e){ return e.type === 'messung'; }); lastResult = m[m.length - 1] || null; })();
+polarUi();
+sRefreshStart();
 })();
 </script>
+<script src="../nova/seelen.js" defer></script>
+<script src="../nova/nova.js" data-nova-app="HumanSpark" defer></script>
 </body>
 </html>
