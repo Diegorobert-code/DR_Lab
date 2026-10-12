@@ -245,7 +245,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 .check{display:flex;gap:12px;align-items:flex-start;font-size:15.5px;margin-top:12px;font-weight:600}
 .check input{width:30px;height:30px;flex:none;accent-color:var(--moon2);margin:0}
 .info p{margin:0 0 6px}
-.gateq{font-size:30px;font-weight:800;margin:6px 0 12px}
+.gateq{font-size:24px;font-weight:800;margin:6px 0 12px}
 .fig.nova-film{display:block;width:100%;height:auto;max-width:100%;max-height:100%;margin:auto;aspect-ratio:1;object-fit:cover;border-radius:50%;overflow:hidden;box-shadow:0 0 0 3px #bfefff,0 0 22px rgba(111,228,255,.45);background:#fdf6e6}
 .pk .nova-film{width:58px;height:58px}.sitem .ic .nova-film{width:70px;height:70px}.stage .nova-film{width:150px;height:150px}.stage.two .nova-film{width:124px;height:124px}.mc .face .nova-film{width:84%;height:84%}
 .fig.nova-film.asleep{filter:brightness(.75) saturate(.8)}
@@ -920,12 +920,14 @@ function holdButton(el, onDone){
 }
 /* danach: kleine Rechenaufgabe */
 const gate = {a:0, b:0};
-function newGateQ(){ gate.a = 6 + Math.floor(Math.random()*10); gate.b = 3 + Math.floor(Math.random()*7); $('#gateQ').textContent = `${gate.a} + ${gate.b} = ?`; $('#gateIn').value = ''; }
+const GATE_W = {3:'drei',4:'vier',5:'fünf',6:'sechs',7:'sieben',8:'acht',9:'neun',12:'zwölf',13:'dreizehn',14:'vierzehn',15:'fünfzehn',16:'sechzehn',17:'siebzehn',18:'achtzehn',19:'neunzehn'};
+// Elternsperre für Kinder-Apps (App Store): in Worten und mit Mal-Rechnen, damit kleine Kinder sie nicht lösen.
+function newGateQ(){ gate.a = 3 + Math.floor(Math.random()*7); gate.b = 12 + Math.floor(Math.random()*8); $('#gateQ').textContent = `${GATE_W[gate.a]} mal ${GATE_W[gate.b]} = ?`; $('#gateIn').value = ''; }
 function openGate(){ TTS.stop(); newGateQ(); $('#gate').classList.add('on'); setTimeout(() => { try{ $('#gateIn').focus(); }catch(e){} }, 80); }
 function closeGate(){ $('#gate').classList.remove('on'); }
 function checkGate(){
   const v = parseInt($('#gateIn').value, 10);
-  if (v === gate.a + gate.b){ closeGate(); go('parents'); }
+  if (v === gate.a * gate.b){ closeGate(); go('parents'); }
   else { toast('Leider nicht richtig – hier ist eine neue Aufgabe.'); newGateQ(); $('#gateIn').focus(); }
 }
 $('#gateOk').addEventListener('click', checkGate);
