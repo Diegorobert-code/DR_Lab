@@ -29,7 +29,7 @@ Pro App liegt alles in `appstore/<app>/`: die iPhone-App (`ios/`), die Texte (`s
 9. Zurück in Xcode: Menü **Product → Archive**, dann **Distribute App → App Store Connect → Upload**.
 10. In App Store Connect die Texte aus `store/texte.md` einfügen, die Screenshots aus `store/screenshots-6.9/` hochladen (Feld «iPhone 6,9 Zoll»), Altersfreigabe und App-Datenschutz wie in der Datei beantworten, Preis «Gratis».
 11. **Verfügbarkeit:** zuerst nur **Schweiz**. (Für EU-Länder verlangt Apple die Händler-Angabe nach dem EU-Gesetz über digitale Dienste, dann werden Adresse, Telefon und Mail öffentlich angezeigt. Das entscheiden wir später.)
-12. Datenschutz-URL: die Seite `datenschutz/` geht online, sobald du Go sagst (Entwurf im Projekt unter appstore/datenschutz.html, es fehlt nur deine Kontakt-Mail).
+12. Datenschutz-URL: die Seite `datenschutz/` geht online, sobald du Go sagst (Entwurf liegt als Seite `datenschutz/index.html` im Pull Request «Datenschutz-Seite», es fehlt nur deine Kontakt-Mail).
 13. Erst wenn alles stimmt: **«Zur Prüfung einreichen»**. Das machst du selbst.
 
 ## Was in der App-Store-Version anders ist als im Web
