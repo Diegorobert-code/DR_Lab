@@ -147,7 +147,17 @@ footer{display:flex;justify-content:space-between;gap:10px 24px;flex-wrap:wrap;p
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
 .open>*,.screen,.under{min-width:0;max-width:100%}
 @media (max-width:620px){.pill{white-space:normal}.under{flex-direction:column}}
-.open{display:inline-flex;align-items:center;min-height:44px;font-weight:600;color:inherit;text-decoration:underline;text-underline-offset:3px}
+a.open{display:inline-flex;align-items:center;min-height:44px;font-weight:600;color:inherit;text-decoration:underline;text-underline-offset:3px}
+.suche{margin:26px 0 0;display:flex;flex-direction:column;gap:10px;max-width:640px}
+.suche form{display:flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 6px 6px 20px}
+.suche input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:500 17px/1.3 var(--body);padding:10px 0;outline:none}
+.suche .mic,.suche .los{min-width:44px;min-height:44px;border-radius:999px;border:0;cursor:pointer;font:600 15px/1 var(--body)}
+.suche .mic{background:var(--raise);color:var(--ink)}.suche .mic.an{background:var(--spark);color:var(--on-spark)}
+.suche .los{background:var(--spark);color:var(--on-spark);padding:0 18px}
+.suche ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.suche li a{display:block;padding:12px 16px;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--ink);text-decoration:none}
+.suche li a b{display:block}.suche li a span{color:var(--muted);font-size:15px}
+.suche .hinweis{color:var(--muted);font-size:14px;margin:0}
 </style>
 </head><body>
 
@@ -170,6 +180,15 @@ footer{display:flex;justify-content:space-between;gap:10px 24px;flex-wrap:wrap;p
     <p>Wir bauen KI, die zuhört, misst und mithilft. Man <em>redet einfach rein</em>, die App macht den Rest.</p>
     <div class="cta"><a class="btn go" href="#apps">Apps ansehen</a><a class="btn line" href="#eigene-ki">Ihre eigene KI</a></div>
   </div>
+  <div class="suche" role="search">
+    <form id="sucheForm" autocomplete="off">
+      <label class="sr" for="sucheFeld" style="position:absolute;left:-9999px">Was suchen Sie?</label>
+      <input id="sucheFeld" type="search" placeholder="Was suchen Sie?" enterkeyhint="search">
+      <button class="mic" id="sucheMic" type="button" aria-label="Mit der Stimme suchen" hidden>🎤</button>
+      <button class="los" type="submit">Suchen</button>
+    </form>
+    <ul id="sucheTreffer" aria-live="polite"></ul>
+  </div>
 </div>
 
 <div class="screen" id="screen">
@@ -181,7 +200,7 @@ footer{display:flex;justify-content:space-between;gap:10px 24px;flex-wrap:wrap;p
   </div>
 </div>
 <div class="under">
-  <span class="label">Markenfilm DR Lab · 60 Sekunden</span>
+  <span class="label" id="filmName">Markenfilm DR Lab · 60 Sekunden</span>
   <span class="label">Mit Ton ansehen</span>
 </div>
 
@@ -265,6 +284,62 @@ footer{display:flex;justify-content:space-between;gap:10px 24px;flex-wrap:wrap;p
 <footer><span>© 2026 DR Lab · Diego Robert, Zürich</span><span>Filme mit Aufnahmen von Pexels · <a href="#impressum">Impressum und Datenschutz</a></span></footer>
 </div>
 
+<script>
+(function(){
+  /* Einstiegsfilm: nach je vier neuen Browser-Sitzungen kommt der nächste Film */
+  var filme=[
+    {src:'film/DRLab.mp4',poster:'poster/DRLab.jpg',name:'Markenfilm DR Lab · 60 Sekunden'},
+    {src:'film/Vorfilm.mp4',poster:'poster/Vorfilm.jpg',name:'Vorfilm DR Lab · 44 Sekunden'}
+  ];
+  var n=0;
+  try{
+    n=parseInt(localStorage.getItem('drlab-sitzungen')||'0',10)||0;
+    if(!sessionStorage.getItem('drlab-sitzung')){sessionStorage.setItem('drlab-sitzung','1');n++;localStorage.setItem('drlab-sitzungen',String(n));}
+  }catch(e){}
+  var f=filme[Math.floor(Math.max(n-1,0)/4)%filme.length],v=document.getElementById('pfilm');
+  if(v&&v.getAttribute('src')!==f.src){v.setAttribute('poster',f.poster);v.setAttribute('src',f.src);}
+  var l=document.getElementById('filmName');if(l)l.textContent=f.name;
+
+  /* Suche über alles, was im Labor steht (läuft im Browser, nichts wird verschickt) */
+  var inhalt=[
+    {t:'Mondschein',d:'Gutenachtgeschichten und Spiele mit Otti dem Igel',u:'mondschein/',k:'kinder kind gutenacht geschichte geschichten schlafen otti igel nova spiel spiele fantasie märchen zähne'},
+    {t:'HumanSpark',d:'Finger auf die Kamera: Puls und Ruhe, übersetzt für die KI',u:'humanspark/',k:'puls herz hrv körper messen kamera finger stress ruhe atem forschung zustand'},
+    {t:'TradePing',d:'Ein Ping, wenn ein Kurs deine Marke erreicht',u:'tradeping/',k:'kurs kurse aktien krypto bitcoin trading börse alarm wecker geld markt'},
+    {t:'Jackie’s Advice',d:'Die KI an der Seite von Müttern',u:'jackie/',k:'mutter mütter mama schule amt familie rat hilfe kinder alleinerziehend'},
+    {t:'Erinnerung',d:'Einfache Erinnerungen fürs Handy',u:'reminder/',k:'erinnerung erinnern reminder termin wecker vergessen'},
+    {t:'Fotowissen',d:'Tipps für bessere Fotos',u:'foto/',k:'foto fotos fotografieren kamera bild bilder licht'},
+    {t:'Transkript',d:'Sprache in Text verwandeln',u:'transkript/',k:'transkript transkription sprache text diktieren aufnahme protokoll'},
+    {t:'Sense Engine',d:'Die Mitte, die alle Apps verbindet',u:'https://diegorobert-code.github.io/Stimmraum/sense/',k:'sense engine nova ki plattform 3d daten mitte'},
+    {t:'Alle Apps mit QR-Code',d:'Übersicht zum Ausprobieren auf dem Handy',u:'apps/',k:'apps app übersicht qr code alle handy testen'},
+    {t:'Ihre eigene KI',d:'Wir bauen eine KI nach Ihren Bedürfnissen',u:'#eigene-ki',k:'eigene ki firma auftrag bauen massgeschneidert unternehmen selbständig agent'},
+    {t:'Über uns',d:'Wer hinter DR Lab steht',u:'#ueber',k:'über uns team diego robert rolfing kinesiologie zürich wer'},
+    {t:'Kontakt',d:'Erzählen Sie uns Ihre Idee',u:'#kontakt',k:'kontakt mail email schreiben anfrage idee preis offerte'}
+  ];
+  var form=document.getElementById('sucheForm'),feld=document.getElementById('sucheFeld'),liste=document.getElementById('sucheTreffer'),mic=document.getElementById('sucheMic');
+  function norm(x){return x.toLowerCase().replace(/[^a-z0-9äöüéèà ]/g,' ');}
+  function suchen(){
+    var w=norm(feld.value).split(/\s+/).filter(function(x){return x.length>1;});
+    liste.textContent='';if(!w.length)return;
+    var r=inhalt.map(function(e){var h=norm(e.t+' '+e.d+' '+e.k),p=0;w.forEach(function(x){if(h.indexOf(x)>=0)p+=2;else if(x.length>4&&h.indexOf(x.slice(0,4))>=0)p+=1;});return {e:e,p:p};})
+      .filter(function(x){return x.p>0;}).sort(function(a,b){return b.p-a.p;}).slice(0,4);
+    if(!r.length){var li=document.createElement('li');li.innerHTML='<p class="hinweis">Nichts gefunden. Schreiben Sie uns, vielleicht bauen wir es: <a href="#kontakt">Kontakt</a></p>';liste.appendChild(li);return;}
+    r.forEach(function(x){var li=document.createElement('li'),a=document.createElement('a'),b=document.createElement('b'),s=document.createElement('span');a.href=x.e.u;b.textContent=x.e.t;s.textContent=x.e.d;a.appendChild(b);a.appendChild(s);li.appendChild(a);liste.appendChild(li);});
+  }
+  form.addEventListener('submit',function(ev){ev.preventDefault();suchen();});
+  feld.addEventListener('input',suchen);
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(SR){
+    mic.hidden=false;var rec=null;
+    mic.addEventListener('click',function(){
+      if(rec){rec.stop();return;}
+      rec=new SR();rec.lang='de-CH';rec.interimResults=false;mic.classList.add('an');
+      rec.onresult=function(e){feld.value=e.results[0][0].transcript;suchen();};
+      rec.onend=function(){mic.classList.remove('an');rec=null;};
+      try{rec.start();}catch(e){mic.classList.remove('an');rec=null;}
+    });
+  }
+})();
+</script>
 <script>
 (function(){
   /* Kopieren */
