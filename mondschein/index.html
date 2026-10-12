@@ -709,8 +709,34 @@ function prinzSVG(o={}){
   </g>${o.sleep ? ZZ : ''}
 </svg>`;
 }
+function bockSVG(o={}){
+  // Zahnböckchen: kleines weisses Zicklein mit Zahnbürste, begleitet beim Zähneputzen. Vorläufige Zeichnung, bis das Filmbild da ist.
+  return `<svg class="fig ${o.cls||''} ${o.sleep?'asleep':''}" viewBox="0 0 200 200" role="img" aria-label="Das Zahnböckchen mit seiner Zahnbürste">
+  <defs><radialGradient id="g-bock" cx="40%" cy="30%" r="75%"><stop offset="0" stop-color="#ffffff"/><stop offset=".7" stop-color="#f4efe6"/><stop offset="1" stop-color="#ddd3c2"/></radialGradient></defs>
+  <ellipse cx="100" cy="192" rx="48" ry="6" fill="#000" opacity=".08"/>
+  <g class="breathe">
+  <path d="M74 52 Q62 26 46 30 Q60 38 64 58 Z" fill="#c9a77a" stroke="#a9875a" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M126 52 Q138 26 154 30 Q140 38 136 58 Z" fill="#c9a77a" stroke="#a9875a" stroke-width="2" stroke-linejoin="round"/>
+  <ellipse cx="44" cy="84" rx="22" ry="10" transform="rotate(-20 44 84)" fill="url(#g-bock)" stroke="#d6cab5" stroke-width="2"/>
+  <ellipse cx="156" cy="84" rx="22" ry="10" transform="rotate(20 156 84)" fill="url(#g-bock)" stroke="#d6cab5" stroke-width="2"/>
+  <ellipse cx="44" cy="84" rx="12" ry="4.5" transform="rotate(-20 44 84)" fill="#ffc6cf"/><ellipse cx="156" cy="84" rx="12" ry="4.5" transform="rotate(20 156 84)" fill="#ffc6cf"/>
+  <path d="M100 50 C134 50 152 74 150 104 C148 134 128 152 100 152 C72 152 52 134 50 104 C48 74 66 50 100 50 Z" fill="url(#g-bock)" stroke="#d6cab5" stroke-width="2"/>
+  <path d="M86 52 Q92 40 100 46 Q108 38 114 52" fill="#fff" stroke="#e2d7c4" stroke-width="2"/>
+  ${o.sleep ? SLEEPY(80,120,96,'#3b2e22') : EYES2(80,120,94,11,13,'#3b2e22','#7a5a3a')}
+  <ellipse cx="66" cy="114" rx="9" ry="5.5" fill="#ffa8b8" opacity=".6"/><ellipse cx="134" cy="114" rx="9" ry="5.5" fill="#ffa8b8" opacity=".6"/>
+  <ellipse cx="100" cy="124" rx="18" ry="12" fill="#ffe1e6"/>
+  <ellipse cx="93" cy="121" rx="2.4" ry="3" fill="#5a3f2e"/><ellipse cx="107" cy="121" rx="2.4" ry="3" fill="#5a3f2e"/>
+  <path d="M88 132 Q100 142 112 132" fill="#fff" stroke="#5a3f2e" stroke-width="2.2" stroke-linejoin="round"/>
+  <path d="M94 133 v4 M100 134 v5 M106 133 v4" stroke="#e8e0d4" stroke-width="1.2"/>
+  <path d="M94 150 Q100 172 106 150" fill="#e9dfcd" stroke="#d6cab5" stroke-width="2"/>
+  <g transform="rotate(-28 160 140)"><rect x="150" y="118" width="9" height="52" rx="4.5" fill="#6fc3ff" stroke="#3d8fd0" stroke-width="2"/><rect x="146" y="106" width="17" height="16" rx="4" fill="#fff" stroke="#9bb8d6" stroke-width="2"/><path d="M148 106 v-6 M152 106 v-7 M156 106 v-7 M160 106 v-6" stroke="#9fe0ff" stroke-width="2.4" stroke-linecap="round"/></g>
+  <g class="twinkle"><path d="M40 140 l2.4 5.6 5.6 2.4 -5.6 2.4 -2.4 5.6 -2.4 -5.6 -5.6 -2.4 5.6 -2.4z" fill="#bfefff"/></g>
+  <g class="twinkle t2"><path d="M168 64 l2 4.6 4.6 2 -4.6 2 -2 4.6 -2 -4.6 -4.6 -2 4.6 -2z" fill="#ffe27a"/></g>
+  </g>${o.sleep ? ZZ : ''}
+</svg>`;
+}
 const FIG = {sunny:sunnySVG, nova:novaSVG, kiki:kikiSVG, moon:moonSVG, mush:mushSVG, fly:flySVG,
-  hase:filmFig('hase.jpg','Hoppel, der Hase'), fuchs:filmFig('fuchs.jpg','Flori, der Fuchs'), fompa:fompaSVG, prinz:prinzSVG};
+  hase:filmFig('hase.jpg','Hoppel, der Hase'), fuchs:filmFig('fuchs.jpg','Flori, der Fuchs'), fompa:fompaSVG, prinz:prinzSVG, bock:bockSVG};
 
 /* ---------- Nachtmodus ---------- */
 function isNight(){ if (S.night==='on') return true; if (S.night==='off') return false; const h=new Date().getHours(); return h>=19 || h<7; }
@@ -1296,6 +1322,16 @@ $('#gHome').addEventListener('click', () => { $('#gWin').classList.remove('on');
 
 /* ---------- Spiele: Bewegungsspiele ---------- */
 const MOVES = [
+ {id:'zaehne', title:'Zähneputzen mit dem Zahnböckchen', fig:'bock', sub:'Zwei Minuten, alle Zähne blitzblank.', steps:[
+  ['Mäh! Hallo, ich bin das Zahnböckchen. Hol deine Zahnbürste und ein kleines bisschen Zahnpasta, so gross wie eine Erbse. Bereit?', 6],
+  ['Wir fangen oben rechts an. Kleine Kreise, ganz sanft, wie ein Kitzel-Karussell. Kreis, kreis, kreis.', 15],
+  ['Jetzt oben links. Die Bürste wandert rüber. Kreise machen, ganz gemütlich.', 15],
+  ['Und jetzt unten links. Mäh, das machst du toll!', 15],
+  ['Unten rechts. Schön gründlich, jeder Zahn bekommt Besuch.', 15],
+  ['Jetzt die Kauflächen oben, da wo man beisst. Hin und her, wie eine kleine Lokomotive. Tsch, tsch, tsch.', 15],
+  ['Und die Kauflächen unten. Tsch, tsch, tsch.', 15],
+  ['Zum Schluss die Innenseiten, ganz sanft vom Zahnfleisch weg nach unten und oben fegen.', 15],
+  ['Ausspucken, nicht schlucken. Fertig! Deine Zähne glänzen wie Sterne. Mäh!', 5]]},
  {id:'rollen', title:'Rollen wie Otti', fig:'sunny', sub:'Klein machen, rollen, strecken.', steps:[
   ['Hallo, ich bin Otti! Wir machen uns ganz klein, wie eine Igelkugel. Kopf runter, Arme um die Knie.', 8],
   ['Jetzt rollen wir ganz sanft hin und her. Hin … und her.', 10],
@@ -1373,7 +1409,7 @@ function mvStep(i){
       if (MV.left <= 0){ clearInterval(MV.timer); setTimeout(() => { if (MV.running && MV.i === i && current === 'move') mvStep(i + 1); }, 600); }
     }, 1000);
   };
-  if (TTS.ok) TTS.speak(text, { onEnd: count, pitch: MV.game.fig==='kiki' ? 1.8 : MV.game.fig==='nova' ? 1.3 : OTTI.pitch });
+  if (TTS.ok) TTS.speak(text, { onEnd: count, pitch: (TALKERS[MV.game.fig] && TALKERS[MV.game.fig].pitch) || OTTI.pitch });
   else count();
 }
 function mvFinish(){
@@ -1501,6 +1537,7 @@ const TALKERS = {
   fuchs:{l:'Flori', pitch:1.2, pre:'', hi:'Hallo! Ich bin Flori, der Fuchs. Ich kenne jeden Weg im Wald.', me:'Ich bin Flori. Mein Schwanz ist buschig und warm, wie eine Decke.', fav:'Am liebsten finde ich Verstecke. Wer findet mich zuerst?', joke:'Warum ist der Fuchs so schlau? Weil er immer zuhört. Hihi.'},
   moon:{l:'Mondstrahl', pitch:1.6, pre:'', hi:'Hallo! Ich bin der kleine Mondstrahl. Ich bin vom Himmel gepurzelt.', me:'Ich bin ein Stück Mondlicht. Am Tag schlafe ich, in der Nacht leuchte ich für dich.', fav:'Am liebsten kitzle ich schlafende Blumen, bis sie lächeln.', joke:'Was macht ein Mondstrahl am Morgen? Er geht ins Bett! Hihi.'},
   mush:{l:'Pilzli', pitch:1.15, pre:'', hi:'Hallo! Ich bin Pilzli mit dem roten Hut.', me:'Ich wohne unter den grossen Bäumen. Mein Hut hat weisse Tupfen, zähl sie mal!', fav:'Am liebsten habe ich Regen, dann wachse ich ein bisschen.', joke:'Warum ist der Pilz so beliebt? Weil er ein Fun-Ghi ist! Hihi.'},
+  bock:{l:'Zahnböckchen', pitch:1.5, pre:'Mäh! ', hi:'Hallo! Ich bin das Zahnböckchen. Ich helfe dir beim Zähneputzen.', me:'Ich bin ein kleines weisses Zicklein mit einer blauen Zahnbürste. Ich putze morgens und abends, je zwei Minuten.', fav:'Am liebsten mag ich Zähne, die glänzen wie Sterne. Und knackige Äpfel!', joke:'Warum putzt das Zahnböckchen so gern? Weil es sonst ein Zahn-Bock-Gesicht macht! Hihi.'},
   fly:{l:'Glimmi', pitch:1.7, pre:'Summ! ', hi:'Hallo! Ich bin Glimmi, das Glühwürmchen.', me:'Ich bin Glimmi. Mein Bauch leuchtet gelb, damit sich niemand im Dunkeln verirrt.', fav:'Am liebsten fliege ich mit Kiki um die Wette.', joke:'Kiki hat mich einmal für einen Stern gehalten. Ich habe einfach weiter geleuchtet! Hihi.'}
 };
 const TK = { who:'sunny', log:[] };
