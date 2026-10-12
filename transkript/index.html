@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Transkript – DR Lab</title>
+<meta name="theme-color" content="#2f4f6f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Transkript">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>
+:root{--bg:#f4f1ea;--card:#fff;--ink:#1d1f24;--muted:#646a75;--accent:#2f4f6f;--rec:#d94c16;--line:#e3ddd2;--ok:#3d7a4a;--f:-apple-system,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#16181c;--card:#20242a;--ink:#eceae6;--muted:#9aa0aa;--accent:#7fa6cc;--rec:#ff7a45;--line:#2f343c;--ok:#7fc28c}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:400 17px/1.5 var(--f);padding:max(16px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom))}
+.w{max-width:640px;margin:0 auto;display:grid;gap:14px}
+h1{font-size:24px;margin:4px 0 0}
+.sub{color:var(--muted);margin:0;font-size:15px}
+.mic{justify-self:center;width:150px;height:150px;border-radius:50%;border:0;background:var(--accent);color:#fff;font:600 18px/1.2 var(--f);display:grid;place-items:center;gap:4px;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.18);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.mic svg{width:46px;height:46px}
+.mic.on{background:var(--rec);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(217,76,22,.45)}50%{box-shadow:0 0 0 22px rgba(217,76,22,0)}}
+.state{text-align:center;color:var(--muted);font-size:15px;min-height:22px;margin:0}
+textarea{width:100%;min-height:42vh;resize:vertical;border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);font:400 18px/1.55 var(--f);padding:14px}
+.interim{color:var(--muted);font-style:italic;min-height:24px;margin:-6px 4px 0;font-size:16px}
+.row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.btn{min-height:52px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 16px var(--f);cursor:pointer}
+.send{display:grid;gap:8px}.send p{margin:0;color:var(--muted);font-size:14px}
+.btn.main{background:var(--accent);border-color:var(--accent);color:#fff}
+.note{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:15px}
+.hidden{display:none}
+.opts{display:flex;gap:16px;flex-wrap:wrap;font-size:15px;color:var(--muted)}
+.opts label{display:flex;align-items:center;gap:6px}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+summary{font-weight:600;cursor:pointer}
+.answer{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;white-space:pre-wrap;font-size:16px}
+.answer b{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+.cfg{display:grid;gap:8px;margin-top:8px}
+.cfg input{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:400 16px var(--f);padding:10px 12px}
+.cfg small{color:var(--muted)}
+.hist{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
+.hist li{border-top:1px solid var(--line);padding-top:8px;font-size:15px;cursor:pointer}
+.hist .hdel{min-height:44px;margin-top:6px;padding:0 14px;font-size:14px}
+.hist time{display:block;color:var(--muted);font-size:13px}
+.foot{color:var(--muted);font-size:13px;text-align:center}
+.toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ok);color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="w">
+  <div>
+    <h1>Sense Engine · Transkript</h1>
+    <p class="sub">Tippen, reinreden, fertig. Der Text bleibt auf deinem Handy. <a href="https://diegorobert-code.github.io/Stimmraum/sense/">Zur Sense Engine</a> · <a href="../apps/">Alle Apps</a></p>
+  </div>
+
+  <button class="mic" id="mic" aria-label="Reinreden starten">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg>
+    <span id="micLabel">Reinreden</span>
+  </button>
+  <p class="state" id="state"></p>
+
+  <textarea id="text" placeholder="Hier erscheint dein Text. Du kannst ihn auch direkt bearbeiten."></textarea>
+
+  <div class="row">
+    <button class="btn main" id="copy">Kopieren</button>
+    <button class="btn" id="share">Teilen</button>
+    <button class="btn" id="new">Neu</button>
+  </div>
+
+  <div class="send">
+    <p>Direkt senden (Text wird auch kopiert):</p>
+    <div class="row">
+      <button class="btn main" data-to="claude">An Claude</button>
+      <button class="btn" data-to="chatgpt">An ChatGPT</button>
+      <button class="btn" data-to="hermes">An Hermes</button>
+    </div>
+  </div>
+
+  <div class="note hidden" id="note"></div>
+
+  <div class="opts">
+    <label><input type="checkbox" id="fix" checked> Verhörer korrigieren</label>
+    <label><input type="checkbox" id="punct" checked> Satzzeichen per Wort</label>
+  </div>
+
+  <div class="answer hidden" id="answer"></div>
+
+  <details id="hermesBox">
+    <summary>Hermes-Verbindung <span id="hermesState"></span></summary>
+    <div class="cfg">
+      <input id="hAddr" type="url" inputmode="url" autocomplete="off" placeholder="Adresse, z. B. https://hermes-….sslip.io">
+      <input id="hKey" type="password" autocomplete="off" placeholder="Passwort">
+      <div class="row">
+        <button class="btn main" id="hSave">Speichern</button>
+        <button class="btn" id="hTest">Testen</button>
+        <button class="btn" id="hDel">Löschen</button>
+      </div>
+      <small>Adresse und Passwort bleiben nur auf diesem Handy. Ohne Verbindung öffnet «An Hermes» Telegram.</small>
+    </div>
+  </details>
+
+  <details id="histBox">
+    <summary>Verlauf</summary>
+    <ul class="hist" id="hist"></ul>
+  </details>
+
+  <p class="foot">DR Lab · Testphase · Spracherkennung des Browsers</p>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+var $ = function(id){ return document.getElementById(id); };
+var ta = $('text'), KEY = 'drlab-transkript-aktuell', HKEY = 'drlab-transkript-verlauf';
+
+function get(k, d){ try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch(e){ return d; } }
+function put(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+
+ta.value = get(KEY, '');
+ta.addEventListener('input', function(){ put(KEY, ta.value); });
+$('fix').checked = get('drlab-transkript-fix', true);
+$('punct').checked = get('drlab-transkript-punct', true);
+$('fix').addEventListener('change', function(){ put('drlab-transkript-fix', this.checked); });
+$('punct').addEventListener('change', function(){ put('drlab-transkript-punct', this.checked); });
+
+/* Verhörer aus Diegos Glossar */
+var FIXES = [
+  [/\b(golfing|rolling)\b/gi, 'Rolfing'],
+  [/\bversen\b/gi, 'Fersen'],
+  [/\bchrüzbei\b/gi, 'Kreuzbein'],
+  [/\bjuman sparks?\b/gi, 'Human Sparks'],
+  [/\bkine\b/gi, 'Kinesiologie'],
+  [/\b(dear lab|air ?lab|ir[- ]lab|gr[- ]lab|dia ?lab|di ar lab|dr läb|d r lab|doktor lab)\b/gi, 'DR Lab'],
+  [/\b(v ?com|wipe code|wild ?code|vibe code)\b/gi, 'Vibecode'],
+  [/\b(sense engine|sens engine|sense ensch[ie]n)\b/gi, 'Sense Engine'],
+  [/ß/g, 'ss']
+];
+var PUNCT = [
+  [/\s*\b(punkt)\b/gi, '.'], [/\s*\b(komma)\b/gi, ','], [/\s*\b(fragezeichen)\b/gi, '?'],
+  [/\s*\b(ausrufezeichen)\b/gi, '!'], [/\s*\b(doppelpunkt)\b/gi, ':'],
+  [/\s*\b(neue zeile|neuer absatz|absatz)\b\s*/gi, '\n']
+];
+function clean(s){
+  if ($('fix').checked) FIXES.forEach(function(f){ s = s.replace(f[0], f[1]); });
+  if ($('punct').checked) PUNCT.forEach(function(f){ s = s.replace(f[0], f[1]); });
+  return s;
+}
+function cap(s){ return s.replace(/(^|[.!?\n]\s*)([a-zäöü])/g, function(m, a, b){ return a + b.toUpperCase(); }); }
+
+/* Spracherkennung, läuft weiter, bis man Stopp tippt */
+var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+var rec = null, want = false, lang = 'de-CH', lock = null, restarts = 0;
+var base = '', raw = '', skip = 0, heard = false, watch = null;
+
+function note(t){ var n = $('note'); n.textContent = t || ''; n.classList.toggle('hidden', !t); }
+function state(t){ $('state').textContent = t || ''; }
+function ui(on){
+  $('mic').classList.toggle('on', on);
+  $('micLabel').textContent = on ? 'Stopp' : 'Reinreden';
+  $('mic').setAttribute('aria-label', on ? 'Aufnahme stoppen' : 'Reinreden starten');
+  state(on ? 'Ich höre zu …' : (ta.value ? 'Gespeichert auf diesem Handy.' : ''));
+}
+/* Text live ins Feld schreiben: fester Teil + was gerade gesprochen wird */
+function render(){
+  var t = clean(raw.slice(skip).trim());
+  var v = base;
+  if (t){
+    var sep = !v || /\n$/.test(v) || /^[.,?!:\n]/.test(t) ? '' : ' ';
+    v = cap(v + sep + t);
+  }
+  ta.value = v;
+  put(KEY, v);
+  ta.scrollTop = ta.scrollHeight;
+}
+function commit(){ base = ta.value; raw = ''; skip = 0; }
+function wake(on){
+  try {
+    if (on && navigator.wakeLock && !lock) navigator.wakeLock.request('screen').then(function(l){ lock = l; l.addEventListener('release', function(){ lock = null; }); }).catch(function(){});
+    if (!on && lock){ lock.release(); lock = null; }
+  } catch(e){}
+}
+function stopAll(msg){
+  want = false; clearTimeout(watch); commit(); ui(false); wake(false);
+  if (msg) note(msg);
+}
+function start(){
+  commit();
+  var r = new SR();
+  rec = r;
+  r.lang = lang; r.continuous = true; r.interimResults = true; r.maxAlternatives = 1;
+  r.onresult = function(ev){
+    if (r !== rec) return;
+    var fin = '', interim = '';
+    for (var i = 0; i < ev.results.length; i++){
+      var t = (ev.results[i][0].transcript || '').trim();
+      if (!t) continue;
+      if (ev.results[i].isFinal){
+        /* manche Handys liefern den ganzen Text nochmals statt nur das neue Stück */
+        fin = fin && t.toLowerCase().indexOf(fin.toLowerCase()) === 0 ? t : (fin ? fin + ' ' + t : t);
+      } else interim += (interim ? ' ' : '') + t;
+    }
+    raw = fin + (fin && interim ? ' ' : '') + interim;
+    if (raw){ heard = true; restarts = 0; clearTimeout(watch); note(''); }
+    render();
+  };
+  r.onerror = function(ev){
+    if (r !== rec) return;
+    var e = ev.error;
+    if (e === 'language-not-supported' && lang === 'de-CH'){ lang = 'de-DE'; return; }
+    if (e === 'no-speech' || e === 'aborted') return;
+    if (e === 'not-allowed' || e === 'service-not-allowed'){
+      stopAll('Mikrofon oder Spracherkennung ist nicht erlaubt. iPhone: Einstellungen → Apps → Safari → Mikrofon erlauben, und Einstellungen → Allgemein → Tastatur → «Diktierfunktion aktivieren» einschalten. Solange: ins Textfeld tippen und das Mikrofon auf der Tastatur nutzen.');
+    } else if (e === 'network'){
+      note('Keine Verbindung zur Spracherkennung. Prüfe das Internet.');
+    } else if (e === 'audio-capture'){
+      stopAll('Das Mikrofon ist gerade besetzt oder nicht erreichbar. Schliesse andere Apps, die zuhören, und tippe nochmals auf Reinreden.');
+    } else {
+      note('Spracherkennung meldet: ' + e + '. Tippe ins Textfeld und nutze das Mikrofon auf der Tastatur.');
+    }
+  };
+  r.onend = function(){
+    if (r !== rec) return;
+    commit();
+    if (want && restarts < 20){ restarts++; setTimeout(function(){ if (want) start(); }, 250); return; }
+    if (want) stopAll(heard ? '' : 'Die Spracherkennung hat sich beendet. Tippe nochmals auf Reinreden, oder tippe ins Textfeld und nutze das Mikrofon auf der Tastatur.');
+    else stopAll('');
+  };
+  try { r.start(); ui(true); wake(true); }
+  catch(e){ stopAll('Spracherkennung konnte nicht starten. Tippe ins Textfeld und nutze das Mikrofon auf der Tastatur.'); }
+}
+$('mic').addEventListener('click', function(){
+  if (!SR){
+    note('Dieser Browser hat keine Spracherkennung. Öffne die Seite in Safari (iPhone) oder Chrome (Android). Oder tippe ins Textfeld und nutze das Mikrofon auf der Tastatur.');
+    ta.focus(); return;
+  }
+  if (want){ want = false; clearTimeout(watch); if (rec) rec.stop(); ui(false); return; }
+  want = true; restarts = 0; heard = false; note('');
+  clearTimeout(watch);
+  watch = setTimeout(function(){
+    if (want && !heard) note('Ich höre noch nichts. Sprich nah am Handy. Kommt weiter nichts: ins Textfeld tippen und das Mikrofon auf der Tastatur nutzen.');
+  }, 7000);
+  start();
+});
+/* von Hand im Feld korrigieren, während die Aufnahme läuft */
+ta.addEventListener('input', function(){ base = ta.value; skip = raw.length; });
+document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'visible' && want) wake(true); });
+
+/* Kopieren, Teilen, Neu */
+function toast(t){ var e = $('toast'); e.textContent = t; e.classList.add('show'); setTimeout(function(){ e.classList.remove('show'); }, 1600); }
+$('copy').addEventListener('click', function(){
+  var t = ta.value.trim(); if (!t) return;
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(function(){ toast('Kopiert'); }, fallback);
+  } else fallback();
+  function fallback(){ ta.focus(); ta.select(); try { document.execCommand('copy'); toast('Kopiert'); } catch(e){ toast('Text ist markiert'); } }
+});
+$('share').addEventListener('click', function(){
+  var t = ta.value.trim(); if (!t) return;
+  if (navigator.share) navigator.share({ text: t }).catch(function(){});
+  else $('copy').click();
+});
+function saveHist(){
+  var t = ta.value.trim(); if (!t) return;
+  var h = get(HKEY, []);
+  if (h.length && h[0].t === t) return;
+  h.unshift({ d: Date.now(), t: t });
+  put(HKEY, h.slice(0, 50));
+}
+$('new').addEventListener('click', function(){
+  if (want){ want = false; clearTimeout(watch); if (rec){ var o = rec; rec = null; try { o.abort(); } catch(e){} } wake(false); }
+  saveHist(); ta.value = ''; put(KEY, ''); base = ''; raw = ''; skip = 0; renderHist(); ui(false); toast('Im Verlauf gespeichert');
+});
+
+/* Direkt senden: öffnet die App mit dem Text, kopiert ihn zusätzlich */
+var TARGETS = {
+  claude: function(t){ return 'https://claude.ai/new?q=' + encodeURIComponent(t); },
+  chatgpt: function(t){ return 'https://chatgpt.com/?q=' + encodeURIComponent(t); },
+  hermes: function(t){ return 'https://t.me/share/url?url=' + encodeURIComponent(t); }
+};
+Array.prototype.forEach.call(document.querySelectorAll('[data-to]'), function(b){
+  b.addEventListener('click', function(){
+    if (want){ stopAll(''); if (rec) try { rec.stop(); } catch(e){} }
+    var t = ta.value.trim(); if (!t){ toast('Noch kein Text'); return; }
+    if (b.getAttribute('data-to') === 'hermes' && hermesReady()){ saveHist(); renderHist(); askHermes(t); return; }
+    try { if (navigator.clipboard) navigator.clipboard.writeText(t).catch(function(){}); } catch(e){}
+    saveHist(); renderHist();
+    window.open(TARGETS[b.getAttribute('data-to')](t.slice(0, 6000)), '_blank');
+  });
+});
+
+/* Hermes direkt: OpenAI-kompatible Schnittstelle des eigenen Servers */
+var HKEYS = { addr: 'drlab-hermes-adresse', key: 'drlab-hermes-passwort' };
+var fromLink = (location.hash.match(/hermes=([^&]+)/) || [])[1];
+if (fromLink){ put(HKEYS.addr, decodeURIComponent(fromLink)); history.replaceState(null, '', location.pathname); }
+function hAddr(){ return String(get(HKEYS.addr, '') || '').trim().replace(/\/+$/, ''); }
+function hermesReady(){ return /^https:\/\//.test(hAddr()) && !!get(HKEYS.key, ''); }
+function hState(){ $('hermesState').textContent = hermesReady() ? '· verbunden' : '· nicht eingerichtet'; }
+$('hAddr').value = hAddr(); $('hKey').value = get(HKEYS.key, '') ? '••••••••' : '';
+$('hSave').addEventListener('click', function(){
+  var a = $('hAddr').value.trim(), k = $('hKey').value.trim();
+  if (a && !/^https:\/\//.test(a)) a = 'https://' + a;
+  put(HKEYS.addr, a); if (k && k !== '••••••••') put(HKEYS.key, k);
+  $('hAddr').value = hAddr(); $('hKey').value = get(HKEYS.key, '') ? '••••••••' : '';
+  hState(); toast('Gespeichert');
+});
+$('hDel').addEventListener('click', function(){ put(HKEYS.addr, ''); put(HKEYS.key, ''); $('hAddr').value = ''; $('hKey').value = ''; hState(); });
+$('hTest').addEventListener('click', function(){
+  if (!hermesReady()){ toast('Erst Adresse und Passwort speichern'); return; }
+  callHermes('Antworte nur mit: Verbindung steht.').then(function(a){ showAnswer(a); toast('Verbindung steht'); }, function(e){ showAnswer('Keine Verbindung: ' + e.message); });
+});
+function showAnswer(t){ var el = $('answer'); el.textContent = ''; var h = document.createElement('b'); h.textContent = 'Hermes'; el.appendChild(h); el.appendChild(document.createTextNode(t)); el.classList.remove('hidden'); }
+// Novas Persönlichkeit für diese App kommt aus nova/seelen.js.
+function novaNachrichten(text){
+  var seele = (window.NOVA_SEELEN || {})['Transkript'];
+  return (seele ? [{ role: 'system', content: seele }] : []).concat([{ role: 'user', content: text }]);
+}
+function callHermes(text){
+  var ctrl = window.AbortController ? new AbortController() : null;
+  var timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, 120000) : null;
+  return fetch(hAddr() + '/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + get(HKEYS.key, ''), 'X-Nova-App': 'Transkript' },
+    body: JSON.stringify({ model: 'hermes-agent', messages: novaNachrichten(text) }),
+    signal: ctrl ? ctrl.signal : undefined
+  }).then(function(r){
+    if (r.status === 401 || r.status === 403) throw new Error('Passwort stimmt nicht.');
+    if (!r.ok) throw new Error('Server meldet Fehler ' + r.status + '.');
+    return r.json();
+  }).then(function(j){
+    var c = j && j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
+    return c || 'Hermes hat den Text erhalten.';
+  }).catch(function(e){
+    if (e.name === 'AbortError') throw new Error('Hermes antwortet nicht.');
+    if (e instanceof TypeError) throw new Error('Server nicht erreichbar.');
+    throw e;
+  }).finally(function(){ if (timer) clearTimeout(timer); });
+}
+function askHermes(t){
+  showAnswer('Sende an Hermes …');
+  callHermes(t).then(showAnswer, function(e){ showAnswer('Nicht gesendet: ' + e.message + ' Dein Text ist kopiert und im Verlauf.'); try { navigator.clipboard.writeText(t); } catch(x){} });
+}
+hState();
+
+/* Verlauf */
+function fmt(d){ d = new Date(d); return d.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' }); }
+function renderHist(){
+  var ul = $('hist'), h = get(HKEY, []);
+  ul.textContent = '';
+  if (!h.length){ var e = document.createElement('li'); e.textContent = 'Noch leer.'; ul.appendChild(e); return; }
+  h.forEach(function(x, i){
+    var li = document.createElement('li'), tm = document.createElement('time'), p = document.createElement('span'), del = document.createElement('button');
+    tm.textContent = fmt(x.d); p.textContent = x.t.length > 140 ? x.t.slice(0, 140) + ' …' : x.t;
+    del.className = 'btn hdel'; del.textContent = 'Löschen'; del.setAttribute('aria-label', 'Eintrag löschen');
+    del.addEventListener('click', function(ev){ ev.stopPropagation(); var all = get(HKEY, []); all.splice(i, 1); put(HKEY, all); renderHist(); toast('Gelöscht'); });
+    li.appendChild(tm); li.appendChild(p); li.appendChild(del);
+    li.addEventListener('click', function(){ saveHist(); ta.value = x.t; put(KEY, x.t); base = x.t; skip = raw.length; window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    ul.appendChild(li);
+  });
+  var all = document.createElement('li'), b = document.createElement('button');
+  b.className = 'btn'; b.textContent = 'Ganzen Verlauf löschen';
+  b.addEventListener('click', function(){ if (confirm('Ganzen Verlauf löschen?')){ put(HKEY, []); renderHist(); } });
+  all.appendChild(b); ul.appendChild(all);
+}
+renderHist();
+ui(false);
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
+})();
+</script>
+<script src="../nova/seelen.js" defer></script>
+</body>
+</html>
