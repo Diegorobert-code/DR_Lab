@@ -169,6 +169,7 @@ input.in,textarea.in,select.in{width:100%;min-height:60px;padding:14px 16px;bord
 textarea.in{min-height:120px;font-size:17px;resize:vertical}
 select.in{font-size:17px}
 .pick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+#tkPick{grid-template-columns:repeat(4,1fr);gap:8px}#tkPick .pk{min-height:88px;font-size:13px}#tkPick .pk svg{width:52px;height:52px}#tkPick .pk .nova-film{width:52px;height:52px}
 .pick.four{grid-template-columns:repeat(4,1fr)}
 .pk{min-height:96px;border-radius:20px;background:var(--bg);border:3px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:15px;padding:6px 2px}
 .pk svg{width:58px;height:58px}
@@ -283,7 +284,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
   <div class="tiles">
     <button class="tile t2 big4" data-go="games"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="12" r="7" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3"/><path d="M32 20v18M32 38l-10 16M32 38l10 16M32 26l-14-8M32 26l14-8" stroke="#1d2a4f" stroke-width="4.5" stroke-linecap="round" fill="none"/><path d="M8 58h48" stroke="#5fb26b" stroke-width="4" stroke-linecap="round"/></svg>Spiele<small>bewegen &amp; Memory</small></button>
     <button class="tile t1 big4" data-go="stories"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 16q12-6 24 2v36q-12-8-24-2z" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M56 16q-12-6-24 2v36q12-8 24-2z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M47 22a7 7 0 1 0 5 10 5.5 5.5 0 1 1-5-10z" fill="#f2b43a"/></svg>Geschichten<small>hören &amp; erfinden</small></button>
-    <button class="tile t3 big4" data-go="talk"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 14h34a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6H24l-10 9v-9H8a6 6 0 0 1-6-6V20a6 6 0 0 1 6-6z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M50 26h6a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6h-2v7l-8-7h-6" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><circle cx="16" cy="27" r="2.6" fill="#1d2a4f"/><circle cx="25" cy="27" r="2.6" fill="#1d2a4f"/><circle cx="34" cy="27" r="2.6" fill="#1d2a4f"/></svg>Reden<small>mit Otti, Kiki &amp; Nova</small></button>
+    <button class="tile t3 big4" data-go="talk"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 14h34a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6H24l-10 9v-9H8a6 6 0 0 1-6-6V20a6 6 0 0 1 6-6z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M50 26h6a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6h-2v7l-8-7h-6" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><circle cx="16" cy="27" r="2.6" fill="#1d2a4f"/><circle cx="25" cy="27" r="2.6" fill="#1d2a4f"/><circle cx="34" cy="27" r="2.6" fill="#1d2a4f"/></svg>Reden<small>mit Otti und allen Freunden</small></button>
     <button class="tile t4 big4" data-go="guide"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M40 8a22 22 0 1 0 16 34A18 18 0 0 1 40 8z" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="14" r="2.4" fill="#fff"/><path d="M14 52q4 4 8 0M26 54q4 4 8 0" stroke="#1d2a4f" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>KI-Leitfaden<small>zum Einschlafen</small></button>
   </div>
   <button class="btn wide holdbtn hold parentbtn" id="parentsHold" aria-label="Für Eltern – 3 Sekunden gedrückt halten"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="28" width="36" height="28" rx="7" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M22 28v-7a10 10 0 0 1 20 0v7" fill="none" stroke="#1d2a4f" stroke-width="4"/><circle cx="32" cy="41" r="4" fill="#1d2a4f"/></svg>Für Eltern (3 Sek. halten)</button>
@@ -667,7 +668,49 @@ function flySVG(o={}){
   <path d="M46 39 Q50 42 54 39" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
 </svg>`;
 }
-const FIG = {sunny:sunnySVG, nova:novaSVG, kiki:kikiSVG, moon:moonSVG, mush:mushSVG, fly:flySVG};
+function filmFig(src, alt){ return (o={}) => `<img class="fig nova-film otti-film ${o.cls||''} ${o.sleep?'asleep':''}" src="${src}" alt="${alt}">`; }
+function fompaSVG(o={}){
+  // Fompa: Erfindung von Claude für Mila. Flauschiges Mondschein-Wesen, sammelt verlorene Träume. Vorläufige Zeichnung, bis das Filmbild da ist.
+  return `<svg class="fig ${o.cls||''} ${o.sleep?'asleep':''}" viewBox="0 0 200 200" role="img" aria-label="Fompa, das flauschige Traumwesen">
+  <defs><radialGradient id="g-fompa" cx="40%" cy="32%" r="70%"><stop offset="0" stop-color="#f3ecff"/><stop offset=".55" stop-color="#b9a6f2"/><stop offset="1" stop-color="#7f6bd6"/></radialGradient>
+  <radialGradient id="g-fstern" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff8c9"/><stop offset="1" stop-color="#ffd66b" stop-opacity="0"/></radialGradient></defs>
+  <ellipse cx="100" cy="190" rx="50" ry="6" fill="#000" opacity=".08"/>
+  <g class="breathe">
+  <circle cx="58" cy="46" r="20" fill="url(#g-fompa)"/><circle cx="142" cy="46" r="20" fill="url(#g-fompa)"/>
+  <circle cx="58" cy="46" r="8" fill="#ffc6dc" opacity=".8"/><circle cx="142" cy="46" r="8" fill="#ffc6dc" opacity=".8"/>
+  <path d="M100 52 C70 50 46 62 40 84 C28 90 26 108 36 116 C30 128 38 146 54 148 C60 166 84 176 100 172 C116 176 140 166 146 148 C162 146 170 128 164 116 C174 108 172 90 160 84 C154 62 130 50 100 52 Z" fill="url(#g-fompa)" stroke="#7f6bd6" stroke-width="2"/>
+  <ellipse cx="72" cy="78" rx="16" ry="9" transform="rotate(-25 72 78)" fill="#fff" opacity=".6"/>
+  ${o.sleep ? SLEEPY(76,124,104,'#2b2550') : EYES2(76,124,102,14,16,'#2b2550','#5b4bb5')}
+  <ellipse cx="60" cy="122" rx="10" ry="6" fill="#ff9fc0" opacity=".65"/><ellipse cx="140" cy="122" rx="10" ry="6" fill="#ff9fc0" opacity=".65"/>
+  ${o.sleep ? `<path d="M93 126 Q100 130 107 126" fill="none" stroke="#2b2550" stroke-width="2.6" stroke-linecap="round"/>` : `<path d="M88 122 Q100 138 112 122 Q100 127 88 122 Z" fill="#4a3b8f" stroke="#2b2550" stroke-width="2" stroke-linejoin="round"/>`}
+  <circle cx="100" cy="150" r="17" fill="url(#g-fstern)"/>
+  <path class="heart" d="M100 140 l3.2 6.6 7.2 1 -5.2 5 1.3 7.2 -6.5 -3.4 -6.5 3.4 1.3 -7.2 -5.2 -5 7.2 -1z" fill="#ffe27a" stroke="#f2b43a" stroke-width="1.5" stroke-linejoin="round"/>
+  <ellipse cx="78" cy="176" rx="13" ry="7" fill="#9c88e6"/><ellipse cx="122" cy="176" rx="13" ry="7" fill="#9c88e6"/>
+  </g>${o.sleep ? ZZ : ''}
+</svg>`;
+}
+function prinzSVG(o={}){
+  // Prinzessin aus dem Mondschein-Land (Name noch offen). Vorläufige Zeichnung, bis das Filmbild da ist.
+  return `<svg class="fig ${o.cls||''} ${o.sleep?'asleep':''}" viewBox="0 0 200 210" role="img" aria-label="Die Prinzessin aus dem Mondschein-Land">
+  <defs><linearGradient id="g-kleid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9ccff"/><stop offset="1" stop-color="#8e7ae0"/></linearGradient>
+  <linearGradient id="g-krone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1a8"/><stop offset="1" stop-color="#f2b43a"/></linearGradient></defs>
+  <ellipse cx="100" cy="202" rx="52" ry="6" fill="#000" opacity=".08"/>
+  <g class="breathe">
+  <path d="M66 140 Q100 122 134 140 L156 196 Q100 208 44 196 Z" fill="url(#g-kleid)" stroke="#7a66cf" stroke-width="2"/>
+  <g fill="#fff" opacity=".85"><circle cx="78" cy="176" r="2.6"/><circle cx="100" cy="186" r="2.6"/><circle cx="122" cy="174" r="2.6"/><circle cx="90" cy="160" r="2"/><circle cx="114" cy="158" r="2"/></g>
+  <path d="M58 64 C52 112 58 150 72 160 L128 160 C142 150 148 112 142 64 Z" fill="#6b3f2a"/>
+  <circle cx="100" cy="92" r="40" fill="#ffd9c2" stroke="#e8b89c" stroke-width="2"/>
+  <path d="M60 88 C60 58 82 46 100 46 C118 46 140 58 140 88 C128 76 112 70 100 72 C88 70 72 76 60 88 Z" fill="#7a4a32"/>
+  <path d="M74 50 L80 30 L90 44 L100 24 L110 44 L120 30 L126 50 Z" fill="url(#g-krone)" stroke="#d99a22" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M104 34 a6 6 0 1 1 -6 -6 a4.6 4.6 0 0 0 6 6z" fill="#fff8d6"/>
+  ${o.sleep ? SLEEPY(84,116,96,'#3a2440') : EYES2(84,116,95,9.5,11,'#3a2440','#6b4a9a')}
+  <ellipse cx="74" cy="106" rx="8" ry="5" fill="#ff9fae" opacity=".55"/><ellipse cx="126" cy="106" rx="8" ry="5" fill="#ff9fae" opacity=".55"/>
+  <path d="M92 112 Q100 120 108 112" fill="none" stroke="#a24a5a" stroke-width="2.6" stroke-linecap="round"/>
+  </g>${o.sleep ? ZZ : ''}
+</svg>`;
+}
+const FIG = {sunny:sunnySVG, nova:novaSVG, kiki:kikiSVG, moon:moonSVG, mush:mushSVG, fly:flySVG,
+  hase:filmFig('hase.jpg','Hoppel, der Hase'), fuchs:filmFig('fuchs.jpg','Flori, der Fuchs'), fompa:fompaSVG, prinz:prinzSVG};
 
 /* ---------- Nachtmodus ---------- */
 function isNight(){ if (S.night==='on') return true; if (S.night==='off') return false; const h=new Date().getHours(); return h>=19 || h<7; }
@@ -1431,8 +1474,15 @@ $('#msGo').addEventListener('click', () => {
 /* ---------- Reden mit Otti, Kiki und Nova (Antworten aus Vorlagen) ---------- */
 const TALKERS = {
   sunny:{l:'Otti', pitch:OTTI.pitch, pre:'', hi:'Hallo! Ich bin Otti, der kleine Igel. Schön, dass du mit mir redest.', me:'Ich bin Otti, ein kleiner Igel mit einem gelben Halstuch. Meine Stacheln sind ganz weich, fast.', fav:'Am liebsten mag ich Walderdbeeren und weiches Moos.', joke:'Weisst du, warum Igel nie streiten? Weil sie immer alles piksfein machen. Hihi!'},
+  nova:{l:'Nova', pitch:1.3, pre:'Piep! ', hi:'Hallo! Ich bin Nova, der kleine blaue Roboter.', me:'Ich bin Nova, ein kleiner Roboter. Mein Bauch leuchtet hellblau, wenn ich mich freue.', fav:'Am liebsten tanze ich den Roboter-Tanz. Piep-piep!', joke:'Warum ist der Roboter so ruhig? Er hat gerade Pause. Piep, hihi.'},
   kiki:{l:'Kiki', pitch:1.8, pre:'Blink, blink! ', hi:'Hallo! Ich bin Kiki, die kleine leuchtende KI.', me:'Ich bin Kiki, eine kleine Spiel-KI. Ich lerne noch, und manchmal irre ich mich. Das ist okay.', fav:'Am liebsten zähle ich Sterne. Manchmal verzähle ich mich.', joke:'Was sagt ein Stern zum anderen? Du strahlst heute aber! Hihi.'},
-  nova:{l:'Nova', pitch:1.3, pre:'Piep! ', hi:'Hallo! Ich bin Nova, der kleine blaue Roboter.', me:'Ich bin Nova, ein kleiner Roboter. Mein Bauch leuchtet hellblau, wenn ich mich freue.', fav:'Am liebsten tanze ich den Roboter-Tanz. Piep-piep!', joke:'Warum ist der Roboter so ruhig? Er hat gerade Pause. Piep, hihi.'}
+  fompa:{l:'Fompa', pitch:1.45, pre:'Fomp! ', hi:'Hallo! Ich bin Fompa, ganz flauschig und ein bisschen kitzlig.', me:'Ich bin Fompa. Ich wohne im Mondschein-Land und sammle Träume, die jemand verloren hat. Mein Stern am Bauch leuchtet, wenn ich einen finde.', fav:'Am liebsten hüpfe ich auf weichen Wolken. Fomp, fomp!', joke:'Was macht Fompa, wenn es regnet? Es wird ein Flausch-Schwamm! Hihi.'},
+  prinz:{l:'Prinzessin', pitch:1.25, pre:'', hi:'Hallo! Ich bin die Prinzessin aus dem Mondschein-Land. Meinen Namen suchen wir noch zusammen.', me:'Ich wohne in einem Schloss aus Mondlicht. Meine Krone hat einen kleinen Mond, der nachts leuchtet.', fav:'Am liebsten tanze ich mit Otti im Garten und zähle mit Kiki die Sterne.', joke:'Warum trägt der Mond nie eine Krone? Weil er schon so hell strahlt! Hihi.'},
+  hase:{l:'Hoppel', pitch:1.4, pre:'', hi:'Hallo! Ich bin Hoppel, der Hase. Ich bin Ottis Freund.', me:'Ich bin Hoppel. Meine Ohren sind so lang, dass ich sogar flüsternde Blätter höre.', fav:'Am liebsten esse ich knackige Rüebli und hüpfe über Pfützen.', joke:'Was sagt ein Hase im Winter? Hoppla, ist das kalt! Hihi.'},
+  fuchs:{l:'Flori', pitch:1.2, pre:'', hi:'Hallo! Ich bin Flori, der Fuchs. Ich kenne jeden Weg im Wald.', me:'Ich bin Flori. Mein Schwanz ist buschig und warm, wie eine Decke.', fav:'Am liebsten finde ich Verstecke. Wer findet mich zuerst?', joke:'Warum ist der Fuchs so schlau? Weil er immer zuhört. Hihi.'},
+  moon:{l:'Mondstrahl', pitch:1.6, pre:'', hi:'Hallo! Ich bin der kleine Mondstrahl. Ich bin vom Himmel gepurzelt.', me:'Ich bin ein Stück Mondlicht. Am Tag schlafe ich, in der Nacht leuchte ich für dich.', fav:'Am liebsten kitzle ich schlafende Blumen, bis sie lächeln.', joke:'Was macht ein Mondstrahl am Morgen? Er geht ins Bett! Hihi.'},
+  mush:{l:'Pilzli', pitch:1.15, pre:'', hi:'Hallo! Ich bin Pilzli mit dem roten Hut.', me:'Ich wohne unter den grossen Bäumen. Mein Hut hat weisse Tupfen, zähl sie mal!', fav:'Am liebsten habe ich Regen, dann wachse ich ein bisschen.', joke:'Warum ist der Pilz so beliebt? Weil er ein Fun-Ghi ist! Hihi.'},
+  fly:{l:'Glimmi', pitch:1.7, pre:'Summ! ', hi:'Hallo! Ich bin Glimmi, das Glühwürmchen.', me:'Ich bin Glimmi. Mein Bauch leuchtet gelb, damit sich niemand im Dunkeln verirrt.', fav:'Am liebsten fliege ich mit Kiki um die Wette.', joke:'Kiki hat mich einmal für einen Stern gehalten. Ich habe einfach weiter geleuchtet! Hihi.'}
 };
 const TK = { who:'sunny', log:[] };
 const TK_RATES = [[0.7,'Langsam'],[0.85,'Ruhig'],[1.0,'Normal']];
