@@ -831,24 +831,45 @@ function splitSentences(t){
 /* ---------- Sprechen (Spracherkennung) ---------- */
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 let rec = null;
+// iPhone (Safari) liefert das Ergebnis ohne Zwischenstände erst nach langer Stille, darum fühlte sich der Knopf sehr langsam an.
+// Jetzt: Zwischenergebnisse mitlesen und nach kurzer Pause selbst abschliessen. Nochmal tippen = sofort fertig.
+const LISTEN_PAUSE = 1100, LISTEN_MAX = 9000;
 function listen(onText, btn){
   if (!SR){ return false; }
+  // Nochmal auf denselben Knopf: Zuhören beenden und das Gehörte nehmen.
+  if (rec && rec._btn === btn && btn){ try{ rec.stop(); }catch(e){} return true; }
   TTS.stop();
   if (rec){ try{ rec.abort(); }catch(e){} rec=null; }
-  let triedDE = false, got = false;
-  const r = new SR(); rec = r;
-  r.lang = 'de-CH'; r.interimResults = false; r.maxAlternatives = 3; r.continuous = false;
-  const off = () => btn && btn.classList.remove('listening');
-  r.onresult = e => { got = true; const alts = Array.from(e.results[0]).map(a=>a.transcript); off(); onText(alts); };
+  let triedDE = false, done = false, alts = [], pauseT = 0, maxT = 0;
+  const r = new SR(); rec = r; r._btn = btn;
+  r.lang = 'de-CH'; r.interimResults = true; r.maxAlternatives = 3; r.continuous = false;
+  const off = () => { clearTimeout(pauseT); clearTimeout(maxT); btn && btn.classList.remove('listening'); };
+  const finish = () => {
+    if (done) return; done = true; off();
+    if (rec===r) rec=null;
+    try{ r.abort(); }catch(e){}
+    if (alts.length && alts[0].trim()) onText(alts); else toast('Ich habe nichts gehört. Nochmal?');
+  };
+  r.onresult = e => {
+    const res = Array.from(e.results);
+    const text = res.map(x => x[0].transcript).join(' ').replace(/\s+/g,' ').trim();
+    alts = res.length === 1 ? Array.from(res[0]).map(a => a.transcript.trim()) : [text];
+    if (!alts[0]) alts[0] = text;
+    clearTimeout(pauseT);
+    if (res.length && res[res.length-1].isFinal) { finish(); return; }
+    pauseT = setTimeout(finish, LISTEN_PAUSE);
+  };
   r.onerror = e => {
     if (!triedDE && (e.error==='language-not-supported' || e.error==='bad-grammar')){ triedDE=true; r.lang='de-DE'; try{ r.start(); return; }catch(x){} }
-    off();
+    if (alts.length){ finish(); return; }
+    done = true; off();
     if (e.error==='not-allowed' || e.error==='service-not-allowed') toast('Mikrofon ist nicht erlaubt. Tippe lieber auf ein Bild.');
     else if (e.error==='no-speech') toast('Ich habe nichts gehört. Nochmal?');
     else if (e.error!=='aborted') toast('Sprechen klappt gerade nicht. Tippe oder schreib es lieber.');
   };
-  r.onend = () => { off(); if (rec===r) rec=null; };
-  try{ r.start(); btn && btn.classList.add('listening'); toast('Ich höre zu …'); }catch(e){ off(); toast('Sprechen klappt gerade nicht. Tippe oder schreib es lieber.'); return false; }
+  r.onend = () => { if (!done) finish(); off(); if (rec===r) rec=null; };
+  try{ r.start(); btn && btn.classList.add('listening'); toast('Ich höre zu …'); maxT = setTimeout(() => { try{ r.stop(); }catch(e){} setTimeout(finish, 800); }, LISTEN_MAX); }
+  catch(e){ off(); if (rec===r) rec=null; toast('Sprechen klappt gerade nicht. Tippe oder schreib es lieber.'); return false; }
   return true;
 }
 
