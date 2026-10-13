@@ -7,6 +7,9 @@
 <meta name="theme-color" content="#0E4F6E">
 <link rel="icon" href="icon.svg">
 <link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Golden Taurus">
 <style>:root{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Golden Taurus Gäste</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -76,6 +79,10 @@ p{margin:0}
 .st-run .dot{background:var(--gold);animation:pulse 1s infinite}
 @keyframes pulse{50%{opacity:.35}}
 .hint{font-size:13px;opacity:.75;margin-top:6px}
+.wqr{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.wqr .code{background:#fff;border-radius:14px;padding:10px;width:156px;height:156px;flex:none;display:grid;place-items:center}
+.wqr .code svg{width:100%;height:100%;display:block}
+.wqr p{flex:1;min-width:150px;font-size:15px;margin:0}
 ol.steps{list-style:none;padding:0;margin:0;counter-reset:s;display:flex;flex-direction:column}
 ol.steps li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;gap:12px;padding-block:12px;border-top:1px solid var(--line)}
 ol.steps li:first-child{border-top:0;padding-top:0}
@@ -211,6 +218,10 @@ body.touring .app{padding-bottom:180px}
         <p class="hint" data-t="testHint"></p>
         <div style="margin-top:16px"><button class="btn block" id="testBtn" data-t="test"></button></div>
       </div>
+      <div class="card" id="wqrCard">
+        <h2 data-t="qrTitle"></h2>
+        <div class="wqr"><div class="code" id="wqr" role="img"></div><p id="wqrTxt"></p></div>
+      </div>
       <div class="card">
         <h2 data-t="stepsTitle"></h2>
         <ol class="steps" id="steps3"></ol>
@@ -282,6 +293,7 @@ body.touring .app{padding-bottom:180px}
   <button data-go="requests"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/></svg><span data-t="nReq"></span></button>
 </div></nav>
 
+<script src="qrcode.js"></script>
 <script>
 /* ---------- Konfiguration: vom Hotel zu bestätigen / einzutragen ---------- */
 const CONFIG={
@@ -308,7 +320,7 @@ const T={
 de:{introTitle:"Willkommen im Golden Taurus",introSub:"Dein Aufenthalt auf dem Handy. Zuerst ins Zimmer, dann einmal durchs ganze Resort.",introBtn:"Ins Zimmer",introSkip:"Direkt zur App",
 roomEyebrow:"Dein Zimmer",wifiTitle:"Gute Verbindung zum WLAN",yourWifi:"Dein WLAN",network:"Netzwerk",password:"Passwort",askReception:"an der Rezeption erfragen",copy:"Kopieren",
 test:"Verbindung testen",testing:"Teste …",stIdle:"Noch nicht getestet",stOk:"Internet erreichbar · {ms} ms",stSlow:"Internet erreichbar, aber langsam ({ms} ms)",stBad:"Kein Internet erreichbar. Bitte die Schritte unten prüfen.",
-testHint:"Der Test prüft, ob das Internet von diesem Handy aus erreichbar ist. Mit dem WLAN verbinden kann er nicht.",
+qrTitle:"WLAN per QR-Code",qrHint:"Zweites Gerät? Kamera auf diesen Code richten und auf «Verbinden» tippen. Ohne Abtippen.",qrEmpty:"Trage oben Netzwerk und Passwort ein, dann erscheint hier der WLAN-Code für dein zweites Gerät.",qrAlt:"WLAN-QR-Code",testHint:"Der Test prüft, ob das Internet von diesem Handy aus erreichbar ist. Mit dem WLAN verbinden kann er nicht.",
 stepsTitle:"In drei Schritten online",moreHelp:"Es klappt nicht? Weitere Hilfe",askHelp:"WLAN-Hilfe an der Rezeption anfragen",
 steps3:[["WLAN einschalten","Einstellungen › WLAN und das Hotel-Netz wählen."],["Anmeldeseite bestätigen","Sie öffnet sich von selbst. Wenn nicht: Browser öffnen und neverssl.com eingeben."],["Verbindung testen","Oben auf «Verbindung testen» tippen."]],
 stepsMore:[["Netz neu verbinden","Netz «ignorieren» und neu wählen."],["iPhone: Private WLAN-Adresse","Beim Hotel-Netz auf (i) tippen und «Rotierend» auf «Fest» stellen."],["Flugmodus 10 Sekunden","Ein, warten, wieder aus."],["VPN ausschalten","Ein VPN blockiert oft die Anmeldeseite."],["Näher zum Flur","Auf dem Balkon ist das Signal schwächer."]],
@@ -341,7 +353,7 @@ demoTag:"Demo-Version",foot:"Golden Taurus Aquapark Resort · inoffizieller Prot
 en:{introTitle:"Welcome to Golden Taurus",introSub:"Your stay on your phone. First your room, then a walk through the whole resort.",introBtn:"Go to my room",introSkip:"Straight to the app",
 roomEyebrow:"Your room",wifiTitle:"A good Wi-Fi connection",yourWifi:"Your Wi-Fi",network:"Network",password:"Password",askReception:"ask at reception",copy:"Copy",
 test:"Test connection",testing:"Testing …",stIdle:"Not tested yet",stOk:"Internet reachable · {ms} ms",stSlow:"Internet reachable but slow ({ms} ms)",stBad:"Internet not reachable. Please check the steps below.",
-testHint:"The test checks whether the internet can be reached from this phone. It cannot join the Wi-Fi for you.",
+qrTitle:"Wi-Fi by QR code",qrHint:"Second device? Point its camera at this code and tap «Join». No typing.",qrEmpty:"Enter the network and password above and the Wi-Fi code for your second device appears here.",qrAlt:"Wi-Fi QR code",testHint:"The test checks whether the internet can be reached from this phone. It cannot join the Wi-Fi for you.",
 stepsTitle:"Online in three steps",moreHelp:"Not working? More help",askHelp:"Ask reception for Wi-Fi help",
 steps3:[["Turn on Wi-Fi","Settings › Wi-Fi and choose the hotel network."],["Accept the login page","It opens by itself. If not, open your browser and type neverssl.com."],["Test the connection","Tap “Test connection” above."]],
 stepsMore:[["Reconnect","“Forget this network”, then join again."],["iPhone: Private Wi-Fi Address","Tap (i) next to the hotel network and change “Rotating” to “Fixed”."],["Airplane mode for 10 seconds","On, wait, off."],["Turn off VPN","A VPN often blocks the login page."],["Move towards the hallway","The signal is weaker on the balcony."]],
@@ -374,7 +386,7 @@ demoTag:"Demo version",foot:"Golden Taurus Aquapark Resort · unofficial prototy
 es:{introTitle:"Bienvenido al Golden Taurus",introSub:"Tu estancia en el móvil. Primero tu habitación, después un paseo por todo el resort.",introBtn:"Ir a mi habitación",introSkip:"Ir directo a la app",
 roomEyebrow:"Tu habitación",wifiTitle:"Buena conexión al wifi",yourWifi:"Tu wifi",network:"Red",password:"Contraseña",askReception:"pídela en recepción",copy:"Copiar",
 test:"Probar conexión",testing:"Probando …",stIdle:"Aún sin probar",stOk:"Internet accesible · {ms} ms",stSlow:"Internet accesible, pero lento ({ms} ms)",stBad:"Internet no accesible. Revisa los pasos de abajo.",
-testHint:"La prueba comprueba si se llega a internet desde este móvil. No puede conectarse al wifi por ti.",
+qrTitle:"Wifi con código QR",qrHint:"¿Otro dispositivo? Apunta su cámara a este código y toca «Conectar». Sin escribir nada.",qrEmpty:"Escribe arriba la red y la contraseña y aquí aparecerá el código wifi para tu otro dispositivo.",qrAlt:"Código QR del wifi",testHint:"La prueba comprueba si se llega a internet desde este móvil. No puede conectarse al wifi por ti.",
 stepsTitle:"Conectado en tres pasos",moreHelp:"¿No funciona? Más ayuda",askHelp:"Pedir ayuda con el wifi en recepción",
 steps3:[["Activa el wifi","Ajustes › Wi-Fi y elige la red del hotel."],["Acepta la página de acceso","Se abre sola. Si no, abre el navegador y escribe neverssl.com."],["Prueba la conexión","Toca «Probar conexión» arriba."]],
 stepsMore:[["Vuelve a conectar","«Olvidar esta red» y conéctate de nuevo."],["iPhone: dirección wifi privada","Toca (i) junto a la red del hotel y cambia «Rotativa» a «Fija»."],["Modo avión 10 segundos","Actívalo, espera y desactívalo."],["Desactiva la VPN","Una VPN suele bloquear la página de acceso."],["Acércate al pasillo","En el balcón la señal es más débil."]],
@@ -428,8 +440,13 @@ function render(){
   $("#foodList").innerHTML=t.food.map((f,i)=>`<button class="food" data-sheet="food:${i}"><span class="thumb">${MEDIA[f[0]]}</span><span><b>${esc(f[1])}</b><span class="sub">${esc(f[2])}</span><span class="hours${f[3]?"":" tbc"}">${esc(f[3]||t.hoursTbc)}</span></span></button>`).join("");
   $("#enjoyList").innerHTML=t.enjoy.map((e,i)=>`<button class="big" data-sheet="enjoy:${i}">${MEDIA[e[0]]}<span class="txt"><b>${esc(e[1])}</b><span>${esc(e[2])}</span></span></button>`).join("");
   $("#reqChips").innerHTML=t.reqs.map((r,i)=>`<button class="chip" data-i="${i}" aria-pressed="${picked.has(i)}">${esc(r)}</button>`).join("");
-  showNet();tourShow();if(!$("#reqResult").hidden)buildReq(true);
+  showNet();drawWqr();tourShow();if(!$("#reqResult").hidden)buildReq(true);
 }
+function wifiEsc(v){return v.replace(/([\\;,:"])/g,"\\$1")}
+function drawWqr(){const t=T[lang],ss=$("#ssid").value.trim(),pw=$("#pass").value,box=$("#wqr");
+  box.setAttribute("aria-label",t.qrAlt);const ok=ss&&typeof qrcode==="function";box.hidden=!ok;$("#wqrTxt").textContent=ok?t.qrHint:t.qrEmpty;if(!ok)return;
+  const q=qrcode(0,"M");q.addData("WIFI:T:"+(pw?"WPA":"nopass")+";S:"+wifiEsc(ss)+";"+(pw?"P:"+wifiEsc(pw)+";":"")+";");q.make();
+  box.innerHTML=q.createSvgTag({cellSize:4,margin:0,scalable:true})}
 function showNet(){const t=T[lang],el=$("#netStatus");const m={idle:["",t.stIdle],run:["st-run",t.testing],ok:["st-ok",(net.ms>1500?t.stSlow:t.stOk).replace("{ms}",net.ms)],bad:["st-bad",t.stBad]}[net.s];
   el.className="status "+m[0];el.lastElementChild.textContent=m[1];$("#testBtn").textContent=net.s==="run"?t.testing:t.test}
 function ping1(url){return new Promise(res=>{const sc=document.createElement("script");const t0=performance.now();
@@ -482,9 +499,10 @@ $("#testBtn").onclick=test;$("#sendBtn").onclick=send;$("#copyReq").onclick=()=>
 $("#tourNext").onclick=()=>tourGo(tourI+1<VIEWS.length?tourI+1:-1);$("#tourX").onclick=()=>tourGo(-1);$("#tourStart").onclick=()=>tourGo(0);
 $("#enterBtn").onclick=()=>closeIntro(true);$("#skipBtn").onclick=()=>closeIntro(false);
 $$("[data-logo]").forEach(el=>{el.innerHTML=ICON});
-[["ssid",CONFIG.wifi.ssid],["pass",CONFIG.wifi.password]].forEach(([id,v])=>{const el=$("#"+id);el.value=v||store.get("gt-"+id)||"";if(v)el.readOnly=true;el.oninput=()=>store.set("gt-"+id,el.value)});
+[["ssid",CONFIG.wifi.ssid],["pass",CONFIG.wifi.password]].forEach(([id,v])=>{const el=$("#"+id);el.value=v||store.get("gt-"+id)||"";if(v)el.readOnly=true;el.oninput=()=>{store.set("gt-"+id,el.value);drawWqr()}});
 $("#room").value=store.get("gt-room")||"";$("#room").oninput=()=>{store.set("gt-room",$("#room").value);if(!$("#reqResult").hidden)buildReq(true)};
 $("#extra").oninput=()=>{if(!$("#reqResult").hidden)buildReq(true)};
 render();go("wifi");
 </script>
+
 </body></html>
