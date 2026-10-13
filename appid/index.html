@@ -608,7 +608,7 @@ function renderIch(){
 document.querySelectorAll("#goalseg button").forEach(b=>b.onclick=()=>{S.profile.goal=b.dataset.g;save();renderIch()});
 $("#kg").oninput=e=>{S.profile.kg=e.target.value;save();renderIch()};
 $("#kcalgoal").oninput=e=>{const v=parseInt(e.target.value);if(v>800&&v<6000){S.profile.kcal=v;save()}};
-$("#reset").onclick=()=>{if(confirm("Wirklich alle Einträge löschen?")){S.days={};save();render();toast("Alles gelöscht")}};
+let rs=0;$("#reset").onclick=()=>{if(!rs){rs=1;$("#reset").textContent="Nochmals tippen zum Löschen";setTimeout(()=>{rs=0;$("#reset").textContent="Alle Daten löschen"},3000);return}rs=0;$("#reset").textContent="Alle Daten löschen";S.days={};save();render();toast("Alles gelöscht")};
 $("#demo").onclick=()=>{
   const W=["Kaffee","Kaffee und ein Gipfeli","Kaffee","Joghurt und eine Banane","Kaffee","Zopf mit Butter und Konfitüre und Milchkaffee","Kaffee"];
   const M=["Pasta mit Tomatensauce","Salat und ein Sandwich","Pouletcurry mit Reis","Pizza","Rösti mit Spiegelei","Kebab","Älplermagronen und Apfelmus"];
