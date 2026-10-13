@@ -494,7 +494,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
   <div class="card">
     <h3 class="ch">Vorlesen</h3>
     <label class="small muted" for="rate">Tempo: <b id="rateLbl">ruhig</b></label>
-    <input type="range" id="rate" min="0.6" max="1.15" step="0.05">
+    <input type="range" id="rate" min="0.7" max="1.3" step="0.05">
     <label class="small muted" for="vol" style="display:block;margin-top:6px">Lautstärke: <b id="volLbl">100%</b></label>
     <input type="range" id="vol" min="0.1" max="1" step="0.05">
     <label class="small muted" for="voiceSel" style="display:block;margin-top:6px">Stimme</label>
@@ -581,8 +581,10 @@ const store = {
   get(k, d){ try{ const v = localStorage.getItem('ms_'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
   set(k, v){ try{ localStorage.setItem('ms_'+k, JSON.stringify(v)); }catch(e){} }
 };
-const S = Object.assign({rate:0.85, vol:1, limit:0, night:'auto', voice:'', name:''}, store.get('settings', {}));
+const S = Object.assign({rate:1, vol:1, limit:0, night:'auto', voice:'', name:''}, store.get('settings', {}));
 const saveS = () => store.set('settings', S);
+// Einmalig: altes, zu langsames Vorlese-Tempo auf «normal» stellen.
+if (S.rateV !== 2){ if (!(S.rate >= 1)) S.rate = 1; S.rateV = 2; saveS(); }
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -770,6 +772,8 @@ $$('[data-night-toggle]').forEach(b => b.addEventListener('click', () => { S.nig
 
 /* ---------- Vorlesen (speechSynthesis) ---------- */
 const OTTI = { pitch: 1.55, tempo: 1.12 };
+// iPhone/iPad lesen bei gleichem Tempo-Wert deutlich langsamer vor als andere Geräte, darum dort etwas schneller.
+const IOS_TEMPO = (/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints > 1)) ? 1.12 : 1;
 const TTS = {
   ok: 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined',
   token: 0, timer: null,
@@ -800,7 +804,7 @@ const TTS = {
       const v = this.voice(); if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'de-DE';
       // Ottis Stimme: hell, flink, verschmitzt. Fragen und Ausrufe etwas höher, damit es lebendig klingt.
       const lift = /\?\s*$/.test(text) ? .12 : /!\s*$/.test(text) ? .07 : (i % 2 ? .04 : 0);
-      u.rate = Math.min(1.6, S.rate * (o.rateMul || 1) * (o.flat ? 1 : OTTI.tempo)); u.pitch = Math.min(2, (o.pitch || OTTI.pitch) + (o.flat ? 0 : lift)); u.volume = Math.max(0, Math.min(1, S.vol == null ? 1 : +S.vol));
+      u.rate = Math.min(1.7, S.rate * (o.rateMul || 1) * (o.flat ? 1 : OTTI.tempo) * IOS_TEMPO); u.pitch = Math.min(2, (o.pitch || OTTI.pitch) + (o.flat ? 0 : lift)); u.volume = Math.max(0, Math.min(1, S.vol == null ? 1 : +S.vol));
       let done = false;
       const fin = () => { if (done || tok !== this.token) return; done = true; clearTimeout(this.timer); i++; setTimeout(next, o.gap || 170); };
       u.onend = fin; u.onerror = fin;
@@ -1599,7 +1603,7 @@ const TALKERS = {
   fly:{l:'Glimmi', pitch:1.7, pre:'Summ! ', hi:'Hallo! Ich bin Glimmi, das Glühwürmchen.', me:'Ich bin Glimmi. Mein Bauch leuchtet gelb, damit sich niemand im Dunkeln verirrt.', fav:'Am liebsten fliege ich mit Kiki um die Wette.', joke:'Kiki hat mich einmal für einen Stern gehalten. Ich habe einfach weiter geleuchtet! Hihi.'}
 };
 const TK = { who:'sunny', log:[] };
-const TK_RATES = [[0.7,'Langsam'],[0.85,'Ruhig'],[1.0,'Normal']];
+const TK_RATES = [[0.85,'Ruhig'],[1.0,'Normal'],[1.15,'Flink']];
 function renderTalk(){
   $('#tkPick').innerHTML = Object.entries(TALKERS).map(([k,f]) => `<button class="pk ${TK.who===k?'sel':''}" data-talker="${k}" aria-pressed="${TK.who===k}">${FIG[k]({})}${f.l}</button>`).join('');
   $('#tkStage').innerHTML = figHTML(TK.who + '-wave');
