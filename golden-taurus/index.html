@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#0E4F6E">
 <link rel="icon" href="icon.svg">
@@ -201,13 +204,14 @@ body.touring .app{padding-bottom:180px}
 </head>
 <body>
 
-<div id="filmPop" role="dialog" aria-label="DR Lab" hidden>
+<div id="filmPop" role="dialog" aria-label="DR Lab">
   <div class="fp-box">
     <video id="filmVid" playsinline muted preload="auto" poster="propuesta/film-poster.jpg"><source src="propuesta/film-es.mp4" type="video/mp4"><source src="propuesta/film-es.webm" type="video/webm"></video>
     <button id="filmPlay" class="playv" type="button" aria-label="Play" hidden><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
     <div class="fp-bar"><button id="filmSound" type="button" data-t="filmSound"></button><button id="filmSkip" type="button" data-t="filmSkip"></button></div>
   </div>
 </div>
+<script>if(/[?&](app|direkt)\b/.test(location.search)||location.hash==="#app")document.getElementById("filmPop").hidden=true</script>
 <div id="intro" role="dialog" aria-label="Golden Taurus">
   <video id="introVid" autoplay muted loop playsinline preload="auto" poster="img/intro-poster.jpg"><source src="intro.mp4" type="video/mp4"><source src="intro.webm" type="video/webm"></video>
   <div class="lang" role="group" aria-label="Language"><button data-lang="de">DE</button><button data-lang="en">EN</button><button data-lang="es">ES</button><button data-lang="zh" lang="zh">中文</button></div>
@@ -563,10 +567,10 @@ render();go("wifi");
 const DIRECT=/[?&](app|direkt)\b/.test(location.search)||location.hash==="#app";
 if(DIRECT){$("#intro").hidden=true;try{const iv=$("#introVid");iv.removeAttribute("autoplay");iv.pause();iv.preload="none"}catch(e){}}
 function startIntro(){$("#intro").classList.add("go");const v=$("#introVid");try{v.currentTime=0}catch(e){}}
-(function(){const pop=$("#filmPop"),f=$("#filmVid"),fb=$("#filmPlay");let seen=false;try{seen=sessionStorage.getItem("gt-film")==="1"}catch(e){}
-  if(DIRECT)return;if(seen||!pop){startIntro();return}
+(function(){const pop=$("#filmPop"),f=$("#filmVid"),fb=$("#filmPlay");
+  if(DIRECT){if(pop)pop.hidden=true;return}if(!pop){startIntro();return}
   pop.hidden=false;try{$("#introVid").pause()}catch(e){}
-  const close=()=>{try{sessionStorage.setItem("gt-film","1")}catch(e){}pop.classList.add("out");try{f.pause()}catch(e){}setTimeout(()=>{pop.hidden=true},400);try{$("#introVid").play().catch(()=>{})}catch(e){}startIntro()};
+  const close=()=>{pop.classList.add("out");try{f.pause()}catch(e){}setTimeout(()=>{pop.hidden=true},400);try{$("#introVid").play().catch(()=>{})}catch(e){}startIntro()};
   const showBtn=()=>{fb.hidden=false};f.muted=true;
   try{const pr=f.play();if(pr&&pr.catch)pr.catch(showBtn)}catch(e){showBtn()}
   setTimeout(()=>{if(f.paused&&!pop.hidden)showBtn()},2500);
