@@ -205,6 +205,12 @@ input[type=range]{width:100%;height:44px;accent-color:var(--moon2)}
 :root:not([data-night="1"]) .priv{color:#1d3a26}
 h3.ch{font-size:19px;margin-bottom:10px}
 /* Brief */
+.cambtn{margin-top:14px;min-height:72px;font-size:20px;gap:10px;background:linear-gradient(135deg,#d9f3ff,#e9e2ff);border:2px solid #b9dcf3;color:#1d2a4f}
+#camBox{position:relative;width:100%;aspect-ratio:3/4;max-height:58vh;border-radius:26px;overflow:hidden;background:#1d2a4f;box-shadow:var(--shadow)}
+#camBox video{width:100%;height:100%;object-fit:cover;display:block}
+#camBox .camotti{position:absolute;left:10px;bottom:10px;width:84px;height:84px}
+#camBox .camotti .nova-film{width:84px;height:84px}
+#camSay{min-height:56px;margin:12px 0;font-size:20px;text-align:center}
 .letterbtn{display:flex;align-items:center;gap:12px;width:100%;margin:14px 0 0;padding:12px 16px;min-height:76px;border-radius:24px;background:linear-gradient(135deg,#ffe3ec,#fff1c9);border:2px solid #f4c2cf;box-shadow:var(--shadow);text-align:left;color:#1d2a4f;animation:fade .45s ease}
 .letterbtn .env{flex:none;width:58px;height:46px;animation:float 3.5s ease-in-out infinite}
 .letterbtn .env svg{width:100%;height:100%}
@@ -285,6 +291,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
     <button class="sunnybtn" id="homeSunny" aria-label="Otti sagt Hallo"></button>
   </div>
   <button class="letterbtn" id="homeLetter" hidden><span class="env" aria-hidden="true"><svg viewBox="0 0 64 48"><rect x="3" y="5" width="58" height="40" rx="8" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M5 9 L32 29 L59 9" fill="none" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M32 22 C27 18 26 14 29 13 C31 12.5 32 14.5 32 15 C32 14.5 33 12.5 35 13 C38 14 37 18 32 22 Z" fill="#ff7c9c"/></svg></span><span><b id="homeLetterT">Ein Brief für dich</b><small>Otti liest dir eine Gutenachtgeschichte vor</small></span></button>
+  <button class="btn wide cambtn" id="homeCam" data-go="cam" hidden>📷 Zeig Otti etwas</button>
   <div class="tiles">
     <button class="tile t2 big4" data-go="games"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="12" r="7" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3"/><path d="M32 20v18M32 38l-10 16M32 38l10 16M32 26l-14-8M32 26l14-8" stroke="#1d2a4f" stroke-width="4.5" stroke-linecap="round" fill="none"/><path d="M8 58h48" stroke="#5fb26b" stroke-width="4" stroke-linecap="round"/></svg>Spiele<small>bewegen &amp; Memory</small></button>
     <button class="tile t1 big4" data-go="stories"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 16q12-6 24 2v36q-12-8-24-2z" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M56 16q-12-6-24 2v36q12-8 24-2z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M47 22a7 7 0 1 0 5 10 5.5 5.5 0 1 1-5-10z" fill="#f2b43a"/></svg>Geschichten<small>hören &amp; erfinden</small></button>
@@ -457,6 +464,14 @@ h3.ch{font-size:19px;margin-bottom:10px}
 </div>
 
 <!-- ELTERN -->
+<section class="screen" id="s-cam" aria-label="Zeig Otti etwas">
+  <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>Zeig Otti etwas</h2><span style="width:58px"></span></div>
+  <div id="camBox"><video id="camVid" muted playsinline webkit-playsinline autoplay></video><span class="camotti" id="camOtti"></span></div>
+  <p id="camSay" class="bubble">Halte etwas vor die Kamera und tippe auf «Was ist das?».</p>
+  <button class="btn big primary wide" id="camGo">🔍 Was ist das?</button>
+  <p class="small muted" style="text-align:center;margin-top:10px">Die Bilder bleiben auf diesem Handy. Nichts wird gespeichert oder gesendet.</p>
+</section>
+
 <section class="screen" id="s-parents" aria-label="Für Eltern">
   <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Kinderbereich">←</button><h2>Für Eltern</h2><span style="width:58px"></span></div>
   <div class="priv">🔒 Deine Daten bleiben auf deinem Handy. Kein Konto, kein Server, keine Werbung.</div>
@@ -509,6 +524,12 @@ h3.ch{font-size:19px;margin-bottom:10px}
   </div>
 
   <div class="card">
+    <h3 class="ch">Kamera: Zeig Otti etwas</h3>
+    <div class="seg" id="segCam"></div>
+    <p class="small muted" style="margin:10px 0 0">Ist die Kamera an, kann dein Kind Otti Dinge zeigen (Teddy, Banane, Ball, Katze …), und Otti sagt, was er sieht. Das Erkennen passiert nur auf diesem Handy: kein Bild wird gespeichert oder gesendet. Standard: aus.</p>
+  </div>
+
+  <div class="card">
     <h3 class="ch">Name des Kindes (freiwillig)</h3>
     <div class="row"><input class="in" id="pName" maxlength="24" autocomplete="off" placeholder="z. B. Mila"><button class="btn" id="pNameSave">Speichern</button></div>
     <p class="small muted" style="margin:8px 0 0">Otti begrüsst dann mit Namen. Bleibt nur auf diesem Handy.</p>
@@ -536,7 +557,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 
   <div class="card info">
     <h3 class="ch">🔒 Datenschutz</h3>
-    <p>Alles bleibt auf diesem Handy: Einstellungen, Botschaften, Ideen. Es gibt kein Konto, keinen Server und keine Werbung. Mondschein sendet nichts ins Internet.</p>
+    <p>Alles bleibt auf diesem Handy: Einstellungen, Botschaften, Ideen, Kamerabilder. Es gibt kein Konto, keinen Server und keine Werbung. Mondschein sendet nichts ins Internet.</p>
     <p class="small muted">Gesprochenes wird nur zum Verstehen kurz vom Gerät (z. B. Apple-Diktat) umgewandelt und nicht gespeichert.</p>
   </div>
   <div class="card info">
@@ -886,6 +907,7 @@ function go(id){
   if (typeof stopLong === 'function') stopLong();
   if (typeof stopMove === 'function') stopMove();
   if (typeof gdStop === 'function') gdStop();
+  if (typeof camStop === 'function' && id !== 'cam') camStop();
   if (id !== 'parents' && id !== 'night' && limitReached()){ id = 'night'; }
   $$('.screen').forEach(s => s.classList.toggle('on', s.id === 's-'+id));
   current = id;
@@ -900,6 +922,7 @@ function go(id){
   if (id==='idea') renderIdea();
   if (id==='parents') renderParents();
   if (id==='night') showNight();
+  if (id==='cam') camStart();
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); });
 
@@ -920,6 +943,7 @@ function renderHome(){
   const L = letterSel();
   $('#homeLetter').hidden = !L;
   if (L) $('#homeLetterT').textContent = 'Ein Brief von ' + L.from;
+  $('#homeCam').hidden = !S.cam;
 }
 const sunnyLines = ['Na, wollen wir eine Geschichte hören?', 'Ich bin Otti. Meine Stacheln sind ganz weich – fast.', 'Kiki und Nova warten schon auf dich!', 'Weisst du, was ich am liebsten mag? Walderdbeeren!', 'Hihi, das kitzelt!'];
 let sunnyIdx = 0;
@@ -1721,6 +1745,7 @@ function renderParents(){
   else { $('#tBar').style.width = '0%'; $('#tPct').textContent = '–'; $('#tInfo').textContent = 'Kein Zeitlimit eingestellt.'; }
   $('#tPlus').disabled = !S.limit;
   $('#segLimit').innerHTML = LIMITS.map(m => `<button data-limit="${m}" class="${S.limit===m?'sel':''}" aria-pressed="${S.limit===m}">${m ? m+' Min.' : 'Aus'}</button>`).join('');
+  $('#segCam').innerHTML = [[false,'Aus'],[true,'An']].map(([k,l]) => `<button data-camset="${k?1:0}" class="${!!S.cam===k?'sel':''}" aria-pressed="${!!S.cam===k}">${l}</button>`).join('');
   $('#segNight').innerHTML = NIGHTS.map(([k,l]) => `<button data-nightset="${k}" class="${S.night===k?'sel':''}" aria-pressed="${S.night===k}">${l}</button>`).join('');
   $('#rate').value = S.rate; $('#rateLbl').textContent = rateLabel(S.rate);
   fillVoices();
@@ -1918,6 +1943,48 @@ renderHome();
 if (limitReached()) go('night');
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(()=>{});
 window.__ms = { go, STORIES, game, S, R, FIG };
+/* ---------- Zeig Otti etwas (Kamera, Erkennen nur auf dem Handy) ---------- */
+// Eltern schalten es frei. Das Modell (COCO-SSD, 80 Alltagsdinge) liegt in kamera/ und läuft im Handy; kein Bild verlässt das Gerät.
+const CAM_DE = {person:'dich',bicycle:'ein Velo',car:'ein Auto',motorcycle:'ein Töff',airplane:'ein Flugzeug',bus:'einen Bus',train:'einen Zug',truck:'einen Lastwagen',boat:'ein Boot','traffic light':'eine Ampel','fire hydrant':'einen Hydranten','stop sign':'ein Stoppschild','parking meter':'eine Parkuhr',bench:'eine Bank',bird:'einen Vogel',cat:'eine Katze',dog:'einen Hund',horse:'ein Pferd',sheep:'ein Schaf',cow:'eine Kuh',elephant:'einen Elefanten',bear:'einen Bären',zebra:'ein Zebra',giraffe:'eine Giraffe',backpack:'einen Rucksack',umbrella:'einen Regenschirm',handbag:'eine Tasche',tie:'eine Krawatte',suitcase:'einen Koffer',frisbee:'ein Frisbee',skis:'Skier',snowboard:'ein Snowboard','sports ball':'einen Ball',kite:'einen Drachen','baseball bat':'einen Schläger','baseball glove':'einen Handschuh',skateboard:'ein Skateboard',surfboard:'ein Surfbrett','tennis racket':'einen Tennisschläger',bottle:'eine Flasche','wine glass':'ein Glas',cup:'eine Tasse',fork:'eine Gabel',knife:'ein Messer',spoon:'einen Löffel',bowl:'eine Schüssel',banana:'eine Banane',apple:'einen Apfel',sandwich:'ein Sandwich',orange:'eine Orange',broccoli:'einen Broccoli',carrot:'ein Rüebli',"hot dog":'einen Hotdog',pizza:'eine Pizza',donut:'einen Donut',cake:'einen Kuchen',chair:'einen Stuhl',couch:'ein Sofa','potted plant':'eine Pflanze',bed:'ein Bett','dining table':'einen Tisch',toilet:'eine Toilette',tv:'einen Fernseher',laptop:'einen Laptop',mouse:'eine Computermaus',remote:'eine Fernbedienung',keyboard:'eine Tastatur','cell phone':'ein Handy',microwave:'eine Mikrowelle',oven:'einen Backofen',toaster:'einen Toaster',sink:'ein Lavabo',refrigerator:'einen Kühlschrank',book:'ein Buch',clock:'eine Uhr',vase:'eine Vase',scissors:'eine Schere','teddy bear':'einen Teddybären','hair drier':'einen Föhn',toothbrush:'eine Zahnbürste'};
+const CAM_EXTRA = {'teddy bear':'Der sieht aber kuschelig aus!',banana:'Mmh, Bananen mag Nova besonders gern!',apple:'Knackig! Das gibt Kraft.',book:'Liest du mir daraus vor?',cat:'Miau! Hallo, Katze!',dog:'Wuff! Hallo, Hund!',toothbrush:'Super, Zähneputzen ist wichtig!','sports ball':'Wollen wir Ball spielen?',cup:'Trinkst du etwas Feines?','potted plant':'Die wächst bestimmt schön.',clock:'Tick, tack!',carrot:'Rüebli mögen die Hasen im Wald.',orange:'Die ist so orange wie die Abendsonne.',bird:'Piep, piep!'};
+let camStream = null, camModel = null, camLoading = null, camBusy = false;
+function camLoadScript(src){ return new Promise((ok, no) => { const sc = document.createElement('script'); sc.src = src; sc.onload = ok; sc.onerror = () => no(new Error('laden')); document.head.appendChild(sc); }); }
+function camLoad(){
+  if (camModel) return Promise.resolve(camModel);
+  if (!camLoading) camLoading = (window.cocoSsd ? Promise.resolve() : camLoadScript('kamera/tf.min.js').then(() => camLoadScript('kamera/coco-ssd.min.js')))
+    .then(() => cocoSsd.load({base:'lite_mobilenet_v2', modelUrl: new URL('kamera/model.json', location.href).href}))
+    .then(m => camModel = m)
+    .catch(e => { camLoading = null; throw e; });
+  return camLoading;
+}
+function camSay(t){ $('#camSay').textContent = t; TTS.speak(t); }
+function camStop(){ if (camStream){ camStream.getTracks().forEach(t => t.stop()); camStream = null; } const v = $('#camVid'); if (v) v.srcObject = null; }
+function camStart(){
+  if (!S.cam){ go('home'); return; }
+  $('#camOtti').innerHTML = FIG.sunny({wave:true});
+  $('#camSay').textContent = 'Halte etwas vor die Kamera und tippe auf «Was ist das?».';
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ $('#camSay').textContent = 'Die Kamera geht auf diesem Gerät leider nicht.'; return; }
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment', width:{ideal:640}, height:{ideal:480}}, audio:false})
+    .then(st => { if (current !== 'cam'){ st.getTracks().forEach(t => t.stop()); return; } camStream = st; const v = $('#camVid'); v.srcObject = st; const pl = v.play(); if (pl && pl.catch) pl.catch(() => {}); })
+    .catch(() => { $('#camSay').textContent = 'Otti darf die Kamera nicht benutzen. Ein Erwachsener kann sie in den Einstellungen des Handys erlauben.'; });
+  camLoad().catch(() => {});
+}
+$('#camGo').addEventListener('click', () => {
+  if (camBusy) return;
+  const v = $('#camVid');
+  if (!camStream || !v.videoWidth){ camSay('Ich sehe noch nichts. Ist die Kamera an?'); return; }
+  camBusy = true; $('#camSay').textContent = 'Otti schaut ganz genau hin …';
+  camLoad().then(m => m.detect(v, 5, 0.45)).then(found => {
+    const things = found.filter(d => d.class !== 'person' && CAM_DE[d.class]).sort((a,b) => b.score - a.score);
+    if (things.length){ const c = things[0].class; camSay(`Oh, ich sehe ${CAM_DE[c]}! ${CAM_EXTRA[c] || 'Toll, danke fürs Zeigen!'}`); }
+    else if (found.some(d => d.class === 'person')) camSay('Ich sehe dich! Hallo! Zeig mir doch etwas, einen Teddy oder eine Banane.');
+    else camSay('Hmm, das kenne ich noch nicht. Halte es etwas näher und probier es nochmal.');
+  }).catch(() => camSay('Otti braucht einen Moment Internet, um das Schauen zu lernen. Probier es gleich nochmal.'))
+    .finally(() => { camBusy = false; });
+});
+$('#segCam').addEventListener('click', e => { const b = e.target.closest('[data-camset]'); if (!b) return; S.cam = b.dataset.camset === '1'; saveS(); renderParents(); toast(S.cam ? 'Kamera ist an: «Zeig Otti etwas» ist auf dem Start.' : 'Kamera ist aus.'); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) camStop(); else if (current === 'cam') camStart(); });
+
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>
