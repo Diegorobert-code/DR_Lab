@@ -154,6 +154,7 @@ svg{fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #sheet dl div{display:flex;justify-content:space-between;gap:16px;padding-block:12px;border-top:1px solid var(--line)}
 #sheet dt{color:var(--muted)} #sheet dd{margin:0;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
 #sheet .close{position:absolute;top:12px;right:12px;z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:rgba(9,22,30,.6);color:#fff;font-size:24px;cursor:pointer}
+.hero h2 .wdemo{margin-left:auto;font-family:var(--body);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 10px}
 .tbcpill{display:inline-block;font-size:12px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
 .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;z-index:30}
 #intro{position:fixed;top:0;right:0;bottom:0;left:0;z-index:20;background:#0B1820;color:#F3F6F4;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
@@ -232,7 +233,7 @@ body.touring .app{padding-bottom:180px}
     <h1 data-t="wifiTitle"></h1>
     <div class="stack">
       <div class="hero">
-        <h2><svg viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".8"/></svg><span data-t="yourWifi"></span></h2>
+        <h2><svg viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".8"/></svg><span data-t="yourWifi"></span><span class="wdemo" data-t="wifiDemo"></span></h2>
         <div class="row"><div class="field"><label for="ssid" data-t="network"></label><input id="ssid" autocomplete="off" spellcheck="false" data-ph="askReception"></div>
           <button class="btn ghost chip-btn" data-copyfrom="ssid" data-t="copy"></button></div>
         <div class="row"><div class="field"><label for="pass" data-t="password"></label><input id="pass" autocomplete="off" spellcheck="false" data-ph="askReception"></div>
@@ -320,7 +321,7 @@ body.touring .app{padding-bottom:180px}
 <script>
 /* ---------- Konfiguration: vom Hotel zu bestätigen / einzutragen ---------- */
 const CONFIG={
-  wifi:{ssid:"",password:""},   // leer = Gast trägt die Daten selbst ein
+  wifi:{ssid:"GoldenTaurus-Guest",password:"demo2026"},   // DEMO-Daten; echte Daten vom Hotel eintragen (leer = Gast trägt selbst ein)
   demo:true,                     // true = Anfragen werden NICHT gesendet
   requestEndpoint:"",            // später: HTTPS-Adresse des Rezeptionssystems (POST JSON)
   reception:{email:"recepcion.taurus@goldenhotels.com",address:"Passeig Marítim 33, 08397 Pineda de Mar"}
@@ -340,7 +341,7 @@ const MEDIA={checkin:'<img src="img/resort.jpg" alt="">',aqua:'<img src="img/poo
 const PRE={wifi:-1,checkin:3,spa:-2,bcn:2};   // Detail-Knopf → vorgewählte Anfrage (Index in reqs; -1 WLAN-Hilfe, -2 Massage)
 
 const T={
-de:{filmSkip:"Überspringen",filmSound:"Ton an",soundOff:"Ton aus",introTitle:"Willkommen im Golden Taurus",introSub:"Dein Aufenthalt auf dem Handy. Zuerst ins Zimmer, dann einmal durchs ganze Resort.",introBtn:"Ins Zimmer",introSkip:"Direkt zur App",
+de:{wifiDemo:"Demo",filmSkip:"Überspringen",filmSound:"Ton an",soundOff:"Ton aus",introTitle:"Willkommen im Golden Taurus",introSub:"Dein Aufenthalt auf dem Handy. Zuerst ins Zimmer, dann einmal durchs ganze Resort.",introBtn:"Ins Zimmer",introSkip:"Direkt zur App",
 roomEyebrow:"Dein Zimmer",wifiTitle:"Gute Verbindung zum WLAN",yourWifi:"Dein WLAN",network:"Netzwerk",password:"Passwort",askReception:"an der Rezeption erfragen",copy:"Kopieren",
 test:"Verbindung testen",testing:"Teste …",stIdle:"Noch nicht getestet",stOk:"Internet erreichbar · {ms} ms",stSlow:"Internet erreichbar, aber langsam ({ms} ms)",stBad:"Kein Internet erreichbar. Bitte die Schritte unten prüfen.",
 qrTitle:"WLAN per QR-Code",qrHint:"Zweites Gerät? Kamera auf diesen Code richten und auf «Verbinden» tippen. Ohne Abtippen.",qrEmpty:"Trage oben Netzwerk und Passwort ein, dann erscheint hier der WLAN-Code für dein zweites Gerät.",qrAlt:"WLAN-QR-Code",testHint:"Der Test prüft, ob das Internet von diesem Handy aus erreichbar ist. Mit dem WLAN verbinden kann er nicht.",
@@ -373,7 +374,7 @@ errPick:"Bitte einen Wunsch wählen oder etwas schreiben.",errRoom:"Bitte die Zi
 demoTitle:"Demo: Diese Anfrage wurde nicht gesendet.",demoText:"In der fertigen App geht sie direkt an die Rezeption. Bis dahin: Text kopieren und an der Rezeption zeigen.",
 copyReq:"Text kopieren",reqHead:"Hallo Rezeption,",reqRoom:"Zimmer",reqBye:"Vielen Dank!",copied:"Kopiert",copyFail:"Bitte Text markieren und kopieren",nothing:"Noch nichts eingetragen",
 demoTag:"Demo-Version",foot:"Golden Taurus Aquapark Resort · inoffizieller Prototyp",nHotel:"Hotel",nFood:"Essen",nEnjoy:"Erleben",nReq:"Wünsche",requestThis:"Anfragen"},
-en:{filmSkip:"Skip",filmSound:"Sound on",soundOff:"Sound off",introTitle:"Welcome to Golden Taurus",introSub:"Your stay on your phone. First your room, then a walk through the whole resort.",introBtn:"Go to my room",introSkip:"Straight to the app",
+en:{wifiDemo:"Demo",filmSkip:"Skip",filmSound:"Sound on",soundOff:"Sound off",introTitle:"Welcome to Golden Taurus",introSub:"Your stay on your phone. First your room, then a walk through the whole resort.",introBtn:"Go to my room",introSkip:"Straight to the app",
 roomEyebrow:"Your room",wifiTitle:"A good Wi-Fi connection",yourWifi:"Your Wi-Fi",network:"Network",password:"Password",askReception:"ask at reception",copy:"Copy",
 test:"Test connection",testing:"Testing …",stIdle:"Not tested yet",stOk:"Internet reachable · {ms} ms",stSlow:"Internet reachable but slow ({ms} ms)",stBad:"Internet not reachable. Please check the steps below.",
 qrTitle:"Wi-Fi by QR code",qrHint:"Second device? Point its camera at this code and tap «Join». No typing.",qrEmpty:"Enter the network and password above and the Wi-Fi code for your second device appears here.",qrAlt:"Wi-Fi QR code",testHint:"The test checks whether the internet can be reached from this phone. It cannot join the Wi-Fi for you.",
@@ -406,7 +407,7 @@ errPick:"Please choose a request or write something.",errRoom:"Please enter your
 demoTitle:"Demo: this request was not sent.",demoText:"In the finished app it goes straight to reception. Until then, copy the text and show it at reception.",
 copyReq:"Copy text",reqHead:"Hello reception,",reqRoom:"Room",reqBye:"Thank you!",copied:"Copied",copyFail:"Please select and copy the text",nothing:"Nothing entered yet",
 demoTag:"Demo version",foot:"Golden Taurus Aquapark Resort · unofficial prototype",nHotel:"Hotel",nFood:"Food",nEnjoy:"Enjoy",nReq:"Requests",requestThis:"Request"},
-es:{filmSkip:"Saltar",filmSound:"Activar sonido",soundOff:"Silenciar",introTitle:"Bienvenido al Golden Taurus",introSub:"Tu estancia en el móvil. Primero tu habitación, después un paseo por todo el resort.",introBtn:"Ir a mi habitación",introSkip:"Ir directo a la app",
+es:{wifiDemo:"Demo",filmSkip:"Saltar",filmSound:"Activar sonido",soundOff:"Silenciar",introTitle:"Bienvenido al Golden Taurus",introSub:"Tu estancia en el móvil. Primero tu habitación, después un paseo por todo el resort.",introBtn:"Ir a mi habitación",introSkip:"Ir directo a la app",
 roomEyebrow:"Tu habitación",wifiTitle:"Buena conexión al wifi",yourWifi:"Tu wifi",network:"Red",password:"Contraseña",askReception:"pídela en recepción",copy:"Copiar",
 test:"Probar conexión",testing:"Probando …",stIdle:"Aún sin probar",stOk:"Internet accesible · {ms} ms",stSlow:"Internet accesible, pero lento ({ms} ms)",stBad:"Internet no accesible. Revisa los pasos de abajo.",
 qrTitle:"Wifi con código QR",qrHint:"¿Otro dispositivo? Apunta su cámara a este código y toca «Conectar». Sin escribir nada.",qrEmpty:"Escribe arriba la red y la contraseña y aquí aparecerá el código wifi para tu otro dispositivo.",qrAlt:"Código QR del wifi",testHint:"La prueba comprueba si se llega a internet desde este móvil. No puede conectarse al wifi por ti.",
@@ -439,7 +440,7 @@ errPick:"Elige una petición o escribe algo.",errRoom:"Escribe tu número de hab
 demoTitle:"Demo: esta petición no se ha enviado.",demoText:"En la app final llega directamente a recepción. Mientras tanto, copia el texto y enséñalo en recepción.",
 copyReq:"Copiar texto",reqHead:"Hola recepción:",reqRoom:"Habitación",reqBye:"¡Muchas gracias!",copied:"Copiado",copyFail:"Selecciona y copia el texto",nothing:"Aún no hay nada",
 demoTag:"Versión demo",foot:"Golden Taurus Aquapark Resort · prototipo no oficial",nHotel:"Hotel",nFood:"Comer",nEnjoy:"Disfrutar",nReq:"Pedir",requestThis:"Solicitar"},
-zh:{filmSkip:"跳过",filmSound:"打开声音",soundOff:"关闭声音",introTitle:"欢迎来到 Golden Taurus",introSub:"您的住宿尽在手机上。先进房间，再逛遍整个度假村。",introBtn:"进入我的房间",introSkip:"直接进入应用",
+zh:{wifiDemo:"演示",filmSkip:"跳过",filmSound:"打开声音",soundOff:"关闭声音",introTitle:"欢迎来到 Golden Taurus",introSub:"您的住宿尽在手机上。先进房间，再逛遍整个度假村。",introBtn:"进入我的房间",introSkip:"直接进入应用",
 roomEyebrow:"您的房间",wifiTitle:"轻松连上无线网络",yourWifi:"您的 Wi-Fi",network:"网络名称",password:"密码",askReception:"请向前台询问",copy:"复制",
 test:"测试连接",testing:"正在测试 …",stIdle:"尚未测试",stOk:"可以上网 · {ms} 毫秒",stSlow:"可以上网，但速度较慢（{ms} 毫秒）",stBad:"无法上网。请查看下面的步骤。",
 qrTitle:"扫码连接 Wi-Fi",qrHint:"还有一台设备？用它的相机对准此二维码，点击“加入”即可，无需输入。",qrEmpty:"在上方输入网络名称和密码，这里就会出现供第二台设备使用的 Wi-Fi 二维码。",qrAlt:"Wi-Fi 二维码",testHint:"此测试检查这部手机能否访问互联网，无法替您连接 Wi-Fi。",
@@ -486,7 +487,7 @@ async function copy(text,el){try{await navigator.clipboard.writeText(text);toast
 
 function render(){
   const t=T[lang];document.documentElement.lang=lang;
-  $$("[data-t]").forEach(el=>{el.textContent=t[el.dataset.t]});
+  $$("[data-t]").forEach(el=>{const v=t[el.dataset.t];el.textContent=typeof v==="string"?v.replace(/Wi-Fi/g,"Wi\u2060-\u2060Fi"):v});
   $$("[data-ph]").forEach(el=>{el.placeholder=t[el.dataset.ph]});
   $$("[data-alt]").forEach(el=>{el.alt=t[el.dataset.alt]});
   $$(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===lang));

@@ -21,17 +21,18 @@
 .codes figcaption{font-size:9pt;font-weight:700;line-height:1.25}.codes figcaption span{display:block;font-weight:400;opacity:.75}
 .data{font-size:9pt;line-height:1.5;border-top:1px solid #E1E9EC;padding-top:3mm;width:100%}
 .data b{font-weight:700}.foot{margin-top:auto;font-size:7.5pt;opacity:.65}
+.card{position:relative}.demo{position:absolute;top:5mm;right:5mm;font-size:7pt;font-weight:700;letter-spacing:.15em;color:#fff;background:#B98A2E;border-radius:99px;padding:1mm 3mm}
 .wave{width:100%;height:9mm}
 @media print{@page{size:A6;margin:0}body{background:#fff;padding:0}.ctl{display:none}.card{box-shadow:none;border-radius:0;width:105mm;height:148mm;margin:0}}
 </style></head><body>
 <div class="ctl">
   <h1>Tarjeta de habitación</h1>
-  <p>Escriba la red y la contraseña del wifi del hotel. La tarjeta se actualiza al momento; luego imprímala (A6).</p>
+  <p>Versión demo con datos de ejemplo. Escriba la red y la contraseña del wifi del hotel. La tarjeta se actualiza al momento; luego imprímala (A6).</p>
   <label for="s">Red wifi (SSID)</label><input id="s" autocomplete="off" spellcheck="false" placeholder="p. ej. GoldenTaurus_Guest">
   <label for="w">Contraseña</label><input id="w" autocomplete="off" spellcheck="false" placeholder="vacío si la red es abierta">
   <button id="pr" type="button">Imprimir</button>
 </div>
-<div class="card">
+<div class="card"><div class="demo">DEMO</div>
   <svg class="wave" viewBox="0 0 64 20" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><circle cx="32" cy="9" r="6" fill="#B98A2E"/><path d="M4 17c5 0 5-3 10-3s5 3 10 3 5-3 10-3 5 3 10 3 5-3 10-3" stroke="#0E4F6E" stroke-width="1.6" fill="none"/></svg>
   <div class="brand">Golden Taurus Aquapark Resort</div>
   <h2>Scan for Wi-Fi &amp; hotel info</h2>
@@ -51,6 +52,6 @@ function draw(){const s=$("#s").value.trim(),w=$("#w").value;
   $("#qw").innerHTML=s?svg("WIFI:T:"+(w?"WPA":"nopass")+";S:"+esc(s)+";"+(w?"P:"+esc(w)+";":"")+";"):'<svg viewBox="0 0 10 10"><rect width="10" height="10" rx="1" fill="#EEF3F5"/><text x="5" y="5.6" font-size="1.2" text-anchor="middle" fill="#6B8290">wifi</text></svg>';
   $("#ds").textContent=s||"–";$("#dw").textContent=s?(w||"(abierta / open)"):"–";
   try{localStorage.setItem("gt-card",JSON.stringify({s,w}))}catch(e){}}
-try{const d=JSON.parse(localStorage.getItem("gt-card")||"{}");$("#s").value=d.s||"";$("#w").value=d.w||""}catch(e){}
+try{const d=JSON.parse(localStorage.getItem("gt-card")||"{}");$("#s").value=d.s||"GoldenTaurus-Guest";$("#w").value=(d.w!==undefined?d.w:"demo2026")}catch(e){}
 $("#qa").innerHTML=svg(APP);$("#s").oninput=$("#w").oninput=draw;$("#pr").onclick=()=>print();draw();
 </script></body></html>
