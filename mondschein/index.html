@@ -97,7 +97,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .filmcard video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .filmcard:after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 40%,transparent 55%,rgba(60,30,0,.28));pointer-events:none}
 :root[data-night="1"] .filmcard{box-shadow:0 0 0 4px #cfae55,0 0 0 9px rgba(207,174,85,.2),0 0 40px rgba(140,160,255,.25)}
-:root[data-night="1"] .filmcard img{filter:brightness(.62) saturate(.8) hue-rotate(-12deg)}
+:root[data-night="1"] .filmcard video,:root[data-night="1"] .filmcard img{filter:brightness(.62) saturate(.8) hue-rotate(-12deg)}
 @keyframes kamera{0%,100%{transform:scale(1.04) translate(0,0)}50%{transform:scale(1.1) translate(-1.5%,1%)}}
 .sunnybtn.hopp .filmcard{animation:hopp .55s cubic-bezier(.3,1.6,.5,1)}
 @keyframes hopp{0%{transform:rotate(-1.2deg) scale(1)}40%{transform:rotate(1deg) scale(1.05)}100%{transform:rotate(-1.2deg) scale(1)}}
@@ -921,7 +921,7 @@ function go(id){
   if (id==='game' && !game.cards.length) newGame();
   if (id==='games') renderGames();
   if (id==='mystory') renderMyStory();
-  if (id==='talk') renderTalk();
+  if (id==='talk'){ renderTalk(); if (TK.who === 'sunny') ottiGruss('#tkStage'); }
   if (id==='guide') renderGuide();
   if (id==='idea') renderIdea();
   if (id==='parents') renderParents();
@@ -957,7 +957,15 @@ $('#homeSunny').addEventListener('click', () => {
   sunnyIdx++;
   $('#greet').textContent = line;
   const hv = $('#homeWinkt'); if (hv){ try{ hv.currentTime = 0; const pl = hv.play(); if (pl && pl.catch) pl.catch(() => {}); }catch(e){} $('#homeSunny').classList.remove('hopp'); void hv.offsetWidth; $('#homeSunny').classList.add('hopp'); }
-  const sz = $('#homeSzene'); if (sz){ clearTimeout(sz._t); sz.src = 'szene-lacht.jpg'; $('#homeSunny').classList.remove('hopp'); void sz.offsetWidth; $('#homeSunny').classList.add('hopp'); sz._t = setTimeout(() => { sz.src = 'szene-' + (isNight()?'ruhig':'hallo') + '.jpg'; }, 2200); }
+  const sz = $('#homeSzene');
+  // Nachts: Antippen lässt Otti kurz winken, danach wieder ruhige Wald-Szene.
+  if (sz && isNight() && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const card = sz.parentNode, v = document.createElement('video');
+    v.src = 'otti-winkt.mp4'; v.muted = true; v.playsInline = true; v.setAttribute('playsinline',''); v.setAttribute('aria-label','Otti winkt dir zu');
+    card.replaceChild(v, sz); const pl = v.play(); if (pl && pl.catch) pl.catch(() => {});
+    const back = () => { if (v.parentNode) v.parentNode.replaceChild(sz, v); };
+    v.addEventListener('ended', back); setTimeout(back, 7000);
+  } else if (sz){ clearTimeout(sz._t); sz.src = 'szene-lacht.jpg'; $('#homeSunny').classList.remove('hopp'); void sz.offsetWidth; $('#homeSunny').classList.add('hopp'); sz._t = setTimeout(() => { sz.src = 'szene-' + (isNight()?'ruhig':'hallo') + '.jpg'; }, 2200); }
   TTS.speak(line);
 });
 
@@ -1633,6 +1641,22 @@ const TALKERS = {
 };
 const TK = { who:'sunny', log:[] };
 const TK_RATES = [[0.85,'Ruhig'],[1.0,'Normal'],[1.15,'Flink']];
+/* Otti winkt: jedes runde Otti-Bild antippen (oder Begrüssung) spielt kurz den Winke-Clip ab */
+function ottiWinkt(img){
+  if (!img || img.tagName !== 'IMG' || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const v = document.createElement('video');
+  v.className = img.className; v.src = 'otti-winkt-fig.mp4'; v.poster = 'otti-winkt-fig.jpg';
+  v.muted = true; v.playsInline = true; v.setAttribute('playsinline',''); v.setAttribute('aria-label','Otti winkt');
+  img.parentNode.replaceChild(v, img);
+  const pl = v.play(); if (pl && pl.catch) pl.catch(() => {});
+  const back = () => { if (v.parentNode) v.parentNode.replaceChild(img, v); };
+  v.addEventListener('ended', back); setTimeout(back, 7000);
+}
+document.addEventListener('click', e => {
+  const img = e.target.closest('img.otti-film[src^="otti-"]');
+  if (img && !img.closest('.pk, .sitem')) ottiWinkt(img);
+});
+function ottiGruss(sel){ const img = $(sel + ' img.otti-film[src^="otti-"]'); if (img) ottiWinkt(img); }
 function renderTalk(){
   $('#tkPick').innerHTML = Object.entries(TALKERS).map(([k,f]) => `<button class="pk ${TK.who===k?'sel':''}" data-talker="${k}" aria-pressed="${TK.who===k}">${FIG[k]({})}${f.l}</button>`).join('');
   $('#tkStage').innerHTML = figHTML(TK.who + '-wave');
@@ -1644,6 +1668,7 @@ $('#tkPick').addEventListener('click', e => {
   const b = e.target.closest('[data-talker]'); if (!b) return;
   TK.who = b.dataset.talker; renderTalk();
   const f = TALKERS[TK.who]; $('#tkSay').textContent = f.pre + f.hi; TTS.speak(f.pre + f.hi, {pitch:f.pitch});
+  if (TK.who === 'sunny') ottiGruss('#tkStage');
 });
 $('#tkRate').addEventListener('click', e => {
   const b = e.target.closest('[data-tkrate]'); if (!b) return;
