@@ -29,6 +29,9 @@ Krypto-Kurse kommen live von CoinGecko, andere Titel trägst du selbst ein. Kurs
 RUHE
 Pings für eine Stunde oder bis morgen pausieren.
 
+MEINE PLATTFORMEN
+Wähle, wo du handelst, zum Beispiel Yuh, Swissquote, PostFinance oder Kraken. Der Knopf «Handeln» bei jedem Titel öffnet deine Plattform. TradePing sieht dein Konto nie und kauft nichts selbst.
+
 MITTEILUNGEN UND TON
 TradePing meldet sich mit Ton und Mitteilung, solange die App offen ist.
 
@@ -61,3 +64,7 @@ Alles «Keine» (kein Glücksspiel, kein echtes Geld in der App). Ergebnis: **4+
 ```
 TradePing is a price alert app. Users set an upper or lower mark per symbol; the app plays a sound and shows a local notification while it is open when a mark is reached. Crypto prices come from the public CoinGecko API, other symbols are entered manually. Tap "Demo" on the first screen to see simulated prices. No trading, no account, no financial advice, all data stays on the device.
 ```
+
+
+## Hinweis Plattform-Namen
+Screenshot 3 zeigt die Namen der Handelsplattformen (Yuh, Swissquote usw.) nur als Auswahl-Knöpfe. Die Namen bitte nicht in Name, Untertitel oder Stichwörter nehmen (Apple lehnt fremde Marken dort ab).
