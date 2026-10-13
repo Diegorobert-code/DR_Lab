@@ -923,19 +923,22 @@ function holdButton(el, onDone){
   el.addEventListener('click', e => e.preventDefault());
 }
 /* danach: kleine Rechenaufgabe */
-const gate = {a:0, b:0};
+const gate = {a:0, b:0, armed:false};
 const GATE_W = {3:'drei',4:'vier',5:'fünf',6:'sechs',7:'sieben',8:'acht',9:'neun',12:'zwölf',13:'dreizehn',14:'vierzehn',15:'fünfzehn',16:'sechzehn',17:'siebzehn',18:'achtzehn',19:'neunzehn'};
 // Elternsperre für Kinder-Apps (App Store): in Worten und mit Mal-Rechnen, damit kleine Kinder sie nicht lösen.
 function newGateQ(){ gate.a = 3 + Math.floor(Math.random()*7); gate.b = 12 + Math.floor(Math.random()*8); $('#gateQ').textContent = `${GATE_W[gate.a]} mal ${GATE_W[gate.b]} = ?`; $('#gateIn').value = ''; }
-function openGate(){ TTS.stop(); newGateQ(); $('#gate').classList.add('on'); setTimeout(() => { try{ $('#gateIn').focus(); }catch(e){} }, 80); }
+// Der Finger liegt beim Öffnen noch auf dem Halte-Knopf: das Loslassen darf nicht «Abbrechen» oder «OK» auslösen.
+function openGate(){ TTS.stop(); newGateQ(); gate.armed = false; $('#gate').classList.add('on'); setTimeout(() => { try{ $('#gateIn').focus(); }catch(e){} }, 80); }
 function closeGate(){ $('#gate').classList.remove('on'); }
 function checkGate(){
   const v = parseInt($('#gateIn').value, 10);
   if (v === gate.a * gate.b){ closeGate(); go('parents'); }
   else { toast('Leider nicht richtig – hier ist eine neue Aufgabe.'); newGateQ(); $('#gateIn').focus(); }
 }
-$('#gateOk').addEventListener('click', checkGate);
-$('#gateNo').addEventListener('click', closeGate);
+$('#gate').addEventListener('pointerdown', () => { gate.armed = true; });
+$('#gate').addEventListener('keydown', () => { gate.armed = true; });
+$('#gateOk').addEventListener('click', () => { if (gate.armed) checkGate(); });
+$('#gateNo').addEventListener('click', () => { if (gate.armed) closeGate(); });
 $('#gateIn').addEventListener('keydown', e => { if (e.key === 'Enter') checkGate(); });
 holdButton($('#parentsHold'), openGate);
 holdButton($('#nightHold'), openGate);
