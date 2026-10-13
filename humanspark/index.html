@@ -1533,6 +1533,13 @@ $('btnExport').addEventListener('click', function(){
       return;
     }
   } catch(e){}
+  // In der iPhone-App gibt es keine Downloads: dann in die Zwischenablage kopieren.
+  if (document.documentElement.classList.contains('native-app')){
+    var done = function(){ alert('Export in die Zwischenablage kopiert. Du kannst ihn jetzt in eine Notiz oder Mail einfügen.'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(json).then(done, function(){ alert('Export ging leider nicht.'); });
+    else alert('Export ging leider nicht.');
+    return;
+  }
   var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
   document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
 });
