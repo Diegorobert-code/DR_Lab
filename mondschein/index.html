@@ -143,7 +143,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .stage svg{width:150px;height:158px}
 .stage.two svg{width:124px;height:132px}
 .story-text{font-size:21px;line-height:1.6;min-height:150px}
-.story-text .s{border-radius:8px;transition:background .3s;padding:1px 2px}
+.story-text .s{border-radius:8px;transition:background .3s;padding:1px 0;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .story-text .s.cur{background:var(--hl)}
 .q{font-size:22px;font-weight:800;margin:0 0 12px;text-align:center}
 .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -170,11 +170,13 @@ input.in,textarea.in,select.in{width:100%;min-height:60px;padding:14px 16px;bord
 textarea.in{min-height:120px;font-size:17px;resize:vertical}
 select.in{font-size:17px}
 .pick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-#tkPick{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}#tkPick .pk{min-height:88px;font-size:13px;min-width:0;overflow-wrap:anywhere;text-align:center}
-@media (max-width:360px){#tkPick{grid-template-columns:repeat(3,minmax(0,1fr))}#tkPick .pk{font-size:11px;-webkit-hyphens:auto;hyphens:auto}}#tkPick .pk svg{width:52px;height:52px}#tkPick .pk .nova-film{width:52px;height:52px}
+#tkPick{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}#tkPick .pk{min-height:96px;font-size:14px;min-width:0;text-align:center;line-height:1.15}
+@media (max-width:340px){#tkPick .pk{font-size:12.5px}}#tkPick .pk svg{width:52px;height:52px}#tkPick .pk .nova-film{width:52px;height:52px}
 .pick.four{grid-template-columns:repeat(4,1fr)}
 .pk{min-height:96px;border-radius:20px;background:var(--bg);border:3px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:15px;padding:6px 2px}
 .pk svg{width:58px;height:58px}
+/* Gezeichnete Figuren im gleichen runden Rahmen wie die Filmfiguren */
+.pk svg.fig,.sitem .ic svg.fig{border-radius:50%;background:radial-gradient(circle at 50% 40%,#f3f8ff,#dcecff);box-shadow:0 0 0 3px #bfefff,0 0 18px rgba(111,228,255,.35);padding:4px;box-sizing:border-box}
 .pk .em{font-size:36px}
 .pk.sel{border-color:var(--moon2);background:var(--hl)}
 .hint{background:var(--hl);border-radius:14px;padding:10px 12px;font-size:15px;margin-top:10px}
