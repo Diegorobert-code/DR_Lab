@@ -471,7 +471,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
   <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>Zeig Otti etwas</h2><span style="width:58px"></span></div>
   <div id="camBox"><video id="camVid" muted playsinline webkit-playsinline autoplay></video><span class="camotti" id="camOtti"></span></div>
   <p id="camSay" class="bubble">Halte etwas vor die Kamera und tippe auf «Was ist das?».</p>
-  <button class="btn big primary wide" id="camGo">🔍 Was ist das?</button>
+  <div class="row"><button class="btn big primary" id="camGo" style="flex:1">🔍 Was ist das?</button><button class="btn big" id="camFlip" style="flex:none;min-width:72px" aria-label="Kamera drehen">🔄</button></div>
   <p class="small muted" style="text-align:center;margin-top:10px">Die Bilder bleiben auf diesem Handy. Nichts wird gespeichert oder gesendet.</p>
 </section>
 
@@ -529,7 +529,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
   <div class="card">
     <h3 class="ch">Kamera: Zeig Otti etwas</h3>
     <div class="seg" id="segCam"></div>
-    <p class="small muted" style="margin:10px 0 0">Ist die Kamera an, kann dein Kind Otti Dinge zeigen (Teddy, Banane, Ball, Katze …), und Otti sagt, was er sieht. Das Erkennen passiert nur auf diesem Handy: kein Bild wird gespeichert oder gesendet. Standard: aus.</p>
+    <p class="small muted" style="margin:10px 0 0">Ist die Kamera an, kann dein Kind Otti Dinge zeigen (Teddy, Banane, Ball, Katze …), und Otti sagt, was er sieht. Sieht er dein Kind, winkt er und grüsst mit dem Namen von unten. Otti erkennt keine Gesichter: er merkt nur, dass ein Mensch da ist. Was dein Kind ihm gezeigt hat, merkt er sich als Lieblingsdinge. Alles passiert nur auf diesem Handy: kein Bild wird gespeichert oder gesendet. Standard: aus.</p>
   </div>
 
   <div class="card">
@@ -1998,14 +1998,31 @@ function camLoad(){
   return camLoading;
 }
 function camSay(t){ $('#camSay').textContent = t; TTS.speak(t); }
-function camStop(){ if (camStream){ camStream.getTracks().forEach(t => t.stop()); camStream = null; } const v = $('#camVid'); if (v) v.srcObject = null; }
+// Otti «erkennt» das Kind: sieht er einen Menschen im Bild, winkt er und grüsst mit dem Namen aus den Eltern-Einstellungen.
+// Keine Gesichtserkennung: es wird nur «Mensch ja/nein» geschaut, nichts gespeichert oder gesendet.
+let camFacing = 'user', camWatchT = 0, camGreeted = false;
+function camHi(){ return S.name ? `Hallo ${S.name}! Ich sehe dich!` : 'Hallo du! Ich sehe dich!'; }
+function camWatch(){
+  clearTimeout(camWatchT);
+  if (current !== 'cam' || camGreeted) return;
+  camWatchT = setTimeout(() => {
+    const v = $('#camVid');
+    if (current !== 'cam' || camGreeted) return;
+    if (camBusy || !camStream || !v.videoWidth || !camModel){ camWatch(); return; }
+    camModel.detect(v, 3, 0.55).then(f => {
+      if (!camGreeted && current === 'cam' && f.some(d => d.class === 'person')){ camGreeted = true; ottiGruss('#camOtti'); camSay(camHi() + ' Zeig mir etwas!'); }
+      else camWatch();
+    }).catch(() => camWatch());
+  }, 1500);
+}
+function camStop(){ clearTimeout(camWatchT); if (camStream){ camStream.getTracks().forEach(t => t.stop()); camStream = null; } const v = $('#camVid'); if (v) v.srcObject = null; }
 function camStart(){
   if (!S.cam){ go('home'); return; }
-  $('#camOtti').innerHTML = FIG.sunny({wave:true});
+  $('#camOtti').innerHTML = FIG.sunny({wave:true}); camGreeted = false;
   $('#camSay').textContent = 'Halte etwas vor die Kamera und tippe auf «Was ist das?».';
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ $('#camSay').textContent = 'Die Kamera geht auf diesem Gerät leider nicht.'; return; }
-  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment', width:{ideal:640}, height:{ideal:480}}, audio:false})
-    .then(st => { if (current !== 'cam'){ st.getTracks().forEach(t => t.stop()); return; } camStream = st; const v = $('#camVid'); v.srcObject = st; const pl = v.play(); if (pl && pl.catch) pl.catch(() => {}); })
+  navigator.mediaDevices.getUserMedia({video:{facingMode:camFacing, width:{ideal:640}, height:{ideal:480}}, audio:false})
+    .then(st => { if (current !== 'cam'){ st.getTracks().forEach(t => t.stop()); return; } camStream = st; const v = $('#camVid'); v.srcObject = st; const pl = v.play(); if (pl && pl.catch) pl.catch(() => {}); v.style.transform = camFacing === 'user' ? 'scaleX(-1)' : ''; camWatch(); })
     .catch(() => { $('#camSay').textContent = 'Otti darf die Kamera nicht benutzen. Ein Erwachsener kann sie in den Einstellungen des Handys erlauben.'; });
   camLoad().catch(() => {});
 }
@@ -2016,12 +2033,17 @@ $('#camGo').addEventListener('click', () => {
   camBusy = true; $('#camSay').textContent = 'Otti schaut ganz genau hin …';
   camLoad().then(m => m.detect(v, 5, 0.45)).then(found => {
     const things = found.filter(d => d.class !== 'person' && CAM_DE[d.class]).sort((a,b) => b.score - a.score);
-    if (things.length){ const c = things[0].class; camSay(`Oh, ich sehe ${CAM_DE[c]}! ${CAM_EXTRA[c] || 'Toll, danke fürs Zeigen!'}`); }
-    else if (found.some(d => d.class === 'person')) camSay('Ich sehe dich! Hallo! Zeig mir doch etwas, einen Teddy oder eine Banane.');
+    if (things.length){
+      const c = things[0].class, seen = store.get('camSeen', {}), n = (seen[c] || 0) + 1; seen[c] = n; store.set('camSeen', seen);
+      const more = n >= 3 ? 'Das ist bestimmt eines deiner Lieblingsdinge!' : n === 2 ? 'Das hast du mir schon mal gezeigt!' : (CAM_EXTRA[c] || 'Toll, danke fürs Zeigen!');
+      camSay(`Oh, ich sehe ${CAM_DE[c]}! ${more}`);
+    }
+    else if (found.some(d => d.class === 'person')){ ottiGruss('#camOtti'); camSay(camHi() + ' Zeig mir doch etwas, einen Teddy oder eine Banane.'); }
     else camSay('Hmm, das kenne ich noch nicht. Halte es etwas näher und probier es nochmal.');
   }).catch(() => camSay('Otti braucht einen Moment Internet, um das Schauen zu lernen. Probier es gleich nochmal.'))
     .finally(() => { camBusy = false; });
 });
+$('#camFlip').addEventListener('click', () => { camFacing = camFacing === 'user' ? 'environment' : 'user'; camStop(); camStart(); });
 $('#segCam').addEventListener('click', e => { const b = e.target.closest('[data-camset]'); if (!b) return; S.cam = b.dataset.camset === '1'; saveS(); renderParents(); toast(S.cam ? 'Kamera ist an: «Zeig Otti etwas» ist auf dem Start.' : 'Kamera ist aus.'); });
 document.addEventListener('visibilitychange', () => { if (document.hidden) camStop(); else if (current === 'cam') camStart(); });
 
