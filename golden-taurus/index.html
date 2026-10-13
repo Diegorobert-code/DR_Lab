@@ -20,8 +20,8 @@
   --bg:#F3F6F7; --surface:#FFFFFF; --ink:#17344A; --muted:#5B7282; --line:#DDE6EA;
   --primary:#0E4F6E; --primary-ink:#FFFFFF; --soft:#E3EEF3; --gold:#B98A2E; --gold-soft:#F6EDDA;
   --ok:#22C55E; --bad:#E5533D; --idle:#9AAAB4; --shadow:0 6px 20px rgba(14,47,64,.08);
-  --display:"Young Serif",Georgia,"Times New Roman",serif;
-  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --display:"Young Serif",Georgia,"Times New Roman","Songti SC","Noto Serif SC",serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI","PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
   --r:18px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
@@ -187,7 +187,7 @@ body.touring .app{padding-bottom:180px}
 
 <div id="intro" role="dialog" aria-label="Golden Taurus">
   <video id="introVid" autoplay muted loop playsinline preload="auto"><source src="intro.mp4" type="video/mp4"><source src="intro.webm" type="video/webm"></video>
-  <div class="lang" role="group" aria-label="Language"><button data-lang="de">DE</button><button data-lang="en">EN</button><button data-lang="es">ES</button></div>
+  <div class="lang" role="group" aria-label="Language"><button data-lang="de">DE</button><button data-lang="en">EN</button><button data-lang="es">ES</button><button data-lang="zh" lang="zh">中文</button></div>
   <div class="in">
     <span data-logo></span>
     <small>Pineda de Mar · Costa del Maresme</small>
@@ -201,7 +201,7 @@ body.touring .app{padding-bottom:180px}
 <div class="app">
   <header class="top">
     <div class="brand"><span data-logo></span><div><small>Aquapark Resort</small><b>Golden Taurus</b></div></div>
-    <div class="lang" role="group" aria-label="Language"><button data-lang="de">DE</button><button data-lang="en">EN</button><button data-lang="es">ES</button></div>
+    <div class="lang" role="group" aria-label="Language"><button data-lang="de">DE</button><button data-lang="en">EN</button><button data-lang="es">ES</button><button data-lang="zh" lang="zh">中文</button></div>
   </header>
 
   <section class="view" id="v-wifi">
@@ -287,7 +287,7 @@ body.touring .app{padding-bottom:180px}
 
 <nav class="tabs" aria-label="Menu"><div class="in">
   <button data-go="wifi"><svg viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".8"/></svg><span>Wi-Fi</span></button>
-  <button data-go="hotel"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5"/></svg><span>Hotel</span></button>
+  <button data-go="hotel"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5"/></svg><span data-t="nHotel"></span></button>
   <button data-go="food"><svg viewBox="0 0 24 24"><path d="M7 3v8a2 2 0 0 0 2 2v8M5 3v5M9 3v5M17 3c-2 2-2 6 0 8v10"/></svg><span data-t="nFood"></span></button>
   <button data-go="enjoy"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"/></svg><span data-t="nEnjoy"></span></button>
   <button data-go="requests"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/></svg><span data-t="nReq"></span></button>
@@ -349,7 +349,7 @@ reqs:["Frische Handtücher","Extra-Kissen","Taxi","Später auschecken","Zimmerre
 errPick:"Bitte einen Wunsch wählen oder etwas schreiben.",errRoom:"Bitte die Zimmernummer eingeben.",
 demoTitle:"Demo: Diese Anfrage wurde nicht gesendet.",demoText:"In der fertigen App geht sie direkt an die Rezeption. Bis dahin: Text kopieren und an der Rezeption zeigen.",
 copyReq:"Text kopieren",reqHead:"Hallo Rezeption,",reqRoom:"Zimmer",reqBye:"Vielen Dank!",copied:"Kopiert",copyFail:"Bitte Text markieren und kopieren",nothing:"Noch nichts eingetragen",
-demoTag:"Demo-Version",foot:"Golden Taurus Aquapark Resort · inoffizieller Prototyp",nFood:"Essen",nEnjoy:"Erleben",nReq:"Wünsche",requestThis:"Anfragen"},
+demoTag:"Demo-Version",foot:"Golden Taurus Aquapark Resort · inoffizieller Prototyp",nHotel:"Hotel",nFood:"Essen",nEnjoy:"Erleben",nReq:"Wünsche",requestThis:"Anfragen"},
 en:{introTitle:"Welcome to Golden Taurus",introSub:"Your stay on your phone. First your room, then a walk through the whole resort.",introBtn:"Go to my room",introSkip:"Straight to the app",
 roomEyebrow:"Your room",wifiTitle:"A good Wi-Fi connection",yourWifi:"Your Wi-Fi",network:"Network",password:"Password",askReception:"ask at reception",copy:"Copy",
 test:"Test connection",testing:"Testing …",stIdle:"Not tested yet",stOk:"Internet reachable · {ms} ms",stSlow:"Internet reachable but slow ({ms} ms)",stBad:"Internet not reachable. Please check the steps below.",
@@ -382,7 +382,7 @@ reqs:["Fresh towels","Extra pillow","Taxi","Late check-out","Room cleaning","Oth
 errPick:"Please choose a request or write something.",errRoom:"Please enter your room number.",
 demoTitle:"Demo: this request was not sent.",demoText:"In the finished app it goes straight to reception. Until then, copy the text and show it at reception.",
 copyReq:"Copy text",reqHead:"Hello reception,",reqRoom:"Room",reqBye:"Thank you!",copied:"Copied",copyFail:"Please select and copy the text",nothing:"Nothing entered yet",
-demoTag:"Demo version",foot:"Golden Taurus Aquapark Resort · unofficial prototype",nFood:"Food",nEnjoy:"Enjoy",nReq:"Requests",requestThis:"Request"},
+demoTag:"Demo version",foot:"Golden Taurus Aquapark Resort · unofficial prototype",nHotel:"Hotel",nFood:"Food",nEnjoy:"Enjoy",nReq:"Requests",requestThis:"Request"},
 es:{introTitle:"Bienvenido al Golden Taurus",introSub:"Tu estancia en el móvil. Primero tu habitación, después un paseo por todo el resort.",introBtn:"Ir a mi habitación",introSkip:"Ir directo a la app",
 roomEyebrow:"Tu habitación",wifiTitle:"Buena conexión al wifi",yourWifi:"Tu wifi",network:"Red",password:"Contraseña",askReception:"pídela en recepción",copy:"Copiar",
 test:"Probar conexión",testing:"Probando …",stIdle:"Aún sin probar",stOk:"Internet accesible · {ms} ms",stSlow:"Internet accesible, pero lento ({ms} ms)",stBad:"Internet no accesible. Revisa los pasos de abajo.",
@@ -415,10 +415,43 @@ reqs:["Toallas limpias","Almohada extra","Taxi","Salida tardía","Limpieza de ha
 errPick:"Elige una petición o escribe algo.",errRoom:"Escribe tu número de habitación.",
 demoTitle:"Demo: esta petición no se ha enviado.",demoText:"En la app final llega directamente a recepción. Mientras tanto, copia el texto y enséñalo en recepción.",
 copyReq:"Copiar texto",reqHead:"Hola recepción:",reqRoom:"Habitación",reqBye:"¡Muchas gracias!",copied:"Copiado",copyFail:"Selecciona y copia el texto",nothing:"Aún no hay nada",
-demoTag:"Versión demo",foot:"Golden Taurus Aquapark Resort · prototipo no oficial",nFood:"Comer",nEnjoy:"Disfrutar",nReq:"Pedir",requestThis:"Solicitar"}};
+demoTag:"Versión demo",foot:"Golden Taurus Aquapark Resort · prototipo no oficial",nHotel:"Hotel",nFood:"Comer",nEnjoy:"Disfrutar",nReq:"Pedir",requestThis:"Solicitar"},
+zh:{introTitle:"欢迎来到 Golden Taurus",introSub:"您的住宿尽在手机上。先进房间，再逛遍整个度假村。",introBtn:"进入我的房间",introSkip:"直接进入应用",
+roomEyebrow:"您的房间",wifiTitle:"轻松连上无线网络",yourWifi:"您的 Wi-Fi",network:"网络名称",password:"密码",askReception:"请向前台询问",copy:"复制",
+test:"测试连接",testing:"正在测试 …",stIdle:"尚未测试",stOk:"可以上网 · {ms} 毫秒",stSlow:"可以上网，但速度较慢（{ms} 毫秒）",stBad:"无法上网。请查看下面的步骤。",
+qrTitle:"扫码连接 Wi-Fi",qrHint:"还有一台设备？用它的相机对准此二维码，点击“加入”即可，无需输入。",qrEmpty:"在上方输入网络名称和密码，这里就会出现供第二台设备使用的 Wi-Fi 二维码。",qrAlt:"Wi-Fi 二维码",testHint:"此测试检查这部手机能否访问互联网，无法替您连接 Wi-Fi。",
+stepsTitle:"三步上网",moreHelp:"连不上？更多帮助",askHelp:"请前台协助连接 Wi-Fi",
+steps3:[["打开 Wi-Fi","设置 › Wi-Fi，选择酒店网络。"],["接受登录页面","页面会自动打开。如果没有，请打开浏览器并输入 neverssl.com。"],["测试连接","点击上方的“测试连接”。"]],
+stepsMore:[["重新连接","选择“忽略此网络”，然后重新加入。"],["iPhone：私有 Wi-Fi 地址","点击酒店网络旁的 (i)，将“轮换”改为“固定”。"],["飞行模式 10 秒","打开，等待，再关闭。"],["关闭 VPN","VPN 常会阻止登录页面。"],["靠近走廊","阳台上的信号较弱。"]],
+tourBtn:"酒店导览",tourNext:"下一步",tourDone:"完成",tourStops:["在房间里：先连 Wi-Fi","酒店一览","餐饮与酒吧","水上乐园、水疗与海滩","向前台提出需求"],
+hotelEyebrow:"度假村",hotelTitle:"重要信息一目了然",capModel:"大堂里的度假村模型",altResort:"带泳池和棕榈树的度假村模型",
+hotel:[["checkin","入住与退房","14:00 起入住，11:00 前退房","",[["入住","14:00 起"],["退房","11:00 前"]],"想晚点退房？在这里提出即可。"],
+["aqua","水上乐园","滑梯与戏水乐趣","",[["住客","免费"],["滑梯","10 岁以上且身高 1.40 米以上"]],"开放时间请询问前台。"],
+["outdoor","四个室外泳池","含儿童泳池","4",[["室外泳池","4"],["儿童泳池","有"]],"据预订网站信息，开放季节为 5 月至 9 月。"],
+["indoor","室内泳池","全年开放","1",[["室内泳池","1"]],""],
+["kids","儿童俱乐部","设有游乐场和游戏室","",[["儿童俱乐部","免费"],["游乐场","有"]],""],
+["spa","水疗与健康","按摩需预约","",[["按摩","需预约"]],"请提前预约。"],
+["parking","停车场","车位有限，设有电动车充电","EUR 16",[["价格","每晚 EUR 16"],["电动车","充电桩"]],"车位较少，请询问前台。"]],
+foodEyebrow:"餐饮与酒吧",foodTitle:"何时供应什么？",hoursTbc:"时间请询问前台",
+food:[["breakfast","自助早餐","每天早上在酒店内","07:30–10:00",[["时间","07:30–10:00"]],""],
+["r1","餐厅 1","名称和菜系待补充","",[["时间","请询问前台"]],"酒店将补充餐厅名称。"],
+["r2","餐厅 2","名称和菜系待补充","",[["时间","请询问前台"]],"酒店将补充餐厅名称。"],
+["bar","泳池酒吧","泳池边的饮品和小吃","",[["位置","泳池边"]],""]],
+enjoyEyebrow:"休闲",enjoyTitle:"水、宁静与大海",
+enjoy:[["aqua","水上乐园","住客免费，10 岁以上且身高 1.40 米以上",[["住客","免费"],["滑梯","10 岁以上 / 1.40 米"]],"开放时间请询问前台。"],
+["spa","水疗与按摩","海滩一天后好好放松",[["按摩","需预约"]],"前台可为您安排预约。"],
+["beach","海滩","就在酒店前方的海滨大道 Passeig Marítim",[["路线","沿海滨步道"]],"沙滩椅和遮阳伞：请询问前台。"],
+["bcn","巴塞罗那","乘坐区域火车一日游",[["出发","Pineda de Mar 火车站"]],"时刻表和建议请询问前台。"]],
+sourceNote:"信息来自公开的预订网站（2026 年 10 月），待酒店确认。",tbc:"待酒店确认",
+reqEyebrow:"需求",reqTitle:"需要我们为您送些什么？",room:"房间号",extra:"还有其他需要吗？（可选）",send:"发送给前台",
+reqs:["干净毛巾","加一个枕头","出租车","延迟退房","打扫房间","其他需求"],wifiHelp:"Wi-Fi 帮助",massage:"预约按摩",
+errPick:"请选择一项需求或写下您的需要。",errRoom:"请输入您的房间号。",
+demoTitle:"演示：此需求尚未发送。",demoText:"在正式版应用中，它会直接发送到前台。在此之前，请复制文字并出示给前台。",
+copyReq:"复制文字",reqHead:"前台您好：",reqRoom:"房间",reqBye:"谢谢！",copied:"已复制",copyFail:"请选中并复制文字",nothing:"尚未输入内容",
+demoTag:"演示版",foot:"Golden Taurus Aquapark Resort · 非官方原型",nHotel:"酒店",nFood:"餐饮",nEnjoy:"休闲",nReq:"需求",requestThis:"提出需求"}};
 
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
-let lang=store.get("gt-lang")||((navigator.language||"es").slice(0,2));if(!T[lang])lang="es";
+let lang=store.get("gt-lang")||((navigator.language||"es").slice(0,2).toLowerCase());if(!T[lang])lang="es";
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const CHEV='<svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>';
@@ -470,7 +503,7 @@ function buildReq(silent){const t=T[lang],room=$("#room").value.trim(),extra=$("
   let msg="";if(!picked.size&&!extra)msg=t.errPick;else if(!room)msg=t.errRoom;
   if(msg){if(!silent){err.textContent=msg;err.hidden=false;$("#reqResult").hidden=true}return}
   err.hidden=true;const lines=[t.reqHead,""];[...picked].sort().forEach(i=>{if(i!==5||!extra)lines.push("• "+t.reqs[i])});if(extra)extra.split("\n").forEach(l=>l.trim()&&lines.push("• "+l.trim()));
-  lines.push("",t.reqRoom+" "+room+". "+t.reqBye);$("#reqText").textContent=lines.join("\n");$("#reqResult").hidden=false}
+  lines.push("",t.reqRoom+" "+room+(lang==="zh"?"。":". ")+t.reqBye);$("#reqText").textContent=lines.join("\n");$("#reqResult").hidden=false}
 function send(){buildReq(false);if($("#reqResult").hidden)return;
   /* Echter Versand später: if(!CONFIG.demo&&CONFIG.requestEndpoint) fetch(CONFIG.requestEndpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({room,requests,text,lang})}) mit Bestätigung/Fehler */
   $("#reqResult").scrollIntoView({behavior:"smooth",block:"center"})}
