@@ -771,7 +771,7 @@ function applyNight(){ document.documentElement.dataset.night = isNight() ? '1' 
 $$('[data-night-toggle]').forEach(b => b.addEventListener('click', () => { S.night = isNight() ? 'off' : 'on'; saveS(); applyNight(); renderParents(); toast(isNight() ? 'Nachtmodus an 🌙' : 'Tagmodus an ☀️'); }));
 
 /* ---------- Vorlesen (speechSynthesis) ---------- */
-const OTTI = { pitch: 1.55, tempo: 1.12 };
+const OTTI = { pitch: 1.35, tempo: 1.12 };
 // iPhone/iPad lesen bei gleichem Tempo-Wert deutlich langsamer vor als andere Geräte, darum dort etwas schneller.
 const IOS_TEMPO = (/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints > 1)) ? 1.12 : 1;
 const TTS = {
@@ -803,10 +803,11 @@ const TTS = {
       const u = new SpeechSynthesisUtterance(text);
       const v = this.voice(); if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'de-DE';
       // Ottis Stimme: hell, flink, verschmitzt. Fragen und Ausrufe etwas höher, damit es lebendig klingt.
-      const lift = /\?\s*$/.test(text) ? .12 : /!\s*$/.test(text) ? .07 : (i % 2 ? .04 : 0);
+      // Fliessend: keine wechselnde Tonhöhe von Satz zu Satz, nur Fragen leicht höher.
+      const lift = /\?\s*$/.test(text) ? .06 : /!\s*$/.test(text) ? .03 : 0;
       u.rate = Math.min(1.7, S.rate * (o.rateMul || 1) * (o.flat ? 1 : OTTI.tempo) * IOS_TEMPO); u.pitch = Math.min(2, (o.pitch || OTTI.pitch) + (o.flat ? 0 : lift)); u.volume = Math.max(0, Math.min(1, S.vol == null ? 1 : +S.vol));
       let done = false;
-      const fin = () => { if (done || tok !== this.token) return; done = true; clearTimeout(this.timer); i++; setTimeout(next, o.gap || 170); };
+      const fin = () => { if (done || tok !== this.token) return; done = true; clearTimeout(this.timer); i++; setTimeout(next, o.gap == null ? 40 : o.gap); };
       u.onend = fin; u.onerror = fin;
       const guard = () => { if (tok !== this.token || done) return; if (speechSynthesis.speaking) this.timer = setTimeout(guard, 1500); else fin(); };
       clearTimeout(this.timer);
@@ -1173,7 +1174,7 @@ function playCurrent(){
     return;
   }
   TTS.speak(R.sents, {
-    start: R.sent, rateMul: p.slow ? .88 : 1, gap: p.slow ? 900 : 600,
+    start: R.sent, rateMul: p.slow ? .92 : 1, gap: p.slow ? 380 : 180,
     onSentence: i => { R.sent = i; highlight(i); },
     onEnd: () => {
       highlight(-1); R.sent = 0;
@@ -1678,7 +1679,7 @@ function gdRead(from, to){
   const list = [], map = [];
   for (let i = from; i <= to; i++){ const ss = ['Otti erzählt: ' + GUIDE[i].h + '.', ...splitSentences(GUIDE[i].t)]; ss.forEach(s => { list.push(s); map.push(i); }); }
   GD.reading = true; gdButtons();
-  TTS.speak(list, { rateMul:.92, gap:700, pitch:1, flat:true, onSentence: k => { gdMark(map[k]); const c = $(`#gdCards [data-gd="${map[k]}"]`); if (c && k && map[k] !== map[k-1]) c.scrollIntoView({behavior:'smooth', block:'center'}); }, onEnd: () => gdStop() });
+  TTS.speak(list, { rateMul:.95, gap:350, pitch:1, flat:true, onSentence: k => { gdMark(map[k]); const c = $(`#gdCards [data-gd="${map[k]}"]`); if (c && k && map[k] !== map[k-1]) c.scrollIntoView({behavior:'smooth', block:'center'}); }, onEnd: () => gdStop() });
 }
 $('#gdAll').addEventListener('click', () => { if (GD.reading){ TTS.stop(); gdStop(); } else gdRead(0, GUIDE.length - 1); });
 $('#gdCards').addEventListener('click', e => { const b = e.target.closest('[data-gdread]'); if (!b) return; const i = +b.dataset.gdread; TTS.stop(); gdRead(i, i); });
