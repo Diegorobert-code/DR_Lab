@@ -183,14 +183,30 @@ body.touring .app{padding-bottom:180px}
 @media (max-width:400px){#tour .dots{display:none}#tour .lbl{font-size:13px}}
 @media (prefers-reduced-motion:no-preference){section.view{animation:in .35s cubic-bezier(.2,.7,.2,1)}#sheet .panel{animation:up .3s cubic-bezier(.2,.7,.2,1)}
   @keyframes in{from{opacity:.55;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes up{from{transform:translateY(40px);opacity:.6}to{transform:none;opacity:1}}}
-@media (prefers-reduced-motion:no-preference){#intro::before{animation:introBg 1.2s ease 1.8s both}#intro .in>*{animation:introIn .8s cubic-bezier(.2,.7,.2,1) both}
-  #intro .in>*:nth-child(1){animation-delay:2s}#intro .in>*:nth-child(2){animation-delay:2.15s}#intro .in>*:nth-child(3){animation-delay:2.3s}#intro .in>*:nth-child(4){animation-delay:2.45s}#intro .in>*:nth-child(n+5){animation-delay:2.7s}
+@media (prefers-reduced-motion:no-preference){#intro::before{opacity:0}#intro .in>*{opacity:0}#intro.go::before{opacity:1;animation:introBg 1.2s ease 1.8s both}#intro.go .in>*{opacity:1;animation:introIn .8s cubic-bezier(.2,.7,.2,1) both}
+  #intro.go .in>*:nth-child(1){animation-delay:2s}#intro.go .in>*:nth-child(2){animation-delay:2.15s}#intro.go .in>*:nth-child(3){animation-delay:2.3s}#intro.go .in>*:nth-child(4){animation-delay:2.45s}#intro.go .in>*:nth-child(n+5){animation-delay:2.7s}
   @keyframes introIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}@keyframes introBg{from{opacity:0}to{opacity:1}}}
+#filmPop{position:fixed;top:0;right:0;bottom:0;left:0;z-index:30;background:rgba(5,12,16,.94);display:flex;align-items:center;justify-content:center;padding:16px;transition:opacity .4s}
+#filmPop.out{opacity:0}
+#filmPop .fp-box{position:relative;width:100%;max-width:960px;display:flex;flex-direction:column;gap:12px}
+#filmPop video{width:100%;height:auto;display:block;border-radius:16px;background:#000;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+#filmPop .playv{position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;border:0;background:rgba(243,246,244,.9);display:grid;place-items:center;cursor:pointer}
+#filmPop .playv svg{width:30px;height:30px;fill:#0E4F6E;margin-left:4px}
+#filmPop .fp-bar{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap}
+#filmPop .fp-bar button{min-height:48px;padding:0 20px;border-radius:14px;font:inherit;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.35);background:transparent;color:#F3F6F4}
+#filmPop .fp-bar #filmSkip{background:#B98A2E;border-color:#B98A2E;color:#17344A}
 @media (prefers-reduced-motion:reduce){#intro.out{transition:none}}
 </style>
 </head>
 <body>
 
+<div id="filmPop" role="dialog" aria-label="DR Lab" hidden>
+  <div class="fp-box">
+    <video id="filmVid" playsinline muted preload="auto" poster="propuesta/film-poster.jpg"><source src="propuesta/film-es.mp4" type="video/mp4"><source src="propuesta/film-es.webm" type="video/webm"></video>
+    <button id="filmPlay" class="playv" type="button" aria-label="Play" hidden><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+    <div class="fp-bar"><button id="filmSound" type="button" data-t="filmSound"></button><button id="filmSkip" type="button" data-t="filmSkip"></button></div>
+  </div>
+</div>
 <div id="intro" role="dialog" aria-label="Golden Taurus">
   <video id="introVid" autoplay muted loop playsinline preload="auto" poster="img/intro-poster.jpg"><source src="intro.mp4" type="video/mp4"><source src="intro.webm" type="video/webm"></video>
   <div class="lang" role="group" aria-label="Language"><button data-lang="de">DE</button><button data-lang="en">EN</button><button data-lang="es">ES</button><button data-lang="zh" lang="zh">中文</button></div>
@@ -324,7 +340,7 @@ const MEDIA={checkin:'<img src="img/resort.jpg" alt="">',aqua:'<img src="img/poo
 const PRE={wifi:-1,checkin:3,spa:-2,bcn:2};   // Detail-Knopf → vorgewählte Anfrage (Index in reqs; -1 WLAN-Hilfe, -2 Massage)
 
 const T={
-de:{introTitle:"Willkommen im Golden Taurus",introSub:"Dein Aufenthalt auf dem Handy. Zuerst ins Zimmer, dann einmal durchs ganze Resort.",introBtn:"Ins Zimmer",introSkip:"Direkt zur App",
+de:{filmSkip:"Überspringen",filmSound:"Ton an",soundOff:"Ton aus",introTitle:"Willkommen im Golden Taurus",introSub:"Dein Aufenthalt auf dem Handy. Zuerst ins Zimmer, dann einmal durchs ganze Resort.",introBtn:"Ins Zimmer",introSkip:"Direkt zur App",
 roomEyebrow:"Dein Zimmer",wifiTitle:"Gute Verbindung zum WLAN",yourWifi:"Dein WLAN",network:"Netzwerk",password:"Passwort",askReception:"an der Rezeption erfragen",copy:"Kopieren",
 test:"Verbindung testen",testing:"Teste …",stIdle:"Noch nicht getestet",stOk:"Internet erreichbar · {ms} ms",stSlow:"Internet erreichbar, aber langsam ({ms} ms)",stBad:"Kein Internet erreichbar. Bitte die Schritte unten prüfen.",
 qrTitle:"WLAN per QR-Code",qrHint:"Zweites Gerät? Kamera auf diesen Code richten und auf «Verbinden» tippen. Ohne Abtippen.",qrEmpty:"Trage oben Netzwerk und Passwort ein, dann erscheint hier der WLAN-Code für dein zweites Gerät.",qrAlt:"WLAN-QR-Code",testHint:"Der Test prüft, ob das Internet von diesem Handy aus erreichbar ist. Mit dem WLAN verbinden kann er nicht.",
@@ -357,7 +373,7 @@ errPick:"Bitte einen Wunsch wählen oder etwas schreiben.",errRoom:"Bitte die Zi
 demoTitle:"Demo: Diese Anfrage wurde nicht gesendet.",demoText:"In der fertigen App geht sie direkt an die Rezeption. Bis dahin: Text kopieren und an der Rezeption zeigen.",
 copyReq:"Text kopieren",reqHead:"Hallo Rezeption,",reqRoom:"Zimmer",reqBye:"Vielen Dank!",copied:"Kopiert",copyFail:"Bitte Text markieren und kopieren",nothing:"Noch nichts eingetragen",
 demoTag:"Demo-Version",foot:"Golden Taurus Aquapark Resort · inoffizieller Prototyp",nHotel:"Hotel",nFood:"Essen",nEnjoy:"Erleben",nReq:"Wünsche",requestThis:"Anfragen"},
-en:{introTitle:"Welcome to Golden Taurus",introSub:"Your stay on your phone. First your room, then a walk through the whole resort.",introBtn:"Go to my room",introSkip:"Straight to the app",
+en:{filmSkip:"Skip",filmSound:"Sound on",soundOff:"Sound off",introTitle:"Welcome to Golden Taurus",introSub:"Your stay on your phone. First your room, then a walk through the whole resort.",introBtn:"Go to my room",introSkip:"Straight to the app",
 roomEyebrow:"Your room",wifiTitle:"A good Wi-Fi connection",yourWifi:"Your Wi-Fi",network:"Network",password:"Password",askReception:"ask at reception",copy:"Copy",
 test:"Test connection",testing:"Testing …",stIdle:"Not tested yet",stOk:"Internet reachable · {ms} ms",stSlow:"Internet reachable but slow ({ms} ms)",stBad:"Internet not reachable. Please check the steps below.",
 qrTitle:"Wi-Fi by QR code",qrHint:"Second device? Point its camera at this code and tap «Join». No typing.",qrEmpty:"Enter the network and password above and the Wi-Fi code for your second device appears here.",qrAlt:"Wi-Fi QR code",testHint:"The test checks whether the internet can be reached from this phone. It cannot join the Wi-Fi for you.",
@@ -390,7 +406,7 @@ errPick:"Please choose a request or write something.",errRoom:"Please enter your
 demoTitle:"Demo: this request was not sent.",demoText:"In the finished app it goes straight to reception. Until then, copy the text and show it at reception.",
 copyReq:"Copy text",reqHead:"Hello reception,",reqRoom:"Room",reqBye:"Thank you!",copied:"Copied",copyFail:"Please select and copy the text",nothing:"Nothing entered yet",
 demoTag:"Demo version",foot:"Golden Taurus Aquapark Resort · unofficial prototype",nHotel:"Hotel",nFood:"Food",nEnjoy:"Enjoy",nReq:"Requests",requestThis:"Request"},
-es:{introTitle:"Bienvenido al Golden Taurus",introSub:"Tu estancia en el móvil. Primero tu habitación, después un paseo por todo el resort.",introBtn:"Ir a mi habitación",introSkip:"Ir directo a la app",
+es:{filmSkip:"Saltar",filmSound:"Activar sonido",soundOff:"Silenciar",introTitle:"Bienvenido al Golden Taurus",introSub:"Tu estancia en el móvil. Primero tu habitación, después un paseo por todo el resort.",introBtn:"Ir a mi habitación",introSkip:"Ir directo a la app",
 roomEyebrow:"Tu habitación",wifiTitle:"Buena conexión al wifi",yourWifi:"Tu wifi",network:"Red",password:"Contraseña",askReception:"pídela en recepción",copy:"Copiar",
 test:"Probar conexión",testing:"Probando …",stIdle:"Aún sin probar",stOk:"Internet accesible · {ms} ms",stSlow:"Internet accesible, pero lento ({ms} ms)",stBad:"Internet no accesible. Revisa los pasos de abajo.",
 qrTitle:"Wifi con código QR",qrHint:"¿Otro dispositivo? Apunta su cámara a este código y toca «Conectar». Sin escribir nada.",qrEmpty:"Escribe arriba la red y la contraseña y aquí aparecerá el código wifi para tu otro dispositivo.",qrAlt:"Código QR del wifi",testHint:"La prueba comprueba si se llega a internet desde este móvil. No puede conectarse al wifi por ti.",
@@ -423,7 +439,7 @@ errPick:"Elige una petición o escribe algo.",errRoom:"Escribe tu número de hab
 demoTitle:"Demo: esta petición no se ha enviado.",demoText:"En la app final llega directamente a recepción. Mientras tanto, copia el texto y enséñalo en recepción.",
 copyReq:"Copiar texto",reqHead:"Hola recepción:",reqRoom:"Habitación",reqBye:"¡Muchas gracias!",copied:"Copiado",copyFail:"Selecciona y copia el texto",nothing:"Aún no hay nada",
 demoTag:"Versión demo",foot:"Golden Taurus Aquapark Resort · prototipo no oficial",nHotel:"Hotel",nFood:"Comer",nEnjoy:"Disfrutar",nReq:"Pedir",requestThis:"Solicitar"},
-zh:{introTitle:"欢迎来到 Golden Taurus",introSub:"您的住宿尽在手机上。先进房间，再逛遍整个度假村。",introBtn:"进入我的房间",introSkip:"直接进入应用",
+zh:{filmSkip:"跳过",filmSound:"打开声音",soundOff:"关闭声音",introTitle:"欢迎来到 Golden Taurus",introSub:"您的住宿尽在手机上。先进房间，再逛遍整个度假村。",introBtn:"进入我的房间",introSkip:"直接进入应用",
 roomEyebrow:"您的房间",wifiTitle:"轻松连上无线网络",yourWifi:"您的 Wi-Fi",network:"网络名称",password:"密码",askReception:"请向前台询问",copy:"复制",
 test:"测试连接",testing:"正在测试 …",stIdle:"尚未测试",stOk:"可以上网 · {ms} 毫秒",stSlow:"可以上网，但速度较慢（{ms} 毫秒）",stBad:"无法上网。请查看下面的步骤。",
 qrTitle:"扫码连接 Wi-Fi",qrHint:"还有一台设备？用它的相机对准此二维码，点击“加入”即可，无需输入。",qrEmpty:"在上方输入网络名称和密码，这里就会出现供第二台设备使用的 Wi-Fi 二维码。",qrAlt:"Wi-Fi 二维码",testHint:"此测试检查这部手机能否访问互联网，无法替您连接 Wi-Fi。",
@@ -543,7 +559,21 @@ $$("[data-logo]").forEach(el=>{el.innerHTML=ICON});
 $("#room").value=store.get("gt-room")||"";$("#room").oninput=()=>{store.set("gt-room",$("#room").value);if(!$("#reqResult").hidden)buildReq(true)};
 $("#extra").oninput=()=>{if(!$("#reqResult").hidden)buildReq(true)};
 render();go("wifi");
-(function(){const v=$("#introVid"),b=$("#playVid");if(!v)return;v.muted=true;
+function startIntro(){$("#intro").classList.add("go");const v=$("#introVid");try{v.currentTime=0}catch(e){}}
+(function(){const pop=$("#filmPop"),f=$("#filmVid"),fb=$("#filmPlay");let seen=false;try{seen=sessionStorage.getItem("gt-film")==="1"}catch(e){}
+  if(seen||!pop){startIntro();return}
+  pop.hidden=false;try{$("#introVid").pause()}catch(e){}
+  const close=()=>{try{sessionStorage.setItem("gt-film","1")}catch(e){}pop.classList.add("out");try{f.pause()}catch(e){}setTimeout(()=>{pop.hidden=true},400);try{$("#introVid").play().catch(()=>{})}catch(e){}startIntro()};
+  const showBtn=()=>{fb.hidden=false};f.muted=true;
+  try{const pr=f.play();if(pr&&pr.catch)pr.catch(showBtn)}catch(e){showBtn()}
+  setTimeout(()=>{if(f.paused&&!pop.hidden)showBtn()},2500);
+  f.addEventListener("playing",()=>{fb.hidden=true});f.addEventListener("ended",close);
+  fb.onclick=()=>{const pr=f.play();if(pr&&pr.catch)pr.catch(()=>{})};
+  $("#filmSkip").onclick=close;
+  $("#filmSound").onclick=()=>{f.muted=!f.muted;if(f.paused)f.play().catch(()=>{});$("#filmSound").textContent=T[lang][f.muted?"filmSound":"soundOff"]};
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!pop.hidden)close()});
+})();
+(function(){const v=$("#introVid"),b=$("#playVid");if(!v)return;v.muted=true;if(!$("#filmPop").hidden){v.pause();v.addEventListener("playing",()=>{b.hidden=true});b.onclick=()=>{const pr=v.play();if(pr&&pr.catch)pr.catch(()=>{})};return}
   const show=()=>{if(!$("#intro").hidden)b.hidden=false};
   try{const pr=v.play();if(pr&&pr.catch)pr.catch(show)}catch(e){show()}
   setTimeout(()=>{if(v.paused)show()},2500);
