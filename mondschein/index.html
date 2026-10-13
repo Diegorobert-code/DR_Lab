@@ -432,6 +432,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 <section class="screen" id="s-guide" aria-label="KI-Leitfaden">
   <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>KI-Leitfaden</h2><button class="btn round" data-night-toggle aria-label="Nachtmodus umschalten">🌙</button></div>
   <div class="stage" id="gdStage"></div>
+  <div class="seg" id="gdLang" style="margin-bottom:10px"><button data-gdlang="de" class="sel" aria-pressed="true">Deutsch</button><button data-gdlang="en" aria-pressed="false">English</button></div>
   <button class="btn big primary wide" id="gdAll" style="margin-bottom:14px">▶ Alles vorlesen</button>
   <div id="gdCards"></div>
   <p class="foot">DR Lab · Testphase</p>
@@ -822,7 +823,8 @@ const TTS = {
       o.onSentence && o.onSentence(i);
       const text = this.clean(list[i]);
       const u = new SpeechSynthesisUtterance(text);
-      const v = this.voice(); if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'de-DE';
+      if (o.lang === 'en'){ const ev = this.ok ? speechSynthesis.getVoices().filter(x => /^en/i.test(x.lang)).sort((a,b) => this.rank(b)-this.rank(a) + (/en[-_]GB/i.test(b.lang)?5:0) - (/en[-_]GB/i.test(a.lang)?5:0))[0] : null; if (ev){ u.voice = ev; u.lang = ev.lang; } else u.lang = 'en-GB'; }
+      else { const v = this.voice(); if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'de-DE'; }
       // Ottis Stimme: hell, flink, verschmitzt. Fragen und Ausrufe etwas höher, damit es lebendig klingt.
       // Fliessend: keine wechselnde Tonhöhe von Satz zu Satz, nur Fragen leicht höher.
       const lift = /\?\s*$/.test(text) ? .06 : /!\s*$/.test(text) ? .03 : 0;
@@ -1688,24 +1690,35 @@ const GUIDE = [
   {e:'🙋', h:'Nachfragen ist gut', t:'Wenn dir etwas komisch vorkommt, darfst du nachfragen. Bei Mama, bei Papa oder bei jemandem, den du lieb hast. Fragen ist klug. Durch Fragen lernen wir alle, auch Kiki und Nova.'},
   {e:'🌙', h:'Pausen sind gut', t:'Und das Schönste zum Schluss: Pausen. Auch Kiki macht am Abend die Lichter ganz klein, und Nova ruht sich aus. Wenn wir ausruhen, wird der Kopf ganz still und weich. Jetzt atmen wir zusammen ein … und aus. Gute Nacht.'}
 ];
-const GD = { reading:false };
+const GUIDE_EN = [
+  {e:'💡', h:'AI can help', t:'Some computers can talk and answer questions. We call that AI. Kiki is a little AI. An AI can help you look things up, explain things and find ideas. A bit like a book that can answer back.'},
+  {e:'🌀', h:'AI can be wrong', t:'Do you know what? An AI does not know everything. Sometimes it says something that is not true at all. Just like Kiki, who once thought a firefly was a star. That is okay. Everybody gets things wrong sometimes.'},
+  {e:'🙋', h:'Asking is good', t:'If something seems strange, you can always ask. Ask Mum, ask Dad, or someone you love. Asking is clever. Asking questions is how we all learn, Kiki and Nova too.'},
+  {e:'🌙', h:'Rest is good', t:'And the best part comes last: resting. In the evening, Kiki turns her lights down low, and Nova has a little rest. When we rest, our head becomes quiet and soft. Now let us breathe in together … and out. Good night.'}
+];
+const GD = { reading:false, lang: store.get('gdLang', 'de') };
+const gdList = () => GD.lang === 'en' ? GUIDE_EN : GUIDE;
 function renderGuide(){
   $('#gdStage').classList.add('two');
   $('#gdStage').innerHTML = figHTML('sunny') + figHTML('kiki-sleep');
-  $('#gdCards').innerHTML = GUIDE.map((g,i) => `<div class="card gcard" data-gd="${i}"><h3>${g.e} ${esc(g.h)}</h3><p>${esc(g.t)}</p><button class="btn wide" data-gdread="${i}">🔊 Vorlesen</button></div>`).join('');
+  const en = GD.lang === 'en';
+  $$('#gdLang button').forEach(b => { const on = b.dataset.gdlang === GD.lang; b.classList.toggle('sel', on); b.setAttribute('aria-pressed', on); });
+  $('#gdCards').innerHTML = gdList().map((g,i) => `<div class="card gcard" data-gd="${i}" lang="${en?'en':'de'}"><h3>${g.e} ${esc(g.h)}</h3><p>${esc(g.t)}</p><button class="btn wide" data-gdread="${i}">🔊 ${en?'Read aloud':'Vorlesen'}</button></div>`).join('');
   gdButtons();
 }
 function gdMark(i){ $$('#gdCards .gcard').forEach(c => c.classList.toggle('cur', +c.dataset.gd === i)); }
 function gdStop(){ GD.reading = false; if ($('#gdCards')) gdMark(-1); gdButtons(); }
-function gdButtons(){ const b = $('#gdAll'); if (b) b.textContent = GD.reading ? '⏸ Stopp' : '▶ Alles vorlesen'; }
+function gdButtons(){ const b = $('#gdAll'); const en = GD.lang === 'en'; if (b) b.textContent = GD.reading ? (en ? '⏸ Stop' : '⏸ Stopp') : (en ? '▶ Read it all' : '▶ Alles vorlesen'); }
 function gdRead(from, to){
   if (!TTS.ok){ toast('Vorlesen geht auf diesem Gerät leider nicht – lies einfach selbst vor.'); return; }
   const list = [], map = [];
-  for (let i = from; i <= to; i++){ const ss = ['Otti erzählt: ' + GUIDE[i].h + '.', ...splitSentences(GUIDE[i].t)]; ss.forEach(s => { list.push(s); map.push(i); }); }
+  const G = gdList(), en = GD.lang === 'en';
+  for (let i = from; i <= to; i++){ const ss = [(en ? 'Otti says: ' : 'Otti erzählt: ') + G[i].h + '.', ...splitSentences(G[i].t)]; ss.forEach(s => { list.push(s); map.push(i); }); }
   GD.reading = true; gdButtons();
-  TTS.speak(list, { rateMul:.95, gap:350, pitch:1, flat:true, onSentence: k => { gdMark(map[k]); const c = $(`#gdCards [data-gd="${map[k]}"]`); if (c && k && map[k] !== map[k-1]) c.scrollIntoView({behavior:'smooth', block:'center'}); }, onEnd: () => gdStop() });
+  TTS.speak(list, { rateMul:.95, gap:350, pitch:1, flat:true, lang: en ? 'en' : '', onSentence: k => { gdMark(map[k]); const c = $(`#gdCards [data-gd="${map[k]}"]`); if (c && k && map[k] !== map[k-1]) c.scrollIntoView({behavior:'smooth', block:'center'}); }, onEnd: () => gdStop() });
 }
-$('#gdAll').addEventListener('click', () => { if (GD.reading){ TTS.stop(); gdStop(); } else gdRead(0, GUIDE.length - 1); });
+$('#gdAll').addEventListener('click', () => { if (GD.reading){ TTS.stop(); gdStop(); } else gdRead(0, gdList().length - 1); });
+$('#gdLang').addEventListener('click', e => { const b = e.target.closest('[data-gdlang]'); if (!b || b.dataset.gdlang === GD.lang) return; TTS.stop(); GD.reading = false; GD.lang = b.dataset.gdlang; store.set('gdLang', GD.lang); renderGuide(); });
 $('#gdCards').addEventListener('click', e => { const b = e.target.closest('[data-gdread]'); if (!b) return; const i = +b.dataset.gdread; TTS.stop(); gdRead(i, i); });
 
 /* ---------- Zeitlimit ---------- */
