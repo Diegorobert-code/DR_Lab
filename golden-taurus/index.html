@@ -560,9 +560,11 @@ $$("[data-logo]").forEach(el=>{el.innerHTML=ICON});
 $("#room").value=store.get("gt-room")||"";$("#room").oninput=()=>{store.set("gt-room",$("#room").value);if(!$("#reqResult").hidden)buildReq(true)};
 $("#extra").oninput=()=>{if(!$("#reqResult").hidden)buildReq(true)};
 render();go("wifi");
+const DIRECT=/[?&](app|direkt)\b/.test(location.search)||location.hash==="#app";
+if(DIRECT){$("#intro").hidden=true;try{const iv=$("#introVid");iv.removeAttribute("autoplay");iv.pause();iv.preload="none"}catch(e){}}
 function startIntro(){$("#intro").classList.add("go");const v=$("#introVid");try{v.currentTime=0}catch(e){}}
 (function(){const pop=$("#filmPop"),f=$("#filmVid"),fb=$("#filmPlay");let seen=false;try{seen=sessionStorage.getItem("gt-film")==="1"}catch(e){}
-  if(seen||!pop){startIntro();return}
+  if(DIRECT)return;if(seen||!pop){startIntro();return}
   pop.hidden=false;try{$("#introVid").pause()}catch(e){}
   const close=()=>{try{sessionStorage.setItem("gt-film","1")}catch(e){}pop.classList.add("out");try{f.pause()}catch(e){}setTimeout(()=>{pop.hidden=true},400);try{$("#introVid").play().catch(()=>{})}catch(e){}startIntro()};
   const showBtn=()=>{fb.hidden=false};f.muted=true;
@@ -574,7 +576,7 @@ function startIntro(){$("#intro").classList.add("go");const v=$("#introVid");try
   $("#filmSound").onclick=()=>{f.muted=!f.muted;if(f.paused)f.play().catch(()=>{});$("#filmSound").textContent=T[lang][f.muted?"filmSound":"soundOff"]};
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!pop.hidden)close()});
 })();
-(function(){const v=$("#introVid"),b=$("#playVid");if(!v)return;v.muted=true;if(!$("#filmPop").hidden){v.pause();v.addEventListener("playing",()=>{b.hidden=true});b.onclick=()=>{const pr=v.play();if(pr&&pr.catch)pr.catch(()=>{})};return}
+(function(){const v=$("#introVid"),b=$("#playVid");if(!v||DIRECT)return;v.muted=true;if(!$("#filmPop").hidden){v.pause();v.addEventListener("playing",()=>{b.hidden=true});b.onclick=()=>{const pr=v.play();if(pr&&pr.catch)pr.catch(()=>{})};return}
   const show=()=>{if(!$("#intro").hidden)b.hidden=false};
   try{const pr=v.play();if(pr&&pr.catch)pr.catch(show)}catch(e){show()}
   setTimeout(()=>{if(v.paused)show()},2500);
