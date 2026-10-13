@@ -94,6 +94,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .filmcard{position:relative;display:block;width:min(92vw,360px);aspect-ratio:4/3;margin:0 auto;border-radius:30px;overflow:hidden;
   box-shadow:0 0 0 4px #ffe08a,0 0 0 9px rgba(255,214,107,.28),0 18px 40px rgba(120,70,10,.28);transform:rotate(-1.2deg)}
 .filmcard img{width:100%;height:100%;object-fit:cover;display:block;animation:kamera 9s ease-in-out infinite}
+.filmcard video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .filmcard:after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 40%,transparent 55%,rgba(60,30,0,.28));pointer-events:none}
 :root[data-night="1"] .filmcard{box-shadow:0 0 0 4px #cfae55,0 0 0 9px rgba(207,174,85,.2),0 0 40px rgba(140,160,255,.25)}
 :root[data-night="1"] .filmcard img{filter:brightness(.62) saturate(.8) hue-rotate(-12deg)}
@@ -612,8 +613,8 @@ function spikes(){
 }
 function sunnySVG(o={}){
   // Otti aus dem Film «Otti und Nova» (Wald-Szene): hallo, lacht oder ruhig
-  const m = o.sleep ? 'ruhig' : o.laugh ? 'lacht' : 'hallo';
-  return `<img class="fig nova-film otti-film ${o.cls||''} ${o.sleep?'asleep':''}" src="otti-${m}.jpg" alt="Otti, der kleine Igel">`;
+  const m = o.sleep ? 'ruhig' : o.laugh ? 'lacht' : o.wave ? 'winkt-fig' : 'hallo';
+  return `<img class="fig nova-film otti-film ${o.cls||''} ${o.sleep?'asleep':''}" src="otti-${m}.jpg" alt="${o.wave?'Otti winkt':'Otti, der kleine Igel'}">`;
 }
 function novaSVG(o={}){
   // Nova aus dem Film «Otti und Nova», Stadt-Szene
@@ -884,7 +885,12 @@ function greeting(){
 }
 function renderHome(){
   $('#greet').textContent = greeting();
-  $('#homeSunny').innerHTML = `<span class="filmcard"><img id="homeSzene" src="szene-${isNight()?'ruhig':'hallo'}.jpg" alt="Otti winkt dir aus dem Wald zu"><i class="glitzer g1"></i><i class="glitzer g2"></i><i class="glitzer g3"></i></span>`;
+  // Tagsüber winkt Otti (Filmclip aus «Otti und Nova»), nachts ruhige Wald-Szene.
+  $('#homeSunny').innerHTML = isNight()
+    ? `<span class="filmcard"><img id="homeSzene" src="szene-ruhig.jpg" alt="Otti im Mondschein-Wald"><i class="glitzer g1"></i><i class="glitzer g2"></i><i class="glitzer g3"></i></span>`
+    : `<span class="filmcard"><video id="homeWinkt" src="otti-winkt.mp4" poster="otti-winkt.jpg" muted loop playsinline webkit-playsinline preload="auto" aria-label="Otti winkt dir zu"></video><i class="glitzer g1"></i><i class="glitzer g2"></i><i class="glitzer g3"></i></span>`;
+  const v = $('#homeWinkt');
+  if (v && !matchMedia('(prefers-reduced-motion: reduce)').matches){ v.muted = true; const pl = v.play(); if (pl && pl.catch) pl.catch(() => {}); }
   const L = letterSel();
   $('#homeLetter').hidden = !L;
   if (L) $('#homeLetterT').textContent = 'Ein Brief von ' + L.from;
@@ -896,6 +902,7 @@ $('#homeSunny').addEventListener('click', () => {
   const line = sunnyIdx === 0 ? greeting() : sunnyLines[(sunnyIdx-1) % sunnyLines.length];
   sunnyIdx++;
   $('#greet').textContent = line;
+  const hv = $('#homeWinkt'); if (hv){ try{ hv.currentTime = 0; const pl = hv.play(); if (pl && pl.catch) pl.catch(() => {}); }catch(e){} $('#homeSunny').classList.remove('hopp'); void hv.offsetWidth; $('#homeSunny').classList.add('hopp'); }
   const sz = $('#homeSzene'); if (sz){ clearTimeout(sz._t); sz.src = 'szene-lacht.jpg'; $('#homeSunny').classList.remove('hopp'); void sz.offsetWidth; $('#homeSunny').classList.add('hopp'); sz._t = setTimeout(() => { sz.src = 'szene-' + (isNight()?'ruhig':'hallo') + '.jpg'; }, 2200); }
   TTS.speak(line);
 });

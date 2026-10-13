@@ -1,6 +1,6 @@
 // Mondschein – Offline-Cache (nur eigene Dateien, keine Daten)
-const CACHE = 'ms-v16';
-const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './nova.jpg', './otti-hallo.jpg', './otti-lacht.jpg', './otti-ruhig.jpg', './szene-hallo.jpg', './szene-lacht.jpg', './szene-ruhig.jpg', './hase.jpg', './fuchs.jpg'];
+const CACHE = 'ms-v17';
+const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './nova.jpg', './otti-hallo.jpg', './otti-lacht.jpg', './otti-ruhig.jpg', './otti-winkt.jpg', './otti-winkt-fig.jpg', './otti-winkt.mp4', './szene-hallo.jpg', './szene-lacht.jpg', './szene-ruhig.jpg', './hase.jpg', './fuchs.jpg'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
 });
