@@ -159,6 +159,7 @@ svg{fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #intro{position:fixed;top:0;right:0;bottom:0;left:0;z-index:20;background:#0B1820;color:#F3F6F4;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
 #intro video{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;object-fit:cover}
 #intro::before{content:"";position:absolute;top:0;right:0;bottom:0;left:0;z-index:1;background:linear-gradient(180deg,rgba(11,24,32,.2) 0%,rgba(11,24,32,.05) 40%,rgba(11,24,32,.9) 80%)}
+#intro .playv{position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);z-index:3;width:72px;height:72px;border-radius:50%;border:0;background:rgba(243,246,244,.9);display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 30px rgba(0,0,0,.35)}#intro .playv svg{width:30px;height:30px;fill:#0E4F6E;margin-left:4px}
 #intro .in{position:relative;z-index:2;max-width:480px;width:100%;margin:0 auto;padding:24px 20px calc(32px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
 #intro .in svg{width:52px;height:52px;border-radius:14px;display:block}
 #intro small{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#E0B45C;font-weight:700}
@@ -188,8 +189,9 @@ body.touring .app{padding-bottom:180px}
 <body>
 
 <div id="intro" role="dialog" aria-label="Golden Taurus">
-  <video id="introVid" autoplay muted loop playsinline preload="auto"><source src="intro.mp4" type="video/mp4"><source src="intro.webm" type="video/webm"></video>
+  <video id="introVid" autoplay muted loop playsinline preload="auto" poster="img/intro-poster.jpg"><source src="intro.mp4" type="video/mp4"><source src="intro.webm" type="video/webm"></video>
   <div class="lang" role="group" aria-label="Language"><button data-lang="de">DE</button><button data-lang="en">EN</button><button data-lang="es">ES</button><button data-lang="zh" lang="zh">中文</button></div>
+  <button id="playVid" class="playv" type="button" aria-label="Play video" hidden><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
   <div class="in">
     <span data-logo></span>
     <small>Pineda de Mar · Costa del Maresme</small>
@@ -538,6 +540,12 @@ $$("[data-logo]").forEach(el=>{el.innerHTML=ICON});
 $("#room").value=store.get("gt-room")||"";$("#room").oninput=()=>{store.set("gt-room",$("#room").value);if(!$("#reqResult").hidden)buildReq(true)};
 $("#extra").oninput=()=>{if(!$("#reqResult").hidden)buildReq(true)};
 render();go("wifi");
+(function(){const v=$("#introVid"),b=$("#playVid");if(!v)return;v.muted=true;
+  const show=()=>{if(!$("#intro").hidden)b.hidden=false};
+  try{const pr=v.play();if(pr&&pr.catch)pr.catch(show)}catch(e){show()}
+  setTimeout(()=>{if(v.paused)show()},2500);
+  b.onclick=()=>{v.muted=true;const pr=v.play();if(pr&&pr.then)pr.then(()=>{b.hidden=true}).catch(()=>{});else b.hidden=true};
+  v.addEventListener("playing",()=>{b.hidden=true})})();
 </script>
 
 </body></html>
