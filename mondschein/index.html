@@ -169,7 +169,8 @@ input.in,textarea.in,select.in{width:100%;min-height:60px;padding:14px 16px;bord
 textarea.in{min-height:120px;font-size:17px;resize:vertical}
 select.in{font-size:17px}
 .pick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-#tkPick{grid-template-columns:repeat(4,1fr);gap:8px}#tkPick .pk{min-height:88px;font-size:13px}#tkPick .pk svg{width:52px;height:52px}#tkPick .pk .nova-film{width:52px;height:52px}
+#tkPick{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}#tkPick .pk{min-height:88px;font-size:13px;min-width:0;overflow-wrap:anywhere;text-align:center}
+@media (max-width:360px){#tkPick{grid-template-columns:repeat(3,minmax(0,1fr))}#tkPick .pk{font-size:11px;-webkit-hyphens:auto;hyphens:auto}}#tkPick .pk svg{width:52px;height:52px}#tkPick .pk .nova-film{width:52px;height:52px}
 .pick.four{grid-template-columns:repeat(4,1fr)}
 .pk{min-height:96px;border-radius:20px;background:var(--bg);border:3px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:15px;padding:6px 2px}
 .pk svg{width:58px;height:58px}
@@ -191,7 +192,7 @@ select.in{font-size:17px}
 .win .card{max-width:420px;width:100%;text-align:center;margin:0}
 /* Eltern */
 .seg{display:flex;flex-wrap:wrap;gap:8px}
-.seg button{min-height:52px;min-width:0;padding:8px 10px;border-radius:16px;background:var(--bg);border:2px solid var(--line);font-weight:700;font-size:16px;flex:1}
+.seg button{min-height:52px;min-width:0;padding:8px 10px;border-radius:16px;background:var(--bg);border:2px solid var(--line);font-weight:700;font-size:16px;flex:1 1 auto;white-space:nowrap}
 .seg button.sel{background:var(--moon);border-color:var(--moon2);color:#1d2a4f}
 input[type=range]{width:100%;height:44px;accent-color:var(--moon2)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
@@ -218,6 +219,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 .badge{display:inline-block;background:var(--moon);color:#1d2a4f;border-radius:999px;padding:1px 8px;font-weight:700;font-size:12.5px}
 .story-text .s.letter{font-style:italic}
 #lFromSeg button{flex:1 1 20%}
+@media (max-width:360px){#lFromSeg button{flex-basis:40%}}
 /* Gute Nacht */
 #s-night{text-align:center}
 #s-night h2{font-size:30px;margin:8px 0}
@@ -225,6 +227,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 /* Neue Bereiche */
 .tile.big4{min-height:150px;font-size:22px}
 .tile.big4 svg{width:64px;height:64px}
+@media (max-width:350px){.tile.big4{font-size:19px;padding-left:6px;padding-right:6px}}
 .parentbtn{margin-top:16px;min-height:64px;font-size:17px;color:var(--muted);gap:10px}
 .parentbtn svg{width:30px;height:30px}
 .move-step{font-size:25px;font-weight:800;text-align:center;min-height:110px;display:flex;align-items:center;justify-content:center;line-height:1.3;padding:4px 6px}
@@ -841,9 +844,10 @@ function listen(onText, btn){
     off();
     if (e.error==='not-allowed' || e.error==='service-not-allowed') toast('Mikrofon ist nicht erlaubt. Tippe lieber auf ein Bild.');
     else if (e.error==='no-speech') toast('Ich habe nichts gehört. Nochmal?');
+    else if (e.error!=='aborted') toast('Sprechen klappt gerade nicht. Tippe oder schreib es lieber.');
   };
   r.onend = () => { off(); if (rec===r) rec=null; };
-  try{ r.start(); btn && btn.classList.add('listening'); toast('Ich höre zu …'); }catch(e){ off(); return false; }
+  try{ r.start(); btn && btn.classList.add('listening'); toast('Ich höre zu …'); }catch(e){ off(); toast('Sprechen klappt gerade nicht. Tippe oder schreib es lieber.'); return false; }
   return true;
 }
 
@@ -1864,6 +1868,7 @@ $('#lMic').addEventListener('click', () => {
     if (!triedDE && (e.error==='language-not-supported' || e.error==='bad-grammar')){ triedDE = true; r.lang = 'de-DE'; try{ r.start(); return; }catch(x){} }
     if (e.error==='not-allowed' || e.error==='service-not-allowed'){ toast('Mikrofon ist nicht erlaubt. Tipp: Auf der Tastatur das Mikrofon antippen und diktieren.'); $('#micHint3').hidden = false; }
     else if (e.error==='no-speech') toast('Ich habe nichts gehört. Nochmal?');
+    else if (e.error!=='aborted'){ toast('Sprechen klappt gerade nicht. Tipp: Auf der Tastatur das Mikrofon antippen und diktieren.'); $('#micHint3').hidden = false; }
   };
   r.onend = () => { if (longRec === r) longRec = null; off(); };
   try{ r.start(); btn.classList.add('listening'); btn.textContent = '⏹ Fertig'; toast('Ich höre zu … Tippe auf «Fertig», wenn du fertig bist.'); }
