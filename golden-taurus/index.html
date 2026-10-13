@@ -1,141 +1,189 @@
 <!doctype html>
-<html lang="de">
+<html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#0E4F6E">
+<link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-180.png">
 <style>:root{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Golden Taurus Gäste</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: one-hand phone app, content column max 480px, fixed bottom tab bar; sea + sand + a single gold accent */
+/* Layout: one-hand phone app, 480px column, fixed tab bar, bottom-sheet details. Design system from the approved ChatGPT brief. */
 :root{
-  --bg:#f3f6f7; --surface:#ffffff; --ink:#0f2a3a; --muted:#5a6f7b; --line:#dbe4e8;
-  --sea:#0e4f6e; --sea-soft:#e2eef3; --gold:#b98a2e; --gold-soft:#f6ecd6; --ok:#2f7d55; --warn:#b5651d;
+  --bg:#F3F6F7; --surface:#FFFFFF; --ink:#17344A; --muted:#5B7282; --line:#DDE6EA;
+  --primary:#0E4F6E; --primary-ink:#FFFFFF; --soft:#E3EEF3; --gold:#B98A2E; --gold-soft:#F6EDDA;
+  --ok:#22C55E; --bad:#E5533D; --idle:#9AAAB4; --shadow:0 6px 20px rgba(14,47,64,.08);
   --display:"Young Serif",Georgia,"Times New Roman",serif;
   --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:18px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0b1820; --surface:#12232d; --ink:#e7eff2; --muted:#9db1bb; --line:#22394a;
-  --sea:#6fb6d6; --sea-soft:#163343; --gold:#e0b45c; --gold-soft:#33291a; --ok:#6cc495; --warn:#e8a062; color-scheme:dark}}
+  --bg:#0B1820; --surface:#12232D; --ink:#E7EFF2; --muted:#9DB1BB; --line:#22394A;
+  --primary:#13617F; --primary-ink:#F3F7F8; --soft:#163343; --gold:#E0B45C; --gold-soft:#33291A; --shadow:0 6px 20px rgba(0,0,0,.35); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0b1820; --surface:#12232d; --ink:#e7eff2; --muted:#9db1bb; --line:#22394a;
-  --sea:#6fb6d6; --sea-soft:#163343; --gold:#e0b45c; --gold-soft:#33291a; --ok:#6cc495; --warn:#e8a062; color-scheme:dark}
+  --bg:#0B1820; --surface:#12232D; --ink:#E7EFF2; --muted:#9DB1BB; --line:#22394A;
+  --primary:#13617F; --primary-ink:#F3F7F8; --soft:#163343; --gold:#E0B45C; --gold-soft:#33291A; --shadow:0 6px 20px rgba(0,0,0,.35); color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;margin:0}
-.app{max-width:480px;margin:0 auto;padding-inline:16px;padding-block:12px 110px}
-header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:8px 4px}
-.brand{display:flex;flex-direction:column;min-width:0}
-.brand small{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600}
-.brand b{font-family:var(--display);font-weight:400;font-size:22px;line-height:1.15}
-.lang{display:flex;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
-.lang button{border:0;background:transparent;color:var(--muted);font:600 13px var(--body);padding:6px 10px;border-radius:999px;cursor:pointer}
-.lang button[aria-pressed="true"]{background:var(--sea);color:var(--bg)}
-h1{font-family:var(--display);font-weight:400;font-size:30px;line-height:1.15;margin:18px 0 6px;text-wrap:balance}
-h2{font-family:var(--display);font-weight:400;font-size:21px;margin:0 0 10px;text-wrap:balance}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;margin:0;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit}
+.app{max-width:480px;margin:0 auto;padding-inline:16px;padding-block:8px 112px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px 4px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand svg{width:36px;height:36px;flex:none;border-radius:10px;display:block}
+.brand>div{display:flex;flex-direction:column;min-width:0}
+.brand small{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.brand b{font-family:var(--display);font-weight:400;font-size:19px;line-height:1.15}
+.lang{display:flex;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;flex:none}
+.lang button{border:0;background:transparent;color:var(--muted);font-weight:600;font-size:13px;padding:6px 10px;border-radius:999px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--primary);color:var(--primary-ink)}
+.demo-tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);background:var(--gold-soft);border-radius:999px;padding:3px 10px;margin-bottom:6px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:16px 0 0}
+h1{font-family:var(--display);font-weight:400;font-size:31px;line-height:1.15;margin:4px 0 8px;text-wrap:balance}
+h2{font-family:var(--display);font-weight:400;font-size:23px;line-height:1.2;margin:0 0 12px;text-wrap:balance}
 p{margin:0}
-.lead{color:var(--muted)}
-.stack{display:flex;flex-direction:column;gap:14px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}
-.wifi{background:var(--sea);color:var(--bg);border:0;position:relative;overflow:hidden}
-.wifi::after{content:"";position:absolute;right:-60px;bottom:-60px;width:200px;height:200px;border-radius:50%;
-  border:28px solid currentColor;opacity:.07;pointer-events:none}
-.wifi>*{position:relative;z-index:1}
-.wifi h2{color:var(--bg)}
-.wifi .row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-block:10px;border-top:1px solid color-mix(in srgb,var(--bg) 22%,transparent)}
-.wifi .row:first-of-type{border-top:0}
-.wifi label{font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.8;display:block}
-.wifi input{background:transparent;border:0;border-bottom:1px dashed color-mix(in srgb,var(--bg) 45%,transparent);color:var(--bg);
-  font:600 19px var(--body);width:100%;padding:2px 0;min-width:0}
-.wifi input::placeholder{color:var(--bg);opacity:.55;font-weight:500;font-size:15px}
-.wifi input:focus{outline:2px solid var(--gold);outline-offset:2px}
+.lead{color:var(--muted);font-size:15px}
+.stack{display:flex;flex-direction:column;gap:16px;margin-top:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;box-shadow:var(--shadow)}
+.hero{background:var(--primary);color:var(--primary-ink);border-radius:var(--r);padding:24px;position:relative;overflow:hidden;box-shadow:0 14px 34px rgba(14,79,110,.28)}
+.hero::after{content:"";position:absolute;right:-70px;top:-70px;width:220px;height:220px;border-radius:50%;border:30px solid rgba(255,255,255,.06);pointer-events:none}
+.hero>*{position:relative;z-index:1}
+.hero h2{color:var(--primary-ink);display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.hero h2 svg{width:26px;height:26px;stroke:var(--primary-ink)}
+.row{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-block:12px;border-top:1px solid rgba(255,255,255,.16)}
+.row:first-of-type{border-top:0}
 .field{min-width:0;flex:1}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;font:600 15px var(--body);
-  padding:12px 16px;cursor:pointer;background:var(--gold);color:#1b1408;text-decoration:none}
+.field label{font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.75;display:block;margin-bottom:2px}
+.field input{background:transparent;border:0;border-bottom:1px dashed rgba(255,255,255,.45);color:var(--primary-ink);font:600 19px var(--body);width:100%;padding:4px 0;min-width:0}
+.field input::placeholder{color:var(--primary-ink);opacity:.55;font-weight:500;font-size:15px}
+.field input:focus{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;font-weight:600;font-size:16px;min-height:48px;padding:0 20px;cursor:pointer;background:var(--gold);color:#1B1408;text-decoration:none;transition:transform .15s ease}
+.btn:active{transform:scale(.98)}
+.btn.block{width:100%}
 .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
-.btn.small{padding:7px 12px;font-size:13px;border-radius:10px}
-.wifi .btn.ghost{border-color:color-mix(in srgb,var(--bg) 40%,transparent);color:var(--bg)}
-.btn:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-.btnrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
-.status{display:flex;align-items:center;gap:10px;margin-top:12px;font-weight:500}
-.dot{width:10px;height:10px;border-radius:50%;background:currentColor;flex:none}
-.st-ok .dot{background:#5fd39a} .st-bad .dot{background:#ff8a6b}
+.btn.primary{background:var(--primary);color:var(--primary-ink)}
+.btn.chip-btn{min-height:40px;padding:0 14px;font-size:14px;border-radius:12px}
+.hero .btn.ghost{border-color:rgba(255,255,255,.4);color:var(--primary-ink)}
+.btn:disabled{opacity:.6}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.status{display:flex;align-items:center;gap:10px;margin-top:16px;font-weight:600;font-size:15px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--idle);flex:none}
+.st-ok .dot{background:var(--ok);box-shadow:0 0 0 4px rgba(34,197,94,.25)}
+.st-bad .dot{background:var(--bad)}
+.st-run .dot{background:var(--gold);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.hint{font-size:13px;opacity:.75;margin-top:6px}
 ol.steps{list-style:none;padding:0;margin:0;counter-reset:s;display:flex;flex-direction:column}
 ol.steps li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;gap:12px;padding-block:12px;border-top:1px solid var(--line)}
-ol.steps li:first-child{border-top:0;padding-top:2px}
-ol.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--sea-soft);color:var(--sea);
-  font-weight:700;font-size:14px;display:grid;place-items:center}
-ol.steps b{display:block}
+ol.steps li:first-child{border-top:0;padding-top:0}
+ol.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--soft);color:var(--primary);font-weight:700;font-size:14px;display:grid;place-items:center}
+ol.steps b{display:block;font-size:16px}
 ol.steps span{color:var(--muted);font-size:15px}
-.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tile{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;text-align:left;cursor:pointer;
-  color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:6px}
-.tile svg{width:24px;height:24px;stroke:var(--sea)}
-.tile b{font-size:15px}
-.tile span{font-size:13px;color:var(--muted)}
-dl.facts{margin:0;display:flex;flex-direction:column}
-dl.facts div{display:flex;justify-content:space-between;gap:14px;padding-block:10px;border-top:1px solid var(--line)}
-dl.facts div:first-child{border-top:0;padding-top:0}
-dt{color:var(--muted)} dd{margin:0;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
-.note{font-size:13px;color:var(--muted)}
-.pill{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--gold-soft);color:var(--gold)}
+details.more{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+details.more summary{cursor:pointer;font-weight:600;color:var(--primary);list-style:none;min-height:40px;display:flex;align-items:center}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::after{content:"+";margin-left:auto;color:var(--muted);font-size:20px}
+details.more[open] summary::after{content:"−"}
+.list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.item{display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:12px;padding:12px 16px;border:0;border-top:1px solid var(--line);background:transparent;text-align:left;cursor:pointer;min-height:64px;width:100%}
+.item:first-child{border-top:0}
+.item .ic{width:40px;height:40px;border-radius:12px;background:var(--soft);display:grid;place-items:center}
+.item .ic svg{width:22px;height:22px;stroke:var(--primary)}
+.item b{display:block;font-size:16px;font-weight:600}
+.item span span{display:block;font-size:13px;color:var(--muted)}
+.item .val{font-weight:700;font-variant-numeric:tabular-nums;color:var(--primary);font-size:15px;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.chev{width:16px;height:16px;stroke:var(--muted)}
+.keyrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.key{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}
+.key small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.key b{font-family:var(--display);font-weight:400;font-size:30px;line-height:1.1;color:var(--primary);font-variant-numeric:tabular-nums}
+.photo{position:relative;height:190px;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);background:var(--soft)}
+.photo img{display:block;width:100%;height:100%;object-fit:cover}
+.photo .cap{position:absolute;left:0;right:0;bottom:0;padding:48px 16px 12px;background:linear-gradient(180deg,rgba(9,28,38,0),rgba(9,28,38,.8));color:#fff;font-size:12px;letter-spacing:.06em}
+.food{display:grid;grid-template-columns:88px 1fr;gap:16px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;box-shadow:var(--shadow);text-align:left;cursor:pointer;width:100%}
+.food .thumb{width:88px;height:88px;border-radius:14px;overflow:hidden;background:var(--soft);display:block}
+.food .thumb img,.food .thumb svg,.art,.art svg{width:100%;height:100%;object-fit:cover;display:block}
+.food b{font-size:17px;display:block}
+.food .sub{display:block;color:var(--muted);font-size:14px}
+.food .hours{display:inline-block;margin-top:6px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--primary);background:var(--soft);border-radius:8px;padding:2px 8px;font-size:15px}
+.food .hours.tbc{color:var(--muted);background:transparent;padding:0;font-weight:500;font-size:13px}
+.big{display:block;position:relative;height:220px;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:0;padding:0;cursor:pointer;width:100%;text-align:left;background:var(--soft)}
+.big>img,.big>.art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.big .txt{position:absolute;left:0;right:0;bottom:0;padding:56px 20px 18px;background:linear-gradient(180deg,rgba(9,28,38,0),rgba(9,28,38,.82));color:#fff}
+.big .txt b{font-family:var(--display);font-weight:400;font-size:24px;display:block}
+.big .txt span{font-size:14px;opacity:.92}
+.big:active,.food:active,.item:active{transform:scale(.99)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;font:500 14px var(--body);cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--sea-soft);border-color:var(--sea);color:var(--sea)}
-textarea,input.plain{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:12px;font:15px var(--body)}
-textarea{min-height:90px;resize:vertical}
-.out{background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:12px;white-space:pre-wrap;font-size:15px;margin-top:12px}
-.copyline{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.copyline code{font:600 15px var(--body);word-break:break-all;min-width:0}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;min-height:44px;padding:0 16px;font-weight:500;font-size:15px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:var(--primary-ink)}
+.lbl{font-size:13px;color:var(--muted);font-weight:600;display:block;margin:16px 0 6px}
+input.plain,textarea{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:14px;padding:12px 14px;font:16px var(--body);min-height:48px}
+textarea{min-height:88px;resize:vertical}
+.err{color:var(--bad);font-weight:600;font-size:14px;margin-top:12px}
+.result{border-radius:var(--r);padding:16px;background:var(--gold-soft);border:1px solid var(--gold);margin-top:16px}
+.result b{display:block;margin-bottom:4px}
+.result pre{white-space:pre-wrap;font:15px var(--body);margin:12px 0;background:var(--surface);border-radius:12px;padding:12px}
+.note{font-size:13px;color:var(--muted)}
+.foot{font-size:12px;color:var(--muted);text-align:center;margin-top:24px}
 nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);
   padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));z-index:5}
 nav.tabs .in{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
-nav.tabs button{border:0;background:transparent;color:var(--muted);font:600 11px var(--body);display:flex;flex-direction:column;
-  align-items:center;gap:3px;padding:6px 2px;cursor:pointer;border-radius:10px}
-nav.tabs svg{width:22px;height:22px;stroke:currentColor}
-nav.tabs button[aria-current="page"]{color:var(--sea)}
+nav.tabs button{border:0;background:transparent;color:var(--muted);font-weight:600;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;cursor:pointer;border-radius:10px;min-height:48px}
+nav.tabs svg{width:23px;height:23px;stroke:currentColor}
+nav.tabs button[aria-current="page"]{color:var(--primary)}
+nav.tabs button[aria-current="page"] svg{stroke-width:2.3}
 svg{fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;
-  font-weight:600;font-size:14px;z-index:9}
-.foot{font-size:12px;color:var(--muted);text-align:center;margin-top:22px}
-@media (prefers-reduced-motion:no-preference){section.view{animation:in .25s ease-out}@keyframes in{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}}
-
-#intro{position:fixed;inset:0;z-index:20;background:#0b1820;color:#f3f6f4;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+#sheet{position:fixed;inset:0;z-index:15;display:flex;align-items:flex-end;justify-content:center;background:rgba(9,22,30,.45)}
+#sheet .panel{background:var(--surface);width:100%;max-width:480px;max-height:88%;overflow:auto;border-radius:24px 24px 0 0;padding:0 0 calc(24px + env(safe-area-inset-bottom,0px));position:relative}
+#sheet .media{height:200px;position:relative;background:var(--soft);overflow:hidden}
+#sheet .media>img,#sheet .media>.art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#sheet .body{padding:20px 24px 0}
+#sheet dl{margin:16px 0 0;display:flex;flex-direction:column}
+#sheet dl div{display:flex;justify-content:space-between;gap:16px;padding-block:12px;border-top:1px solid var(--line)}
+#sheet dt{color:var(--muted)} #sheet dd{margin:0;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+#sheet .close{position:absolute;top:12px;right:12px;z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:rgba(9,22,30,.6);color:#fff;font-size:24px;cursor:pointer}
+.tbcpill{display:inline-block;font-size:12px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;z-index:30}
+#intro{position:fixed;inset:0;z-index:20;background:#0B1820;color:#F3F6F4;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
 #intro video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-#intro::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(11,24,32,.15) 0%,rgba(11,24,32,.1) 40%,rgba(11,24,32,.88) 78%)}
-#intro .in{position:relative;z-index:2;max-width:480px;width:100%;margin:0 auto;padding:24px 20px calc(36px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
-#intro small{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#e0b45c;font-weight:600}
-#intro h1{color:#f3f6f4;font-size:38px;margin:0}
-#intro p{color:#c9d8df;font-size:17px}
-#intro .btn{margin-top:10px;padding:16px;font-size:17px}
-#intro .skip{background:transparent;border:0;color:#c9d8df;font:500 14px var(--body);cursor:pointer;padding:8px;align-self:center}
-#intro .introlang{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px;z-index:3;background:rgba(11,24,32,.55);border-color:rgba(255,255,255,.2)}
-#intro .introlang button{color:#c9d8df}
-#intro .introlang button[aria-pressed="true"]{background:#f3f6f4;color:#0b1820}
+#intro::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(11,24,32,.2) 0%,rgba(11,24,32,.05) 40%,rgba(11,24,32,.9) 80%)}
+#intro .in{position:relative;z-index:2;max-width:480px;width:100%;margin:0 auto;padding:24px 20px calc(32px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
+#intro .in svg{width:52px;height:52px;border-radius:14px;display:block}
+#intro small{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#E0B45C;font-weight:700}
+#intro h1{color:#F3F6F4;font-size:38px;margin:0}
+#intro p{color:#C9D8DF;font-size:17px}
+#intro .btn{margin-top:8px;min-height:54px;font-size:17px}
+#intro .skip{background:transparent;border:0;color:#C9D8DF;font-weight:500;font-size:15px;cursor:pointer;padding:10px;align-self:center}
+#intro .lang{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px;z-index:3;background:rgba(11,24,32,.55);border-color:rgba(255,255,255,.2)}
+#intro .lang button{color:#C9D8DF}
+#intro .lang button[aria-pressed="true"]{background:#F3F6F4;color:#0B1820}
 #intro.out{transition:opacity .5s ease,transform .6s ease;opacity:0;transform:scale(1.06)}
-.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-top:18px}
-.eyebrow+h1{margin-top:4px}
-#tour{position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom,0px));z-index:6;padding-inline:16px}
-#tour .bar{max-width:448px;margin:0 auto;background:var(--ink);color:var(--bg);border-radius:16px;padding:10px 10px 10px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+#tour{position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom,0px));z-index:6;padding-inline:16px}
+#tour .bar{max-width:448px;margin:0 auto;background:var(--ink);color:var(--bg);border-radius:16px;padding:8px 8px 8px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
 #tour .dots{display:flex;gap:5px;flex:none}
 #tour .dots i{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.3}
 #tour .dots i.on{opacity:1;background:var(--gold)}
 #tour .lbl{flex:1;min-width:0;font-size:14px;font-weight:600}
-#tour .x{background:transparent;border:0;color:inherit;opacity:.7;font:600 20px var(--body);cursor:pointer;padding:4px 8px}
+#tour .btn{min-height:40px;padding:0 14px;font-size:14px}
+#tour .x{background:transparent;border:0;color:inherit;opacity:.7;font-weight:600;font-size:22px;cursor:pointer;padding:4px 8px;min-height:40px}
 body.touring .app{padding-bottom:180px}
 @media (max-width:400px){#tour .dots{display:none}#tour .lbl{font-size:13px}}
+@media (prefers-reduced-motion:no-preference){section.view{animation:in .35s cubic-bezier(.2,.7,.2,1)}#sheet .panel{animation:up .3s cubic-bezier(.2,.7,.2,1)}
+  @keyframes in{from{opacity:.55;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes up{from{transform:translateY(40px);opacity:.6}to{transform:none;opacity:1}}}
 @media (prefers-reduced-motion:reduce){#intro.out{transition:none}}
 </style>
 </head>
 <body>
 
 <div id="intro" role="dialog" aria-label="Golden Taurus">
-  <video id="introVid" poster="data:image/jpeg;base64,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" autoplay muted loop playsinline preload="auto"><source src="intro.mp4" type="video/mp4"><source src="intro.webm" type="video/webm"></video>
-  <div class="lang introlang" role="group" aria-label="Language"><button data-lang="de" aria-pressed="true">DE</button><button data-lang="en" aria-pressed="false">EN</button><button data-lang="es" aria-pressed="false">ES</button></div>
+  <video id="introVid" autoplay muted loop playsinline preload="auto"><source src="intro.mp4" type="video/mp4"><source src="intro.webm" type="video/webm"></video>
+  <div class="lang" role="group" aria-label="Language"><button data-lang="de">DE</button><button data-lang="en">EN</button><button data-lang="es">ES</button></div>
   <div class="in">
-    <small>Pineda de Mar ★★★★</small>
+    <span data-logo></span>
+    <small>Pineda de Mar · Costa del Maresme</small>
     <h1 data-t="introTitle"></h1>
     <p data-t="introSub"></p>
     <button class="btn" id="enterBtn" data-t="introBtn"></button>
@@ -145,262 +193,298 @@ body.touring .app{padding-bottom:180px}
 
 <div class="app">
   <header class="top">
-    <div class="brand"><small>Pineda de Mar ★★★★</small><b>Golden Taurus</b></div>
-    <div class="lang" role="group" aria-label="Language">
-      <button data-lang="de" aria-pressed="true">DE</button><button data-lang="en" aria-pressed="false">EN</button><button data-lang="es" aria-pressed="false">ES</button>
-    </div>
+    <div class="brand"><span data-logo></span><div><small>Aquapark Resort</small><b>Golden Taurus</b></div></div>
+    <div class="lang" role="group" aria-label="Language"><button data-lang="de">DE</button><button data-lang="en">EN</button><button data-lang="es">ES</button></div>
   </header>
 
-  <!-- WLAN -->
   <section class="view" id="v-wifi">
     <p class="eyebrow" data-t="roomEyebrow"></p>
     <h1 data-t="wifiTitle"></h1>
-    <p class="lead" data-t="wifiLead"></p>
-    <div class="stack" style="margin-top:16px">
-      <div class="card wifi">
-        <h2 data-t="yourWifi"></h2>
-        <div class="row"><div class="field"><label for="ssid" data-t="network"></label><input id="ssid" autocomplete="off" data-ph="askReception"></div></div>
-        <div class="row"><div class="field"><label for="pass" data-t="password"></label><input id="pass" autocomplete="off" data-ph="askReception"></div>
-          <button class="btn small ghost" id="copyPass" data-t="copy"></button></div>
+    <div class="stack">
+      <div class="hero">
+        <h2><svg viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".8"/></svg><span data-t="yourWifi"></span></h2>
+        <div class="row"><div class="field"><label for="ssid" data-t="network"></label><input id="ssid" autocomplete="off" spellcheck="false" data-ph="askReception"></div>
+          <button class="btn ghost chip-btn" data-copyfrom="ssid" data-t="copy"></button></div>
+        <div class="row"><div class="field"><label for="pass" data-t="password"></label><input id="pass" autocomplete="off" spellcheck="false" data-ph="askReception"></div>
+          <button class="btn ghost chip-btn" data-copyfrom="pass" data-t="copy"></button></div>
         <div class="status" id="netStatus" aria-live="polite"><span class="dot"></span><span></span></div>
-        <div class="btnrow"><button class="btn" id="testBtn" data-t="test"></button></div>
+        <p class="hint" data-t="testHint"></p>
+        <div style="margin-top:16px"><button class="btn block" id="testBtn" data-t="test"></button></div>
       </div>
-
       <div class="card">
-        <h2 data-t="fixTitle"></h2>
-        <ol class="steps" id="fixSteps"></ol>
-        <div class="btnrow"><button class="btn ghost" data-go="help" data-t="stillNo"></button><button class="btn ghost" id="tourStart" data-t="tourBtn"></button></div>
+        <h2 data-t="stepsTitle"></h2>
+        <ol class="steps" id="steps3"></ol>
+        <details class="more"><summary data-t="moreHelp"></summary><ol class="steps" id="stepsMore" style="margin-top:12px"></ol>
+          <button class="btn ghost block" style="margin-top:12px" data-go="requests" data-pre="wifi" data-t="askHelp"></button></details>
       </div>
-
-      <div class="tiles">
-        <button class="tile" data-go="hotel"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5"/></svg><b data-t="tHotel"></b><span data-t="tHotelS"></span></button>
-        <button class="tile" data-go="food"><svg viewBox="0 0 24 24"><path d="M7 3v8a2 2 0 0 0 2 2v8M5 3v5M9 3v5M17 3c-2 2-2 6 0 8v10"/></svg><b data-t="tFood"></b><span data-t="tFoodS"></span></button>
-        <button class="tile" data-go="enjoy"><svg viewBox="0 0 24 24"><path d="M2 18c2 0 2-1.5 4-1.5S8 18 10 18s2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5M8 14V5a2 2 0 0 1 4 0M16 14V5a2 2 0 0 0-4 0M8 8h8M8 11h8"/></svg><b data-t="tEnjoy"></b><span data-t="tEnjoyS"></span></button>
-        <button class="tile" data-go="help"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/></svg><b data-t="tHelp"></b><span data-t="tHelpS"></span></button>
-      </div>
+      <button class="btn ghost block" id="tourStart" data-t="tourBtn"></button>
     </div>
   </section>
 
-  <!-- HOTEL -->
   <section class="view" id="v-hotel" hidden>
-    <h1 data-t="tHotel"></h1>
-    <p class="lead" data-t="hotelLead"></p>
-    <div class="stack" style="margin-top:16px">
-      <div class="card"><dl class="facts" id="hotelFacts"></dl></div>
-      <div class="card">
-        <h2 data-t="contact"></h2>
-        <div class="stack">
-          <div class="copyline"><code>Passeig Marítim 33, 08397 Pineda de Mar</code><button class="btn small ghost" data-copy="Passeig Marítim 33, 08397 Pineda de Mar" data-t="copy"></button></div>
-          <div class="copyline"><code>recepcion.taurus@goldenhotels.com</code><button class="btn small ghost" data-copy="recepcion.taurus@goldenhotels.com" data-t="copy"></button></div>
-          <a class="btn ghost" href="https://www.google.com/maps/search/?api=1&query=Golden+Taurus+Aquapark+Resort+Pineda+de+Mar" target="_blank" rel="noopener" data-t="map"></a>
-        </div>
+    <p class="eyebrow" data-t="hotelEyebrow"></p>
+    <h1 data-t="hotelTitle"></h1>
+    <div class="stack">
+      <div class="photo"><img src="img/resort.jpg" alt="" data-alt="altResort"><div class="cap" data-t="capModel"></div></div>
+      <div class="keyrow">
+        <button class="key" data-sheet="hotel:0" style="text-align:left;cursor:pointer"><small>Check-in</small><b>14:00</b></button>
+        <button class="key" data-sheet="hotel:0" style="text-align:left;cursor:pointer"><small>Check-out</small><b>11:00</b></button>
       </div>
+      <div class="list" id="hotelList"></div>
       <p class="note" data-t="sourceNote"></p>
     </div>
   </section>
 
-  <!-- FOOD -->
   <section class="view" id="v-food" hidden>
-    <h1 data-t="tFood"></h1>
-    <p class="lead" data-t="foodLead"></p>
-    <div class="stack" style="margin-top:16px">
-      <div class="card"><dl class="facts" id="foodFacts"></dl></div>
-      <p class="note" data-t="sourceNote"></p>
-    </div>
+    <p class="eyebrow" data-t="foodEyebrow"></p>
+    <h1 data-t="foodTitle"></h1>
+    <div class="stack" id="foodList"></div>
+    <p class="note" style="margin-top:16px" data-t="sourceNote"></p>
   </section>
 
-  <!-- ENJOY -->
   <section class="view" id="v-enjoy" hidden>
-    <h1 data-t="tEnjoy"></h1>
-    <p class="lead" data-t="enjoyLead"></p>
-    <div class="stack" style="margin-top:16px" id="enjoyList"></div>
-    <p class="note" style="margin-top:14px" data-t="sourceNote"></p>
+    <p class="eyebrow" data-t="enjoyEyebrow"></p>
+    <h1 data-t="enjoyTitle"></h1>
+    <div class="stack" id="enjoyList"></div>
   </section>
 
-  <!-- HELP / REQUESTS -->
-  <section class="view" id="v-help" hidden>
-    <h1 data-t="tHelp"></h1>
-    <p class="lead" data-t="helpLead"></p>
-    <div class="stack" style="margin-top:16px">
-      <div class="card">
-        <h2 data-t="whatNeed"></h2>
-        <div class="chips" id="reqChips"></div>
-        <div style="margin-top:14px;display:grid;gap:10px">
-          <label for="room" class="note" data-t="room"></label>
-          <input id="room" class="plain" inputmode="numeric" placeholder="412">
-          <label for="extra" class="note" data-t="extra"></label>
-          <textarea id="extra"></textarea>
-        </div>
-        <div class="out" id="reqOut"></div>
-        <div class="btnrow"><button class="btn" id="copyReq" data-t="copyReq"></button></div>
-        <p class="note" style="margin-top:10px" data-t="reqHint"></p>
+  <section class="view" id="v-requests" hidden>
+    <p class="eyebrow" data-t="reqEyebrow"></p>
+    <h1 data-t="reqTitle"></h1>
+    <div class="card" style="margin-top:16px">
+      <div class="chips" id="reqChips"></div>
+      <label class="lbl" for="room" data-t="room"></label>
+      <input id="room" class="plain" inputmode="numeric" autocomplete="off" placeholder="412">
+      <label class="lbl" for="extra" data-t="extra"></label>
+      <textarea id="extra"></textarea>
+      <div class="err" id="reqErr" hidden></div>
+      <div style="margin-top:16px"><button class="btn primary block" id="sendBtn" data-t="send"></button></div>
+      <div class="result" id="reqResult" hidden>
+        <b data-t="demoTitle"></b><p class="note" data-t="demoText"></p>
+        <pre id="reqText"></pre>
+        <button class="btn ghost block" id="copyReq" data-t="copyReq"></button>
       </div>
     </div>
   </section>
 
-  <p class="foot" data-t="foot"></p>
+  <p class="foot"><span class="demo-tag" data-t="demoTag"></span><br><span data-t="foot"></span></p>
 </div>
 
-<div id="tour" hidden><div class="bar"><div class="dots" id="tourDots"></div><span class="lbl" id="tourLbl"></span><button class="btn small" id="tourNext"></button><button class="x" id="tourX" aria-label="Close">×</button></div></div>
+<div id="tour" hidden><div class="bar"><div class="dots" id="tourDots"></div><span class="lbl" id="tourLbl"></span><button class="btn" id="tourNext"></button><button class="x" id="tourX" aria-label="Close">×</button></div></div>
+
+<div id="sheet" hidden><div class="panel" role="dialog" aria-modal="true"><button class="close" id="sheetX" aria-label="Close">×</button><div class="media" id="sheetMedia"></div><div class="body" id="sheetBody"></div></div></div>
 
 <nav class="tabs" aria-label="Menu"><div class="in">
-  <button data-go="wifi" aria-current="page"><svg viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".8"/></svg><span data-t="nWifi"></span></button>
-  <button data-go="hotel"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5"/></svg><span data-t="nHotel"></span></button>
+  <button data-go="wifi"><svg viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".8"/></svg><span>Wi-Fi</span></button>
+  <button data-go="hotel"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5"/></svg><span>Hotel</span></button>
   <button data-go="food"><svg viewBox="0 0 24 24"><path d="M7 3v8a2 2 0 0 0 2 2v8M5 3v5M9 3v5M17 3c-2 2-2 6 0 8v10"/></svg><span data-t="nFood"></span></button>
   <button data-go="enjoy"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"/></svg><span data-t="nEnjoy"></span></button>
-  <button data-go="help"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/></svg><span data-t="nHelp"></span></button>
+  <button data-go="requests"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/></svg><span data-t="nReq"></span></button>
 </div></nav>
 
 <script>
+/* ---------- Konfiguration: vom Hotel zu bestätigen / einzutragen ---------- */
+const CONFIG={
+  wifi:{ssid:"",password:""},   // leer = Gast trägt die Daten selbst ein
+  demo:true,                     // true = Anfragen werden NICHT gesendet
+  requestEndpoint:"",            // später: HTTPS-Adresse des Rezeptionssystems (POST JSON)
+  reception:{email:"recepcion.taurus@goldenhotels.com",address:"Passeig Marítim 33, 08397 Pineda de Mar"}
+};
+
+const ICON='<svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0E4F6E"/><circle cx="32" cy="27" r="10" fill="#B98A2E"/><g stroke="#B98A2E" stroke-width="2.4" stroke-linecap="round"><path d="M32 9v4M14 27h4M46 27h4M19 14l3 3M45 14l-3 3"/></g><path d="M6 44c6 0 6-4 13-4s7 4 13 4 7-4 13-4 7 4 13 4v20H6z" fill="#F3F6F7"/><path d="M6 50c6 0 6-3.5 13-3.5S26 50 32 50s7-3.5 13-3.5S52 50 58 50" stroke="#0E4F6E" stroke-width="2.4"/></svg>';
+const ART={
+ spa:'<div class="art"><svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="sg" cx="50%" cy="35%" r="80%"><stop offset="0" stop-color="#CFE6E4"/><stop offset="1" stop-color="#3E7F86"/></radialGradient></defs><rect width="400" height="300" fill="url(#sg)"/><ellipse cx="200" cy="250" rx="150" ry="22" fill="#2E6A70" opacity=".5"/><ellipse cx="200" cy="225" rx="62" ry="22" fill="#5C6B6E"/><ellipse cx="200" cy="190" rx="48" ry="18" fill="#7B8A8C"/><ellipse cx="200" cy="160" rx="34" ry="14" fill="#A4B0B1"/><path d="M200 120c-14-18-14-34 0-50 14 16 14 32 0 50z" fill="#E8F2EE" opacity=".9"/></svg></div>',
+ beach:'<div class="art"><svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="bk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9FD3EA"/><stop offset="1" stop-color="#F3E3C2"/></linearGradient></defs><rect width="400" height="300" fill="url(#bk)"/><circle cx="300" cy="80" r="34" fill="#F6C766"/><rect y="150" width="400" height="70" fill="#1F7FA6"/><path d="M0 160c40 6 80-6 120 0s80 6 120 0 80-6 160 0" stroke="#BFE3F1" stroke-width="3" opacity=".7"/><path d="M0 215c60-14 140-14 200-4s140 10 200-4v93H0z" fill="#EBD3A5"/><path d="M120 250l-26-62" stroke="#8A6A2E" stroke-width="3"/><path d="M66 196c18-16 44-18 58-6-20-2-38 0-58 6z" fill="#E9A23B"/></svg></div>',
+ bcn:'<div class="art"><svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="bc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4B983"/><stop offset=".6" stop-color="#E98A6B"/><stop offset="1" stop-color="#5B4A72"/></linearGradient></defs><rect width="400" height="300" fill="url(#bc)"/><circle cx="110" cy="120" r="30" fill="#FBD38D" opacity=".9"/><path fill="#2C2440" d="M0 300V230h40v-20h30v20h20v-40h25v40h30v-60h22v60h20V170l8-40 8 40v-30l8-36 8 36v30l8-40 8 40v-20l8-30 8 30v80h30v-30h30v30h30v-50h22v50h30v70z"/></svg></div>',
+ breakfast:'<div class="art"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice"><rect width="200" height="200" fill="#F6EDDA"/><circle cx="100" cy="105" r="62" fill="#fff" stroke="#E4D6B8" stroke-width="4"/><circle cx="85" cy="100" r="22" fill="#fff" stroke="#EADFC6" stroke-width="2"/><circle cx="85" cy="100" r="10" fill="#F2B544"/><rect x="110" y="85" width="34" height="38" rx="6" fill="#D9A15A"/><circle cx="125" cy="135" r="9" fill="#E5533D"/></svg></div>',
+ rest:'<div class="art"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice"><rect width="200" height="200" fill="#E3EEF3"/><circle cx="100" cy="105" r="58" fill="#fff" stroke="#CFDDE3" stroke-width="4"/><path d="M60 50v40M52 50v18a8 8 0 0 0 16 0V50M144 50c-10 10-10 30 0 40v70" stroke="#0E4F6E" stroke-width="5"/></svg></div>',
+ bar:'<div class="art"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice"><rect width="200" height="200" fill="#CFE9F1"/><path d="M60 60h80l-40 50z" fill="#F4B983"/><path d="M60 60h80l-40 50zM100 110v40M78 152h44" stroke="#0E4F6E" stroke-width="5"/><circle cx="132" cy="56" r="10" fill="#E5533D"/></svg></div>'
+};
+const IC={aqua:'<path d="M3 20c3 0 3-2 6-2s3 2 6 2 3-2 6-2M6 16V5a2 2 0 0 1 4 0M18 16V5a2 2 0 0 0-4 0M6 9h8M6 12h8"/>',outdoor:'<circle cx="12" cy="7" r="3"/><path d="M2 17c3 0 3-2 6-2s3 2 6 2 3-2 6-2M2 21c3 0 3-2 6-2s3 2 6 2 3-2 6-2"/>',indoor:'<path d="M3 10l9-6 9 6M5 10v10h14V10M7 17c2 0 2-1.5 5-1.5s3 1.5 5 1.5"/>',kids:'<circle cx="12" cy="6" r="3"/><path d="M6 21l2-8h8l2 8M9 13l-3-3M15 13l3-3"/>',spa:'<path d="M12 20c-5 0-8-3-8-7 3 0 6 1 8 4 2-3 5-4 8-4 0 4-3 7-8 7zM12 13c-2-2-2-6 0-9 2 3 2 7 0 9z"/>',parking:'<rect x="4" y="3" width="16" height="18" rx="3"/><path d="M10 17V8h3a3 3 0 0 1 0 6h-3"/>'};
+const MEDIA={checkin:'<img src="img/resort.jpg" alt="">',aqua:'<img src="img/pool.jpg" alt="">',outdoor:'<img src="img/pool.jpg" alt="">',indoor:'<img src="img/resort.jpg" alt="">',kids:'<img src="img/garden.jpg" alt="">',parking:'<img src="img/garden.jpg" alt="">',spa:ART.spa,beach:ART.beach,bcn:ART.bcn,breakfast:ART.breakfast,r1:ART.rest,r2:ART.rest,bar:ART.bar};
+const PRE={wifi:-1,checkin:3,spa:-2,bcn:2};   // Detail-Knopf → vorgewählte Anfrage (Index in reqs; -1 WLAN-Hilfe, -2 Massage)
+
 const T={
-de:{introTitle:"Willkommen im Golden Taurus",introSub:"Dein Aufenthalt auf dem Handy. Zuerst ins Zimmer, dann einmal durchs ganze Resort.",introBtn:"Ins Zimmer",introSkip:"Direkt zur App",roomEyebrow:"Dein Zimmer",tourBtn:"Rundgang durchs Hotel",tourNext:"Weiter",tourDone:"Fertig",tourStops:["Im Zimmer: zuerst das WLAN","Das Hotel auf einen Blick","Essen und Bars","Aquapark, Spa und Strand","Wünsche an die Rezeption"],wifiTitle:"Gute Verbindung zum WLAN",wifiLead:"Schnell online im ganzen Hotel. Das WLAN ist für alle Gäste gratis.",yourWifi:"Dein WLAN",network:"Netzwerk",password:"Passwort",
-askReception:"an der Rezeption erfragen und hier eintragen",copy:"Kopieren",test:"Verbindung testen",testing:"Teste …",
-online:"Online · Antwort in {ms} ms",onlineSlow:"Online, aber langsam ({ms} ms). Schritte unten helfen.",offline:"Keine Verbindung. Schritte unten helfen.",onlineNoMs:"Online",
-fixTitle:"Kein Internet? In 1 Minute gelöst",stillNo:"Klappt immer noch nicht",
-steps:[["WLAN einschalten und Hotel-Netz wählen","Netzwerk wie oben. Mobile Daten dürfen an bleiben."],
-["Anmeldeseite öffnet sich nicht?","Browser öffnen und neverssl.com eingeben. Dann erscheint die Hotel-Anmeldung."],
-["Netz neu verbinden","In den WLAN-Einstellungen das Netz «ignorieren» bzw. «entfernen» und neu wählen."],
-["iPhone: Private WLAN-Adresse","Beim Hotel-Netz auf (i) tippen. Steht «Private WLAN-Adresse» auf «Rotierend», auf «Fest» stellen."],
-["Flugmodus 10 Sekunden","Ein, zehn Sekunden warten, wieder aus. Das löst die meisten Hänger."],
-["VPN und Datensparmodus aus","Ein aktives VPN blockiert oft die Anmeldeseite."],
-["Näher an Lobby oder Flur","Im Zimmer hinten oder auf dem Balkon ist das Signal schwächer."]],
-tHotel:"Hotel",tHotelS:"Zeiten, Pools, Parkplatz",tFood:"Essen & Bars",tFoodS:"Frühstück, Restaurants",tEnjoy:"Erleben",tEnjoyS:"Aquapark, Spa, Strand",tHelp:"Wünsche",tHelpS:"Handtücher, Taxi, Hilfe",
-nWifi:"WLAN",nHotel:"Hotel",nFood:"Essen",nEnjoy:"Erleben",nHelp:"Wünsche",
-hotelLead:"Das Wichtigste auf einen Blick.",contact:"Kontakt & Weg",map:"In Karten öffnen",
-facts:[["Check-in","ab 14:00"],["Check-out","bis 11:00"],["WLAN","gratis, im ganzen Haus"],["Pools","1 innen · 4 aussen · Kinderbecken"],["Kinderclub","gratis, mit Spielplatz"],["Parkplatz","EUR 16 / Nacht, wenige Plätze"],["E-Auto","Ladestation vorhanden"],["Zimmer","440"]],
-foodLead:"Restaurants und Bars im Haus.",
-food:[["Frühstücksbuffet","07:30–10:00"],["Restaurants","2 im Haus"],["Poolbar","am Pool"],["Bars & Lounges","2"],["Abendessen","Zeiten an der Rezeption"]],
-enjoyLead:"Wasser, Ruhe und Meer, alles nah.",
-enjoy:[["Aquapark","Gratis für Gäste. Rutschen ab 10 Jahren und 1,40 m.","im Hotel"],["Spa & Massage","Massagen bitte vorher an der Rezeption reservieren.","reservieren"],["Strand","Das Hotel liegt am Passeig Marítim, direkt an der Strandpromenade.","vor der Tür"],["Barcelona","Mit dem Regionalzug ab Bahnhof Pineda de Mar. Fahrplan an der Rezeption.","Ausflug"]],
-helpLead:"Wunsch antippen, Zimmernummer eingeben, Text kopieren und an der Rezeption zeigen oder per Mail senden.",
-whatNeed:"Was brauchst du?",room:"Zimmernummer",extra:"Noch etwas dazu? (freiwillig)",copyReq:"Text kopieren",
-reqHint:"Diese App sendet nichts selbst. Du entscheidest, wem du den Text gibst.",
-reqs:["Frische Handtücher","Extra-Kissen","Zimmerreinigung","WLAN-Hilfe","Später auschecken","Taxi bestellen","Massage reservieren","Etwas ist kaputt"],
-reqHead:"Hallo Rezeption,",reqRoom:"Zimmer",reqBye:"Vielen Dank!",reqEmpty:"Tippe oben auf einen Wunsch.",
-copied:"Kopiert",copyFail:"Bitte Text markieren und kopieren",
-sourceNote:"Angaben aus öffentlichen Buchungsseiten (Stand Okt. 2026). Bitte vor Ort bestätigen.",
-foot:"Gäste-Prototyp · Golden Taurus Aquapark Resort · inoffiziell"},
-en:{introTitle:"Welcome to Golden Taurus",introSub:"Your stay on your phone. First your room, then a walk through the whole resort.",introBtn:"Go to my room",introSkip:"Straight to the app",roomEyebrow:"Your room",tourBtn:"Tour of the hotel",tourNext:"Next",tourDone:"Done",tourStops:["In your room: Wi-Fi first","The hotel at a glance","Food and bars","Aquapark, spa and beach","Requests to reception"],wifiTitle:"A good Wi-Fi connection",wifiLead:"Get online anywhere in the hotel. Wi-Fi is free for all guests.",yourWifi:"Your Wi-Fi",network:"Network",password:"Password",
-askReception:"ask at reception and enter it here",copy:"Copy",test:"Test connection",testing:"Testing …",
-online:"Online · reply in {ms} ms",onlineSlow:"Online but slow ({ms} ms). The steps below help.",offline:"No connection. The steps below help.",onlineNoMs:"Online",
-fixTitle:"No internet? Fixed in a minute",stillNo:"Still not working",
-steps:[["Turn on Wi-Fi and pick the hotel network","Network name as above. Mobile data can stay on."],
-["Login page doesn't appear?","Open your browser and type neverssl.com. The hotel login page will show up."],
-["Reconnect to the network","In Wi-Fi settings, choose “Forget this network”, then join again."],
-["iPhone: Private Wi-Fi Address","Tap (i) next to the hotel network. If it says “Rotating”, set it to “Fixed”."],
-["Airplane mode for 10 seconds","On, wait ten seconds, off. This clears most hang-ups."],
-["Turn off VPN and Low Data Mode","An active VPN often blocks the login page."],
-["Move closer to the lobby or hallway","The signal is weaker at the back of the room or on the balcony."]],
-tHotel:"Hotel",tHotelS:"Times, pools, parking",tFood:"Food & bars",tFoodS:"Breakfast, restaurants",tEnjoy:"Enjoy",tEnjoyS:"Aquapark, spa, beach",tHelp:"Requests",tHelpS:"Towels, taxi, help",
-nWifi:"Wi-Fi",nHotel:"Hotel",nFood:"Food",nEnjoy:"Enjoy",nHelp:"Requests",
-hotelLead:"The essentials at a glance.",contact:"Contact & directions",map:"Open in Maps",
-facts:[["Check-in","from 14:00"],["Check-out","by 11:00"],["Wi-Fi","free, whole hotel"],["Pools","1 indoor · 4 outdoor · kids' pool"],["Kids club","free, with playground"],["Parking","EUR 16 / night, limited"],["Electric car","charging station"],["Rooms","440"]],
-foodLead:"Restaurants and bars in the hotel.",
-food:[["Breakfast buffet","07:30–10:00"],["Restaurants","2 on site"],["Pool bar","by the pool"],["Bars & lounges","2"],["Dinner","times at reception"]],
-enjoyLead:"Water, calm and the sea, all close by.",
-enjoy:[["Aquapark","Free for guests. Slides from age 10 and 1.40 m.","in the hotel"],["Spa & massage","Please book massages in advance at reception.","book ahead"],["Beach","The hotel sits on Passeig Marítim, right on the seafront promenade.","on the doorstep"],["Barcelona","Regional train from Pineda de Mar station. Timetable at reception.","day trip"]],
-helpLead:"Tap a request, add your room number, copy the text and show it at reception or send it by email.",
-whatNeed:"What do you need?",room:"Room number",extra:"Anything else? (optional)",copyReq:"Copy text",
-reqHint:"This app sends nothing by itself. You decide who gets the text.",
-reqs:["Fresh towels","Extra pillow","Room cleaning","Wi-Fi help","Late check-out","Call a taxi","Book a massage","Something is broken"],
-reqHead:"Hello reception,",reqRoom:"Room",reqBye:"Thank you!",reqEmpty:"Tap a request above.",
-copied:"Copied",copyFail:"Please select and copy the text",
-sourceNote:"Details from public booking sites (Oct 2026). Please confirm on site.",
-foot:"Guest prototype · Golden Taurus Aquapark Resort · unofficial"},
-es:{introTitle:"Bienvenido al Golden Taurus",introSub:"Tu estancia en el móvil. Primero tu habitación, después un paseo por todo el resort.",introBtn:"Ir a mi habitación",introSkip:"Ir directo a la app",roomEyebrow:"Tu habitación",tourBtn:"Recorrido por el hotel",tourNext:"Siguiente",tourDone:"Listo",tourStops:["En tu habitación: primero el wifi","El hotel de un vistazo","Comer y bares","Aquapark, spa y playa","Peticiones a recepción"],wifiTitle:"Buena conexión al wifi",wifiLead:"Conéctate en todo el hotel. El wifi es gratis para todos los huéspedes.",yourWifi:"Tu wifi",network:"Red",password:"Contraseña",
-askReception:"pídela en recepción y escríbela aquí",copy:"Copiar",test:"Probar conexión",testing:"Probando …",
-online:"Conectado · respuesta en {ms} ms",onlineSlow:"Conectado, pero lento ({ms} ms). Los pasos de abajo ayudan.",offline:"Sin conexión. Los pasos de abajo ayudan.",onlineNoMs:"Conectado",
-fixTitle:"¿Sin internet? Listo en un minuto",stillNo:"Sigue sin funcionar",
-steps:[["Activa el wifi y elige la red del hotel","Nombre de la red como arriba. Los datos móviles pueden seguir activos."],
-["¿No aparece la página de acceso?","Abre el navegador y escribe neverssl.com. Aparecerá el acceso del hotel."],
-["Vuelve a conectar","En ajustes de wifi, elige «Olvidar esta red» y conéctate de nuevo."],
-["iPhone: dirección wifi privada","Toca (i) junto a la red del hotel. Si dice «Rotativa», cámbiala a «Fija»."],
-["Modo avión 10 segundos","Actívalo, espera diez segundos y desactívalo. Soluciona casi todos los bloqueos."],
-["Desactiva VPN y ahorro de datos","Una VPN activa suele bloquear la página de acceso."],
-["Acércate al vestíbulo o al pasillo","La señal es más débil al fondo de la habitación o en el balcón."]],
-tHotel:"Hotel",tHotelS:"Horarios, piscinas, parking",tFood:"Comer y bares",tFoodS:"Desayuno, restaurantes",tEnjoy:"Disfrutar",tEnjoyS:"Aquapark, spa, playa",tHelp:"Peticiones",tHelpS:"Toallas, taxi, ayuda",
-nWifi:"Wifi",nHotel:"Hotel",nFood:"Comer",nEnjoy:"Disfrutar",nHelp:"Pedir",
-hotelLead:"Lo esencial de un vistazo.",contact:"Contacto y cómo llegar",map:"Abrir en Mapas",
-facts:[["Check-in","desde las 14:00"],["Check-out","hasta las 11:00"],["Wifi","gratis, en todo el hotel"],["Piscinas","1 interior · 4 exteriores · infantil"],["Club infantil","gratis, con parque"],["Parking","EUR 16 / noche, plazas limitadas"],["Coche eléctrico","punto de carga"],["Habitaciones","440"]],
-foodLead:"Restaurantes y bares del hotel.",
-food:[["Desayuno buffet","07:30–10:00"],["Restaurantes","2 en el hotel"],["Bar de piscina","junto a la piscina"],["Bares y salones","2"],["Cena","horarios en recepción"]],
-enjoyLead:"Agua, calma y mar, todo cerca.",
-enjoy:[["Aquapark","Gratis para huéspedes. Toboganes desde 10 años y 1,40 m.","en el hotel"],["Spa y masajes","Reserva los masajes con antelación en recepción.","reservar"],["Playa","El hotel está en el Passeig Marítim, en pleno paseo marítimo.","delante"],["Barcelona","Tren regional desde la estación de Pineda de Mar. Horarios en recepción.","excursión"]],
-helpLead:"Elige una petición, añade tu habitación, copia el texto y enséñalo en recepción o envíalo por correo.",
-whatNeed:"¿Qué necesitas?",room:"Número de habitación",extra:"¿Algo más? (opcional)",copyReq:"Copiar texto",
-reqHint:"Esta app no envía nada por sí sola. Tú decides a quién darle el texto.",
-reqs:["Toallas limpias","Almohada extra","Limpieza de habitación","Ayuda con el wifi","Salida tardía","Pedir un taxi","Reservar masaje","Algo está roto"],
-reqHead:"Hola recepción:",reqRoom:"Habitación",reqBye:"¡Muchas gracias!",reqEmpty:"Toca una petición arriba.",
-copied:"Copiado",copyFail:"Selecciona y copia el texto",
-sourceNote:"Datos de webs públicas de reservas (oct. 2026). Confírmalos en el hotel.",
-foot:"Prototipo para huéspedes · Golden Taurus Aquapark Resort · no oficial"}};
+de:{introTitle:"Willkommen im Golden Taurus",introSub:"Dein Aufenthalt auf dem Handy. Zuerst ins Zimmer, dann einmal durchs ganze Resort.",introBtn:"Ins Zimmer",introSkip:"Direkt zur App",
+roomEyebrow:"Dein Zimmer",wifiTitle:"Gute Verbindung zum WLAN",yourWifi:"Dein WLAN",network:"Netzwerk",password:"Passwort",askReception:"an der Rezeption erfragen",copy:"Kopieren",
+test:"Verbindung testen",testing:"Teste …",stIdle:"Noch nicht getestet",stOk:"Internet erreichbar · {ms} ms",stSlow:"Internet erreichbar, aber langsam ({ms} ms)",stBad:"Kein Internet erreichbar. Bitte die Schritte unten prüfen.",
+testHint:"Der Test prüft, ob das Internet von diesem Handy aus erreichbar ist. Mit dem WLAN verbinden kann er nicht.",
+stepsTitle:"In drei Schritten online",moreHelp:"Es klappt nicht? Weitere Hilfe",askHelp:"WLAN-Hilfe an der Rezeption anfragen",
+steps3:[["WLAN einschalten","Einstellungen › WLAN und das Hotel-Netz wählen."],["Anmeldeseite bestätigen","Sie öffnet sich von selbst. Wenn nicht: Browser öffnen und neverssl.com eingeben."],["Verbindung testen","Oben auf «Verbindung testen» tippen."]],
+stepsMore:[["Netz neu verbinden","Netz «ignorieren» und neu wählen."],["iPhone: Private WLAN-Adresse","Beim Hotel-Netz auf (i) tippen und «Rotierend» auf «Fest» stellen."],["Flugmodus 10 Sekunden","Ein, warten, wieder aus."],["VPN ausschalten","Ein VPN blockiert oft die Anmeldeseite."],["Näher zum Flur","Auf dem Balkon ist das Signal schwächer."]],
+tourBtn:"Rundgang durchs Hotel",tourNext:"Weiter",tourDone:"Fertig",tourStops:["Im Zimmer: zuerst das WLAN","Das Hotel auf einen Blick","Essen und Bars","Aquapark, Spa und Strand","Wünsche an die Rezeption"],
+hotelEyebrow:"Das Resort",hotelTitle:"Alles Wichtige auf einen Blick",capModel:"Modell des Resorts in der Lobby",altResort:"Modell des Resorts mit Pool und Palmen",
+hotel:[["checkin","Check-in & Check-out","Ankunft ab 14:00, Abreise bis 11:00","",[["Check-in","ab 14:00"],["Check-out","bis 11:00"]],"Später auschecken? Einfach hier anfragen."],
+["aqua","Aquapark","Rutschen und Wasserspass","",[["Für Gäste","inklusive"],["Rutschen","ab 10 Jahren und 1,40 m"]],"Öffnungszeiten bitte an der Rezeption erfragen."],
+["outdoor","Vier Aussenpools","mit Kinderbecken","4",[["Aussenpools","4"],["Kinderbecken","ja"]],"Saison laut Buchungsseiten Mai bis September."],
+["indoor","Innenpool","ganzjährig","1",[["Innenpool","1"]],""],
+["kids","Kinderclub","mit Spielplatz und Spielraum","",[["Kinderclub","inklusive"],["Spielplatz","ja"]],""],
+["spa","Spa & Wellness","Massagen auf Reservation","",[["Massagen","auf Reservation"]],"Bitte vorher reservieren."],
+["parking","Parkplatz","begrenzt, mit E-Ladestation","EUR 16",[["Preis","EUR 16 / Nacht"],["E-Auto","Ladestation"]],"Wenige Plätze, bitte an der Rezeption fragen."]],
+foodEyebrow:"Essen & Bars",foodTitle:"Wann gibt es was?",hoursTbc:"Zeiten an der Rezeption",
+food:[["breakfast","Frühstücksbuffet","Jeden Morgen im Hotel","07:30–10:00",[["Zeit","07:30–10:00"]],""],
+["r1","Restaurant 1","Name und Küche folgen","",[["Zeiten","an der Rezeption"]],"Der Name des Restaurants wird vom Hotel ergänzt."],
+["r2","Restaurant 2","Name und Küche folgen","",[["Zeiten","an der Rezeption"]],"Der Name des Restaurants wird vom Hotel ergänzt."],
+["bar","Poolbar","Getränke und Snacks am Pool","",[["Ort","am Pool"]],""]],
+enjoyEyebrow:"Erleben",enjoyTitle:"Wasser, Ruhe und Meer",
+enjoy:[["aqua","Aquapark","Gratis für Gäste, ab 10 Jahren und 1,40 m",[["Für Gäste","inklusive"],["Rutschen","ab 10 J. / 1,40 m"]],"Öffnungszeiten an der Rezeption."],
+["spa","Spa & Massage","Ruhe nach dem Strandtag",[["Massagen","auf Reservation"]],"Termine vergibt die Rezeption."],
+["beach","Strand","Direkt vor dem Hotel am Passeig Marítim",[["Weg","über die Promenade"]],"Liegen und Schirme: bitte an der Rezeption fragen."],
+["bcn","Barcelona","Tagesausflug mit dem Regionalzug",[["Ab","Bahnhof Pineda de Mar"]],"Fahrplan und Tipps an der Rezeption."]],
+sourceNote:"Angaben aus öffentlichen Buchungsseiten (Okt. 2026). Bestätigung durch das Hotel ausstehend.",tbc:"vom Hotel zu bestätigen",
+reqEyebrow:"Wünsche",reqTitle:"Was dürfen wir bringen?",room:"Zimmernummer",extra:"Noch etwas dazu? (freiwillig)",send:"An die Rezeption senden",
+reqs:["Frische Handtücher","Extra-Kissen","Taxi","Später auschecken","Zimmerreinigung","Anderer Wunsch"],wifiHelp:"Hilfe mit dem WLAN",massage:"Massage reservieren",
+errPick:"Bitte einen Wunsch wählen oder etwas schreiben.",errRoom:"Bitte die Zimmernummer eingeben.",
+demoTitle:"Demo: Diese Anfrage wurde nicht gesendet.",demoText:"In der fertigen App geht sie direkt an die Rezeption. Bis dahin: Text kopieren und an der Rezeption zeigen.",
+copyReq:"Text kopieren",reqHead:"Hallo Rezeption,",reqRoom:"Zimmer",reqBye:"Vielen Dank!",copied:"Kopiert",copyFail:"Bitte Text markieren und kopieren",nothing:"Noch nichts eingetragen",
+demoTag:"Demo-Version",foot:"Golden Taurus Aquapark Resort · inoffizieller Prototyp",nFood:"Essen",nEnjoy:"Erleben",nReq:"Wünsche",requestThis:"Anfragen"},
+en:{introTitle:"Welcome to Golden Taurus",introSub:"Your stay on your phone. First your room, then a walk through the whole resort.",introBtn:"Go to my room",introSkip:"Straight to the app",
+roomEyebrow:"Your room",wifiTitle:"A good Wi-Fi connection",yourWifi:"Your Wi-Fi",network:"Network",password:"Password",askReception:"ask at reception",copy:"Copy",
+test:"Test connection",testing:"Testing …",stIdle:"Not tested yet",stOk:"Internet reachable · {ms} ms",stSlow:"Internet reachable but slow ({ms} ms)",stBad:"Internet not reachable. Please check the steps below.",
+testHint:"The test checks whether the internet can be reached from this phone. It cannot join the Wi-Fi for you.",
+stepsTitle:"Online in three steps",moreHelp:"Not working? More help",askHelp:"Ask reception for Wi-Fi help",
+steps3:[["Turn on Wi-Fi","Settings › Wi-Fi and choose the hotel network."],["Accept the login page","It opens by itself. If not, open your browser and type neverssl.com."],["Test the connection","Tap “Test connection” above."]],
+stepsMore:[["Reconnect","“Forget this network”, then join again."],["iPhone: Private Wi-Fi Address","Tap (i) next to the hotel network and change “Rotating” to “Fixed”."],["Airplane mode for 10 seconds","On, wait, off."],["Turn off VPN","A VPN often blocks the login page."],["Move towards the hallway","The signal is weaker on the balcony."]],
+tourBtn:"Tour of the hotel",tourNext:"Next",tourDone:"Done",tourStops:["In your room: Wi-Fi first","The hotel at a glance","Food and bars","Aquapark, spa and beach","Requests to reception"],
+hotelEyebrow:"The resort",hotelTitle:"Everything important at a glance",capModel:"Model of the resort in the lobby",altResort:"Model of the resort with pool and palm trees",
+hotel:[["checkin","Check-in & check-out","Arrival from 14:00, departure by 11:00","",[["Check-in","from 14:00"],["Check-out","by 11:00"]],"Want a later check-out? Just ask here."],
+["aqua","Aquapark","Slides and water fun","",[["For guests","included"],["Slides","age 10+ and 1.40 m"]],"Please ask reception for opening times."],
+["outdoor","Four outdoor pools","with kids' pool","4",[["Outdoor pools","4"],["Kids' pool","yes"]],"Season May to September according to booking sites."],
+["indoor","Indoor pool","all year","1",[["Indoor pool","1"]],""],
+["kids","Kids club","with playground and games room","",[["Kids club","included"],["Playground","yes"]],""],
+["spa","Spa & wellness","massages by reservation","",[["Massages","by reservation"]],"Please book ahead."],
+["parking","Parking","limited, with EV charging","EUR 16",[["Price","EUR 16 / night"],["Electric car","charging station"]],"Few spaces, please ask reception."]],
+foodEyebrow:"Food & bars",foodTitle:"What's on and when?",hoursTbc:"Hours at reception",
+food:[["breakfast","Breakfast buffet","Every morning in the hotel","07:30–10:00",[["Time","07:30–10:00"]],""],
+["r1","Restaurant 1","Name and cuisine to follow","",[["Hours","at reception"]],"The hotel will add the restaurant's name."],
+["r2","Restaurant 2","Name and cuisine to follow","",[["Hours","at reception"]],"The hotel will add the restaurant's name."],
+["bar","Pool bar","Drinks and snacks by the pool","",[["Where","by the pool"]],""]],
+enjoyEyebrow:"Enjoy",enjoyTitle:"Water, calm and the sea",
+enjoy:[["aqua","Aquapark","Free for guests, age 10+ and 1.40 m",[["For guests","included"],["Slides","age 10+ / 1.40 m"]],"Opening times at reception."],
+["spa","Spa & massage","Unwind after a beach day",[["Massages","by reservation"]],"Reception arranges appointments."],
+["beach","Beach","Right in front of the hotel on Passeig Marítim",[["Way","along the promenade"]],"Sunbeds and umbrellas: please ask reception."],
+["bcn","Barcelona","Day trip by regional train",[["From","Pineda de Mar station"]],"Timetable and tips at reception."]],
+sourceNote:"Details from public booking sites (Oct 2026). Awaiting confirmation by the hotel.",tbc:"to be confirmed by the hotel",
+reqEyebrow:"Requests",reqTitle:"What can we bring you?",room:"Room number",extra:"Anything else? (optional)",send:"Send to reception",
+reqs:["Fresh towels","Extra pillow","Taxi","Late check-out","Room cleaning","Other request"],wifiHelp:"Help with the Wi-Fi",massage:"Book a massage",
+errPick:"Please choose a request or write something.",errRoom:"Please enter your room number.",
+demoTitle:"Demo: this request was not sent.",demoText:"In the finished app it goes straight to reception. Until then, copy the text and show it at reception.",
+copyReq:"Copy text",reqHead:"Hello reception,",reqRoom:"Room",reqBye:"Thank you!",copied:"Copied",copyFail:"Please select and copy the text",nothing:"Nothing entered yet",
+demoTag:"Demo version",foot:"Golden Taurus Aquapark Resort · unofficial prototype",nFood:"Food",nEnjoy:"Enjoy",nReq:"Requests",requestThis:"Request"},
+es:{introTitle:"Bienvenido al Golden Taurus",introSub:"Tu estancia en el móvil. Primero tu habitación, después un paseo por todo el resort.",introBtn:"Ir a mi habitación",introSkip:"Ir directo a la app",
+roomEyebrow:"Tu habitación",wifiTitle:"Buena conexión al wifi",yourWifi:"Tu wifi",network:"Red",password:"Contraseña",askReception:"pídela en recepción",copy:"Copiar",
+test:"Probar conexión",testing:"Probando …",stIdle:"Aún sin probar",stOk:"Internet accesible · {ms} ms",stSlow:"Internet accesible, pero lento ({ms} ms)",stBad:"Internet no accesible. Revisa los pasos de abajo.",
+testHint:"La prueba comprueba si se llega a internet desde este móvil. No puede conectarse al wifi por ti.",
+stepsTitle:"Conectado en tres pasos",moreHelp:"¿No funciona? Más ayuda",askHelp:"Pedir ayuda con el wifi en recepción",
+steps3:[["Activa el wifi","Ajustes › Wi-Fi y elige la red del hotel."],["Acepta la página de acceso","Se abre sola. Si no, abre el navegador y escribe neverssl.com."],["Prueba la conexión","Toca «Probar conexión» arriba."]],
+stepsMore:[["Vuelve a conectar","«Olvidar esta red» y conéctate de nuevo."],["iPhone: dirección wifi privada","Toca (i) junto a la red del hotel y cambia «Rotativa» a «Fija»."],["Modo avión 10 segundos","Actívalo, espera y desactívalo."],["Desactiva la VPN","Una VPN suele bloquear la página de acceso."],["Acércate al pasillo","En el balcón la señal es más débil."]],
+tourBtn:"Recorrido por el hotel",tourNext:"Siguiente",tourDone:"Listo",tourStops:["En tu habitación: primero el wifi","El hotel de un vistazo","Comer y bares","Aquapark, spa y playa","Peticiones a recepción"],
+hotelEyebrow:"El resort",hotelTitle:"Lo esencial de un vistazo",capModel:"Maqueta del resort en el vestíbulo",altResort:"Maqueta del resort con piscina y palmeras",
+hotel:[["checkin","Check-in y check-out","Llegada desde las 14:00, salida hasta las 11:00","",[["Check-in","desde las 14:00"],["Check-out","hasta las 11:00"]],"¿Salida más tarde? Pídela aquí."],
+["aqua","Aquapark","Toboganes y diversión","",[["Huéspedes","incluido"],["Toboganes","desde 10 años y 1,40 m"]],"Consulta los horarios en recepción."],
+["outdoor","Cuatro piscinas exteriores","con piscina infantil","4",[["Exteriores","4"],["Infantil","sí"]],"Temporada de mayo a septiembre según webs de reservas."],
+["indoor","Piscina interior","todo el año","1",[["Interior","1"]],""],
+["kids","Club infantil","con parque y sala de juegos","",[["Club infantil","incluido"],["Parque","sí"]],""],
+["spa","Spa y bienestar","masajes con reserva","",[["Masajes","con reserva"]],"Reserva con antelación."],
+["parking","Parking","plazas limitadas, con carga eléctrica","EUR 16",[["Precio","EUR 16 / noche"],["Coche eléctrico","punto de carga"]],"Pocas plazas, pregunta en recepción."]],
+foodEyebrow:"Comer y bares",foodTitle:"¿Qué hay y a qué hora?",hoursTbc:"Horario en recepción",
+food:[["breakfast","Desayuno buffet","Cada mañana en el hotel","07:30–10:00",[["Horario","07:30–10:00"]],""],
+["r1","Restaurante 1","Nombre y cocina por confirmar","",[["Horario","en recepción"]],"El hotel añadirá el nombre del restaurante."],
+["r2","Restaurante 2","Nombre y cocina por confirmar","",[["Horario","en recepción"]],"El hotel añadirá el nombre del restaurante."],
+["bar","Bar de piscina","Bebidas y snacks junto a la piscina","",[["Dónde","junto a la piscina"]],""]],
+enjoyEyebrow:"Disfrutar",enjoyTitle:"Agua, calma y mar",
+enjoy:[["aqua","Aquapark","Gratis para huéspedes, desde 10 años y 1,40 m",[["Huéspedes","incluido"],["Toboganes","10 años / 1,40 m"]],"Horarios en recepción."],
+["spa","Spa y masajes","Calma después de la playa",[["Masajes","con reserva"]],"Recepción organiza las citas."],
+["beach","Playa","Delante del hotel, en el Passeig Marítim",[["Camino","por el paseo"]],"Hamacas y sombrillas: pregunta en recepción."],
+["bcn","Barcelona","Excursión en tren regional",[["Desde","estación de Pineda de Mar"]],"Horarios y consejos en recepción."]],
+sourceNote:"Datos de webs públicas de reservas (oct. 2026). Pendiente de confirmación por el hotel.",tbc:"por confirmar con el hotel",
+reqEyebrow:"Peticiones",reqTitle:"¿Qué te traemos?",room:"Número de habitación",extra:"¿Algo más? (opcional)",send:"Enviar a recepción",
+reqs:["Toallas limpias","Almohada extra","Taxi","Salida tardía","Limpieza de habitación","Otra petición"],wifiHelp:"Ayuda con el wifi",massage:"Reservar masaje",
+errPick:"Elige una petición o escribe algo.",errRoom:"Escribe tu número de habitación.",
+demoTitle:"Demo: esta petición no se ha enviado.",demoText:"En la app final llega directamente a recepción. Mientras tanto, copia el texto y enséñalo en recepción.",
+copyReq:"Copiar texto",reqHead:"Hola recepción:",reqRoom:"Habitación",reqBye:"¡Muchas gracias!",copied:"Copiado",copyFail:"Selecciona y copia el texto",nothing:"Aún no hay nada",
+demoTag:"Versión demo",foot:"Golden Taurus Aquapark Resort · prototipo no oficial",nFood:"Comer",nEnjoy:"Disfrutar",nReq:"Pedir",requestThis:"Solicitar"}};
 
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
-let lang=store.get("gt-lang")||((navigator.language||"de").slice(0,2));
-if(!T[lang])lang="de";
-const picked=new Set();let lastNet=null;
+let lang=store.get("gt-lang")||((navigator.language||"es").slice(0,2));if(!T[lang])lang="es";
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const CHEV='<svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>';
+const picked=new Set();let extraPre="";let net={s:"idle"};
 
-function toast(msg){const d=document.createElement("div");d.className="toast";d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),1600)}
-async function copy(text,el){try{await navigator.clipboard.writeText(text);toast(T[lang].copied)}catch(e){
-  if(el){const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r)}toast(T[lang].copyFail)}}
-
-function facts(id,rows){$(id).innerHTML=rows.map(([a,b])=>`<div><dt>${a}</dt><dd>${b}</dd></div>`).join("")}
+function toast(m){const d=document.createElement("div");d.className="toast";d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),1600)}
+function selectEl(el){try{if(el.select)el.select();else{const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r)}}catch(e){}}
+async function copy(text,el){try{await navigator.clipboard.writeText(text);toast(T[lang].copied)}catch(e){if(el)selectEl(el);toast(T[lang].copyFail)}}
 
 function render(){
   const t=T[lang];document.documentElement.lang=lang;
   $$("[data-t]").forEach(el=>{el.textContent=t[el.dataset.t]});
   $$("[data-ph]").forEach(el=>{el.placeholder=t[el.dataset.ph]});
+  $$("[data-alt]").forEach(el=>{el.alt=t[el.dataset.alt]});
   $$(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===lang));
-  $("#fixSteps").innerHTML=t.steps.map(([a,b])=>`<li><div><b>${a}</b><span>${b}</span></div></li>`).join("");
-  facts("#hotelFacts",t.facts);facts("#foodFacts",t.food);
-  $("#enjoyList").innerHTML=t.enjoy.map(([a,b,c])=>`<div class="card"><div class="copyline" style="margin-bottom:6px"><h2 style="margin:0">${a}</h2><span class="pill">${c}</span></div><p class="lead">${b}</p></div>`).join("");
-  $("#reqChips").innerHTML=t.reqs.map((r,i)=>`<button class="chip" data-i="${i}" aria-pressed="${picked.has(i)}">${r}</button>`).join("");
-  $$("#reqChips .chip").forEach(c=>c.onclick=()=>{const i=+c.dataset.i;picked.has(i)?picked.delete(i):picked.add(i);c.setAttribute("aria-pressed",picked.has(i));req()});
-  showNet();req();
+  const li=a=>a.map(([b,s])=>`<li><div><b>${esc(b)}</b><span>${esc(s)}</span></div></li>`).join("");
+  $("#steps3").innerHTML=li(t.steps3);$("#stepsMore").innerHTML=li(t.stepsMore);
+  $("#hotelList").innerHTML=t.hotel.map((h,i)=>i===0?"":`<button class="item" data-sheet="hotel:${i}"><span class="ic"><svg viewBox="0 0 24 24">${IC[h[0]]}</svg></span><span><b>${esc(h[1])}</b><span>${esc(h[2])}</span></span><span class="val">${esc(h[3])}${CHEV}</span></button>`).join("");
+  $("#foodList").innerHTML=t.food.map((f,i)=>`<button class="food" data-sheet="food:${i}"><span class="thumb">${MEDIA[f[0]]}</span><span><b>${esc(f[1])}</b><span class="sub">${esc(f[2])}</span><span class="hours${f[3]?"":" tbc"}">${esc(f[3]||t.hoursTbc)}</span></span></button>`).join("");
+  $("#enjoyList").innerHTML=t.enjoy.map((e,i)=>`<button class="big" data-sheet="enjoy:${i}">${MEDIA[e[0]]}<span class="txt"><b>${esc(e[1])}</b><span>${esc(e[2])}</span></span></button>`).join("");
+  $("#reqChips").innerHTML=t.reqs.map((r,i)=>`<button class="chip" data-i="${i}" aria-pressed="${picked.has(i)}">${esc(r)}</button>`).join("");
+  showNet();tourShow();if(!$("#reqResult").hidden)buildReq(true);
 }
-function req(){const t=T[lang];const room=$("#room").value.trim(),extra=$("#extra").value.trim();
-  if(!picked.size&&!extra){$("#reqOut").textContent=t.reqEmpty;return}
-  const lines=[t.reqHead,""];[...picked].sort().forEach(i=>lines.push("• "+t.reqs[i]));if(extra)lines.push("• "+extra);
-  lines.push("",(room?t.reqRoom+" "+room+". ":"")+t.reqBye);$("#reqOut").textContent=lines.join("\n")}
-function showNet(){const t=T[lang],el=$("#netStatus");let cls,txt;
-  if(lastNet===null){cls=navigator.onLine?"st-ok":"st-bad";txt=navigator.onLine?t.onlineNoMs:t.offline}
-  else if(lastNet<0){cls="st-bad";txt=t.offline}
-  else{cls="st-ok";txt=(lastNet>1500?t.onlineSlow:t.online).replace("{ms}",lastNet)}
-  el.className="status "+cls;el.lastElementChild.textContent=txt}
+function showNet(){const t=T[lang],el=$("#netStatus");const m={idle:["",t.stIdle],run:["st-run",t.testing],ok:["st-ok",(net.ms>1500?t.stSlow:t.stOk).replace("{ms}",net.ms)],bad:["st-bad",t.stBad]}[net.s];
+  el.className="status "+m[0];el.lastElementChild.textContent=m[1];$("#testBtn").textContent=net.s==="run"?t.testing:t.test}
 function ping1(url){return new Promise(res=>{const sc=document.createElement("script");const t0=performance.now();
   const to=setTimeout(()=>{sc.remove();res(-1)},5000);
-  sc.onload=()=>{clearTimeout(to);sc.remove();res(Math.round(performance.now()-t0))};
-  sc.onerror=()=>{clearTimeout(to);sc.remove();res(-1)};
+  sc.onload=()=>{clearTimeout(to);sc.remove();res(Math.round(performance.now()-t0))};sc.onerror=()=>{clearTimeout(to);sc.remove();res(-1)};
   sc.src=url+"?t="+Date.now();document.head.appendChild(sc)})}
-async function ping(){for(const u of ["https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.5/js.cookie.min.js","https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js","https://unpkg.com/js-cookie@3.0.5/dist/js.cookie.min.js"]){const ms=await ping1(u);if(ms>=0)return ms}return -1}
-async function test(){const b=$("#testBtn");b.textContent=T[lang].testing;b.disabled=true;
-  lastNet=await ping();b.disabled=false;b.textContent=T[lang].test;showNet()}
+async function test(){const b=$("#testBtn");b.disabled=true;net={s:"run"};showNet();let ms=-1;
+  for(const u of ["https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.5/js.cookie.min.js","https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js","https://unpkg.com/js-cookie@3.0.5/dist/js.cookie.min.js"]){ms=await ping1(u);if(ms>=0)break}
+  net=ms>=0?{s:"ok",ms}:{s:"bad"};b.disabled=false;showNet()}
 
-function go(v){$$("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);
+function openSheet(kind,i){const t=T[lang];const src=t[kind][i];const id=src[0],title=src[1],sub=src[2];
+  const rows=kind==="enjoy"?src[3]:src[4],note=kind==="enjoy"?src[4]:src[5];
+  const cta=PRE[id]!==undefined?(id==="spa"?t.massage:t.requestThis):"";
+  $("#sheetMedia").innerHTML=MEDIA[id]||"";
+  $("#sheetBody").innerHTML=`<h2>${esc(title)}</h2><p class="lead">${esc(sub)}</p><dl>${rows.map(([a,b])=>`<div><dt>${esc(a)}</dt><dd>${esc(b)}</dd></div>`).join("")}</dl>${note?`<p class="note" style="margin-top:12px">${esc(note)}</p>`:""}<p style="margin-top:12px"><span class="tbcpill">${esc(t.tbc)}</span></p>${cta?`<div style="margin-top:16px"><button class="btn primary block" data-go="requests" data-pre="${id}">${esc(cta)}</button></div>`:""}`;
+  $("#sheet").hidden=false;$("#sheet .panel").scrollTop=0;$("#sheetX").focus()}
+function closeSheet(){$("#sheet").hidden=true}
+function preselect(id){const t=T[lang],p=PRE[id];if(p>=0)picked.add(p);else{picked.add(5);const add=p===-1?t.wifiHelp:t.massage;const x=$("#extra");if(!x.value.includes(add))x.value=(x.value?x.value+"\n":"")+add}}
+
+function buildReq(silent){const t=T[lang],room=$("#room").value.trim(),extra=$("#extra").value.trim(),err=$("#reqErr");
+  let msg="";if(!picked.size&&!extra)msg=t.errPick;else if(!room)msg=t.errRoom;
+  if(msg){if(!silent){err.textContent=msg;err.hidden=false;$("#reqResult").hidden=true}return}
+  err.hidden=true;const lines=[t.reqHead,""];[...picked].sort().forEach(i=>{if(i!==5||!extra)lines.push("• "+t.reqs[i])});if(extra)extra.split("\n").forEach(l=>l.trim()&&lines.push("• "+l.trim()));
+  lines.push("",t.reqRoom+" "+room+". "+t.reqBye);$("#reqText").textContent=lines.join("\n");$("#reqResult").hidden=false}
+function send(){buildReq(false);if($("#reqResult").hidden)return;
+  /* Echter Versand später: if(!CONFIG.demo&&CONFIG.requestEndpoint) fetch(CONFIG.requestEndpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({room,requests,text,lang})}) mit Bestätigung/Fehler */
+  $("#reqResult").scrollIntoView({behavior:"smooth",block:"center"})}
+
+const VIEWS=["wifi","hotel","food","enjoy","requests"];let tourI=-1;
+function go(v){closeSheet();$$("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);
   $$("nav.tabs button").forEach(b=>b.dataset.go===v?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
-  scrollTo({top:0});store.set("gt-tab",v);if(typeof tourI!=="undefined"&&tourI>=0){tourI=STOPS.indexOf(v);tourShow()}}
-document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(g){go(g.dataset.go)}
-  const c=e.target.closest("[data-copy]");if(c)copy(c.dataset.copy,c.previousElementSibling)});
-$$(".lang button").forEach(b=>b.onclick=()=>{lang=b.dataset.lang;store.set("gt-lang",lang);render()});
-["ssid","pass"].forEach(id=>{const el=$("#"+id);el.value=store.get("gt-"+id)||"";el.oninput=()=>store.set("gt-"+id,el.value)});
-$("#copyPass").onclick=()=>{const v=$("#pass").value;if(v)copy(v,null);else $("#pass").focus()};
-$("#testBtn").onclick=test;$("#copyReq").onclick=()=>{if(picked.size||$("#extra").value.trim())copy($("#reqOut").textContent,$("#reqOut"));else toast(T[lang].reqEmpty)};$("#room").oninput=req;$("#extra").oninput=req;
-addEventListener("online",()=>{lastNet=null;showNet()});addEventListener("offline",()=>{lastNet=-1;showNet()});
-
-const STOPS=["wifi","hotel","food","enjoy","help"];let tourI=-1;
+  scrollTo({top:0});if(tourI>=0){tourI=VIEWS.indexOf(v);tourShow()}}
 function tourShow(){const t=T[lang];if(tourI<0){$("#tour").hidden=true;document.body.classList.remove("touring");return}
   $("#tour").hidden=false;document.body.classList.add("touring");
-  $("#tourDots").innerHTML=STOPS.map((_,i)=>`<i class="${i===tourI?"on":""}"></i>`).join("");
-  $("#tourLbl").textContent=t.tourStops[tourI];$("#tourNext").textContent=tourI===STOPS.length-1?t.tourDone:t.tourNext+" →"}
-function tourGo(i){tourI=i;if(i>=0)go(STOPS[i]);tourShow()}
-$("#tourNext").onclick=()=>tourGo(tourI+1<STOPS.length?tourI+1:-1);
-$("#tourX").onclick=()=>tourGo(-1);$("#tourStart").onclick=()=>tourGo(0);
-function closeIntro(tour){const el=$("#intro");el.classList.add("out");setTimeout(()=>{el.hidden=true;try{$("#introVid").pause()}catch(e){}},550);
-  if(tour)tourGo(0);else go("wifi")}
+  $("#tourDots").innerHTML=VIEWS.map((_,i)=>`<i class="${i===tourI?"on":""}"></i>`).join("");
+  $("#tourLbl").textContent=t.tourStops[tourI];$("#tourNext").textContent=tourI===VIEWS.length-1?t.tourDone:t.tourNext+" →"}
+function tourGo(i){tourI=i;if(i>=0)go(VIEWS[i]);tourShow()}
+function closeIntro(tour){const el=$("#intro");el.classList.add("out");setTimeout(()=>{el.hidden=true;try{$("#introVid").pause()}catch(e){}},550);if(tour)tourGo(0);else go("wifi")}
+
+document.addEventListener("click",e=>{
+  const s=e.target.closest("[data-sheet]");if(s){const[k,i]=s.dataset.sheet.split(":");openSheet(k,+i);return}
+  const g=e.target.closest("[data-go]");if(g){if(g.dataset.pre)preselect(g.dataset.pre);go(g.dataset.go);render();return}
+  const c=e.target.closest("[data-copyfrom]");if(c){const inp=$("#"+c.dataset.copyfrom);if(inp.value)copy(inp.value,inp);else{toast(T[lang].nothing);inp.focus()}return}
+  const l=e.target.closest(".lang button");if(l){lang=l.dataset.lang;store.set("gt-lang",lang);render();return}
+  const ch=e.target.closest("#reqChips .chip");if(ch){const i=+ch.dataset.i;picked.has(i)?picked.delete(i):picked.add(i);ch.setAttribute("aria-pressed",picked.has(i));if(!$("#reqResult").hidden)buildReq(true);return}
+});
+$("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet")closeSheet()});
+$("#sheetX").onclick=closeSheet;document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
+$("#testBtn").onclick=test;$("#sendBtn").onclick=send;$("#copyReq").onclick=()=>copy($("#reqText").textContent,$("#reqText"));
+$("#tourNext").onclick=()=>tourGo(tourI+1<VIEWS.length?tourI+1:-1);$("#tourX").onclick=()=>tourGo(-1);$("#tourStart").onclick=()=>tourGo(0);
 $("#enterBtn").onclick=()=>closeIntro(true);$("#skipBtn").onclick=()=>closeIntro(false);
-const _render=render;render=function(){_render();tourShow()};
-render();
-const h=location.hash.slice(1);go(["wifi","hotel","food","enjoy","help"].includes(h)?h:"wifi");
+$$("[data-logo]").forEach(el=>{el.innerHTML=ICON});
+[["ssid",CONFIG.wifi.ssid],["pass",CONFIG.wifi.password]].forEach(([id,v])=>{const el=$("#"+id);el.value=v||store.get("gt-"+id)||"";if(v)el.readOnly=true;el.oninput=()=>store.set("gt-"+id,el.value)});
+$("#room").value=store.get("gt-room")||"";$("#room").oninput=()=>{store.set("gt-room",$("#room").value);if(!$("#reqResult").hidden)buildReq(true)};
+$("#extra").oninput=()=>{if(!$("#reqResult").hidden)buildReq(true)};
+render();go("wifi");
 </script>
 </body></html>
