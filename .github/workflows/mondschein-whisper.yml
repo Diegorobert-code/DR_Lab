@@ -16,11 +16,13 @@ jobs:
           node-version: 22
       - name: Werkzeuge
         run: |
-          sudo apt-get update -q && sudo apt-get install -y -q espeak-ng
+          sudo apt-get update -q && sudo apt-get install -y -q espeak-ng ffmpeg
           npm install --no-save --prefix tools/tests playwright@1.56.1
           npx --prefix tools/tests playwright install --with-deps chromium
       - name: Satz sprechen und erkennen
         run: |
           espeak-ng -v de -s 140 -w /tmp/satz-roh.wav "Ich habe einen kleinen Hund."
           ffmpeg -loglevel error -y -i /tmp/satz-roh.wav -ar 16000 -ac 1 -c:a pcm_s16le /tmp/satz.wav
-          node tools/tests/whisper-test.mjs /tmp/satz.wav
+          set -o pipefail
+          node tools/tests/whisper-test.mjs /tmp/satz.wav 2>&1 | tee /tmp/whisper.txt || { grep -v '^\[page\]' /tmp/whisper.txt | tail -5 | sed 's/^/::error::/'; exit 1; }
+          grep -E '^Laden' /tmp/whisper.txt | sed 's/^/::notice::/'
