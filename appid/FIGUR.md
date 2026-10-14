@@ -1,21 +1,16 @@
-# AppiD / Florence – Figur (Diego, 14.10.2026)
+# AppiD / Florence – Figur «Flo» (Entwurf, 14.10.2026)
 
-Status: Entwurf. Bild und Referenzfoto kommen aus dem Thread mit Tinko (Phönix-Figur), danach hier einbauen.
+Status: Konzept, noch nicht in der App eingebaut (erst nach Diegos Go). Name «Flo» noch zu bestätigen.
 
-Rolle: das Gesicht und die Stimme der Ernährungs- und Gesundheits-App. Sie begleitet, erklärt und gibt die persönlichen Tipps.
+Rolle: Gesicht und Stimme der Ernährungs- und Gesundheits-App. Sie begleitet, erklärt und gibt die persönlichen Tipps.
 
-Look:
-- junge, sportliche Frau, als KI gestaltet
-- roboterartig, aber cool und warm, kein kalter Roboter
-- Sportkleidung
-- nach dem Vorbild der Frau auf Diegos Referenzfoto, aber stilisiert, nicht als Porträt
-- Diegos Varianten im Diktat: «Sportelfe» und roboterartig; Entscheid: roboterartig, cool, mit Sportkleidung
+Look: junge, sportliche, coole Roboter-KI-Frau in Sportkleidung. Weiss-mintgrüne Körperteile mit feinen leuchtenden Linien, kleiner leuchtender Herzkern, kurze Sportjacke in Navy, mintgrüne Leggings, weisse Laufschuhe.
 
-Charakter (Vorschlag): ruhig, motivierend ohne Druck, ehrlich (Schätzungen sagt sie als Schätzungen), humorvoll, schweizerisch.
+Charakter: energisch und fröhlich, motiviert ohne Druck, ehrlich (Schätzungen sind Schätzungen), mag frisches Essen und Bewegung draussen.
 
-Name: offen (Vorschlag Florence, passend zum Projektnamen).
+Im Prototyp vorgesehen:
+- kleines Bild von Flo neben dem Tipp-Kasten «Für dich»
+- Flo spricht die Tipps und die Abendfrage
+- Startbildschirm: Flo über dem Mikrofon
 
-Hinweis: Wenn die Frau auf dem Foto erkennbar bleibt, braucht es vor einer Veröffentlichung ihr Einverständnis.
-
-Diktat Diego 14.10.2026 09:15 (unverändert):
-«Eine junge sportliche Lady, nach ihrem Vorbild, aber eine KI. Also sie ist sportlich, jung, hat Sportkleidung an und sieht aus ein bisschen wie sie. Aber es muss roboterartig sein. Nein, muss nicht. Einfach eine junge Lady. Doch, roboterartig. Nee, eine Elfe. Eine Sportelfe. Nein, roboterartig, aber cool, nach ihrem Vorbild, mit Sportkleidung. Das ist die Gesundheits-App. Genau.»
+Hinweis: Das Gesicht ist nach dem Vorbild einer realen Person gestaltet. Vor jeder Veröffentlichung braucht es ihr Einverständnis. Das Vorbild-Foto liegt nur in der Projektablage, nicht in diesem öffentlichen Repo.
