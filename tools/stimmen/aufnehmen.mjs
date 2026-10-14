@@ -62,7 +62,7 @@ const index = new Set(fs.existsSync(path.join(outDir, 'index.json')) ? JSON.pars
 const zaehler = {}; let neu = 0, fehler = 0;
 for (const s of saetze) {
   if (probe && (zaehler[s.who] = (zaehler[s.who] || 0) + 1) > 3) continue;
-  const f = cfg.figuren[s.who], id = idOf(f.stimme);
+  const f = cfg.figuren[s.who], id = f.id || idOf(f.stimme);
   if (!id) { console.error(`Stimme «${f.stimme}» (${s.who}) nicht im Konto, übersprungen.`); fehler++; continue; }
   const file = path.join(outDir, s.key + '.mp3');
   if (fs.existsSync(file)) { index.add(s.key); continue; }

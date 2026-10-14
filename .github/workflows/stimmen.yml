@@ -15,6 +15,10 @@ on:
         description: 'Nur 3 Probesätze pro Figur (zum Anhören)'
         type: boolean
         default: true
+      nur:
+        description: 'Nur diese Figuren, mit Komma (leer = alle), z. B. otti'
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -35,7 +39,7 @@ jobs:
       - name: Aufnehmen
         env:
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
-        run: node tools/stimmen/aufnehmen.mjs ${{ inputs.app }} ${{ inputs.probe && '--probe' || '' }}
+        run: node tools/stimmen/aufnehmen.mjs ${{ inputs.app }} ${{ inputs.probe && '--probe' || '' }} ${{ inputs.nur != '' && format('--nur {0}', inputs.nur) || '' }}
       - name: Entwurf-PR öffnen
         env:
           GH_TOKEN: ${{ github.token }}
