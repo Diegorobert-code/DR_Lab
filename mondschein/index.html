@@ -606,6 +606,13 @@ h3.ch{font-size:19px;margin-bottom:10px}
   </div>
 
   <div class="card">
+    <h3 class="ch">Was Otti sich merkt</h3>
+    <div id="memList" class="small"></div>
+    <button class="btn wide" id="memClear" style="margin-top:10px">🧽 Alles vergessen</button>
+    <p class="small muted" style="margin:10px 0 0">Otti merkt sich, was dein Kind ihm erzählt: Lieblingstier, -farbe, -essen, -spiel, -ding, welche Geschichten es oft hört und Fragen, auf die Otti noch keine Antwort hatte. Alles bleibt nur auf diesem Handy, nichts wird gesendet. Keine Tonaufnahmen.</p>
+  </div>
+
+  <div class="card">
     <h3 class="ch">Name des Kindes (freiwillig)</h3>
     <div class="row"><input class="in" id="pName" maxlength="24" autocomplete="off" placeholder="z. B. Mila"><button class="btn" id="pNameSave">Speichern</button></div>
     <p class="small muted" style="margin:8px 0 0">Otti begrüsst dann mit Namen. Bleibt nur auf diesem Handy.</p>
@@ -1411,6 +1418,7 @@ function buildSeq(story){
   return seq;
 }
 function openStory(story, autoplay=true){
+  if (story.title) memStory(story.title);
   R.story = story; R.seq = buildSeq(story); R.idx = 0; R.vars = {}; R.sent = 0; R.started = false;
   R.seq.forEach(p => { if (p.q) p._chosen = null; });
   $('#rTitle').textContent = story.title;
@@ -1954,13 +1962,44 @@ $('#tkRate').addEventListener('click', e => {
   S.rate = +b.dataset.tkrate; saveS(); renderTalk();
   const f = TALKERS[TK.who]; TTS.speak(f.pre + 'So schnell spreche ich jetzt.', {pitch:f.pitch});
 });
+/* ---------- Lernen: Otti merkt sich Dinge, nur auf diesem Handy ---------- */
+const MEM_KAT = {tier:'Lieblingstier', farbe:'Lieblingsfarbe', essen:'Lieblingsessen', spiel:'Lieblingsspiel', ding:'Lieblingsding'};
+function mem(){ return Object.assign({stories:{}, fragen:[]}, store.get('mem', {})); }
+function memSet(m){ store.set('mem', m); }
+const gross = w => w.charAt(0).toUpperCase() + w.slice(1);
+// Lernt aus einem Satz des Kindes. Gibt eine Antwort zurück, wenn es etwas Neues gelernt hat.
+function lern(raw){
+  const t = String(raw||'').toLowerCase().replace(/[.!?,]+/g,' ').replace(/\s+/g,' ').trim(), m = mem();
+  let x = t.match(/\b(?:ich heisse|ich heiße|ich heiss|mein name ist)\s+([a-zäöüéè-]{2,20})/);
+  if (x){ const n = gross(x[1]); if (S.name !== n){ S.name = n; saveS(); } return `Hallo ${n}! Deinen Namen merke ich mir.`; }
+  x = t.match(/\bmein(?:e)? lieblings(tier|farbe|essen|spiel|ding|sache)\s+(?:ist|sind)\s+(?:der |die |das |ein |eine |einen )?([a-zäöüéè -]{2,30})/);
+  if (x){ const k = x[1] === 'sache' ? 'ding' : x[1]; let v = x[2].trim().split(' ').slice(0,3).join(' ');
+    if (k !== 'farbe') v = v.split(' ').map(gross).join(' ');
+    m[k] = v; memSet(m); return `${gross(v)}! Das merke ich mir${S.name ? ', '+S.name : ''}.`; }
+  return '';
+}
+// Frage ohne Antwort lokal merken (Eltern sehen sie, nichts wird gesendet).
+function memFrage(raw){ const m = mem(), q = String(raw||'').trim().slice(0,120); if (!q) return; m.fragen = m.fragen.filter(f => f.q !== q).concat({q, ts:Date.now()}).slice(-20); memSet(m); }
+function memStory(title){ const m = mem(); m.stories[title] = (m.stories[title]||0) + 1; memSet(m); }
+function memLieblingsGeschichte(){ const e = Object.entries(mem().stories).sort((a,b) => b[1]-a[1])[0]; return e && e[1] >= 3 ? e[0] : ''; }
+function renderMem(){
+  const m = mem(), rows = Object.entries(MEM_KAT).filter(([k]) => m[k]).map(([k,l]) => `<div>${l}: <b>${esc(m[k])}</b></div>`);
+  const lg = memLieblingsGeschichte(); if (lg) rows.push(`<div>Lieblingsgeschichte: <b>${esc(lg)}</b></div>`);
+  if (m.fragen.length) rows.push(`<div style="margin-top:8px">Fragen ohne Antwort:</div><ul style="margin:4px 0 0;padding-left:20px">${m.fragen.slice().reverse().map(f => `<li>${esc(f.q)}</li>`).join('')}</ul>`);
+  $('#memList').innerHTML = rows.join('') || '<span class="muted">Noch nichts gemerkt.</span>';
+}
+$('#memClear').addEventListener('click', () => { memSet({stories:{}, fragen:[]}); renderMem(); toast('Otti hat alles vergessen.'); });
 function talkReply(who, raw){
   const f = TALKERS[who], t = String(raw||'').toLowerCase().trim();
   const r = Math.random, pick = a => a[Math.floor(r()*a.length)];
-  let a;
+  let a, M = mem();
+  const neu = t ? lern(raw) : '';
+  if (neu) M = mem();
   if (!t) a = 'Ich habe nichts gehört. Magst du es nochmal sagen?';
+  else if (neu) a = neu + ' Und was magst du noch?';
   else if (/traurig|weinen|wein |angst|fürcht|allein|wütend|böse|weh|schlimm/.test(t)) a = 'Oh, das klingt schwer. Gut, dass du es sagst. Magst du es auch Mama, Papa oder jemandem erzählen, den du lieb hast? Die können dich ganz fest drücken.';
-  else if (/^(hallo|hoi|hi|hey|grüezi|guten (tag|morgen|abend)|sali)\b/.test(t)) a = f.hi + ' Was möchtest du mir erzählen?';
+  else if (/^(hallo|hoi|hi|hey|grüezi|guten (tag|morgen|abend)|sali)\b/.test(t)) a = f.hi + (M.tier && r() < .5 ? ` Ich weiss noch: Du magst ${M.tier}!` : '') + ' Was möchtest du mir erzählen?';
+  else if (/was (magst|mag) ich|weisst du (noch )?was ich mag|was ist mein lieblings/.test(t)) { const k = Object.keys(MEM_KAT).filter(k => M[k]); a = k.length ? 'Ich weiss es noch! ' + k.map(k => `${k==='farbe'?'Deine':'Dein'} ${MEM_KAT[k]} ist ${M[k]}.`).join(' ') : 'Das hast du mir noch nicht verraten. Sag zum Beispiel: Mein Lieblingstier ist der Fuchs.'; }
   else if (/wie heisst du|wer bist du|was bist du/.test(t)) a = f.me;
   else if (/\bki\b|künstlich|computer|roboter|maschine/.test(t)) a = 'Eine KI ist ein Computer, der sprechen und antworten kann. Ich bin ein Spiel-Freund: Meine Antworten habe ich schon vorher gelernt. Und weisst du was? Auch eine KI kann sich irren.';
   else if (/müde|schlaf|gute nacht|bett|gähn/.test(t)) a = pick(['Ich bin auch schon ein bisschen müde. Sollen wir zusammen tief einatmen … und ausatmen?', 'Kuschel dich gemütlich ein. Im KI-Leitfaden lese ich dir etwas Ruhiges vor.']);
@@ -1969,11 +2008,11 @@ function talkReply(who, raw){
   else if (/froh|glücklich|schön|toll|super|freu|lustig|spass/.test(t)) a = pick(['Das freut mich so! Erzähl mir mehr davon.', 'Juhui! Da hüpft mein Herz vor Freude.']);
   else if (/spiel/.test(t)) a = 'Spielen ist toll! Unter «Spiele» können wir uns zusammen bewegen. Magst du es probieren?';
   else if (/geschicht|erzähl/.test(t)) a = 'Ich liebe Geschichten! Unter «Geschichten» kannst du sogar deine eigene anfangen.';
-  else if (/\?|warum|wieso|weshalb|^wie |^was |^wo |^wer /.test(t)) a = 'Das ist eine gute Frage! Das weiss ich nicht genau. Frag doch Mama oder Papa, zusammen findet ihr es heraus.';
+  else if (/\?|warum|wieso|weshalb|^wie |^was |^wo |^wer /.test(t) && !memFrage(raw)) a = 'Das ist eine gute Frage! Das weiss ich nicht genau. Frag doch Mama oder Papa, zusammen findet ihr es heraus.';
   else if (/kaputt|verloren|vergessen|hingefallen/.test(t)) a = pick(['Oh je, das ist ärgerlich. Wer könnte dir helfen, das wieder gut zu machen?', 'Das passiert manchmal. Weisst du schon, was du jetzt machen kannst?']);
-  else if (/hund|katze|pferd|tier|vogel|fisch|hase|maus|bär|löwe|elefant|dino/.test(t)) a = pick(['Oh, Tiere mag ich sehr! Welches Tier magst du am liebsten, und warum?', 'Ein Tier! Wie gross ist es, und welche Farbe hat es?', 'Wenn du ein Tier sein könntest, welches wärst du? Und warum?']);
-  else if (/farbe|rot|blau|grün|gelb|rosa|lila|pink|orange/.test(t)) a = pick(['Farben sind wie kleine Zaubereien. Welche Farbe magst du am liebsten?', 'Weisst du, was diese Farbe hat? Zähl mir drei Dinge auf!']);
-  else if (/essen|hunger|pizza|nudeln|glace|eis|schoggi|schokolade|apfel|banane|znüni|zvieri/.test(t)) a = pick(['Mmh, jetzt bekomme ich auch Hunger! Was isst du am allerliebsten?', 'Lecker! Wenn du heute kochen dürftest, was würdest du machen?']);
+  else if (/hund|katze|pferd|tier|vogel|fisch|hase|maus|bär|löwe|elefant|dino/.test(t)) a = M.tier ? pick([`Tiere! Dein Lieblingstier ist doch ${M.tier}. Was kann ${M.tier} besonders gut?`, 'Ein Tier! Wie gross ist es, und welche Farbe hat es?']) : pick(['Oh, Tiere mag ich sehr! Welches Tier magst du am liebsten, und warum?', 'Ein Tier! Wie gross ist es, und welche Farbe hat es?', 'Wenn du ein Tier sein könntest, welches wärst du? Und warum?']);
+  else if (/farbe|rot|blau|grün|gelb|rosa|lila|pink|orange/.test(t)) a = M.farbe ? `Ich weiss: Deine Lieblingsfarbe ist ${M.farbe}! Was hat alles diese Farbe?` : pick(['Farben sind wie kleine Zaubereien. Welche Farbe magst du am liebsten?', 'Weisst du, was diese Farbe hat? Zähl mir drei Dinge auf!']);
+  else if (/essen|hunger|pizza|nudeln|glace|eis|schoggi|schokolade|apfel|banane|znüni|zvieri/.test(t)) a = M.essen ? `Mmh! Und dein Lieblingsessen ist ja ${M.essen}. Wann gibt es das wieder?` : pick(['Mmh, jetzt bekomme ich auch Hunger! Was isst du am allerliebsten?', 'Lecker! Wenn du heute kochen dürftest, was würdest du machen?']);
   else if (/mama|papa|mami|papi|oma|opa|bruder|schwester|familie|freund|freundin/.test(t)) a = pick(['Das klingt nach jemandem, den du lieb hast. Was macht ihr gerne zusammen?', 'Wie schön! Was ist das Lustigste, das ihr zusammen erlebt habt?']);
   else if (/kindergarten|chindsgi|schule|kita|lehrer|lehrerin/.test(t)) a = pick(['Und, was hast du heute im Kindergarten oder in der Schule erlebt?', 'Was spielst du dort am liebsten? Und mit wem?']);
   else if (/heute|gestern|morgen/.test(t)) a = pick(['Was war heute das Schönste für dich?', 'Und worauf freust du dich morgen?']);
@@ -2093,6 +2132,7 @@ function renderParents(){
   if (!$('#lFrom').value) $('#lFrom').value = store.get('lastFrom', '');
   renderLetters();
   renderIdeas();
+  renderMem();
 }
 $('#segLimit').addEventListener('click', e => { const b=e.target.closest('[data-limit]'); if(!b) return; S.limit=+b.dataset.limit; saveS(); renderParents(); toast(S.limit ? `Zeitlimit: ${S.limit} Min. pro Tag` : 'Kein Zeitlimit'); });
 $('#segHear').addEventListener('click', e => { const b=e.target.closest('[data-hearset]'); if(!b) return; S.hear=b.dataset.hearset; saveS(); renderParents(); if (S.hear==='whisper'){ toast('Whisper wird geladen …'); WH.load().then(() => toast('Whisper ist bereit 👂')).catch(() => toast('Whisper konnte nicht laden. Bitte im WLAN nochmal.')); } });
