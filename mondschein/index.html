@@ -866,8 +866,16 @@ $$('[data-night-toggle]').forEach(b => b.addEventListener('click', () => { S.nig
 const OTTI = { pitch: 1.12, tempo: 0.92 };
 // iPhone/iPad lesen bei gleichem Tempo-Wert deutlich langsamer vor als andere Geräte, darum dort etwas schneller.
 const IOS_TEMPO = (/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints > 1)) ? 1 : 1;
+/* Echte Stimmen (ElevenLabs), einmal aufgenommen und als mp3 in der App: läuft ohne Internet, nichts vom Kind geht raus.
+   Liegt für einen Satz keine Aufnahme vor (z.B. mit dem Namen des Kindes), liest die Gerätestimme vor. */
+const STIMME = { set: new Set(), audio: null };
+function stimmeHash(t){ let h = 0x811c9dc5; for (const c of t){ h ^= c.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8,'0'); }
+function stimmeWer(o){ if (o.lang === 'en' || o.flat) return ''; if (o.who) return o.who; const t = typeof TALKERS !== 'undefined' && Object.keys(TALKERS).find(k => TALKERS[k].pitch === o.pitch); return (!t || t === 'sunny') ? 'otti' : t; }
+fetch('stimme/index.json').then(r => r.ok ? r.json() : []).then(l => { (l || []).forEach(k => STIMME.set.add(k)); }).catch(() => {});
 const TTS = {
   ok: 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined',
+  // Für das Aufnahme-Werkzeug: Sprecher + Text so, wie die App sie sucht.
+  key(text, o={}){ const w = stimmeWer(o); return w ? w + '/' + stimmeHash(this.clean(text)) : ''; },
   token: 0, timer: null,
   voices(){ if(!this.ok) return []; return speechSynthesis.getVoices().filter(v => /^de/i.test(v.lang)); },
   // Beste Stimme zuerst: neuronale/erweiterte Stimmen klingen flüssig, Kompaktstimmen wie Roboter.
@@ -881,17 +889,33 @@ const TTS = {
     return r; },
   voice(){ const vs=this.voices(); if(!vs.length) return null; return vs.find(v=>v.name===S.voice) || vs.slice().sort((a,b)=>this.rank(b)-this.rank(a))[0]; },
   clean(t){ return t.replace(/[«»„“"‹›]/g,'').replace(/\s*–\s*/g,', ').replace(/\s*…\s*/g,' ... ').trim(); },
-  stop(){ this.token++; clearTimeout(this.timer); if(this.ok){ try{ speechSynthesis.cancel(); }catch(e){} } },
+  stop(){ this.token++; clearTimeout(this.timer); if (STIMME.audio){ try{ STIMME.audio.pause(); }catch(e){} STIMME.audio = null; } if(this.ok){ try{ speechSynthesis.cancel(); }catch(e){} } },
   speak(list, o={}){
     this.stop();
     if (typeof list === 'string') list = [list];
     const tok = this.token; let i = o.start || 0;
-    if (!this.ok){ if(o.onEnd) setTimeout(()=>{ if(tok===this.token) o.onEnd(); }, 50); return; }
+    const hasRec = list.some(t => STIMME.set.has(this.key(t, o)));
+    if (!this.ok && !hasRec){ if(o.onEnd) setTimeout(()=>{ if(tok===this.token) o.onEnd(); }, 50); return; }
     const next = () => {
       if (tok !== this.token) return;
       if (i >= list.length){ o.onEnd && o.onEnd(); return; }
       o.onSentence && o.onSentence(i);
       const text = this.clean(list[i]);
+      const k = this.key(list[i], o);
+      if (k && STIMME.set.has(k)){
+        const a = new Audio('stimme/' + k + '.mp3'); STIMME.audio = a;
+        a.preservesPitch = true; a.playbackRate = Math.max(.6, Math.min(1.6, S.rate * (o.rateMul || 1)));
+        a.volume = Math.max(0, Math.min(1, S.vol == null ? 1 : +S.vol));
+        let done = false;
+        const fin = () => { if (done || tok !== this.token) return; done = true; clearTimeout(this.timer); i++; setTimeout(next, o.gap == null ? 40 : o.gap); };
+        a.onended = fin;
+        // Aufnahme fehlt oder spielt nicht: diesen Satz mit der Gerätestimme, nicht hängen bleiben.
+        a.onerror = () => { if (done || tok !== this.token) return; STIMME.set.delete(k); next(); };
+        clearTimeout(this.timer); this.timer = setTimeout(fin, 4000 + text.length * 150 / S.rate);
+        a.play().catch(() => a.onerror());
+        return;
+      }
+      if (!this.ok){ i++; setTimeout(next, 50); return; }
       const u = new SpeechSynthesisUtterance(text);
       if (o.lang === 'en'){ const ev = this.ok ? speechSynthesis.getVoices().filter(x => /^en/i.test(x.lang)).sort((a,b) => this.rank(b)-this.rank(a) + (/en[-_]GB/i.test(b.lang)?5:0) - (/en[-_]GB/i.test(a.lang)?5:0))[0] : null; if (ev){ u.voice = ev; u.lang = ev.lang; } else u.lang = 'en-GB'; }
       else { const v = this.voice(); if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'de-DE'; }
@@ -2356,6 +2380,32 @@ function pick1(a){ return a[Math.floor(Math.random() * a.length)]; }
 document.addEventListener('visibilitychange', () => { if (current !== 'call') return; if (document.hidden){ if (CALL.stream){ CALL.stream.getTracks().forEach(t => t.stop()); CALL.stream = null; } $('#callSelf').classList.remove('live'); } else if (CALL.on && CALL.selfOn) callCam(true); });
 
 
+
+/* ---------- Aufnahme-Liste für echte Stimmen ----------
+   tools/stimmen/aufnehmen.mjs ruft das auf und nimmt jeden Satz einmal auf. Sätze mit dem Namen des Kindes sind nicht dabei. */
+window.MS_TEXTE = () => {
+  const out = new Map();
+  const add = (text, o={}) => { const t = String(text||'').trim(); if (!t || /\{\w+\}/.test(t)) return; const k = TTS.key(t, o); if (k) out.set(k, { key:k, who:k.split('/')[0], text:TTS.clean(t) }); };
+  STORIES.forEach(st => st.parts.forEach(p => {
+    if (p.q){ const opts = p.opts.map(o => o.l); add(p.q); add(opts.slice(0,-1).join(', ') + ' oder ' + opts[opts.length-1] + '?'); }
+    [p.t, p.after].forEach(t => {
+      if (!t) return;
+      const vars = [...new Set((t.match(/\{(\w+)\}/g) || []).map(m => m.slice(1,-1)))];
+      let combos = [{}];
+      vars.forEach(v => { const vals = []; st.parts.forEach(q => (q.opts||[]).forEach(o => { if (o.v && o.v[v] != null) vals.push(o.v[v]); })); combos = vals.length ? combos.flatMap(c => vals.map(x => Object.assign({}, c, {[v]:x}))) : combos; });
+      combos.forEach(c => splitSentences(fill(t, c)).forEach(x => add(x)));
+    });
+  }));
+  Object.keys(TALKERS).forEach(k => { const f = TALKERS[k], o = {pitch:f.pitch};
+    add(f.pre + f.hi, o); add(f.pre + 'So schnell spreche ich jetzt.', o);
+    const src = String(talkReply), lits = src.match(/'[^'\n]{8,}'/g) || [];
+    lits.map(l => l.slice(1,-1)).filter(l => /[a-zäöü]\s/.test(l) && !/\\/.test(l)).forEach(a => add(f.pre + a, o));
+    add(f.pre + f.hi + ' Was möchtest du mir erzählen?', o); add(f.pre + f.me, o); add(f.pre + f.joke, o); add(f.pre + f.fav + ' Und du, was magst du am liebsten?', o);
+  });
+  MOVES.forEach(m => m.steps.forEach(([t]) => add(t, {pitch:(TALKERS[m.fig] && TALKERS[m.fig].pitch) || OTTI.pitch})));
+  (window.MS_LITERALE || []).forEach(t => add(t));
+  return [...out.values()];
+};
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>

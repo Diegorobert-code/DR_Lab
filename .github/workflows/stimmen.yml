@@ -1,0 +1,59 @@
+# Echte Stimmen für Otti und die anderen Figuren mit ElevenLabs aufnehmen.
+# Braucht das Repository-Secret ELEVENLABS_API_KEY (Settings → Secrets and variables → Actions).
+# Legt die Tondateien auf einen eigenen Zweig und öffnet einen Entwurf-PR. Live geht nichts ohne Diegos Go.
+name: Stimmen aufnehmen
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: 'Welche App'
+        type: choice
+        default: mondschein
+        options: [mondschein]
+      probe:
+        description: 'Nur 3 Probesätze pro Figur (zum Anhören)'
+        type: boolean
+        default: true
+      nur:
+        description: 'Nur diese Figuren, mit Komma (leer = alle), z. B. otti'
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  aufnehmen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Browser bereitstellen
+        run: |
+          npm install --no-save --prefix tools/stimmen playwright@1.56.1
+          npx --prefix tools/stimmen playwright install --with-deps chromium
+      - name: Aufnehmen
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: node tools/stimmen/aufnehmen.mjs ${{ inputs.app }} ${{ inputs.probe && '--probe' || '' }} ${{ inputs.nur != '' && format('--nur {0}', inputs.nur) || '' }}
+      - name: Entwurf-PR öffnen
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rm -rf tools/stimmen/node_modules tools/stimmen/package*.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          zweig="stimmen-${{ inputs.app }}-${{ github.run_number }}"
+          git checkout -b "$zweig"
+          git add ${{ inputs.app }}/stimme tools/stimmen/${{ inputs.app }}-saetze.json
+          git diff --cached --quiet && { echo "Nichts Neues aufgenommen."; exit 0; }
+          git commit -m "${{ inputs.app }}: Stimmen aufgenommen (${{ inputs.probe && 'Probe' || 'alle' }})"
+          git push -u origin "$zweig"
+          gh pr create --draft --base "${{ github.ref_name }}" --head "$zweig" \
+            --title "${{ inputs.app }}: echte Stimmen (${{ inputs.probe && 'Probe' || 'alle' }})" \
+            --body "Tondateien von ElevenLabs, aufgenommen von der Aktion «Stimmen aufnehmen». Wartet auf Diegos Go." \
+            || echo "Zweig $zweig ist gepusht, PR bitte auf GitHub öffnen."
