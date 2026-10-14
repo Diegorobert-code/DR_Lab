@@ -106,7 +106,7 @@ svg.chart{width:100%;height:auto;display:block}
 .seg button[aria-pressed="true"]{background:var(--card);color:var(--navy);box-shadow:0 1px 4px rgba(20,40,60,.12)}
 input[type=range]{width:100%;height:36px;accent-color:var(--navy)}
 .rangelbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
-#sig{width:100%;height:auto;aspect-ratio:600/220;display:block;background:#fff;border:1px dashed #b9b0a3;border-radius:12px;touch-action:none;cursor:crosshair}
+#sig{width:100%;height:auto;aspect-ratio:600/220;display:block;background:#fff;border:1px dashed #b9b0a3;border-radius:12px;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:crosshair}
 .phase{font-size:14px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--coral2)}
 .clock{font-size:44px;font-weight:700;color:var(--navy);line-height:1.1;font-variant-numeric:tabular-nums}
 .sub{font-size:15px;color:var(--navy);margin:14px 0 4px}
@@ -260,7 +260,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
       <canvas id="sig" width="600" height="220" aria-label="Unterschriftsfeld"></canvas>
       <div class="row">
         <button class="btn ghost" id="sigClear">Löschen</button>
-        <button class="btn primary" id="sigOk">OK, einverstanden</button>
+        <button class="btn primary" id="sigOk" disabled>OK, einverstanden</button>
       </div>
       <button class="btn ghost" id="sigCancel">Zurück</button>
       <div class="notice warn hidden" id="sigErr"></div>
@@ -1061,28 +1061,54 @@ function sRequestStart(demo){
 $('sStart').addEventListener('click', function(){ sRequestStart(false); });
 $('sDemo').addEventListener('click', function(){ sRequestStart(true); });
 
-// Unterschrift
-var sig = $('sig'), sgx = sig.getContext('2d'), sigDrawing = false, sigLen = 0, sigLast = null;
-function sigReset(){ sgx.clearRect(0, 0, sig.width, sig.height); sgx.fillStyle = '#fff'; sgx.fillRect(0, 0, sig.width, sig.height); sigLen = 0; }
-function sigPos(ev){ var r = sig.getBoundingClientRect(); return [(ev.clientX - r.left) * sig.width / r.width, (ev.clientY - r.top) * sig.height / r.height]; }
-sig.addEventListener('pointerdown', function(ev){ ev.preventDefault(); sigDrawing = true; sigLast = sigPos(ev); try { sig.setPointerCapture(ev.pointerId); } catch(e){} });
-sig.addEventListener('pointermove', function(ev){
-  if (!sigDrawing) return; ev.preventDefault();
-  var p = sigPos(ev);
-  sgx.strokeStyle = '#1f3a4d'; sgx.lineWidth = 3.5; sgx.lineCap = 'round'; sgx.lineJoin = 'round';
+// Unterschrift: Touch (iPhone) mit eigenem Scroll-Stopp, sonst Maus/Stift
+var sig = $('sig'), sgx = sig.getContext('2d'), sigDrawing = false, sigInk = false, sigLast = null, sigPid = null;
+function sigScale(){ var r = sig.getBoundingClientRect(); return r.width ? sig.width / r.width : 1; }
+function sigReset(){
+  sgx.clearRect(0, 0, sig.width, sig.height); sgx.fillStyle = '#fff'; sgx.fillRect(0, 0, sig.width, sig.height);
+  sigInk = false; sigDrawing = false; sigLast = null; $('sigOk').disabled = true; $('sigErr').classList.add('hidden');
+}
+function sigPos(x, y){ var r = sig.getBoundingClientRect(); return [(x - r.left) * sig.width / r.width, (y - r.top) * sig.height / r.height]; }
+function sigPen(){ sgx.strokeStyle = sgx.fillStyle = '#1f3a4d'; sgx.lineWidth = 3 * sigScale(); sgx.lineCap = 'round'; sgx.lineJoin = 'round'; }
+function sigStart(x, y){
+  sigDrawing = true; sigLast = sigPos(x, y); sigPen();
+  sgx.beginPath(); sgx.arc(sigLast[0], sigLast[1], sgx.lineWidth / 2, 0, Math.PI * 2); sgx.fill(); // auch ein Punkt zählt
+  if (!sigInk){ sigInk = true; $('sigOk').disabled = false; $('sigErr').classList.add('hidden'); }
+}
+function sigMove(x, y){
+  if (!sigDrawing) return;
+  var p = sigPos(x, y); sigPen();
   sgx.beginPath(); sgx.moveTo(sigLast[0], sigLast[1]); sgx.lineTo(p[0], p[1]); sgx.stroke();
-  sigLen += Math.hypot(p[0] - sigLast[0], p[1] - sigLast[1]); sigLast = p;
+  sigLast = p;
+}
+function sigEnd(){ sigDrawing = false; sigPid = null; }
+sig.addEventListener('touchstart', function(ev){ ev.preventDefault(); var t = ev.changedTouches[0]; sigStart(t.clientX, t.clientY); }, {passive:false});
+sig.addEventListener('touchmove', function(ev){ ev.preventDefault(); for (var i = 0; i < ev.touches.length; i++){ sigMove(ev.touches[i].clientX, ev.touches[i].clientY); break; } }, {passive:false});
+sig.addEventListener('touchend', function(ev){ ev.preventDefault(); sigEnd(); }, {passive:false});
+sig.addEventListener('touchcancel', sigEnd);
+sig.addEventListener('pointerdown', function(ev){
+  if (ev.pointerType === 'touch') return; // Touch läuft über touchstart
+  ev.preventDefault(); sigPid = ev.pointerId; sigStart(ev.clientX, ev.clientY);
+  try { sig.setPointerCapture(ev.pointerId); } catch(e){}
 });
-['pointerup','pointercancel','pointerleave'].forEach(function(n){ sig.addEventListener(n, function(){ sigDrawing = false; }); });
+sig.addEventListener('pointermove', function(ev){ if (ev.pointerType === 'touch' || ev.pointerId !== sigPid) return; ev.preventDefault(); sigMove(ev.clientX, ev.clientY); });
+['pointerup','pointercancel'].forEach(function(n){ sig.addEventListener(n, function(ev){ if (ev.pointerType !== 'touch') sigEnd(); }); });
 $('sigClear').addEventListener('click', sigReset);
 $('sigCancel').addEventListener('click', function(){ sPending = null; sShow('sStartBox'); });
+function sigImage(k, t){ // Unterschrift + Kürzel, Datum, Uhrzeit als ein Bild
+  var c = document.createElement('canvas'); c.width = sig.width; c.height = sig.height + 44;
+  var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(sig, 0, 0);
+  x.fillStyle = '#5b6670'; x.font = '600 22px -apple-system,system-ui,sans-serif'; x.fillText(k + ' · ' + new Date(t).toLocaleString('de-CH', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'}), 14, c.height - 14);
+  return c.toDataURL('image/png');
+}
 $('sigOk').addEventListener('click', function(){
   if (!sPending) { sShow('sStartBox'); return; }
-  if (sigLen < 60){ var n = $('sigErr'); n.textContent = 'Bitte zuerst im Feld unterschreiben.'; n.classList.remove('hidden'); return; }
-  var c = consents(); c[sPending.k] = {t:Date.now(), sig:sig.toDataURL('image/png')};
+  if (!sigInk){ var n = $('sigErr'); n.textContent = 'Bitte zuerst im Feld unterschreiben.'; n.classList.remove('hidden'); return; }
+  var t = Date.now(), c = consents(); c[sPending.k] = {t:t, k:sPending.k, sig:sigImage(sPending.k, t)};
   if (!saveObj(CKEY, c)){ var m = $('sigErr'); m.textContent = 'Speichern nicht möglich (Speicher voll oder blockiert).'; m.classList.remove('hidden'); return; }
   sBegin(sPending);
 });
+sigReset();
 
 // Marker-Knöpfe
 $('sMarkers').innerHTML = MARKERS.map(function(m){ return '<button class="mbtn" data-m="' + m.k + '" style="background:' + m.c + '">' + m.l + '</button>'; }).join('');
