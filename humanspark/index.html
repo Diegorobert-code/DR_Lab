@@ -21,6 +21,10 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.45 var(--font);overflow-x:hidden}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top);background:var(--bg);z-index:50;pointer-events:none}
+.dlg{position:fixed;inset:0;background:rgba(20,30,40,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:60}
+.dlg>div{background:var(--card);border-radius:18px;padding:20px;max-width:360px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.dlg p{margin:0 0 6px}
 body{padding:calc(env(safe-area-inset-top) + 12px) calc(env(safe-area-inset-right) + 16px) calc(env(safe-area-inset-bottom) + 16px) calc(env(safe-area-inset-left) + 16px)}
 .wrap{max-width:560px;margin:0 auto}
 header{display:flex;align-items:center;gap:12px;margin:4px 0 12px}
@@ -507,6 +511,18 @@ var video = $('video'), cv = document.createElement('canvas'); cv.width = 40; cv
 var cx = cv.getContext('2d', {willReadFrequently:true});
 var wave = $('wave'), wx = wave.getContext('2d');
 
+function uiDialog(msg, okLabel, cancelLabel, onOk){
+  var d = document.createElement('div'); d.className = 'dlg'; d.setAttribute('role', 'dialog');
+  d.innerHTML = '<div><p></p><div class="row"' + (cancelLabel ? '' : ' style="grid-template-columns:1fr"') + '>' + (cancelLabel ? '<button class="btn ghost" data-a="0"></button>' : '') + '<button class="btn primary" data-a="1"></button></div></div>';
+  d.querySelector('p').textContent = msg;
+  if (cancelLabel) d.querySelector('[data-a="0"]').textContent = cancelLabel;
+  d.querySelector('[data-a="1"]').textContent = okLabel;
+  d.addEventListener('click', function(ev){ var a = ev.target.dataset && ev.target.dataset.a; if (a == null) return; d.remove(); if (a === '1' && onOk) onOk(); });
+  document.body.appendChild(d);
+}
+function uiConfirm(msg, okLabel, onOk){ uiDialog(msg, okLabel, 'Abbrechen', onOk); }
+function uiAlert(msg){ uiDialog(msg, 'OK'); }
+
 function setStatus(t){ $('status').textContent = t; }
 function setProgress(sec){
   var p = Math.max(0, Math.min(100, Math.round(sec / TOTAL * 100)));
@@ -625,11 +641,13 @@ function stopMeasure(){
 }
 
 function readRed(v){
-  cx.drawImage(v, 0, 0, cv.width, cv.height);
+  var vw = v.videoWidth || cv.width, vh = v.videoHeight || cv.height; // nur die Bildmitte, Ränder sind oft dunkel
+  cx.drawImage(v, vw * 0.25, vh * 0.25, vw * 0.5, vh * 0.5, 0, 0, cv.width, cv.height);
   var d = cx.getImageData(0, 0, cv.width, cv.height).data, r = 0, g = 0, b = 0, n = d.length / 4;
   for (var i = 0; i < d.length; i += 4){ r += d[i]; g += d[i+1]; b += d[i+2]; }
   r /= n; g /= n; b /= n;
-  return {r:r, covered: r > 40 && r > g * 1.5 && r > b * 1.5};
+  // Ohne Licht (iPhone) ist der Finger nur dunkelrot: Rot muss klar überwiegen, darf aber dunkel sein
+  return {r:r, covered: r >= 8 && r - Math.max(g, b) >= 5 && r > g * 1.4 && r > b * 1.4};
 }
 
 function tickCam(){
@@ -885,7 +903,7 @@ function startExercise(){
 
 /* ---------- Vorlesen ---------- */
 function speak(text){
-  if (!('speechSynthesis' in window)){ alert('Vorlesen wird von diesem Browser nicht unterstützt.'); return; }
+  if (!('speechSynthesis' in window)){ uiAlert('Vorlesen wird von diesem Browser nicht unterstützt.'); return; }
   speechSynthesis.cancel();
   var u = new SpeechSynthesisUtterance(text);
   u.lang = 'de-CH';
@@ -1316,8 +1334,9 @@ $('sSkip').addEventListener('click', function(){
 });
 $('sAbort').addEventListener('click', function(){
   if (!sess) return;
-  if (!confirm('Sitzung abbrechen? Die Daten dieser Sitzung werden nicht gespeichert.')) return;
-  sStop(); sess = null; sShow('sStartBox'); sRefreshStart();
+  uiConfirm('Sitzung abbrechen? Die Daten dieser Sitzung werden nicht gespeichert.', 'Sitzung abbrechen', function(){
+    if (!sess) return; sStop(); sess = null; sShow('sStartBox'); sRefreshStart();
+  });
 });
 
 function sStop(){
@@ -1489,7 +1508,7 @@ function renderHistory(){
     b.addEventListener('click', function(){
       var e = load().filter(function(x){ return x.id === b.dataset.open; })[0];
       if (!e) return;
-      if (sess){ alert('Während einer laufenden Sitzung kann keine andere Auswertung geöffnet werden.'); return; }
+      if (sess){ uiAlert('Während einer laufenden Sitzung kann keine andere Auswertung geöffnet werden.'); return; }
       showTab('sitzung'); renderOutcome(e);
     });
   });
@@ -1547,10 +1566,11 @@ function renderK(K, l){
 }
 $('hKDel').addEventListener('click', function(){
   var K = hFilter.slice(2); if (!K) return;
-  if (!confirm('Einwilligung von ' + K + ' widerrufen und alle Sitzungen von ' + K + ' löschen?')) return;
-  save(load().filter(function(e){ return !(e.type === 'sitzung' && e.kuerzel === K); }));
-  var c = consents(); delete c[K]; saveObj(CKEY, c);
-  hFilter = 'alle'; renderHistory();
+  uiConfirm('Einwilligung von ' + K + ' widerrufen und alle Sitzungen von ' + K + ' löschen?', 'Widerrufen und löschen', function(){
+    save(load().filter(function(e){ return !(e.type === 'sitzung' && e.kuerzel === K); }));
+    var c = consents(); delete c[K]; saveObj(CKEY, c);
+    hFilter = 'alle'; renderHistory();
+  });
 });
 
 $('btnExport').addEventListener('click', function(){
@@ -1568,9 +1588,9 @@ $('btnExport').addEventListener('click', function(){
   } catch(e){}
   // In der iPhone-App gibt es keine Downloads: dann in die Zwischenablage kopieren.
   if (document.documentElement.classList.contains('native-app')){
-    var done = function(){ alert('Export in die Zwischenablage kopiert. Du kannst ihn jetzt in eine Notiz oder Mail einfügen.'); };
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(json).then(done, function(){ alert('Export ging leider nicht.'); });
-    else alert('Export ging leider nicht.');
+    var done = function(){ uiAlert('Export in die Zwischenablage kopiert. Du kannst ihn jetzt in eine Notiz oder Mail einfügen.'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(json).then(done, function(){ uiAlert('Export ging leider nicht.'); });
+    else uiAlert('Export ging leider nicht.');
     return;
   }
   var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
@@ -1578,12 +1598,13 @@ $('btnExport').addEventListener('click', function(){
 });
 
 $('btnClear').addEventListener('click', function(){
-  if (!load().length && !Object.keys(consents()).length && !loadObj(IKEY, []).length){ alert('Es gibt noch nichts zu löschen.'); return; }
-  if (!confirm('Wirklich alle Messungen, Sitzungen, Einwilligungen' + (IS_APP ? ' und Einträge' : ', Einträge und Ideen') + ' auf diesem Handy löschen? Das lässt sich nicht rückgängig machen.')) return;
-  try { localStorage.removeItem(KEY); localStorage.removeItem(CKEY); localStorage.removeItem(IKEY); } catch(e){}
-  lastResult = null; resultShown = false; hFilter = 'alle';
-  showBox('startBox');
-  renderHistory();
+  if (!load().length && !Object.keys(consents()).length && !loadObj(IKEY, []).length){ uiAlert('Es gibt noch nichts zu löschen.'); return; }
+  uiConfirm('Wirklich alle Messungen, Sitzungen, Einwilligungen' + (IS_APP ? ' und Einträge' : ', Einträge und Ideen') + ' auf diesem Handy löschen? Das lässt sich nicht rückgängig machen.', 'Löschen', function(){
+    try { localStorage.removeItem(KEY); localStorage.removeItem(CKEY); localStorage.removeItem(IKEY); } catch(e){}
+    lastResult = null; resultShown = false; hFilter = 'alle';
+    showBox('startBox');
+    renderHistory();
+  });
 });
 
 /* ---------- Ideen ---------- */
