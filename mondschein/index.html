@@ -55,7 +55,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .muted{color:var(--muted)}
 .small{font-size:14px}
 .foot{text-align:center;font-size:12.5px;color:var(--muted);margin:22px 0 4px;line-height:1.5}
-.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 22px);transform:translateX(-50%) translateY(30px);background:var(--night);color:#fff6e3;padding:12px 18px;border-radius:16px;font-size:16px;max-width:calc(100% - 32px);opacity:0;pointer-events:none;transition:.3s;z-index:50;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 70px);transform:translateX(-50%) translateY(-20px);background:var(--night);color:#fff6e3;padding:12px 18px;border-radius:16px;font-size:16px;max-width:calc(100% - 32px);opacity:0;pointer-events:none;transition:.3s;z-index:50;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.25)}
 .toast.on{opacity:1;transform:translateX(-50%)}
 :root[data-night="1"] .toast{background:#2a3563}
 /* Figuren */
@@ -1891,7 +1891,24 @@ function talkReply(who, raw){
   else if (/spiel/.test(t)) a = 'Spielen ist toll! Unter «Spiele» können wir uns zusammen bewegen. Magst du es probieren?';
   else if (/geschicht|erzähl/.test(t)) a = 'Ich liebe Geschichten! Unter «Geschichten» kannst du sogar deine eigene anfangen.';
   else if (/\?|warum|wieso|weshalb|^wie |^was |^wo |^wer /.test(t)) a = 'Das ist eine gute Frage! Das weiss ich nicht genau. Frag doch Mama oder Papa, zusammen findet ihr es heraus.';
-  else a = pick(['Erzähl mir mehr davon!', 'Oh, spannend! Und dann?', 'Schön, dass du mir das erzählst.', 'Hm, das gefällt mir. Was passiert als Nächstes?']);
+  else if (/kaputt|verloren|vergessen|hingefallen/.test(t)) a = pick(['Oh je, das ist ärgerlich. Wer könnte dir helfen, das wieder gut zu machen?', 'Das passiert manchmal. Weisst du schon, was du jetzt machen kannst?']);
+  else if (/hund|katze|pferd|tier|vogel|fisch|hase|maus|bär|löwe|elefant|dino/.test(t)) a = pick(['Oh, Tiere mag ich sehr! Welches Tier magst du am liebsten, und warum?', 'Ein Tier! Wie gross ist es, und welche Farbe hat es?', 'Wenn du ein Tier sein könntest, welches wärst du? Und warum?']);
+  else if (/farbe|rot|blau|grün|gelb|rosa|lila|pink|orange/.test(t)) a = pick(['Farben sind wie kleine Zaubereien. Welche Farbe magst du am liebsten?', 'Weisst du, was diese Farbe hat? Zähl mir drei Dinge auf!']);
+  else if (/essen|hunger|pizza|nudeln|glace|eis|schoggi|schokolade|apfel|banane|znüni|zvieri/.test(t)) a = pick(['Mmh, jetzt bekomme ich auch Hunger! Was isst du am allerliebsten?', 'Lecker! Wenn du heute kochen dürftest, was würdest du machen?']);
+  else if (/mama|papa|mami|papi|oma|opa|bruder|schwester|familie|freund|freundin/.test(t)) a = pick(['Das klingt nach jemandem, den du lieb hast. Was macht ihr gerne zusammen?', 'Wie schön! Was ist das Lustigste, das ihr zusammen erlebt habt?']);
+  else if (/kindergarten|chindsgi|schule|kita|lehrer|lehrerin/.test(t)) a = pick(['Und, was hast du heute im Kindergarten oder in der Schule erlebt?', 'Was spielst du dort am liebsten? Und mit wem?']);
+  else if (/heute|gestern|morgen/.test(t)) a = pick(['Was war heute das Schönste für dich?', 'Und worauf freust du dich morgen?']);
+  else if (/^(ja|jaa|jo|genau|klar|okay|ok)\b/.test(t)) a = pick(['Super! Erzähl mir mehr.', 'Juhui! Und was machen wir jetzt?', 'Das dachte ich mir. Und wie geht es weiter?']);
+  else if (/^(nein|nö|nei|ne)\b/.test(t)) a = pick(['Okay, das ist ganz in Ordnung. Was möchtest du lieber?', 'Gut, dann machen wir etwas anderes. Was magst du jetzt?']);
+  else {
+    // Ein Wort aus dem Satz aufnehmen, damit die Antwort zum Kind passt, und eine Frage zurückstellen.
+    const w = (String(raw||'').match(/[A-ZÄÖÜ][a-zäöüß]{3,}/g) || []).filter(x => !/^(Ich|Und|Aber|Dann|Weil|Das|Der|Die|Wir|Mein|Meine|Heute|Otti|Nova|Kiki)$/.test(x)).pop();
+    a = w ? pick([`${w}? Das klingt spannend! Erzähl mir mehr über ${w}.`, `Oh, ${w}! Wie sieht das aus?`, `${w}, das muss ich mir merken. Was passiert damit als Nächstes?`])
+          : pick(['Erzähl mir mehr davon!', 'Oh, spannend! Und dann?', 'Schön, dass du mir das erzählst. Wie hast du dich dabei gefühlt?', 'Hm, das gefällt mir. Was passiert als Nächstes?', 'Wirklich? Wie bist du darauf gekommen?', 'Und was war daran am schönsten?']);
+  }
+  // Nicht zweimal dieselbe Antwort hintereinander.
+  if (a === TK.last){ a = pick(['Und was möchtest du mir noch erzählen?', 'Erzähl weiter, ich höre gut zu!']); }
+  TK.last = a;
   return f.pre + a;
 }
 function talkTo(text){
