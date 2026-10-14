@@ -866,8 +866,16 @@ $$('[data-night-toggle]').forEach(b => b.addEventListener('click', () => { S.nig
 const OTTI = { pitch: 1.12, tempo: 0.92 };
 // iPhone/iPad lesen bei gleichem Tempo-Wert deutlich langsamer vor als andere Geräte, darum dort etwas schneller.
 const IOS_TEMPO = (/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints > 1)) ? 1 : 1;
+/* Echte Stimmen (ElevenLabs), einmal aufgenommen und als mp3 in der App: läuft ohne Internet, nichts vom Kind geht raus.
+   Liegt für einen Satz keine Aufnahme vor (z.B. mit dem Namen des Kindes), liest die Gerätestimme vor. */
+const STIMME = { set: new Set(), audio: null };
+function stimmeHash(t){ let h = 0x811c9dc5; for (const c of t){ h ^= c.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8,'0'); }
+function stimmeWer(o){ if (o.lang === 'en' || o.flat) return ''; if (o.who) return o.who; const t = typeof TALKERS !== 'undefined' && Object.keys(TALKERS).find(k => TALKERS[k].pitch === o.pitch); return (!t || t === 'sunny') ? 'otti' : t; }
+fetch('stimme/index.json').then(r => r.ok ? r.json() : []).then(l => { (l || []).forEach(k => STIMME.set.add(k)); }).catch(() => {});
 const TTS = {
   ok: 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined',
+  // Für das Aufnahme-Werkzeug: Sprecher + Text so, wie die App sie sucht.
+  key(text, o={}){ const w = stimmeWer(o); return w ? w + '/' + stimmeHash(this.clean(text)) : ''; },
   token: 0, timer: null,
   voices(){ if(!this.ok) return []; return speechSynthesis.getVoices().filter(v => /^de/i.test(v.lang)); },
   // Beste Stimme zuerst: neuronale/erweiterte Stimmen klingen flüssig, Kompaktstimmen wie Roboter.
@@ -881,17 +889,33 @@ const TTS = {
     return r; },
   voice(){ const vs=this.voices(); if(!vs.length) return null; return vs.find(v=>v.name===S.voice) || vs.slice().sort((a,b)=>this.rank(b)-this.rank(a))[0]; },
   clean(t){ return t.replace(/[«»„“"‹›]/g,'').replace(/\s*–\s*/g,', ').replace(/\s*…\s*/g,' ... ').trim(); },
-  stop(){ this.token++; clearTimeout(this.timer); if(this.ok){ try{ speechSynthesis.cancel(); }catch(e){} } },
+  stop(){ this.token++; clearTimeout(this.timer); if (STIMME.audio){ try{ STIMME.audio.pause(); }catch(e){} STIMME.audio = null; } if(this.ok){ try{ speechSynthesis.cancel(); }catch(e){} } },
   speak(list, o={}){
     this.stop();
     if (typeof list === 'string') list = [list];
     const tok = this.token; let i = o.start || 0;
-    if (!this.ok){ if(o.onEnd) setTimeout(()=>{ if(tok===this.token) o.onEnd(); }, 50); return; }
+    const hasRec = list.some(t => STIMME.set.has(this.key(t, o)));
+    if (!this.ok && !hasRec){ if(o.onEnd) setTimeout(()=>{ if(tok===this.token) o.onEnd(); }, 50); return; }
     const next = () => {
       if (tok !== this.token) return;
       if (i >= list.length){ o.onEnd && o.onEnd(); return; }
       o.onSentence && o.onSentence(i);
       const text = this.clean(list[i]);
+      const k = this.key(list[i], o);
+      if (k && STIMME.set.has(k)){
+        const a = new Audio('stimme/' + k + '.mp3'); STIMME.audio = a;
+        a.preservesPitch = true; a.playbackRate = Math.max(.6, Math.min(1.6, S.rate * (o.rateMul || 1)));
+        a.volume = Math.max(0, Math.min(1, S.vol == null ? 1 : +S.vol));
+        let done = false;
+        const fin = () => { if (done || tok !== this.token) return; done = true; clearTimeout(this.timer); i++; setTimeout(next, o.gap == null ? 40 : o.gap); };
+        a.onended = fin;
+        // Aufnahme fehlt oder spielt nicht: diesen Satz mit der Gerätestimme, nicht hängen bleiben.
+        a.onerror = () => { if (done || tok !== this.token) return; STIMME.set.delete(k); next(); };
+        clearTimeout(this.timer); this.timer = setTimeout(fin, 4000 + text.length * 150 / S.rate);
+        a.play().catch(() => a.onerror());
+        return;
+      }
+      if (!this.ok){ i++; setTimeout(next, 50); return; }
       const u = new SpeechSynthesisUtterance(text);
       if (o.lang === 'en'){ const ev = this.ok ? speechSynthesis.getVoices().filter(x => /^en/i.test(x.lang)).sort((a,b) => this.rank(b)-this.rank(a) + (/en[-_]GB/i.test(b.lang)?5:0) - (/en[-_]GB/i.test(a.lang)?5:0))[0] : null; if (ev){ u.voice = ev; u.lang = ev.lang; } else u.lang = 'en-GB'; }
       else { const v = this.voice(); if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'de-DE'; }
@@ -2187,7 +2211,7 @@ function camDescribe(found){
 function camSay(t){ $('#camSay').textContent = t; TTS.speak(t); }
 // Otti «erkennt» das Kind: sieht er einen Menschen im Bild, winkt er und grüsst mit dem Namen aus den Eltern-Einstellungen.
 // Keine Gesichtserkennung: es wird nur «Mensch ja/nein» geschaut, nichts gespeichert oder gesendet.
-let camFacing = 'user', camWatchT = 0, camGreeted = false;
+let camFacing = 'user', camWatchT = 0, camGreeted = false, camWink = null;
 function camHi(){ return S.name ? `Hallo ${S.name}! Ich sehe dich!` : 'Hallo du! Ich sehe dich!'; }
 function camWatch(){
   clearTimeout(camWatchT);
@@ -2202,14 +2226,14 @@ function camWatch(){
     }).catch(() => camWatch());
   }, 1500);
 }
-function camStop(){ clearTimeout(camWatchT); if (camStream){ camStream.getTracks().forEach(t => t.stop()); camStream = null; } const v = $('#camVid'); if (v) v.srcObject = null; }
+function camStop(){ clearTimeout(camWatchT); if (camWink){ camWink(); camWink = null; } if (camStream){ camStream.getTracks().forEach(t => t.stop()); camStream = null; } const v = $('#camVid'); if (v) v.srcObject = null; }
 function camStart(){
   if (!S.cam){ go('home'); return; }
   $('#camOtti').innerHTML = FIG.sunny({wave:true}); camGreeted = false;
   $('#camSay').textContent = 'Halte etwas vor die Kamera und tippe auf «Was ist das?».';
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ $('#camSay').textContent = 'Die Kamera geht auf diesem Gerät leider nicht.'; return; }
   navigator.mediaDevices.getUserMedia({video:{facingMode:camFacing, width:{ideal:640}, height:{ideal:480}}, audio:false})
-    .then(st => { if (current !== 'cam'){ st.getTracks().forEach(t => t.stop()); return; } camStream = st; const v = $('#camVid'); v.srcObject = st; const pl = v.play(); if (pl && pl.catch) pl.catch(() => {}); v.style.transform = camFacing === 'user' ? 'scaleX(-1)' : ''; camWatch(); })
+    .then(st => { if (current !== 'cam'){ st.getTracks().forEach(t => t.stop()); return; } camStream = st; const v = $('#camVid'); v.srcObject = st; const pl = v.play(); if (pl && pl.catch) pl.catch(() => {}); v.style.transform = camFacing === 'user' ? 'scaleX(-1)' : ''; camWatch(); if (camWink) camWink(); camWink = winkWache(v, () => { if (current !== 'cam' || camBusy) return; ottiGruss('#camOtti'); camSay(pick1(WINK_ZURUECK)); }); })
     .catch(() => { $('#camSay').textContent = 'Otti darf die Kamera nicht benutzen. Ein Erwachsener kann sie in den Einstellungen des Handys erlauben.'; });
   camLoad().catch(() => {});
 }
@@ -2228,11 +2252,55 @@ $('#camGo').addEventListener('click', () => {
 $('#camFlip').addEventListener('click', () => { camFacing = camFacing === 'user' ? 'environment' : 'user'; camStop(); camStart(); });
 $('#segCam').addEventListener('click', e => { const b = e.target.closest('[data-camset]'); if (!b) return; S.cam = b.dataset.camset === '1'; saveS(); renderParents(); toast(S.cam ? 'Kamera ist an: «Zeig Otti etwas» ist auf dem Start.' : 'Kamera ist aus.'); });
 document.addEventListener('visibilitychange', () => { if (document.hidden) camStop(); else if (current === 'cam') camStart(); });
+
+/* ---------- Zurückwinken: Otti merkt, wenn du in die Kamera winkst ---------- */
+// Nur Bewegung im kleinen Graubild (48×36) und «Mensch im Bild ja/nein». Kein Gesicht, nichts gespeichert oder gesendet.
+// Winken = viel Bewegung oben im Bild, die mehrmals schnell die Richtung wechselt.
+function winkWache(video, onWave){
+  const W = 48, H = 36, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d', { willReadFrequently: true });
+  let prev = null, lastX = null, dir = 0, turns = [], person = false, pT = 0, cool = 0, stopped = false, t = 0;
+  const checkPerson = () => {
+    if (stopped) return;
+    if (camModel && video.videoWidth) camModel.detect(video, 3, 0.5).then(f => { person = f.some(d => d.class === 'person'); }).catch(() => {});
+    pT = setTimeout(checkPerson, 2000);
+  };
+  const step = () => {
+    if (stopped) return;
+    t = setTimeout(step, 120);
+    if (!video.videoWidth || document.hidden) return;
+    g.drawImage(video, 0, 0, W, H);
+    const d = g.getImageData(0, 0, W, Math.round(H * .65)).data, n = d.length / 4, cur = new Uint8Array(n);
+    for (let i = 0; i < n; i++) cur[i] = (d[i*4] * 3 + d[i*4+1] * 6 + d[i*4+2]) / 10;
+    if (prev){
+      let sum = 0, sx = 0;
+      for (let i = 0; i < n; i++){ if (Math.abs(cur[i] - prev[i]) > 28){ sum++; sx += i % W; } }
+      const now = Date.now();
+      if (sum > n * .025){
+        const x = sx / sum;
+        if (lastX != null && Math.abs(x - lastX) > 1.2){
+          const nd = x > lastX ? 1 : -1;
+          if (dir && nd !== dir) turns.push(now);
+          dir = nd;
+        }
+        lastX = x;
+      } else { lastX = null; }
+      turns = turns.filter(z => now - z < 1800);
+      if (turns.length >= 3 && person && now > cool){ cool = now + 7000; turns = []; onWave(); }
+    }
+    prev = cur;
+  };
+  camLoad().then(checkPerson).catch(() => {});
+  step();
+  return () => { stopped = true; clearTimeout(t); clearTimeout(pT); };
+}
+const WINK_ZURUECK = ['Hallo! Ich winke dir zurück!', 'Huhu! Ich sehe, wie du winkst!', 'Winke, winke! Hihi, das macht Spass!'];
+
 /* ---------- Videoanruf mit Otti ---------- */
 // Otti bewegt sich und redet: Während er spricht, läuft der Sprech-Clip, sonst atmet das Standbild ruhig.
 // Die Kamera (nur wenn Eltern sie erlaubt haben) zeigt das Kind klein in der Ecke und hilft Otti beim «Schau mal».
 // Keine Gesichtserkennung, nichts wird gespeichert oder gesendet. Antworten kommen aus den Vorlagen auf dem Handy.
-const CALL = { on:false, t0:0, tick:0, stream:null, selfOn:true, empty:0, gen:0, noAuto:false };
+const CALL = { on:false, t0:0, tick:0, stream:null, selfOn:true, empty:0, gen:0, noAuto:false, wink:null };
 const callStage = () => $('#callStage');
 function callTime(){
   if (!CALL.on || !CALL.t0) return;
@@ -2289,6 +2357,17 @@ function callListen(auto){
   });
   if (!rec) callStage().classList.remove('is-hear');
 }
+// Otti ist verspielt: manchmal ein kleiner lustiger Ausruf vor der Antwort.
+const OTTI_LUSTIG = ['Hihi! ', 'Hoppla! ', 'Juhui! ', 'Oh la la! ', 'Kicher, kicher! ', 'Hui! '];
+function ottiLustig(a){ return /^(Oh, das klingt schwer|Ich habe nichts)/.test(a) || Math.random() > .4 ? a : pick1(OTTI_LUSTIG) + a; }
+// Du winkst, Otti winkt zurück. Spricht oder hört er gerade, winkt er nur, ohne zu reden.
+function callWinkt(){
+  if (!CALL.on || !CALL.t0) return;
+  callWave();
+  const st = callStage();
+  if (st.classList.contains('is-talk') || st.classList.contains('is-hear') || rec) return;
+  callSay(pick1(WINK_ZURUECK));
+}
 function callCanSee(){ const v = $('#callVid'); return !!(CALL.stream && CALL.selfOn && v.videoWidth); }
 function callLook(){
   if (!callCanSee()){
@@ -2323,11 +2402,12 @@ function callHeard(raw){
     }
     if (/was ist das|was halte ich|was hab ich|was habe ich|schau mal|schau her|kennst du das|siehst du das/.test(low)){ callLook(); return; }
     if (/^(hallo|hoi|hi|hey|grüezi|guten (tag|morgen|abend)|sali)\b/.test(low)) callWave();
-    callSay(talkReply('sunny', t));
+    callSay(ottiLustig(talkReply('sunny', t)));
   }, 350);
 }
 function callCam(on){
   const box = $('#callSelf'), v = $('#callVid');
+  if (CALL.wink){ CALL.wink(); CALL.wink = null; }
   if (CALL.stream){ CALL.stream.getTracks().forEach(t => t.stop()); CALL.stream = null; }
   v.srcObject = null; box.classList.remove('live');
   $('#callLook').hidden = !S.cam;
@@ -2337,6 +2417,8 @@ function callCam(on){
       if (!CALL.on || !CALL.selfOn){ st.getTracks().forEach(t => t.stop()); return false; }
       CALL.stream = st; v.srcObject = st; const pl = v.play(); if (pl && pl.catch) pl.catch(() => {});
       box.classList.add('live'); camLoad().catch(() => {});
+      if (CALL.wink) CALL.wink();
+      CALL.wink = winkWache(v, callWinkt);
       return true;
     }).catch(() => false);
 }
@@ -2376,6 +2458,7 @@ function callStart(){
 }
 function callStop(){
   CALL.on = false; CALL.gen++;
+  if (CALL.wink){ CALL.wink(); CALL.wink = null; }
   clearInterval(CALL.tick);
   if (CALL.stream){ CALL.stream.getTracks().forEach(t => t.stop()); CALL.stream = null; }
   const v = $('#callVid'); if (v) v.srcObject = null;
@@ -2399,6 +2482,32 @@ function pick1(a){ return a[Math.floor(Math.random() * a.length)]; }
 document.addEventListener('visibilitychange', () => { if (current !== 'call') return; if (document.hidden){ if (CALL.stream){ CALL.stream.getTracks().forEach(t => t.stop()); CALL.stream = null; } $('#callSelf').classList.remove('live'); } else if (CALL.on && CALL.selfOn) callCam(true); });
 
 
+
+/* ---------- Aufnahme-Liste für echte Stimmen ----------
+   tools/stimmen/aufnehmen.mjs ruft das auf und nimmt jeden Satz einmal auf. Sätze mit dem Namen des Kindes sind nicht dabei. */
+window.MS_TEXTE = () => {
+  const out = new Map();
+  const add = (text, o={}) => { const t = String(text||'').trim(); if (!t || /\{\w+\}/.test(t)) return; const k = TTS.key(t, o); if (k) out.set(k, { key:k, who:k.split('/')[0], text:TTS.clean(t) }); };
+  STORIES.forEach(st => st.parts.forEach(p => {
+    if (p.q){ const opts = p.opts.map(o => o.l); add(p.q); add(opts.slice(0,-1).join(', ') + ' oder ' + opts[opts.length-1] + '?'); }
+    [p.t, p.after].forEach(t => {
+      if (!t) return;
+      const vars = [...new Set((t.match(/\{(\w+)\}/g) || []).map(m => m.slice(1,-1)))];
+      let combos = [{}];
+      vars.forEach(v => { const vals = []; st.parts.forEach(q => (q.opts||[]).forEach(o => { if (o.v && o.v[v] != null) vals.push(o.v[v]); })); combos = vals.length ? combos.flatMap(c => vals.map(x => Object.assign({}, c, {[v]:x}))) : combos; });
+      combos.forEach(c => splitSentences(fill(t, c)).forEach(x => add(x)));
+    });
+  }));
+  Object.keys(TALKERS).forEach(k => { const f = TALKERS[k], o = {pitch:f.pitch};
+    add(f.pre + f.hi, o); add(f.pre + 'So schnell spreche ich jetzt.', o);
+    const src = String(talkReply), lits = src.match(/'[^'\n]{8,}'/g) || [];
+    lits.map(l => l.slice(1,-1)).filter(l => /[a-zäöü]\s/.test(l) && !/\\/.test(l)).forEach(a => add(f.pre + a, o));
+    add(f.pre + f.hi + ' Was möchtest du mir erzählen?', o); add(f.pre + f.me, o); add(f.pre + f.joke, o); add(f.pre + f.fav + ' Und du, was magst du am liebsten?', o);
+  });
+  MOVES.forEach(m => m.steps.forEach(([t]) => add(t, {pitch:(TALKERS[m.fig] && TALKERS[m.fig].pitch) || OTTI.pitch})));
+  (window.MS_LITERALE || []).forEach(t => add(t));
+  return [...out.values()];
+};
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>
