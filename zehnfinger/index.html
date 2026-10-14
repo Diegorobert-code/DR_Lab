@@ -49,6 +49,7 @@ h1{font-family:var(--serif);font-weight:600;font-size:26px;margin:0;line-height:
 .btn{border:0;border-radius:999px;padding:10px 18px;background:var(--accent);color:#fff;font-weight:600;cursor:pointer}
 .btn.ghost{background:transparent;color:var(--ink2);border:1px solid var(--line)}
 .name{display:flex;gap:8px;align-items:center;font-size:15px;color:var(--ink2)}
+.name select{border:1px solid var(--line);border-radius:10px;padding:6px 8px;background:#fff}
 .name input{border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:#fff;width:140px}
 /* Üben */
 .bar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
@@ -107,14 +108,16 @@ h1{font-family:var(--serif);font-weight:600;font-size:26px;margin:0;line-height:
   <!-- Übersicht -->
   <section id="home">
     <div class="card coach">
-      <div class="face" aria-hidden="true">🌿</div>
+      <div class="face" aria-hidden="true" id="coachFace">🌿</div>
       <div>
-        <div class="who">Jackie</div>
+        <div class="who" id="coachName">Jackie</div>
         <p id="welcome"></p>
       </div>
     </div>
     <div class="row" style="justify-content:space-between;margin-bottom:14px">
       <label class="name">Name <input id="nameIn" maxlength="20" autocomplete="off"></label>
+      <label class="name">Coach <select id="coachSel"><option value="jackie">Jackie</option><option value="coin">Coin Maker</option></select></label>
+      <button class="btn ghost" id="voiceBtn" type="button" aria-pressed="true">🔊 Stimme an</button>
       <button class="btn ghost" id="resetBtn" type="button">Fortschritt löschen</button>
     </div>
     <div class="grid" id="lessons"></div>
@@ -132,7 +135,7 @@ h1{font-family:var(--serif);font-weight:600;font-size:26px;margin:0;line-height:
       <div class="focus-msg" id="focusMsg">Hier tippen oder klicken, dann geht's los.</div>
     </div>
     <input id="trap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Eingabe">
-    <div class="hint" id="hint"></div>
+    <div class="hint" id="hint"><span id="hintFace" aria-hidden="true"></span> <span id="hintTxt"></span></div>
     <div class="kb" id="kb"></div>
     <div class="hands" aria-hidden="true">
       <svg viewBox="0 0 200 210" id="handL"></svg>
@@ -169,6 +172,39 @@ const STORE = 'zehnfinger.v1';
 function load(){ try{ return JSON.parse(localStorage.getItem(STORE)) || {}; }catch(e){ return {}; } }
 function save(){ try{ localStorage.setItem(STORE, JSON.stringify(state)); }catch(e){} }
 const state = load();
+const COACHES = {
+  jackie:{name:'Jackie', face:'🌿', praise:['Schön gleichmässig.','Gut so, weiter.','Du machst das ruhig und sicher.','Denk an die Grundstellung.'],
+    gentle:['Kein Problem, versuch es nochmal.','Ganz ruhig, die Finger finden den Weg.','Schau auf die markierte Taste.','Nur Mut, das gehört dazu.'],
+    top:'Wunderbar', pitch:1.1},
+  coin:{name:'Coin Maker', face:'🪙', praise:['Fein gearbeitet.','Jeder Anschlag hat seinen Wert.','So gefällt mir das, schön ruhig.','Gute Handarbeit, weiter so.'],
+    gentle:['Kein Problem, nochmal mit Ruhe.','Ein guter Handwerker probiert es einfach nochmals.','Schau genau hin, die Taste leuchtet.','Fehler sind Werkzeug zum Lernen.'],
+    top:'Das ist Gold wert', pitch:0.8}
+};
+const coach = () => COACHES[state.coach] || COACHES.jackie;
+if(state.voice===undefined) state.voice = true;
+/* ---------- Stimme (Sprachausgabe des Browsers, kostenlos, offline) ---------- */
+const synth = window.speechSynthesis;
+let deVoice = null, lastSay = 0;
+function pickVoice(){
+  if(!synth) return;
+  const v = synth.getVoices();
+  deVoice = v.find(x=>/de[-_]CH/i.test(x.lang)) || v.find(x=>/^de/i.test(x.lang)) || null;
+}
+if(synth){ pickVoice(); synth.onvoiceschanged = pickVoice; }
+function say(text, urgent){
+  if(!synth || !state.voice) return;
+  const now = Date.now();
+  if(!urgent && now-lastSay < 2500) return; // nicht dauernd reden
+  lastSay = now;
+  try{
+    synth.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = deVoice ? deVoice.lang : 'de-DE'; if(deVoice) u.voice = deVoice;
+    u.rate = 0.9; u.pitch = coach().pitch;
+    synth.speak(u);
+  }catch(e){}
+}
+function setHint(text, speak, urgent){ $('hintTxt').textContent = text; $('hintFace').textContent = coach().face; if(speak) say(text, urgent); }
 state.best = state.best || {};
 if(!state.name) state.name = 'Jacky';
 
@@ -274,6 +310,10 @@ function makeText(i){
 function stars(acc){ return acc>=97 ? 3 : acc>=92 ? 2 : acc>=80 ? 1 : 0; }
 function renderHome(){
   $('nameIn').value = state.name;
+  $('coachSel').value = state.coach || 'jackie';
+  $('coachFace').textContent = coach().face; $('coachName').textContent = coach().name;
+  $('voiceBtn').textContent = state.voice ? '🔊 Stimme an' : '🔇 Stimme aus';
+  $('voiceBtn').setAttribute('aria-pressed', state.voice);
   const doneCount = Object.keys(state.best).length;
   $('welcome').textContent = doneCount===0
     ? `Hallo ${state.name}, schön, dass du da bist. Wir lernen das Zehnfingersystem in kleinen Schritten. Fang einfach mit Lektion 1 an.`
@@ -293,6 +333,8 @@ function renderHome(){
   });
 }
 $('nameIn').addEventListener('input', e => { state.name = e.target.value.trim() || 'Jacky'; save(); renderHome(); $('nameIn').focus(); });
+$('coachSel').addEventListener('change', e => { state.coach = e.target.value; save(); renderHome(); say($('welcome').textContent, true); });
+$('voiceBtn').addEventListener('click', () => { state.voice = !state.voice; save(); if(!state.voice && synth) synth.cancel(); renderHome(); if(state.voice) say('Hallo '+state.name+', ich bin '+coach().name+'.', true); });
 $('resetBtn').addEventListener('click', () => { if(confirm('Den ganzen Fortschritt auf diesem Gerät löschen?')){ state.best = {}; save(); renderHome(); } });
 
 /* ---------- Tastatur zeichnen ---------- */
@@ -345,7 +387,7 @@ function start(i){
   cur = {i, text:makeText(i), pos:0, errors:0, typed:0, start:0, errAt:new Set(), wrongShown:false};
   $('home').classList.add('hidden'); $('done').classList.add('hidden'); $('practice').classList.remove('hidden');
   $('lTitle').textContent = `Lektion ${i+1} · ${LESSONS[i].t}`;
-  $('hint').textContent = LESSONS[i].intro;
+  setHint(LESSONS[i].intro, true, true);
   renderKb(); renderText(); updateStats();
   $('focusMsg').classList.remove('hidden');
   window.scrollTo({top:0});
@@ -400,7 +442,6 @@ function updateStats(){
   $('sSpeed').textContent = cpm; $('sAcc').textContent = acc;
   return {cpm, acc};
 }
-const GENTLE = ['Kein Problem, versuch es nochmal.','Ganz ruhig, die Finger finden den Weg.','Schau auf die markierte Taste.','Nur Mut, das gehört dazu.'];
 
 function onChar(ch){
   if(!cur || cur.pos>=cur.text.length) return;
@@ -410,12 +451,14 @@ function onChar(ch){
   if(ch===want){
     cur.pos++; cur.wrongShown=false;
     if(cur.pos>=cur.text.length){ finish(); return; }
-    if(cur.pos % 25 === 0) $('hint').textContent = pick(['Schön gleichmässig.','Gut so, weiter.','Du machst das ruhig und sicher.','Denk an die Grundstellung.']);
+    if(cur.pos % 25 === 0) setHint(pick(coach().praise), true);
   } else {
     cur.errors++; cur.errAt.add(cur.pos); cur.wrongShown=true;
     const info = keyOf[want];
     const fname = info ? FINGER_NAME[info.finger] : '';
-    $('hint').textContent = `${pick(GENTLE)} Gesucht: «${want===' '?'Leertaste':want}»` + (fname?` mit dem ${fname.replace('linker','linken').replace('rechter','rechten')}`:'') + (info&&info.shift?' und Umschalttaste':'') + '.';
+    const keyName = want===' ' ? 'Leertaste' : want;
+    setHint(`${pick(coach().gentle)} Gesucht: «${want===' '?'Leertaste':want}»` + (fname?` mit dem ${fname.replace('linker','linken').replace('rechter','rechten')}`:'') + (info&&info.shift?' und Umschalttaste':'') + '.', false);
+    say(info && /[a-zäöü]/i.test(want) ? `${keyName.toUpperCase()}, ${fname.replace('linker','linker Hand,').replace('rechter','rechter Hand,')}` : (want===' '?'Leertaste':''), false);
   }
   renderText(); updateStats();
   if(!cur.wrongShown) return;
@@ -442,17 +485,18 @@ function finish(){
   save();
   const st = stars(acc);
   $('rStars').textContent = '★'.repeat(st) + '☆'.repeat(3-st);
-  $('rTitle').textContent = st===3 ? `Wunderbar, ${state.name}!` : st>=1 ? `Gut gemacht, ${state.name}.` : `Danke fürs Üben, ${state.name}.`;
+  $('rTitle').textContent = st===3 ? `${coach().top}, ${state.name}!` : st>=1 ? `Gut gemacht, ${state.name}.` : `Danke fürs Üben, ${state.name}.`;
   $('rText').textContent = st===3 ? 'Sehr genau getippt. Du kannst zur nächsten Lektion.'
     : st>=1 ? 'Das sitzt schon recht gut. Eine Runde mehr macht es noch sicherer.'
     : 'Nimm dir Zeit. Wiederhole die Lektion ruhig noch ein- oder zweimal.';
   $('rSpeed').textContent = cpm; $('rAcc').textContent = acc + ' %';
   $('nextBtn').classList.toggle('hidden', i>=LESSONS.length-1);
   $('practice').classList.add('hidden'); $('done').classList.remove('hidden');
+  say(`${$('rTitle').textContent} ${$('rText').textContent}`, true);
   $('trap').blur();
 }
 function showHome(){
-  cur = null; $('trap').blur();
+  cur = null; $('trap').blur(); if(synth) synth.cancel();
   ['practice','done'].forEach(id=>$(id).classList.add('hidden'));
   $('home').classList.remove('hidden'); renderHome();
 }
