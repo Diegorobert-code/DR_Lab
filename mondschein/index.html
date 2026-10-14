@@ -594,6 +594,12 @@ h3.ch{font-size:19px;margin-bottom:10px}
   </div>
 
   <div class="card">
+    <h3 class="ch">Zuhören</h3>
+    <div class="seg" id="segHear"></div>
+    <p class="small muted" style="margin:10px 0 0">Whisper: Otti versteht dein Kind direkt im Handy. Die Stimme bleibt auf dem Gerät und wird nicht gespeichert. Beim ersten Mal lädt das Handy einmal ein Sprachmodell (ca. 80 MB, am besten im WLAN). Automatisch: Whisper nur dort, wo das Handy selbst nicht zuhören kann.</p>
+  </div>
+
+  <div class="card">
     <h3 class="ch">Kamera: Zeig Otti etwas</h3>
     <div class="seg" id="segCam"></div>
     <p class="small muted" style="margin:10px 0 0">Ist die Kamera an, kann dein Kind Otti Dinge zeigen (Teddy, Banane, Ball, Katze …), und Otti sagt, was er sieht. Sieht er dein Kind, winkt er und grüsst mit dem Namen von unten. Otti erkennt keine Gesichter: er merkt nur, dass ein Mensch da ist. Was dein Kind ihm gezeigt hat, merkt er sich als Lieblingsdinge. Alles passiert nur auf diesem Handy: kein Bild wird gespeichert oder gesendet. Standard: aus.</p>
@@ -672,7 +678,7 @@ const store = {
   get(k, d){ try{ const v = localStorage.getItem('ms_'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
   set(k, v){ try{ localStorage.setItem('ms_'+k, JSON.stringify(v)); }catch(e){} }
 };
-const S = Object.assign({rate:1, vol:1, limit:0, night:'auto', voice:'', name:''}, store.get('settings', {}));
+const S = Object.assign({rate:1, vol:1, limit:0, night:'auto', voice:'', name:'', hear:'auto'}, store.get('settings', {}));
 const saveS = () => store.set('settings', S);
 // Einmalig: altes, zu langsames Vorlese-Tempo auf «normal» stellen.
 if (S.rateV !== 2){ if (!(S.rate >= 1)) S.rate = 1; S.rateV = 2; saveS(); }
@@ -934,8 +940,81 @@ let rec = null;
 // iPhone (Safari) liefert das Ergebnis ohne Zwischenstände erst nach langer Stille, darum fühlte sich der Knopf sehr langsam an.
 // Jetzt: Zwischenergebnisse mitlesen und nach kurzer Pause selbst abschliessen. Nochmal tippen = sofort fertig.
 const LISTEN_PAUSE = 1100, LISTEN_MAX = 9000;
+/* ---------- Whisper: Zuhören direkt im Handy ----------
+   Diego 14.10.: Whisper fürs Hören. Die Stimme des Kindes bleibt im Handy: aufgenommen, in Text umgewandelt, sofort verworfen.
+   Aus dem Internet kommt nur einmal das Sprachmodell (ca. 80 MB), danach bleibt es im Browser gespeichert. */
+const WH = {
+  ok: !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.WebAssembly && (window.AudioContext || window.webkitAudioContext)),
+  lib: 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1',
+  model: 'onnx-community/whisper-base',
+  asr: null, loading: null, cur: null,
+  load(){
+    if (this.asr) return Promise.resolve(this.asr);
+    if (!this.loading) this.loading = import(this.lib).then(T => {
+      T.env.allowLocalModels = false;
+      return T.pipeline('automatic-speech-recognition', this.model, { dtype: { encoder_model: 'q8', decoder_model_merged: 'q8' }, device: 'wasm' });
+    }).then(a => this.asr = a).catch(e => { this.loading = null; throw e; });
+    return this.loading;
+  },
+  async text(pcm){
+    const asr = await this.load();
+    const r = await asr(pcm, { language: 'german', task: 'transcribe', chunk_length_s: 30 });
+    // Whisper erfindet bei Stille manchmal Sätze wie «Untertitel von …». Die verwerfen wir.
+    const t = String((r && r.text) || '').replace(/\[.*?\]|\(.*?\)/g, '').replace(/\s+/g, ' ').trim();
+    return /^(untertitel|vielen dank|danke fürs zuschauen|copyright|swr|zdf)/i.test(t) || t.length < 2 ? '' : t;
+  }
+};
+// Automatisch: Whisper, wo der Browser selbst nicht zuhören kann (z.B. in der App aus dem App Store). Eltern können Whisper immer einschalten.
+function useWhisper(){ return WH.ok && (S.hear === 'whisper' || (!SR && S.hear !== 'apple')); }
+const HEAR = !!SR || WH.ok;
+window.MS_WH = WH; // für Tests
+function whisperListen(onText, btn, opt){
+  const say = m => { if (!opt.quiet) toast(m); }, none = e => { opt.onNone && opt.onNone(e); };
+  // Nochmal auf denselben Knopf: sofort fertig.
+  if (WH.cur && WH.cur.btn === btn && btn){ WH.cur.stop(); return true; }
+  if (WH.cur) WH.cur.cancel();
+  TTS.stop();
+  const C = { btn, done:false };
+  WH.cur = C; rec = { abort: () => C.cancel(), stop: () => C.stop(), _btn: btn };
+  if (!WH.asr){ say(WH.loading ? 'Otti lernt noch zuhören …' : 'Otti lernt zuhören, einen Moment …'); WH.load().catch(() => {}); }
+  let ctx, src, node, stream, chunks = [], heard = false, lastLoud = 0, t0 = Date.now(), timer;
+  const off = () => { clearInterval(timer); btn && btn.classList.remove('listening'); try{ node && node.disconnect(); src && src.disconnect(); }catch(e){} if (stream) stream.getTracks().forEach(t => t.stop()); try{ ctx && ctx.close(); }catch(e){} if (WH.cur === C) WH.cur = null; if (rec && rec._btn === btn) rec = null; };
+  C.cancel = () => { if (C.done) return; C.done = true; off(); };
+  C.stop = () => {
+    if (C.done) return; C.done = true; const rate = ctx ? ctx.sampleRate : 16000; off();
+    if (!heard){ say('Ich habe nichts gehört. Nochmal?'); none('no-speech'); return; }
+    const n = chunks.reduce((a,c) => a + c.length, 0), all = new Float32Array(n); let o = 0; chunks.forEach(c => { all.set(c, o); o += c.length; }); chunks = null;
+    // Auf 16 kHz bringen, so wie Whisper es braucht.
+    const k = rate / 16000, pcm = new Float32Array(Math.floor(n / k)); for (let i = 0; i < pcm.length; i++) pcm[i] = all[Math.floor(i * k)];
+    say('Otti denkt kurz nach …');
+    WH.text(pcm).then(t => { if (t) onText([t]); else { say('Ich habe nichts verstanden. Nochmal?'); none('no-speech'); } })
+      .catch(() => { toast('Zuhören klappt gerade nicht. Schreib es lieber.'); none('whisper'); });
+  };
+  navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 } }).then(st => {
+    if (C.done){ st.getTracks().forEach(t => t.stop()); return; }
+    stream = st; const AC = window.AudioContext || window.webkitAudioContext;
+    try{ ctx = new AC({ sampleRate: 16000 }); }catch(e){ ctx = new AC(); }
+    src = ctx.createMediaStreamSource(st); node = ctx.createScriptProcessor(4096, 1, 1);
+    node.onaudioprocess = e => {
+      if (C.done) return;
+      const d = e.inputBuffer.getChannelData(0); chunks.push(new Float32Array(d));
+      let sum = 0; for (let i = 0; i < d.length; i++) sum += d[i] * d[i];
+      if (Math.sqrt(sum / d.length) > 0.02){ heard = true; lastLoud = Date.now(); }
+    };
+    src.connect(node); node.connect(ctx.destination);
+    btn && btn.classList.add('listening'); if (WH.asr) say('Ich höre zu …');
+    timer = setInterval(() => {
+      const now = Date.now();
+      if (heard && now - lastLoud > LISTEN_PAUSE + 300) C.stop();
+      else if (!heard && now - t0 > 7000) C.stop();
+      else if (now - t0 > LISTEN_MAX) C.stop();
+    }, 150);
+  }).catch(() => { C.done = true; off(); toast('Mikrofon ist nicht erlaubt. Tippe lieber auf ein Bild.'); none('not-allowed'); });
+  return true;
+}
 function listen(onText, btn, opt = {}){
   const say = m => { if (!opt.quiet) toast(m); }, none = () => { opt.onNone && opt.onNone(); };
+  if (useWhisper()) return whisperListen(onText, btn, opt);
   if (!SR){ return false; }
   // Nochmal auf denselben Knopf: Zuhören beenden und das Gehörte nehmen.
   if (rec && rec._btn === btn && btn){ try{ rec.stop(); }catch(e){} return true; }
@@ -1248,7 +1327,7 @@ function renderPart(){
   if (p.q){
     c.innerHTML = `<p class="q">${esc(p.q)}</p>
       <div class="opts ${p.opts.length===2?'n2':''}">${p.opts.map((o,i)=>`<button class="opt ${p._chosen===i?'sel':''}" data-opt="${i}"><span class="em" aria-hidden="true">${o.e}</span>${esc(o.l)}</button>`).join('')}</div>
-      ${SR ? `<button class="btn wide mic" id="rMic">🎤 Sag es Otti</button>` :
+      ${HEAR ? `<button class="btn wide mic" id="rMic">🎤 Sag es Otti</button>` :
         `<p class="hint">Sprechen geht hier nicht direkt – tippe auf ein Bild. Oder schreib/diktiere es hier:</p><div class="row"><input class="in" id="rType" placeholder="Dein Wort" autocomplete="off"><button class="btn" id="rTypeOk">OK</button></div>`}`;
     R.sents = [];
   } else {
@@ -1394,7 +1473,7 @@ function renderIdea(){
   if (!$('#kThing').value) $('#kThing').value = kid.thing || '';
   $('#pFriend').innerHTML = Object.entries(FRIENDS).map(([k,f]) => `<button class="pk ${sel.friend===k?'sel':''}" data-friend="${k}" aria-pressed="${sel.friend===k}">${FIG[k]({})}${f.l}</button>`).join('');
   $('#pPlace').innerHTML = Object.entries(PLACES).map(([k,p]) => `<button class="pk ${sel.place===k?'sel':''}" data-place="${k}" aria-pressed="${sel.place===k}"><span class="em" aria-hidden="true">${p.e}</span>${p.l}</button>`).join('');
-  $('#micHint').hidden = !!SR;
+  $('#micHint').hidden = HEAR;
 }
 $('#pFriend').addEventListener('click', e => { const b=e.target.closest('[data-friend]'); if(!b) return; sel.friend=b.dataset.friend; store.set('lastFriend', sel.friend); renderIdea(); });
 $('#pPlace').addEventListener('click', e => { const b=e.target.closest('[data-place]'); if(!b) return; sel.place=b.dataset.place; store.set('lastPlace', sel.place); renderIdea(); });
@@ -1424,7 +1503,7 @@ $('#makeStory').addEventListener('click', makeStory);
 
 /* Mikrofon-Knöpfe für Textfelder */
 $$('.mic-btn').forEach(b => {
-  if (!SR){ b.hidden = true; return; }
+  if (!HEAR){ b.hidden = true; return; }
   b.addEventListener('click', () => {
     const target = $('#'+b.dataset.mic);
     listen(texts => {
@@ -1650,7 +1729,7 @@ function renderMyStory(){
   $('#msStage').classList.add('two');
   $('#msStage').innerHTML = figHTML('sunny-wave') + figHTML('kiki');
   $('#msChips').innerHTML = MSCHIPS.map(c => `<button class="chip" data-mschip="${esc(c)}">${esc(c.trim())} …</button>`).join('');
-  $('#micHint4').hidden = !!SR;
+  $('#micHint4').hidden = HEAR;
 }
 $('#msChips').addEventListener('click', e => { const b = e.target.closest('[data-mschip]'); if (!b) return; const t = $('#msText'); t.value = (t.value.trim() ? t.value.trim()+' ' : '') + b.dataset.mschip; t.focus(); });
 const NEUTER = /^(kind|mädchen|pferd|schaf|eichhörnchen|kaninchen|einhorn|schwein|küken|lamm|reh|zebra|krokodil|nilpferd|gespenst|monster|auto|boot|schiff|sternchen|häschen|kätzchen|männchen)$/i;
@@ -1778,7 +1857,7 @@ function talkTo(text){
   TTS.speak(a, {pitch:f.pitch});
 }
 $('#tkMic').addEventListener('click', () => {
-  if (!SR){ toast('Sprechen geht hier nicht direkt. Tipp: Ins Feld tippen und auf der Tastatur das Mikrofon antippen.'); $('#tkText').focus(); return; }
+  if (!HEAR){ toast('Sprechen geht hier nicht direkt. Tipp: Ins Feld tippen und auf der Tastatur das Mikrofon antippen.'); $('#tkText').focus(); return; }
   listen(texts => talkTo(texts[0] || ''), $('#tkMic'));
 });
 $('#tkSend').addEventListener('click', () => { const v = $('#tkText').value.trim(); if (!v){ $('#tkText').focus(); return; } $('#tkText').value = ''; talkTo(v); });
@@ -1860,18 +1939,20 @@ function renderParents(){
   $('#tPlus').disabled = !S.limit;
   $('#segLimit').innerHTML = LIMITS.map(m => `<button data-limit="${m}" class="${S.limit===m?'sel':''}" aria-pressed="${S.limit===m}">${m ? m+' Min.' : 'Aus'}</button>`).join('');
   $('#segCam').innerHTML = [[false,'Aus'],[true,'An']].map(([k,l]) => `<button data-camset="${k?1:0}" class="${!!S.cam===k?'sel':''}" aria-pressed="${!!S.cam===k}">${l}</button>`).join('');
+  $('#segHear').innerHTML = [['auto','Automatisch'],['whisper','Whisper'],['apple','Handy']].filter(([k]) => k !== 'whisper' || WH.ok).filter(([k]) => k !== 'apple' || SR).map(([k,l]) => `<button data-hearset="${k}" class="${(S.hear||'auto')===k?'sel':''}" aria-pressed="${(S.hear||'auto')===k}">${l}</button>`).join('');
   $('#segNight').innerHTML = NIGHTS.map(([k,l]) => `<button data-nightset="${k}" class="${S.night===k?'sel':''}" aria-pressed="${S.night===k}">${l}</button>`).join('');
   $('#rate').value = S.rate; $('#rateLbl').textContent = rateLabel(S.rate);
   fillVoices();
   if (document.activeElement !== $('#pName')) $('#pName').value = S.name || '';
   $('#chips').innerHTML = CHIPS.map(c => `<button class="chip" data-chip="${esc(c)}">${esc(c)}</button>`).join('');
-  $('#micHint2').hidden = !!SR;
+  $('#micHint2').hidden = HEAR;
   $('#vol').value = S.vol; $('#volLbl').textContent = Math.round(S.vol*100)+'%';
   if (!$('#lFrom').value) $('#lFrom').value = store.get('lastFrom', '');
   renderLetters();
   renderIdeas();
 }
 $('#segLimit').addEventListener('click', e => { const b=e.target.closest('[data-limit]'); if(!b) return; S.limit=+b.dataset.limit; saveS(); renderParents(); toast(S.limit ? `Zeitlimit: ${S.limit} Min. pro Tag` : 'Kein Zeitlimit'); });
+$('#segHear').addEventListener('click', e => { const b=e.target.closest('[data-hearset]'); if(!b) return; S.hear=b.dataset.hearset; saveS(); renderParents(); if (S.hear==='whisper'){ toast('Whisper wird geladen …'); WH.load().then(() => toast('Whisper ist bereit 👂')).catch(() => toast('Whisper konnte nicht laden. Bitte im WLAN nochmal.')); } });
 $('#segNight').addEventListener('click', e => { const b=e.target.closest('[data-nightset]'); if(!b) return; S.night=b.dataset.nightset; saveS(); applyNight(); renderParents(); });
 $('#tPlus').addEventListener('click', () => { const u=usage(); u.bonus=(u.bonus||0)+600000; store.set('usage',u); renderParents(); toast('+10 Minuten für heute'); });
 $('#tReset').addEventListener('click', () => { const u=usage(); u.ms=0; u.bonus=0; store.set('usage',u); renderParents(); toast('Zeit für heute auf 0 gesetzt'); });
@@ -2168,7 +2249,7 @@ function callSay(text, o = {}){
 }
 function callListen(auto){
   if (!CALL.on) return;
-  if (!SR){ $('#callTypeRow').hidden = false; if (!auto) $('#callText').focus(); return; }
+  if (!HEAR){ $('#callTypeRow').hidden = false; if (!auto) $('#callText').focus(); return; }
   // Nach zwei stillen Runden wartet Otti auf den Knopf, damit das Mikrofon nicht endlos läuft.
   if (auto && (CALL.empty >= 2 || CALL.noAuto)) return;
   callStage().classList.add('is-hear');
@@ -2257,7 +2338,7 @@ function callStart(){
   const st = callStage();
   st.classList.remove('is-talk', 'is-wave', 'is-hear'); st.classList.add('is-ring');
   $('#callTime').textContent = 'Otti wird angerufen …'; callSub('');
-  $('#callTypeRow').hidden = !!SR;
+  $('#callTypeRow').hidden = HEAR;
   $('#callSelfOff').innerHTML = S.cam ? '<i>📷</i>Kamera an' : '<i>📷</i>Kamera aus';
   const cam = callCam(true);
   setTimeout(() => {
