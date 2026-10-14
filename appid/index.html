@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="AppiD">
+<meta name="apple-mobile-web-app-title" content="Food and Flow">
 <meta name="theme-color" content="#f6f4ef">
 <meta name="color-scheme" content="light">
 <meta name="description" content="Dein Essen verstehen, ohne darüber nachdenken zu müssen.">
@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
-<title>AppiD</title>
+<title>Food and Flow</title>
 <style>
 :root{
   --bg:#f6f4ef; --card:#fffdf9; --ink:#1f2a25; --ink2:#4b5852; --muted:#86918b; --line:#e6e2d9;
@@ -205,7 +205,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:500;letter-spacing:-.01em;margin:0
 <body>
 <div class="app">
   <div class="top">
-    <div class="brand">App<span>i</span>D</div>
+    <div class="brand">Food <span>and</span> Flow</div>
     <span class="tag">Prototyp</span>
   </div>
 
@@ -245,7 +245,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:500;letter-spacing:-.01em;margin:0
       <div class="micro" id="micro"></div>
       <div id="meals"></div>
       <button class="addact" id="addact">+ Bewegung hinzufügen</button>
-      <p class="small" style="margin:14px 0 0">Alle Werte sind <span class="est">Schätzungen</span>. Mengen mit ≈ hat AppiD angenommen.</p>
+      <p class="small" style="margin:14px 0 0">Alle Werte sind <span class="est">Schätzungen</span>. Mengen mit ≈ hat Food and Flow angenommen.</p>
     </div>
   </section>
 
@@ -255,13 +255,13 @@ h1,h2,h3{font-family:var(--serif);font-weight:500;letter-spacing:-.01em;margin:0
     <p class="sub">Rezepte, Trends und Wissen, passend zu deinem Ziel.</p>
     <div class="filters" id="filters"></div>
     <div id="feed"></div>
-    <p class="small" style="margin:18px 4px 0">Trends prüft AppiD an seriösen Quellen und zeigt, wie gut sie belegt sind. Keine Heilversprechen.</p>
+    <p class="small" style="margin:18px 4px 0">Trends prüft Food and Flow an seriösen Quellen und zeigt, wie gut sie belegt sind. Keine Heilversprechen.</p>
   </section>
 
   <!-- VERLAUF -->
   <section class="view" id="v-verlauf">
     <h1 class="hello">Dein Verlauf</h1>
-    <p class="sub">Was AppiD über deine Gewohnheiten gelernt hat.</p>
+    <p class="sub">Was Food and Flow über deine Gewohnheiten gelernt hat.</p>
     <div class="card">
       <h3>Protein, letzte 7 Tage</h3>
       <div class="week" id="week"></div>
@@ -310,10 +310,10 @@ h1,h2,h3{font-family:var(--serif);font-weight:500;letter-spacing:-.01em;margin:0
     </div>
     <div class="card">
       <h3>Ausprobieren</h3>
-      <p class="small" style="margin:0">Lädt drei Beispielwochen, damit du siehst, wie AppiD mit der Zeit lernt.</p>
+      <p class="small" style="margin:0">Lädt drei Beispielwochen, damit du siehst, wie Food and Flow mit der Zeit lernt.</p>
       <button class="btn" id="demo">Beispieldaten laden</button>
       <button class="btn ghost" id="reset">Alle Daten löschen</button>
-      <p class="note">Deine Daten bleiben nur auf diesem Gerät. Nichts wird gesendet oder weitergegeben. AppiD gibt keine medizinischen Diagnosen; alle Nährwerte sind Schätzungen.</p>
+      <p class="note">Deine Daten bleiben nur auf diesem Gerät. Nichts wird gesendet oder weitergegeben. Food and Flow gibt keine medizinischen Diagnosen; alle Nährwerte sind Schätzungen.</p>
     </div>
   </section>
 </div>
@@ -663,7 +663,7 @@ function renderTip(){
   } else if(t.fib<15){
     html=`<p>Ballaststoffe sind heute noch knapp. Vollkornbrot statt Weissbrot oder ein Apfel helfen schon.</p>`;
   } else html=`<p>Ein ausgewogener Tag bisher. Weiter so, ganz ohne Stress.</p>`;
-  el.innerHTML=lbl+html+(a.days<7&&a.days>0?`<p class="small" style="margin:6px 0 0">AppiD lernt noch: ${a.days} von 7 Tagen erfasst.</p>`:"");
+  el.innerHTML=lbl+html+(a.days<7&&a.days>0?`<p class="small" style="margin:6px 0 0">Food and Flow lernt noch: ${a.days} von 7 Tagen erfasst.</p>`:"");
 }
 
 function renderVerlauf(){
@@ -757,8 +757,8 @@ function renderIch(){
   if(document.activeElement!==$("#kcalgoal"))$("#kcalgoal").value=P.kcalOwn||"";
   const E=energy();
   $("#energy").innerHTML=E.full?`<div class="row"><span>Grundumsatz</span><b>≈ ${fmt(E.bmr)} kcal</b></div><div class="row"><span>Verbrauch mit Alltag</span><b>≈ ${fmt(E.tdee)} kcal</b></div><div class="row"><span>${E.adj<0?"Für dein Ziel −400":E.adj>0?"Für Muskelaufbau +250":"Für dein Ziel ±0"}</span><b></b></div><div class="row" style="border-top:1px solid #d5e2da;margin-top:4px;padding-top:6px"><span><b>Dein Tagesziel</b></span><b>≈ ${fmt(E.goal)} kcal${E.own?" (eigenes)":""}</b></div>`
-    :`<div class="row"><span>Tagesziel</span><b>≈ ${fmt(E.goal)} kcal</b></div><div class="small">Mit Geschlecht, Alter, Grösse und Gewicht rechnet AppiD dein persönliches Ziel.</div>`;
-  $("#goalinfo").textContent=`Protein-Ziel ca. ${proteinGoal()} g pro Tag. Sport zählt AppiD jeden Tag dazu. Richtwerte, keine medizinische Beratung.`;
+    :`<div class="row"><span>Tagesziel</span><b>≈ ${fmt(E.goal)} kcal</b></div><div class="small">Mit Geschlecht, Alter, Grösse und Gewicht rechnet Food and Flow dein persönliches Ziel.</div>`;
+  $("#goalinfo").textContent=`Protein-Ziel ca. ${proteinGoal()} g pro Tag. Sport zählt Food and Flow jeden Tag dazu. Richtwerte, keine medizinische Beratung.`;
   $("#intpills").innerHTML=INTERESTS.map(([k,n])=>`<button class="pill ${P.interests.includes(k)?"on":""}" data-i="${k}">${n}</button>`).join("");
   $("#allpills").innerHTML=ALLERG.map(([k,n])=>`<button class="pill ${P.allergies.includes(k)?"on":""}" data-al="${k}">${n}</button>`).join("");
   $("#intpills").querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{toggle(P.interests,b.dataset.i);save();renderIch()});

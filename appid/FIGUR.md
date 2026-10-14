@@ -1,8 +1,8 @@
-# AppiD / Florence – Figur «Flo» (Entwurf, 14.10.2026)
+# Food and Flow – Figur «Flo» (Entwurf, 14.10.2026)
 
-Status: Konzept, noch nicht in der App eingebaut (erst nach Diegos Go). Name «Flo» noch zu bestätigen.
+Status: Konzept, noch nicht in der App eingebaut (erst nach Diegos Go). Name «Flo» von Diego bestätigt (14.10.2026).
 
-Rolle: Gesicht und Stimme der Ernährungs- und Gesundheits-App. Sie begleitet, erklärt und gibt die persönlichen Tipps.
+Rolle: Gesicht und Stimme von Food and Flow (Ernährungs- und Gesundheits-App). Sie begleitet, erklärt und gibt die persönlichen Tipps.
 
 Look: junge, sportliche, coole Roboter-KI-Frau in Sportkleidung. Weiss-mintgrüne Körperteile mit feinen leuchtenden Linien, kleiner leuchtender Herzkern, kurze Sportjacke in Navy, mintgrüne Leggings, weisse Laufschuhe.
 
