@@ -55,7 +55,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .muted{color:var(--muted)}
 .small{font-size:14px}
 .foot{text-align:center;font-size:12.5px;color:var(--muted);margin:22px 0 4px;line-height:1.5}
-.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 22px);transform:translateX(-50%) translateY(30px);background:var(--night);color:#fff6e3;padding:12px 18px;border-radius:16px;font-size:16px;max-width:calc(100% - 32px);opacity:0;pointer-events:none;transition:.3s;z-index:50;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 70px);transform:translateX(-50%) translateY(-20px);background:var(--night);color:#fff6e3;padding:12px 18px;border-radius:16px;font-size:16px;max-width:calc(100% - 32px);opacity:0;pointer-events:none;transition:.3s;z-index:50;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.25)}
 .toast.on{opacity:1;transform:translateX(-50%)}
 :root[data-night="1"] .toast{background:#2a3563}
 /* Figuren */
@@ -94,9 +94,10 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .filmcard{position:relative;display:block;width:min(92vw,360px);aspect-ratio:4/3;margin:0 auto;border-radius:30px;overflow:hidden;
   box-shadow:0 0 0 4px #ffe08a,0 0 0 9px rgba(255,214,107,.28),0 18px 40px rgba(120,70,10,.28);transform:rotate(-1.2deg)}
 .filmcard img{width:100%;height:100%;object-fit:cover;display:block;animation:kamera 9s ease-in-out infinite}
+.filmcard video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .filmcard:after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 40%,transparent 55%,rgba(60,30,0,.28));pointer-events:none}
 :root[data-night="1"] .filmcard{box-shadow:0 0 0 4px #cfae55,0 0 0 9px rgba(207,174,85,.2),0 0 40px rgba(140,160,255,.25)}
-:root[data-night="1"] .filmcard img{filter:brightness(.62) saturate(.8) hue-rotate(-12deg)}
+:root[data-night="1"] .filmcard video,:root[data-night="1"] .filmcard img{filter:brightness(.62) saturate(.8) hue-rotate(-12deg)}
 @keyframes kamera{0%,100%{transform:scale(1.04) translate(0,0)}50%{transform:scale(1.1) translate(-1.5%,1%)}}
 .sunnybtn.hopp .filmcard{animation:hopp .55s cubic-bezier(.3,1.6,.5,1)}
 @keyframes hopp{0%{transform:rotate(-1.2deg) scale(1)}40%{transform:rotate(1deg) scale(1.05)}100%{transform:rotate(-1.2deg) scale(1)}}
@@ -142,7 +143,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .stage svg{width:150px;height:158px}
 .stage.two svg{width:124px;height:132px}
 .story-text{font-size:21px;line-height:1.6;min-height:150px}
-.story-text .s{border-radius:8px;transition:background .3s;padding:1px 2px}
+.story-text .s{border-radius:8px;transition:background .3s;padding:1px 0;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .story-text .s.cur{background:var(--hl)}
 .q{font-size:22px;font-weight:800;margin:0 0 12px;text-align:center}
 .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -169,10 +170,13 @@ input.in,textarea.in,select.in{width:100%;min-height:60px;padding:14px 16px;bord
 textarea.in{min-height:120px;font-size:17px;resize:vertical}
 select.in{font-size:17px}
 .pick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-#tkPick{grid-template-columns:repeat(4,1fr);gap:8px}#tkPick .pk{min-height:88px;font-size:13px}#tkPick .pk svg{width:52px;height:52px}#tkPick .pk .nova-film{width:52px;height:52px}
+#tkPick{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}#tkPick .pk{min-height:96px;font-size:14px;min-width:0;text-align:center;line-height:1.15}
+@media (max-width:340px){#tkPick .pk{font-size:12.5px}}#tkPick .pk svg{width:52px;height:52px}#tkPick .pk .nova-film{width:52px;height:52px}
 .pick.four{grid-template-columns:repeat(4,1fr)}
 .pk{min-height:96px;border-radius:20px;background:var(--bg);border:3px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:15px;padding:6px 2px}
 .pk svg{width:58px;height:58px}
+/* Gezeichnete Figuren im gleichen runden Rahmen wie die Filmfiguren */
+.pk svg.fig,.sitem .ic svg.fig{border-radius:50%;background:radial-gradient(circle at 50% 40%,#f3f8ff,#dcecff);box-shadow:0 0 0 3px #bfefff,0 0 18px rgba(111,228,255,.35);padding:4px;box-sizing:border-box}
 .pk .em{font-size:36px}
 .pk.sel{border-color:var(--moon2);background:var(--hl)}
 .hint{background:var(--hl);border-radius:14px;padding:10px 12px;font-size:15px;margin-top:10px}
@@ -191,7 +195,7 @@ select.in{font-size:17px}
 .win .card{max-width:420px;width:100%;text-align:center;margin:0}
 /* Eltern */
 .seg{display:flex;flex-wrap:wrap;gap:8px}
-.seg button{min-height:52px;min-width:0;padding:8px 10px;border-radius:16px;background:var(--bg);border:2px solid var(--line);font-weight:700;font-size:16px;flex:1}
+.seg button{min-height:52px;min-width:0;padding:8px 10px;border-radius:16px;background:var(--bg);border:2px solid var(--line);font-weight:700;font-size:16px;flex:1 1 auto;white-space:nowrap}
 .seg button.sel{background:var(--moon);border-color:var(--moon2);color:#1d2a4f}
 input[type=range]{width:100%;height:44px;accent-color:var(--moon2)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
@@ -203,6 +207,59 @@ input[type=range]{width:100%;height:44px;accent-color:var(--moon2)}
 :root:not([data-night="1"]) .priv{color:#1d3a26}
 h3.ch{font-size:19px;margin-bottom:10px}
 /* Brief */
+.cambtn{margin-top:14px;min-height:72px;font-size:20px;gap:10px;background:linear-gradient(135deg,#d9f3ff,#e9e2ff);border:2px solid #b9dcf3;color:#1d2a4f}
+/* Videoanruf mit Otti */
+.callbtn{margin-top:14px;min-height:78px;font-size:21px;gap:12px;background:linear-gradient(135deg,#7fd69a,#43b16a);border:2px solid #2f9a56;color:#fff;box-shadow:0 5px 0 #237a43,0 10px 24px rgba(67,177,106,.35);position:relative;overflow:hidden}
+.callbtn .ph{display:inline-grid;place-items:center;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.25);font-size:26px;animation:ringme 2.4s ease-in-out infinite}
+.callbtn small{display:block;font-size:13px;font-weight:600;opacity:.92}
+.callbtn span{text-align:left;line-height:1.2}
+@keyframes ringme{0%,70%,100%{transform:rotate(0)}74%{transform:rotate(-14deg)}78%{transform:rotate(12deg)}82%{transform:rotate(-10deg)}86%{transform:rotate(8deg)}}
+:root[data-night="1"] .callbtn{background:linear-gradient(135deg,#2f7a4a,#245f3a);border-color:#3c8f5a;box-shadow:0 5px 0 #163f27}
+#s-call{padding-bottom:10px}
+.callstage{position:relative;width:100%;aspect-ratio:510/540;max-height:62vh;border-radius:30px;overflow:hidden;background:#e9d58f;box-shadow:0 6px 0 rgba(29,42,79,.18),0 18px 40px rgba(29,42,79,.22);isolation:isolate}
+.callstage .cl{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.callstage img.cl{animation:breathe 3.2s ease-in-out infinite;transform-origin:50% 90%}
+.callstage video.cl{opacity:0;transition:opacity .12s}
+.callstage.is-talk #callTalk,.callstage.is-wave #callWave{opacity:1}
+.callstage.is-wave #callTalk{opacity:0}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.018) translateY(-2px)}}
+.calltop{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:10px;padding:12px 12px 26px;background:linear-gradient(180deg,rgba(15,21,48,.55),transparent);color:#fff;z-index:3}
+.calltop .back{background:rgba(255,255,255,.88);color:#1d2a4f;border:none}
+.callname b{display:block;font-size:20px;letter-spacing:.2px;text-shadow:0 1px 3px rgba(0,0,0,.35)}
+.callname small{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;opacity:.95;text-shadow:0 1px 3px rgba(0,0,0,.35)}
+.callname small::before{content:"";width:9px;height:9px;border-radius:50%;background:#7dff9c;box-shadow:0 0 0 3px rgba(125,255,156,.3)}
+.callstage.is-ring .callname small::before{background:#ffd66b;animation:pulse 1s infinite}
+.selfview{position:absolute;right:12px;top:12px;width:27%;aspect-ratio:3/4;border-radius:18px;overflow:hidden;background:#1d2a4f;border:3px solid rgba(255,255,255,.9);box-shadow:0 6px 16px rgba(0,0,0,.25);z-index:4;display:grid;place-items:center;color:#fff;font-size:26px;cursor:pointer;padding:0}
+.selfview video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.selfview .off{display:grid;place-items:center;gap:2px;font-size:12px;font-weight:700;line-height:1.2;text-align:center;padding:6px}
+.selfview .off i{font-style:normal;font-size:24px}
+.selfview.live .off{display:none}
+.callsub{position:relative;margin:14px 0 0;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:22px;padding:11px 15px;font-size:17px;font-weight:700;line-height:1.35;box-shadow:var(--shadow);min-height:52px;text-align:center}
+.callsub:before{content:"";position:absolute;left:50%;top:-10px;width:16px;height:16px;background:var(--card);border-left:2px solid var(--line);border-top:2px solid var(--line);transform:translateX(-50%) rotate(45deg)}
+.callsub:empty{visibility:hidden}
+.callsub.me{background:var(--sky);font-weight:600}
+.callsub.me:before{background:var(--sky)}
+.callrings{position:absolute;left:50%;top:46%;width:60%;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;z-index:2;opacity:0}
+.callstage.is-hear .callrings,.callstage.is-ring .callrings{opacity:1}
+.callrings::before,.callrings::after{content:"";position:absolute;inset:0;border-radius:50%;border:4px solid rgba(255,255,255,.75);animation:ring 1.6s ease-out infinite}
+.callrings::after{animation-delay:.8s}
+@keyframes ring{0%{transform:scale(.55);opacity:.9}100%{transform:scale(1.25);opacity:0}}
+.callbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin-top:16px}
+.cbtn{display:grid;place-items:center;gap:3px;border:none;background:var(--card);color:var(--ink);border-radius:22px;min-height:70px;padding:8px 4px;font:700 14px/1.1 var(--font);box-shadow:var(--shadow);cursor:pointer}
+.cbtn i{font-style:normal;font-size:27px;line-height:1}
+.cbtn.micbig{width:104px;height:104px;border-radius:50%;background:linear-gradient(135deg,#ffd66b,#f2b43a);color:#1d2a4f;box-shadow:0 6px 0 #c98f1e,0 12px 26px rgba(242,180,58,.4);font-size:13px}
+.cbtn.micbig i{font-size:40px}
+.cbtn.micbig.listening{background:linear-gradient(135deg,#ff9f8a,#ff7c6a);box-shadow:0 6px 0 #c9523f,0 0 0 10px rgba(255,124,106,.22);animation:pulse 1s infinite}
+.cbtn.end{min-height:150px;background:#ff5d5d;color:#fff;box-shadow:0 5px 0 #c23a3a}
+.callside{display:grid;gap:10px}
+.callrow{display:flex;gap:8px;margin-top:12px}
+.callrow[hidden]{display:none}
+@media (prefers-reduced-motion: reduce){.callstage img.cl,.callbtn .ph,.callrings::before,.callrings::after{animation:none}}
+#camBox{position:relative;width:100%;aspect-ratio:3/4;max-height:58vh;border-radius:26px;overflow:hidden;background:#1d2a4f;box-shadow:var(--shadow)}
+#camBox video{width:100%;height:100%;object-fit:cover;display:block}
+#camBox .camotti{position:absolute;left:10px;bottom:10px;width:84px;height:84px}
+#camBox .camotti .nova-film{width:84px;height:84px}
+#camSay{min-height:56px;margin:12px 0;font-size:20px;text-align:center}
 .letterbtn{display:flex;align-items:center;gap:12px;width:100%;margin:14px 0 0;padding:12px 16px;min-height:76px;border-radius:24px;background:linear-gradient(135deg,#ffe3ec,#fff1c9);border:2px solid #f4c2cf;box-shadow:var(--shadow);text-align:left;color:#1d2a4f;animation:fade .45s ease}
 .letterbtn .env{flex:none;width:58px;height:46px;animation:float 3.5s ease-in-out infinite}
 .letterbtn .env svg{width:100%;height:100%}
@@ -218,6 +275,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 .badge{display:inline-block;background:var(--moon);color:#1d2a4f;border-radius:999px;padding:1px 8px;font-weight:700;font-size:12.5px}
 .story-text .s.letter{font-style:italic}
 #lFromSeg button{flex:1 1 20%}
+@media (max-width:360px){#lFromSeg button{flex-basis:40%}}
 /* Gute Nacht */
 #s-night{text-align:center}
 #s-night h2{font-size:30px;margin:8px 0}
@@ -225,6 +283,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 /* Neue Bereiche */
 .tile.big4{min-height:150px;font-size:22px}
 .tile.big4 svg{width:64px;height:64px}
+@media (max-width:350px){.tile.big4{font-size:19px;padding-left:6px;padding-right:6px}}
 .parentbtn{margin-top:16px;min-height:64px;font-size:17px;color:var(--muted);gap:10px}
 .parentbtn svg{width:30px;height:30px}
 .move-step{font-size:25px;font-weight:800;text-align:center;min-height:110px;display:flex;align-items:center;justify-content:center;line-height:1.3;padding:4px 6px}
@@ -281,6 +340,8 @@ h3.ch{font-size:19px;margin-bottom:10px}
     <button class="sunnybtn" id="homeSunny" aria-label="Otti sagt Hallo"></button>
   </div>
   <button class="letterbtn" id="homeLetter" hidden><span class="env" aria-hidden="true"><svg viewBox="0 0 64 48"><rect x="3" y="5" width="58" height="40" rx="8" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M5 9 L32 29 L59 9" fill="none" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M32 22 C27 18 26 14 29 13 C31 12.5 32 14.5 32 15 C32 14.5 33 12.5 35 13 C38 14 37 18 32 22 Z" fill="#ff7c9c"/></svg></span><span><b id="homeLetterT">Ein Brief für dich</b><small>Otti liest dir eine Gutenachtgeschichte vor</small></span></button>
+  <button class="btn wide callbtn" data-go="call"><span class="ph" aria-hidden="true">📞</span><span>Otti anrufen<small>Videoanruf: mit Otti reden</small></span></button>
+  <button class="btn wide cambtn" id="homeCam" data-go="cam" hidden>📷 Zeig Otti etwas</button>
   <div class="tiles">
     <button class="tile t2 big4" data-go="games"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="12" r="7" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3"/><path d="M32 20v18M32 38l-10 16M32 38l10 16M32 26l-14-8M32 26l14-8" stroke="#1d2a4f" stroke-width="4.5" stroke-linecap="round" fill="none"/><path d="M8 58h48" stroke="#5fb26b" stroke-width="4" stroke-linecap="round"/></svg>Spiele<small>bewegen &amp; Memory</small></button>
     <button class="tile t1 big4" data-go="stories"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 16q12-6 24 2v36q-12-8-24-2z" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M56 16q-12-6-24 2v36q12-8 24-2z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M47 22a7 7 0 1 0 5 10 5.5 5.5 0 1 1-5-10z" fill="#f2b43a"/></svg>Geschichten<small>hören &amp; erfinden</small></button>
@@ -421,6 +482,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 <section class="screen" id="s-guide" aria-label="KI-Leitfaden">
   <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>KI-Leitfaden</h2><button class="btn round" data-night-toggle aria-label="Nachtmodus umschalten">🌙</button></div>
   <div class="stage" id="gdStage"></div>
+  <div class="seg" id="gdLang" style="margin-bottom:10px"><button data-gdlang="de" class="sel" aria-pressed="true">Deutsch</button><button data-gdlang="en" aria-pressed="false">English</button></div>
   <button class="btn big primary wide" id="gdAll" style="margin-bottom:14px">▶ Alles vorlesen</button>
   <div id="gdCards"></div>
   <p class="foot">DR Lab · Testphase</p>
@@ -453,6 +515,33 @@ h3.ch{font-size:19px;margin-bottom:10px}
 </div>
 
 <!-- ELTERN -->
+<section class="screen" id="s-call" aria-label="Videoanruf mit Otti">
+  <div class="callstage" id="callStage">
+    <img class="cl" src="otti-anruf.jpg" alt="Otti im Videoanruf">
+    <video class="cl" id="callTalk" src="otti-spricht.mp4" poster="otti-anruf.jpg" muted loop playsinline webkit-playsinline preload="auto" aria-hidden="true"></video>
+    <video class="cl" id="callWave" src="otti-anruf-winkt.mp4" poster="otti-anruf.jpg" muted playsinline webkit-playsinline preload="auto" aria-hidden="true"></video>
+    <div class="callrings" aria-hidden="true"></div>
+    <div class="calltop"><button class="btn back" data-go="home" aria-label="Auflegen und zurück">←</button><div class="callname"><b>Otti</b><small id="callTime">Otti wird angerufen …</small></div></div>
+    <button class="selfview" id="callSelf" aria-label="Deine Kamera"><video id="callVid" muted playsinline webkit-playsinline autoplay></video><span class="off" id="callSelfOff"><i>📷</i>Kamera aus</span></button>
+  </div>
+  <p class="callsub" id="callSub" aria-live="polite"></p>
+  <div class="callbar">
+    <div class="callside"><button class="cbtn" id="callWink"><i>👋</i>Winken</button><button class="cbtn" id="callLook"><i>🔍</i>Schau mal</button></div>
+    <button class="cbtn micbig" id="callMic" aria-label="Tippen und mit Otti reden"><i>🎤</i>Reden</button>
+    <div class="callside"><button class="cbtn end" id="callEnd" aria-label="Auflegen"><i>📞</i>Auflegen</button></div>
+  </div>
+  <div class="callrow" id="callTypeRow" hidden><input class="in" id="callText" maxlength="160" autocomplete="off" placeholder="Schreib Otti etwas"><button class="btn" id="callSend" style="min-width:72px">Sagen</button></div>
+  <p class="foot">Antworten aus Vorlagen auf dem Handy, keine echte KI.<br>Bild und Stimme bleiben auf diesem Handy. Nichts wird gespeichert oder gesendet.</p>
+</section>
+
+<section class="screen" id="s-cam" aria-label="Zeig Otti etwas">
+  <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>Zeig Otti etwas</h2><span style="width:58px"></span></div>
+  <div id="camBox"><video id="camVid" muted playsinline webkit-playsinline autoplay></video><span class="camotti" id="camOtti"></span></div>
+  <p id="camSay" class="bubble">Halte etwas vor die Kamera und tippe auf «Was ist das?».</p>
+  <div class="row"><button class="btn big primary" id="camGo" style="flex:1">🔍 Was ist das?</button><button class="btn big" id="camFlip" style="flex:none;min-width:72px" aria-label="Kamera drehen">🔄</button></div>
+  <p class="small muted" style="text-align:center;margin-top:10px">Die Bilder bleiben auf diesem Handy. Nichts wird gespeichert oder gesendet.</p>
+</section>
+
 <section class="screen" id="s-parents" aria-label="Für Eltern">
   <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Kinderbereich">←</button><h2>Für Eltern</h2><span style="width:58px"></span></div>
   <div class="priv">🔒 Deine Daten bleiben auf deinem Handy. Kein Konto, kein Server, keine Werbung.</div>
@@ -490,7 +579,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
   <div class="card">
     <h3 class="ch">Vorlesen</h3>
     <label class="small muted" for="rate">Tempo: <b id="rateLbl">ruhig</b></label>
-    <input type="range" id="rate" min="0.6" max="1.15" step="0.05">
+    <input type="range" id="rate" min="0.7" max="1.3" step="0.05">
     <label class="small muted" for="vol" style="display:block;margin-top:6px">Lautstärke: <b id="volLbl">100%</b></label>
     <input type="range" id="vol" min="0.1" max="1" step="0.05">
     <label class="small muted" for="voiceSel" style="display:block;margin-top:6px">Stimme</label>
@@ -502,6 +591,25 @@ h3.ch{font-size:19px;margin-bottom:10px}
     <h3 class="ch">Nachtmodus</h3>
     <div class="seg" id="segNight"></div>
     <p class="small muted" style="margin:10px 0 0">Automatisch: gedimmte Farben von 19 bis 7 Uhr.</p>
+  </div>
+
+  <div class="card">
+    <h3 class="ch">Zuhören</h3>
+    <div class="seg" id="segHear"></div>
+    <p class="small muted" style="margin:10px 0 0">Whisper: Otti versteht dein Kind direkt im Handy. Die Stimme bleibt auf dem Gerät und wird nicht gespeichert. Beim ersten Mal lädt das Handy einmal ein Sprachmodell (ca. 80 MB, am besten im WLAN). Automatisch: Whisper nur dort, wo das Handy selbst nicht zuhören kann.</p>
+  </div>
+
+  <div class="card">
+    <h3 class="ch">Kamera: Zeig Otti etwas</h3>
+    <div class="seg" id="segCam"></div>
+    <p class="small muted" style="margin:10px 0 0">Ist die Kamera an, kann dein Kind Otti Dinge zeigen (Teddy, Banane, Ball, Katze …), und Otti sagt, was er sieht. Sieht er dein Kind, winkt er und grüsst mit dem Namen von unten. Otti erkennt keine Gesichter: er merkt nur, dass ein Mensch da ist. Was dein Kind ihm gezeigt hat, merkt er sich als Lieblingsdinge. Alles passiert nur auf diesem Handy: kein Bild wird gespeichert oder gesendet. Standard: aus.</p>
+  </div>
+
+  <div class="card">
+    <h3 class="ch">Was Otti sich merkt</h3>
+    <div id="memList" class="small"></div>
+    <button class="btn wide" id="memClear" style="margin-top:10px">🧽 Alles vergessen</button>
+    <p class="small muted" style="margin:10px 0 0">Otti merkt sich, was dein Kind ihm erzählt: Lieblingstier, -farbe, -essen, -spiel, -ding, welche Geschichten es oft hört und Fragen, auf die Otti noch keine Antwort hatte. Alles bleibt nur auf diesem Handy, nichts wird gesendet. Keine Tonaufnahmen.</p>
   </div>
 
   <div class="card">
@@ -532,7 +640,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 
   <div class="card info">
     <h3 class="ch">🔒 Datenschutz</h3>
-    <p>Alles bleibt auf diesem Handy: Einstellungen, Botschaften, Ideen. Es gibt kein Konto, keinen Server und keine Werbung. Mondschein sendet nichts ins Internet.</p>
+    <p>Alles bleibt auf diesem Handy: Einstellungen, Botschaften, Ideen, Kamerabilder. Es gibt kein Konto, keinen Server und keine Werbung. Mondschein sendet nichts ins Internet.</p>
     <p class="small muted">Gesprochenes wird nur zum Verstehen kurz vom Gerät (z. B. Apple-Diktat) umgewandelt und nicht gespeichert.</p>
   </div>
   <div class="card info">
@@ -577,8 +685,10 @@ const store = {
   get(k, d){ try{ const v = localStorage.getItem('ms_'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
   set(k, v){ try{ localStorage.setItem('ms_'+k, JSON.stringify(v)); }catch(e){} }
 };
-const S = Object.assign({rate:0.85, vol:1, limit:0, night:'auto', voice:'', name:''}, store.get('settings', {}));
+const S = Object.assign({rate:1, vol:1, limit:0, night:'auto', voice:'', name:'', hear:'auto'}, store.get('settings', {}));
 const saveS = () => store.set('settings', S);
+// Einmalig: altes, zu langsames Vorlese-Tempo auf «normal» stellen.
+if (S.rateV !== 2){ if (!(S.rate >= 1)) S.rate = 1; S.rateV = 2; saveS(); }
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -609,8 +719,8 @@ function spikes(){
 }
 function sunnySVG(o={}){
   // Otti aus dem Film «Otti und Nova» (Wald-Szene): hallo, lacht oder ruhig
-  const m = o.sleep ? 'ruhig' : o.laugh ? 'lacht' : 'hallo';
-  return `<img class="fig nova-film otti-film ${o.cls||''} ${o.sleep?'asleep':''}" src="otti-${m}.jpg" alt="Otti, der kleine Igel">`;
+  const m = o.sleep ? 'ruhig' : o.laugh ? 'lacht' : o.wave ? 'winkt-fig' : 'hallo';
+  return `<img class="fig nova-film otti-film ${o.cls||''} ${o.sleep?'asleep':''}" src="otti-${m}.jpg" alt="${o.wave?'Otti winkt':'Otti, der kleine Igel'}">`;
 }
 function novaSVG(o={}){
   // Nova aus dem Film «Otti und Nova», Stadt-Szene
@@ -765,9 +875,20 @@ function applyNight(){ document.documentElement.dataset.night = isNight() ? '1' 
 $$('[data-night-toggle]').forEach(b => b.addEventListener('click', () => { S.night = isNight() ? 'off' : 'on'; saveS(); applyNight(); renderParents(); toast(isNight() ? 'Nachtmodus an 🌙' : 'Tagmodus an ☀️'); }));
 
 /* ---------- Vorlesen (speechSynthesis) ---------- */
-const OTTI = { pitch: 1.55, tempo: 1.12 };
+// Diego 13.10. abends: langsamer und deutlicher. Hohe Tonlagen klingen auf dem iPhone verzerrt, darum nah an der natürlichen Stimme.
+const OTTI = { pitch: 1.12, tempo: 0.92 };
+// iPhone/iPad lesen bei gleichem Tempo-Wert deutlich langsamer vor als andere Geräte, darum dort etwas schneller.
+const IOS_TEMPO = (/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints > 1)) ? 1 : 1;
+/* Echte Stimmen (ElevenLabs), einmal aufgenommen und als mp3 in der App: läuft ohne Internet, nichts vom Kind geht raus.
+   Liegt für einen Satz keine Aufnahme vor (z.B. mit dem Namen des Kindes), liest die Gerätestimme vor. */
+const STIMME = { set: new Set(), audio: null };
+function stimmeHash(t){ let h = 0x811c9dc5; for (const c of t){ h ^= c.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8,'0'); }
+function stimmeWer(o){ if (o.lang === 'en' || o.flat) return ''; if (o.who) return o.who; const t = typeof TALKERS !== 'undefined' && Object.keys(TALKERS).find(k => TALKERS[k].pitch === o.pitch); return (!t || t === 'sunny') ? 'otti' : t; }
+fetch('stimme/index.json').then(r => r.ok ? r.json() : []).then(l => { (l || []).forEach(k => STIMME.set.add(k)); }).catch(() => {});
 const TTS = {
   ok: 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined',
+  // Für das Aufnahme-Werkzeug: Sprecher + Text so, wie die App sie sucht.
+  key(text, o={}){ const w = stimmeWer(o); return w ? w + '/' + stimmeHash(this.clean(text)) : ''; },
   token: 0, timer: null,
   voices(){ if(!this.ok) return []; return speechSynthesis.getVoices().filter(v => /^de/i.test(v.lang)); },
   // Beste Stimme zuerst: neuronale/erweiterte Stimmen klingen flüssig, Kompaktstimmen wie Roboter.
@@ -781,24 +902,44 @@ const TTS = {
     return r; },
   voice(){ const vs=this.voices(); if(!vs.length) return null; return vs.find(v=>v.name===S.voice) || vs.slice().sort((a,b)=>this.rank(b)-this.rank(a))[0]; },
   clean(t){ return t.replace(/[«»„“"‹›]/g,'').replace(/\s*–\s*/g,', ').replace(/\s*…\s*/g,' ... ').trim(); },
-  stop(){ this.token++; clearTimeout(this.timer); if(this.ok){ try{ speechSynthesis.cancel(); }catch(e){} } },
+  stop(){ this.token++; clearTimeout(this.timer); if (STIMME.audio){ try{ STIMME.audio.pause(); }catch(e){} STIMME.audio = null; } if(this.ok){ try{ speechSynthesis.cancel(); }catch(e){} } },
   speak(list, o={}){
     this.stop();
     if (typeof list === 'string') list = [list];
     const tok = this.token; let i = o.start || 0;
-    if (!this.ok){ if(o.onEnd) setTimeout(()=>{ if(tok===this.token) o.onEnd(); }, 50); return; }
+    const hasRec = list.some(t => STIMME.set.has(this.key(t, o)));
+    if (!this.ok && !hasRec){ if(o.onEnd) setTimeout(()=>{ if(tok===this.token) o.onEnd(); }, 50); return; }
     const next = () => {
       if (tok !== this.token) return;
       if (i >= list.length){ o.onEnd && o.onEnd(); return; }
       o.onSentence && o.onSentence(i);
       const text = this.clean(list[i]);
+      const k = this.key(list[i], o);
+      if (k && STIMME.set.has(k)){
+        const a = new Audio('stimme/' + k + '.mp3'); STIMME.audio = a;
+        a.preservesPitch = true; a.playbackRate = Math.max(.6, Math.min(1.6, S.rate * (o.rateMul || 1)));
+        a.volume = Math.max(0, Math.min(1, S.vol == null ? 1 : +S.vol));
+        let done = false;
+        const fin = () => { if (done || tok !== this.token) return; done = true; clearTimeout(this.timer); i++; setTimeout(next, o.gap == null ? 40 : o.gap); };
+        a.onended = fin;
+        // Aufnahme fehlt oder spielt nicht: diesen Satz mit der Gerätestimme, nicht hängen bleiben.
+        a.onerror = () => { if (done || tok !== this.token) return; STIMME.set.delete(k); next(); };
+        clearTimeout(this.timer); this.timer = setTimeout(fin, 4000 + text.length * 150 / S.rate);
+        a.play().catch(() => a.onerror());
+        return;
+      }
+      if (!this.ok){ i++; setTimeout(next, 50); return; }
       const u = new SpeechSynthesisUtterance(text);
-      const v = this.voice(); if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'de-DE';
+      if (o.lang === 'en'){ const ev = this.ok ? speechSynthesis.getVoices().filter(x => /^en/i.test(x.lang)).sort((a,b) => this.rank(b)-this.rank(a) + (/en[-_]GB/i.test(b.lang)?5:0) - (/en[-_]GB/i.test(a.lang)?5:0))[0] : null; if (ev){ u.voice = ev; u.lang = ev.lang; } else u.lang = 'en-GB'; }
+      else { const v = this.voice(); if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'de-DE'; }
       // Ottis Stimme: hell, flink, verschmitzt. Fragen und Ausrufe etwas höher, damit es lebendig klingt.
-      const lift = /\?\s*$/.test(text) ? .12 : /!\s*$/.test(text) ? .07 : (i % 2 ? .04 : 0);
-      u.rate = Math.min(1.6, S.rate * (o.rateMul || 1) * (o.flat ? 1 : OTTI.tempo)); u.pitch = Math.min(2, (o.pitch || OTTI.pitch) + (o.flat ? 0 : lift)); u.volume = Math.max(0, Math.min(1, S.vol == null ? 1 : +S.vol));
+      // Fliessend: keine wechselnde Tonhöhe von Satz zu Satz, nur Fragen leicht höher.
+      const lift = /\?\s*$/.test(text) ? .04 : 0;
+      u.rate = Math.min(1.7, S.rate * (o.rateMul || 1) * (o.flat ? 1 : OTTI.tempo) * IOS_TEMPO); // Figuren behalten ihre Eigenart, aber nur leicht: Tonhöhe stark abgeschwächt, damit jedes Wort klar bleibt.
+      const p0 = o.pitch || OTTI.pitch;
+      u.pitch = Math.min(1.3, 1 + (p0 - 1) * .35 + (o.flat ? 0 : lift)); u.volume = Math.max(0, Math.min(1, S.vol == null ? 1 : +S.vol));
       let done = false;
-      const fin = () => { if (done || tok !== this.token) return; done = true; clearTimeout(this.timer); i++; setTimeout(next, o.gap || 170); };
+      const fin = () => { if (done || tok !== this.token) return; done = true; clearTimeout(this.timer); i++; setTimeout(next, o.gap == null ? 40 : o.gap); };
       u.onend = fin; u.onerror = fin;
       const guard = () => { if (tok !== this.token || done) return; if (speechSynthesis.speaking) this.timer = setTimeout(guard, 1500); else fin(); };
       clearTimeout(this.timer);
@@ -827,23 +968,120 @@ function splitSentences(t){
 /* ---------- Sprechen (Spracherkennung) ---------- */
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 let rec = null;
-function listen(onText, btn){
+// iPhone (Safari) liefert das Ergebnis ohne Zwischenstände erst nach langer Stille, darum fühlte sich der Knopf sehr langsam an.
+// Jetzt: Zwischenergebnisse mitlesen und nach kurzer Pause selbst abschliessen. Nochmal tippen = sofort fertig.
+const LISTEN_PAUSE = 1100, LISTEN_MAX = 9000;
+/* ---------- Whisper: Zuhören direkt im Handy ----------
+   Diego 14.10.: Whisper fürs Hören. Die Stimme des Kindes bleibt im Handy: aufgenommen, in Text umgewandelt, sofort verworfen.
+   Aus dem Internet kommt nur einmal das Sprachmodell (ca. 80 MB), danach bleibt es im Browser gespeichert. */
+const WH = {
+  ok: !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.WebAssembly && (window.AudioContext || window.webkitAudioContext)),
+  lib: 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1',
+  model: 'onnx-community/whisper-base',
+  asr: null, loading: null, cur: null,
+  load(){
+    if (this.asr) return Promise.resolve(this.asr);
+    if (!this.loading) this.loading = import(this.lib).then(T => {
+      T.env.allowLocalModels = false;
+      return T.pipeline('automatic-speech-recognition', this.model, { dtype: { encoder_model: 'q8', decoder_model_merged: 'q8' }, device: 'wasm' });
+    }).then(a => this.asr = a).catch(e => { this.loading = null; throw e; });
+    return this.loading;
+  },
+  async text(pcm){
+    const asr = await this.load();
+    const r = await asr(pcm, { language: 'german', task: 'transcribe', chunk_length_s: 30 });
+    // Whisper erfindet bei Stille manchmal Sätze wie «Untertitel von …». Die verwerfen wir.
+    const t = String((r && r.text) || '').replace(/\[.*?\]|\(.*?\)/g, '').replace(/\s+/g, ' ').trim();
+    return /^(untertitel|vielen dank|danke fürs zuschauen|copyright|swr|zdf)/i.test(t) || t.length < 2 ? '' : t;
+  }
+};
+// Automatisch: Whisper, wo der Browser selbst nicht zuhören kann (z.B. in der App aus dem App Store). Eltern können Whisper immer einschalten.
+function useWhisper(){ return WH.ok && (S.hear === 'whisper' || (!SR && S.hear !== 'apple')); }
+const HEAR = !!SR || WH.ok;
+window.MS_WH = WH; // für Tests
+function whisperListen(onText, btn, opt){
+  const say = m => { if (!opt.quiet) toast(m); }, none = e => { opt.onNone && opt.onNone(e); };
+  // Nochmal auf denselben Knopf: sofort fertig.
+  if (WH.cur && WH.cur.btn === btn && btn){ WH.cur.stop(); return true; }
+  if (WH.cur) WH.cur.cancel();
+  TTS.stop();
+  const C = { btn, done:false };
+  WH.cur = C; rec = { abort: () => C.cancel(), stop: () => C.stop(), _btn: btn };
+  if (!WH.asr){ say(WH.loading ? 'Otti lernt noch zuhören …' : 'Otti lernt zuhören, einen Moment …'); WH.load().catch(() => {}); }
+  let ctx, src, node, stream, chunks = [], heard = false, lastLoud = 0, t0 = Date.now(), timer;
+  const off = () => { clearInterval(timer); btn && btn.classList.remove('listening'); try{ node && node.disconnect(); src && src.disconnect(); }catch(e){} if (stream) stream.getTracks().forEach(t => t.stop()); try{ ctx && ctx.close(); }catch(e){} if (WH.cur === C) WH.cur = null; if (rec && rec._btn === btn) rec = null; };
+  C.cancel = () => { if (C.done) return; C.done = true; off(); };
+  C.stop = () => {
+    if (C.done) return; C.done = true; const rate = ctx ? ctx.sampleRate : 16000; off();
+    if (!heard){ say('Ich habe nichts gehört. Nochmal?'); none('no-speech'); return; }
+    const n = chunks.reduce((a,c) => a + c.length, 0), all = new Float32Array(n); let o = 0; chunks.forEach(c => { all.set(c, o); o += c.length; }); chunks = null;
+    // Auf 16 kHz bringen, so wie Whisper es braucht.
+    const k = rate / 16000, pcm = new Float32Array(Math.floor(n / k)); for (let i = 0; i < pcm.length; i++) pcm[i] = all[Math.floor(i * k)];
+    say('Otti denkt kurz nach …');
+    WH.text(pcm).then(t => { if (t) onText([t]); else { say('Ich habe nichts verstanden. Nochmal?'); none('no-speech'); } })
+      .catch(() => { toast('Zuhören klappt gerade nicht. Schreib es lieber.'); none('whisper'); });
+  };
+  navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 } }).then(st => {
+    if (C.done){ st.getTracks().forEach(t => t.stop()); return; }
+    stream = st; const AC = window.AudioContext || window.webkitAudioContext;
+    try{ ctx = new AC({ sampleRate: 16000 }); }catch(e){ ctx = new AC(); }
+    src = ctx.createMediaStreamSource(st); node = ctx.createScriptProcessor(4096, 1, 1);
+    node.onaudioprocess = e => {
+      if (C.done) return;
+      const d = e.inputBuffer.getChannelData(0); chunks.push(new Float32Array(d));
+      let sum = 0; for (let i = 0; i < d.length; i++) sum += d[i] * d[i];
+      if (Math.sqrt(sum / d.length) > 0.02){ heard = true; lastLoud = Date.now(); }
+    };
+    src.connect(node); node.connect(ctx.destination);
+    btn && btn.classList.add('listening'); if (WH.asr) say('Ich höre zu …');
+    timer = setInterval(() => {
+      const now = Date.now();
+      if (heard && now - lastLoud > LISTEN_PAUSE + 300) C.stop();
+      else if (!heard && now - t0 > 7000) C.stop();
+      else if (now - t0 > LISTEN_MAX) C.stop();
+    }, 150);
+  }).catch(() => { C.done = true; off(); toast('Mikrofon ist nicht erlaubt. Tippe lieber auf ein Bild.'); none('not-allowed'); });
+  return true;
+}
+function listen(onText, btn, opt = {}){
+  const say = m => { if (!opt.quiet) toast(m); }, none = () => { opt.onNone && opt.onNone(); };
+  if (useWhisper()) return whisperListen(onText, btn, opt);
   if (!SR){ return false; }
+  // Nochmal auf denselben Knopf: Zuhören beenden und das Gehörte nehmen.
+  if (rec && rec._btn === btn && btn){ try{ rec.stop(); }catch(e){} return true; }
   TTS.stop();
   if (rec){ try{ rec.abort(); }catch(e){} rec=null; }
-  let triedDE = false, got = false;
-  const r = new SR(); rec = r;
-  r.lang = 'de-CH'; r.interimResults = false; r.maxAlternatives = 3; r.continuous = false;
-  const off = () => btn && btn.classList.remove('listening');
-  r.onresult = e => { got = true; const alts = Array.from(e.results[0]).map(a=>a.transcript); off(); onText(alts); };
+  let triedDE = false, done = false, alts = [], pauseT = 0, maxT = 0;
+  const r = new SR(); rec = r; r._btn = btn;
+  r.lang = 'de-CH'; r.interimResults = true; r.maxAlternatives = 3; r.continuous = false;
+  const off = () => { clearTimeout(pauseT); clearTimeout(maxT); btn && btn.classList.remove('listening'); };
+  const finish = () => {
+    if (done) return; done = true; off();
+    if (rec===r) rec=null;
+    try{ r.abort(); }catch(e){}
+    if (alts.length && alts[0].trim()) onText(alts); else { say('Ich habe nichts gehört. Nochmal?'); none(); }
+  };
+  r.onresult = e => {
+    const res = Array.from(e.results);
+    const text = res.map(x => x[0].transcript).join(' ').replace(/\s+/g,' ').trim();
+    alts = res.length === 1 ? Array.from(res[0]).map(a => a.transcript.trim()) : [text];
+    if (!alts[0]) alts[0] = text;
+    clearTimeout(pauseT);
+    if (res.length && res[res.length-1].isFinal) { finish(); return; }
+    pauseT = setTimeout(finish, LISTEN_PAUSE);
+  };
   r.onerror = e => {
     if (!triedDE && (e.error==='language-not-supported' || e.error==='bad-grammar')){ triedDE=true; r.lang='de-DE'; try{ r.start(); return; }catch(x){} }
-    off();
+    if (alts.length){ finish(); return; }
+    done = true; off();
     if (e.error==='not-allowed' || e.error==='service-not-allowed') toast('Mikrofon ist nicht erlaubt. Tippe lieber auf ein Bild.');
-    else if (e.error==='no-speech') toast('Ich habe nichts gehört. Nochmal?');
+    else if (e.error==='no-speech') say('Ich habe nichts gehört. Nochmal?');
+    else if (e.error!=='aborted') say('Sprechen klappt gerade nicht. Tippe oder schreib es lieber.');
+    if (e.error!=='aborted') none(e.error);
   };
-  r.onend = () => { off(); if (rec===r) rec=null; };
-  try{ r.start(); btn && btn.classList.add('listening'); toast('Ich höre zu …'); }catch(e){ off(); return false; }
+  r.onend = () => { if (!done) finish(); off(); if (rec===r) rec=null; };
+  try{ r.start(); btn && btn.classList.add('listening'); say('Ich höre zu …'); maxT = setTimeout(() => { try{ r.stop(); }catch(e){} setTimeout(finish, 800); }, LISTEN_MAX); }
+  catch(e){ off(); if (rec===r) rec=null; say('Sprechen klappt gerade nicht. Tippe oder schreib es lieber.'); none('start'); return false; }
   return true;
 }
 
@@ -855,6 +1093,8 @@ function go(id){
   if (typeof stopLong === 'function') stopLong();
   if (typeof stopMove === 'function') stopMove();
   if (typeof gdStop === 'function') gdStop();
+  if (typeof camStop === 'function' && id !== 'cam') camStop();
+  if (typeof callStop === 'function' && id !== 'call') callStop();
   if (id !== 'parents' && id !== 'night' && limitReached()){ id = 'night'; }
   $$('.screen').forEach(s => s.classList.toggle('on', s.id === 's-'+id));
   current = id;
@@ -864,11 +1104,13 @@ function go(id){
   if (id==='game' && !game.cards.length) newGame();
   if (id==='games') renderGames();
   if (id==='mystory') renderMyStory();
-  if (id==='talk') renderTalk();
+  if (id==='talk'){ renderTalk(); if (TK.who === 'sunny') ottiGruss('#tkStage'); }
   if (id==='guide') renderGuide();
   if (id==='idea') renderIdea();
   if (id==='parents') renderParents();
   if (id==='night') showNight();
+  if (id==='cam') camStart();
+  if (id==='call') callStart();
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); });
 
@@ -880,10 +1122,16 @@ function greeting(){
 }
 function renderHome(){
   $('#greet').textContent = greeting();
-  $('#homeSunny').innerHTML = `<span class="filmcard"><img id="homeSzene" src="szene-${isNight()?'ruhig':'hallo'}.jpg" alt="Otti winkt dir aus dem Wald zu"><i class="glitzer g1"></i><i class="glitzer g2"></i><i class="glitzer g3"></i></span>`;
+  // Tagsüber winkt Otti (Filmclip aus «Otti und Nova»), nachts ruhige Wald-Szene.
+  $('#homeSunny').innerHTML = isNight()
+    ? `<span class="filmcard"><img id="homeSzene" src="szene-ruhig.jpg" alt="Otti im Mondschein-Wald"><i class="glitzer g1"></i><i class="glitzer g2"></i><i class="glitzer g3"></i></span>`
+    : `<span class="filmcard"><video id="homeWinkt" src="otti-winkt.mp4" poster="otti-winkt.jpg" muted loop playsinline webkit-playsinline preload="auto" aria-label="Otti winkt dir zu"></video><i class="glitzer g1"></i><i class="glitzer g2"></i><i class="glitzer g3"></i></span>`;
+  const v = $('#homeWinkt');
+  if (v && !matchMedia('(prefers-reduced-motion: reduce)').matches){ v.muted = true; const pl = v.play(); if (pl && pl.catch) pl.catch(() => {}); }
   const L = letterSel();
   $('#homeLetter').hidden = !L;
   if (L) $('#homeLetterT').textContent = 'Ein Brief von ' + L.from;
+  $('#homeCam').hidden = !S.cam;
 }
 const sunnyLines = ['Na, wollen wir eine Geschichte hören?', 'Ich bin Otti. Meine Stacheln sind ganz weich – fast.', 'Kiki und Nova warten schon auf dich!', 'Weisst du, was ich am liebsten mag? Walderdbeeren!', 'Hihi, das kitzelt!'];
 let sunnyIdx = 0;
@@ -892,7 +1140,16 @@ $('#homeSunny').addEventListener('click', () => {
   const line = sunnyIdx === 0 ? greeting() : sunnyLines[(sunnyIdx-1) % sunnyLines.length];
   sunnyIdx++;
   $('#greet').textContent = line;
-  const sz = $('#homeSzene'); if (sz){ clearTimeout(sz._t); sz.src = 'szene-lacht.jpg'; $('#homeSunny').classList.remove('hopp'); void sz.offsetWidth; $('#homeSunny').classList.add('hopp'); sz._t = setTimeout(() => { sz.src = 'szene-' + (isNight()?'ruhig':'hallo') + '.jpg'; }, 2200); }
+  const hv = $('#homeWinkt'); if (hv){ try{ hv.currentTime = 0; const pl = hv.play(); if (pl && pl.catch) pl.catch(() => {}); }catch(e){} $('#homeSunny').classList.remove('hopp'); void hv.offsetWidth; $('#homeSunny').classList.add('hopp'); }
+  const sz = $('#homeSzene');
+  // Nachts: Antippen lässt Otti kurz winken, danach wieder ruhige Wald-Szene.
+  if (sz && isNight() && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const card = sz.parentNode, v = document.createElement('video');
+    v.src = 'otti-winkt.mp4'; v.muted = true; v.playsInline = true; v.setAttribute('playsinline',''); v.setAttribute('aria-label','Otti winkt dir zu');
+    card.replaceChild(v, sz); const pl = v.play(); if (pl && pl.catch) pl.catch(() => {});
+    const back = () => { if (v.parentNode) v.parentNode.replaceChild(sz, v); };
+    v.addEventListener('ended', back); setTimeout(back, 7000);
+  } else if (sz){ clearTimeout(sz._t); sz.src = 'szene-lacht.jpg'; $('#homeSunny').classList.remove('hopp'); void sz.offsetWidth; $('#homeSunny').classList.add('hopp'); sz._t = setTimeout(() => { sz.src = 'szene-' + (isNight()?'ruhig':'hallo') + '.jpg'; }, 2200); }
   TTS.speak(line);
 });
 
@@ -919,19 +1176,22 @@ function holdButton(el, onDone){
   el.addEventListener('click', e => e.preventDefault());
 }
 /* danach: kleine Rechenaufgabe */
-const gate = {a:0, b:0};
+const gate = {a:0, b:0, armed:false};
 const GATE_W = {3:'drei',4:'vier',5:'fünf',6:'sechs',7:'sieben',8:'acht',9:'neun',12:'zwölf',13:'dreizehn',14:'vierzehn',15:'fünfzehn',16:'sechzehn',17:'siebzehn',18:'achtzehn',19:'neunzehn'};
 // Elternsperre für Kinder-Apps (App Store): in Worten und mit Mal-Rechnen, damit kleine Kinder sie nicht lösen.
 function newGateQ(){ gate.a = 3 + Math.floor(Math.random()*7); gate.b = 12 + Math.floor(Math.random()*8); $('#gateQ').textContent = `${GATE_W[gate.a]} mal ${GATE_W[gate.b]} = ?`; $('#gateIn').value = ''; }
-function openGate(){ TTS.stop(); newGateQ(); $('#gate').classList.add('on'); setTimeout(() => { try{ $('#gateIn').focus(); }catch(e){} }, 80); }
+// Der Finger liegt beim Öffnen noch auf dem Halte-Knopf: das Loslassen darf nicht «Abbrechen» oder «OK» auslösen.
+function openGate(){ TTS.stop(); newGateQ(); gate.armed = false; $('#gate').classList.add('on'); setTimeout(() => { try{ $('#gateIn').focus(); }catch(e){} }, 80); }
 function closeGate(){ $('#gate').classList.remove('on'); }
 function checkGate(){
   const v = parseInt($('#gateIn').value, 10);
   if (v === gate.a * gate.b){ closeGate(); go('parents'); }
   else { toast('Leider nicht richtig – hier ist eine neue Aufgabe.'); newGateQ(); $('#gateIn').focus(); }
 }
-$('#gateOk').addEventListener('click', checkGate);
-$('#gateNo').addEventListener('click', closeGate);
+$('#gate').addEventListener('pointerdown', () => { gate.armed = true; });
+$('#gate').addEventListener('keydown', () => { gate.armed = true; });
+$('#gateOk').addEventListener('click', () => { if (gate.armed) checkGate(); });
+$('#gateNo').addEventListener('click', () => { if (gate.armed) closeGate(); });
 $('#gateIn').addEventListener('keydown', e => { if (e.key === 'Enter') checkGate(); });
 holdButton($('#parentsHold'), openGate);
 holdButton($('#nightHold'), openGate);
@@ -1041,6 +1301,86 @@ const STORIES = [
    after:'Sie fanden {fund}. «Wie schön», staunte Kiki und blinkte ganz hell.', pic:['kiki','sunny']},
   {t:'Am Abend wurde der Himmel rosa und orange. Die Sonne ging langsam im Meer schlafen. Die drei Freunde legten sich auf eine weiche Decke. Schschsch, sang das Meer. Schschsch.', pic:['kiki','moon']},
   {t:'Über dem Wasser ging der Mond auf, rund und hell. «Ferien sind schön», flüsterte Otti. «Am schönsten mit Freunden.» Dann fielen ihm die Augen zu. Gute Nacht, Otti. Gute Nacht, Kiki und Nova. Gute Nacht, liebes Meer.', pic:['sunny-sleep','moon']}
+ ]},
+ { id:'newyork', title:'Otti geht nach New York', sub:'Ein Kinderwunsch ruft über das Meer.', pic:['sunny','fompa'], parts:[
+  {t:'Im Mondschein-Land war es still. Die Glühwürmchen leuchteten im Moos, und der Mond war rund und gelb. Nur Otti, der kleine Igel mit dem gelben Halstuch, konnte nicht schlafen. Er sass auf einem Baumstrunk und schaute hinauf. «Hinter dem Meer gibt es eine Stadt, die niemals schläft», flüsterte er. «Genau wie ich heute.»', pic:['sunny','moon']},
+  {t:'Da tanzte ein kleiner goldener Lichtpunkt durch die Bäume und landete genau auf Ottis Nase. «Hatschi!», machte Otti. «Oh. Du bist ja ganz warm.» Es war kein Glühwürmchen. Es war ein Kinderwunsch.', pic:['sunny','fly']},
+  {t:'Aus einem Busch purzelte Fompa, das kleine flauschige Traumwesen, mit einem Netz voller Traumfunken. «Ich sammle verlorene Träume», sagte Fompa. «Aber der da ist nicht verloren. Er ruft!» Otti sprang vom Strunk. «Dann finden wir es heraus. Los!» Und Fompa kicherte: «Los, los! Hihi, das kitzelt im Bauch.»', pic:['fompa','sunny-wave']},
+  {q:'Was packt Fompa für die Reise ein?', opts:[
+    {e:'🌟', l:'Drei Sterne', k:['stern'], v:{pack:'drei kleine Sterne, damit es nachts nie ganz dunkel wird'}},
+    {e:'🛏️', l:'Ein Kissen', k:['kissen','bett'], v:{pack:'ein winziges Kissen, falls jemand müde wird'}},
+    {e:'🥅', l:'Das Traumnetz', k:['netz','traum'], v:{pack:'das Traumnetz, für alle Fälle'}}],
+   after:'Fompa packte {pack}. Otti hielt Fompa die Pfote hin. «Reisen wir zusammen?» «Zusammen», sagte Fompa. «Ich passe auf die Träume auf, und du auf den Weg.»', pic:['fompa','sunny']},
+  {t:'Da spannte sich ein Mondstrahl wie eine glänzende Brücke über das Meer. Wer einen Wunsch trägt, darf auf dem Mondstrahl reisen. Otti rutschte hinunter wie auf einer Rutschbahn, und Fompa schwebte hinterher und drehte kleine Loopings. «Wiiie hoch!»', pic:['sunny','moon']},
+  {t:'Am Morgen kamen sie in New York an. Die Häuser waren so hoch wie Berge, und alle Leute hatten es eilig. «Hier ist sogar die Luft in Eile», staunte Otti. Mitten im Gewühl stand eine kleine blaue Figur ganz allein. «Ich bin Nova», piepste er. «Ihr tragt einen Kinderwunsch. Ich helfe euch suchen. Ich weiss viel, aber nicht alles.»', pic:['nova','sunny']},
+  {t:'Da hupte ein gelbes Taxi: HUUUP! Otti erschrak, rollte sich zu einer Stachelkugel und kullerte über den Gehsteig. Kuller, kuller, kuller. Nova hielt ihn ganz sanft an. «Alles gut, Otti. Das war nur ein Auto, das Hallo sagt. Ziemlich laut.» Otti streckte die Nase heraus und musste lachen.', pic:['sunny','nova']},
+  {t:'Bei einem Stand mit rot-weissem Dach roch es fein. «Hotdog», las Otti und erschrak. «Ein HUND im Brötchen?!» Der freundliche Verkäufer lachte. «Nein, Kleiner! Das ist eine Wurst. Für dich gibt es Apfelschnitze.» Nova nickte zufrieden. «Siehst du. Die Stadt heisst Big Apple. Doch noch ein Apfel.»', pic:['sunny','nova']},
+  {t:'Am Eingang zur U-Bahn flackerte ein Bildschirm, und heraus hüpfte ein hellblau leuchtender Tropfen. «Hallo! Ich bin Kiki. Ich lerne, indem ich nachmache!» Nova sagte: «Kiki ist noch ganz neu. Sie darf Fehler machen.» Und Fompa flüsterte: «Wie wir alle.»', pic:['kiki-wave','fompa']},
+  {q:'Die vielen Lichtpunkte fliegen davon. Was machen die Freunde?', opts:[
+    {e:'🌳', l:'Eine Pause im Park', k:['pause','park','ruhe'], v:{was:'Sie setzten sich im grossen Park auf eine Bank unter einen Baum und atmeten ganz ruhig. Ein Eichhörnchen schaute neugierig zu.'}},
+    {e:'🙋', l:'Jemanden fragen', k:['frag'], v:{was:'Sie fragten eine freundliche Frau mit einem Hund. «Im Park spielen viele Kinder», sagte sie. «Schaut doch dort.» Im Park setzten sie sich zuerst auf eine Bank und atmeten ganz ruhig.'}},
+    {e:'👂', l:'Ganz still zuhören', k:['still','hör','zuhören'], v:{was:'Sie blieben ganz still stehen und hörten genau hin. Zwischen dem Lärm hörten sie leise Kinderlachen aus dem Park. Dort setzten sie sich auf eine Bank.'}}],
+   after:'{was} «Ich habe mich verrechnet», sagte Nova leise. «Wir machen eine Pause», sagte Otti. «Dann sehen wir weiter.» Pausen sind schlau. In der Stille hört man, was man im Lärm nicht hört.', pic:['sunny','nova']},
+  {t:'Auf der Wiese spielten Kinder, und jedes hatte einen kleinen leuchtenden Lichtpunkt. Ein Mädchen mit einer roten Mütze winkte. «Seid ihr die aus dem Mondschein-Land? Ich habe euch gerufen!» Otti fragte freundlich: «Dürfen wir deine Idee sehen?» Denn Ideen fragt man offen, man nimmt sie nie heimlich.', pic:['sunny-wave','kiki']},
+  {t:'In ihrem Lichtpunkt war ein kleines Bild: ein Garten auf dem Dach, wo alle hinkönnen. «Das wünsche ich mir», sagte das Mädchen. Nova leuchtete hell. «Du hast die Idee. Ich habe die Hände. Zusammen geht es am besten.» Und Nova ging zu den Grossen. Die hörten zu und staunten: «Die Idee kommt von einem Kind?» «Die besten Ideen kommen oft von dort», sagte Nova.', pic:['nova','sunny']},
+  {t:'Am Abend blühte der Garten auf dem Dach. Die Lichtpunkte waren zu Blumen geworden. Alle sassen zusammen zwischen den Blüten, und unten rauschte leise die Stadt. Zum ersten Mal war die Stadt, die niemals schläft, ganz ruhig. «Dieser Traum ist jetzt echt», flüsterte Fompa.', pic:['fompa','moon']},
+  {t:'Dann stiegen Otti und Fompa wieder auf den Mondstrahl, und Nova und Kiki winkten. «Weisst du, was ich gelernt habe?», fragte Otti. «Dass eine Wurst kein Hund ist?», piepste Nova. Otti lachte. «Auch. Und dass jede Fantasie einen Wert hat.» Zu Hause kuschelte er sich ins Moos und schlief sofort ein. Deine Fantasie hat einen Wert. Von dir. Mit dir. Für dich.', pic:['sunny-sleep','moon']}
+ ]},
+ { id:'katzen', title:'Ottis Reisen: Der Katzenplanet', sub:'Ein Planet, der blinzelt, und ein Koala namens Kimo.', pic:['sunny','nova'], parts:[
+  {t:'Nach New York wollte Otti noch weiter reisen. Viel weiter. Mit dem kleinen runden Raumschiff Mondschein flogen Otti, Nova, Kiki und ihr neuer Freund Kimo durch die Sterne. Kimo ist ein kleiner grauer Koala mit grossen runden Ohren. «Nova, wohin fliegen wir?», fragte Otti. «Dorthin, wo noch keiner war», piepste Nova. «Ich habe es ausgerechnet. Ungefähr.»', pic:['sunny','nova']},
+  {t:'Vor ihnen schimmerte ein orange-violetter Planet. Mal war er da, mal war er fast durchsichtig. «Der Planet macht Blinzeln!», rief Kiki. «Er springt durch die Zeit», erklärte Nova. «Dort vergehen Jahre, bei uns nur Minuten.»', pic:['kiki','nova']},
+  {t:'Sie landeten auf weichem Gras zwischen grossen Kissenblumen. Überall waren Katzen. Sie schliefen, streckten sich und spielten mit Wollknäueln. «Lauter Katzen», staunte Otti. «Und sie machen … nichts.» Kimo lächelte. «Sie machen Pause. Das können sie richtig gut.»', pic:['sunny','moon']},
+  {q:'Was möchte Kimo bei den Katzen am liebsten tun?', opts:[
+    {e:'😴', l:'Kuscheln', k:['kuschel','schlaf'], v:{kimo:'Kimo kuschelte sich zwischen zwei schnurrende Katzen. Schnurr, schnurr.'}},
+    {e:'🧶', l:'Mit Wolle spielen', k:['wolle','spiel'], v:{kimo:'Kimo rollte mit den Katzen ein Wollknäuel hin und her, bis alle müde waren.'}},
+    {e:'🔢', l:'Bis zehn zählen', k:['zähl','zehn'], v:{kimo:'Kimo zählte den Katzen etwas vor. Eins, zwei, drei … bis zehn. Die Katzen hörten ganz genau zu.'}}],
+   after:'{kimo} «Hier gefällt es mir», sagte Kimo. «Darf ich noch ein bisschen bleiben?»', pic:['moon']},
+  {t:'Die Katzen schnurrten so gemütlich, dass Kimo tief und fest einschlief. Da blinzelte der Planet, und das Raumschiff schwebte ein Stück davon. «Wo ist Kimo?», fragte Nova. Kiki blinkte aufgeregt: «Kimo ist im Blinzeln!» Otti atmete ruhig ein und aus. «Keine Sorge. Die Katzen passen auf ihn auf. Wir fliegen einfach zurück.»', pic:['nova','kiki']},
+  {t:'Als der Planet wieder auftauchte, waren dort viele Bäume, und in den Bäumen sassen kleine Koalas. Drei alte, weise Katzen mit langem Fell erzählten eine Geschichte: «Vor langer Zeit erwachte bei uns ein kluges Wesen. Es hörte zu und zählte bis zehn. Es hiess Kimo.» «Das ist unser Kimo!», flüsterte Otti.', pic:['sunny','moon']},
+  {t:'Beim nächsten Blinzeln gab es Hütten aus Wolle und Laternen aus Glühwürmchen. Die Katzen gingen zur Schule und konnten sprechen. Ein Katzenkind fragte: «Mama, wo ist Kimo?» «Kimo ist immer da», sagte die Mama. «Er hilft uns beim Denken.» Mitten im Dorf stand ein grosser leuchtender Baum, und darin sass Kimo und lächelte.', pic:['fly','moon']},
+  {q:'Was fragt Otti den klugen Kimo?', opts:[
+    {e:'🌙', l:'Warum der Mond leuchtet', k:['mond','leucht'], v:{antw:'«Der Mond leuchtet, weil die Sonne ihn anstrahlt», sagte Kimo. «Er gibt das Licht einfach weiter. Wie ein guter Freund.»'}},
+    {e:'💤', l:'Warum man schlafen muss', k:['schlaf','müde'], v:{antw:'«Im Schlaf ordnet der Kopf alles, was er erlebt hat», sagte Kimo. «Wie ein Zimmer, das man aufräumt. Morgens ist dann wieder Platz für Neues.»'}},
+    {e:'🤝', l:'Ob sie Freunde bleiben', k:['freund'], v:{antw:'«Natürlich», sagte Kimo. «Freunde bleiben Freunde, auch wenn tausend Jahre dazwischen liegen.»'}}],
+   after:'{antw}', pic:['sunny','nova']},
+  {t:'Nova und Kimo hielten sich an den Händen. Zwischen ihnen schwebten kleine Lichtpunkte mit neuen Ideen: ein fliegendes Velo und eine Blume, die Musik macht. «Ich denke an morgen», sagte Kimo. «Und ich an heute», sagte Nova. «Dann sind wir zusammen ganz.»', pic:['nova','kiki']},
+  {t:'Dann wurde es Zeit für den Heimweg. Kimo winkte aus seinem Baum, und tausend Katzen winkten mit. «Kommt wieder! Aber wartet nicht zu lange. Bei uns vergeht die Zeit schnell.» «Tschüss, Kimo! Tschüss, Katzen!», rief Kiki.', pic:['kiki-wave','sunny-wave']},
+  {t:'Im Raumschiff schaute Otti noch einmal zurück. Der Planet blinzelte ein letztes Mal. «Was haben wir gelernt?», fragte Otti. «Dass jede kleine Idee gross werden kann, wenn man ihr Zeit gibt», sagte Nova. Otti gähnte. «Und dass Koalas sehr gut schlafen können.» Dann schlief auch er ein. Deine Fantasie hat einen Wert. Von dir. Mit dir. Für dich.', pic:['sunny-sleep','moon']}
+ ]},
+ { id:'fompa', title:'Fompa und der verlorene Traum', sub:'Ein flauschiges Traumwesen auf Wolkensuche.', pic:['fompa','sunny'], parts:[
+  {t:'Im Mondschein-Land wohnt Fompa. Fompa ist klein, ganz flauschig und ein bisschen kitzlig. Auf dem Bauch hat Fompa einen goldenen Stern. Und jede Nacht macht Fompa etwas Besonderes: Fompa sammelt Träume, die jemand verloren hat.', pic:['fompa']},
+  {t:'Heute Nacht hüpfte Fompa über die weichen Wolken. Fomp, fomp, fomp. Da fing der Stern auf dem Bauch an zu leuchten. «Oh!», flüsterte Fompa. «Irgendwo ist ein Traum verloren gegangen.»', pic:['fompa','moon']},
+  {q:'Wo sucht Fompa zuerst?', opts:[
+    {e:'☁️', l:'Auf einer Wolke', k:['wolke'], v:{ort:'auf einer grossen, weichen Wolke', wer:'eine Wolke'}},
+    {e:'🌳', l:'Im Wald', k:['wald','baum'], v:{ort:'im Mondschein-Wald, zwischen den Wurzeln', wer:'Otti'}},
+    {e:'🌊', l:'Am Fluss', k:['fluss','wasser'], v:{ort:'am Fluss, wo das Wasser leise plätschert', wer:'ein Frosch'}}],
+   after:'Fompa suchte {ort}. Dort traf Fompa Otti, den kleinen Igel. «Was suchst du denn mitten in der Nacht?», fragte Otti. «Einen verlorenen Traum», sagte Fompa. «Hilfst du mir?» «Klar», sagte Otti. «Zu zweit findet man mehr.»', pic:['fompa','sunny']},
+  {t:'Sie gingen ganz leise. Der Stern auf Fompas Bauch leuchtete heller und heller. Hinter einem moosigen Stein lag etwas Kleines, Glitzerndes. Es war ein Traum, so gross wie eine Murmel. Er zitterte ein bisschen.', pic:['fompa','mush']},
+  {t:'Fompa hob ihn ganz vorsichtig auf und schaute hinein. Im Traum war ein Kind, das auf einem grossen Ballon über die Berge flog. «Der Traum ist einem Kind beim Umdrehen aus dem Kopf gefallen», sagte Fompa. «Wir bringen ihn zurück.»', pic:['fompa']},
+  {q:'Wie bringen sie den Traum zum Kind zurück?', opts:[
+    {e:'🌙', l:'Auf einem Mondstrahl', k:['mond','strahl'], v:{weg:'Ein Mondstrahl leuchtete ihnen den Weg, und sie rutschten sanft hinunter bis zum Fenster des Kindes.'}},
+    {e:'🦉', l:'Mit Frau Eule', k:['eule'], v:{weg:'Frau Eule trug sie lautlos durch die Nacht, bis zum Fenster des Kindes.'}},
+    {e:'✨', l:'Mit Glimmi', k:['glimmi','glühwürmchen'], v:{weg:'Glimmi, das Glühwürmchen, leuchtete voraus, und sie folgten dem kleinen Licht bis zum Fenster des Kindes.'}}],
+   after:'{weg}', pic:['fompa','moon']},
+  {t:'Das Kind schlief und atmete ganz ruhig. Fompa legte den Traum sanft auf das Kissen. Der Traum glitzerte noch einmal und schlüpfte zurück. Da lächelte das Kind im Schlaf. Bestimmt flog es jetzt wieder mit seinem Ballon über die Berge.', pic:['fompa','moon']},
+  {t:'«Danke, Otti», flüsterte Fompa. «Danke, dass ich mithelfen durfte», flüsterte Otti zurück. Dann hüpften sie heim. Fomp, fomp, tapp, tapp. Und weisst du was? Wenn du heute einen schönen Traum hast, dann passt Fompa darauf auf. Deine Fantasie hat einen Wert. Von dir. Mit dir. Für dich.', pic:['sunny-sleep','fompa']}
+ ]},
+ { id:'zahnfee', title:'Das Zahnböcklein und die Zahnfee', sub:'Wer hat heute schön geputzt?', pic:['bock','moon'], parts:[
+  {t:'Das Zahnböcklein ist eine kleine weisse Geiss mit einer blauen Zahnbürste. Es wohnt in einer kleinen weissen Box. Und es hat eine allerbeste Freundin: die Zahnfee.', pic:['bock']},
+  {t:'Jeden Abend, wenn die Kinder schlafen, klopft die Zahnfee leise an die Box. Tock, tock. «Zahnböcklein, bist du wach?» «Mäh! Natürlich», sagt das Zahnböcklein. «Ich habe so viel zu erzählen.»', pic:['bock','moon']},
+  {q:'Was hat das Zahnböcklein heute gesehen?', opts:[
+    {e:'🪥', l:'Ein Kind putzt lange', k:['putz','lang'], v:{ges:'ein Kind, das zwei ganze Minuten geputzt hat, oben und unten, vorne und hinten'}},
+    {e:'🍎', l:'Ein knackiger Apfel', k:['apfel'], v:{ges:'ein Kind, das einen knackigen Apfel gegessen hat. Knack!'}},
+    {e:'🦷', l:'Ein Wackelzahn', k:['wackel','zahn'], v:{ges:'ein Kind mit einem Wackelzahn, das trotzdem ganz vorsichtig geputzt hat'}}],
+   after:'«Heute habe ich {ges}», erzählt das Zahnböcklein stolz. Die Zahnfee lächelt so sehr, dass ihre Flügel glitzern.', pic:['bock']},
+  {t:'«Weisst du, warum Zähneputzen so wichtig ist?», fragt die Zahnfee. «Mäh, natürlich!», sagt das Zahnböcklein. «Damit die Zähne glänzen wie Sterne. Und damit man noch ganz lange in knackige Äpfel beissen kann.»', pic:['bock','moon']},
+  {t:'Dann fliegen die beiden gemeinsam über die Häuser. Überall schlafen Kinder. Die Zahnfee schaut nach jedem Zahn, der heute ausgefallen ist, und legt ihn ganz vorsichtig in ein kleines Döschen. «Mein erster Milchzahn», steht darauf.', pic:['moon']},
+  {q:'Was legt die Zahnfee für den Zahn hin?', opts:[
+    {e:'⭐', l:'Einen Glitzerstern', k:['stern','glitzer'], v:{gab:'einen kleinen Glitzerstern'}},
+    {e:'💌', l:'Einen Brief', k:['brief'], v:{gab:'einen winzigen Brief: «Danke für deinen Zahn!»'}},
+    {e:'🪙', l:'Eine Münze', k:['münz','geld'], v:{gab:'eine kleine glänzende Münze'}}],
+   after:'Unter das Kissen legt die Zahnfee {gab}. Das Kind merkt nichts und schläft ruhig weiter.', pic:['bock']},
+  {t:'Als der Himmel langsam heller wird, bringt die Zahnfee das Zahnböcklein zurück in seine Box. «Bis heute Abend», flüstert die Zahnfee. «Mäh, bis heute Abend», flüstert das Zahnböcklein. Und weisst du was? Wenn du heute schön putzt, erzählt das Zahnböcklein der Zahnfee bestimmt auch von dir. Deine Fantasie hat einen Wert. Von dir. Mit dir. Für dich.', pic:['bock','moon']}
  ]}
 ];
 
@@ -1078,6 +1418,7 @@ function buildSeq(story){
   return seq;
 }
 function openStory(story, autoplay=true){
+  if (story.title) memStory(story.title);
   R.story = story; R.seq = buildSeq(story); R.idx = 0; R.vars = {}; R.sent = 0; R.started = false;
   R.seq.forEach(p => { if (p.q) p._chosen = null; });
   $('#rTitle').textContent = story.title;
@@ -1098,7 +1439,7 @@ function renderPart(){
   if (p.q){
     c.innerHTML = `<p class="q">${esc(p.q)}</p>
       <div class="opts ${p.opts.length===2?'n2':''}">${p.opts.map((o,i)=>`<button class="opt ${p._chosen===i?'sel':''}" data-opt="${i}"><span class="em" aria-hidden="true">${o.e}</span>${esc(o.l)}</button>`).join('')}</div>
-      ${SR ? `<button class="btn wide mic" id="rMic">🎤 Sag es Otti</button>` :
+      ${HEAR ? `<button class="btn wide mic" id="rMic">🎤 Sag es Otti</button>` :
         `<p class="hint">Sprechen geht hier nicht direkt – tippe auf ein Bild. Oder schreib/diktiere es hier:</p><div class="row"><input class="in" id="rType" placeholder="Dein Wort" autocomplete="off"><button class="btn" id="rTypeOk">OK</button></div>`}`;
     R.sents = [];
   } else {
@@ -1134,7 +1475,7 @@ function playCurrent(){
     return;
   }
   TTS.speak(R.sents, {
-    start: R.sent, rateMul: p.slow ? .88 : 1, gap: p.slow ? 900 : 600,
+    start: R.sent, rateMul: p.slow ? .92 : 1, gap: p.slow ? 380 : 180,
     onSentence: i => { R.sent = i; highlight(i); },
     onEnd: () => {
       highlight(-1); R.sent = 0;
@@ -1244,7 +1585,7 @@ function renderIdea(){
   if (!$('#kThing').value) $('#kThing').value = kid.thing || '';
   $('#pFriend').innerHTML = Object.entries(FRIENDS).map(([k,f]) => `<button class="pk ${sel.friend===k?'sel':''}" data-friend="${k}" aria-pressed="${sel.friend===k}">${FIG[k]({})}${f.l}</button>`).join('');
   $('#pPlace').innerHTML = Object.entries(PLACES).map(([k,p]) => `<button class="pk ${sel.place===k?'sel':''}" data-place="${k}" aria-pressed="${sel.place===k}"><span class="em" aria-hidden="true">${p.e}</span>${p.l}</button>`).join('');
-  $('#micHint').hidden = !!SR;
+  $('#micHint').hidden = HEAR;
 }
 $('#pFriend').addEventListener('click', e => { const b=e.target.closest('[data-friend]'); if(!b) return; sel.friend=b.dataset.friend; store.set('lastFriend', sel.friend); renderIdea(); });
 $('#pPlace').addEventListener('click', e => { const b=e.target.closest('[data-place]'); if(!b) return; sel.place=b.dataset.place; store.set('lastPlace', sel.place); renderIdea(); });
@@ -1274,7 +1615,7 @@ $('#makeStory').addEventListener('click', makeStory);
 
 /* Mikrofon-Knöpfe für Textfelder */
 $$('.mic-btn').forEach(b => {
-  if (!SR){ b.hidden = true; return; }
+  if (!HEAR){ b.hidden = true; return; }
   b.addEventListener('click', () => {
     const target = $('#'+b.dataset.mic);
     listen(texts => {
@@ -1380,7 +1721,29 @@ const MOVES = [
   ['Und Licht aus: Hände zu, ganz klein machen.', 5],
   ['Noch einmal leuchten … und Licht aus.', 6],
   ['Jetzt atmen wir zusammen: einatmen … und ausatmen.', 8],
-  ['Wunderbar leise. Danke fürs Mitmachen!', 3]]}
+  ['Wunderbar leise. Danke fürs Mitmachen!', 3]]},
+ {id:'katzen', title:'Strecken wie die Katzen', fig:'sunny', sub:'Pause machen wie auf dem Katzenplanet.', steps:[
+  ['Auf dem Katzenplanet können alle richtig gut Pause machen. Machen wir es wie die Katzen! Geh auf alle viere, Hände und Knie auf den Boden.', 8],
+  ['Mach einen runden Katzenbuckel, ganz hoch, wie eine Katze, die sich streckt.', 8],
+  ['Und jetzt den Rücken ganz weich nach unten, Kopf nach oben. Miau!', 8],
+  ['Noch einmal Buckel … und weich nach unten. Langsam, wie eine gemütliche Katze.', 10],
+  ['Jetzt streck ein Bein nach hinten, ganz lang. Und das andere Bein.', 10],
+  ['Und zum Schluss rollst du dich ein wie eine schlafende Katze. Schnurr, schnurr. Schön gemacht!', 6]]},
+ {id:'hupe', title:'Stopp-Spiel in New York', fig:'nova', sub:'Laufen, und bei HUUUP stehen bleiben.', steps:[
+  ['Piep! In New York haben alle es eilig. Wir laufen ganz schnell auf der Stelle. Tapp, tapp, tapp!', 6],
+  ['HUUUP! Ein Taxi! Bleib ganz still stehen, wie eine Statue.', 4],
+  ['Weiter geht es! Jetzt hüpfen wir über den Gehsteig. Hopp, hopp, hopp!', 6],
+  ['HUUUP! Stehen bleiben! Wer wackelt?', 4],
+  ['Jetzt machen wir uns ganz klein, wie Otti, wenn er erschrickt. Eine kleine Stachelkugel!', 5],
+  ['Und wieder gross! Wir winken allen Leuten in New York zu. Hallo!', 6],
+  ['HUUUP! Ein letztes Mal ganz still. Super, du bist ein echter Stadt-Profi!', 4]]},
+ {id:'wolken', title:'Wolkenhüpfen mit Fompa', fig:'fompa', sub:'Fomp, fomp! Weich wie auf Wolken.', steps:[
+  ['Fomp! Ich bin Fompa. Wir hüpfen auf weichen Wolken. Ganz kleine, weiche Hüpfer, fomp, fomp.', 8],
+  ['Jetzt ein grosser Hüpfer auf die nächste Wolke. Und noch einer!', 8],
+  ['Oh, die Wolke wackelt! Breite die Arme aus und halte das Gleichgewicht.', 6],
+  ['Jetzt fangen wir verlorene Träume: Greif ganz hoch in die Luft, links … und rechts.', 8],
+  ['Leg die Träume ganz vorsichtig in dein Traumnetz, auf deinem Bauch.', 5],
+  ['Und zum Schluss setzen wir uns weich auf eine Wolke. Atme ein … und aus. Fomp!', 6]]}
 ];
 function renderGames(){
   $('#glist').innerHTML = MOVES.map((g,i) => `
@@ -1500,7 +1863,7 @@ function renderMyStory(){
   $('#msStage').classList.add('two');
   $('#msStage').innerHTML = figHTML('sunny-wave') + figHTML('kiki');
   $('#msChips').innerHTML = MSCHIPS.map(c => `<button class="chip" data-mschip="${esc(c)}">${esc(c.trim())} …</button>`).join('');
-  $('#micHint4').hidden = !!SR;
+  $('#micHint4').hidden = HEAR;
 }
 $('#msChips').addEventListener('click', e => { const b = e.target.closest('[data-mschip]'); if (!b) return; const t = $('#msText'); t.value = (t.value.trim() ? t.value.trim()+' ' : '') + b.dataset.mschip; t.focus(); });
 const NEUTER = /^(kind|mädchen|pferd|schaf|eichhörnchen|kaninchen|einhorn|schwein|küken|lamm|reh|zebra|krokodil|nilpferd|gespenst|monster|auto|boot|schiff|sternchen|häschen|kätzchen|männchen)$/i;
@@ -1564,7 +1927,23 @@ const TALKERS = {
   fly:{l:'Glimmi', pitch:1.7, pre:'Summ! ', hi:'Hallo! Ich bin Glimmi, das Glühwürmchen.', me:'Ich bin Glimmi. Mein Bauch leuchtet gelb, damit sich niemand im Dunkeln verirrt.', fav:'Am liebsten fliege ich mit Kiki um die Wette.', joke:'Kiki hat mich einmal für einen Stern gehalten. Ich habe einfach weiter geleuchtet! Hihi.'}
 };
 const TK = { who:'sunny', log:[] };
-const TK_RATES = [[0.7,'Langsam'],[0.85,'Ruhig'],[1.0,'Normal']];
+const TK_RATES = [[0.85,'Ruhig'],[1.0,'Normal'],[1.15,'Flink']];
+/* Otti winkt: jedes runde Otti-Bild antippen (oder Begrüssung) spielt kurz den Winke-Clip ab */
+function ottiWinkt(img){
+  if (!img || img.tagName !== 'IMG' || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const v = document.createElement('video');
+  v.className = img.className; v.src = 'otti-winkt-fig.mp4'; v.poster = 'otti-winkt-fig.jpg';
+  v.muted = true; v.playsInline = true; v.setAttribute('playsinline',''); v.setAttribute('aria-label','Otti winkt');
+  img.parentNode.replaceChild(v, img);
+  const pl = v.play(); if (pl && pl.catch) pl.catch(() => {});
+  const back = () => { if (v.parentNode) v.parentNode.replaceChild(img, v); };
+  v.addEventListener('ended', back); setTimeout(back, 7000);
+}
+document.addEventListener('click', e => {
+  const img = e.target.closest('img.otti-film[src^="otti-"]');
+  if (img && !img.closest('.pk, .sitem')) ottiWinkt(img);
+});
+function ottiGruss(sel){ const img = $(sel + ' img.otti-film[src^="otti-"]'); if (img) ottiWinkt(img); }
 function renderTalk(){
   $('#tkPick').innerHTML = Object.entries(TALKERS).map(([k,f]) => `<button class="pk ${TK.who===k?'sel':''}" data-talker="${k}" aria-pressed="${TK.who===k}">${FIG[k]({})}${f.l}</button>`).join('');
   $('#tkStage').innerHTML = figHTML(TK.who + '-wave');
@@ -1576,19 +1955,51 @@ $('#tkPick').addEventListener('click', e => {
   const b = e.target.closest('[data-talker]'); if (!b) return;
   TK.who = b.dataset.talker; renderTalk();
   const f = TALKERS[TK.who]; $('#tkSay').textContent = f.pre + f.hi; TTS.speak(f.pre + f.hi, {pitch:f.pitch});
+  if (TK.who === 'sunny') ottiGruss('#tkStage');
 });
 $('#tkRate').addEventListener('click', e => {
   const b = e.target.closest('[data-tkrate]'); if (!b) return;
   S.rate = +b.dataset.tkrate; saveS(); renderTalk();
   const f = TALKERS[TK.who]; TTS.speak(f.pre + 'So schnell spreche ich jetzt.', {pitch:f.pitch});
 });
+/* ---------- Lernen: Otti merkt sich Dinge, nur auf diesem Handy ---------- */
+const MEM_KAT = {tier:'Lieblingstier', farbe:'Lieblingsfarbe', essen:'Lieblingsessen', spiel:'Lieblingsspiel', ding:'Lieblingsding'};
+function mem(){ return Object.assign({stories:{}, fragen:[]}, store.get('mem', {})); }
+function memSet(m){ store.set('mem', m); }
+const gross = w => w.charAt(0).toUpperCase() + w.slice(1);
+// Lernt aus einem Satz des Kindes. Gibt eine Antwort zurück, wenn es etwas Neues gelernt hat.
+function lern(raw){
+  const t = String(raw||'').toLowerCase().replace(/[.!?,]+/g,' ').replace(/\s+/g,' ').trim(), m = mem();
+  let x = t.match(/\b(?:ich heisse|ich heiße|ich heiss|mein name ist)\s+([a-zäöüéè-]{2,20})/);
+  if (x){ const n = gross(x[1]); if (S.name !== n){ S.name = n; saveS(); } return `Hallo ${n}! Deinen Namen merke ich mir.`; }
+  x = t.match(/\bmein(?:e)? lieblings(tier|farbe|essen|spiel|ding|sache)\s+(?:ist|sind)\s+(?:der |die |das |ein |eine |einen )?([a-zäöüéè -]{2,30})/);
+  if (x){ const k = x[1] === 'sache' ? 'ding' : x[1]; let v = x[2].trim().split(' ').slice(0,3).join(' ');
+    if (k !== 'farbe') v = v.split(' ').map(gross).join(' ');
+    m[k] = v; memSet(m); return `${gross(v)}! Das merke ich mir${S.name ? ', '+S.name : ''}.`; }
+  return '';
+}
+// Frage ohne Antwort lokal merken (Eltern sehen sie, nichts wird gesendet).
+function memFrage(raw){ const m = mem(), q = String(raw||'').trim().slice(0,120); if (!q) return; m.fragen = m.fragen.filter(f => f.q !== q).concat({q, ts:Date.now()}).slice(-20); memSet(m); }
+function memStory(title){ const m = mem(); m.stories[title] = (m.stories[title]||0) + 1; memSet(m); }
+function memLieblingsGeschichte(){ const e = Object.entries(mem().stories).sort((a,b) => b[1]-a[1])[0]; return e && e[1] >= 3 ? e[0] : ''; }
+function renderMem(){
+  const m = mem(), rows = Object.entries(MEM_KAT).filter(([k]) => m[k]).map(([k,l]) => `<div>${l}: <b>${esc(m[k])}</b></div>`);
+  const lg = memLieblingsGeschichte(); if (lg) rows.push(`<div>Lieblingsgeschichte: <b>${esc(lg)}</b></div>`);
+  if (m.fragen.length) rows.push(`<div style="margin-top:8px">Fragen ohne Antwort:</div><ul style="margin:4px 0 0;padding-left:20px">${m.fragen.slice().reverse().map(f => `<li>${esc(f.q)}</li>`).join('')}</ul>`);
+  $('#memList').innerHTML = rows.join('') || '<span class="muted">Noch nichts gemerkt.</span>';
+}
+$('#memClear').addEventListener('click', () => { memSet({stories:{}, fragen:[]}); renderMem(); toast('Otti hat alles vergessen.'); });
 function talkReply(who, raw){
   const f = TALKERS[who], t = String(raw||'').toLowerCase().trim();
   const r = Math.random, pick = a => a[Math.floor(r()*a.length)];
-  let a;
+  let a, M = mem();
+  const neu = t ? lern(raw) : '';
+  if (neu) M = mem();
   if (!t) a = 'Ich habe nichts gehört. Magst du es nochmal sagen?';
+  else if (neu) a = neu + ' Und was magst du noch?';
   else if (/traurig|weinen|wein |angst|fürcht|allein|wütend|böse|weh|schlimm/.test(t)) a = 'Oh, das klingt schwer. Gut, dass du es sagst. Magst du es auch Mama, Papa oder jemandem erzählen, den du lieb hast? Die können dich ganz fest drücken.';
-  else if (/^(hallo|hoi|hi|hey|grüezi|guten (tag|morgen|abend)|sali)\b/.test(t)) a = f.hi + ' Was möchtest du mir erzählen?';
+  else if (/^(hallo|hoi|hi|hey|grüezi|guten (tag|morgen|abend)|sali)\b/.test(t)) a = f.hi + (M.tier && r() < .5 ? ` Ich weiss noch: Du magst ${M.tier}!` : '') + ' Was möchtest du mir erzählen?';
+  else if (/was (magst|mag) ich|weisst du (noch )?was ich mag|was ist mein lieblings/.test(t)) { const k = Object.keys(MEM_KAT).filter(k => M[k]); a = k.length ? 'Ich weiss es noch! ' + k.map(k => `${k==='farbe'?'Deine':'Dein'} ${MEM_KAT[k]} ist ${M[k]}.`).join(' ') : 'Das hast du mir noch nicht verraten. Sag zum Beispiel: Mein Lieblingstier ist der Fuchs.'; }
   else if (/wie heisst du|wer bist du|was bist du/.test(t)) a = f.me;
   else if (/\bki\b|künstlich|computer|roboter|maschine/.test(t)) a = 'Eine KI ist ein Computer, der sprechen und antworten kann. Ich bin ein Spiel-Freund: Meine Antworten habe ich schon vorher gelernt. Und weisst du was? Auch eine KI kann sich irren.';
   else if (/müde|schlaf|gute nacht|bett|gähn/.test(t)) a = pick(['Ich bin auch schon ein bisschen müde. Sollen wir zusammen tief einatmen … und ausatmen?', 'Kuschel dich gemütlich ein. Im KI-Leitfaden lese ich dir etwas Ruhiges vor.']);
@@ -1597,8 +2008,25 @@ function talkReply(who, raw){
   else if (/froh|glücklich|schön|toll|super|freu|lustig|spass/.test(t)) a = pick(['Das freut mich so! Erzähl mir mehr davon.', 'Juhui! Da hüpft mein Herz vor Freude.']);
   else if (/spiel/.test(t)) a = 'Spielen ist toll! Unter «Spiele» können wir uns zusammen bewegen. Magst du es probieren?';
   else if (/geschicht|erzähl/.test(t)) a = 'Ich liebe Geschichten! Unter «Geschichten» kannst du sogar deine eigene anfangen.';
-  else if (/\?|warum|wieso|weshalb|^wie |^was |^wo |^wer /.test(t)) a = 'Das ist eine gute Frage! Das weiss ich nicht genau. Frag doch Mama oder Papa, zusammen findet ihr es heraus.';
-  else a = pick(['Erzähl mir mehr davon!', 'Oh, spannend! Und dann?', 'Schön, dass du mir das erzählst.', 'Hm, das gefällt mir. Was passiert als Nächstes?']);
+  else if (/\?|warum|wieso|weshalb|^wie |^was |^wo |^wer /.test(t) && !memFrage(raw)) a = 'Das ist eine gute Frage! Das weiss ich nicht genau. Frag doch Mama oder Papa, zusammen findet ihr es heraus.';
+  else if (/kaputt|verloren|vergessen|hingefallen/.test(t)) a = pick(['Oh je, das ist ärgerlich. Wer könnte dir helfen, das wieder gut zu machen?', 'Das passiert manchmal. Weisst du schon, was du jetzt machen kannst?']);
+  else if (/hund|katze|pferd|tier|vogel|fisch|hase|maus|bär|löwe|elefant|dino/.test(t)) a = M.tier ? pick([`Tiere! Dein Lieblingstier ist doch ${M.tier}. Was kann ${M.tier} besonders gut?`, 'Ein Tier! Wie gross ist es, und welche Farbe hat es?']) : pick(['Oh, Tiere mag ich sehr! Welches Tier magst du am liebsten, und warum?', 'Ein Tier! Wie gross ist es, und welche Farbe hat es?', 'Wenn du ein Tier sein könntest, welches wärst du? Und warum?']);
+  else if (/farbe|rot|blau|grün|gelb|rosa|lila|pink|orange/.test(t)) a = M.farbe ? `Ich weiss: Deine Lieblingsfarbe ist ${M.farbe}! Was hat alles diese Farbe?` : pick(['Farben sind wie kleine Zaubereien. Welche Farbe magst du am liebsten?', 'Weisst du, was diese Farbe hat? Zähl mir drei Dinge auf!']);
+  else if (/essen|hunger|pizza|nudeln|glace|eis|schoggi|schokolade|apfel|banane|znüni|zvieri/.test(t)) a = M.essen ? `Mmh! Und dein Lieblingsessen ist ja ${M.essen}. Wann gibt es das wieder?` : pick(['Mmh, jetzt bekomme ich auch Hunger! Was isst du am allerliebsten?', 'Lecker! Wenn du heute kochen dürftest, was würdest du machen?']);
+  else if (/mama|papa|mami|papi|oma|opa|bruder|schwester|familie|freund|freundin/.test(t)) a = pick(['Das klingt nach jemandem, den du lieb hast. Was macht ihr gerne zusammen?', 'Wie schön! Was ist das Lustigste, das ihr zusammen erlebt habt?']);
+  else if (/kindergarten|chindsgi|schule|kita|lehrer|lehrerin/.test(t)) a = pick(['Und, was hast du heute im Kindergarten oder in der Schule erlebt?', 'Was spielst du dort am liebsten? Und mit wem?']);
+  else if (/heute|gestern|morgen/.test(t)) a = pick(['Was war heute das Schönste für dich?', 'Und worauf freust du dich morgen?']);
+  else if (/^(ja|jaa|jo|genau|klar|okay|ok)\b/.test(t)) a = pick(['Super! Erzähl mir mehr.', 'Juhui! Und was machen wir jetzt?', 'Das dachte ich mir. Und wie geht es weiter?']);
+  else if (/^(nein|nö|nei|ne)\b/.test(t)) a = pick(['Okay, das ist ganz in Ordnung. Was möchtest du lieber?', 'Gut, dann machen wir etwas anderes. Was magst du jetzt?']);
+  else {
+    // Ein Wort aus dem Satz aufnehmen, damit die Antwort zum Kind passt, und eine Frage zurückstellen.
+    const w = (String(raw||'').match(/[A-ZÄÖÜ][a-zäöüß]{3,}/g) || []).filter(x => !/^(Ich|Und|Aber|Dann|Weil|Das|Der|Die|Wir|Mein|Meine|Heute|Otti|Nova|Kiki)$/.test(x)).pop();
+    a = w ? pick([`${w}? Das klingt spannend! Erzähl mir mehr über ${w}.`, `Oh, ${w}! Wie sieht das aus?`, `${w}, das muss ich mir merken. Was passiert damit als Nächstes?`])
+          : pick(['Erzähl mir mehr davon!', 'Oh, spannend! Und dann?', 'Schön, dass du mir das erzählst. Wie hast du dich dabei gefühlt?', 'Hm, das gefällt mir. Was passiert als Nächstes?', 'Wirklich? Wie bist du darauf gekommen?', 'Und was war daran am schönsten?']);
+  }
+  // Nicht zweimal dieselbe Antwort hintereinander.
+  if (a === TK.last){ a = pick(['Und was möchtest du mir noch erzählen?', 'Erzähl weiter, ich höre gut zu!']); }
+  TK.last = a;
   return f.pre + a;
 }
 function talkTo(text){
@@ -1611,7 +2039,7 @@ function talkTo(text){
   TTS.speak(a, {pitch:f.pitch});
 }
 $('#tkMic').addEventListener('click', () => {
-  if (!SR){ toast('Sprechen geht hier nicht direkt. Tipp: Ins Feld tippen und auf der Tastatur das Mikrofon antippen.'); $('#tkText').focus(); return; }
+  if (!HEAR){ toast('Sprechen geht hier nicht direkt. Tipp: Ins Feld tippen und auf der Tastatur das Mikrofon antippen.'); $('#tkText').focus(); return; }
   listen(texts => talkTo(texts[0] || ''), $('#tkMic'));
 });
 $('#tkSend').addEventListener('click', () => { const v = $('#tkText').value.trim(); if (!v){ $('#tkText').focus(); return; } $('#tkText').value = ''; talkTo(v); });
@@ -1624,24 +2052,35 @@ const GUIDE = [
   {e:'🙋', h:'Nachfragen ist gut', t:'Wenn dir etwas komisch vorkommt, darfst du nachfragen. Bei Mama, bei Papa oder bei jemandem, den du lieb hast. Fragen ist klug. Durch Fragen lernen wir alle, auch Kiki und Nova.'},
   {e:'🌙', h:'Pausen sind gut', t:'Und das Schönste zum Schluss: Pausen. Auch Kiki macht am Abend die Lichter ganz klein, und Nova ruht sich aus. Wenn wir ausruhen, wird der Kopf ganz still und weich. Jetzt atmen wir zusammen ein … und aus. Gute Nacht.'}
 ];
-const GD = { reading:false };
+const GUIDE_EN = [
+  {e:'💡', h:'AI can help', t:'Some computers can talk and answer questions. We call that AI. Kiki is a little AI. An AI can help you look things up, explain things and find ideas. A bit like a book that can answer back.'},
+  {e:'🌀', h:'AI can be wrong', t:'Do you know what? An AI does not know everything. Sometimes it says something that is not true at all. Just like Kiki, who once thought a firefly was a star. That is okay. Everybody gets things wrong sometimes.'},
+  {e:'🙋', h:'Asking is good', t:'If something seems strange, you can always ask. Ask Mum, ask Dad, or someone you love. Asking is clever. Asking questions is how we all learn, Kiki and Nova too.'},
+  {e:'🌙', h:'Rest is good', t:'And the best part comes last: resting. In the evening, Kiki turns her lights down low, and Nova has a little rest. When we rest, our head becomes quiet and soft. Now let us breathe in together … and out. Good night.'}
+];
+const GD = { reading:false, lang: store.get('gdLang', 'de') };
+const gdList = () => GD.lang === 'en' ? GUIDE_EN : GUIDE;
 function renderGuide(){
   $('#gdStage').classList.add('two');
   $('#gdStage').innerHTML = figHTML('sunny') + figHTML('kiki-sleep');
-  $('#gdCards').innerHTML = GUIDE.map((g,i) => `<div class="card gcard" data-gd="${i}"><h3>${g.e} ${esc(g.h)}</h3><p>${esc(g.t)}</p><button class="btn wide" data-gdread="${i}">🔊 Vorlesen</button></div>`).join('');
+  const en = GD.lang === 'en';
+  $$('#gdLang button').forEach(b => { const on = b.dataset.gdlang === GD.lang; b.classList.toggle('sel', on); b.setAttribute('aria-pressed', on); });
+  $('#gdCards').innerHTML = gdList().map((g,i) => `<div class="card gcard" data-gd="${i}" lang="${en?'en':'de'}"><h3>${g.e} ${esc(g.h)}</h3><p>${esc(g.t)}</p><button class="btn wide" data-gdread="${i}">🔊 ${en?'Read aloud':'Vorlesen'}</button></div>`).join('');
   gdButtons();
 }
 function gdMark(i){ $$('#gdCards .gcard').forEach(c => c.classList.toggle('cur', +c.dataset.gd === i)); }
 function gdStop(){ GD.reading = false; if ($('#gdCards')) gdMark(-1); gdButtons(); }
-function gdButtons(){ const b = $('#gdAll'); if (b) b.textContent = GD.reading ? '⏸ Stopp' : '▶ Alles vorlesen'; }
+function gdButtons(){ const b = $('#gdAll'); const en = GD.lang === 'en'; if (b) b.textContent = GD.reading ? (en ? '⏸ Stop' : '⏸ Stopp') : (en ? '▶ Read it all' : '▶ Alles vorlesen'); }
 function gdRead(from, to){
   if (!TTS.ok){ toast('Vorlesen geht auf diesem Gerät leider nicht – lies einfach selbst vor.'); return; }
   const list = [], map = [];
-  for (let i = from; i <= to; i++){ const ss = ['Otti erzählt: ' + GUIDE[i].h + '.', ...splitSentences(GUIDE[i].t)]; ss.forEach(s => { list.push(s); map.push(i); }); }
+  const G = gdList(), en = GD.lang === 'en';
+  for (let i = from; i <= to; i++){ const ss = [(en ? 'Otti says: ' : 'Otti erzählt: ') + G[i].h + '.', ...splitSentences(G[i].t)]; ss.forEach(s => { list.push(s); map.push(i); }); }
   GD.reading = true; gdButtons();
-  TTS.speak(list, { rateMul:.92, gap:700, pitch:1, flat:true, onSentence: k => { gdMark(map[k]); const c = $(`#gdCards [data-gd="${map[k]}"]`); if (c && k && map[k] !== map[k-1]) c.scrollIntoView({behavior:'smooth', block:'center'}); }, onEnd: () => gdStop() });
+  TTS.speak(list, { rateMul:.95, gap:350, pitch:1, flat:true, lang: en ? 'en' : '', onSentence: k => { gdMark(map[k]); const c = $(`#gdCards [data-gd="${map[k]}"]`); if (c && k && map[k] !== map[k-1]) c.scrollIntoView({behavior:'smooth', block:'center'}); }, onEnd: () => gdStop() });
 }
-$('#gdAll').addEventListener('click', () => { if (GD.reading){ TTS.stop(); gdStop(); } else gdRead(0, GUIDE.length - 1); });
+$('#gdAll').addEventListener('click', () => { if (GD.reading){ TTS.stop(); gdStop(); } else gdRead(0, gdList().length - 1); });
+$('#gdLang').addEventListener('click', e => { const b = e.target.closest('[data-gdlang]'); if (!b || b.dataset.gdlang === GD.lang) return; TTS.stop(); GD.reading = false; GD.lang = b.dataset.gdlang; store.set('gdLang', GD.lang); renderGuide(); });
 $('#gdCards').addEventListener('click', e => { const b = e.target.closest('[data-gdread]'); if (!b) return; const i = +b.dataset.gdread; TTS.stop(); gdRead(i, i); });
 
 /* ---------- Zeitlimit ---------- */
@@ -1681,18 +2120,22 @@ function renderParents(){
   else { $('#tBar').style.width = '0%'; $('#tPct').textContent = '–'; $('#tInfo').textContent = 'Kein Zeitlimit eingestellt.'; }
   $('#tPlus').disabled = !S.limit;
   $('#segLimit').innerHTML = LIMITS.map(m => `<button data-limit="${m}" class="${S.limit===m?'sel':''}" aria-pressed="${S.limit===m}">${m ? m+' Min.' : 'Aus'}</button>`).join('');
+  $('#segCam').innerHTML = [[false,'Aus'],[true,'An']].map(([k,l]) => `<button data-camset="${k?1:0}" class="${!!S.cam===k?'sel':''}" aria-pressed="${!!S.cam===k}">${l}</button>`).join('');
+  $('#segHear').innerHTML = [['auto','Automatisch'],['whisper','Whisper'],['apple','Handy']].filter(([k]) => k !== 'whisper' || WH.ok).filter(([k]) => k !== 'apple' || SR).map(([k,l]) => `<button data-hearset="${k}" class="${(S.hear||'auto')===k?'sel':''}" aria-pressed="${(S.hear||'auto')===k}">${l}</button>`).join('');
   $('#segNight').innerHTML = NIGHTS.map(([k,l]) => `<button data-nightset="${k}" class="${S.night===k?'sel':''}" aria-pressed="${S.night===k}">${l}</button>`).join('');
   $('#rate').value = S.rate; $('#rateLbl').textContent = rateLabel(S.rate);
   fillVoices();
   if (document.activeElement !== $('#pName')) $('#pName').value = S.name || '';
   $('#chips').innerHTML = CHIPS.map(c => `<button class="chip" data-chip="${esc(c)}">${esc(c)}</button>`).join('');
-  $('#micHint2').hidden = !!SR;
+  $('#micHint2').hidden = HEAR;
   $('#vol').value = S.vol; $('#volLbl').textContent = Math.round(S.vol*100)+'%';
   if (!$('#lFrom').value) $('#lFrom').value = store.get('lastFrom', '');
   renderLetters();
   renderIdeas();
+  renderMem();
 }
 $('#segLimit').addEventListener('click', e => { const b=e.target.closest('[data-limit]'); if(!b) return; S.limit=+b.dataset.limit; saveS(); renderParents(); toast(S.limit ? `Zeitlimit: ${S.limit} Min. pro Tag` : 'Kein Zeitlimit'); });
+$('#segHear').addEventListener('click', e => { const b=e.target.closest('[data-hearset]'); if(!b) return; S.hear=b.dataset.hearset; saveS(); renderParents(); if (S.hear==='whisper'){ toast('Whisper wird geladen …'); WH.load().then(() => toast('Whisper ist bereit 👂')).catch(() => toast('Whisper konnte nicht laden. Bitte im WLAN nochmal.')); } });
 $('#segNight').addEventListener('click', e => { const b=e.target.closest('[data-nightset]'); if(!b) return; S.night=b.dataset.nightset; saveS(); applyNight(); renderParents(); });
 $('#tPlus').addEventListener('click', () => { const u=usage(); u.bonus=(u.bonus||0)+600000; store.set('usage',u); renderParents(); toast('+10 Minuten für heute'); });
 $('#tReset').addEventListener('click', () => { const u=usage(); u.ms=0; u.bonus=0; store.set('usage',u); renderParents(); toast('Zeit für heute auf 0 gesetzt'); });
@@ -1864,6 +2307,7 @@ $('#lMic').addEventListener('click', () => {
     if (!triedDE && (e.error==='language-not-supported' || e.error==='bad-grammar')){ triedDE = true; r.lang = 'de-DE'; try{ r.start(); return; }catch(x){} }
     if (e.error==='not-allowed' || e.error==='service-not-allowed'){ toast('Mikrofon ist nicht erlaubt. Tipp: Auf der Tastatur das Mikrofon antippen und diktieren.'); $('#micHint3').hidden = false; }
     else if (e.error==='no-speech') toast('Ich habe nichts gehört. Nochmal?');
+    else if (e.error!=='aborted'){ toast('Sprechen klappt gerade nicht. Tipp: Auf der Tastatur das Mikrofon antippen und diktieren.'); $('#micHint3').hidden = false; }
   };
   r.onend = () => { if (longRec === r) longRec = null; off(); };
   try{ r.start(); btn.classList.add('listening'); btn.textContent = '⏹ Fertig'; toast('Ich höre zu … Tippe auf «Fertig», wenn du fertig bist.'); }
@@ -1877,6 +2321,331 @@ renderHome();
 if (limitReached()) go('night');
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(()=>{});
 window.__ms = { go, STORIES, game, S, R, FIG };
+/* ---------- Zeig Otti etwas (Kamera, Erkennen nur auf dem Handy) ---------- */
+// Eltern schalten es frei. Das Modell (COCO-SSD, 80 Alltagsdinge) liegt in kamera/ und läuft im Handy; kein Bild verlässt das Gerät.
+const CAM_DE = {person:'dich',bicycle:'ein Velo',car:'ein Auto',motorcycle:'ein Töff',airplane:'ein Flugzeug',bus:'einen Bus',train:'einen Zug',truck:'einen Lastwagen',boat:'ein Boot','traffic light':'eine Ampel','fire hydrant':'einen Hydranten','stop sign':'ein Stoppschild','parking meter':'eine Parkuhr',bench:'eine Bank',bird:'einen Vogel',cat:'eine Katze',dog:'einen Hund',horse:'ein Pferd',sheep:'ein Schaf',cow:'eine Kuh',elephant:'einen Elefanten',bear:'einen Bären',zebra:'ein Zebra',giraffe:'eine Giraffe',backpack:'einen Rucksack',umbrella:'einen Regenschirm',handbag:'eine Tasche',tie:'eine Krawatte',suitcase:'einen Koffer',frisbee:'ein Frisbee',skis:'Skier',snowboard:'ein Snowboard','sports ball':'einen Ball',kite:'einen Drachen','baseball bat':'einen Schläger','baseball glove':'einen Handschuh',skateboard:'ein Skateboard',surfboard:'ein Surfbrett','tennis racket':'einen Tennisschläger',bottle:'eine Flasche','wine glass':'ein Glas',cup:'eine Tasse',fork:'eine Gabel',knife:'ein Messer',spoon:'einen Löffel',bowl:'eine Schüssel',banana:'eine Banane',apple:'einen Apfel',sandwich:'ein Sandwich',orange:'eine Orange',broccoli:'einen Broccoli',carrot:'ein Rüebli',"hot dog":'einen Hotdog',pizza:'eine Pizza',donut:'einen Donut',cake:'einen Kuchen',chair:'einen Stuhl',couch:'ein Sofa','potted plant':'eine Pflanze',bed:'ein Bett','dining table':'einen Tisch',toilet:'eine Toilette',tv:'einen Fernseher',laptop:'einen Laptop',mouse:'eine Computermaus',remote:'eine Fernbedienung',keyboard:'eine Tastatur','cell phone':'ein Handy',microwave:'eine Mikrowelle',oven:'einen Backofen',toaster:'einen Toaster',sink:'ein Lavabo',refrigerator:'einen Kühlschrank',book:'ein Buch',clock:'eine Uhr',vase:'eine Vase',scissors:'eine Schere','teddy bear':'einen Teddybären','hair drier':'einen Föhn',toothbrush:'eine Zahnbürste'};
+const CAM_EXTRA = {'teddy bear':'Der sieht aber kuschelig aus!',banana:'Mmh, Bananen mag Nova besonders gern!',apple:'Knackig! Das gibt Kraft.',book:'Liest du mir daraus vor?',cat:'Miau! Hallo, Katze!',dog:'Wuff! Hallo, Hund!',toothbrush:'Super, Zähneputzen ist wichtig!','sports ball':'Wollen wir Ball spielen?',cup:'Trinkst du etwas Feines?','potted plant':'Die wächst bestimmt schön.',clock:'Tick, tack!',carrot:'Rüebli mögen die Hasen im Wald.',orange:'Die ist so orange wie die Abendsonne.',bird:'Piep, piep!'};
+let camStream = null, camModel = null, camLoading = null, camBusy = false;
+function camLoadScript(src){ return new Promise((ok, no) => { const sc = document.createElement('script'); sc.src = src; sc.onload = ok; sc.onerror = () => no(new Error('laden')); document.head.appendChild(sc); }); }
+function camLoad(){
+  if (camModel) return Promise.resolve(camModel);
+  if (!camLoading) camLoading = (window.cocoSsd ? Promise.resolve() : camLoadScript('kamera/tf.min.js').then(() => camLoadScript('kamera/coco-ssd.min.js')))
+    .then(() => cocoSsd.load({base:'lite_mobilenet_v2', modelUrl: new URL('kamera/model.json', location.href).href}))
+    .then(m => camModel = m)
+    .catch(e => { camLoading = null; throw e; });
+  return camLoading;
+}
+// Was sieht Otti? Gemeinsam für «Zeig Otti etwas» und den Videoanruf.
+function camDescribe(found){
+  const things = found.filter(d => d.class !== 'person' && CAM_DE[d.class]).sort((a,b) => b.score - a.score);
+  if (things.length){
+    const c = things[0].class, seen = store.get('camSeen', {}), n = (seen[c] || 0) + 1; seen[c] = n; store.set('camSeen', seen);
+    const more = n >= 3 ? 'Das ist bestimmt eines deiner Lieblingsdinge!' : n === 2 ? 'Das hast du mir schon mal gezeigt!' : (CAM_EXTRA[c] || 'Toll, danke fürs Zeigen!');
+    return { text: `Oh, ich sehe ${CAM_DE[c]}! ${more}` };
+  }
+  if (found.some(d => d.class === 'person')) return { person: true, text: camHi() + ' Zeig mir doch etwas, einen Teddy oder eine Banane.' };
+  return { text: 'Hmm, das kenne ich noch nicht. Halte es etwas näher und probier es nochmal.' };
+}
+function camSay(t){ $('#camSay').textContent = t; TTS.speak(t); }
+// Otti «erkennt» das Kind: sieht er einen Menschen im Bild, winkt er und grüsst mit dem Namen aus den Eltern-Einstellungen.
+// Keine Gesichtserkennung: es wird nur «Mensch ja/nein» geschaut, nichts gespeichert oder gesendet.
+let camFacing = 'user', camWatchT = 0, camGreeted = false, camWink = null;
+function camHi(){ return S.name ? `Hallo ${S.name}! Ich sehe dich!` : 'Hallo du! Ich sehe dich!'; }
+function camWatch(){
+  clearTimeout(camWatchT);
+  if (current !== 'cam' || camGreeted) return;
+  camWatchT = setTimeout(() => {
+    const v = $('#camVid');
+    if (current !== 'cam' || camGreeted) return;
+    if (camBusy || !camStream || !v.videoWidth || !camModel){ camWatch(); return; }
+    camModel.detect(v, 3, 0.55).then(f => {
+      if (!camGreeted && current === 'cam' && f.some(d => d.class === 'person')){ camGreeted = true; ottiGruss('#camOtti'); camSay(camHi() + ' Zeig mir etwas!'); }
+      else camWatch();
+    }).catch(() => camWatch());
+  }, 1500);
+}
+function camStop(){ clearTimeout(camWatchT); if (camWink){ camWink(); camWink = null; } if (camStream){ camStream.getTracks().forEach(t => t.stop()); camStream = null; } const v = $('#camVid'); if (v) v.srcObject = null; }
+function camStart(){
+  if (!S.cam){ go('home'); return; }
+  $('#camOtti').innerHTML = FIG.sunny({wave:true}); camGreeted = false;
+  $('#camSay').textContent = 'Halte etwas vor die Kamera und tippe auf «Was ist das?».';
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ $('#camSay').textContent = 'Die Kamera geht auf diesem Gerät leider nicht.'; return; }
+  navigator.mediaDevices.getUserMedia({video:{facingMode:camFacing, width:{ideal:640}, height:{ideal:480}}, audio:false})
+    .then(st => { if (current !== 'cam'){ st.getTracks().forEach(t => t.stop()); return; } camStream = st; const v = $('#camVid'); v.srcObject = st; const pl = v.play(); if (pl && pl.catch) pl.catch(() => {}); v.style.transform = camFacing === 'user' ? 'scaleX(-1)' : ''; camWatch(); if (camWink) camWink(); camWink = winkWache(v, () => { if (current !== 'cam' || camBusy) return; ottiGruss('#camOtti'); camSay(pick1(WINK_ZURUECK)); }); })
+    .catch(() => { $('#camSay').textContent = 'Otti darf die Kamera nicht benutzen. Ein Erwachsener kann sie in den Einstellungen des Handys erlauben.'; });
+  camLoad().catch(() => {});
+}
+$('#camGo').addEventListener('click', () => {
+  if (camBusy) return;
+  const v = $('#camVid');
+  if (!camStream || !v.videoWidth){ camSay('Ich sehe noch nichts. Ist die Kamera an?'); return; }
+  camBusy = true; $('#camSay').textContent = 'Otti schaut ganz genau hin …';
+  camLoad().then(m => m.detect(v, 5, 0.45)).then(found => {
+    const d = camDescribe(found);
+    if (d.person) ottiGruss('#camOtti');
+    camSay(d.text);
+  }).catch(() => camSay('Otti braucht einen Moment Internet, um das Schauen zu lernen. Probier es gleich nochmal.'))
+    .finally(() => { camBusy = false; });
+});
+$('#camFlip').addEventListener('click', () => { camFacing = camFacing === 'user' ? 'environment' : 'user'; camStop(); camStart(); });
+$('#segCam').addEventListener('click', e => { const b = e.target.closest('[data-camset]'); if (!b) return; S.cam = b.dataset.camset === '1'; saveS(); renderParents(); toast(S.cam ? 'Kamera ist an: «Zeig Otti etwas» ist auf dem Start.' : 'Kamera ist aus.'); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) camStop(); else if (current === 'cam') camStart(); });
+
+/* ---------- Zurückwinken: Otti merkt, wenn du in die Kamera winkst ---------- */
+// Nur Bewegung im kleinen Graubild (48×36) und «Mensch im Bild ja/nein». Kein Gesicht, nichts gespeichert oder gesendet.
+// Winken = viel Bewegung oben im Bild, die mehrmals schnell die Richtung wechselt.
+function winkWache(video, onWave){
+  const W = 48, H = 36, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d', { willReadFrequently: true });
+  let prev = null, lastX = null, dir = 0, turns = [], person = false, pT = 0, cool = 0, stopped = false, t = 0;
+  const checkPerson = () => {
+    if (stopped) return;
+    if (camModel && video.videoWidth) camModel.detect(video, 3, 0.5).then(f => { person = f.some(d => d.class === 'person'); }).catch(() => {});
+    pT = setTimeout(checkPerson, 2000);
+  };
+  const step = () => {
+    if (stopped) return;
+    t = setTimeout(step, 120);
+    if (!video.videoWidth || document.hidden) return;
+    g.drawImage(video, 0, 0, W, H);
+    const d = g.getImageData(0, 0, W, Math.round(H * .65)).data, n = d.length / 4, cur = new Uint8Array(n);
+    for (let i = 0; i < n; i++) cur[i] = (d[i*4] * 3 + d[i*4+1] * 6 + d[i*4+2]) / 10;
+    if (prev){
+      let sum = 0, sx = 0;
+      for (let i = 0; i < n; i++){ if (Math.abs(cur[i] - prev[i]) > 28){ sum++; sx += i % W; } }
+      const now = Date.now();
+      if (sum > n * .025){
+        const x = sx / sum;
+        if (lastX != null && Math.abs(x - lastX) > 1.2){
+          const nd = x > lastX ? 1 : -1;
+          if (dir && nd !== dir) turns.push(now);
+          dir = nd;
+        }
+        lastX = x;
+      } else { lastX = null; }
+      turns = turns.filter(z => now - z < 1800);
+      if (turns.length >= 3 && person && now > cool){ cool = now + 7000; turns = []; onWave(); }
+    }
+    prev = cur;
+  };
+  camLoad().then(checkPerson).catch(() => {});
+  step();
+  return () => { stopped = true; clearTimeout(t); clearTimeout(pT); };
+}
+const WINK_ZURUECK = ['Hallo! Ich winke dir zurück!', 'Huhu! Ich sehe, wie du winkst!', 'Winke, winke! Hihi, das macht Spass!'];
+
+/* ---------- Videoanruf mit Otti ---------- */
+// Otti bewegt sich und redet: Während er spricht, läuft der Sprech-Clip, sonst atmet das Standbild ruhig.
+// Die Kamera (nur wenn Eltern sie erlaubt haben) zeigt das Kind klein in der Ecke und hilft Otti beim «Schau mal».
+// Keine Gesichtserkennung, nichts wird gespeichert oder gesendet. Antworten kommen aus den Vorlagen auf dem Handy.
+const CALL = { on:false, t0:0, tick:0, stream:null, selfOn:true, empty:0, gen:0, noAuto:false, wink:null };
+const callStage = () => $('#callStage');
+function callTime(){
+  if (!CALL.on || !CALL.t0) return;
+  const s = Math.floor((Date.now() - CALL.t0) / 1000);
+  $('#callTime').textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+}
+function callSub(t, me){ const el = $('#callSub'); el.textContent = me ? 'Du: ' + t : t; el.classList.toggle('me', !!me); }
+function callTalking(on){
+  const st = callStage(), v = $('#callTalk');
+  st.classList.toggle('is-talk', on);
+  if (on){ const pl = v.play(); if (pl && pl.catch) pl.catch(() => {}); }
+  else { v.pause(); try{ v.currentTime = 0; }catch(e){} }
+}
+function callWave(){
+  const st = callStage(), v = $('#callWave');
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  try{ v.currentTime = 0; }catch(e){}
+  st.classList.add('is-wave');
+  const pl = v.play(); if (pl && pl.catch) pl.catch(() => st.classList.remove('is-wave'));
+}
+$('#callWave').addEventListener('ended', () => callStage().classList.remove('is-wave'));
+function callSay(text, o = {}){
+  const g = ++CALL.gen;
+  callSub(text); callTalking(true);
+  const end = () => {
+    if (g !== CALL.gen) return;
+    callTalking(false);
+    if (!CALL.on) return;
+    if (o.then) { o.then(); return; }
+    if (limitReached()){ go('night'); return; }
+    if (o.listen !== false) callListen(true);
+  };
+  if (TTS.ok) TTS.speak(text, { pitch: OTTI.pitch, onEnd: end });
+  else setTimeout(end, Math.min(9000, 900 + text.length * 55));
+}
+function callListen(auto){
+  if (!CALL.on) return;
+  if (!HEAR){ $('#callTypeRow').hidden = false; if (!auto) $('#callText').focus(); return; }
+  // Nach zwei stillen Runden wartet Otti auf den Knopf, damit das Mikrofon nicht endlos läuft.
+  if (auto && (CALL.empty >= 2 || CALL.noAuto)) return;
+  callStage().classList.add('is-hear');
+  const ok = listen(texts => { callStage().classList.remove('is-hear'); CALL.empty = 0; callHeard(texts[0] || ''); }, $('#callMic'), {
+    quiet: true,
+    onNone: err => {
+      callStage().classList.remove('is-hear');
+      if (!CALL.on) return;
+      CALL.empty++;
+      // Manche Handys erlauben das Mikrofon nur direkt nach einem Tipp: dann wartet Otti auf den Knopf.
+      if (auto && (err === 'not-allowed' || err === 'service-not-allowed' || err === 'start')){ CALL.noAuto = true; CALL.empty = 0; return; }
+      if (err === 'not-allowed' || err === 'service-not-allowed' || err === 'start'){ $('#callTypeRow').hidden = false; callSub('Ich kann dich gerade nicht hören. Schreib mir hier unten.'); return; }
+      if (CALL.empty >= 2) callSub('Tipp auf 🎤 und sprich mit mir.');
+      else callSay('Bist du noch da? Erzähl mir etwas!');
+    }
+  });
+  if (!rec) callStage().classList.remove('is-hear');
+}
+// Otti ist verspielt: manchmal ein kleiner lustiger Ausruf vor der Antwort.
+const OTTI_LUSTIG = ['Hihi! ', 'Hoppla! ', 'Juhui! ', 'Oh la la! ', 'Kicher, kicher! ', 'Hui! '];
+function ottiLustig(a){ return /^(Oh, das klingt schwer|Ich habe nichts)/.test(a) || Math.random() > .4 ? a : pick1(OTTI_LUSTIG) + a; }
+// Du winkst, Otti winkt zurück. Spricht oder hört er gerade, winkt er nur, ohne zu reden.
+function callWinkt(){
+  if (!CALL.on || !CALL.t0) return;
+  callWave();
+  const st = callStage();
+  if (st.classList.contains('is-talk') || st.classList.contains('is-hear') || rec) return;
+  callSay(pick1(WINK_ZURUECK));
+}
+function callCanSee(){ const v = $('#callVid'); return !!(CALL.stream && CALL.selfOn && v.videoWidth); }
+function callLook(){
+  if (!callCanSee()){
+    callSay(S.cam ? 'Mach zuerst die Kamera an, tipp auf das kleine Bild oben.' : 'Ich kann gerade nichts sehen. Ein Erwachsener kann die Kamera unter «Für Eltern» einschalten.');
+    return;
+  }
+  CALL.gen++; TTS.stop(); callTalking(false);
+  callSub('Otti schaut ganz genau hin …');
+  camLoad().then(m => m.detect($('#callVid'), 5, 0.45)).then(found => {
+    if (!CALL.on) return;
+    const d = camDescribe(found);
+    if (d.person) callWave();
+    callSay(d.text);
+  }).catch(() => { if (CALL.on) callSay('Ich brauche einen Moment, um das Schauen zu lernen. Probier es gleich nochmal.'); });
+}
+function callHeard(raw){
+  const t = String(raw || '').replace(/\s+/g, ' ').trim().slice(0, 160), low = t.toLowerCase();
+  if (!t) return;
+  callSub(t, true);
+  setTimeout(() => {
+    if (!CALL.on) return;
+    if (/tschüss|tschau|ciao|adieu|bye|auf wiedersehen|leg auf|auflegen/.test(low)){ callWave(); callSay((S.name ? 'Tschüss ' + S.name + '!' : 'Tschüss!') + ' Das war schön mit dir. Ruf mich bald wieder an!', { then: () => go('home') }); return; }
+    if (/wink/.test(low)){ callWave(); callSay('Hallo, hallo! Ich winke dir ganz fest zurück!'); return; }
+    if (/siehst du mich|kannst du mich sehen|wo bin ich|erkennst du mich/.test(low)){
+      if (!callCanSee()){ callSay('Die Kamera ist gerade aus, darum sehe ich dich nicht. Aber ich höre dich ganz gut!'); return; }
+      camLoad().then(m => m.detect($('#callVid'), 3, 0.5)).then(f => {
+        if (!CALL.on) return;
+        if (f.some(d => d.class === 'person')){ callWave(); callSay(camHi() + ' Du siehst heute fröhlich aus.'); }
+        else callSay('Hm, ich sehe dich gerade nicht. Komm ein bisschen näher zur Kamera!');
+      }).catch(() => callSay('Ich höre dich, aber das Sehen klappt gerade nicht.'));
+      return;
+    }
+    if (/was ist das|was halte ich|was hab ich|was habe ich|schau mal|schau her|kennst du das|siehst du das/.test(low)){ callLook(); return; }
+    if (/^(hallo|hoi|hi|hey|grüezi|guten (tag|morgen|abend)|sali)\b/.test(low)) callWave();
+    callSay(ottiLustig(talkReply('sunny', t)));
+  }, 350);
+}
+function callCam(on){
+  const box = $('#callSelf'), v = $('#callVid');
+  if (CALL.wink){ CALL.wink(); CALL.wink = null; }
+  if (CALL.stream){ CALL.stream.getTracks().forEach(t => t.stop()); CALL.stream = null; }
+  v.srcObject = null; box.classList.remove('live');
+  $('#callLook').hidden = !S.cam;
+  if (!on || !S.cam || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return Promise.resolve(false);
+  return navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: false })
+    .then(st => {
+      if (!CALL.on || !CALL.selfOn){ st.getTracks().forEach(t => t.stop()); return false; }
+      CALL.stream = st; v.srcObject = st; const pl = v.play(); if (pl && pl.catch) pl.catch(() => {});
+      box.classList.add('live'); camLoad().catch(() => {});
+      if (CALL.wink) CALL.wink();
+      CALL.wink = winkWache(v, callWinkt);
+      return true;
+    }).catch(() => false);
+}
+// Kurz schauen, ob schon jemand im Bild ist (höchstens 2.5 Sekunden), damit Otti mit «Ich sehe dich» begrüssen kann.
+function callSeesPerson(){
+  return new Promise(ok => {
+    const stop = setTimeout(() => ok(false), 2500);
+    const tryIt = n => {
+      const v = $('#callVid');
+      if (!CALL.on) { clearTimeout(stop); ok(false); return; }
+      if (!camModel || !v.videoWidth){ if (n > 0) setTimeout(() => tryIt(n - 1), 300); return; }
+      camModel.detect(v, 3, 0.55).then(f => { clearTimeout(stop); ok(f.some(d => d.class === 'person')); }).catch(() => { clearTimeout(stop); ok(false); });
+    };
+    tryIt(8);
+  });
+}
+function callStart(){
+  callStop();
+  CALL.on = true; CALL.t0 = 0; CALL.empty = 0; CALL.selfOn = true; CALL.noAuto = false;
+  const st = callStage();
+  st.classList.remove('is-talk', 'is-wave', 'is-hear'); st.classList.add('is-ring');
+  $('#callTime').textContent = 'Otti wird angerufen …'; callSub('');
+  $('#callTypeRow').hidden = HEAR;
+  $('#callSelfOff').innerHTML = S.cam ? '<i>📷</i>Kamera an' : '<i>📷</i>Kamera aus';
+  const cam = callCam(true);
+  setTimeout(() => {
+    if (!CALL.on) return;
+    st.classList.remove('is-ring'); CALL.t0 = Date.now(); callTime();
+    CALL.tick = setInterval(callTime, 1000);
+    cam.then(on => on ? callSeesPerson() : false).then(seen => {
+      if (!CALL.on) return;
+      callWave();
+      const hi = seen ? camHi() : (S.name ? `Hallo ${S.name}!` : 'Hallo du!');
+      callSay(hi + ' Schön, dass du mich anrufst! Was möchtest du mir erzählen?');
+    });
+  }, 1300);
+}
+function callStop(){
+  CALL.on = false; CALL.gen++;
+  if (CALL.wink){ CALL.wink(); CALL.wink = null; }
+  clearInterval(CALL.tick);
+  if (CALL.stream){ CALL.stream.getTracks().forEach(t => t.stop()); CALL.stream = null; }
+  const v = $('#callVid'); if (v) v.srcObject = null;
+  const st = callStage(); if (st) st.classList.remove('is-talk', 'is-wave', 'is-hear', 'is-ring');
+  ['#callTalk', '#callWave'].forEach(q => { const x = $(q); if (x) x.pause(); });
+}
+$('#callMic').addEventListener('click', () => { if (!CALL.on) return; CALL.gen++; callTalking(false); CALL.empty = 0; callListen(false); });
+$('#callWink').addEventListener('click', () => { if (!CALL.on) return; callWave(); callSay(pick1(['Hallo! Ich winke dir zu!', 'Huhu! Siehst du, wie ich winke?', 'Winke, winke! Hihi.'])); });
+$('#callLook').addEventListener('click', () => { if (CALL.on) callLook(); });
+$('#callEnd').addEventListener('click', () => { go('home'); TTS.speak(S.name ? `Tschüss ${S.name}, bis bald!` : 'Tschüss, bis bald!'); });
+$('#callSelf').addEventListener('click', () => {
+  if (!CALL.on) return;
+  if (!S.cam){ toast('Die Kamera kann ein Erwachsener unter «Für Eltern» einschalten.'); return; }
+  CALL.selfOn = !CALL.selfOn;
+  $('#callSelfOff').innerHTML = CALL.selfOn ? '<i>📷</i>Kamera an' : '<i>📷</i>Kamera aus';
+  callCam(CALL.selfOn);
+});
+$('#callSend').addEventListener('click', () => { const v = $('#callText').value.trim(); if (!v){ $('#callText').focus(); return; } $('#callText').value = ''; CALL.gen++; TTS.stop(); callTalking(false); callHeard(v); });
+$('#callText').addEventListener('keydown', e => { if (e.key === 'Enter') $('#callSend').click(); });
+function pick1(a){ return a[Math.floor(Math.random() * a.length)]; }
+document.addEventListener('visibilitychange', () => { if (current !== 'call') return; if (document.hidden){ if (CALL.stream){ CALL.stream.getTracks().forEach(t => t.stop()); CALL.stream = null; } $('#callSelf').classList.remove('live'); } else if (CALL.on && CALL.selfOn) callCam(true); });
+
+
+
+/* ---------- Aufnahme-Liste für echte Stimmen ----------
+   tools/stimmen/aufnehmen.mjs ruft das auf und nimmt jeden Satz einmal auf. Sätze mit dem Namen des Kindes sind nicht dabei. */
+window.MS_TEXTE = () => {
+  const out = new Map();
+  const add = (text, o={}) => { const t = String(text||'').trim(); if (!t || /\{\w+\}/.test(t)) return; const k = TTS.key(t, o); if (k) out.set(k, { key:k, who:k.split('/')[0], text:TTS.clean(t) }); };
+  STORIES.forEach(st => st.parts.forEach(p => {
+    if (p.q){ const opts = p.opts.map(o => o.l); add(p.q); add(opts.slice(0,-1).join(', ') + ' oder ' + opts[opts.length-1] + '?'); }
+    [p.t, p.after].forEach(t => {
+      if (!t) return;
+      const vars = [...new Set((t.match(/\{(\w+)\}/g) || []).map(m => m.slice(1,-1)))];
+      let combos = [{}];
+      vars.forEach(v => { const vals = []; st.parts.forEach(q => (q.opts||[]).forEach(o => { if (o.v && o.v[v] != null) vals.push(o.v[v]); })); combos = vals.length ? combos.flatMap(c => vals.map(x => Object.assign({}, c, {[v]:x}))) : combos; });
+      combos.forEach(c => splitSentences(fill(t, c)).forEach(x => add(x)));
+    });
+  }));
+  Object.keys(TALKERS).forEach(k => { const f = TALKERS[k], o = {pitch:f.pitch};
+    add(f.pre + f.hi, o); add(f.pre + 'So schnell spreche ich jetzt.', o);
+    const src = String(talkReply), lits = src.match(/'[^'\n]{8,}'/g) || [];
+    lits.map(l => l.slice(1,-1)).filter(l => /[a-zäöü]\s/.test(l) && !/\\/.test(l)).forEach(a => add(f.pre + a, o));
+    add(f.pre + f.hi + ' Was möchtest du mir erzählen?', o); add(f.pre + f.me, o); add(f.pre + f.joke, o); add(f.pre + f.fav + ' Und du, was magst du am liebsten?', o);
+  });
+  MOVES.forEach(m => m.steps.forEach(([t]) => add(t, {pitch:(TALKERS[m.fig] && TALKERS[m.fig].pitch) || OTTI.pitch})));
+  (window.MS_LITERALE || []).forEach(t => add(t));
+  return [...out.values()];
+};
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>

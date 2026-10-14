@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Golden Taurus · Tarjeta de habitación</title><link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;600;700&display=swap">
+<script src="../qrcode.js"></script>
+<style>
+/* Room card: A6 portrait (105x148mm), two codes: join Wi-Fi + open guest app. Form above is screen-only. */
+:root{--p:#0E4F6E;--g:#B98A2E;--bg:#F3F6F7;--ink:#17344A;color-scheme:light}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Figtree,Arial,sans-serif;padding-inline:16px;padding-block:24px}
+.ctl{max-width:560px;margin:0 auto 24px;display:flex;flex-direction:column;gap:12px}
+.ctl h1{font-family:'Young Serif',Georgia,serif;font-weight:400;font-size:26px;margin:0}
+.ctl label{font-size:13px;font-weight:600}.ctl input{width:100%;min-height:48px;border:1px solid #CBD8DE;border-radius:14px;padding:0 14px;font:inherit;font-size:16px;background:#fff;color:var(--ink)}
+.ctl button{min-height:48px;border:0;border-radius:14px;background:var(--p);color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+.ctl p{margin:0;font-size:14px;opacity:.8}
+.card{width:105mm;height:148mm;max-width:100%;margin:0 auto;background:#fff;border-radius:6mm;box-shadow:0 10px 30px rgba(14,79,110,.18);padding:8mm 8mm 7mm;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3mm;overflow:hidden}
+.brand{font-size:8pt;letter-spacing:.18em;text-transform:uppercase;color:var(--g);font-weight:700}
+.card h2{font-family:'Young Serif',Georgia,serif;font-weight:400;font-size:17pt;margin:0;color:var(--p);line-height:1.1}
+.codes{display:flex;gap:5mm;width:100%;justify-content:center;margin-top:2mm}
+.codes figure{margin:0;flex:1;display:flex;flex-direction:column;align-items:center;gap:2mm}
+.codes .q{width:36mm;height:36mm}.codes .q svg{width:100%;height:100%;display:block}
+.codes figcaption{font-size:9pt;font-weight:700;line-height:1.25}.codes figcaption span{display:block;font-weight:400;opacity:.75}
+.data{font-size:9pt;line-height:1.5;border-top:1px solid #E1E9EC;padding-top:3mm;width:100%}
+.data b{font-weight:700}.foot{margin-top:auto;font-size:7.5pt;opacity:.65}
+.card{position:relative}.demo{position:absolute;top:5mm;right:5mm;font-size:7pt;font-weight:700;letter-spacing:.15em;color:#fff;background:#B98A2E;border-radius:99px;padding:1mm 3mm}
+.wave{width:100%;height:9mm}
+@media print{@page{size:A6;margin:0}body{background:#fff;padding:0}.ctl{display:none}.card{box-shadow:none;border-radius:0;width:105mm;height:148mm;margin:0}}
+</style></head><body>
+<div class="ctl">
+  <h1>Tarjeta de habitación</h1>
+  <p>Versión demo con datos de ejemplo. Escriba la red y la contraseña del wifi del hotel. La tarjeta se actualiza al momento; luego imprímala (A6).</p>
+  <label for="s">Red wifi (SSID)</label><input id="s" autocomplete="off" spellcheck="false" placeholder="p. ej. GoldenTaurus_Guest">
+  <label for="w">Contraseña</label><input id="w" autocomplete="off" spellcheck="false" placeholder="vacío si la red es abierta">
+  <button id="pr" type="button">Imprimir</button>
+</div>
+<div class="card"><div class="demo">DEMO</div>
+  <svg class="wave" viewBox="0 0 64 20" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><circle cx="32" cy="9" r="6" fill="#B98A2E"/><path d="M4 17c5 0 5-3 10-3s5 3 10 3 5-3 10-3 5 3 10 3 5-3 10-3" stroke="#0E4F6E" stroke-width="1.6" fill="none"/></svg>
+  <div class="brand">Golden Taurus Aquapark Resort</div>
+  <h2>Scan for Wi-Fi &amp; hotel info</h2>
+  <div class="codes">
+    <figure><div class="q" id="qw"></div><figcaption>1 · Wi-Fi<span>Conectar · Join · Verbinden</span></figcaption></figure>
+    <figure><div class="q" id="qa"></div><figcaption>2 · App<span>Hotel · Info · Peticiones</span></figcaption></figure>
+  </div>
+  <div class="data"><b>Wi-Fi:</b> <span id="ds">–</span><br><b>Contraseña / Password:</b> <span id="dw">–</span></div>
+  <div class="foot">Cámara del móvil → código → tocar el aviso · Camera → code → tap the banner</div>
+</div>
+<script>
+const APP="https://diegorobert-code.github.io/DR_Lab/golden-taurus/app/";
+const $=s=>document.querySelector(s);
+const esc=v=>v.replace(/([\;,:"])/g,"\\$1");
+function svg(t){const q=qrcode(0,"M");q.addData(t);q.make();return q.createSvgTag({cellSize:4,margin:0,scalable:true})}
+function draw(){const s=$("#s").value.trim(),w=$("#w").value;
+  $("#qw").innerHTML=s?svg("WIFI:T:"+(w?"WPA":"nopass")+";S:"+esc(s)+";"+(w?"P:"+esc(w)+";":"")+";"):'<svg viewBox="0 0 10 10"><rect width="10" height="10" rx="1" fill="#EEF3F5"/><text x="5" y="5.6" font-size="1.2" text-anchor="middle" fill="#6B8290">wifi</text></svg>';
+  $("#ds").textContent=s||"–";$("#dw").textContent=s?(w||"(abierta / open)"):"–";
+  try{localStorage.setItem("gt-card",JSON.stringify({s,w}))}catch(e){}}
+try{const d=JSON.parse(localStorage.getItem("gt-card")||"{}");$("#s").value=d.s||"GoldenTaurus-Guest";$("#w").value=(d.w!==undefined?d.w:"demo2026")}catch(e){}
+$("#qa").innerHTML=svg(APP);$("#s").oninput=$("#w").oninput=draw;$("#pr").onclick=()=>print();draw();
+</script></body></html>

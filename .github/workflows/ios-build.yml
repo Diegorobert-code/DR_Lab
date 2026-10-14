@@ -1,0 +1,120 @@
+# iPhone-Apps auf einem Gratis-Mac von GitHub bauen (öffentliches Repo = kostenlos).
+# Ohne Apple-Schlüssel: Test-Build für den Simulator, zeigt, ob alle Apps kompilieren.
+# Mit Apple-Schlüsseln und «Hochladen» = ja: signiert und lädt nach App Store Connect (TestFlight).
+# Eingereicht zur Prüfung wird nie automatisch, das macht Diego in App Store Connect.
+name: iPhone-Apps bauen
+
+on:
+  push:
+    branches: [main]
+    paths: ['appstore/**', 'mondschein/**', 'humanspark/**', 'tradeping/**', 'jackie/**', '.github/workflows/ios-build.yml']
+  pull_request:
+    paths: ['appstore/**', 'mondschein/**', 'humanspark/**', 'tradeping/**', 'jackie/**', '.github/workflows/ios-build.yml']
+  workflow_dispatch:
+    inputs:
+      hochladen:
+        description: 'Nach App Store Connect hochladen (braucht Apple-Schlüssel)'
+        type: boolean
+        default: false
+      app:
+        description: 'Welche App'
+        type: choice
+        default: alle
+        options: [alle, mondschein, humanspark, tradeping, jackie]
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  bauen:
+    name: ${{ matrix.app }}
+    runs-on: macos-15
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [mondschein, humanspark, tradeping, jackie]
+    env:
+      HOCHLADEN: ${{ github.event_name == 'workflow_dispatch' && inputs.hochladen && (inputs.app == 'alle' || inputs.app == matrix.app) }}
+      UEBERSPRINGEN: ${{ github.event_name == 'workflow_dispatch' && inputs.app != 'alle' && inputs.app != matrix.app }}
+    steps:
+      - uses: actions/checkout@v4
+        if: env.UEBERSPRINGEN != 'true'
+
+      - uses: actions/setup-node@v4
+        if: env.UEBERSPRINGEN != 'true'
+        with:
+          node-version: 22
+
+      - name: Neuestes Xcode wählen
+        if: env.UEBERSPRINGEN != 'true'
+        run: |
+          sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | grep -v -i -e beta -e release_candidate | sort -V | tail -1)"
+          xcodebuild -version
+          # Apple nimmt seit 28.04.2026 nur Uploads an, die mit Xcode 26 oder neuer gebaut sind.
+          HAUPT=$(xcodebuild -version | head -1 | sed -E 's/Xcode ([0-9]+).*/\1/')
+          if [ "$HAUPT" -lt 26 ]; then echo "::error::Xcode $HAUPT ist zu alt, Apple verlangt Xcode 26 oder neuer"; exit 1; fi
+
+      - name: Web-Teil bauen und iOS synchronisieren
+        if: env.UEBERSPRINGEN != 'true'
+        working-directory: appstore/${{ matrix.app }}
+        run: |
+          npm ci --no-fund --no-audit
+          node ../web-bauen.mjs ${{ matrix.app }}
+          npx cap sync ios
+
+      - name: Test-Build (Simulator, ohne Signatur)
+        if: env.UEBERSPRINGEN != 'true' && env.HOCHLADEN != 'true'
+        working-directory: appstore/${{ matrix.app }}/ios/App
+        run: |
+          set -o pipefail
+          # Bei einem Fehler die wichtigsten Zeilen als Hinweis am Lauf anzeigen (lesbar ohne das ganze Protokoll).
+          if ! xcodebuild -project App.xcodeproj -scheme App -configuration Release \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build CODE_SIGNING_ALLOWED=NO build > xcodebuild.log 2>&1; then
+            tail -60 xcodebuild.log
+            { grep -E "error:|fatal:|BUILD FAILED|xcodebuild: error" xcodebuild.log || tail -12 xcodebuild.log; } | head -15 | while IFS= read -r z; do echo "::error::${z:0:900}"; done
+            exit 1
+          fi
+          tail -40 xcodebuild.log
+
+      - name: Apple-Schlüssel bereitlegen
+        if: env.HOCHLADEN == 'true'
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+        run: |
+          if [ -z "$ASC_KEY_P8" ] || [ -z "$ASC_KEY_ID" ]; then echo "::error::Apple-Schlüssel fehlen (ASC_KEY_P8, ASC_KEY_ID, ASC_ISSUER_ID, APPLE_TEAM_ID)"; exit 1; fi
+          mkdir -p ~/.appstoreconnect/private_keys
+          printf '%s\n' "$ASC_KEY_P8" > ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8
+
+      - name: Archivieren, signieren und hochladen
+        if: env.HOCHLADEN == 'true'
+        working-directory: appstore/${{ matrix.app }}/ios/App
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          set -o pipefail
+          KEY=~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8
+          AUTH="-allowProvisioningUpdates -authenticationKeyPath $KEY -authenticationKeyID $ASC_KEY_ID -authenticationKeyIssuerID $ASC_ISSUER_ID"
+          xcodebuild -project App.xcodeproj -scheme App -configuration Release \
+            -destination 'generic/platform=iOS' -archivePath build/App.xcarchive \
+            DEVELOPMENT_TEAM=$APPLE_TEAM_ID CODE_SIGN_STYLE=Automatic \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }} \
+            $AUTH archive | tail -40
+          cat > build/export.plist <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>$APPLE_TEAM_ID</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict></plist>
+          PLIST
+          xcodebuild -exportArchive -archivePath build/App.xcarchive \
+            -exportOptionsPlist build/export.plist -exportPath build/export $AUTH | tail -40

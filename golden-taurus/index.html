@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0E4F6E">
+<link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Golden Taurus">
+<style>:root{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Golden Taurus Gäste</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one-hand phone app, 480px column, fixed tab bar, bottom-sheet details. Design system from the approved ChatGPT brief. */
+:root{
+  --bg:#F3F6F7; --surface:#FFFFFF; --ink:#17344A; --muted:#5B7282; --line:#DDE6EA;
+  --primary:#0E4F6E; --primary-ink:#FFFFFF; --soft:#E3EEF3; --gold:#B98A2E; --gold-soft:#F6EDDA;
+  --ok:#22C55E; --bad:#E5533D; --idle:#9AAAB4; --shadow:0 6px 20px rgba(14,47,64,.08);
+  --display:"Young Serif",Georgia,"Times New Roman","Songti SC","Noto Serif SC",serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI","PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+  --r:18px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B1820; --surface:#12232D; --ink:#E7EFF2; --muted:#9DB1BB; --line:#22394A;
+  --primary:#13617F; --primary-ink:#F3F7F8; --soft:#163343; --gold:#E0B45C; --gold-soft:#33291A; --shadow:0 6px 20px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1820; --surface:#12232D; --ink:#E7EFF2; --muted:#9DB1BB; --line:#22394A;
+  --primary:#13617F; --primary-ink:#F3F7F8; --soft:#163343; --gold:#E0B45C; --gold-soft:#33291A; --shadow:0 6px 20px rgba(0,0,0,.35); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;margin:0;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit}
+.app{max-width:480px;margin:0 auto;padding-inline:16px;padding-block:8px 112px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px 4px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand svg{width:36px;height:36px;flex:none;border-radius:10px;display:block}
+.brand>div{display:flex;flex-direction:column;min-width:0}
+.brand small{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.brand b{font-family:var(--display);font-weight:400;font-size:19px;line-height:1.15}
+.brand small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:420px){.brand svg{width:32px;height:32px}.brand b{font-size:17px}.brand small{display:none}.lang button{min-width:36px;padding:0 6px;font-size:12px}header.top{gap:8px}}
+.lang{display:flex;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;flex:none}
+.lang button{border:0;background:transparent;color:var(--muted);font-weight:600;font-size:13px;padding:0 9px;min-width:40px;min-height:40px;border-radius:999px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--primary);color:var(--primary-ink)}
+.demo-tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);background:var(--gold-soft);border-radius:999px;padding:3px 10px;margin-bottom:6px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:16px 0 0}
+h1{font-family:var(--display);font-weight:400;font-size:31px;line-height:1.15;margin:4px 0 8px;text-wrap:balance}
+h2{font-family:var(--display);font-weight:400;font-size:23px;line-height:1.2;margin:0 0 12px;text-wrap:balance}
+p{margin:0}
+.lead{color:var(--muted);font-size:15px}
+.stack{display:flex;flex-direction:column;gap:16px;margin-top:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;box-shadow:var(--shadow)}
+.hero{background:var(--primary);color:var(--primary-ink);border-radius:var(--r);padding:24px;position:relative;overflow:hidden;box-shadow:0 14px 34px rgba(14,79,110,.28)}
+.hero::after{content:"";position:absolute;right:-70px;top:-70px;width:220px;height:220px;border-radius:50%;border:30px solid rgba(255,255,255,.06);pointer-events:none}
+.hero>*{position:relative;z-index:1}
+.hero h2{color:var(--primary-ink);display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.hero h2 svg{width:26px;height:26px;stroke:var(--primary-ink)}
+.row{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-block:12px;border-top:1px solid rgba(255,255,255,.16)}
+.row:first-of-type{border-top:0}
+.field{min-width:0;flex:1}
+.field label{font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.75;display:block;margin-bottom:2px}
+.field input{background:transparent;border:0;border-bottom:1px dashed rgba(255,255,255,.45);color:var(--primary-ink);font:600 19px var(--body);width:100%;padding:4px 0;min-width:0}
+.field input::placeholder{color:var(--primary-ink);opacity:.55;font-weight:500;font-size:15px}
+.field input:focus{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;font-weight:600;font-size:16px;min-height:48px;padding:0 20px;cursor:pointer;background:var(--gold);color:#1B1408;text-decoration:none;transition:transform .15s ease}
+.btn:active{transform:scale(.98)}
+.btn.block{width:100%}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn.primary{background:var(--primary);color:var(--primary-ink)}
+.btn.chip-btn{min-height:40px;padding:0 14px;font-size:14px;border-radius:12px}
+.hero .btn.ghost{border-color:rgba(255,255,255,.4);color:var(--primary-ink)}
+.btn:disabled{opacity:.6}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.status{display:flex;align-items:center;gap:10px;margin-top:16px;font-weight:600;font-size:15px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--idle);flex:none}
+.st-ok .dot{background:var(--ok);box-shadow:0 0 0 4px rgba(34,197,94,.25)}
+.st-bad .dot{background:var(--bad)}
+.st-run .dot{background:var(--gold);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.hint{font-size:13px;opacity:.75;margin-top:6px}
+.wqr{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.wqr .code{background:#fff;border-radius:14px;padding:10px;width:156px;height:156px;flex:none;display:grid;place-items:center}
+.wqr .code svg{width:100%;height:100%;display:block}
+.wqr p{flex:1;min-width:150px;font-size:15px;margin:0}
+ol.steps{list-style:none;padding:0;margin:0;counter-reset:s;display:flex;flex-direction:column}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;gap:12px;padding-block:12px;border-top:1px solid var(--line)}
+ol.steps li:first-child{border-top:0;padding-top:0}
+ol.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--soft);color:var(--primary);font-weight:700;font-size:14px;display:grid;place-items:center}
+ol.steps b{display:block;font-size:16px}
+ol.steps span{color:var(--muted);font-size:15px}
+details.more{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+details.more summary{cursor:pointer;font-weight:600;color:var(--primary);list-style:none;min-height:40px;display:flex;align-items:center}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::after{content:"+";margin-left:auto;color:var(--muted);font-size:20px}
+details.more[open] summary::after{content:"−"}
+.list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.item{display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:12px;padding:12px 16px;border:0;border-top:1px solid var(--line);background:transparent;text-align:left;cursor:pointer;min-height:64px;width:100%}
+.item:first-child{border-top:0}
+.item .ic{width:40px;height:40px;border-radius:12px;background:var(--soft);display:grid;place-items:center}
+.item .ic svg{width:22px;height:22px;stroke:var(--primary)}
+.item b{display:block;font-size:16px;font-weight:600}
+.item span span{display:block;font-size:13px;color:var(--muted)}
+.item .val{font-weight:700;font-variant-numeric:tabular-nums;color:var(--primary);font-size:15px;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.chev{width:16px;height:16px;stroke:var(--muted)}
+.keyrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.key{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}
+.key small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.key b{font-family:var(--display);font-weight:400;font-size:30px;line-height:1.1;color:var(--primary);font-variant-numeric:tabular-nums}
+.photo{position:relative;height:190px;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);background:var(--soft)}
+.photo img{display:block;width:100%;height:100%;object-fit:cover}
+.photo .cap{position:absolute;left:0;right:0;bottom:0;padding:48px 16px 12px;background:linear-gradient(180deg,rgba(9,28,38,0),rgba(9,28,38,.8));color:#fff;font-size:12px;letter-spacing:.06em}
+.food{display:grid;grid-template-columns:88px 1fr;gap:16px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;box-shadow:var(--shadow);text-align:left;cursor:pointer;width:100%}
+.food .thumb{width:88px;height:88px;border-radius:14px;overflow:hidden;background:var(--soft);display:block}
+.food .thumb img,.food .thumb svg,.art,.art svg{width:100%;height:100%;object-fit:cover;display:block}
+.food b{font-size:17px;display:block}
+.food .sub{display:block;color:var(--muted);font-size:14px}
+.food .hours{display:inline-block;margin-top:6px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--primary);background:var(--soft);border-radius:8px;padding:2px 8px;font-size:15px}
+.food .hours.tbc{color:var(--muted);background:transparent;padding:0;font-weight:500;font-size:13px}
+.big{display:block;position:relative;height:220px;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:0;padding:0;cursor:pointer;width:100%;text-align:left;background:var(--soft)}
+.big>img,.big>.art{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;object-fit:cover}
+.big .txt{position:absolute;left:0;right:0;bottom:0;padding:56px 20px 18px;background:linear-gradient(180deg,rgba(9,28,38,0),rgba(9,28,38,.82));color:#fff}
+.big .txt b{font-family:var(--display);font-weight:400;font-size:24px;display:block}
+.big .txt span{font-size:14px;opacity:.92}
+.big:active,.food:active,.item:active{transform:scale(.99)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;min-height:44px;padding:0 16px;font-weight:500;font-size:15px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:var(--primary-ink)}
+.lbl{font-size:13px;color:var(--muted);font-weight:600;display:block;margin:16px 0 6px}
+input.plain,textarea{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:14px;padding:12px 14px;font:16px var(--body);min-height:48px}
+textarea{min-height:88px;resize:vertical}
+.err{color:var(--bad);font-weight:600;font-size:14px;margin-top:12px}
+.result{border-radius:var(--r);padding:16px;background:var(--gold-soft);border:1px solid var(--gold);margin-top:16px}
+.result b{display:block;margin-bottom:4px}
+.result pre{white-space:pre-wrap;font:15px var(--body);margin:12px 0;background:var(--surface);border-radius:12px;padding:12px}
+.note{font-size:13px;color:var(--muted)}
+.foot{font-size:12px;color:var(--muted);text-align:center;margin-top:24px}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);
+  padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));z-index:5}
+nav.tabs .in{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+nav.tabs button{border:0;background:transparent;color:var(--muted);font-weight:600;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;cursor:pointer;border-radius:10px;min-height:48px}
+nav.tabs svg{width:23px;height:23px;stroke:currentColor}
+nav.tabs button[aria-current="page"]{color:var(--primary)}
+nav.tabs button[aria-current="page"] svg{stroke-width:2.3}
+svg{fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#sheet{position:fixed;top:0;right:0;bottom:0;left:0;z-index:15;display:flex;align-items:flex-end;justify-content:center;background:rgba(9,22,30,.45)}
+#sheet .panel{background:var(--surface);width:100%;max-width:480px;max-height:88%;overflow:auto;border-radius:24px 24px 0 0;padding:0 0 calc(24px + env(safe-area-inset-bottom,0px));position:relative}
+#sheet .media{height:200px;position:relative;background:var(--soft);overflow:hidden}
+#sheet .media>img,#sheet .media>.art{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;object-fit:cover}
+#sheet .body{padding:20px 24px 0}
+#sheet dl{margin:16px 0 0;display:flex;flex-direction:column}
+#sheet dl div{display:flex;justify-content:space-between;gap:16px;padding-block:12px;border-top:1px solid var(--line)}
+#sheet dt{color:var(--muted)} #sheet dd{margin:0;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+#sheet .close{position:absolute;top:12px;right:12px;z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:rgba(9,22,30,.6);color:#fff;font-size:24px;cursor:pointer}
+.hero h2 .wdemo{margin-left:auto;font-family:var(--body);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 10px}
+.tbcpill{display:inline-block;font-size:12px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;z-index:30}
+#intro{position:fixed;top:0;right:0;bottom:0;left:0;z-index:20;background:#0B1820;color:#F3F6F4;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+#intro video{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;object-fit:cover}
+#intro::before{content:"";position:absolute;top:0;right:0;bottom:0;left:0;z-index:1;background:linear-gradient(180deg,rgba(11,24,32,.2) 0%,rgba(11,24,32,.05) 40%,rgba(11,24,32,.9) 80%)}
+#intro .playv{position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);z-index:3;width:72px;height:72px;border-radius:50%;border:0;background:rgba(243,246,244,.9);display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 30px rgba(0,0,0,.35)}#intro .playv svg{width:30px;height:30px;fill:#0E4F6E;margin-left:4px}
+#intro .in{position:relative;z-index:2;max-width:480px;width:100%;margin:0 auto;padding:24px 20px calc(32px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
+#intro .in svg{width:52px;height:52px;border-radius:14px;display:block}
+#intro small{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#E0B45C;font-weight:700}
+#intro h1{color:#F3F6F4;font-size:38px;margin:0}
+#intro p{color:#C9D8DF;font-size:17px}
+#intro .btn{margin-top:8px;min-height:54px;font-size:17px}
+#intro .skip{background:transparent;border:0;color:#C9D8DF;font-weight:500;font-size:15px;cursor:pointer;padding:10px;align-self:center}
+#intro .lang{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px;z-index:3;background:rgba(11,24,32,.55);border-color:rgba(255,255,255,.2)}
+#intro .lang button{color:#C9D8DF}
+#intro .lang button[aria-pressed="true"]{background:#F3F6F4;color:#0B1820}
+#intro.out{transition:opacity .5s ease,transform .6s ease;opacity:0;transform:scale(1.06)}
+#tour{position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom,0px));z-index:6;padding-inline:16px}
+#tour .bar{max-width:448px;margin:0 auto;background:var(--ink);color:var(--bg);border-radius:16px;padding:8px 8px 8px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+#tour .dots{display:flex;gap:5px;flex:none}
+#tour .dots i{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.3}
+#tour .dots i.on{opacity:1;background:var(--gold)}
+#tour .lbl{flex:1;min-width:0;font-size:14px;font-weight:600}
+#tour .btn{min-height:40px;padding:0 14px;font-size:14px}
+#tour .x{background:transparent;border:0;color:inherit;opacity:.7;font-weight:600;font-size:22px;cursor:pointer;padding:4px 8px;min-height:40px}
+body.touring .app{padding-bottom:180px}
+@media (max-width:400px){#tour .dots{display:none}#tour .lbl{font-size:13px}}
+@media (prefers-reduced-motion:no-preference){section.view{animation:in .35s cubic-bezier(.2,.7,.2,1)}#sheet .panel{animation:up .3s cubic-bezier(.2,.7,.2,1)}
+  @keyframes in{from{opacity:.55;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes up{from{transform:translateY(40px);opacity:.6}to{transform:none;opacity:1}}}
+@media (prefers-reduced-motion:no-preference){#intro::before{opacity:0}#intro .in>*{opacity:0}#intro.go::before{opacity:1;animation:introBg 1.2s ease 1.8s both}#intro.go .in>*{opacity:1;animation:introIn .8s cubic-bezier(.2,.7,.2,1) both}
+  #intro.go .in>*:nth-child(1){animation-delay:2s}#intro.go .in>*:nth-child(2){animation-delay:2.15s}#intro.go .in>*:nth-child(3){animation-delay:2.3s}#intro.go .in>*:nth-child(4){animation-delay:2.45s}#intro.go .in>*:nth-child(n+5){animation-delay:2.7s}
+  @keyframes introIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}@keyframes introBg{from{opacity:0}to{opacity:1}}}
+#filmPop{position:fixed;top:0;right:0;bottom:0;left:0;z-index:30;background:rgba(5,12,16,.94);display:flex;align-items:center;justify-content:center;padding:16px;transition:opacity .4s}
+#filmPop.out{opacity:0}
+#filmPop .fp-box{position:relative;width:100%;max-width:960px;display:flex;flex-direction:column;gap:12px}
+#filmPop video{width:100%;height:auto;display:block;border-radius:16px;background:#000;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+#filmPop .playv{position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;border:0;background:rgba(243,246,244,.9);display:grid;place-items:center;cursor:pointer}
+#filmPop .playv svg{width:30px;height:30px;fill:#0E4F6E;margin-left:4px}
+#filmPop .fp-bar{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap}
+#filmPop .fp-bar button{min-height:48px;padding:0 20px;border-radius:14px;font:inherit;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.35);background:transparent;color:#F3F6F4}
+#filmPop .fp-bar #filmSkip{background:#B98A2E;border-color:#B98A2E;color:#17344A}
+@media (prefers-reduced-motion:reduce){#intro.out{transition:none}}
+</style>
+</head>
+<body>
+
+<div id="filmPop" role="dialog" aria-label="DR Lab">
+  <div class="fp-box">
+    <video id="filmVid" playsinline muted preload="auto" poster="propuesta/film-poster.jpg"><source src="propuesta/film-es.mp4?v=2" type="video/mp4"><source src="propuesta/film-es.webm?v=2" type="video/webm"></video>
+    <button id="filmPlay" class="playv" type="button" aria-label="Play" hidden><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+    <div class="fp-bar"><button id="filmSound" type="button" data-t="filmSound"></button><button id="filmSkip" type="button" data-t="filmSkip"></button></div>
+  </div>
+</div>
+<script>if(/[?&](app|direkt)\b/.test(location.search)||location.hash==="#app")document.getElementById("filmPop").hidden=true</script>
+<div id="intro" role="dialog" aria-label="Golden Taurus">
+  <video id="introVid" autoplay muted loop playsinline preload="auto" poster="img/intro-poster.jpg"><source src="intro.mp4" type="video/mp4"><source src="intro.webm" type="video/webm"></video>
+  <div class="lang" role="group" aria-label="Language"><button data-lang="de">DE</button><button data-lang="en">EN</button><button data-lang="es">ES</button><button data-lang="zh" lang="zh">中文</button></div>
+  <button id="playVid" class="playv" type="button" aria-label="Play video" hidden><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+  <div class="in">
+    <span data-logo></span>
+    <small>Pineda de Mar · Costa del Maresme</small>
+    <h1 data-t="introTitle"></h1>
+    <p data-t="introSub"></p>
+    <button class="btn" id="enterBtn" data-t="introBtn"></button>
+    <button class="skip" id="skipBtn" data-t="introSkip"></button>
+  </div>
+</div>
+
+<div class="app">
+  <header class="top">
+    <div class="brand"><span data-logo></span><div><small>Aquapark Resort</small><b>Golden Taurus</b></div></div>
+    <div class="lang" role="group" aria-label="Language"><button data-lang="de">DE</button><button data-lang="en">EN</button><button data-lang="es">ES</button><button data-lang="zh" lang="zh">中文</button></div>
+  </header>
+
+  <section class="view" id="v-wifi">
+    <p class="eyebrow" data-t="roomEyebrow"></p>
+    <h1 data-t="wifiTitle"></h1>
+    <div class="stack">
+      <div class="hero">
+        <h2><svg viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".8"/></svg><span data-t="yourWifi"></span><span class="wdemo" data-t="wifiDemo"></span></h2>
+        <div class="row"><div class="field"><label for="ssid" data-t="network"></label><input id="ssid" autocomplete="off" spellcheck="false" data-ph="askReception"></div>
+          <button class="btn ghost chip-btn" data-copyfrom="ssid" data-t="copy"></button></div>
+        <div class="row"><div class="field"><label for="pass" data-t="password"></label><input id="pass" autocomplete="off" spellcheck="false" data-ph="askReception"></div>
+          <button class="btn ghost chip-btn" data-copyfrom="pass" data-t="copy"></button></div>
+        <div class="status" id="netStatus" aria-live="polite"><span class="dot"></span><span></span></div>
+        <p class="hint" data-t="testHint"></p>
+        <div style="margin-top:16px"><button class="btn block" id="testBtn" data-t="test"></button></div>
+      </div>
+      <div class="card" id="wqrCard">
+        <h2 data-t="qrTitle"></h2>
+        <div class="wqr"><div class="code" id="wqr" role="img"></div><p id="wqrTxt"></p></div>
+      </div>
+      <div class="card">
+        <h2 data-t="stepsTitle"></h2>
+        <ol class="steps" id="steps3"></ol>
+        <details class="more"><summary data-t="moreHelp"></summary><ol class="steps" id="stepsMore" style="margin-top:12px"></ol>
+          <button class="btn ghost block" style="margin-top:12px" data-go="requests" data-pre="wifi" data-t="askHelp"></button></details>
+      </div>
+      <button class="btn ghost block" id="tourStart" data-t="tourBtn"></button>
+    </div>
+  </section>
+
+  <section class="view" id="v-hotel" hidden>
+    <p class="eyebrow" data-t="hotelEyebrow"></p>
+    <h1 data-t="hotelTitle"></h1>
+    <div class="stack">
+      <div class="photo"><img src="img/resort.jpg" alt="" data-alt="altResort"><div class="cap" data-t="capModel"></div></div>
+      <div class="keyrow">
+        <button class="key" data-sheet="hotel:0" style="text-align:left;cursor:pointer"><small>Check-in</small><b>14:00</b></button>
+        <button class="key" data-sheet="hotel:0" style="text-align:left;cursor:pointer"><small>Check-out</small><b>11:00</b></button>
+      </div>
+      <div class="list" id="hotelList"></div>
+      <p class="note" data-t="sourceNote"></p>
+    </div>
+  </section>
+
+  <section class="view" id="v-food" hidden>
+    <p class="eyebrow" data-t="foodEyebrow"></p>
+    <h1 data-t="foodTitle"></h1>
+    <div class="stack" id="foodList"></div>
+    <p class="note" style="margin-top:16px" data-t="sourceNote"></p>
+  </section>
+
+  <section class="view" id="v-enjoy" hidden>
+    <p class="eyebrow" data-t="enjoyEyebrow"></p>
+    <h1 data-t="enjoyTitle"></h1>
+    <div class="stack" id="enjoyList"></div>
+  </section>
+
+  <section class="view" id="v-requests" hidden>
+    <p class="eyebrow" data-t="reqEyebrow"></p>
+    <h1 data-t="reqTitle"></h1>
+    <div class="card" style="margin-top:16px">
+      <div class="chips" id="reqChips"></div>
+      <label class="lbl" for="room" data-t="room"></label>
+      <input id="room" class="plain" inputmode="numeric" autocomplete="off" placeholder="412">
+      <label class="lbl" for="extra" data-t="extra"></label>
+      <textarea id="extra"></textarea>
+      <div class="err" id="reqErr" hidden></div>
+      <div style="margin-top:16px"><button class="btn primary block" id="sendBtn" data-t="send"></button></div>
+      <div class="result" id="reqResult" hidden>
+        <b data-t="demoTitle"></b><p class="note" data-t="demoText"></p>
+        <pre id="reqText"></pre>
+        <button class="btn ghost block" id="copyReq" data-t="copyReq"></button>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot"><span class="demo-tag" data-t="demoTag"></span><br><span data-t="foot"></span></p>
+</div>
+
+<div id="tour" hidden><div class="bar"><div class="dots" id="tourDots"></div><span class="lbl" id="tourLbl"></span><button class="btn" id="tourNext"></button><button class="x" id="tourX" aria-label="Close">×</button></div></div>
+
+<div id="sheet" hidden><div class="panel" role="dialog" aria-modal="true"><button class="close" id="sheetX" aria-label="Close">×</button><div class="media" id="sheetMedia"></div><div class="body" id="sheetBody"></div></div></div>
+
+<nav class="tabs" aria-label="Menu"><div class="in">
+  <button data-go="wifi"><svg viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".8"/></svg><span>Wi-Fi</span></button>
+  <button data-go="hotel"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5"/></svg><span data-t="nHotel"></span></button>
+  <button data-go="food"><svg viewBox="0 0 24 24"><path d="M7 3v8a2 2 0 0 0 2 2v8M5 3v5M9 3v5M17 3c-2 2-2 6 0 8v10"/></svg><span data-t="nFood"></span></button>
+  <button data-go="enjoy"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"/></svg><span data-t="nEnjoy"></span></button>
+  <button data-go="requests"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/></svg><span data-t="nReq"></span></button>
+</div></nav>
+
+<script src="qrcode.js"></script>
+<script>
+/* ---------- Konfiguration: vom Hotel zu bestätigen / einzutragen ---------- */
+const CONFIG={
+  wifi:{ssid:"GoldenTaurus-Guest",password:"demo2026"},   // DEMO-Daten; echte Daten vom Hotel eintragen (leer = Gast trägt selbst ein)
+  demo:true,                     // true = Anfragen werden NICHT gesendet
+  requestEndpoint:"",            // später: HTTPS-Adresse des Rezeptionssystems (POST JSON)
+  reception:{email:"recepcion.taurus@goldenhotels.com",address:"Passeig Marítim 33, 08397 Pineda de Mar"}
+};
+
+const ICON='<svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0E4F6E"/><circle cx="32" cy="27" r="10" fill="#B98A2E"/><g stroke="#B98A2E" stroke-width="2.4" stroke-linecap="round"><path d="M32 9v4M14 27h4M46 27h4M19 14l3 3M45 14l-3 3"/></g><path d="M6 44c6 0 6-4 13-4s7 4 13 4 7-4 13-4 7 4 13 4v20H6z" fill="#F3F6F7"/><path d="M6 50c6 0 6-3.5 13-3.5S26 50 32 50s7-3.5 13-3.5S52 50 58 50" stroke="#0E4F6E" stroke-width="2.4"/></svg>';
+const ART={
+ spa:'<div class="art"><svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="sg" cx="50%" cy="35%" r="80%"><stop offset="0" stop-color="#CFE6E4"/><stop offset="1" stop-color="#3E7F86"/></radialGradient></defs><rect width="400" height="300" fill="url(#sg)"/><ellipse cx="200" cy="250" rx="150" ry="22" fill="#2E6A70" opacity=".5"/><ellipse cx="200" cy="225" rx="62" ry="22" fill="#5C6B6E"/><ellipse cx="200" cy="190" rx="48" ry="18" fill="#7B8A8C"/><ellipse cx="200" cy="160" rx="34" ry="14" fill="#A4B0B1"/><path d="M200 120c-14-18-14-34 0-50 14 16 14 32 0 50z" fill="#E8F2EE" opacity=".9"/></svg></div>',
+ beach:'<div class="art"><svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="bk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9FD3EA"/><stop offset="1" stop-color="#F3E3C2"/></linearGradient></defs><rect width="400" height="300" fill="url(#bk)"/><circle cx="300" cy="80" r="34" fill="#F6C766"/><rect y="150" width="400" height="70" fill="#1F7FA6"/><path d="M0 160c40 6 80-6 120 0s80 6 120 0 80-6 160 0" stroke="#BFE3F1" stroke-width="3" opacity=".7"/><path d="M0 215c60-14 140-14 200-4s140 10 200-4v93H0z" fill="#EBD3A5"/><path d="M120 250l-26-62" stroke="#8A6A2E" stroke-width="3"/><path d="M66 196c18-16 44-18 58-6-20-2-38 0-58 6z" fill="#E9A23B"/></svg></div>',
+ bcn:'<div class="art"><svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="bc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4B983"/><stop offset=".6" stop-color="#E98A6B"/><stop offset="1" stop-color="#5B4A72"/></linearGradient></defs><rect width="400" height="300" fill="url(#bc)"/><circle cx="110" cy="120" r="30" fill="#FBD38D" opacity=".9"/><path fill="#2C2440" d="M0 300V230h40v-20h30v20h20v-40h25v40h30v-60h22v60h20V170l8-40 8 40v-30l8-36 8 36v30l8-40 8 40v-20l8-30 8 30v80h30v-30h30v30h30v-50h22v50h30v70z"/></svg></div>',
+ breakfast:'<div class="art"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice"><rect width="200" height="200" fill="#F6EDDA"/><circle cx="100" cy="105" r="62" fill="#fff" stroke="#E4D6B8" stroke-width="4"/><circle cx="85" cy="100" r="22" fill="#fff" stroke="#EADFC6" stroke-width="2"/><circle cx="85" cy="100" r="10" fill="#F2B544"/><rect x="110" y="85" width="34" height="38" rx="6" fill="#D9A15A"/><circle cx="125" cy="135" r="9" fill="#E5533D"/></svg></div>',
+ rest:'<div class="art"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice"><rect width="200" height="200" fill="#E3EEF3"/><circle cx="100" cy="105" r="58" fill="#fff" stroke="#CFDDE3" stroke-width="4"/><path d="M60 50v40M52 50v18a8 8 0 0 0 16 0V50M144 50c-10 10-10 30 0 40v70" stroke="#0E4F6E" stroke-width="5"/></svg></div>',
+ bar:'<div class="art"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice"><rect width="200" height="200" fill="#CFE9F1"/><path d="M60 60h80l-40 50z" fill="#F4B983"/><path d="M60 60h80l-40 50zM100 110v40M78 152h44" stroke="#0E4F6E" stroke-width="5"/><circle cx="132" cy="56" r="10" fill="#E5533D"/></svg></div>'
+};
+const IC={aqua:'<path d="M3 20c3 0 3-2 6-2s3 2 6 2 3-2 6-2M6 16V5a2 2 0 0 1 4 0M18 16V5a2 2 0 0 0-4 0M6 9h8M6 12h8"/>',outdoor:'<circle cx="12" cy="7" r="3"/><path d="M2 17c3 0 3-2 6-2s3 2 6 2 3-2 6-2M2 21c3 0 3-2 6-2s3 2 6 2 3-2 6-2"/>',indoor:'<path d="M3 10l9-6 9 6M5 10v10h14V10M7 17c2 0 2-1.5 5-1.5s3 1.5 5 1.5"/>',kids:'<circle cx="12" cy="6" r="3"/><path d="M6 21l2-8h8l2 8M9 13l-3-3M15 13l3-3"/>',spa:'<path d="M12 20c-5 0-8-3-8-7 3 0 6 1 8 4 2-3 5-4 8-4 0 4-3 7-8 7zM12 13c-2-2-2-6 0-9 2 3 2 7 0 9z"/>',parking:'<rect x="4" y="3" width="16" height="18" rx="3"/><path d="M10 17V8h3a3 3 0 0 1 0 6h-3"/>'};
+const MEDIA={checkin:'<img src="img/resort.jpg" alt="">',aqua:'<img src="img/pool.jpg" alt="">',outdoor:'<img src="img/pool.jpg" alt="">',indoor:'<img src="img/resort.jpg" alt="">',kids:'<img src="img/garden.jpg" alt="">',parking:'<img src="img/garden.jpg" alt="">',spa:ART.spa,beach:ART.beach,bcn:ART.bcn,breakfast:ART.breakfast,r1:ART.rest,r2:ART.rest,bar:ART.bar};
+const PRE={wifi:-1,checkin:3,spa:-2,bcn:2};   // Detail-Knopf → vorgewählte Anfrage (Index in reqs; -1 WLAN-Hilfe, -2 Massage)
+
+const T={
+de:{wifiDemo:"Demo",filmSkip:"Überspringen",filmSound:"Ton an",soundOff:"Ton aus",introTitle:"Willkommen im Golden Taurus",introSub:"Dein Aufenthalt auf dem Handy. Zuerst ins Zimmer, dann einmal durchs ganze Resort.",introBtn:"Ins Zimmer",introSkip:"Direkt zur App",
+roomEyebrow:"Dein Zimmer",wifiTitle:"Gute Verbindung zum WLAN",yourWifi:"Dein WLAN",network:"Netzwerk",password:"Passwort",askReception:"an der Rezeption erfragen",copy:"Kopieren",
+test:"Verbindung testen",testing:"Teste …",stIdle:"Noch nicht getestet",stOk:"Internet erreichbar · {ms} ms",stSlow:"Internet erreichbar, aber langsam ({ms} ms)",stBad:"Kein Internet erreichbar. Bitte die Schritte unten prüfen.",
+qrTitle:"WLAN per QR-Code",qrHint:"Zweites Gerät? Kamera auf diesen Code richten und auf «Verbinden» tippen. Ohne Abtippen.",qrEmpty:"Trage oben Netzwerk und Passwort ein, dann erscheint hier der WLAN-Code für dein zweites Gerät.",qrAlt:"WLAN-QR-Code",testHint:"Der Test prüft, ob das Internet von diesem Handy aus erreichbar ist. Mit dem WLAN verbinden kann er nicht.",
+stepsTitle:"In drei Schritten online",moreHelp:"Es klappt nicht? Weitere Hilfe",askHelp:"WLAN-Hilfe an der Rezeption anfragen",
+steps3:[["WLAN einschalten","Einstellungen › WLAN und das Hotel-Netz wählen."],["Anmeldeseite bestätigen","Sie öffnet sich von selbst. Wenn nicht: Browser öffnen und neverssl.com eingeben."],["Verbindung testen","Oben auf «Verbindung testen» tippen."]],
+stepsMore:[["Netz neu verbinden","Netz «ignorieren» und neu wählen."],["iPhone: Private WLAN-Adresse","Beim Hotel-Netz auf (i) tippen und «Rotierend» auf «Fest» stellen."],["Flugmodus 10 Sekunden","Ein, warten, wieder aus."],["VPN ausschalten","Ein VPN blockiert oft die Anmeldeseite."],["Näher zum Flur","Auf dem Balkon ist das Signal schwächer."]],
+tourBtn:"Rundgang durchs Hotel",tourNext:"Weiter",tourDone:"Fertig",tourStops:["Im Zimmer: zuerst das WLAN","Das Hotel auf einen Blick","Essen und Bars","Aquapark, Spa und Strand","Wünsche an die Rezeption"],
+hotelEyebrow:"Das Resort",hotelTitle:"Alles Wichtige auf einen Blick",capModel:"Modell des Resorts in der Lobby",altResort:"Modell des Resorts mit Pool und Palmen",
+hotel:[["checkin","Check-in & Check-out","Ankunft ab 14:00, Abreise bis 11:00","",[["Check-in","ab 14:00"],["Check-out","bis 11:00"]],"Später auschecken? Einfach hier anfragen."],
+["aqua","Aquapark","Rutschen und Wasserspass","",[["Für Gäste","inklusive"],["Rutschen","ab 10 Jahren und 1,40 m"]],"Öffnungszeiten bitte an der Rezeption erfragen."],
+["outdoor","Vier Aussenpools","mit Kinderbecken","4",[["Aussenpools","4"],["Kinderbecken","ja"]],"Saison laut Buchungsseiten Mai bis September."],
+["indoor","Innenpool","ganzjährig","1",[["Innenpool","1"]],""],
+["kids","Kinderclub","mit Spielplatz und Spielraum","",[["Kinderclub","inklusive"],["Spielplatz","ja"]],""],
+["spa","Spa & Wellness","Massagen auf Reservation","",[["Massagen","auf Reservation"]],"Bitte vorher reservieren."],
+["parking","Parkplatz","begrenzt, mit E-Ladestation","EUR 16",[["Preis","EUR 16 / Nacht"],["E-Auto","Ladestation"]],"Wenige Plätze, bitte an der Rezeption fragen."]],
+foodEyebrow:"Essen & Bars",foodTitle:"Wann gibt es was?",hoursTbc:"Zeiten an der Rezeption",
+food:[["breakfast","Frühstücksbuffet","Jeden Morgen im Hotel","07:30–10:00",[["Zeit","07:30–10:00"]],""],
+["r1","Restaurant 1","Name und Küche folgen","",[["Zeiten","an der Rezeption"]],"Der Name des Restaurants wird vom Hotel ergänzt."],
+["r2","Restaurant 2","Name und Küche folgen","",[["Zeiten","an der Rezeption"]],"Der Name des Restaurants wird vom Hotel ergänzt."],
+["bar","Poolbar","Getränke und Snacks am Pool","",[["Ort","am Pool"]],""]],
+enjoyEyebrow:"Erleben",enjoyTitle:"Wasser, Ruhe und Meer",
+enjoy:[["aqua","Aquapark","Gratis für Gäste, ab 10 Jahren und 1,40 m",[["Für Gäste","inklusive"],["Rutschen","ab 10 J. / 1,40 m"]],"Öffnungszeiten an der Rezeption."],
+["spa","Spa & Massage","Ruhe nach dem Strandtag",[["Massagen","auf Reservation"]],"Termine vergibt die Rezeption."],
+["beach","Strand","Direkt vor dem Hotel am Passeig Marítim",[["Weg","über die Promenade"]],"Liegen und Schirme: bitte an der Rezeption fragen."],
+["bcn","Barcelona","Tagesausflug mit dem Regionalzug",[["Ab","Bahnhof Pineda de Mar"]],"Fahrplan und Tipps an der Rezeption."]],
+sourceNote:"Angaben aus öffentlichen Buchungsseiten (Okt. 2026). Bestätigung durch das Hotel ausstehend.",tbc:"vom Hotel zu bestätigen",
+reqEyebrow:"Wünsche",reqTitle:"Was dürfen wir bringen?",room:"Zimmernummer",extra:"Noch etwas dazu? (freiwillig)",send:"An die Rezeption senden",
+reqs:["Frische Handtücher","Extra-Kissen","Taxi","Später auschecken","Zimmerreinigung","Anderer Wunsch"],wifiHelp:"Hilfe mit dem WLAN",massage:"Massage reservieren",
+errPick:"Bitte einen Wunsch wählen oder etwas schreiben.",errRoom:"Bitte die Zimmernummer eingeben.",
+demoTitle:"Demo: Diese Anfrage wurde nicht gesendet.",demoText:"In der fertigen App geht sie direkt an die Rezeption. Bis dahin: Text kopieren und an der Rezeption zeigen.",
+copyReq:"Text kopieren",reqHead:"Hallo Rezeption,",reqRoom:"Zimmer",reqBye:"Vielen Dank!",copied:"Kopiert",copyFail:"Bitte Text markieren und kopieren",nothing:"Noch nichts eingetragen",
+demoTag:"Demo-Version",foot:"Golden Taurus Aquapark Resort · inoffizieller Prototyp",nHotel:"Hotel",nFood:"Essen",nEnjoy:"Erleben",nReq:"Wünsche",requestThis:"Anfragen"},
+en:{wifiDemo:"Demo",filmSkip:"Skip",filmSound:"Sound on",soundOff:"Sound off",introTitle:"Welcome to Golden Taurus",introSub:"Your stay on your phone. First your room, then a walk through the whole resort.",introBtn:"Go to my room",introSkip:"Straight to the app",
+roomEyebrow:"Your room",wifiTitle:"A good Wi-Fi connection",yourWifi:"Your Wi-Fi",network:"Network",password:"Password",askReception:"ask at reception",copy:"Copy",
+test:"Test connection",testing:"Testing …",stIdle:"Not tested yet",stOk:"Internet reachable · {ms} ms",stSlow:"Internet reachable but slow ({ms} ms)",stBad:"Internet not reachable. Please check the steps below.",
+qrTitle:"Wi-Fi by QR code",qrHint:"Second device? Point its camera at this code and tap «Join». No typing.",qrEmpty:"Enter the network and password above and the Wi-Fi code for your second device appears here.",qrAlt:"Wi-Fi QR code",testHint:"The test checks whether the internet can be reached from this phone. It cannot join the Wi-Fi for you.",
+stepsTitle:"Online in three steps",moreHelp:"Not working? More help",askHelp:"Ask reception for Wi-Fi help",
+steps3:[["Turn on Wi-Fi","Settings › Wi-Fi and choose the hotel network."],["Accept the login page","It opens by itself. If not, open your browser and type neverssl.com."],["Test the connection","Tap “Test connection” above."]],
+stepsMore:[["Reconnect","“Forget this network”, then join again."],["iPhone: Private Wi-Fi Address","Tap (i) next to the hotel network and change “Rotating” to “Fixed”."],["Airplane mode for 10 seconds","On, wait, off."],["Turn off VPN","A VPN often blocks the login page."],["Move towards the hallway","The signal is weaker on the balcony."]],
+tourBtn:"Tour of the hotel",tourNext:"Next",tourDone:"Done",tourStops:["In your room: Wi-Fi first","The hotel at a glance","Food and bars","Aquapark, spa and beach","Requests to reception"],
+hotelEyebrow:"The resort",hotelTitle:"Everything important at a glance",capModel:"Model of the resort in the lobby",altResort:"Model of the resort with pool and palm trees",
+hotel:[["checkin","Check-in & check-out","Arrival from 14:00, departure by 11:00","",[["Check-in","from 14:00"],["Check-out","by 11:00"]],"Want a later check-out? Just ask here."],
+["aqua","Aquapark","Slides and water fun","",[["For guests","included"],["Slides","age 10+ and 1.40 m"]],"Please ask reception for opening times."],
+["outdoor","Four outdoor pools","with kids' pool","4",[["Outdoor pools","4"],["Kids' pool","yes"]],"Season May to September according to booking sites."],
+["indoor","Indoor pool","all year","1",[["Indoor pool","1"]],""],
+["kids","Kids club","with playground and games room","",[["Kids club","included"],["Playground","yes"]],""],
+["spa","Spa & wellness","massages by reservation","",[["Massages","by reservation"]],"Please book ahead."],
+["parking","Parking","limited, with EV charging","EUR 16",[["Price","EUR 16 / night"],["Electric car","charging station"]],"Few spaces, please ask reception."]],
+foodEyebrow:"Food & bars",foodTitle:"What's on and when?",hoursTbc:"Hours at reception",
+food:[["breakfast","Breakfast buffet","Every morning in the hotel","07:30–10:00",[["Time","07:30–10:00"]],""],
+["r1","Restaurant 1","Name and cuisine to follow","",[["Hours","at reception"]],"The hotel will add the restaurant's name."],
+["r2","Restaurant 2","Name and cuisine to follow","",[["Hours","at reception"]],"The hotel will add the restaurant's name."],
+["bar","Pool bar","Drinks and snacks by the pool","",[["Where","by the pool"]],""]],
+enjoyEyebrow:"Enjoy",enjoyTitle:"Water, calm and the sea",
+enjoy:[["aqua","Aquapark","Free for guests, age 10+ and 1.40 m",[["For guests","included"],["Slides","age 10+ / 1.40 m"]],"Opening times at reception."],
+["spa","Spa & massage","Unwind after a beach day",[["Massages","by reservation"]],"Reception arranges appointments."],
+["beach","Beach","Right in front of the hotel on Passeig Marítim",[["Way","along the promenade"]],"Sunbeds and umbrellas: please ask reception."],
+["bcn","Barcelona","Day trip by regional train",[["From","Pineda de Mar station"]],"Timetable and tips at reception."]],
+sourceNote:"Details from public booking sites (Oct 2026). Awaiting confirmation by the hotel.",tbc:"to be confirmed by the hotel",
+reqEyebrow:"Requests",reqTitle:"What can we bring you?",room:"Room number",extra:"Anything else? (optional)",send:"Send to reception",
+reqs:["Fresh towels","Extra pillow","Taxi","Late check-out","Room cleaning","Other request"],wifiHelp:"Help with the Wi-Fi",massage:"Book a massage",
+errPick:"Please choose a request or write something.",errRoom:"Please enter your room number.",
+demoTitle:"Demo: this request was not sent.",demoText:"In the finished app it goes straight to reception. Until then, copy the text and show it at reception.",
+copyReq:"Copy text",reqHead:"Hello reception,",reqRoom:"Room",reqBye:"Thank you!",copied:"Copied",copyFail:"Please select and copy the text",nothing:"Nothing entered yet",
+demoTag:"Demo version",foot:"Golden Taurus Aquapark Resort · unofficial prototype",nHotel:"Hotel",nFood:"Food",nEnjoy:"Enjoy",nReq:"Requests",requestThis:"Request"},
+es:{wifiDemo:"Demo",filmSkip:"Saltar",filmSound:"Activar sonido",soundOff:"Silenciar",introTitle:"Bienvenido al Golden Taurus",introSub:"Tu estancia en el móvil. Primero tu habitación, después un paseo por todo el resort.",introBtn:"Ir a mi habitación",introSkip:"Ir directo a la app",
+roomEyebrow:"Tu habitación",wifiTitle:"Buena conexión al wifi",yourWifi:"Tu wifi",network:"Red",password:"Contraseña",askReception:"pídela en recepción",copy:"Copiar",
+test:"Probar conexión",testing:"Probando …",stIdle:"Aún sin probar",stOk:"Internet accesible · {ms} ms",stSlow:"Internet accesible, pero lento ({ms} ms)",stBad:"Internet no accesible. Revisa los pasos de abajo.",
+qrTitle:"Wifi con código QR",qrHint:"¿Otro dispositivo? Apunta su cámara a este código y toca «Conectar». Sin escribir nada.",qrEmpty:"Escribe arriba la red y la contraseña y aquí aparecerá el código wifi para tu otro dispositivo.",qrAlt:"Código QR del wifi",testHint:"La prueba comprueba si se llega a internet desde este móvil. No puede conectarse al wifi por ti.",
+stepsTitle:"Conectado en tres pasos",moreHelp:"¿No funciona? Más ayuda",askHelp:"Pedir ayuda con el wifi en recepción",
+steps3:[["Activa el wifi","Ajustes › Wi-Fi y elige la red del hotel."],["Acepta la página de acceso","Se abre sola. Si no, abre el navegador y escribe neverssl.com."],["Prueba la conexión","Toca «Probar conexión» arriba."]],
+stepsMore:[["Vuelve a conectar","«Olvidar esta red» y conéctate de nuevo."],["iPhone: dirección wifi privada","Toca (i) junto a la red del hotel y cambia «Rotativa» a «Fija»."],["Modo avión 10 segundos","Actívalo, espera y desactívalo."],["Desactiva la VPN","Una VPN suele bloquear la página de acceso."],["Acércate al pasillo","En el balcón la señal es más débil."]],
+tourBtn:"Recorrido por el hotel",tourNext:"Siguiente",tourDone:"Listo",tourStops:["En tu habitación: primero el wifi","El hotel de un vistazo","Comer y bares","Aquapark, spa y playa","Peticiones a recepción"],
+hotelEyebrow:"El resort",hotelTitle:"Lo esencial de un vistazo",capModel:"Maqueta del resort en el vestíbulo",altResort:"Maqueta del resort con piscina y palmeras",
+hotel:[["checkin","Check-in y check-out","Llegada desde las 14:00, salida hasta las 11:00","",[["Check-in","desde las 14:00"],["Check-out","hasta las 11:00"]],"¿Salida más tarde? Pídela aquí."],
+["aqua","Aquapark","Toboganes y diversión","",[["Huéspedes","incluido"],["Toboganes","desde 10 años y 1,40 m"]],"Consulta los horarios en recepción."],
+["outdoor","Cuatro piscinas exteriores","con piscina infantil","4",[["Exteriores","4"],["Infantil","sí"]],"Temporada de mayo a septiembre según webs de reservas."],
+["indoor","Piscina interior","todo el año","1",[["Interior","1"]],""],
+["kids","Club infantil","con parque y sala de juegos","",[["Club infantil","incluido"],["Parque","sí"]],""],
+["spa","Spa y bienestar","masajes con reserva","",[["Masajes","con reserva"]],"Reserva con antelación."],
+["parking","Parking","plazas limitadas, con carga eléctrica","EUR 16",[["Precio","EUR 16 / noche"],["Coche eléctrico","punto de carga"]],"Pocas plazas, pregunta en recepción."]],
+foodEyebrow:"Comer y bares",foodTitle:"¿Qué hay y a qué hora?",hoursTbc:"Horario en recepción",
+food:[["breakfast","Desayuno buffet","Cada mañana en el hotel","07:30–10:00",[["Horario","07:30–10:00"]],""],
+["r1","Restaurante 1","Nombre y cocina por confirmar","",[["Horario","en recepción"]],"El hotel añadirá el nombre del restaurante."],
+["r2","Restaurante 2","Nombre y cocina por confirmar","",[["Horario","en recepción"]],"El hotel añadirá el nombre del restaurante."],
+["bar","Bar de piscina","Bebidas y snacks junto a la piscina","",[["Dónde","junto a la piscina"]],""]],
+enjoyEyebrow:"Disfrutar",enjoyTitle:"Agua, calma y mar",
+enjoy:[["aqua","Aquapark","Gratis para huéspedes, desde 10 años y 1,40 m",[["Huéspedes","incluido"],["Toboganes","10 años / 1,40 m"]],"Horarios en recepción."],
+["spa","Spa y masajes","Calma después de la playa",[["Masajes","con reserva"]],"Recepción organiza las citas."],
+["beach","Playa","Delante del hotel, en el Passeig Marítim",[["Camino","por el paseo"]],"Hamacas y sombrillas: pregunta en recepción."],
+["bcn","Barcelona","Excursión en tren regional",[["Desde","estación de Pineda de Mar"]],"Horarios y consejos en recepción."]],
+sourceNote:"Datos de webs públicas de reservas (oct. 2026). Pendiente de confirmación por el hotel.",tbc:"por confirmar con el hotel",
+reqEyebrow:"Peticiones",reqTitle:"¿Qué te traemos?",room:"Número de habitación",extra:"¿Algo más? (opcional)",send:"Enviar a recepción",
+reqs:["Toallas limpias","Almohada extra","Taxi","Salida tardía","Limpieza de habitación","Otra petición"],wifiHelp:"Ayuda con el wifi",massage:"Reservar masaje",
+errPick:"Elige una petición o escribe algo.",errRoom:"Escribe tu número de habitación.",
+demoTitle:"Demo: esta petición no se ha enviado.",demoText:"En la app final llega directamente a recepción. Mientras tanto, copia el texto y enséñalo en recepción.",
+copyReq:"Copiar texto",reqHead:"Hola recepción:",reqRoom:"Habitación",reqBye:"¡Muchas gracias!",copied:"Copiado",copyFail:"Selecciona y copia el texto",nothing:"Aún no hay nada",
+demoTag:"Versión demo",foot:"Golden Taurus Aquapark Resort · prototipo no oficial",nHotel:"Hotel",nFood:"Comer",nEnjoy:"Disfrutar",nReq:"Pedir",requestThis:"Solicitar"},
+zh:{wifiDemo:"演示",filmSkip:"跳过",filmSound:"打开声音",soundOff:"关闭声音",introTitle:"欢迎来到 Golden Taurus",introSub:"您的住宿尽在手机上。先进房间，再逛遍整个度假村。",introBtn:"进入我的房间",introSkip:"直接进入应用",
+roomEyebrow:"您的房间",wifiTitle:"轻松连上无线网络",yourWifi:"您的 Wi-Fi",network:"网络名称",password:"密码",askReception:"请向前台询问",copy:"复制",
+test:"测试连接",testing:"正在测试 …",stIdle:"尚未测试",stOk:"可以上网 · {ms} 毫秒",stSlow:"可以上网，但速度较慢（{ms} 毫秒）",stBad:"无法上网。请查看下面的步骤。",
+qrTitle:"扫码连接 Wi-Fi",qrHint:"还有一台设备？用它的相机对准此二维码，点击“加入”即可，无需输入。",qrEmpty:"在上方输入网络名称和密码，这里就会出现供第二台设备使用的 Wi-Fi 二维码。",qrAlt:"Wi-Fi 二维码",testHint:"此测试检查这部手机能否访问互联网，无法替您连接 Wi-Fi。",
+stepsTitle:"三步上网",moreHelp:"连不上？更多帮助",askHelp:"请前台协助连接 Wi-Fi",
+steps3:[["打开 Wi-Fi","设置 › Wi-Fi，选择酒店网络。"],["接受登录页面","页面会自动打开。如果没有，请打开浏览器并输入 neverssl.com。"],["测试连接","点击上方的“测试连接”。"]],
+stepsMore:[["重新连接","选择“忽略此网络”，然后重新加入。"],["iPhone：私有 Wi-Fi 地址","点击酒店网络旁的 (i)，将“轮换”改为“固定”。"],["飞行模式 10 秒","打开，等待，再关闭。"],["关闭 VPN","VPN 常会阻止登录页面。"],["靠近走廊","阳台上的信号较弱。"]],
+tourBtn:"酒店导览",tourNext:"下一步",tourDone:"完成",tourStops:["在房间里：先连 Wi-Fi","酒店一览","餐饮与酒吧","水上乐园、水疗与海滩","向前台提出需求"],
+hotelEyebrow:"度假村",hotelTitle:"重要信息一目了然",capModel:"大堂里的度假村模型",altResort:"带泳池和棕榈树的度假村模型",
+hotel:[["checkin","入住与退房","14:00 起入住，11:00 前退房","",[["入住","14:00 起"],["退房","11:00 前"]],"想晚点退房？在这里提出即可。"],
+["aqua","水上乐园","滑梯与戏水乐趣","",[["住客","免费"],["滑梯","10 岁以上且身高 1.40 米以上"]],"开放时间请询问前台。"],
+["outdoor","四个室外泳池","含儿童泳池","4",[["室外泳池","4"],["儿童泳池","有"]],"据预订网站信息，开放季节为 5 月至 9 月。"],
+["indoor","室内泳池","全年开放","1",[["室内泳池","1"]],""],
+["kids","儿童俱乐部","设有游乐场和游戏室","",[["儿童俱乐部","免费"],["游乐场","有"]],""],
+["spa","水疗与健康","按摩需预约","",[["按摩","需预约"]],"请提前预约。"],
+["parking","停车场","车位有限，设有电动车充电","EUR 16",[["价格","每晚 EUR 16"],["电动车","充电桩"]],"车位较少，请询问前台。"]],
+foodEyebrow:"餐饮与酒吧",foodTitle:"何时供应什么？",hoursTbc:"时间请询问前台",
+food:[["breakfast","自助早餐","每天早上在酒店内","07:30–10:00",[["时间","07:30–10:00"]],""],
+["r1","餐厅 1","名称和菜系待补充","",[["时间","请询问前台"]],"酒店将补充餐厅名称。"],
+["r2","餐厅 2","名称和菜系待补充","",[["时间","请询问前台"]],"酒店将补充餐厅名称。"],
+["bar","泳池酒吧","泳池边的饮品和小吃","",[["位置","泳池边"]],""]],
+enjoyEyebrow:"休闲",enjoyTitle:"水、宁静与大海",
+enjoy:[["aqua","水上乐园","住客免费，10 岁以上且身高 1.40 米以上",[["住客","免费"],["滑梯","10 岁以上 / 1.40 米"]],"开放时间请询问前台。"],
+["spa","水疗与按摩","海滩一天后好好放松",[["按摩","需预约"]],"前台可为您安排预约。"],
+["beach","海滩","就在酒店前方的海滨大道 Passeig Marítim",[["路线","沿海滨步道"]],"沙滩椅和遮阳伞：请询问前台。"],
+["bcn","巴塞罗那","乘坐区域火车一日游",[["出发","Pineda de Mar 火车站"]],"时刻表和建议请询问前台。"]],
+sourceNote:"信息来自公开的预订网站（2026 年 10 月），待酒店确认。",tbc:"待酒店确认",
+reqEyebrow:"需求",reqTitle:"需要我们为您送些什么？",room:"房间号",extra:"还有其他需要吗？（可选）",send:"发送给前台",
+reqs:["干净毛巾","加一个枕头","出租车","延迟退房","打扫房间","其他需求"],wifiHelp:"Wi-Fi 帮助",massage:"预约按摩",
+errPick:"请选择一项需求或写下您的需要。",errRoom:"请输入您的房间号。",
+demoTitle:"演示：此需求尚未发送。",demoText:"在正式版应用中，它会直接发送到前台。在此之前，请复制文字并出示给前台。",
+copyReq:"复制文字",reqHead:"前台您好：",reqRoom:"房间",reqBye:"谢谢！",copied:"已复制",copyFail:"请选中并复制文字",nothing:"尚未输入内容",
+demoTag:"演示版",foot:"Golden Taurus Aquapark Resort · 非官方原型",nHotel:"酒店",nFood:"餐饮",nEnjoy:"休闲",nReq:"需求",requestThis:"提出需求"}};
+
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let lang=store.get("gt-lang")||"es";if(!T[lang])lang="es";
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const CHEV='<svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>';
+const picked=new Set();let extraPre="";let net={s:"idle"};
+
+function toast(m){const d=document.createElement("div");d.className="toast";d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),1600)}
+function selectEl(el){try{if(el.select)el.select();else{const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r)}}catch(e){}}
+async function copy(text,el){try{await navigator.clipboard.writeText(text);toast(T[lang].copied)}catch(e){if(el)selectEl(el);toast(T[lang].copyFail)}}
+
+function render(){
+  const t=T[lang];document.documentElement.lang=lang;
+  $$("[data-t]").forEach(el=>{const v=t[el.dataset.t];el.textContent=typeof v==="string"?v.replace(/Wi-Fi/g,"Wi\u2060-\u2060Fi"):v});
+  $$("[data-ph]").forEach(el=>{el.placeholder=t[el.dataset.ph]});
+  $$("[data-alt]").forEach(el=>{el.alt=t[el.dataset.alt]});
+  $$(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===lang));
+  const li=a=>a.map(([b,s])=>`<li><div><b>${esc(b)}</b><span>${esc(s)}</span></div></li>`).join("");
+  $("#steps3").innerHTML=li(t.steps3);$("#stepsMore").innerHTML=li(t.stepsMore);
+  $("#hotelList").innerHTML=t.hotel.map((h,i)=>i===0?"":`<button class="item" data-sheet="hotel:${i}"><span class="ic"><svg viewBox="0 0 24 24">${IC[h[0]]}</svg></span><span><b>${esc(h[1])}</b><span>${esc(h[2])}</span></span><span class="val">${esc(h[3])}${CHEV}</span></button>`).join("");
+  $("#foodList").innerHTML=t.food.map((f,i)=>`<button class="food" data-sheet="food:${i}"><span class="thumb">${MEDIA[f[0]]}</span><span><b>${esc(f[1])}</b><span class="sub">${esc(f[2])}</span><span class="hours${f[3]?"":" tbc"}">${esc(f[3]||t.hoursTbc)}</span></span></button>`).join("");
+  $("#enjoyList").innerHTML=t.enjoy.map((e,i)=>`<button class="big" data-sheet="enjoy:${i}">${MEDIA[e[0]]}<span class="txt"><b>${esc(e[1])}</b><span>${esc(e[2])}</span></span></button>`).join("");
+  $("#reqChips").innerHTML=t.reqs.map((r,i)=>`<button class="chip" data-i="${i}" aria-pressed="${picked.has(i)}">${esc(r)}</button>`).join("");
+  showNet();drawWqr();tourShow();if(!$("#reqResult").hidden)buildReq(true);
+}
+function wifiEsc(v){return v.replace(/([\\;,:"])/g,"\\$1")}
+function drawWqr(){const t=T[lang],ss=$("#ssid").value.trim(),pw=$("#pass").value,box=$("#wqr");
+  box.setAttribute("aria-label",t.qrAlt);const ok=ss&&typeof qrcode==="function";box.hidden=!ok;$("#wqrTxt").textContent=ok?t.qrHint:t.qrEmpty;if(!ok)return;
+  const q=qrcode(0,"M");q.addData("WIFI:T:"+(pw?"WPA":"nopass")+";S:"+wifiEsc(ss)+";"+(pw?"P:"+wifiEsc(pw)+";":"")+";");q.make();
+  box.innerHTML=q.createSvgTag({cellSize:4,margin:0,scalable:true})}
+function showNet(){const t=T[lang],el=$("#netStatus");const m={idle:["",t.stIdle],run:["st-run",t.testing],ok:["st-ok",(net.ms>1500?t.stSlow:t.stOk).replace("{ms}",net.ms)],bad:["st-bad",t.stBad]}[net.s];
+  el.className="status "+m[0];el.lastElementChild.textContent=m[1];$("#testBtn").textContent=net.s==="run"?t.testing:t.test}
+function ping1(url){return new Promise(res=>{const sc=document.createElement("script");const t0=performance.now();
+  const to=setTimeout(()=>{sc.remove();res(-1)},5000);
+  sc.onload=()=>{clearTimeout(to);sc.remove();res(Math.round(performance.now()-t0))};sc.onerror=()=>{clearTimeout(to);sc.remove();res(-1)};
+  sc.src=url+"?t="+Date.now();document.head.appendChild(sc)})}
+async function test(){const b=$("#testBtn");b.disabled=true;net={s:"run"};showNet();let ms=-1;
+  for(const u of ["https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.5/js.cookie.min.js","https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js","https://unpkg.com/js-cookie@3.0.5/dist/js.cookie.min.js"]){ms=await ping1(u);if(ms>=0)break}
+  net=ms>=0?{s:"ok",ms}:{s:"bad"};b.disabled=false;showNet()}
+
+function openSheet(kind,i){const t=T[lang];const src=t[kind][i];const id=src[0],title=src[1],sub=src[2];
+  const rows=kind==="enjoy"?src[3]:src[4],note=kind==="enjoy"?src[4]:src[5];
+  const cta=PRE[id]!==undefined?(id==="spa"?t.massage:t.requestThis):"";
+  $("#sheetMedia").innerHTML=MEDIA[id]||"";
+  $("#sheetBody").innerHTML=`<h2>${esc(title)}</h2><p class="lead">${esc(sub)}</p><dl>${rows.map(([a,b])=>`<div><dt>${esc(a)}</dt><dd>${esc(b)}</dd></div>`).join("")}</dl>${note?`<p class="note" style="margin-top:12px">${esc(note)}</p>`:""}<p style="margin-top:12px"><span class="tbcpill">${esc(t.tbc)}</span></p>${cta?`<div style="margin-top:16px"><button class="btn primary block" data-go="requests" data-pre="${id}">${esc(cta)}</button></div>`:""}`;
+  $("#sheet").hidden=false;$("#sheet .panel").scrollTop=0;$("#sheetX").focus()}
+function closeSheet(){$("#sheet").hidden=true}
+function preselect(id){const t=T[lang],p=PRE[id];if(p>=0)picked.add(p);else{picked.add(5);const add=p===-1?t.wifiHelp:t.massage;const x=$("#extra");if(!x.value.includes(add))x.value=(x.value?x.value+"\n":"")+add}}
+
+function buildReq(silent){const t=T[lang],room=$("#room").value.trim(),extra=$("#extra").value.trim(),err=$("#reqErr");
+  let msg="";if(!picked.size&&!extra)msg=t.errPick;else if(!room)msg=t.errRoom;
+  if(msg){if(!silent){err.textContent=msg;err.hidden=false;$("#reqResult").hidden=true}return}
+  err.hidden=true;const lines=[t.reqHead,""];[...picked].sort().forEach(i=>{if(i!==5||!extra)lines.push("• "+t.reqs[i])});if(extra)extra.split("\n").forEach(l=>l.trim()&&lines.push("• "+l.trim()));
+  lines.push("",t.reqRoom+" "+room+(lang==="zh"?"。":". ")+t.reqBye);$("#reqText").textContent=lines.join("\n");$("#reqResult").hidden=false}
+function send(){buildReq(false);if($("#reqResult").hidden)return;
+  /* Echter Versand später: if(!CONFIG.demo&&CONFIG.requestEndpoint) fetch(CONFIG.requestEndpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({room,requests,text,lang})}) mit Bestätigung/Fehler */
+  $("#reqResult").scrollIntoView({behavior:"smooth",block:"center"})}
+
+const VIEWS=["wifi","hotel","food","enjoy","requests"];let tourI=-1;
+function go(v){closeSheet();$$("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);
+  $$("nav.tabs button").forEach(b=>b.dataset.go===v?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
+  scrollTo({top:0});if(tourI>=0){tourI=VIEWS.indexOf(v);tourShow()}}
+function tourShow(){const t=T[lang];if(tourI<0){$("#tour").hidden=true;document.body.classList.remove("touring");return}
+  $("#tour").hidden=false;document.body.classList.add("touring");
+  $("#tourDots").innerHTML=VIEWS.map((_,i)=>`<i class="${i===tourI?"on":""}"></i>`).join("");
+  $("#tourLbl").textContent=t.tourStops[tourI];$("#tourNext").textContent=tourI===VIEWS.length-1?t.tourDone:t.tourNext+" →"}
+function tourGo(i){tourI=i;if(i>=0)go(VIEWS[i]);tourShow()}
+function closeIntro(tour){const el=$("#intro");el.classList.add("out");setTimeout(()=>{el.hidden=true;try{$("#introVid").pause()}catch(e){}},550);if(tour)tourGo(0);else go("wifi")}
+
+document.addEventListener("click",e=>{
+  const s=e.target.closest("[data-sheet]");if(s){const[k,i]=s.dataset.sheet.split(":");openSheet(k,+i);return}
+  const g=e.target.closest("[data-go]");if(g){if(g.dataset.pre)preselect(g.dataset.pre);go(g.dataset.go);render();return}
+  const c=e.target.closest("[data-copyfrom]");if(c){const inp=$("#"+c.dataset.copyfrom);if(inp.value)copy(inp.value,inp);else{toast(T[lang].nothing);inp.focus()}return}
+  const l=e.target.closest(".lang button");if(l){lang=l.dataset.lang;store.set("gt-lang",lang);render();return}
+  const ch=e.target.closest("#reqChips .chip");if(ch){const i=+ch.dataset.i;picked.has(i)?picked.delete(i):picked.add(i);ch.setAttribute("aria-pressed",picked.has(i));if(!$("#reqResult").hidden)buildReq(true);return}
+});
+$("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet")closeSheet()});
+$("#sheetX").onclick=closeSheet;document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
+$("#testBtn").onclick=test;$("#sendBtn").onclick=send;$("#copyReq").onclick=()=>copy($("#reqText").textContent,$("#reqText"));
+$("#tourNext").onclick=()=>tourGo(tourI+1<VIEWS.length?tourI+1:-1);$("#tourX").onclick=()=>tourGo(-1);$("#tourStart").onclick=()=>tourGo(0);
+$("#enterBtn").onclick=()=>closeIntro(true);$("#skipBtn").onclick=()=>closeIntro(false);
+$$("[data-logo]").forEach(el=>{el.innerHTML=ICON});
+[["ssid",CONFIG.wifi.ssid],["pass",CONFIG.wifi.password]].forEach(([id,v])=>{const el=$("#"+id);el.value=v||store.get("gt-"+id)||"";if(v)el.readOnly=true;el.oninput=()=>{store.set("gt-"+id,el.value);drawWqr()}});
+$("#room").value=store.get("gt-room")||"";$("#room").oninput=()=>{store.set("gt-room",$("#room").value);if(!$("#reqResult").hidden)buildReq(true)};
+$("#extra").oninput=()=>{if(!$("#reqResult").hidden)buildReq(true)};
+render();go("wifi");
+const DIRECT=/[?&](app|direkt)\b/.test(location.search)||location.hash==="#app";
+if(DIRECT){$("#intro").hidden=true;try{const iv=$("#introVid");iv.removeAttribute("autoplay");iv.pause();iv.preload="none"}catch(e){}}
+function startIntro(){$("#intro").classList.add("go");const v=$("#introVid");try{v.currentTime=0}catch(e){}}
+(function(){const pop=$("#filmPop"),f=$("#filmVid"),fb=$("#filmPlay");
+  if(DIRECT){if(pop)pop.hidden=true;return}if(!pop){startIntro();return}
+  pop.hidden=false;try{$("#introVid").pause()}catch(e){}
+  const close=()=>{pop.classList.add("out");try{f.pause()}catch(e){}setTimeout(()=>{pop.hidden=true},400);try{$("#introVid").play().catch(()=>{})}catch(e){}startIntro()};
+  const showBtn=()=>{fb.hidden=false};f.muted=true;
+  try{const pr=f.play();if(pr&&pr.catch)pr.catch(showBtn)}catch(e){showBtn()}
+  setTimeout(()=>{if(f.paused&&!pop.hidden)showBtn()},2500);
+  f.addEventListener("playing",()=>{fb.hidden=true});f.addEventListener("ended",close);
+  fb.onclick=()=>{const pr=f.play();if(pr&&pr.catch)pr.catch(()=>{})};
+  $("#filmSkip").onclick=close;
+  $("#filmSound").onclick=()=>{f.muted=!f.muted;if(f.paused)f.play().catch(()=>{});$("#filmSound").textContent=T[lang][f.muted?"filmSound":"soundOff"]};
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!pop.hidden)close()});
+})();
+(function(){const v=$("#introVid"),b=$("#playVid");if(!v||DIRECT)return;v.muted=true;if(!$("#filmPop").hidden){v.pause();v.addEventListener("playing",()=>{b.hidden=true});b.onclick=()=>{const pr=v.play();if(pr&&pr.catch)pr.catch(()=>{})};return}
+  const show=()=>{if(!$("#intro").hidden)b.hidden=false};
+  try{const pr=v.play();if(pr&&pr.catch)pr.catch(show)}catch(e){show()}
+  setTimeout(()=>{if(v.paused)show()},2500);
+  b.onclick=()=>{v.muted=true;const pr=v.play();if(pr&&pr.then)pr.then(()=>{b.hidden=true}).catch(()=>{});else b.hidden=true};
+  v.addEventListener("playing",()=>{b.hidden=true})})();
+</script>
+
+</body></html>

@@ -132,6 +132,10 @@ input[type=range]{width:100%;height:36px;accent-color:var(--navy)}
 .badge{display:inline-block;font-size:12px;font-weight:700;border-radius:99px;padding:2px 9px;background:#e4eef0;color:var(--navy2)}
 footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
 .hidden{display:none!important}
+.app-only{display:none}
+.native-app .web-only{display:none!important}
+.native-app .app-only{display:block}
+.native-app span.app-only{display:inline}
 </style>
 </head>
 <body>
@@ -142,8 +146,9 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
   </header>
 
   <div class="intro">
-    <span class="vision">Entwicklungsvision von DR Lab</span>
-    <p>HumanSpark liest deinen Körper und übersetzt ihn in eine kurze Sprache für die KI.</p>
+    <span class="vision web-only">Entwicklungsvision von DR Lab</span>
+    <p class="web-only">HumanSpark liest deinen Körper und übersetzt ihn in eine kurze Sprache für die KI.</p>
+    <p class="app-only">HumanSpark schätzt Puls und Ruhe über die Kamera und hält fest, wie es dir geht.</p>
     <p class="safe">Deine Daten bleiben auf deinem Handy. HumanSpark ist kein medizinisches Gerät und stellt keine Diagnosen.</p>
   </div>
 
@@ -159,13 +164,13 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
   <section class="panel on" id="p-messen">
     <div class="box" id="startBox">
       <h2 id="startTitle">Puls und Ruhe messen</h2>
-      <div class="seg" id="srcSeg">
+      <div class="seg web-only" id="srcSeg">
         <button data-src="kamera" aria-pressed="true">Finger (Kamera)</button>
         <button data-src="polar" aria-pressed="false">Polar H10</button>
       </div>
       <div id="camHelp">
         <p>Lege die Fingerkuppe sanft auf die Rückkamera und halte still. Die Messung dauert etwa 60 Sekunden.</p>
-        <p class="muted">Die Taschenlampe lässt sich im iPhone-Browser nicht einschalten. Miss deshalb bei hellem Licht (z.&nbsp;B. am Fenster oder unter einer Lampe), damit der Finger rot durchleuchtet wird.</p>
+        <p class="muted">Das Licht der Kamera lässt sich auf dem iPhone hier nicht einschalten. Miss deshalb bei hellem Licht (z.&nbsp;B. am Fenster oder unter einer Lampe), damit der Finger rot durchleuchtet wird.</p>
       </div>
       <div class="notice hidden" id="polarNote"></div>
       <button class="btn primary" id="btnStart">Messung starten</button>
@@ -352,7 +357,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
     </div>
     <div class="box">
       <h2>Daten</h2>
-      <p class="muted">Alles liegt nur in diesem Browser auf deinem Handy: Messungen, Sitzungen, Einwilligungen und Ideen. Exportieren kannst du es selbst, z. B. für dich oder deine Therapeutin.</p>
+      <p class="muted"><span class="web-only">Alles liegt nur in diesem Browser auf deinem Handy: Messungen, Sitzungen, Einwilligungen und Ideen.</span><span class="app-only">Alles liegt nur in dieser App auf deinem iPhone: Messungen, Sitzungen und Einwilligungen.</span> Exportieren kannst du es selbst, z. B. für dich oder deine Therapeutin.</p>
       <button class="btn primary" id="btnExport">Export (JSON teilen)</button>
       <button class="btn danger" id="btnClear">Alles löschen</button>
     </div>
@@ -391,6 +396,8 @@ var $ = function(id){ return document.getElementById(id); };
 var KEY = 'hs_entries', CKEY = 'hs_consents', IKEY = 'hs_ideas';
 var params = new URLSearchParams(location.search);
 var FAST = params.has('demofast'); // nur für Tests: Demo läuft schneller
+var IS_APP = document.documentElement.classList.contains('native-app'); // iPhone-App (Capacitor)
+var MIC_SETTINGS = IS_APP ? 'in den iPhone-Einstellungen unter HumanSpark' : 'in den Browser-Einstellungen';
 
 /* ---------- Speicher ---------- */
 function load(){ try { return JSON.parse(localStorage.getItem(KEY) || '[]') || []; } catch(e){ return []; } }
@@ -430,7 +437,7 @@ var STAGES = [
   {n:3, name:'Wach', color:'var(--s3)', hex:'#b9a256',
    desc:'Wach und aktiv. Etwas Energie ist da – das ist gut zum Handeln.', ex:['kreuz','fuesse','atem55']},
   {n:4, name:'Angeregt', color:'var(--s4)', hex:'#d98f5c',
-   desc:'Dein Körper ist angeregt. Vielleicht ist gerade viel los – ein paar ruhige Atemzüge helfen, wieder anzukommen.', ex:['atem46','kreuz','fuesse']},
+   desc:'Dein Körper ist angeregt. Vielleicht ist gerade viel los – ein paar ruhige Atemzüge können dir helfen, wieder anzukommen.', ex:['atem46','kreuz','fuesse']},
   {n:5, name:'Stark geladen', color:'var(--s5)', hex:'#c96a4e',
    desc:'Viel Ladung im Körper. Das ist kein Fehler, sondern eine Information. Gönn dir einen langen Ausatem.', ex:['atem46','kreuzLangsam','fuesse']}
 ];
@@ -455,7 +462,7 @@ function showTab(name){
 document.querySelectorAll('.tab').forEach(function(b){ b.addEventListener('click', function(){ showTab(b.dataset.tab); }); });
 
 /* ---------- Polar H10 (Web Bluetooth, Herzfrequenz-Dienst 0x180D / 0x2A37) ---------- */
-var HAS_BT = !!(navigator.bluetooth && navigator.bluetooth.requestDevice);
+var HAS_BT = !IS_APP && !!(navigator.bluetooth && navigator.bluetooth.requestDevice);
 var POLAR_NO_BT = 'Polar H10 geht im iPhone-Browser nicht (kein Bluetooth im Safari). Kommt mit der App-Version. Am Mac/Android-Chrome geht es.';
 var polar = {dev:null, connected:false, onData:null, lastHr:null};
 function parseHR(dv){
@@ -552,7 +559,7 @@ function startMeasure(demo){
   video.style.display = 'block'; $('dot').style.display = 'none';
   setStatus('Kamera wird geöffnet …');
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-    camFail('Dieser Browser gibt keinen Kamerazugriff. Öffne die Seite in Safari (über https) oder probiere die Demo.');
+    camFail(IS_APP ? 'Die Kamera ist gerade nicht verfügbar. Du kannst die Demo ausprobieren.' : 'Dieser Browser gibt keinen Kamerazugriff. Öffne die Seite in Safari (über https) oder probiere die Demo.');
     return;
   }
   openCam().then(function(stream){
@@ -564,7 +571,7 @@ function startMeasure(demo){
     state.timer = setInterval(tickCam, 33);
   })
   .catch(function(err){
-    camFail('Kamera nicht verfügbar' + (err && err.name === 'NotAllowedError' ? ' – der Zugriff wurde nicht erlaubt. Du kannst ihn in den Einstellungen von Safari freigeben.' : '.') + ' Du kannst die Demo ausprobieren.');
+    camFail('Kamera nicht verfügbar' + (err && err.name === 'NotAllowedError' ? ' – der Zugriff wurde nicht erlaubt. Du kannst ihn ' + (IS_APP ? 'in den iPhone-Einstellungen unter HumanSpark' : 'in den Einstellungen von Safari') + ' freigeben.' : '.') + ' Du kannst die Demo ausprobieren.');
   });
 }
 
@@ -966,14 +973,14 @@ function startRecog(){
   };
   recog.onerror = function(ev){
     if (ev.error === 'language-not-supported' && langTry === 'de-CH'){ langTry = 'de-DE'; setMic(false); startRecog(); return; }
-    if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') micNote('Mikrofon nicht erlaubt. Du kannst die Freigabe in den Safari-Einstellungen geben – oder einfach das Diktat der Tastatur nutzen.');
+    if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') micNote('Mikrofon nicht erlaubt. Du kannst die Freigabe ' + MIC_SETTINGS + ' geben – oder einfach das Diktat der Tastatur nutzen.');
     else if (ev.error !== 'no-speech' && ev.error !== 'aborted') micNote('Spracherkennung unterbrochen (' + ev.error + '). Tipp nochmals auf «Reinreden» oder nutz das Tastatur-Diktat.');
   };
   recog.onend = function(){ setMic(false); };
   try { recog.start(); setMic(true); micNote(''); } catch(e){ micNote('Spracherkennung konnte nicht starten. Nutz das Diktat der Tastatur.'); }
 }
 $('btnMic').addEventListener('click', function(){
-  if (!SR){ micNote('Spracherkennung ist in diesem Browser nicht verfügbar. Tipp ins Textfeld und nutz das Mikrofon der iPhone-Tastatur – das funktioniert immer.'); $('talkText').focus(); return; }
+  if (!SR){ micNote('Spracherkennung ist hier nicht verfügbar. Tipp ins Textfeld und nutz das Mikrofon der iPhone-Tastatur – das funktioniert immer.'); $('talkText').focus(); return; }
   if (listening){ recog.stop(); return; }
   startRecog();
 });
@@ -982,7 +989,7 @@ $('btnMic').addEventListener('click', function(){
 function Dictation(o){
   var r = null, on = false, lang = 'de-CH';
   function start(){
-    if (!SR){ o.err('Spracherkennung ist in diesem Browser nicht verfügbar. Tipp ins Textfeld und nutz das Mikrofon der Tastatur.'); return; }
+    if (!SR){ o.err('Spracherkennung ist hier nicht verfügbar. Tipp ins Textfeld und nutz das Mikrofon der Tastatur.'); return; }
     if (recog && listening) recog.stop();
     r = new SR(); r.lang = lang; r.continuous = true; r.interimResults = true;
     r.onresult = function(ev){
@@ -992,7 +999,7 @@ function Dictation(o){
     };
     r.onerror = function(ev){
       if (ev.error === 'language-not-supported' && lang === 'de-CH'){ lang = 'de-DE'; setTimeout(start, 50); return; }
-      if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') o.err('Mikrofon nicht erlaubt. Gib die Freigabe in den Browser-Einstellungen – oder tipp die Notiz.');
+      if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') o.err('Mikrofon nicht erlaubt. Gib die Freigabe ' + MIC_SETTINGS + ' – oder tipp die Notiz.');
       else if (ev.error !== 'no-speech' && ev.error !== 'aborted') o.err('Spracherkennung unterbrochen (' + ev.error + '). Tipp nochmals auf den Knopf oder tipp die Notiz.');
     };
     r.onend = function(){ on = false; o.state(false); if (o.interim) o.interim(''); };
@@ -1025,7 +1032,7 @@ function sSrcInfo(){
   $('sSrcWrap').classList.toggle('hidden', sMode !== 'messung');
   if (polar.connected){ info.textContent = 'Messquelle: Polar H10 (verbunden). Für lange Sitzungen die beste Quelle.'; btn.classList.add('hidden'); }
   else if (HAS_BT){ info.textContent = 'Messquelle: Finger auf der Kamera. Für lange Sitzungen ist der Polar H10 Brustgurt verlässlicher.'; btn.classList.remove('hidden'); }
-  else { info.textContent = 'Messquelle: Finger auf der Kamera (für eine lange Sitzung nur als Notlösung). ' + POLAR_NO_BT; btn.classList.add('hidden'); }
+  else { info.textContent = 'Messquelle: Finger auf der Kamera (für eine lange Sitzung nur als Notlösung).' + (IS_APP ? '' : ' ' + POLAR_NO_BT); btn.classList.add('hidden'); }
 }
 function sRefreshStart(){
   var k = kuerzel(), c = consents()[k];
@@ -1533,13 +1540,20 @@ $('btnExport').addEventListener('click', function(){
       return;
     }
   } catch(e){}
+  // In der iPhone-App gibt es keine Downloads: dann in die Zwischenablage kopieren.
+  if (document.documentElement.classList.contains('native-app')){
+    var done = function(){ alert('Export in die Zwischenablage kopiert. Du kannst ihn jetzt in eine Notiz oder Mail einfügen.'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(json).then(done, function(){ alert('Export ging leider nicht.'); });
+    else alert('Export ging leider nicht.');
+    return;
+  }
   var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
   document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
 });
 
 $('btnClear').addEventListener('click', function(){
   if (!load().length && !Object.keys(consents()).length && !loadObj(IKEY, []).length){ alert('Es gibt noch nichts zu löschen.'); return; }
-  if (!confirm('Wirklich alle Messungen, Sitzungen, Einwilligungen, Einträge und Ideen auf diesem Handy löschen? Das lässt sich nicht rückgängig machen.')) return;
+  if (!confirm('Wirklich alle Messungen, Sitzungen, Einwilligungen' + (IS_APP ? ' und Einträge' : ', Einträge und Ideen') + ' auf diesem Handy löschen? Das lässt sich nicht rückgängig machen.')) return;
   try { localStorage.removeItem(KEY); localStorage.removeItem(CKEY); localStorage.removeItem(IKEY); } catch(e){}
   lastResult = null; resultShown = false; hFilter = 'alle';
   showBox('startBox');

@@ -64,4 +64,5 @@ HumanSpark estimates heart rate and HRV (RMSSD) from the rear camera (photopleth
 
 ## Achtung vor dem Einreichen
 - Der Reiter «Ideen» («Kauf mit deinen Ideen», Guthaben) ist in der App-Store-Version ausgeblendet, weil Apple Guthaben für Funktionen nur über In-App-Käufe erlaubt. Im Web bleibt er.
-- Polar H10 (Brustgurt) geht in der iPhone-App nicht, weil Apple kein Web-Bluetooth erlaubt. Die App zeigt das bereits an.
+- Polar H10 (Brustgurt) geht in der iPhone-App nicht (kein Web-Bluetooth). Die Auswahl ist in der App ausgeblendet, damit der Prüfer keinen Knopf findet, der nicht funktioniert.
+- Die Screenshots (13.10.2026) zeigen die App-Version: ohne «Ideen», ohne Polar, ohne «Testphase».
