@@ -139,6 +139,7 @@
       heute:'Heute', nichts:'Nichts geplant. Schön ruhig.',
       angeh:'Für Angehörige (lange drücken)',
       fehlt:'Diese Nummer fehlt noch. Deine Familie trägt sie ein.',
+      fehltNot:'Es ist noch keine Nummer eingetragen. Im Notfall wähle 144.',
       ruft:n=>'Ich rufe '+n+' an.',
       klemmtSag:n=>'Das ist nicht schlimm. Du musst dir kein Passwort merken. Ich sage '+n+' Bescheid.',
       klemmtSms:n=>'Hallo '+n+', hier ist Granny. Das Handy oder ein Passwort geht gerade nicht. Bitte ruf an.',
@@ -161,6 +162,7 @@
       heute:'Hoy', nichts:'Nada previsto. Todo tranquilo.',
       angeh:'Para la familia (mantener pulsado)',
       fehlt:'Falta este número. Tu familia lo pondrá.',
+      fehltNot:'Todavía no hay ningún número. En caso de emergencia, llama al 112.',
       ruft:n=>'Llamo a '+n+'.',
       klemmtSag:n=>'No pasa nada. No tienes que recordar ninguna contraseña. Aviso a '+n+'.',
       klemmtSms:n=>'Hola '+n+', soy Granny. El móvil o una contraseña no funciona. Por favor, llama.',
@@ -198,7 +200,7 @@
   }
 
   function anrufen(nr){ if(nr) location.href='tel:'+nr.replace(/[^\d+]/g,''); }
-  function sms(nr,text){ if(nr) location.href='sms:'+nr.replace(/[^\d+]/g,'')+'&body='+encodeURIComponent(text); }
+  function sms(nr,text){ if(nr) location.href='sms:'+nr.replace(/[^\d+]/g,'')+'?&body='+encodeURIComponent(text); }
 
   function zeichnen(){
     const t=L(); document.documentElement.lang=S.sprache;
@@ -221,8 +223,12 @@
     $('blase').textContent=t.gruss(new Date().getHours(),S.name);
   }
 
-  $('hilfe').onclick=()=>{const t=L(); const n=S.hname||S.leute[0].n; if(!S.hnr){sag(t.fehlt);return} sag(t.hilfeSag(n)); setTimeout(()=>anrufen(S.hnr),1500);};
-  $('klemmt').onclick=()=>{const t=L(); const n=S.pname||S.leute[0].n; sag(t.klemmtSag(n)); if(S.pnr) setTimeout(()=>sms(S.pnr,t.klemmtSms(n)),2500);};
+  // Rückfall: fehlt die eigene Nummer, nimm die erste Person mit Nummer
+  const erste=()=>S.leute.find(p=>p.nr)||null;
+  $('hilfe').onclick=()=>{const t=L(); const e=erste(); const nr=S.hnr||(e&&e.nr); const n=S.hnr?(S.hname||S.leute[0].n):(e&&e.n);
+    if(!nr){sag(t.fehltNot);return} sag(t.hilfeSag(n)); setTimeout(()=>anrufen(nr),1500);};
+  $('klemmt').onclick=()=>{const t=L(); const e=erste(); const nr=S.pnr||(e&&e.nr); const n=S.pnr?(S.pname||S.leute[0].n):(e?e.n:S.leute[0].n);
+    sag(t.klemmtSag(n)); if(nr) setTimeout(()=>sms(nr,t.klemmtSms(n)),2500);};
 
   // Antwort: zuerst einfache Regeln, mit Server frei
   async function antworten(text){
