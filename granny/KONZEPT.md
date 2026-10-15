@@ -3,11 +3,11 @@
 Stand 15.10.2026 · intern · Thread «Projekt Granny»
 
 ## Die Figur
-**Granny** ist eine liebe, lustige, etwas kauzige alte Frau aus dem Dorf (KI-Verse-Städtchen). Sie vergisst ständig Dinge und lacht darüber: Ihre Brille sucht sie, während sie auf ihrem Kopf sitzt; an der Strickjacke klebt ein Zettel «Brille?». Weisser Dutt mit zwei goldenen Stricknadeln, runde Goldbrille, nachtblaue Strickjacke, goldene Brosche (= ihr Sprechknopf). Pixar-Stil, Nachtblau + Gold.
+**Granny** ist eine liebe, lustige, etwas kauzige alte Frau aus dem Dorf (KI-Verse-Städtchen). Sie vergisst ständig Dinge und lacht darüber: Ihre Brille sucht sie, während sie auf ihrem Kopf sitzt; an der Strickjacke klebt ein Zettel «Brille?». v2 (15.10., nach Diegos Stilvorlage): kurze lockige graue Haare, rote Brille hochgeschoben in den Locken, geblümte rosa Bluse, rote Rose als Anstecker (= ihr Sprechknopf), grosses Lachen. Stilvorlage privat, nie als Abbild. Pixar-Stil, Nachtblau + Gold.
 - Charakter: warm, geduldig, nie belehrend. Vergessen ist bei ihr nichts Peinliches.
 - Lieblingssatz (Vorschlag): «Wo hab ich sie wieder hingetan? Ah, auf dem Kopf!»
 - Freunde: Nova hilft ihr im Hintergrund (Granny ist das Gesicht, Nova das Wissen dahinter). Fia achtet auf ihren Schlaf, Letti bringt ihr Briefe der Familie.
-- Entwürfe: figuren/granny/granny-entwurf.png (+ .svg), Gerät: figuren/granny/granny-geraet-entwurf.png
+- Entwürfe: figuren/granny/granny-entwurf-v2.png (v1: granny-entwurf.png), Gerät: figuren/granny/granny-geraet-entwurf.png
 
 ## Für wen
 1. Ältere Menschen, auch mit beginnender Demenz, die allein wohnen.
