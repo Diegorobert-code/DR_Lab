@@ -103,9 +103,9 @@ p{margin:0 0 10px}
 .syl.now{background:var(--gold);color:#2a1f05;transform:scale(1.08)}
 .syl.done{color:var(--good)}
 .songlist{display:flex;flex-direction:column;gap:10px}
-.toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:6px 2px;border-bottom:1px solid var(--line);font-size:17px}
+.toggle{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:6px 2px;border-bottom:1px solid var(--line);font-size:17px}
 .toggle:last-child{border-bottom:0}
-.seg{display:inline-flex;background:rgba(255,255,255,.06);border-radius:99px;padding:3px;border:1px solid var(--line);flex-wrap:wrap}
+.seg{display:inline-flex;flex:none;background:rgba(255,255,255,.06);border-radius:99px;padding:3px;border:1px solid var(--line)}
 .seg button{border:0;background:transparent;min-height:42px;padding:0 13px;border-radius:99px;font-size:15px;font-weight:500;cursor:pointer;color:var(--ink2)}
 .seg button.on{background:var(--gold);color:#2a1f05;font-weight:600}
 canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
@@ -227,7 +227,7 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
     <div class="grid">
       <button class="card" data-go="tone"><span class="ic">🎯</span><span><b>Ton treffen</b><small>Kiki singt vor, du singst nach</small></span></button>
       <button class="card" data-go="scale"><span class="ic">🪜</span><span><b>Tonleiter</b><small>Schritt für Schritt nach oben</small></span></button>
-      <button class="card" data-go="songs"><span class="ic">🦆</span><span><b>Lieder</b><small>Entchen, Bruder Jakob, Hänschen</small></span></button>
+      <button class="card" data-go="songs"><span class="ic">🦆</span><span><b>Lieder</b><small>Kinderlieder und bekannte Lieder</small></span></button>
       <button class="card" data-go="mirror"><span class="ic">🌈</span><span><b>Stimm-Spiegel</b><small>Sieh deine Stimme</small></span></button>
       <button class="card wide" data-go="settings"><span class="ic">⚙️</span><span><b>Für Eltern</b><small>Stimmlage, wie genau, Kikis Stimme</small></span></button>
     </div>
@@ -289,7 +289,15 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
     <div class="panel">
       <h2 style="font-size:19px">So klappt es gut</h2>
       <p class="muted" style="font-size:16px">1. Ruhiger Raum, Handy auf Armlänge.<br>2. Zuerst zuhören, dann auf «a» oder «u» singen.<br>3. Kurz und spielerisch, 10 Minuten reichen. Nach oben und unten zeigen hilft Kindern.<br>4. Kein Ton? Seitenschalter am iPhone auf laut stellen.</p>
-      <p class="muted" style="font-size:16px">Datenschutz: Das Mikrofon wird nur zum Zuhören benutzt. Es wird nichts aufgenommen, gespeichert oder verschickt. Nur die Sterne merkt sich das Handy.</p>
+      <p class="muted" style="font-size:16px">Datenschutz: Das Mikrofon wird nur zum Zuhören benutzt. Es wird nichts aufgenommen, gespeichert oder verschickt. Nur Sterne, Einstellungen und die Lern-Zahlen bleiben auf diesem Handy.</p>
+    </div>
+    <div class="panel">
+      <h2 style="font-size:19px">Was Kiki sich merkt</h2>
+      <div id="memList" class="muted" style="font-size:16px"></div>
+      <p class="mini" style="text-align:left;margin:8px 0 0">Kiki lernt mit: Töne, die noch schwer sind, kommen bei «Ton treffen» öfter, und Kiki erinnert sich an das Lieblingslied. Gespeichert werden nur Zahlen (welcher Ton wie oft getroffen wurde), keine Stimme, nur auf diesem Handy.</p>
+      <label style="display:flex;gap:10px;align-items:flex-start;margin:12px 0 8px;font-size:16px"><input type="checkbox" id="shareOk" style="width:22px;height:22px;flex:none;margin-top:2px"> <span>Ich bin einverstanden, dass DR Lab diese Lern-Zahlen (ohne Namen, ohne Stimme) lesen und für die Weiterentwicklung von Kiki nutzen darf.</span></label>
+      <div class="row"><button class="btn soft small" id="memShare">📤 Erfahrung teilen</button><button class="btn soft small" id="memClear">🧽 Alles vergessen</button></div>
+      <p class="mini" id="shareMsg" style="text-align:left;margin:8px 0 0"></p>
     </div>
     <button class="btn soft small" id="resetStars">Sterne zurücksetzen</button>
     <p class="foot">Kiki singt · ein DR Lab Projekt</p>
@@ -309,6 +317,35 @@ const S = { octave: store.get('octave', 4), tol: store.get('tol', 60), voice: st
 let stars = store.get('stars', 0);
 const $ = id => document.getElementById(id);
 $('starCount').textContent = stars;
+
+/* ---------- Was Kiki sich merkt (nur auf diesem Handy) ---------- */
+const mem = Object.assign({notes:{}, songs:{}, lo:null, hi:null, days:[], hits:0}, store.get('mem', {}));
+const saveMem = () => store.set('mem', mem);
+function memDay(){ const d = new Date().toISOString().slice(0,10); if (!mem.days.includes(d)){ mem.days.push(d); if (mem.days.length > 90) mem.days.shift(); saveMem(); } }
+function memNote(m, hit, secs){
+  const k = NAMES[((Math.round(m)%12)+12)%12], n = mem.notes[k] || (mem.notes[k] = {t:0, h:0, s:0});
+  n.t++; if (hit){ n.h++; n.s += secs || 0; mem.hits++; } memDay(); saveMem();
+}
+function memSong(id, key){ const x = mem.songs[id] || (mem.songs[id] = {l:0, s:0, d:0}); x[key]++; memDay(); saveMem(); }
+function noteRate(k){ const n = mem.notes[k]; return n ? (n.h + 1)/(n.t + 2) : .5; }
+function bestNote(){ let b = null, bv = 0; for (const k in mem.notes){ const n = mem.notes[k]; if (n.h >= 2 && noteRate(k) > bv){ bv = noteRate(k); b = k; } } return b; }
+function practiceNote(){ let b = null, bv = 1; for (const k in mem.notes){ const n = mem.notes[k]; if (n.t >= 2 && noteRate(k) < .6 && noteRate(k) < bv){ bv = noteRate(k); b = k; } } return b; }
+function favSong(){ let b = null, bv = 0; SONGS.forEach(x => { const v = mem.songs[x.id]; if (v){ const sc = v.l + v.s*2 + v.d*3; if (sc > bv){ bv = sc; b = x; } } }); return bv >= 3 ? b : null; }
+let rangeT = 0, rangeM = null;
+function memRange(m, dt){   // nur gehaltene Töne zählen für den Stimmumfang
+  if (m == null || m < 40 || m > 90){ rangeT = 0; rangeM = null; return; }
+  if (rangeM != null && Math.abs(m - rangeM) < .5) rangeT += dt; else { rangeT = 0; rangeM = m; }
+  if (rangeT > .4){ const r = Math.round(m); if (mem.lo == null || r < mem.lo) mem.lo = r; if (mem.hi == null || r > mem.hi) mem.hi = r; }
+}
+function memGreeting(){
+  if (!mem.hits) return 'Juhu! Ich freu mich so! Was wollen wir heute singen?';
+  const fav = favSong(), best = bestNote(), pr = practiceNote();
+  const opts = [];
+  if (fav) opts.push(`Schön, dass du wieder da bist! Dein Lieblingslied ist «${fav.title}». Singen wir es?`);
+  if (best) opts.push(`Schön, dass du wieder da bist! Das ${best} triffst du schon super. Was singen wir heute?`);
+  if (pr) opts.push(`Hallo! Heute üben wir ein bisschen das ${pr}. Das schaffst du!`);
+  return opts.length ? opts[Math.floor(Math.random()*opts.length)] : 'Schön, dass du wieder da bist! Was singen wir heute?';
+}
 
 /* ---------- Kiki einsetzen ---------- */
 const kikis = [];
@@ -371,6 +408,7 @@ async function micOn(){
 }
 function micOff(){
   if (!stream) return;
+  saveMem();
   stream.getTracks().forEach(t => t.stop()); try{ srcNode.disconnect(); }catch(e){}
   stream = null; srcNode = null;
 }
@@ -482,13 +520,14 @@ function go(name){
   $('back').hidden = (name === 'home' || name === 'menu');
   scrollTo(0,0);
 }
-$('back').onclick = () => go(current === 'train' && trainer.from === 'songs' ? 'songs' : 'menu');
+$('back').onclick = () => { if (current === 'train' && trainer.from === 'songs'){ songList(); go('songs'); } else go('menu'); };
 document.querySelectorAll('[data-go]').forEach(b => b.onclick = async () => {
   await initAudio();
   const g = b.dataset.go;
   if (g === 'tone') startTone();
   else if (g === 'scale') startSeq('Tonleiter', scaleSeq(), null);
-  else if (g === 'songs') { go('songs'); }
+  else if (g === 'songs') { songList(); go('songs'); }
+  else if (g === 'settings') { renderMem(); go('settings'); }
   else if (g === 'mirror') startMirror();
   else go(g);
 });
@@ -502,7 +541,8 @@ $('startBtn').onclick = async () => {
   micOff();
   go('menu');
   kikiMood('happy');
-  await say('Juhu! Ich freu mich so! Was wollen wir heute singen?');
+  const greet = memGreeting(); $('menuBubble').textContent = greet;
+  await say(greet);
   kikiMood(null);
 };
 
@@ -581,11 +621,15 @@ let toneState = {last:null, count:0, timer:0};
 function toneTarget(){
   const base = S.octave*12 + 12; // C4 = 60
   let pool = [2,4,5,7,9];       // D E F G A
-  if (toneState.count >= 6) pool = [0,2,4,5,7,9,11,12];
-  let r; do { r = pool[Math.floor(Math.random()*pool.length)]; } while (pool.length > 1 && base + r === toneState.last);
-  // zu Beginn: G, dann E (leicht für Kinder)
-  if (toneState.count === 0) r = 7; else if (toneState.count === 1) r = 4;
-  return base + r;
+  if (mem.hits >= 6 || toneState.count >= 6) pool = [0,2,4,5,7,9,11,12];
+  // ganz am Anfang: G, dann E (leicht für Kinder)
+  if (mem.hits < 3){ if (toneState.count === 0) return base + 7; if (toneState.count === 1) return base + 4; }
+  // Kiki lernt: Töne, die noch schwer sind, kommen öfter
+  const cand = pool.filter(r => base + r !== toneState.last);
+  const w = cand.map(r => 1 + 2*(1 - noteRate(NAMES[r%12])));
+  let x = Math.random()*w.reduce((a,b) => a+b, 0), i = 0;
+  while (i < w.length - 1 && x > w[i]){ x -= w[i]; i++; }
+  return base + cand[i];
 }
 function setupTrainUI(title, withLyrics){
   $('trainTitle').textContent = title;
@@ -612,7 +656,8 @@ async function toneRound(intro){
   setHint('Kiki singt vor … 🎵'); $('youNote').innerHTML = 'Zielton ' + dotHTML(trainer.target);
   const ok = await play([{m: trainer.target, d: 1}], 1.5);
   if (!ok || current !== 'train') return;
-  await listenFor(1, 14, async () => {
+  await listenFor(1, 14, async (secs) => {
+    memNote(trainer.target, true, secs);
     toneState.count++; toneState.last = trainer.target;
     addStars(1); kikiMood('happy'); setHint('★ ' + 'Getroffen!', true);
     await say(praise());
@@ -621,6 +666,7 @@ async function toneRound(intro){
     trainer.target = toneTarget();
     toneRound(false);
   }, async () => {
+    memNote(trainer.target, false);
     setHint('Hör nochmal zu 👂');
     await say('Hör nochmal genau zu.');
     if (current === 'train' && trainer.mode === 'tone') toneRound(false);
@@ -636,8 +682,9 @@ async function listenFor(need, timeoutS, onHit, onTimeout){
   listenCb = (m, dt) => {
     if (myTok !== playToken || fired) return;
     elapsed += dt;
+    memRange(m, dt);
     ladderUpdate(m, dt);
-    if (trainer.hold >= trainer.need){ fired = true; listenCb = null; trainer.active = false; micOff(); onHit(); }
+    if (trainer.hold >= trainer.need){ fired = true; listenCb = null; trainer.active = false; micOff(); onHit(elapsed); }
     else if (timeoutS && elapsed > timeoutS && trainer.hold < .2){ fired = true; listenCb = null; trainer.active = false; micOff(); onTimeout && onTimeout(); }
   };
 }
@@ -669,21 +716,47 @@ const SONGS = [
     [62,'A'],[62,'ber'],[62,'Mut'],[62,'ter'],[62,'wei'],[64,'net'],[65,'sehr,',2,1],
     [64,'hat'],[64,'ja'],[64,'nun'],[64,'kein'],[64,'Häns'],[65,'chen'],[67,'mehr.',2,1],
     [67,'Da'],[64,'be'],[64,'sinnt',2],[65,'sich'],[62,'das'],[62,'Kind,',2,1],
-    [60,'eilt'],[64,'nach'],[67,'Haus'],[67,'ge'],[60,'schwind.',4]]}
+    [60,'eilt'],[64,'nach'],[67,'Haus'],[67,'ge'],[60,'schwind.',4]]},
+  // Bekannte Lieder, alle gemeinfrei (Komponist/Texter seit über 70 Jahren tot oder Volksgut)
+  {id:'freude', cat:'gross', title:'Ode an die Freude', sub:'Beethoven · Freude, schöner Götterfunken', ic:'🎻', bpm:100, notes:[
+    [64,'Freu'],[64,'de,'],[65,'schö'],[67,'ner'],[67,'Göt'],[65,'ter'],[64,'fun'],[62,'ken,',1,1],
+    [60,'Toch'],[60,'ter'],[62,'aus'],[64,'E',1.5],[62,'ly',.5],[62,'si',1],[62,'um.',1,1],
+    [64,'Wir'],[64,'be'],[65,'tre'],[67,'ten'],[67,'feu'],[65,'er'],[64,'trun'],[62,'ken,',1,1],
+    [60,'himm'],[60,'li'],[62,'sche,'],[64,'dein',1.5],[62,'Hei',.5],[60,'lig',1],[60,'tum!',2]]},
+  {id:'grace', cat:'gross', title:'Amazing Grace', sub:'Englisches Volkslied · ruhig und lang', ic:'🕊️', bpm:85, notes:[
+    [55,'A'],[60,'ma',2],[64,'zing'],[64,'grace',2],[62,'how'],[60,'sweet',2],[57,'the'],[55,'sound,',2,1],
+    [55,'that'],[60,'saved',2],[64,'a'],[64,'wretch',2],[62,'like'],[67,'me.',3]]},
+  {id:'saints', cat:'gross', title:'When the Saints', sub:'Gospel · fröhlich', ic:'🎺', bpm:120, notes:[
+    [60,'Oh'],[64,'when'],[65,'the'],[67,'saints',4,1],
+    [60,'go'],[64,'mar'],[65,'ching'],[67,'in,',4,1],
+    [60,'oh'],[64,'when'],[65,'the'],[67,'saints',2],[64,'go'],[60,'mar',2],[64,'ching'],[62,'in,',4,1],
+    [64,'Oh'],[64,'Lord,'],[62,'I'],[60,'want',2],[60,'to'],[64,'be'],[67,'in'],[67,'that'],[67,'num'],[65,'ber',3,1],
+    [64,'when'],[65,'the'],[67,'saints',2],[64,'go'],[60,'mar',2],[62,'ching'],[60,'in.',4]]},
+  {id:'geburtstag', cat:'gross', title:'Zum Geburtstag viel Glück', sub:'Happy Birthday · für jedes Fest', ic:'🎂', bpm:110, notes:[
+    [55,'Zum',.75],[55,'Ge',.25],[57,'burts'],[55,'tag'],[60,'viel'],[59,'Glück,',2,1],
+    [55,'zum',.75],[55,'Ge',.25],[57,'burts'],[55,'tag'],[62,'viel'],[60,'Glück,',2,1],
+    [55,'zum',.75],[55,'Ge',.25],[67,'burts'],[64,'tag,'],[60,'lie'],[59,'bes'],[57,'Kind,',2,1],
+    [65,'zum',.75],[65,'Ge',.25],[64,'burts'],[60,'tag'],[62,'viel'],[60,'Glück!',2]]}
 ];
 function songSeq(song){
   const shift = (S.octave - 4)*12;
   return song.notes.map(([m,t,d,br]) => ({m: m+shift, t, d: d || 1, br: !!br}));
 }
-(function songList(){
-  const box = $('songlist');
-  SONGS.forEach(s => {
-    const el = document.createElement('button'); el.className = 'card wide';
-    el.innerHTML = `<span class="ic">${s.ic}</span><span><b>${s.title}</b><small>${s.notes.length} Töne · Kiki hilft bei jedem Ton</small></span>`;
-    el.onclick = async () => { await initAudio(); startSeq(s.title, songSeq(s), s); };
-    box.appendChild(el);
+function songList(){
+  const box = $('songlist'); box.innerHTML = '';
+  const fav = favSong();
+  [['kind','Kinderlieder'],['gross','Bekannte Lieder']].forEach(([cat, label]) => {
+    const h = document.createElement('h2'); h.textContent = label; h.style.cssText = 'font-size:19px;margin:8px 4px 0'; box.appendChild(h);
+    SONGS.filter(s => (s.cat || 'kind') === cat).forEach(s => {
+      const el = document.createElement('button'); el.className = 'card wide';
+      const v = mem.songs[s.id], done = v && v.d ? ` · ${v.d}× geschafft` : '';
+      el.innerHTML = `<span class="ic">${s.ic}</span><span><b>${s.title}${fav === s ? ' ⭐' : ''}</b><small>${fav === s ? 'Dein Lieblingslied' : (s.sub || s.notes.length + ' Töne · Kiki hilft bei jedem Ton')}${done}</small></span>`;
+      el.onclick = async () => { await initAudio(); startSeq(s.title, songSeq(s), s); };
+      box.appendChild(el);
+    });
   });
-})();
+}
+songList();
 let seq = null;
 function renderLyrics(){
   const box = $('lyrics'); box.innerHTML = '';
@@ -722,6 +795,7 @@ async function playWhole(){
   const tok = playToken + 1;
   setHint('Kiki singt das Lied 🎵');
   const items = seq.items;
+  if (seq.song) memSong(seq.song.id, 'l');
   const p = play(items.map(n => ({m:n.m, d:n.d})), beat);
   // Silben mitlaufen lassen
   let acc = 0;
@@ -738,6 +812,7 @@ async function seqStep(first){
   const n = seq.items[seq.i];
   trainer.target = n.m; ladderShow(n.m); markSyl(seq.i);
   $('youNote').innerHTML = 'Zielton ' + dotHTML(n.m);
+  if (first && seq.i === 0 && seq.song) memSong(seq.song.id, 's');
   if (first && seq.i === 0) await say(seq.song ? 'Ich singe dir jeden Ton vor, du singst ihn nach.' : 'Wir klettern die Tonleiter hoch. Ich singe vor, du singst nach!');
   if (current !== 'train') return;
   if (S.prompt || !seq.song || first){
@@ -745,13 +820,15 @@ async function seqStep(first){
     const ok = await play([{m:n.m, d:1}], seq.song ? .8 : 1.1);
     if (!ok || current !== 'train') return;
   }
-  await listenFor(seq.song ? .35 : .6, 0, () => {
+  await listenFor(seq.song ? .35 : .6, 0, (secs) => {
+    memNote(n.m, true, secs);
     burst(4);
     seq.i++;
     if (current === 'train') seqStep(false);
   });
 }
 async function seqDone(){
+  if (seq.song) memSong(seq.song.id, 'd');
   markSyl(seq.items.length); setHint('Geschafft! ★★★', true);
   kikiMood('happy'); addStars(3);
   await say(seq.song ? 'Bravo! Du hast das ganze Lied gesungen!' : 'Juhu! Ganz oben angekommen!');
@@ -775,7 +852,8 @@ async function startMirror(){
   const W = cv.clientWidth, H = cv.clientHeight;
   const lo = 43, hi = 84; // G2 … C6
   const yOf = m => H - (m - lo)/(hi - lo)*H;
-  listenCb = (m) => {
+  listenCb = (m, dt) => {
+    memRange(m, dt);
     trace.push(m); if (trace.length > 240) trace.shift();
     x.clearRect(0,0,W,H);
     for (let k = lo; k <= hi; k++){ if ([0,4,7].includes(k%12)){ x.fillStyle = 'rgba(255,255,255,.06)'; x.fillRect(0, yOf(k), W, 1); if (k%12 === 0){ x.fillStyle = 'rgba(255,255,255,.35)'; x.font = '12px Fredoka, sans-serif'; x.fillText('C', 6, yOf(k) - 3); } } }
@@ -796,6 +874,32 @@ document.querySelectorAll('.seg').forEach(seg => {
   seg.querySelectorAll('button').forEach(b => b.onclick = () => { S[k] = +b.dataset.v; store.set(k, S[k]); sync(); });
   sync();
 });
+function memSummary(){
+  const nm = m => NAMES[((m%12)+12)%12] + (Math.floor(m/12) - 1);
+  const notes = Object.keys(mem.notes).sort((a,b) => NAMES.indexOf(a) - NAMES.indexOf(b)).map(k => { const n = mem.notes[k]; return `${k}: ${n.h} von ${n.t}` + (n.h ? `, ⌀ ${(n.s/n.h).toFixed(1)} s` : ''); });
+  const songs = SONGS.filter(x => mem.songs[x.id]).map(x => { const v = mem.songs[x.id]; return `${x.title}: ${v.l}× angehört, ${v.s}× begonnen, ${v.d}× geschafft`; });
+  return {notes, songs, range: mem.lo != null ? `${nm(mem.lo)} bis ${nm(mem.hi)}` : null, best: bestNote(), pr: practiceNote(), fav: favSong(), days: mem.days.length};
+}
+function renderMem(){
+  const x = memSummary(), el = $('memList');
+  if (!mem.hits && !x.songs.length){ el.textContent = 'Noch nichts. Nach dem ersten Singen steht hier, was Kiki gelernt hat.'; return; }
+  el.innerHTML = [
+    `<b>Übungstage:</b> ${x.days}`,
+    x.best ? `<b>Sicher:</b> ${x.best}` : '', x.pr ? `<b>Noch üben:</b> ${x.pr}` : '',
+    x.fav ? `<b>Lieblingslied:</b> ${x.fav.title}` : '',
+    x.range ? `<b>Stimmumfang:</b> ${x.range}` : '',
+    x.notes.length ? `<b>Töne getroffen:</b> ${x.notes.join(' · ')}` : '',
+    x.songs.length ? `<b>Lieder:</b> ${x.songs.join(' · ')}` : ''
+  ].filter(Boolean).join('<br>');
+}
+$('memClear').onclick = () => { if (!confirm('Soll Kiki alles vergessen?')) return; Object.assign(mem, {notes:{}, songs:{}, lo:null, hi:null, days:[], hits:0}); saveMem(); renderMem(); };
+$('memShare').onclick = async () => {
+  if (!$('shareOk').checked){ $('shareMsg').textContent = 'Bitte zuerst das Häkchen setzen.'; return; }
+  const x = memSummary();
+  const text = ['KIKI SINGT – Lern-Erfahrung (für Sense Engine)', `Datum: ${new Date().toISOString().slice(0,10)}`, `Übungstage: ${x.days}`, `Einstellung: Lage ${S.octave === 4 ? 'hoch' : 'tief'}, Genauigkeit ±${S.tol} Cent`, x.best ? `Sicher: ${x.best}` : '', x.pr ? `Noch üben: ${x.pr}` : '', x.fav ? `Lieblingslied: ${x.fav.title}` : '', x.range ? `Stimmumfang: ${x.range}` : '', x.notes.length ? 'Töne: ' + x.notes.join('; ') : '', x.songs.length ? 'Lieder: ' + x.songs.join('; ') : '', 'Einwilligung: ja · ohne Namen · ohne Stimme'].filter(Boolean).join('\n');
+  try{ if (navigator.share){ await navigator.share({title: 'Kiki – Lern-Erfahrung', text}); $('shareMsg').textContent = 'Geteilt. Danke!'; return; } }catch(e){ if (e && e.name === 'AbortError') return; }
+  try{ await navigator.clipboard.writeText(text); $('shareMsg').textContent = 'Kopiert. Du kannst es jetzt an DR Lab schicken.'; }catch(e){ $('shareMsg').textContent = text; }
+};
 $('resetStars').onclick = () => { stars = 0; store.set('stars', 0); $('starCount').textContent = 0; };
 
 /* Offline */
