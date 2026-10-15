@@ -344,6 +344,8 @@ function memGreeting(){
   if (fav) opts.push(`Schön, dass du wieder da bist! Dein Lieblingslied ist «${fav.title}». Singen wir es?`);
   if (best) opts.push(`Schön, dass du wieder da bist! Das ${best} triffst du schon super. Was singen wir heute?`);
   if (pr) opts.push(`Hallo! Heute üben wir ein bisschen das ${pr}. Das schaffst du!`);
+  const sure = Object.keys(mem.notes).filter(k => mem.notes[k].h >= 2 && noteRate(k) >= .7);
+  if (sure.length >= 3 && !Object.values(mem.songs).some(v => v.d)) return `Kiki hat gemerkt: Du triffst ${sure.slice(0,3).join(', ')} schon super. Probieren wir die Tonleiter oder ein Lied?`;
   return opts.length ? opts[Math.floor(Math.random()*opts.length)] : 'Schön, dass du wieder da bist! Was singen wir heute?';
 }
 
@@ -896,7 +898,7 @@ $('memClear').onclick = () => { if (!confirm('Soll Kiki alles vergessen?')) retu
 $('memShare').onclick = async () => {
   if (!$('shareOk').checked){ $('shareMsg').textContent = 'Bitte zuerst das Häkchen setzen.'; return; }
   const x = memSummary();
-  const text = ['KIKI SINGT – Lern-Erfahrung (für Sense Engine)', `Datum: ${new Date().toISOString().slice(0,10)}`, `Übungstage: ${x.days}`, `Einstellung: Lage ${S.octave === 4 ? 'hoch' : 'tief'}, Genauigkeit ±${S.tol} Cent`, x.best ? `Sicher: ${x.best}` : '', x.pr ? `Noch üben: ${x.pr}` : '', x.fav ? `Lieblingslied: ${x.fav.title}` : '', x.range ? `Stimmumfang: ${x.range}` : '', x.notes.length ? 'Töne: ' + x.notes.join('; ') : '', x.songs.length ? 'Lieder: ' + x.songs.join('; ') : '', 'Einwilligung: ja · ohne Namen · ohne Stimme'].filter(Boolean).join('\n');
+  const text = ['KIKI SINGT – Lern-Erfahrung (für Sense Engine)', `Datum: ${new Date().toISOString().slice(0,10)}`, `Übungstage: ${x.days}`, `Einstellung: Lage ${S.octave === 4 ? 'hoch' : 'tief'}, Genauigkeit ±${S.tol} Cent`, x.best ? `Sicher: ${x.best}` : '', x.pr ? `Noch üben: ${x.pr}` : '', x.fav ? `Lieblingslied: ${x.fav.title}` : '', x.range ? `Stimmumfang: ${x.range}` : '', x.notes.length ? 'Töne: ' + x.notes.join('; ') : '', x.songs.length ? 'Lieder: ' + x.songs.join('; ') : '', 'Einwilligung: ja · ohne Namen · ohne Stimme', '', 'Sense Engine (JSON):', JSON.stringify(Object.keys(mem.notes).map(k => ({app:'Kiki', art: noteRate(k) < .6 ? 'schwierig' : 'fortschritt', zeit: new Date().toISOString().slice(0,16), daten:{uebung:'ton-treffen', ton:k, versuche: mem.notes[k].t, getroffen: mem.notes[k].h, sterne: stars}, einwilligung:true})))].filter(Boolean).join('\n');
   try{ if (navigator.share){ await navigator.share({title: 'Kiki – Lern-Erfahrung', text}); $('shareMsg').textContent = 'Geteilt. Danke!'; return; } }catch(e){ if (e && e.name === 'AbortError') return; }
   try{ await navigator.clipboard.writeText(text); $('shareMsg').textContent = 'Kopiert. Du kannst es jetzt an DR Lab schicken.'; }catch(e){ $('shareMsg').textContent = text; }
 };
