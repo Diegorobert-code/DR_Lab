@@ -182,6 +182,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
     </div>
     <div class="fb" id="fb"></div>
     <div class="row" style="margin:10px 0"><button class="btn gold" id="play">▶ Start</button></div>
+    <button class="btn soft" id="manual" hidden>Ohne Musik: Schritt für Schritt</button>
     <div class="tempo">
       <button id="tm">−</button>
       <div class="val"><b id="bpm">90</b> <span>Schläge pro Minute · <em id="tempo-name">langsam</em></span></div>
@@ -502,7 +503,21 @@ function registerHit(tAudio,el,fbEl,meterEl){
   if(meterEl){const i=document.createElement("i");i.style.left=(50+Math.max(-48,Math.min(48,ms/250*50)))+"%";meterEl.appendChild(i);setTimeout(()=>i.style.opacity=0,30);setTimeout(()=>i.remove(),1800);}
   const cc=(P.cam?$("#counts-cam"):$("#counts")).querySelector(`[data-c="${best.count}"]`); if(cc) cc.classList.add(a<=120?"hit":"off");
 }
-function tap(ev){ ev.preventDefault(); if(!ctx||!P.running) return; const t=ctx.currentTime;
+/* Schritt für Schritt: ohne Musik, jedes Tippen = nächster Schlag */
+let manualCount=0;
+function manualStep(){
+  manualCount=manualCount%8+1; const c=manualCount, seq=stepFor(P.step), e=seq[c];
+  $("#counts").querySelectorAll(".cnt").forEach(x=>x.classList.toggle("now",+x.dataset.c===c));
+  $("#say-big").textContent=e?`${c} · ${e.t}`:`${c} · Pause`;
+  $("#say-sub").textContent=c===8?"Gut. Noch einmal, oder oben Start für die Musik.":"Tippe für den nächsten Schlag";
+  moveFeet(seq,c);
+  try{ if(mem.voice&&"speechSynthesis" in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(sayNum[c]);u.lang="es-ES";u.rate=1.1;speechSynthesis.speak(u);} }catch(_){}
+}
+function setManual(v){ P.manual=v; manualCount=0; $("#manual").textContent=v?"Zurück zum Takt mit Musik":"Ohne Musik: Schritt für Schritt";
+  $("#meterbox").hidden=v; $("#fb").textContent=""; $("#tap-hint").textContent=v?"für den nächsten Schritt":(STEPS[P.step].tapOn?"auf 1 und 5":"bei jedem Schritt (nicht auf 4 und 8)");
+  if(v){ stop(); $("#say-big").textContent="Schritt für Schritt"; $("#say-sub").textContent="Tippe unten. Jedes Tippen ist ein Schlag."; feet={L:[...HOME.L],R:[...HOME.R]};rot=0;placeFeet(false);} }
+$("#manual").onclick=()=>setManual(!P.manual);
+function tap(ev){ ev.preventDefault(); if(P.manual){ manualStep(); return; } if(!ctx||!P.running) return; const t=ctx.currentTime;
   $("#tap").classList.add("flash"); setTimeout(()=>$("#tap").classList.remove("flash"),90);
   registerHit(t,null,$("#fb"),$("#meter"));
 }
@@ -578,11 +593,12 @@ function openPractice(id,mode,bpm){
   $("#tap-hint").textContent=S.tapOn?"auf 1 und 5":"bei jedem Schritt (nicht auf 4 und 8)";
   $("#say-big").textContent=P.mode==="free"?"♫":"Bereit?"; $("#say-sub").textContent=P.mode==="free"?"Tippe auf Start.":"Tippe auf Start. Die erste Runde hörst du nur zu.";
   $("#fb").textContent=""; renderChips($("#chips"));
+  P.manual=false; $("#manual").hidden=(P.mode!=="step"); setManual(false); $("#say-big").textContent=P.mode==="free"?"♫":"Bereit?";
   feet={L:[...HOME.L],R:[...HOME.R]};rot=0;placeFeet(false);$("#ghost").style.opacity=0;
   if(P.mode==="step"){const seq=stepFor(id);const ne=seq[1];if(ne&&ne.p){$("#ghost").style.opacity=1;$("#ghost").style.transform=`translate(${ne.p[0]*1.25}px,${ne.p[1]*1.25}px)`;}}
   show("practice");
 }
-$("#play").onclick=()=>{ P.running?stop():start(); };
+$("#play").onclick=()=>{ if(P.manual)setManual(false); P.running?stop():start(); };
 $("#r-again").onclick=()=>openPractice(P.step,"step",P.bpm);
 $("#r-next").onclick=()=>{const s=suggestion();openPractice(s.id,"step",s.bpm)};
 $("#r-home").onclick=()=>show("home");
