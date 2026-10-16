@@ -42,6 +42,8 @@ await page.waitForFunction(() => typeof window.MS_TEXTE === 'function');
 let saetze = await page.evaluate(() => window.MS_TEXTE());
 await browser.close(); server.close();
 
+// Die Satzliste immer vollständig ablegen, auch wenn nur einzelne Figuren aufgenommen werden.
+fs.writeFileSync(path.join(ROOT, 'tools/stimmen', app + '-saetze.json'), JSON.stringify(saetze, null, 1));
 if (nur) saetze = saetze.filter(s => nur.includes(s.who));
 const fehlt = [...new Set(saetze.map(s => s.who))].filter(w => !cfg.figuren[w]);
 if (fehlt.length) { console.log('::error::Keine Stimme eingetragen für: ' + fehlt.join(', ')); process.exit(1); }
@@ -51,7 +53,6 @@ saetze.forEach(s => { (proFigur[s.who] ||= { n: 0, z: 0 }); proFigur[s.who].n++;
 const total = saetze.reduce((a, s) => a + s.text.length, 0);
 console.log(`${saetze.length} Sätze, ${total} Zeichen`);
 Object.entries(proFigur).forEach(([w, x]) => console.log(`  ${w}: ${x.n} Sätze, ${x.z} Zeichen`));
-fs.writeFileSync(path.join(ROOT, 'tools/stimmen', app + '-saetze.json'), JSON.stringify(saetze, null, 1));
 if (!KEY) { console.log((process.env.GITHUB_ACTIONS ? '::warning::' : '') + 'Kein Schlüssel: nur gezählt, nichts aufgenommen.'); process.exit(0); }
 
 // Stimmen-Namen → IDs aus Diegos Konto.
@@ -69,7 +70,7 @@ const idOf = name => (voices.find(v => v.name.toLowerCase() === name.toLowerCase
 
 fs.mkdirSync(outDir, { recursive: true });
 const index = new Set(fs.existsSync(path.join(outDir, 'index.json')) ? JSON.parse(fs.readFileSync(path.join(outDir, 'index.json'), 'utf8')) : []);
-const zaehler = {}; let neu = 0, fehler = 0;
+const zaehler = {}; let neu = 0, fehler = 0, stopp = '';
 for (const s of saetze) {
   if (probe && (zaehler[s.who] = (zaehler[s.who] || 0) + 1) > 3) continue;
   const f = cfg.figuren[s.who], id = f.id || idOf(f.stimme);
@@ -79,10 +80,13 @@ for (const s of saetze) {
   const r = await api(`/v1/text-to-speech/${id}?output_format=${cfg.format}`, { method: 'POST', body: JSON.stringify({
     text: s.text, model_id: cfg.modell, language_code: 'de',
     voice_settings: { stability: f.stabil, similarity_boost: 0.75, style: f.stil, use_speaker_boost: true, speed: f.tempo } }) });
-  if (!r.ok) { meld(`Fehler ${r.status} bei ${s.key}: ${(await r.text()).slice(0, 200).replace(/\n/g, ' ')}`); fehler++; if (r.status === 401 || r.status === 402 || r.status === 429) break; continue; }
+  if (!r.ok) { meld(`Fehler ${r.status} bei ${s.key}: ${(await r.text()).slice(0, 200).replace(/\n/g, ' ')}`); fehler++; if (r.status === 401 || r.status === 402 || r.status === 429) { stopp = r.status === 401 ? 'Schlüssel ohne Recht «Text to Speech» (in ElevenLabs beim API-Schlüssel freischalten)' : r.status === 402 ? 'ElevenLabs-Guthaben aufgebraucht' : 'ElevenLabs bremst (zu viele Anfragen), später nochmals'; break; } continue; }
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, Buffer.from(await r.arrayBuffer()));
   index.add(s.key); neu++;
 }
 fs.writeFileSync(path.join(outDir, 'index.json'), JSON.stringify([...index].sort()));
 meld(`Neu aufgenommen: ${neu}, Fehler: ${fehler}, total im Index: ${index.size}`);
+if (stopp) meld('Abgebrochen: ' + stopp);
+// Nichts aufgenommen, aber Fehler: Aktion rot statt grün, damit es auffällt (Teilaufnahmen werden trotzdem gesichert).
+if (neu === 0 && fehler > 0) fail(stopp || `Keine einzige Aufnahme (${fehler} Fehler)`);

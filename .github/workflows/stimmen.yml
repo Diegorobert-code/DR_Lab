@@ -50,7 +50,7 @@ jobs:
           zweig="stimmen-${{ inputs.app }}-${{ github.run_number }}"
           git checkout -b "$zweig"
           git add ${{ inputs.app }}/stimme tools/stimmen/${{ inputs.app }}-saetze.json
-          git diff --cached --quiet && { echo "Nichts Neues aufgenommen."; exit 0; }
+          git diff --cached --quiet -- '${{ inputs.app }}/stimme/*.mp3' '${{ inputs.app }}/stimme/**/*.mp3' && { echo "Keine neuen Tondateien, kein Zweig."; exit 0; }
           git commit -m "${{ inputs.app }}: Stimmen aufgenommen (${{ inputs.probe && 'Probe' || 'alle' }})"
           git push -u origin "$zweig"
           gh pr create --draft --base "${{ github.ref_name }}" --head "$zweig" \
