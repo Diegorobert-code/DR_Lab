@@ -108,6 +108,13 @@ p{margin:0 0 10px}
 .seg{display:inline-flex;flex:none;background:rgba(255,255,255,.06);border-radius:99px;padding:3px;border:1px solid var(--line)}
 .seg button{border:0;background:transparent;min-height:42px;padding:0 13px;border-radius:99px;font-size:15px;font-weight:500;cursor:pointer;color:var(--ink2)}
 .seg button.on{background:var(--gold);color:#2a1f05;font-weight:600}
+.balloon-box{height:190px;display:flex;align-items:center;justify-content:center}
+.balloon{width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0%,#ffb3c1 25%,#ff7a93 70%,#e0556f 100%);box-shadow:0 12px 30px -10px rgba(255,122,147,.7);transition:transform 4s ease-in-out}
+.balloon.big{transform:scale(2.4)}
+.balloon.out{transition-duration:6s}
+.warmdots{display:flex;justify-content:center;gap:8px;margin:2px 0 4px}
+.warmdots i{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.18)}
+.warmdots i.on{background:var(--gold)}.warmdots i.done{background:var(--good)}
 canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
 .mirror-note{display:flex;align-items:center;justify-content:center;gap:14px;font-size:44px;font-weight:700;min-height:70px}
 .err{background:rgba(255,138,122,.14);border:1px solid rgba(255,138,122,.4);color:#ffd2cb;border-radius:18px;padding:12px 14px;font-size:16px;margin:10px 0}
@@ -225,6 +232,7 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
     <div class="kiki-stage" data-kiki="small"></div>
     <div class="bubble" id="menuBubble">Juhu! Was wollen wir heute singen?</div>
     <div class="grid">
+      <button class="card wide" data-go="warm"><span class="ic">🎈</span><span><b>Aufwärmen</b><small>Atmen, summen, Sirene · zuerst, 2 Minuten</small></span></button>
       <button class="card" data-go="tone"><span class="ic">🎯</span><span><b>Ton treffen</b><small>Kiki singt vor, du singst nach</small></span></button>
       <button class="card" data-go="scale"><span class="ic">🪜</span><span><b>Tonleiter</b><small>Schritt für Schritt nach oben</small></span></button>
       <button class="card" data-go="songs"><span class="ic">🦆</span><span><b>Lieder</b><small>Kinderlieder und bekannte Lieder</small></span></button>
@@ -265,6 +273,18 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
     <div class="kiki-stage" data-kiki="small"></div>
     <div class="bubble">Welches Lied singen wir? Du kannst es zuerst anhören.</div>
     <div class="songlist" id="songlist"></div>
+  </section>
+
+  <!-- Aufwärmen -->
+  <section class="screen" id="s-warm">
+    <h2 class="center" id="warmTitle">Aufwärmen</h2>
+    <div class="warmdots" id="warmDots"><i></i><i></i><i></i></div>
+    <div class="kiki-stage" data-kiki="small"></div>
+    <div class="balloon-box"><div class="balloon" id="balloon"></div></div>
+    <div class="hint" id="warmHint">Bereit?</div>
+    <div class="meter" aria-hidden="true" style="margin:4px 0 14px"><i id="warmMeter"></i></div>
+    <div class="row" style="margin-bottom:10px"><button class="btn soft small" id="warmSkip">⏭ Weiter</button></div>
+    <button class="btn gold" id="warmBtn">▶︎ Los geht's</button>
   </section>
 
   <!-- Stimm-Spiegel -->
@@ -531,6 +551,7 @@ document.querySelectorAll('[data-go]').forEach(b => b.onclick = async () => {
   else if (g === 'songs') { songList(); go('songs'); }
   else if (g === 'settings') { renderMem(); go('settings'); }
   else if (g === 'mirror') startMirror();
+  else if (g === 'warm') startWarm();
   else go(g);
 });
 
@@ -842,6 +863,85 @@ async function seqDone(){
   $('replayBtn').onclick = playWhole;
 }
 
+/* ---------- Aufwärmen: Ballon-Atmen, Summen, Sirene ---------- */
+let warm = null;
+function warmDots(i){ document.querySelectorAll('#warmDots i').forEach((d, k) => { d.classList.toggle('on', k === i); d.classList.toggle('done', k < i); }); }
+function warmHint(t, good){ const el = $('warmHint'); el.textContent = t; el.classList.toggle('good', !!good); }
+function startWarm(){
+  go('warm');
+  warm = {step: 0, tok: playToken};
+  warmDots(-1); $('warmTitle').textContent = 'Aufwärmen'; warmHint('Zuerst wärmen wir die Stimme auf.');
+  $('balloon').className = 'balloon'; $('warmMeter').style.width = '0';
+  $('warmBtn').hidden = false; $('warmBtn').textContent = '▶︎ Los geht\'s';
+  $('warmBtn').onclick = () => warmStep(0);
+  $('warmSkip').onclick = () => warmStep(Math.min(3, warm.step + 1));
+}
+const warmAlive = tok => current === 'warm' && tok === playToken;
+async function warmStep(i){
+  listenCb = null; micOff(); try{ speechSynthesis.cancel(); }catch(e){}
+  playToken++; const tok = playToken; warm.step = i;
+  $('warmBtn').hidden = true; $('warmMeter').style.width = '0'; kikiMood(null);
+  const b = $('balloon'); b.className = 'balloon'; b.style.transform = ''; b.style.transition = (i === 1 || i === 2) ? 'transform .12s' : '';
+  warmDots(i);
+  if (i === 0){
+    $('warmTitle').textContent = '1 · Ballon-Atmen';
+    await say('Wir atmen wie ein Ballon. Langsam einatmen, und dann ganz leise sss machen.');
+    for (let k = 0; k < 3; k++){
+      if (!warmAlive(tok)) return;
+      b.className = 'balloon big'; warmHint('Einatmen … 🎈');
+      for (let n = 4; n > 0; n--){ $('warmMeter').style.width = ((5-n)/4*100) + '%'; await wait(1000); if (!warmAlive(tok)) return; }
+      b.className = 'balloon out'; warmHint('Langsam raus: sss …');
+      for (let n = 6; n > 0; n--){ $('warmMeter').style.width = (n-1)/6*100 + '%'; await wait(1000); if (!warmAlive(tok)) return; }
+    }
+    return warmStep(1);
+  }
+  if (i === 1){
+    $('warmTitle').textContent = '2 · Summen wie eine Biene';
+    await say('Jetzt summen wir wie eine Biene. Mmmm. Irgendein Ton, ganz bequem.');
+    if (!warmAlive(tok)) return;
+    warmHint('Summ «mmm» … 🐝'); kikiMood('listen');
+    if (!await micOn()) return;
+    let held = 0; hist = [];
+    listenCb = (m, dt) => {
+      if (!warmAlive(tok)) return;
+      memRange(m, dt);
+      if (m != null){ held += dt; b.style.transform = `scale(${1.3 + .25*Math.sin(performance.now()/90)})`; }
+      else { held = Math.max(0, held - dt*.5); b.style.transform = ''; }
+      $('warmMeter').style.width = Math.min(100, held/3*100) + '%';
+      if (held >= 3){ listenCb = null; micOff(); burst(6); warmHint('Wunderbar gesummt!', true); kikiMood('happy'); wait(1200).then(() => warmAlive(tok) && warmStep(2)); }
+    };
+    return;
+  }
+  if (i === 2){
+    $('warmTitle').textContent = '3 · Sirene';
+    await say('Jetzt machen wir eine Sirene. Von ganz tief nach ganz hoch: uuuuiii!');
+    if (!warmAlive(tok)) return;
+    warmHint('Von tief nach hoch: uuuiii 🚒'); kikiMood('listen');
+    if (!await micOn()) return;
+    let lo = null, hi = null; hist = [];
+    listenCb = (m, dt) => {
+      if (!warmAlive(tok)) return;
+      memRange(m, dt);
+      if (m == null){ b.style.transform = ''; return; }
+      lo = lo == null ? m : Math.min(lo, m); hi = hi == null ? m : Math.max(hi, m);
+      const span = hi - lo;
+      b.style.transform = `translateY(${-Math.max(-60, Math.min(60, (m - lo - 3)*8))}px)`;
+      $('warmMeter').style.width = Math.min(100, span/7*100) + '%';
+      if (span >= 7){ listenCb = null; micOff(); burst(8); warmHint('Tatüü! Super Sirene!', true); kikiMood('happy'); wait(1200).then(() => warmAlive(tok) && warmStep(3)); }
+    };
+    return;
+  }
+  // fertig
+  $('warmTitle').textContent = 'Aufgewärmt!';
+  mem.warm = (mem.warm || 0) + 1; memDay(); saveMem();
+  addStars(2); kikiMood('happy'); warmHint('Deine Stimme ist bereit ★★', true);
+  b.className = 'balloon big';
+  await say('Super aufgewärmt! Jetzt kann es losgehen.');
+  if (!warmAlive(tok)) return;
+  $('warmBtn').hidden = false; $('warmBtn').textContent = '🎤 Zum Singen';
+  $('warmBtn').onclick = () => go('menu');
+}
+
 /* ---------- Übung 4: Stimm-Spiegel ---------- */
 const trace = [];
 async function startMirror(){
@@ -884,9 +984,10 @@ function memSummary(){
 }
 function renderMem(){
   const x = memSummary(), el = $('memList');
-  if (!mem.hits && !x.songs.length){ el.textContent = 'Noch nichts. Nach dem ersten Singen steht hier, was Kiki gelernt hat.'; return; }
+  if (!mem.hits && !x.songs.length && !mem.warm){ el.textContent = 'Noch nichts. Nach dem ersten Singen steht hier, was Kiki gelernt hat.'; return; }
   el.innerHTML = [
     `<b>Übungstage:</b> ${x.days}`,
+    mem.warm ? `<b>Aufgewärmt:</b> ${mem.warm}×` : '',
     x.best ? `<b>Sicher:</b> ${x.best}` : '', x.pr ? `<b>Noch üben:</b> ${x.pr}` : '',
     x.fav ? `<b>Lieblingslied:</b> ${x.fav.title}` : '',
     x.range ? `<b>Stimmumfang:</b> ${x.range}` : '',
