@@ -43,6 +43,7 @@ h1{font-family:var(--serif);font-weight:600;font-size:26px;margin:0;line-height:
 .lesson .t{font-weight:600;margin:2px 0 4px}
 .lesson .k{font-family:var(--mono);font-size:14px;color:var(--ink2)}
 .lesson .s{margin-top:6px;font-size:13px;color:var(--sage);min-height:18px}
+.lesson.tricky{background:var(--accent-l);border-color:#efcfc2}
 .lesson.done{background:var(--sage-l);border-color:#cfdcd2}
 .lesson.locked{opacity:.55}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -188,11 +189,12 @@ const COACHES = {
 };
 const coach = () => COACHES[state.coach] || COACHES.jackie;
 if(state.voice===undefined) state.voice = true;
+state.keyErr = state.keyErr || {}; // Fehler pro Taste, für «schwierige Tasten»
 if(state.easy===undefined) state.easy = true; // ruhig, kurz, ohne Zeitdruck
 const E = () => state.easy;
 /* ---------- Stimme (Sprachausgabe des Browsers, kostenlos, offline) ---------- */
 const synth = window.speechSynthesis;
-let deVoice = null, lastSay = 0;
+let deVoice = null, lastSay = 0, lastErrSay = 0;
 function pickVoice(){
   if(!synth) return;
   const v = synth.getVoices();
@@ -202,7 +204,8 @@ if(synth){ pickVoice(); synth.onvoiceschanged = pickVoice; }
 function say(text, urgent){
   if(!synth || !state.voice) return;
   const now = Date.now();
-  if(!urgent && now-lastSay < 2500) return; // nicht dauernd reden
+  if(urgent==='err'){ if(now-lastErrSay < 1500) return; lastErrSay = now; } // Fehler: eigener, kurzer Abstand
+  else if(!urgent && now-lastSay < 2500) return; // nicht dauernd reden
   lastSay = now;
   try{
     synth.cancel();
@@ -284,7 +287,28 @@ function allowed(i){ // alle Buchstaben bis und mit Lektion i
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
 
+const TRICKY = -1;
+function trickyKeys(){
+  return Object.entries(state.keyErr).filter(([k,n]) => n>=2).sort((a,b) => b[1]-a[1]).slice(0,3).map(([k]) => k);
+}
+function lessonOf(i){
+  if(i!==TRICKY) return LESSONS[i];
+  const k = trickyKeys();
+  return {t:'Deine schwierigen Tasten', k:k.join(''), intro:`Diese Tasten üben wir extra: ${k.map(c=>c.toUpperCase()).join(', ')}. Ganz ruhig, eine nach der anderen.`};
+}
+function makeTricky(){
+  const keys = trickyKeys(), parts = [];
+  keys.forEach(c => parts.push(c+' '+c+' '+c));
+  const done = Object.keys(state.best).map(Number).filter(n => n>=0);
+  const ok = allowed(Math.max(2, ...done)); // nur Buchstaben, die schon geübt wurden
+  keys.forEach(c => ok.add(c));
+  const pool = WORDS.filter(w => w.length<=6 && keys.some(c => w.includes(c)) && w.split('').every(c => ok.has(c)));
+  for(let n=0;n<(E()?5:10) && pool.length;n++) parts.push(pick(pool));
+  if(!pool.length) keys.forEach(c => parts.push(c+c+' '+c+c));
+  return parts.join(' ');
+}
 function makeText(i){
+  if(i===TRICKY) return makeTricky();
   const L = LESSONS[i];
   if(L.sentences) return shuffle(SENTENCES.slice()).slice(0,E()?1:3).join(' ');
   if(L.numbers){
@@ -330,6 +354,15 @@ function renderHome(){
     ? `Hallo ${state.name}, schön, dass du da bist. Wir lernen das Zehnfingersystem in kleinen Schritten. Fang einfach mit Lektion 1 an.`
     : `Willkommen zurück, ${state.name}. ${doneCount} von ${LESSONS.length} Lektionen hast du schon geübt. Weiter so, ganz in deinem Tempo.`;
   const box = $('lessons'); box.innerHTML = '';
+  const tk = trickyKeys();
+  if(tk.length){
+    const el = document.createElement('button');
+    el.type = 'button'; el.className = 'lesson tricky';
+    el.innerHTML = `<div class="n">Extra-Übung</div><div class="t">Deine schwierigen Tasten</div><div class="k"></div><div class="s">kurz und gezielt</div>`;
+    el.querySelector('.k').textContent = tk.join(' ');
+    el.addEventListener('click', () => start(TRICKY));
+    box.appendChild(el);
+  }
   LESSONS.forEach((L,i) => {
     const b = state.best[i];
     const el = document.createElement('button');
@@ -347,7 +380,7 @@ $('nameIn').addEventListener('input', e => { state.name = e.target.value.trim() 
 $('coachSel').addEventListener('change', e => { state.coach = e.target.value; save(); renderHome(); say($('welcome').textContent, true); });
 $('easyBtn').addEventListener('click', () => { state.easy = !state.easy; save(); renderHome(); });
 $('voiceBtn').addEventListener('click', () => { state.voice = !state.voice; save(); if(!state.voice && synth) synth.cancel(); renderHome(); if(state.voice) say('Hallo '+state.name+', ich bin '+coach().name+'.', true); });
-$('resetBtn').addEventListener('click', () => { if(confirm('Den ganzen Fortschritt auf diesem Gerät löschen?')){ state.best = {}; save(); renderHome(); } });
+$('resetBtn').addEventListener('click', () => { if(confirm('Den ganzen Fortschritt auf diesem Gerät löschen?')){ state.best = {}; state.keyErr = {}; save(); renderHome(); } });
 
 /* ---------- Tastatur zeichnen ---------- */
 function renderKb(){
@@ -398,8 +431,9 @@ let cur = null; // {i, text, pos, errors, typed, start, errAt:Set}
 function start(i){
   cur = {i, text:makeText(i), pos:0, errors:0, typed:0, start:0, errAt:new Set(), wrongShown:false};
   $('home').classList.add('hidden'); $('done').classList.add('hidden'); $('practice').classList.remove('hidden');
-  $('lTitle').textContent = `Lektion ${i+1} · ${LESSONS[i].t}`;
-  setHint(LESSONS[i].intro, true, true);
+  const L = lessonOf(i);
+  $('lTitle').textContent = i===TRICKY ? L.t : `Lektion ${i+1} · ${L.t}`;
+  setHint(L.intro, true, true);
   renderKb(); renderText(); updateStats();
   $('focusMsg').classList.remove('hidden');
   window.scrollTo({top:0});
@@ -474,11 +508,13 @@ function onChar(ch){
     if(cur.pos % 25 === 0) setHint(pick(coach().praise), true);
   } else {
     cur.errors++; cur.errAt.add(cur.pos); cur.wrongShown=true;
+    const base = keyOf[want] && keyOf[want].base;
+    if(base && base!==' ' && !cur.errAt.has(-cur.pos-1)){ state.keyErr[base] = (state.keyErr[base]||0) + 1; cur.errAt.add(-cur.pos-1); } // pro Stelle nur einmal zählen
     const info = keyOf[want];
     const fname = info ? FINGER_NAME[info.finger] : '';
     const keyName = want===' ' ? 'Leertaste' : want;
     setHint(`${pick(coach().gentle)} Gesucht: «${want===' '?'Leertaste':want}»` + (fname?` mit dem ${fname.replace('linker','linken').replace('rechter','rechten')}`:'') + (info&&info.shift?' und Umschalttaste':'') + '.', false);
-    say(info && /[a-zäöü]/i.test(want) ? `${keyName.toUpperCase()}, ${fname.replace('linker','linker Hand,').replace('rechter','rechter Hand,')}` : (want===' '?'Leertaste':''), false);
+    say(info && /[a-zäöü]/i.test(want) ? `${keyName.toUpperCase()}, ${fname.replace('linker','linker Hand,').replace('rechter','rechter Hand,')}` : (want===' '?'Leertaste':''), 'err');
   }
   renderText(); updateStats();
   if(!cur.wrongShown) return;
@@ -501,7 +537,8 @@ $('trap').addEventListener('input', e => {
 function finish(){
   const {cpm, acc} = updateStats();
   const i = cur.i, prev = state.best[i];
-  if(!prev || acc>prev.acc || (acc===prev.acc && cpm>prev.cpm)) state.best[i] = {cpm, acc};
+  if(i===TRICKY){ if(acc>=90) Object.keys(state.keyErr).forEach(k => { state.keyErr[k] = Math.floor(state.keyErr[k]/2); if(!state.keyErr[k]) delete state.keyErr[k]; }); }
+  else if(!prev || acc>prev.acc || (acc===prev.acc && cpm>prev.cpm)) state.best[i] = {cpm, acc};
   save();
   const st = stars(acc);
   $('rStars').textContent = '★'.repeat(st) + '☆'.repeat(3-st);
@@ -512,7 +549,7 @@ function finish(){
   if(E()) $('rText').textContent = st===3 ? 'Sehr schön. Wenn du magst, geh weiter. Oder mach eine kleine Pause.'
     : 'Du hast die Lektion geschafft. Jedes Mal wird es etwas leichter. Eine Wiederholung hilft den Fingern.';
   $('rErr').textContent = cur.errors; $('rSpeed').textContent = cpm; $('rAcc').textContent = acc + ' %';
-  $('nextBtn').classList.toggle('hidden', i>=LESSONS.length-1);
+  $('nextBtn').classList.toggle('hidden', i===TRICKY || i>=LESSONS.length-1);
   $('practice').classList.add('hidden'); $('done').classList.remove('hidden');
   say(`${$('rTitle').textContent} ${$('rText').textContent}`, true);
   $('trap').blur();
