@@ -151,6 +151,10 @@ input[type=range]{width:100%;accent-color:var(--gold)}
     <button class="btn gold" id="go-next">Weiter üben</button>
     <div class="sec">Stufen</div>
     <div class="list" id="levels"></div>
+    <div class="sec">Carmencita Workshop</div>
+    <div class="list">
+      <button class="item" data-go="ws"><div class="ic">✦</div><div class="tx"><b>Tanz-Fitness 30 Min.</b><span>4 Wochen, 2× pro Woche: Merengue, Salsa, Cumbia, Reggaeton, Samba</span></div><div class="badge" id="ws-badge"></div></button>
+    </div>
     <div class="sec">Mehr</div>
     <div class="list">
       <button class="item" data-go="band"><div class="ic">♫</div><div class="tx"><b>Band &amp; Metronom</b><span>Instrumente einzeln, Tempo frei, Clave 2-3 oder 3-2</span></div></button>
@@ -204,6 +208,31 @@ input[type=range]{width:100%;accent-color:var(--gold)}
       <button class="btn gold" id="r-again">Nochmal</button>
       <button class="btn soft" id="r-next">Nächster Vorschlag</button>
       <button class="btn soft" id="r-home">Zur Übersicht</button>
+    </div>
+  </section>
+
+  <!-- WORKSHOP -->
+  <section class="screen" id="s-ws">
+    <div id="ws-pick">
+      <h2 class="center">Carmencita Workshop</h2>
+      <p class="muted center small">30 Minuten: Aufwärmen, vier Tanzblöcke, Cool-down. Zweimal pro Woche, vier Wochen. Die Musik wird im Handy erzeugt.</p>
+      <div class="list" id="ws-list"></div>
+      <p class="foot-note">Kein Gesundheitsversprechen. Bei Schmerzen kleiner und langsamer tanzen. Wasser bereit, Platz frei, glatte Sohlen.</p>
+    </div>
+    <div id="ws-run" hidden>
+      <h2 class="center" id="ws-title">Einheit</h2>
+      <div class="result"><div class="score" id="ws-time">5:00</div><p class="muted" id="ws-total">noch 30:00 gesamt</p></div>
+      <div class="meter" style="height:12px;margin:6px 0 12px"><i id="ws-bar" style="top:0;left:0;width:0;height:12px;margin:0;border-radius:0;transition:none"></i></div>
+      <div class="say"><div class="big" id="ws-block">Aufwärmen</div><div class="sub" id="ws-move"></div></div>
+      <div class="counts" id="counts-ws"></div>
+      <p class="center muted small" id="ws-next"></p>
+      <div class="row" style="margin:10px 0"><button class="btn gold" id="ws-play">▶ Los</button></div>
+      <div class="row"><button class="btn soft" id="ws-skip">Nächster Block ››</button></div>
+    </div>
+    <div id="ws-done" hidden class="center">
+      <div class="stage"><svg class="carmen small dance" viewBox="0 0 200 240"><use href="#carmen-art"/></svg></div>
+      <div class="bubble" id="ws-done-say">¡Eso! Einheit geschafft.</div>
+      <button class="btn gold" id="ws-back">Zur Workshop-Übersicht</button>
     </div>
   </section>
 
@@ -386,6 +415,12 @@ const SND={
     const o=ctx.createOscillator(),o2=ctx.createOscillator(),g=ctx.createGain();o.type="triangle";o2.type="sine";o.frequency.value=o2.frequency.value=mtof(m);
     g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.55,t+.01);g.gain.setValueAtTime(.45,t+dur*.7);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
     o.connect(g);o2.connect(g);g.connect(f);f.connect(master);o.start(t);o2.start(t);o.stop(t+dur+.05);o2.stop(t+dur+.05)},
+  kick:(t,v)=>{const o=osc("sine",140,t,.28,v,master);o.frequency.exponentialRampToValueAtTime(48,t+.18)},
+  snare:(t,v)=>{nz(t,.12,v,1800,.8);osc("triangle",190,t,.08,v*.5,master)},
+  shaker:(t,v,d)=>nz(t,d,v,7000,1.5),
+  surdo:(t,v)=>{const o=osc("sine",95,t,.5,v,master);o.frequency.exponentialRampToValueAtTime(70,t+.4)},
+  pad:(t,ms,d)=>{for(const m of ms){const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=mtof(m);
+    g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.07,t+.6);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(master);o.start(t);o.stop(t+d+.1)}},
   piano:(t,ms)=>{for(const m of ms){osc("triangle",mtof(m),t,.22,.09,master);osc("sine",mtof(m)*2,t,.12,.03,master)}}
 };
 // Akkorde I-IV-V-IV (C, F, G7, F), ein Akkord pro Takt
@@ -399,22 +434,42 @@ const P={running:false,bpm:90,next:0,i:0,bar:0,beats:[],timer:null,cycle:0,mode:
   scored:4,hits:new Map(),offs:[],extra:0,done:false,cam:false};
 function outLat(){return (ctx.outputLatency||0)+(ctx.baseLatency||0)}
 function schedule(){
-  const ahead=ctx.currentTime+.14, e8=60/P.bpm/2;
+  const ahead=ctx.currentTime+.14, e16=60/P.bpm/4, e8=e16*2;
   while(P.next<ahead){
-    const i=P.i%16, inBar=i%8, cyc=Math.floor(P.i/16), barG=Math.floor(P.i/8), ch=CH[barG%4], nxt=CH[(barG+1)%4], t=P.next;
-    if(P.mode!=="free"&&!P.cam&&cyc>P.scored){clearInterval(P.timer);P.timer=null;setTimeout(()=>{if(P.running)finish()},Math.max(0,(t-ctx.currentTime+outLat())*1000)+250);return}
-    if(i%2===0){const count=i/2+1; P.beats.push({t,count,cyc});
-      if(on.klick) SND.klick(t,count===1||count===5);
-      if(on.campana) SND.campana(t,count===1||count===5);
-      if(mem.voice&&P.bpm<=110&&(P.mode!=="free")) speak(sayNum[count],t,count);
+    const s16=P.i%32, cyc=Math.floor(P.i/32), t=P.next, st=P.style||"salsa";
+    if((P.mode==="step"||P.mode==="hoeren")&&!P.cam&&cyc>P.scored){clearInterval(P.timer);P.timer=null;setTimeout(()=>{if(P.running)finish()},Math.max(0,(t-ctx.currentTime+outLat())*1000)+250);return}
+    if(s16%4===0){const count=s16/4+1; P.beats.push({t,count,cyc});
+      if(st==="salsa"){ if(on.klick) SND.klick(t,count===1||count===5);
+        if(on.campana) SND.campana(t,count===1||count===5);
+        if(mem.voice&&P.bpm<=110&&(P.mode==="step"||P.mode==="hoeren")) speak(sayNum[count],t,count); }
     }
-    if(on.clave&&CLAVE[mem.clave].includes(i)) SND.clave(t);
-    if(on.conga) SND.conga(t,CONGA[inBar]);
-    if(on.bajo){ if(inBar===3) SND.bajo(t,ch.b+7,e8*3); if(inBar===6) SND.bajo(t,nxt.b,e8*2.6); }
-    if(on.piano&&MONT.includes(inBar)) SND.piano(t,inBar%2?ch.n.map(x=>x+12):[ch.n[0]+12,ch.n[2]+12]);
-    P.next+=e8; P.i++;
+    if(st==="salsa"){ if(s16%2===0){
+      const i=s16/2, inBar=i%8, barG=Math.floor(P.i/16), ch=CH[barG%4], nxt=CH[(barG+1)%4];
+      if(on.clave&&CLAVE[mem.clave].includes(i)) SND.clave(t);
+      if(on.conga) SND.conga(t,CONGA[inBar]);
+      if(on.bajo){ if(inBar===3) SND.bajo(t,ch.b+7,e8*3); if(inBar===6) SND.bajo(t,nxt.b,e8*2.6); }
+      if(on.piano&&MONT.includes(inBar)) SND.piano(t,inBar%2?ch.n.map(x=>x+12):[ch.n[0]+12,ch.n[2]+12]);
+    }} else STYLE[st](s16,t,e16,CH[Math.floor(P.i/16)%4]);
+    P.next+=e16; P.i++;
   }
 }
+/* Weitere Rhythmen für den Workshop, alles im Handy erzeugt (16tel-Raster, 32 pro 8 Schläge) */
+const STYLE={
+  merengue:(s,t,e,ch)=>{ if(s%4===0)SND.kick(t,.7); if(s%2===0||s%4===3)SND.shaker(t,s%4===0?.22:.12,.05);
+    if(s%8===4)SND.snare(t,.35); if(s%8===7)SND.snare(t,.15);
+    if(s%16===0)SND.bajo(t,ch.b,e*3.5); if(s%16===8)SND.bajo(t,ch.b+7,e*3.5);
+    if(s%4===2)SND.piano(t,ch.n.map(x=>x+12)); },
+  cumbia:(s,t,e,ch)=>{ if(s%8===0)SND.kick(t,.7); if(s%4===2)SND.shaker(t,.25,.14); else if(s%4===0)SND.shaker(t,.12,.04);
+    if(s%16===12||s%16===14)SND.conga(t,"open");
+    if(s%16===0)SND.bajo(t,ch.b,e*3.5); if(s%16===8)SND.bajo(t,ch.b+7,e*3.5);
+    if(s%4===2)SND.piano(t,ch.n.map(x=>x+12)); },
+  reggaeton:(s,t,e,ch)=>{ if(s%4===0)SND.kick(t,.85); if(s%8===3||s%8===6)SND.snare(t,.4); if(s%2===0)SND.shaker(t,.08,.03);
+    if(s%16===0)SND.bajo(t,ch.b,e*7); if(s%16===8)SND.bajo(t,ch.b,e*7); },
+  samba:(s,t,e,ch)=>{ if(s%8===0)SND.surdo(t,.35); if(s%8===4)SND.surdo(t,.7); SND.shaker(t,s%4===3?.2:.08,.03);
+    if([0,3,6,10,12].includes(s%16))SND.clave(t); if(s%16===0)SND.piano(t,ch.n); },
+  warm:(s,t,e,ch)=>{ if(s%4===0)SND.kick(t,.5); if(s%4===2)SND.shaker(t,.15,.06); if(s%16===0)SND.bajo(t,ch.b,e*7); if(s%8===4)SND.snare(t,.18); },
+  cool:(s,t,e,ch)=>{ if(s%16===0)SND.pad(t,ch.n,e*15); if(s%8===0)SND.shaker(t,.05,.2); }
+};
 let voices=null;
 function speak(w,t,count){
   if(!("speechSynthesis" in window)) return;
@@ -458,6 +513,7 @@ function buildCounts(el,tapOn){
     d.className="cnt "+(isStep?"step":"rest"); d.textContent=isStep?c:"·"+c; d.dataset.c=c; el.appendChild(d);}
 }
 function onBeat(b){
+  if(P.mode==="workshop") return;
   const el=P.cam?$("#counts-cam"):$("#counts");
   el.querySelectorAll(".cnt").forEach(x=>{x.classList.toggle("now",+x.dataset.c===b.count); if(b.count===1)x.classList.remove("hit","off")});
   if(P.cam){ return; }
@@ -558,11 +614,11 @@ function suggestion(){
 let current="home";
 function show(n){ current=n; $$(".screen").forEach(s=>s.classList.remove("on")); $("#s-"+n).classList.add("on");
   $("#back").hidden=(n==="home"); window.scrollTo(0,0); if(n==="home")renderHome(); if(n==="mem")renderMem(); if(n==="set")renderSet(); }
-$("#back").onclick=()=>{ stop(); camStop(); show("home"); };
+$("#back").onclick=()=>{ if(W){W.run=false;wsLock(false);} stop(); camStop(); show("home"); };
 $$("[data-go]").forEach(b=>b.onclick=()=>{const g=b.dataset.go; if(g==="band")openPractice("grund","free"); else show(g);});
 
 function renderHome(){
-  $("#rounds").textContent=mem.rounds;
+  $("#rounds").textContent=mem.rounds; $("#ws-badge").textContent=Object.keys(mem.ws||{}).length+" / 8";
   const L=$("#levels"); L.innerHTML="";
   ORDER.forEach((id,k)=>{const s=STEPS[id],m=mem.steps[id];const b=document.createElement("button");b.className="item";
     b.innerHTML=`<div class="ic">${s.ic}</div><div class="tx"><b>${k}. ${s.title}</b><span>${s.short}</span></div><div class="badge">${m?m.best+" %":""}</div>`;
@@ -581,7 +637,7 @@ function renderChips(el){
     c.onclick=()=>{on[k]=on[k]?0:1;c.classList.toggle("on",!!on[k]);}; el.appendChild(c);});
 }
 function openPractice(id,mode,bpm){
-  stop(true); P.step=id; P.mode=mode==="free"?"free":(id==="hoeren"?"hoeren":"step"); P.cam=false;
+  stop(true); P.style="salsa"; P.step=id; P.mode=mode==="free"?"free":(id==="hoeren"?"hoeren":"step"); P.cam=false;
   const S=STEPS[id];
   setBpm(bpm||mem.bpm[id]||90);
   if(P.mode==="free"){ $("#p-title").textContent="Band & Metronom"; $("#p-intro").textContent="Schalte Instrumente ein und aus. Hör, wie sie zusammen den Takt bauen. Die Clave ist der Herzschlag.";
@@ -656,7 +712,7 @@ async function camStart(){
       landmarker=await vis.PoseLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",delegate:"GPU"},runningMode:"VIDEO",numPoses:1});
     }
     $("#cam-ov").textContent="Musik startet … ab der zweiten 1 mittanzen";
-    P.step=camStep; P.mode="step"; P.cam=true; on={klick:1,clave:1,campana:1,conga:1,bajo:1,piano:1}; if(!P.bpm)P.bpm=90;
+    P.step=camStep; P.mode="step"; P.style="salsa"; P.cam=true; on={klick:1,clave:1,campana:1,conga:1,bajo:1,piano:1}; if(!P.bpm)P.bpm=90;
     start(); P.cam=true; $("#cam-go").textContent="Stopp"; camLoop();
   }catch(e){ $("#cam-ov").textContent="Kamera nicht verfügbar: "+(e&&e.name==="NotAllowedError"?"bitte erlauben":"auf diesem Gerät noch nicht"); camStop(); }
 }
@@ -684,10 +740,71 @@ function camLoop(){
   }; loop();
 }
 
+/* ---------- Carmencita Workshop (30 Min.) ---------- */
+const WARM={name:"Aufwärmen",style:"warm",bpm:122,every:32,moves:["Auf der Stelle marschieren","Schultern kreisen","Hüfte kreisen","Seit-Tap rechts und links"]};
+const COOL={name:"Cool-down",style:"cool",bpm:70,every:32,moves:["Langsam gehen","Tief atmen","Waden dehnen","Oberschenkel dehnen","Hüfte und Schultern lösen"]};
+const CH_A=["Merengue-Marsch vor","Merengue mit Drehung","Salsa-Grundschritt","Salsa-Seitschritt mit Armen"];
+const CH_B=["Cumbia zurück","Cumbia mit Viertel-Drehungen","Samba-Hüfte","Freie Pose: ¡Eso!"];
+const B=(name,style,bpm,moves,every)=>({name,style,bpm,moves,every:every||32});
+const WS={
+ "1A":{t:"Woche 1 · Ankommen",b:[B("Merengue","merengue",125,["Marsch auf der Stelle","Marsch zur Seite"]),B("Salsa","salsa",140,["Grundschritt vor und zurück"]),B("Cumbia","cumbia",120,["Fuss zurück, Knie weich"]),B("Reggaeton","reggaeton",95,["Bounce: leicht wippen"])]},
+ "1B":{t:"Woche 1 · Ankommen",b:[B("Merengue","merengue",128,["Marsch auf der Stelle","Marsch mit Drehung auf 8"]),B("Salsa","salsa",145,["Grundschritt vor und zurück","Seitschritt"]),B("Cumbia","cumbia",122,["Fuss zurück, Knie weich"]),B("Reggaeton","reggaeton",96,["Bounce","Step-Touch"])]},
+ "2A":{t:"Woche 2 · Arme dazu",b:[B("Merengue","merengue",128,["Marsch mit Armkreisen"]),B("Salsa","salsa",150,["Grundschritt, Arme locker im Takt"]),B("Cumbia","cumbia",122,["Cumbia mit Fächer-Hand"]),B("Reggaeton","reggaeton",98,["Step-Touch mit Schulter"])]},
+ "2B":{t:"Woche 2 · Kette",b:[B("Merengue","merengue",130,["Marsch mit Armkreisen","Marsch mit Drehung"]),B("Salsa","salsa",150,["Grundschritt mit Armen","Seitschritt mit Armen"]),B("Cumbia","cumbia",124,["Cumbia mit Fächer-Hand"]),B("Kette","salsa",140,["8× Merengue-Marsch","8× Salsa-Grundschritt","8× Cumbia"],8)]},
+ "3A":{t:"Woche 3 · Hüfte",b:[B("Merengue","merengue",130,["Merengue-Hüfte: Gewicht wechseln"]),B("Salsa","salsa",150,["Rückschritt kubanisch"]),B("Cumbia","cumbia",124,["Cumbia mit Viertel-Drehung"]),B("Samba","samba",100,["Samba-Hüfte langsam"])]},
+ "3B":{t:"Woche 3 · Choreo A",b:[B("Merengue","merengue",130,["Merengue-Hüfte"]),B("Salsa","salsa",150,["Rechtsdrehung auf 5-6-7"]),B("Cumbia","cumbia",124,["Cumbia mit Viertel-Drehung"]),B("Choreo A lernen","salsa",135,CH_A,8)]},
+ "4A":{t:"Woche 4 · Choreo B",b:[B("Merengue","merengue",130,["Merengue-Hüfte mit Armen"]),B("Choreo A","salsa",140,CH_A,8),B("Choreo B lernen","cumbia",120,CH_B,8),B("Samba","samba",100,["Samba-Hüfte"])]},
+ "4B":{t:"Woche 4 · Ganze Choreo",b:[B("Choreo A","salsa",140,CH_A,8),B("Choreo B","cumbia",122,CH_B,8),B("Ganze Choreo","salsa",140,CH_A.concat(CH_B),8),B("Choreo + frei tanzen","merengue",128,CH_A.concat(CH_B,["Frei tanzen!"]),8)]}
+};
+const BLOCK_S=300; let W=null,wake=null;
+function wsBlocks(k){return [WARM,...WS[k].b,COOL]}
+function renderWs(){
+  $("#ws-pick").hidden=false;$("#ws-run").hidden=true;$("#ws-done").hidden=true;
+  const done=(mem.ws||{}); const L=$("#ws-list"); L.innerHTML="";
+  let next=Object.keys(WS).find(k=>!done[k])||"4B";
+  Object.keys(WS).forEach(k=>{const b=document.createElement("button");b.className="item";
+    b.innerHTML=`<div class="ic">${done[k]?"✓":k}</div><div class="tx"><b>Einheit ${k}${k===next?" · als Nächstes":""}</b><span>${WS[k].t}: ${WS[k].b.map(x=>x.name).join(", ")}</span></div><div class="badge">${done[k]?done[k].slice(5).split("-").reverse().join("."):""}</div>`;
+    b.onclick=()=>wsOpen(k); L.appendChild(b);});
+}
+function wsOpen(k){ W={k,idx:0,el:0,run:false,lastMove:-1}; $("#ws-pick").hidden=true;$("#ws-run").hidden=false;$("#ws-done").hidden=true;
+  $("#ws-title").textContent="Einheit "+k+" · "+WS[k].t.split(" · ")[1]; buildCounts($("#counts-ws"),[1,2,3,4,5,6,7,8]); wsShow(); $("#ws-play").textContent="▶ Los"; }
+function sayDe(txt){ try{ if(!("speechSynthesis" in window))return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(txt); u.lang="de-DE"; u.rate=1.05;
+  const v=(voices||speechSynthesis.getVoices()).find(v=>/^de/i.test(v.lang)); if(v)u.voice=v; speechSynthesis.speak(u);}catch(e){} }
+const mmss=x=>{x=Math.max(0,Math.ceil(x));return Math.floor(x/60)+":"+String(x%60).padStart(2,"0")};
+function wsShow(){ const bl=wsBlocks(W.k), b=bl[W.idx], rest=BLOCK_S-W.el;
+  $("#ws-block").textContent=b.name; $("#ws-time").textContent=mmss(rest); $("#ws-total").textContent="noch "+mmss(rest+(bl.length-1-W.idx)*BLOCK_S)+" gesamt";
+  $("#ws-bar").style.width=((W.idx*BLOCK_S+W.el)/(bl.length*BLOCK_S)*100)+"%";
+  const beats=Math.floor(W.el*b.bpm/60), mi=Math.floor(beats/b.every)%b.moves.length;
+  $("#ws-move").textContent=b.moves[mi]+" · "+b.bpm+" Schläge";
+  if(W.run&&mi!==W.lastMove){ if(W.lastMove!==-1&&b.moves.length>1) sayDe(b.moves[mi]); W.lastMove=mi; }
+  const nb=bl[W.idx+1]; $("#ws-next").textContent=nb?"Danach: "+nb.name:"Danach: fertig!";
+}
+function wsStartBlock(announce){ const b=wsBlocks(W.k)[W.idx]; P.style=b.style; P.mode="workshop"; P.cam=false; setBpm(b.bpm);
+  on={klick:0,clave:1,campana:1,conga:1,bajo:1,piano:1}; start(); P.style=b.style; W.t0=ctx.currentTime-W.el; W.run=true; W.lastMove=-1;
+  if(announce) sayDe(W.idx===0?"Willkommen. Wir wärmen uns auf. "+b.moves[0]:"Jetzt "+b.name+". "+b.moves[0]);
+  $("#ws-play").textContent="❚❚ Pause"; wsLoop(); }
+function wsLoop(){ if(!W||!W.run)return; W.el=ctx.currentTime-W.t0;
+  const b=currentBeat(); if(b) $("#counts-ws").querySelectorAll(".cnt").forEach(x=>x.classList.toggle("now",+x.dataset.c===b.count));
+  if(W.el>=BLOCK_S-10&&!W.warned){W.warned=true;sayDe("Noch zehn Sekunden");}
+  if(W.el>=BLOCK_S) return wsNext();
+  wsShow(); requestAnimationFrame(wsLoop); }
+function wsNext(){ const bl=wsBlocks(W.k); stop(true); W.warned=false; W.el=0;
+  if(W.idx>=bl.length-1) return wsFinish(); W.idx++; wsStartBlock(true); }
+async function wsLock(on_){ try{ if(on_&&navigator.wakeLock) wake=await navigator.wakeLock.request("screen"); else if(wake){wake.release();wake=null;} }catch(e){} }
+$("#ws-play").onclick=()=>{ if(!W)return; audio(); if(W.run){ W.run=false; stop(); wsLock(false); $("#ws-play").textContent="▶ Weiter"; } else { wsLock(true); wsStartBlock(W.el===0); } };
+$("#ws-skip").onclick=()=>{ if(!W)return; const was=W.run; W.run=false; stop(true); W.el=0; W.warned=false;
+  if(W.idx>=wsBlocks(W.k).length-1) return wsFinish(); W.idx++; if(was){audio();wsStartBlock(true);} else wsShow(); };
+function wsFinish(){ W.run=false; stop(); wsLock(false); mem.ws=mem.ws||{}; mem.ws[W.k]=new Date().toISOString().slice(0,10); save();
+  sayDe("Eso! Einheit geschafft. Trink etwas Wasser.");
+  $("#ws-run").hidden=true; $("#ws-done").hidden=false;
+  const n=Object.keys(mem.ws).length; $("#ws-done-say").textContent=`¡Eso! Einheit ${W.k} geschafft. ${n} von 8 Einheiten. Trink etwas Wasser.`; }
+$("#ws-back").onclick=()=>renderWs();
+$("[data-go=ws]").addEventListener("click",()=>renderWs());
+
 /* ---------- Start ---------- */
 renderHome();
 if("speechSynthesis" in window) speechSynthesis.onvoiceschanged=()=>{voices=speechSynthesis.getVoices()};
-document.addEventListener("visibilitychange",()=>{ if(document.hidden){stop();camStop();} });
+document.addEventListener("visibilitychange",()=>{ if(document.hidden){ if(W&&W.run){W.run=false;$("#ws-play").textContent="▶ Weiter";} stop();camStop();} });
 })();
 </script>
 </body>
