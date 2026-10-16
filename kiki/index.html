@@ -9,14 +9,14 @@
 <meta name="apple-mobile-web-app-title" content="Kiki singt">
 <meta name="theme-color" content="#0f1b3d">
 <meta name="color-scheme" content="dark">
-<meta name="description" content="Singen lernen mit Kiki dem Koala: einen Ton treffen, Tonleiter, Kinderlieder.">
+<meta name="description" content="Kiki, der singende Koala: Töne treffen, Tonleitern, Lieder und dein Stimmraum.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
-<title>Kiki singt</title>
+<title>Kiki – der singende Koala</title>
 <style>
 :root{
   --night:#0f1b3d; --night2:#18295a; --night3:#22397a; --card:rgba(255,255,255,.07); --line:rgba(255,255,255,.13);
@@ -115,6 +115,25 @@ p{margin:0 0 10px}
 .warmdots{display:flex;justify-content:center;gap:8px;margin:2px 0 4px}
 .warmdots i{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.18)}
 .warmdots i.on{background:var(--gold)}.warmdots i.done{background:var(--good)}
+.room{position:relative;flex:0 0 112px;height:330px;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:rgba(255,255,255,.04)}
+.room .zone{position:absolute;left:0;right:0;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;font-size:13px;color:var(--muted)}
+.room .z-hi{top:0;height:34%;background:rgba(120,170,255,.07)}
+.room .z-mid{top:34%;height:30%;background:rgba(255,255,255,.03)}
+.room .z-lo{top:64%;bottom:0;background:rgba(160,120,90,.09)}
+.rband{position:absolute;left:10px;right:10px;border-radius:14px;background:linear-gradient(180deg,rgba(127,220,164,.55),rgba(242,193,78,.55));border:2px solid var(--gold);opacity:0;transition:all .4s var(--ease)}
+.rband.on{opacity:1}
+.rcomfy{position:absolute;left:50%;z-index:2;font-size:26px;transform:translate(-50%,-50%);opacity:0;transition:top .4s,opacity .3s}
+.rcomfy.on{opacity:1}
+.room .ball{width:30px;height:30px;margin:-15px 0 0 -15px}
+.steps{display:flex;align-items:flex-end;gap:3px;height:120px;margin-top:6px}
+.steps div{flex:1;border-radius:8px 8px 4px 4px;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;font-size:13px;font-weight:600;color:#1b1630;padding-top:4px}
+.steps span{font-size:11px;color:var(--muted);text-align:center;flex:1}
+.steplbl{display:flex;gap:3px;margin-top:4px}
+.syl small{font-size:11px;opacity:.75;font-weight:500}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 4px}
+.keys button{min-height:84px;border:0;border-radius:20px;font-size:24px;font-weight:700;color:#1b1630;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.15);transition:transform .12s}
+.keys button small{font-size:13px;font-weight:600;opacity:.75}
+.keys button.on{transform:scale(1.07);box-shadow:0 0 0 4px #fff,0 0 26px rgba(255,255,255,.6)}
 canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
 .mirror-note{display:flex;align-items:center;justify-content:center;gap:14px;font-size:44px;font-weight:700;min-height:70px}
 .err{background:rgba(255,138,122,.14);border:1px solid rgba(255,138,122,.4);color:#ffd2cb;border-radius:18px;padding:12px 14px;font-size:16px;margin:10px 0}
@@ -146,6 +165,18 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
 @keyframes float{0%{opacity:0;transform:translateY(8px)}30%{opacity:1}100%{opacity:0;transform:translateY(-18px)}}
 .kiki .idle{animation:breathe 3.4s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
 @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.015,.99)}}
+.kiki.dance .body{animation:sway .6s ease-in-out infinite alternate}
+.kiki.dance .notes{display:inline}
+.kiki.dance .eOpen{display:none}.kiki.dance .eHappy{display:inline}
+@keyframes sway{from{transform:rotate(-5deg) translateY(0)}to{transform:rotate(5deg) translateY(-4px)}}
+.stage-deco{position:absolute;inset:0;pointer-events:none}
+.kiki-stage.big{height:250px;align-items:flex-end}
+.kiki-stage.big .kiki{position:relative;z-index:1;margin-bottom:6px}
+.moon{position:absolute;top:4px;right:calc(50% - 150px);width:74px;height:74px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff7da,#f2d88f 60%,#d9b65e);box-shadow:0 0 50px rgba(242,216,143,.55)}
+.moon:after{content:"";position:absolute;width:12px;height:12px;border-radius:50%;background:rgba(190,150,70,.35);top:22px;left:40px;box-shadow:-18px 18px 0 -2px rgba(190,150,70,.3)}
+.branch{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:340px;height:60px}
+.kiki-tip{display:flex;align-items:center;gap:10px;background:var(--gold-l);border:1px solid rgba(242,193,78,.35);border-radius:18px;padding:8px 12px;margin:8px 0 12px;font-size:16px}
+.kiki-tip .kiki{width:64px;height:64px;flex:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:380px){.ladder{flex-basis:96px;height:300px}.kiki{width:190px;height:190px}h1{font-size:27px}}
 </style>
@@ -221,6 +252,7 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
   <!-- Start -->
   <section class="screen on" id="s-home">
     <div class="kiki-stage" data-kiki="big"></div>
+    <h1>Kiki, der singende Koala</h1>
     <div class="bubble" id="homeBubble">Hallo, ich bin Kiki! Ich singe soo gern. Wollen wir zusammen singen?</div>
     <button class="btn gold" id="startBtn">🎤 Kiki, wir möchten singen lernen</button>
     <div class="err" id="micErr" hidden></div>
@@ -233,9 +265,11 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
     <div class="bubble" id="menuBubble">Juhu! Was wollen wir heute singen?</div>
     <div class="grid">
       <button class="card wide" data-go="warm"><span class="ic">🎈</span><span><b>Aufwärmen</b><small>Atmen, summen, Sirene · zuerst, 2 Minuten</small></span></button>
+      <button class="card wide" data-go="room"><span class="ic">🏠</span><span><b>Mein Stimmraum</b><small>Wie tief und wie hoch kann ich singen?</small></span></button>
       <button class="card" data-go="tone"><span class="ic">🎯</span><span><b>Ton treffen</b><small>Kiki singt vor, du singst nach</small></span></button>
-      <button class="card" data-go="scale"><span class="ic">🪜</span><span><b>Tonleiter</b><small>Schritt für Schritt nach oben</small></span></button>
+      <button class="card" data-go="scale"><span class="ic">🪜</span><span><b>Tonleitern</b><small>Do-Re-Mi, Dur, Moll, Terzen</small></span></button>
       <button class="card" data-go="songs"><span class="ic">🦆</span><span><b>Lieder</b><small>Kinderlieder und bekannte Lieder</small></span></button>
+      <button class="card wide" data-go="pitch"><span class="ic">🎹</span><span><b>Ton vorgeben</b><small>Kiki spielt den Ton, so lange ihr wollt</small></span></button>
       <button class="card" data-go="mirror"><span class="ic">🌈</span><span><b>Stimm-Spiegel</b><small>Sieh deine Stimme</small></span></button>
       <button class="card wide" data-go="settings"><span class="ic">⚙️</span><span><b>Für Eltern</b><small>Stimmlage, wie genau, Kikis Stimme</small></span></button>
     </div>
@@ -268,6 +302,22 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
     <p class="mini" id="trainFoot" style="margin-top:10px">Tipp: Handy auf Armlänge halten. Kein Ton? Seitenschalter am iPhone auf laut stellen.</p>
   </section>
 
+  <!-- Tonleitern lernen -->
+  <section class="screen" id="s-scales">
+    <h2 class="center">Tonleitern lernen</h2>
+    <div class="kiki-tip"><span data-kiki="small"></span><span id="scaleTip">Do, Re, Mi … Wähl eine Übung. Ich singe in deiner Höhe vor.</span></div>
+    <div class="panel">
+      <div class="toggle"><span>Tonart</span><span class="seg" id="keySeg"></span></div>
+      <div class="toggle"><span>Kiki singt vor</span><span class="seg" id="vorSeg"><button data-v="1">jeden Ton</button><button data-v="0">nur den 1.</button></span></div>
+    </div>
+    <div class="songlist" id="scaleList"></div>
+    <div class="panel">
+      <h2 style="font-size:19px">So ist eine Dur-Tonleiter gebaut</h2>
+      <div class="steps" id="stepsViz"></div>
+      <p class="muted" style="font-size:15px;margin:8px 0 0">Ganz – Ganz – <b>Halb</b> – Ganz – Ganz – Ganz – <b>Halb</b>. Die kleinen Schritte liegen zwischen Mi–Fa und Ti–Do. Moll hat die Halbtonschritte an anderen Stellen (2–3 und 5–6), darum klingt es weicher und trauriger.</p>
+    </div>
+  </section>
+
   <!-- Lieder-Auswahl -->
   <section class="screen" id="s-songs">
     <div class="kiki-stage" data-kiki="small"></div>
@@ -287,10 +337,47 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
     <button class="btn gold" id="warmBtn">▶︎ Los geht's</button>
   </section>
 
+  <!-- Stimmraum -->
+  <section class="screen" id="s-room">
+    <h2 class="center" id="roomTitle">Mein Stimmraum</h2>
+    <div class="trainer">
+      <div class="room" id="room">
+        <div class="zone z-hi"><span>🐦 hoch</span></div>
+        <div class="zone z-mid"><span>🏠 Mitte</span></div>
+        <div class="zone z-lo"><span>🐻 tief</span></div>
+        <div class="rband" id="rband"></div>
+        <div class="rcomfy" id="rcomfy">🐨</div>
+        <div class="ball" id="rball"></div>
+      </div>
+      <div class="side">
+        <div class="kiki-stage" data-kiki="small"></div>
+        <div class="hint" id="roomHint">Wir messen deinen Stimmraum.</div>
+        <div class="meter" aria-hidden="true"><i id="roomMeter"></i></div>
+        <div class="notebig" id="roomNote"></div>
+      </div>
+    </div>
+    <div class="panel" id="roomResult" hidden></div>
+    <div class="row" style="margin-bottom:10px"><button class="btn soft small" id="roomDone">✓ Fertig</button></div>
+    <button class="btn gold" id="roomBtn">▶︎ Messen</button>
+    <p class="mini" style="margin-top:10px">Kiki merkt sich deinen Stimmraum und singt dann die Übungen genau in deiner Höhe. Nur Zahlen, keine Aufnahme.</p>
+  </section>
+
+  <!-- Ton vorgeben -->
+  <section class="screen" id="s-pitch">
+    <h2 class="center">Ton vorgeben</h2>
+    <div class="kiki-tip"><span data-kiki="small"></span><span>Tipp auf eine Taste, dann spiele ich den Ton. Mit «Ton halten» klingt er weiter, bis ihr Stopp drückt.</span></div>
+    <div class="keys" id="keys"></div>
+    <div class="panel">
+      <div class="toggle"><span>Ton halten</span><span class="seg" id="holdSeg"><button data-v="0">kurz</button><button data-v="1">halten</button></span></div>
+    </div>
+    <button class="btn gold" id="pitchStop">■ Stopp</button>
+    <p class="mini" style="margin-top:10px">Kein Ton? Lautstärke am iPhone hoch. Die Töne liegen in eurer Stimmhöhe (siehe «Mein Stimmraum»).</p>
+  </section>
+
   <!-- Stimm-Spiegel -->
   <section class="screen" id="s-mirror">
     <h2 class="center">Stimm-Spiegel</h2>
-    <p class="center muted" style="font-size:16px">Sing hoch und tief, Kiki malt deine Stimme.</p>
+    <div class="kiki-tip"><span data-kiki="small"></span><span>Sing hoch und tief, ich male deine Stimme. Bei schönen langen Tönen tanze ich!</span></div>
     <div class="mirror-note" id="mirrorNote">…</div>
     <canvas id="mirror"></canvas>
     <p class="mini" style="margin-top:10px">Probier: wie eine Sirene rauf und runter, oder ganz lange einen Ton halten.</p>
@@ -304,6 +391,8 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
       <p class="mini" style="text-align:left;margin:6px 0 4px">Hohe Lage passt für Kinder und Frauen, tiefe Lage für Männer. Eine Oktave höher oder tiefer zählt immer auch als getroffen, so könnt ihr zusammen singen.</p>
       <div class="toggle"><span>Wie genau?</span><span class="seg" data-set="tol"><button data-v="60">leicht</button><button data-v="35">mittel</button><button data-v="20">genau</button></span></div>
       <div class="toggle"><span>Kiki spricht</span><span class="seg" data-set="voice"><button data-v="1">an</button><button data-v="0">aus</button></span></div>
+      <div class="toggle"><span>Übungen im eigenen Stimmraum</span><span class="seg" data-set="room"><button data-v="1">an</button><button data-v="0">aus</button></span></div>
+      <p class="mini" style="text-align:left;margin:6px 0 4px">Ist der Stimmraum gemessen, singt Kiki die Übungen und Lieder in der Höhe, die zur Stimme passt. Sonst gilt die Lage oben.</p>
       <div class="toggle"><span>Kiki singt jeden Ton vor (Lieder)</span><span class="seg" data-set="prompt"><button data-v="1">an</button><button data-v="0">aus</button></span></div>
     </div>
     <div class="panel">
@@ -319,6 +408,11 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
       <div class="row"><button class="btn soft small" id="memShare">📤 Erfahrung teilen</button><button class="btn soft small" id="memClear">🧽 Alles vergessen</button></div>
       <p class="mini" id="shareMsg" style="text-align:left;margin:8px 0 0"></p>
     </div>
+    <div class="panel">
+      <h2 style="font-size:19px">Name des Kindes (freiwillig)</h2>
+      <div class="row"><input id="kidName" maxlength="24" autocomplete="off" placeholder="z. B. Lena" style="flex:2;min-height:52px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font:inherit;font-size:18px;padding:0 14px"><button class="btn soft small" id="kidSave" style="flex:1">Speichern</button></div>
+      <p class="mini" style="text-align:left;margin:8px 0 0">Kiki begrüsst dann mit Namen. Der Name bleibt nur auf diesem Handy.</p>
+    </div>
     <button class="btn soft small" id="resetStars">Sterne zurücksetzen</button>
     <p class="foot">Kiki singt · ein DR Lab Projekt</p>
   </section>
@@ -333,7 +427,7 @@ const store = {
   get(k, d){ try{ const v = localStorage.getItem('kiki_'+k); return v === null ? d : JSON.parse(v); }catch(e){ return d; } },
   set(k, v){ try{ localStorage.setItem('kiki_'+k, JSON.stringify(v)); }catch(e){} }
 };
-const S = { octave: store.get('octave', 4), tol: store.get('tol', 60), voice: store.get('voice', 1), prompt: store.get('prompt', 1) };
+const S = { octave: store.get('octave', 4), tol: store.get('tol', 60), voice: store.get('voice', 1), prompt: store.get('prompt', 1), vor: store.get('vor', 1), key: store.get('key', 0), room: store.get('room', 1) };
 let stars = store.get('stars', 0);
 const $ = id => document.getElementById(id);
 $('starCount').textContent = stars;
@@ -358,6 +452,10 @@ function memRange(m, dt){   // nur gehaltene Töne zählen für den Stimmumfang
   if (rangeT > .4){ const r = Math.round(m); if (mem.lo == null || r < mem.lo) mem.lo = r; if (mem.hi == null || r > mem.hi) mem.hi = r; }
 }
 function memGreeting(){
+  const nm0 = store.get('name', ''), hi = nm0 ? `Hallo ${nm0}! ` : '';
+  return hi + memGreeting0();
+}
+function memGreeting0(){
   if (!mem.hits) return 'Juhu! Ich freu mich so! Was wollen wir heute singen?';
   const fav = favSong(), best = bestNote(), pr = practiceNote();
   const opts = [];
@@ -378,10 +476,18 @@ document.querySelectorAll('[data-kiki]').forEach(el => {
   const suf = '_' + kikis.length;
   node.querySelectorAll('[id]').forEach(g => { g.id += suf; });
   node.innerHTML = node.innerHTML.replace(/url\(#(\w+)\)/g, (m, id) => `url(#${id}${suf})`);
+  if (el.dataset.kiki === 'big'){
+    el.classList.add('big');
+    el.insertAdjacentHTML('afterbegin', `<div class="stage-deco" aria-hidden="true"><div class="moon"></div>
+      <svg class="branch" viewBox="0 0 340 60"><path d="M0 44 C70 30 140 52 200 40 S300 30 340 22" stroke="#6b4f3a" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <g fill="#7fbf9a"><ellipse cx="40" cy="30" rx="16" ry="6" transform="rotate(-25 40 30)"/><ellipse cx="70" cy="50" rx="15" ry="5.5" transform="rotate(20 70 50)"/>
+      <ellipse cx="250" cy="24" rx="16" ry="6" transform="rotate(-30 250 24)"/><ellipse cx="290" cy="42" rx="15" ry="5.5" transform="rotate(25 290 42)"/><ellipse cx="320" cy="14" rx="13" ry="5" transform="rotate(-15 320 14)"/></g>
+      <g fill="#a7dcbc"><ellipse cx="110" cy="52" rx="13" ry="5" transform="rotate(10 110 52)"/><ellipse cx="225" cy="50" rx="13" ry="5" transform="rotate(-12 225 50)"/></g></svg></div>`);
+  }
   el.appendChild(node); kikis.push(node);
 });
 function kikiMood(m){
-  kikis.forEach(k => { k.classList.remove('sing','happy','listen'); if (m) k.classList.add(m); });
+  kikis.forEach(k => { k.classList.remove('sing','happy','listen','dance'); if (m) k.classList.add(m); });
 }
 
 /* ---------- Sternenhimmel ---------- */
@@ -413,10 +519,26 @@ async function initAudio(){
   if (!ac){
     const AC = window.AudioContext || window.webkitAudioContext;
     ac = new AC();
-    master = ac.createGain(); master.gain.value = .9; master.connect(ac.destination);
+    const comp = ac.createDynamicsCompressor(); comp.threshold.value = -18; comp.ratio.value = 4; comp.connect(ac.destination);
+    master = ac.createGain(); master.gain.value = 1.4; master.connect(comp);
     analyser = ac.createAnalyser(); analyser.fftSize = 2048; buf = new Float32Array(analyser.fftSize);
   }
   if (ac.state !== 'running') { try{ await ac.resume(); }catch(e){} }
+  unlockSpeaker();
+}
+/* iPhone: Ein leises HTML-Audio im Hintergrund sorgt dafür, dass Kikis Töne auch bei Stummschalter hörbar sind */
+let silentEl = null;
+function unlockSpeaker(){
+  if (silentEl) { if (silentEl.paused) silentEl.play().catch(() => {}); return; }
+  try{
+    const sr = 8000, n = sr/2, b = new ArrayBuffer(44 + n*2), v = new DataView(b);
+    const w = (o, t) => [...t].forEach((c, i) => v.setUint8(o+i, c.charCodeAt(0)));
+    w(0,'RIFF'); v.setUint32(4, 36 + n*2, true); w(8,'WAVE'); w(12,'fmt '); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+    v.setUint32(24,sr,true); v.setUint32(28,sr*2,true); v.setUint16(32,2,true); v.setUint16(34,16,true); w(36,'data'); v.setUint32(40,n*2,true);
+    silentEl = new Audio(URL.createObjectURL(new Blob([b], {type:'audio/wav'})));
+    silentEl.loop = true; silentEl.setAttribute('playsinline', ''); silentEl.volume = .01;
+    silentEl.play().catch(() => {});
+  }catch(e){}
 }
 async function micOn(){
   if (stream) return true;
@@ -446,11 +568,11 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 function tone(midi, dur, when){
   const t0 = (when ?? ac.currentTime) + .02, f = hz(midi);
   const g = ac.createGain(); g.connect(master);
-  g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(.32, t0+.06);
-  g.gain.setValueAtTime(.32, t0+Math.max(.08, dur-.14)); g.gain.linearRampToValueAtTime(0, t0+dur);
+  g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(.5, t0+.06);
+  g.gain.setValueAtTime(.5, t0+Math.max(.08, dur-.14)); g.gain.linearRampToValueAtTime(0, t0+dur);
   const o1 = ac.createOscillator(); o1.type = 'sine'; o1.frequency.value = f;
   const o2 = ac.createOscillator(); o2.type = 'triangle'; o2.frequency.value = f*2;
-  const g2 = ac.createGain(); g2.gain.value = .12; o2.connect(g2); g2.connect(g);
+  const g2 = ac.createGain(); g2.gain.value = .3; o2.connect(g2); g2.connect(g); // Obertöne: auf kleinen Handy-Lautsprechern besser hörbar
   const lfo = ac.createOscillator(), lg = ac.createGain(); lfo.frequency.value = 5.2; lg.gain.setValueAtTime(0, t0); lg.gain.linearRampToValueAtTime(f*.004, t0+Math.min(.5,dur));
   lfo.connect(lg); lg.connect(o1.frequency); lg.connect(o2.frequency);
   o1.connect(g);
@@ -534,7 +656,7 @@ function diffCents(m, target){
 
 /* ---------- Navigation ---------- */
 let current = 'home';
-const stopAll = () => { listenCb = null; playToken++; micOff(); try{ speechSynthesis.cancel(); }catch(e){} kikiMood(null); trainer.active = false; };
+const stopAll = () => { listenCb = null; playToken++; micOff(); if (drone) droneStop(); try{ speechSynthesis.cancel(); }catch(e){} kikiMood(null); trainer.active = false; };
 function go(name){
   if (name !== current) stopAll();
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === 's-'+name));
@@ -542,16 +664,18 @@ function go(name){
   $('back').hidden = (name === 'home' || name === 'menu');
   scrollTo(0,0);
 }
-$('back').onclick = () => { if (current === 'train' && trainer.from === 'songs'){ songList(); go('songs'); } else go('menu'); };
+$('back').onclick = () => { if (current === 'train' && trainer.from === 'songs'){ songList(); go('songs'); } else if (current === 'train' && trainer.from === 'scales'){ startScales(); } else go('menu'); };
 document.querySelectorAll('[data-go]').forEach(b => b.onclick = async () => {
   await initAudio();
   const g = b.dataset.go;
   if (g === 'tone') startTone();
-  else if (g === 'scale') startSeq('Tonleiter', scaleSeq(), null);
+  else if (g === 'scale') startScales();
   else if (g === 'songs') { songList(); go('songs'); }
   else if (g === 'settings') { renderMem(); go('settings'); }
   else if (g === 'mirror') startMirror();
   else if (g === 'warm') startWarm();
+  else if (g === 'room') startRoom();
+  else if (g === 'pitch') startPitch();
   else go(g);
 });
 
@@ -599,7 +723,7 @@ function ladderShow(target){
 function ladderUpdate(m, dt){
   const L = $('ladder'), h = L.clientHeight, ball = $('ball');
   if (m == null){
-    ball.classList.remove('on'); L.classList.remove('hit');
+    ball.classList.remove('on'); L.classList.remove('hit'); kikis.forEach(k => k.classList.remove('dance'));
     trainer.hold = Math.max(0, trainer.hold - dt*.6);
     $('youNote').innerHTML = '';
     if (trainer.active) setHint('Sing mit «aaa» …');
@@ -609,6 +733,7 @@ function ladderUpdate(m, dt){
     ball.style.top = y + 'px'; ball.classList.add('on');
     const inTune = Math.abs(d) <= S.tol;
     L.classList.toggle('hit', inTune);
+    kikis.forEach(k => k.classList.toggle('dance', inTune));
     $('youNote').innerHTML = 'Du singst ' + dotHTML(m);
     if (inTune){ trainer.hold += dt; setHint('Genau so! Halten …', true); }
     else {
@@ -642,9 +767,12 @@ const praise = () => PRAISE[Math.floor(Math.random()*PRAISE.length)];
 /* ---------- Übung 1: Ton treffen ---------- */
 let toneState = {last:null, count:0, timer:0};
 function toneTarget(){
-  const base = S.octave*12 + 12; // C4 = 60
+  const base = baseC(); // C4 = 60, oder passend zum Stimmraum
   let pool = [2,4,5,7,9];       // D E F G A
   if (mem.hits >= 6 || toneState.count >= 6) pool = [0,2,4,5,7,9,11,12];
+  // nur Töne, die im gemessenen Stimmraum liegen (wenn genug übrig bleiben)
+  const rm = useRoom();
+  if (rm){ const inRoom = pool.filter(r => base + r >= rm.lo && base + r <= rm.hi); if (inRoom.length >= 3) pool = inRoom; }
   // ganz am Anfang: G, dann E (leicht für Kinder)
   if (mem.hits < 3){ if (toneState.count === 0) return base + 7; if (toneState.count === 1) return base + 4; }
   // Kiki lernt: Töne, die noch schwer sind, kommen öfter
@@ -713,9 +841,54 @@ async function listenFor(need, timeoutS, onHit, onTimeout){
 }
 
 /* ---------- Übung 2 + 3: Tonleiter und Lieder ---------- */
-function scaleSeq(){
-  const b = S.octave*12 + 12, steps = [0,2,4,5,7,9,11,12], lab = ['C','D','E','F','G','A','H','C'];
-  return steps.map((s,i) => ({m: b+s, d: 1, t: lab[i]}));
+/* ---------- Tonleitern lernen ---------- */
+const SOLF = ['Do','Re','Mi','Fa','So','La','Ti'];
+const MAJOR = [0,2,4,5,7,9,11], MINOR = [0,2,3,5,7,8,10];
+const KEYS = [[0,'C'],[2,'D'],[4,'E'],[5,'F'],[7,'G'],[9,'A']];
+const LESSONS = [
+  {id:'dur-auf',   ic:'🪜', title:'1 · Do-Re-Mi aufwärts', sub:'Die Dur-Tonleiter, Schritt für Schritt hoch', deg:[0,1,2,3,4,5,6,7]},
+  {id:'dur-aufab', ic:'⛰️', title:'2 · Hoch und wieder runter', sub:'Do bis Do und zurück', deg:[0,1,2,3,4,5,6,7,6,5,4,3,2,1,0]},
+  {id:'fuenf',     ic:'🖐️', title:'3 · Fünf-Ton-Leiter', sub:'Do-Re-Mi-Fa-So-Fa-Mi-Re-Do · klassisches Einsingen', deg:[0,1,2,3,4,3,2,1,0]},
+  {id:'terzen',    ic:'🦘', title:'4 · Terzen-Sprünge', sub:'Do-Mi, Re-Fa, Mi-So … Sprünge treffen', deg:[0,2,1,3,2,4,3,5,4,6,5,7]},
+  {id:'dreiklang', ic:'🔺', title:'5 · Dreiklang', sub:'Do-Mi-So-Do und zurück', deg:[0,2,4,7,4,2,0]},
+  {id:'moll',      ic:'🌙', title:'6 · Moll-Tonleiter', sub:'Weicher, trauriger Klang, auf und ab', deg:[0,1,2,3,4,5,6,7,6,5,4,3,2,1,0], minor:true},
+];
+function scaleRoot(){
+  // Grundton der Tonart, passend zur Stimme: Mitte der Leiter nah am Wohlfühlton
+  const rm = useRoom(), comfy = rm && rm.comfy != null ? rm.comfy : baseC() + 5;
+  let m = baseC() + S.key;
+  while (m + 5 - comfy > 6) m -= 12;
+  while (comfy - (m + 5) > 6) m += 12;
+  return m;
+}
+function lessonSeq(L){
+  const root = scaleRoot(), sc = L.minor ? MINOR : MAJOR;
+  return L.deg.map(d => { const o = Math.floor(d/7), k = d%7, m = root + sc[k] + 12*o; return {m, d: 1, t: `${SOLF[k]} <small>${noteName(m)}</small>`}; });
+}
+function scaleSeq(){ return lessonSeq(LESSONS[0]); }
+function startScales(){
+  go('scales');
+  const ks = $('keySeg'); ks.innerHTML = '';
+  KEYS.forEach(([v, n]) => { const b = document.createElement('button'); b.textContent = n; b.classList.toggle('on', S.key === v); b.onclick = () => { S.key = v; store.set('key', v); startScales(); }; ks.appendChild(b); });
+  $('vorSeg').querySelectorAll('button').forEach(b => { b.classList.toggle('on', +b.dataset.v === +S.vor); b.onclick = () => { S.vor = +b.dataset.v; store.set('vor', S.vor); startScales(); }; });
+  const keyName = KEYS.find(k => k[0] === S.key)[1];
+  const box = $('scaleList'); box.innerHTML = '';
+  const done = mem.scales || {};
+  LESSONS.forEach(L => {
+    const el = document.createElement('button'); el.className = 'card wide';
+    const tn = L.minor ? keyName.toLowerCase() + '-Moll' : keyName + '-Dur';
+    el.innerHTML = `<span class="ic">${L.ic}</span><span><b>${L.title}${done[L.id] ? ' ✓' : ''}</b><small>${L.sub} · ${tn}${done[L.id] ? ' · ' + done[L.id] + '× geschafft' : ''}</small></span>`;
+    el.onclick = async () => { await initAudio(); startSeq(L.title.replace(/^\d · /, '') + ' · ' + tn, lessonSeq(L), null, {from: 'scales', lesson: L.id}); };
+    box.appendChild(el);
+  });
+  // Bauplan der Dur-Tonleiter
+  const v = $('stepsViz'); v.innerHTML = '';
+  const root = scaleRoot();
+  MAJOR.concat([12]).forEach((st, i) => {
+    const d = document.createElement('div'); const m = root + st;
+    d.style.height = (30 + st*6) + 'px'; d.style.background = noteColor(m);
+    d.innerHTML = `${SOLF[i % 7]}<br>${noteName(m)}`; v.appendChild(d);
+  });
 }
 // Melodien in C-Dur, Mitte = C4 (60); d = Schläge; br = Zeilenumbruch danach
 const SONGS = [
@@ -762,7 +935,7 @@ const SONGS = [
     [65,'zum',.75],[65,'Ge',.25],[64,'burts'],[60,'tag'],[62,'viel'],[60,'Glück!',2]]}
 ];
 function songSeq(song){
-  const shift = (S.octave - 4)*12;
+  const shift = baseC() - 60;
   return song.notes.map(([m,t,d,br]) => ({m: m+shift, t, d: d || 1, br: !!br}));
 }
 function songList(){
@@ -797,9 +970,9 @@ function markSyl(i){
   const n = seq.items[Math.min(i, seq.items.length - 1)], cur = n ? n.line : 0;
   document.querySelectorAll('.lyrics .line').forEach((el, k) => { el.classList.toggle('far', k < cur || k > cur + 1); el.classList.toggle('next', k === cur + 1); });
 }
-function startSeq(title, items, song){
-  trainer.from = song ? 'songs' : 'menu'; trainer.mode = 'seq';
-  seq = {title, items, song, i:0};
+function startSeq(title, items, song, opts){
+  trainer.from = song ? 'songs' : (opts && opts.from) || 'menu'; trainer.mode = 'seq';
+  seq = {title, items, song, i:0, lesson: opts && opts.lesson};
   trainer.target = items[0].m;
   setupTrainUI(title, true);
   renderLyrics();
@@ -836,9 +1009,9 @@ async function seqStep(first){
   trainer.target = n.m; ladderShow(n.m); markSyl(seq.i);
   $('youNote').innerHTML = 'Zielton ' + dotHTML(n.m);
   if (first && seq.i === 0 && seq.song) memSong(seq.song.id, 's');
-  if (first && seq.i === 0) await say(seq.song ? 'Ich singe dir jeden Ton vor, du singst ihn nach.' : 'Wir klettern die Tonleiter hoch. Ich singe vor, du singst nach!');
+  if (first && seq.i === 0) await say(seq.song ? 'Ich singe dir jeden Ton vor, du singst ihn nach.' : (S.vor !== 0 ? 'Ich singe vor, du singst nach. Do, Re, Mi!' : 'Ich gebe dir den ersten Ton. Den Rest findest du selbst!'));
   if (current !== 'train') return;
-  if (S.prompt || !seq.song || first){
+  if (first || (seq.song ? S.prompt : S.vor !== 0)){
     setHint('Kiki singt «' + n.t + '» 🎵');
     const ok = await play([{m:n.m, d:1}], seq.song ? .8 : 1.1);
     if (!ok || current !== 'train') return;
@@ -854,7 +1027,8 @@ async function seqDone(){
   if (seq.song) memSong(seq.song.id, 'd');
   markSyl(seq.items.length); setHint('Geschafft! ★★★', true);
   kikiMood('happy'); addStars(3);
-  await say(seq.song ? 'Bravo! Du hast das ganze Lied gesungen!' : 'Juhu! Ganz oben angekommen!');
+  if (seq.lesson){ mem.scales = mem.scales || {}; mem.scales[seq.lesson] = (mem.scales[seq.lesson] || 0) + 1; saveMem(); }
+  await say(seq.song ? 'Bravo! Du hast das ganze Lied gesungen!' : 'Super! Tonleiter geschafft!');
   if (current !== 'train') return;
   seq.i = 0;
   $('mainBtn').hidden = false; $('mainBtn').textContent = '🔁 Nochmal';
@@ -942,6 +1116,133 @@ async function warmStep(i){
   $('warmBtn').onclick = () => go('menu');
 }
 
+/* ---------- Mein Stimmraum ---------- */
+const nm = m => NAMES[((m%12)+12)%12] + (Math.floor(m/12) - 1);
+function useRoom(){ return S.room && mem.room && mem.room.lo != null && mem.room.hi != null ? mem.room : null; }
+/* C, um den die Übungen liegen: so gewählt, dass die Mitte (F) nah am Wohlfühlton ist */
+function baseC(){
+  const rm = useRoom();
+  if (!rm) return S.octave*12 + 12;
+  const c = rm.comfy != null ? rm.comfy : Math.round((rm.lo + rm.hi)/2);
+  return 60 + Math.round((c - 65)/12)*12;
+}
+const RLO = 43, RHI = 84; // G2 … C6
+function roomY(m){ const h = $('room').clientHeight; return h - (Math.max(RLO, Math.min(RHI, m)) - RLO)/(RHI - RLO)*h; }
+function roomDraw(lo, hi, comfy){
+  const band = $('rband'), c = $('rcomfy');
+  if (lo != null && hi != null){ const t = roomY(hi + .5), b = roomY(lo - .5); band.style.top = t + 'px'; band.style.height = Math.max(8, b - t) + 'px'; band.classList.add('on'); }
+  else band.classList.remove('on');
+  if (comfy != null){ c.style.top = roomY(comfy) + 'px'; c.classList.add('on'); } else c.classList.remove('on');
+}
+function roomHint(t, good){ const el = $('roomHint'); el.textContent = t; el.classList.toggle('good', !!good); }
+let room = null;
+function startRoom(){
+  go('room');
+  room = {step: -1, lo: null, hi: null, comfy: null};
+  $('roomResult').hidden = true; $('roomDone').hidden = true; $('rball').classList.remove('on'); $('roomMeter').style.width = '0'; $('roomNote').innerHTML = '';
+  const rm = mem.room;
+  if (rm && rm.lo != null){ roomDraw(rm.lo, rm.hi, rm.comfy); roomShowResult(false); roomHint('Das ist dein Stimmraum.'); $('roomBtn').textContent = '🔁 Neu messen'; }
+  else { roomDraw(null, null, null); roomHint('Wir messen deinen Stimmraum.'); $('roomBtn').textContent = '▶︎ Messen'; }
+  $('roomBtn').hidden = false; $('roomBtn').onclick = () => roomStep(0);
+  $('roomDone').onclick = () => roomStep(room.step + 1);
+}
+/* Ton gilt erst, wenn er ein bisschen gehalten wird */
+function stableTracker(need){ let t = 0, ref = null; return (m, dt) => { if (m == null){ t = 0; ref = null; return null; } if (ref != null && Math.abs(m - ref) < .6){ t += dt; ref = ref*.8 + m*.2; } else { t = 0; ref = m; } return t >= need ? Math.round(ref) : null; }; }
+const roomAlive = tok => current === 'room' && tok === playToken;
+async function roomStep(i){
+  listenCb = null; micOff(); try{ speechSynthesis.cancel(); }catch(e){}
+  playToken++; const tok = playToken; room.step = i;
+  $('roomBtn').hidden = true; $('roomResult').hidden = true; $('roomMeter').style.width = '0';
+  const ball = $('rball');
+  if (i === 0){ room.lo = room.hi = room.comfy = null; roomDraw(null, null, null); }
+  if (i > 2) return roomFinish(tok);
+  const steps = [
+    {title:'1 · Ganz tief', say:'Sing einen ganz tiefen Ton, wie ein grosser Bär. Brumm!', hint:'Ganz tief, wie ein Bär 🐻', need:.6},
+    {title:'2 · Ganz hoch', say:'Und jetzt ganz hoch, wie ein kleiner Vogel. Piep!', hint:'Ganz hoch, wie ein Vogel 🐦', need:.6},
+    {title:'3 · Wohlfühlton', say:'Zum Schluss: Sing einen Ton, der sich ganz bequem anfühlt. Aaah.', hint:'Ganz bequem: aaah 🏠', need:1.5}
+  ][i];
+  $('roomTitle').textContent = steps.title;
+  await say(steps.say);
+  if (!roomAlive(tok)) return;
+  roomHint(steps.hint); kikiMood('listen');
+  $('roomDone').hidden = false; $('roomDone').textContent = i === 2 ? '✓ Fertig' : '✓ Weiter';
+  if (!await micOn()) return;
+  const track = stableTracker(steps.need); hist = [];
+  let got = 0;
+  listenCb = (m, dt) => {
+    if (!roomAlive(tok)) return;
+    memRange(m, dt);
+    if (m == null){ ball.classList.remove('on'); }
+    else { ball.style.top = roomY(m) + 'px'; ball.classList.add('on'); $('roomNote').innerHTML = 'Du singst ' + dotHTML(m); }
+    const n = track(m, dt);
+    if (n == null) return;
+    if (i === 0 && (room.lo == null || n < room.lo)){ room.lo = n; got++; if (room.hi == null) room.hi = n; }
+    else if (i === 1 && (room.hi == null || n > room.hi)){ room.hi = n; got++; if (room.lo == null) room.lo = n; }
+    else if (i === 2 && room.comfy == null){ room.comfy = n; got++; }
+    else return;
+    roomDraw(room.lo, room.hi, room.comfy);
+    $('roomMeter').style.width = '100%';
+    if (i === 2){ listenCb = null; micOff(); burst(6); roomStep(3); }
+    else roomHint((i === 0 ? 'Tief: ' : 'Hoch: ') + nm(n) + ' · noch ' + (i === 0 ? 'tiefer?' : 'höher?'), true);
+  };
+}
+async function roomFinish(tok){
+  $('roomDone').hidden = true; $('roomTitle').textContent = 'Mein Stimmraum'; $('rball').classList.remove('on');
+  if (room.lo == null || room.hi == null || room.hi - room.lo < 4){ roomHint('Kiki hat noch nicht genug gehört. Nochmal?'); $('roomBtn').hidden = false; $('roomBtn').textContent = '🔁 Nochmal'; return; }
+  if (room.comfy == null) room.comfy = Math.round((room.lo + room.hi)/2);
+  if (room.comfy < room.lo) room.lo = room.comfy; if (room.comfy > room.hi) room.hi = room.comfy;
+  const before = mem.room && mem.room.lo != null ? mem.room.hi - mem.room.lo : null;
+  mem.room = {lo: room.lo, hi: room.hi, comfy: room.comfy, date: new Date().toISOString().slice(0,10)};
+  mem.rooms = (mem.rooms || []).concat([mem.room]).slice(-20);
+  memDay(); saveMem();
+  roomDraw(room.lo, room.hi, room.comfy);
+  const span = room.hi - room.lo;
+  addStars(2); kikiMood('happy');
+  roomShowResult(true);
+  const grew = before != null && span > before;
+  roomHint(grew ? 'Dein Stimmraum ist gewachsen! 🌱' : 'Gemessen! ★★', true);
+  await say(grew ? `Wow! Dein Stimmraum ist um ${span - before} Töne gewachsen!` : `Super! Dein Stimmraum geht von ${noteName(room.lo)} bis ${noteName(room.hi)}. Jetzt singe ich die Übungen genau in deiner Höhe.`);
+  if (!roomAlive(tok)) return;
+  $('roomBtn').hidden = false; $('roomBtn').textContent = '🎤 Zum Singen'; $('roomBtn').onclick = () => go('menu');
+}
+function spanWords(n){ if (n >= 24) return 'zwei Oktaven und mehr'; if (n >= 12) return 'über eine Oktave'; if (n >= 7) return 'eine halbe Oktave und mehr'; return n + ' Halbtöne'; }
+function roomShowResult(fresh){
+  const rm = mem.room, el = $('roomResult'); if (!rm) return;
+  const span = rm.hi - rm.lo, hist = (mem.rooms || []).slice(-5);
+  el.innerHTML = `<b>Von ${nm(rm.lo)} bis ${nm(rm.hi)}</b> · ${spanWords(span)}<br>Wohlfühlton: ${dotHTML(rm.comfy)} ${nm(rm.comfy)}<br><span class="muted" style="font-size:14px">Gemessen am ${rm.date}${hist.length > 1 ? ' · Verlauf: ' + hist.map(h => (h.hi - h.lo)).join(' → ') + ' Halbtöne' : ''}</span>`;
+  el.hidden = false;
+}
+
+/* ---------- Ton vorgeben ---------- */
+let drone = null, pitchHold = store.get('hold', 0);
+function droneStop(){ if (!drone) return; const {g, os} = drone, t = ac.currentTime; g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0, t + .15); os.forEach(o => o.stop(t + .2)); drone = null; kikiMood(null); document.querySelectorAll('.keys button').forEach(b => b.classList.remove('on')); }
+function droneStart(m){
+  droneStop(); const f = hz(m), t = ac.currentTime;
+  const g = ac.createGain(); g.connect(master); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.45, t + .08);
+  const o1 = ac.createOscillator(); o1.type = 'sine'; o1.frequency.value = f; o1.connect(g);
+  const o2 = ac.createOscillator(); o2.type = 'triangle'; o2.frequency.value = f*2; const g2 = ac.createGain(); g2.gain.value = .3; o2.connect(g2); g2.connect(g);
+  [o1, o2].forEach(o => o.start(t)); drone = {g, os:[o1, o2]}; kikiMood('sing');
+}
+function startPitch(){
+  go('pitch');
+  const box = $('keys'); box.innerHTML = ''; const b0 = baseC();
+  MAJOR.concat([12]).forEach((st, i) => {
+    const m = b0 + st, k = document.createElement('button');
+    k.style.background = noteColor(m); k.innerHTML = `${noteName(m)}<small>${SOLF[i % 7]}</small>`;
+    k.onclick = async () => {
+      await initAudio(); micOff(); setSession('playback'); playToken++;
+      const was = k.classList.contains('on');
+      droneStop(); if (was && pitchHold) return;
+      k.classList.add('on');
+      if (pitchHold) droneStart(m);
+      else { await play([{m, d:1}], 2); k.classList.remove('on'); }
+    };
+    box.appendChild(k);
+  });
+  $('holdSeg').querySelectorAll('button').forEach(b => { b.classList.toggle('on', +b.dataset.v === +pitchHold); b.onclick = () => { pitchHold = +b.dataset.v; store.set('hold', pitchHold); droneStop(); startPitch(); }; });
+  $('pitchStop').onclick = () => { playToken++; droneStop(); };
+}
+
 /* ---------- Übung 4: Stimm-Spiegel ---------- */
 const trace = [];
 async function startMirror(){
@@ -984,13 +1285,14 @@ function memSummary(){
 }
 function renderMem(){
   const x = memSummary(), el = $('memList');
-  if (!mem.hits && !x.songs.length && !mem.warm){ el.textContent = 'Noch nichts. Nach dem ersten Singen steht hier, was Kiki gelernt hat.'; return; }
+  if (!mem.hits && !x.songs.length && !mem.warm && !mem.room){ el.textContent = 'Noch nichts. Nach dem ersten Singen steht hier, was Kiki gelernt hat.'; return; }
   el.innerHTML = [
     `<b>Übungstage:</b> ${x.days}`,
     mem.warm ? `<b>Aufgewärmt:</b> ${mem.warm}×` : '',
     x.best ? `<b>Sicher:</b> ${x.best}` : '', x.pr ? `<b>Noch üben:</b> ${x.pr}` : '',
     x.fav ? `<b>Lieblingslied:</b> ${x.fav.title}` : '',
-    x.range ? `<b>Stimmumfang:</b> ${x.range}` : '',
+    mem.room ? `<b>Stimmraum:</b> ${nm(mem.room.lo)} bis ${nm(mem.room.hi)}, Wohlfühlton ${nm(mem.room.comfy)} (${mem.room.date})` : '',
+    x.range ? `<b>Gehört beim Singen:</b> ${x.range}` : '',
     x.notes.length ? `<b>Töne getroffen:</b> ${x.notes.join(' · ')}` : '',
     x.songs.length ? `<b>Lieder:</b> ${x.songs.join(' · ')}` : ''
   ].filter(Boolean).join('<br>');
@@ -999,10 +1301,14 @@ $('memClear').onclick = () => { if (!confirm('Soll Kiki alles vergessen?')) retu
 $('memShare').onclick = async () => {
   if (!$('shareOk').checked){ $('shareMsg').textContent = 'Bitte zuerst das Häkchen setzen.'; return; }
   const x = memSummary();
-  const text = ['KIKI SINGT – Lern-Erfahrung (für Sense Engine)', `Datum: ${new Date().toISOString().slice(0,10)}`, `Übungstage: ${x.days}`, `Einstellung: Lage ${S.octave === 4 ? 'hoch' : 'tief'}, Genauigkeit ±${S.tol} Cent`, x.best ? `Sicher: ${x.best}` : '', x.pr ? `Noch üben: ${x.pr}` : '', x.fav ? `Lieblingslied: ${x.fav.title}` : '', x.range ? `Stimmumfang: ${x.range}` : '', x.notes.length ? 'Töne: ' + x.notes.join('; ') : '', x.songs.length ? 'Lieder: ' + x.songs.join('; ') : '', 'Einwilligung: ja · ohne Namen · ohne Stimme', '', 'Sense Engine (JSON):', JSON.stringify(Object.keys(mem.notes).map(k => ({app:'Kiki', art: noteRate(k) < .6 ? 'schwierig' : 'fortschritt', zeit: new Date().toISOString().slice(0,16), daten:{uebung:'ton-treffen', ton:k, versuche: mem.notes[k].t, getroffen: mem.notes[k].h, sterne: stars}, einwilligung:true})))].filter(Boolean).join('\n');
+  const text = ['KIKI SINGT – Lern-Erfahrung (für Sense Engine)', `Datum: ${new Date().toISOString().slice(0,10)}`, `Übungstage: ${x.days}`, `Einstellung: Lage ${S.octave === 4 ? 'hoch' : 'tief'}, Genauigkeit ±${S.tol} Cent`, x.best ? `Sicher: ${x.best}` : '', x.pr ? `Noch üben: ${x.pr}` : '', x.fav ? `Lieblingslied: ${x.fav.title}` : '', mem.room ? `Stimmraum: ${nm(mem.room.lo)} bis ${nm(mem.room.hi)}, Wohlfühlton ${nm(mem.room.comfy)}` : '', x.range ? `Gehört beim Singen: ${x.range}` : '', x.notes.length ? 'Töne: ' + x.notes.join('; ') : '', x.songs.length ? 'Lieder: ' + x.songs.join('; ') : '', 'Einwilligung: ja · ohne Namen · ohne Stimme', '', 'Sense Engine (JSON):', JSON.stringify(Object.keys(mem.notes).map(k => ({app:'Kiki', art: noteRate(k) < .6 ? 'schwierig' : 'fortschritt', zeit: new Date().toISOString().slice(0,16), daten:{uebung:'ton-treffen', ton:k, versuche: mem.notes[k].t, getroffen: mem.notes[k].h, sterne: stars}, einwilligung:true})))].filter(Boolean).join('\n');
   try{ if (navigator.share){ await navigator.share({title: 'Kiki – Lern-Erfahrung', text}); $('shareMsg').textContent = 'Geteilt. Danke!'; return; } }catch(e){ if (e && e.name === 'AbortError') return; }
   try{ await navigator.clipboard.writeText(text); $('shareMsg').textContent = 'Kopiert. Du kannst es jetzt an DR Lab schicken.'; }catch(e){ $('shareMsg').textContent = text; }
 };
+$('kidName').value = store.get('name', '');
+$('kidSave').onclick = () => { const n = $('kidName').value.trim().slice(0, 24); store.set('name', n); $('kidSave').textContent = 'Gespeichert ✓'; setTimeout(() => $('kidSave').textContent = 'Speichern', 1500); homeGreet(); };
+function homeGreet(){ const n = store.get('name', ''); $('homeBubble').textContent = n ? `Hallo ${n}! Ich bin Kiki, der singende Koala. Wollen wir zusammen singen?` : 'Hallo, ich bin Kiki! Ich singe soo gern. Wollen wir zusammen singen?'; }
+homeGreet();
 $('resetStars').onclick = () => { stars = 0; store.set('stars', 0); $('starCount').textContent = 0; };
 
 /* Offline */
