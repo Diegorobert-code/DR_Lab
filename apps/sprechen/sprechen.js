@@ -5,6 +5,7 @@
      data-audio="audio/flo/"   Ordner mit manifest.json + MP3 (Figurenstimme, Kategorien wie im Stimmenplan)
      data-endpoint="https://…" DR-Lab-Server für freie Antworten (erst nach «Server Go»). Leer = nur feste Sätze.
      data-unten="96"           Abstand des Knopfs vom unteren Rand in px (bei Tab-Leisten)
+     data-stimme-handy="mann"   Handystimme männlich wählen (bis MP3 da sind); data-tempo / data-hoehe fein einstellen
      data-handystimme="nein"   ohne Audio-Datei nicht mit der Handystimme vorlesen
      data-saetze='{"gruss":["…"]}' eigene feste Sätze pro Kategorie (Fallback, solange keine Audios da sind)
      data-stil="sprachnachricht" Antwort als Sprachnachricht (Abspielknopf + Wellen, Text als Untertitel)
@@ -164,10 +165,10 @@
     if (rec){ try{ rec.stop(); }catch(e){} return; }
     stopp();
     rec = new SR(); rec.lang = d.sprache || 'de-CH'; rec.interimResults = true; rec.maxAlternatives = 1;
-    let fertig = '';
-    rec.onresult = e => { let t = ''; for (const r of e.results){ t += r[0].transcript; if (r.isFinal) fertig = t; } du.textContent = '«' + t + '»'; };
+    let fertig = '', zwischen = '';
+    rec.onresult = e => { let t = ''; for (const r of e.results){ t += r[0].transcript; if (r.isFinal) fertig = t; } zwischen = t; du.textContent = '«' + t + '»'; };
     rec.onerror = e => { if (e.error === 'not-allowed') sie.textContent = 'Ich darf das Mikrofon noch nicht benutzen. Erlaube es in den Einstellungen oder schreib mir.'; };
-    rec.onend = () => { knopf.classList.remove('hoert'); mic.classList.remove('rec'); const t = fertig || (du.textContent || '').replace(/[«»]/g, ''); rec = null; if (t.trim()) senden(t); };
+    rec.onend = () => { knopf.classList.remove('hoert'); mic.classList.remove('rec'); const t = fertig || zwischen; if (!t) du.textContent = ''; rec = null; if (t.trim()) senden(t); };
     try{ rec.start(); knopf.classList.add('hoert'); mic.classList.add('rec'); du.textContent = 'Ich höre zu …'; }catch(e){ rec = null; feld.focus(); }
   }
 
@@ -222,13 +223,29 @@
     }
     handy(a.text, an, aus);
   }
+  // Handystimme (bis die Figurenstimme als MP3 da ist): beste deutsche Stimme, Text sprechbar machen
+  let stimmen = [];
+  const ladeStimmen = () => { try{ stimmen = speechSynthesis.getVoices().filter(x => /^de/i.test(x.lang)); }catch(e){} };
+  if (window.speechSynthesis){ ladeStimmen(); try{ speechSynthesis.addEventListener('voiceschanged', ladeStimmen); }catch(e){} }
+  const MANN = d.stimmeHandy === 'mann';
+  function besteStimme(){
+    const gut = /(premium|enhanced|erweitert|natural|neural|online)/i;
+    const m = /(markus|yannick|viktor|martin|conrad|killian|stefan|daniel|hans)/i, f = /(anna|helena|petra|sandra|katja|amala|seraphina|marlene|vicki)/i;
+    const pass = MANN ? m : f;
+    const rang = x => (gut.test(x.name) ? 4 : 0) + (pass.test(x.name) ? 2 : 0) + (/de-CH/i.test(x.lang) ? 1 : 0) + (x.localService ? 0 : 1);
+    return stimmen.slice().sort((a, b) => rang(b) - rang(a))[0] || null;
+  }
+  const sprechbar = t => t.replace(/\bMr\.\s*/g, 'Mister ').replace(/[«»"„“]/g, '').replace(/\s*·\s*/g, ', ').replace(/(\d)'(\d)/g, '$1$2').replace(/\s+/g, ' ').trim();
   function handy(text, an, aus){
     if (!HANDY || !window.speechSynthesis){ if (SN) setTimeout(aus, Math.max(2, text.length / 14) * 1000); return; }
     try{
-      const u = new SpeechSynthesisUtterance(text); u.lang = 'de-DE'; u.rate = 1; u.pitch = 1.05;
-      const v = speechSynthesis.getVoices().filter(x => /^de/i.test(x.lang));
-      if (v.length) u.voice = v.find(x => /premium|enhanced|natural/i.test(x.name)) || v[0];
-      u.onstart = an; u.onend = aus; speechSynthesis.speak(u);
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(sprechbar(text));
+      const v = besteStimme(); if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'de-DE';
+      u.rate = parseFloat(d.tempo || '0.96'); u.pitch = parseFloat(d.hoehe || (MANN ? '0.95' : '1.05'));
+      u.onstart = an; u.onend = aus; u.onerror = aus;
+      // kurz warten, bis das Mikrofon frei ist (sonst schneidet iPhone den Anfang ab)
+      setTimeout(() => { try{ speechSynthesis.resume(); speechSynthesis.speak(u); }catch(e){} }, 250);
     }catch(e){}
   }
 
