@@ -173,8 +173,23 @@
   vergessenZeigen();
 
   // Mr. Ping: Diegos Titel aus der TradePing-Liste (gleiches Handy), keine Kurse erfunden.
+  // Übungstopf aus der Mr.-Ping-App (kommt im Link mit)
+  try {
+    var mt = /[#&]topf=([^&]+)/.exec(location.hash);
+    if (mt) { var tp = JSON.parse(decodeURIComponent(mt[1])); if (Array.isArray(tp)) localStorage.setItem('tp.topf', JSON.stringify(tp)); history.replaceState(null, '', location.pathname + location.search); }
+  } catch (e) {}
   function positionen() {
     var it = []; try { it = JSON.parse(localStorage.getItem('tp.items')) || []; } catch (e) {}
+    var topf = []; try { topf = (JSON.parse(localStorage.getItem('tp.topf')) || []).filter(function (x) { return x && x.name; }); } catch (e) {}
+    if (topf.length) {
+      var summe = 0, start = 0;
+      var t = topf.map(function (x) {
+        var e = +x.einsatz || 50, w = x.kauf && x.jetzt ? e * x.jetzt / x.kauf : e;
+        summe += w; start += e;
+        return x.name + ': Einsatz ' + e + ' Franken, Kaufkurs ' + (x.kauf || '?') + ', jetzt ' + (x.jetzt || '?') + ', Wert ' + w.toFixed(2) + ' Franken (' + ((w / e - 1) * 100).toFixed(1) + ' %)';
+      }).join('; ');
+      return 'Übungstopf in Yuh: ' + t + '. Ganzer Topf ' + summe.toFixed(2) + ' von ' + start + ' Franken.' + (it.length ? ' Weitere beobachtete Titel: ' + it.map(function (x) { return x.name || x.sym; }).join(', ') + '.' : '');
+    }
     if (!it.length) return 'Noch nicht eingetragen. Frag Diego freundlich, welche vier Titel er gekauft hat.';
     return it.map(function (x) {
       var t = (x.name || x.sym) + (x.sym ? ' (' + x.sym + ')' : '');

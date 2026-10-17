@@ -59,7 +59,7 @@
   }
 
   function bild(now) {
-    var t = (now - t0) / DAUER; if (t > 1) t = 1;
+    var t = (now - t0) / DAUER; if (t > 1) t = 1; if (t < 0) t = 0;
     var cx = W / 2, cy = H * 0.45;
     ctx.fillStyle = '#050b1f'; ctx.fillRect(0, 0, W, H);
     // Sterne (beim Portal ziehen sie zur Mitte)
