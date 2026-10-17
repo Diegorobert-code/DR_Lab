@@ -600,6 +600,9 @@ function say(text){
   return new Promise(res => {
     if (!S.voice || !('speechSynthesis' in window)) return res();
     micOff(); setSession('playback');
+    // Kikis eigene Stimme (Sense Engine). Sätze mit dem Namen des Kindes bleiben bei der Gerätestimme.
+    const nm = store.get('name', '');
+    if (window.NovaStimme && NovaStimme.aktiv() && !(nm && text.includes(nm))){ NovaStimme.sprich(text, { figur: 'kiki' }).then(() => res()); return; }
     try{
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
@@ -1403,5 +1406,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 
 <style>/* Kiki: Farbschleier über dem Sternenhimmel, unter dem Inhalt */.film-aurora,#filmFunken{z-index:0!important}.film-aurora{opacity:.75}</style>
 <script src="feedback.js" data-app="Kiki" defer></script>
+<script src="../nova/seelen.js" defer></script>
+<script src="../nova/nova.js" data-nova-app="Kiki" data-nova-kind="1" data-nova-unten="90" defer></script>
 </body>
 </html>
