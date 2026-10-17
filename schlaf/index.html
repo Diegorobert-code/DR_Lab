@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Fias Nest">
-<meta name="theme-color" content="#140F24">
+<meta name="theme-color" content="#0E1838">
 <meta name="robots" content="noindex">
 <meta property="og:title" content="Fias Nest">
 <meta property="og:description" content="Abendritual mit Fia: Licht runter, 5 Seufzer, Handy weg.">
@@ -20,19 +20,35 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Figtree:wght@400;500;600&display=swap">
 <style>
 body{margin:0}
-/* Layout: eine Handy-Spalte, Fia oben im Nest, darunter drei Glut-Stufen; die Seite wird mit jeder erledigten Stufe dunkler */
+/* Layout: Startbild mit Fia (Tinko-Figur) als Titel, dann eine Handy-Spalte mit drei Glut-Stufen; Nachtblau wie Fias Sternenhimmel, Gold wie ihre Glut */
 :root{
-  --night:#140F24; --night-deep:#0B0815; --gold:#F2C14E; --coral:#D97757; --ember:#FF8A3D;
-  --cream:#F5E6D3; --muted:#B8A9C2; --line:rgba(242,193,78,.22);
+  --night:#0E1838; --night-deep:#060A1C; --sky:#1B2C6B; --gold:#F2C14E; --coral:#D97757; --ember:#FF8A3D;
+  --cream:#F5E6D3; --muted:#AEB8DA; --line:rgba(242,193,78,.22);
   --display:"Newsreader",Georgia,serif; --body:"Figtree",system-ui,sans-serif;
   color-scheme:dark;
 }
 html,body{height:100%}
 body{background:var(--night);color:var(--cream);font-family:var(--body);font-size:16px;line-height:1.5;
   transition:background 1.6s ease;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-body[data-stage="1"]{background:#110C1E}
-body[data-stage="2"]{background:#0E0A18}
+body[data-stage="1"]{background:#0B1430}
+body[data-stage="2"]{background:#091026}
 body[data-stage="3"]{background:var(--night-deep)}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;transition:opacity 1.6s;
+  background:radial-gradient(1.5px 1.5px at 12% 18%,var(--gold),transparent),radial-gradient(1px 1px at 78% 9%,var(--cream),transparent),
+  radial-gradient(2px 2px at 88% 30%,var(--gold),transparent),radial-gradient(1px 1px at 30% 6%,var(--cream),transparent),
+  radial-gradient(1.5px 1.5px at 62% 22%,var(--gold),transparent),radial-gradient(1px 1px at 6% 44%,var(--cream),transparent),
+  radial-gradient(1px 1px at 94% 58%,var(--cream),transparent),radial-gradient(1.5px 1.5px at 20% 70%,var(--gold),transparent),
+  radial-gradient(ellipse at 50% -10%,rgba(27,44,107,.75),transparent 60%)}
+body[data-stage="3"]::before{opacity:.35}
+main,#start{position:relative;z-index:1}
+#start{max-width:440px;margin:0 auto;padding-block:max(28px,env(safe-area-inset-top,0px)) 40px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px}
+.cover{width:min(78vw,320px);aspect-ratio:1;max-width:100%;border-radius:22%;border:3px solid var(--gold);object-fit:cover;
+  box-shadow:0 0 0 6px rgba(242,193,78,.08),0 18px 60px rgba(255,138,61,.28);animation:breathe 6s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(1.02);box-shadow:0 0 0 6px rgba(242,193,78,.12),0 18px 70px rgba(255,138,61,.4)}}
+#start h1{font-family:var(--display);font-weight:400;font-size:2.8rem;line-height:1;margin:6px 0 0;color:var(--gold)}
+#start .lead{margin:0;font-size:1.1rem}
+#start .small{margin:0;color:var(--muted);font-size:.85rem}
+.big{font-size:1.05rem;padding:13px 26px}
 main{max-width:440px;margin:0 auto;padding-block:max(20px,env(safe-area-inset-top,0px)) 40px;display:flex;flex-direction:column;gap:22px}
 .tag{align-self:flex-start;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);border-radius:99px;padding:3px 10px}
 header h1{font-family:var(--display);font-weight:400;font-size:2.2rem;line-height:1.1;margin:0;text-wrap:balance}
@@ -48,7 +64,7 @@ li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;paddin
 li.done{opacity:.45}
 li.active{border-color:var(--gold)}
 .dot{width:22px;height:22px;border-radius:50%;margin-top:2px;background:radial-gradient(circle,var(--gold),var(--ember) 60%,transparent 72%);box-shadow:0 0 14px var(--ember);transition:all 1s}
-li.done .dot{background:#3a2a2a;box-shadow:none}
+li.done .dot{background:#26304f;box-shadow:none}
 li h2{font-size:1.05rem;font-weight:600;margin:0}
 li p{margin:2px 0 10px;color:var(--muted);font-size:.93rem}
 li .text{min-width:0}
@@ -63,7 +79,15 @@ button[disabled]{opacity:.4;cursor:default}
 </style>
 </head>
 <body>
-<main>
+<section id="start">
+  <span class="tag">Entwurf</span>
+  <img class="cover" src="icon-512.png" alt="Fia schläft im Nest unter Sternen">
+  <h1>Fias Nest</h1>
+  <p class="lead">Ruhig schlafen, mit Fia.</p>
+  <button class="big" id="go">Abendritual beginnen</button>
+  <p class="small">Morgen, Mittagsnest und Glutmodus folgen.</p>
+</section>
+<main hidden>
   <span class="tag">Entwurf · Abendritual</span>
   <header>
     <h1>Ausglühen mit Fia</h1>
@@ -131,6 +155,7 @@ $('b2').onclick=async()=>{
 $('b3').onclick=()=>{finish(3);$('s3').classList.remove('active');
   $('fia').style.opacity='.55';$('fia').style.transform='translateY(6px)';say('Schlaf gut.');$('end').hidden=false;$('reset').hidden=false;};
 $('reset').onclick=()=>location.reload();
+$('go').onclick=()=>{$('start').hidden=true;document.querySelector('main').hidden=false;scrollTo(0,0);};
 stage(0);
 </script>
 
