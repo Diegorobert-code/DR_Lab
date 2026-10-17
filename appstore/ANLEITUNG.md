@@ -42,3 +42,13 @@ Pro App liegt alles in `appstore/<app>/`: die iPhone-App (`ios/`), die Texte (`s
 
 ## Neu bauen (nur falls nötig)
 `./alle-vorbereiten.sh` kopiert die aktuelle Web-Version jeder App in die iPhone-App. Danach in Xcode wieder Archive → Upload, mit höherer Build-Nummer (Xcode: App → General → Build).
+
+## Ohne eigenen Mac: Cloud-Mac auf GitHub (gratis)
+Jede Änderung an den Apps wird automatisch auf einem Mac von GitHub test-gebaut (Reiter «Actions» → «iPhone-Apps bauen»).
+Zum Hochladen nach App Store Connect, sobald das Developer-Konto aktiv ist:
+1. App Store Connect → Benutzer und Zugriff → Integrationen → App Store Connect API → Schlüssel erzeugen (Rolle **Admin**, nötig fürs automatische Signieren). Die .p8-Datei einmal laden.
+2. Team-ID steht unter developer.apple.com/account → Mitgliedschaft.
+3. GitHub → DR_Lab → Settings → Secrets and variables → Actions → vier Einträge: `ASC_KEY_ID` (Schlüssel-ID), `ASC_ISSUER_ID` (Aussteller-ID), `ASC_KEY_P8` (ganzer Inhalt der .p8-Datei), `APPLE_TEAM_ID`.
+4. Die vier App-Einträge in App Store Connect müssen schon angelegt sein (Schritt 8 oben).
+5. Actions → «iPhone-Apps bauen» → «Run workflow» → «Hochladen» anhaken. Nach ca. 20 Min. liegen die Builds in TestFlight.
+Eingereicht wird dadurch nichts; «Zur Prüfung einreichen» machst du weiterhin selbst.

@@ -34,7 +34,9 @@ const kopf = '<link rel="stylesheet" href="../native/fonts/fonts.css">\n' +
   (fs.existsSync(core) ? '<script src="../native/capacitor.js"></script>\n' : '') +
   '<script src="../native/native.js"></script>\n' +
   (app.css ? `<style>${app.css}</style>\n` : '');
-html = html.replace(/<head>/i, m => m + '\n' + kopf);
+// Nach <meta charset> einfügen, damit die Zeichenkodierung zuerst kommt (Umlaute).
+if (/<meta charset[^>]*>/i.test(html)) html = html.replace(/<meta charset[^>]*>/i, m => m + '\n' + kopf);
+else html = html.replace(/<head>/i, m => m + '\n' + kopf);
 fs.writeFileSync(datei, html);
 fs.rmSync(path.join(www, app.ordner, 'sw.js'), { force: true });
 
