@@ -212,9 +212,13 @@ footer b{color:var(--ink2);font-weight:600}
 .pos-kopf{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .pos-kopf input{flex:1;min-width:0;background:none;border:0;border-bottom:1px dashed var(--line2);font-weight:700;font-size:17px;padding:4px 0}
 .pos-kopf .w{font-weight:700;white-space:nowrap;font-size:15px}
-.pos-felder{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.pos-felder label{min-width:0}
-.pos-felder label{display:grid;gap:2px;font-size:11.5px;color:var(--muted)}
-.pos-felder input{width:100%;min-width:0;box-sizing:border-box;background:rgba(120,160,230,.08);border:1px solid var(--line);border-radius:10px;padding:9px 8px;font-size:16px}
+.pos-felder{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ping-an{width:100%;min-height:52px;margin:6px 0 4px;border:1px solid rgba(245,196,81,.5);border-radius:16px;background:rgba(245,196,81,.12);color:var(--gold);font-weight:700;font-size:16px}
+.ping-an.an{background:rgba(63,193,165,.14);border-color:rgba(63,193,165,.5);color:#7fe0c8}
+.ping-status{margin:0 0 6px;font-size:13px;color:var(--muted);min-height:1em}
+.pos .live{font-size:11px;color:#7fe0c8;margin-left:4px}.pos-felder label{min-width:0}.pos-felder label .live{display:inline}
+.pos-felder label{display:block;font-size:11.5px;color:var(--muted)}
+.pos-felder input{display:block;margin-top:2px;width:100%;min-width:0;box-sizing:border-box;background:rgba(120,160,230,.08);border:1px solid var(--line);border-radius:10px;padding:9px 8px;font-size:16px}
 .pos-info{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12.5px;color:var(--ink2)}
 .pos-info .warn{color:var(--red);font-weight:700}.pos-info .gut{color:var(--green);font-weight:700}
 .topf-hinweis{margin:12px 0 0;font-size:12.5px;color:var(--muted)}
@@ -243,13 +247,15 @@ footer b{color:var(--ink2);font-weight:600}
 
   <section class="topf" id="topf" aria-label="Mein Übungstopf">
     <h2>Mein Übungstopf</h2>
-    <p class="unter">CHF 200, vier Titel zu je CHF 50, selbst gekauft in Yuh. Kurse trägst du von Hand aus Yuh ein.</p>
+    <p class="unter">CHF 200, vier Titel zu je CHF 50, selbst gekauft in Yuh. Trag pro Titel das Kürzel ein (z. B. AAPL), dann kommen die echten Kurse von selbst.</p>
     <div class="topf-zahl"><b id="topfWert">CHF 200.00</b><span id="topfDiff">±0.00 %</span></div>
     <div class="balken" aria-hidden="true"><i id="topfBalken" style="width:50%"></i><span class="pause" title="Pause bei −25 %"></span></div>
     <div class="balken-txt"><span>Pause bei −25 %</span><span>Gewinn markieren ab +30 %</span></div>
     <div id="topfAlarm"></div>
+    <button type="button" class="ping-an" id="pingAn">🔔 Ping aufs Handy einschalten</button>
+    <p class="ping-status" id="pingStatus" aria-live="polite"></p>
     <div id="topfListe"></div>
-    <p class="topf-hinweis">Regeln aus deiner Leitlinie: Verlustgrenze pro Titel −15 % (nie nach unten schieben), Pause bei −25 % im ganzen Topf, ab +30 % die Hälfte als Gewinn markieren. Mr. Ping sieht diese Liste, wenn du mit ihm redest.</p>
+    <p class="topf-hinweis">Regeln aus deiner Leitlinie: Verlustgrenze pro Titel −15 % (nie nach unten schieben), Pause bei −25 % im ganzen Topf, ab +30 % die Hälfte als Gewinn markieren. Mr. Ping pingt bei −5 %, −10 %, −15 % und +30 % gegenüber dem Kaufkurs, während die US-Börse offen ist. Kaufkurs bitte in der Währung der Aktie (bei US-Aktien Dollar). Mr. Ping sieht diese Liste, wenn du mit ihm redest.</p>
   </section>
   <div class="radar-box">
     <div class="radar" id="radar">
@@ -844,7 +850,8 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 (function () {
   var KEY = 'tp.topf', $ = function (id) { return document.getElementById(id); };
   var topf; try { topf = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
-  if (!Array.isArray(topf) || topf.length !== 4) topf = [0, 1, 2, 3].map(function () { return { name: '', einsatz: 50, kauf: null, jetzt: null }; });
+  if (!Array.isArray(topf) || topf.length !== 4) topf = [0, 1, 2, 3].map(function () { return { name: '', symbol: '', einsatz: 50, kauf: null, jetzt: null }; });
+  topf.forEach(function (p) { p.live = false; if (p.symbol == null) p.symbol = ''; });
   function speichern() { try { localStorage.setItem(KEY, JSON.stringify(topf)); } catch (e) {} }
   function zahl(v) { v = String(v == null ? '' : v).replace(/[’' ]/g, '').replace(',', '.'); var n = parseFloat(v); return isNaN(n) ? null : n; }
   function chf(n) { return 'CHF ' + n.toLocaleString('de-CH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -859,14 +866,14 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
       if (p.kauf) info.push('Gewinnmarke: <b>' + (p.kauf * 1.3).toFixed(2) + '</b>');
       if (pr != null && pr <= -15) info.push('<span class="warn">Verlustgrenze erreicht</span>');
       if (pr != null && pr >= 30) info.push('<span class="gut">+30 % erreicht: Hälfte als Gewinn markieren</span>');
-      d.innerHTML = '<div class="pos-kopf"><input aria-label="Titel ' + (i + 1) + '" placeholder="Titel ' + (i + 1) + ' (z. B. Name aus Yuh)" maxlength="40"><span class="w ' + (pr == null ? '' : pr >= 0 ? 'plus' : 'minus') + '">' + chf(w) + (pr == null ? '' : ' · ' + (pr >= 0 ? '+' : '') + pr.toFixed(1) + ' %') + '</span></div>' +
-        '<div class="pos-felder"><label>Einsatz CHF<input inputmode="decimal" data-k="einsatz"></label><label>Kaufkurs<input inputmode="decimal" data-k="kauf" placeholder="—"></label><label>Kurs jetzt<input inputmode="decimal" data-k="jetzt" placeholder="—"></label></div>' +
+      d.innerHTML = '<div class="pos-kopf"><input aria-label="Titel ' + (i + 1) + '" placeholder="Titel ' + (i + 1) + '" maxlength="40"><span class="w ' + (pr == null ? '' : pr >= 0 ? 'plus' : 'minus') + '">' + chf(w) + (pr == null ? '' : ' · ' + (pr >= 0 ? '+' : '') + pr.toFixed(1) + ' %') + '</span></div>' +
+        '<div class="pos-felder"><label>Kürzel<input data-k="symbol" placeholder="z. B. AAPL" autocapitalize="characters" autocomplete="off" spellcheck="false" maxlength="15"></label><label>Einsatz CHF<input inputmode="decimal" data-k="einsatz"></label><label>Kaufkurs<input inputmode="decimal" data-k="kauf" placeholder="—"></label><label>Kurs jetzt' + (p.live ? ' <span class="live">● live</span>' : '') + '<input inputmode="decimal" data-k="jetzt" placeholder="—"></label></div>' +
         (info.length ? '<div class="pos-info">' + info.join('') + '</div>' : '');
       var nm = d.querySelector('.pos-kopf input'); nm.value = p.name || '';
-      nm.addEventListener('change', function () { p.name = nm.value.trim(); speichern(); });
+      nm.addEventListener('change', function () { p.name = nm.value.trim(); speichern(); abgleichen(); });
       d.querySelectorAll('.pos-felder input').forEach(function (inp) {
         var k = inp.getAttribute('data-k'); inp.value = p[k] == null ? '' : p[k];
-        inp.addEventListener('change', function () { var n = zahl(inp.value); p[k] = k === 'einsatz' ? (n || 0) : n; speichern(); zeichnen(); });
+        inp.addEventListener('change', function () { if (k === 'symbol') { p.symbol = inp.value.toUpperCase().replace(/[^A-Z0-9.:\-]/g, ''); p.live = false; speichern(); zeichnen(); abgleichen(); holen(); return; } var n = zahl(inp.value); p[k] = k === 'einsatz' ? (n || 0) : n; if (k === 'jetzt') p.live = false; speichern(); zeichnen(); if (k === 'kauf') abgleichen(); });
       });
       liste.appendChild(d);
     });
@@ -886,6 +893,53 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
       var basis = a.getAttribute('href').split('#')[0];
       a.setAttribute('href', basis + '#topf=' + encodeURIComponent(JSON.stringify(topf)));
     });
+  });
+  // Echte Kurse und Ping kommen vom eigenen Server (Schlüssel bleibt dort).
+  var SERVER = 'https://sense-179-237-127-58.sslip.io/kursping';
+  function holen() {
+    var s = topf.map(function (p) { return p.symbol; }).filter(Boolean);
+    if (!s.length || document.hidden) return;
+    fetch(SERVER + '/kurse?s=' + encodeURIComponent(s.join(',')), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (k) {
+      var neu = false;
+      topf.forEach(function (p) { if (p.symbol && typeof k[p.symbol] === 'number') { p.jetzt = k[p.symbol]; p.live = true; neu = true; } });
+      if (neu) { speichern(); zeichnen(); }
+    }).catch(function () {});
+  }
+  holen(); setInterval(holen, 60000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) holen(); });
+  function pingId() { try { return localStorage.getItem('tp.pingId'); } catch (e) { return null; } }
+  function titelListe() { return topf.filter(function (p) { return p.symbol; }).map(function (p) { return { symbol: p.symbol, name: p.name, kauf: p.kauf }; }); }
+  function abgleichen() {
+    var id = pingId(); if (!id) return;
+    fetch(SERVER + '/abo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, titel: titelListe() }) }).catch(function () {});
+  }
+  function b64u(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; var b = atob(s), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; }
+  var knopf = $('pingAn'), status = $('pingStatus');
+  function zeigeAn() { if (pingId()) { knopf.textContent = '🔔 Ping ist eingeschaltet · Probe senden'; knopf.classList.add('an'); } }
+  zeigeAn();
+  knopf.addEventListener('click', function () {
+    var id = pingId();
+    if (id) {
+      status.textContent = 'Probe-Ping ist unterwegs …';
+      fetch(SERVER + '/test?id=' + id, { method: 'POST' }).then(function (r) { status.textContent = r.ok ? 'Probe-Ping gesendet.' : 'Der Server kennt dieses Handy nicht mehr. Bitte neu einschalten.'; if (r.status === 404) { try { localStorage.removeItem('tp.pingId'); } catch (e) {} knopf.textContent = '🔔 Ping aufs Handy einschalten'; knopf.classList.remove('an'); } }).catch(function () { status.textContent = 'Server gerade nicht erreichbar.'; });
+      return;
+    }
+    if (!('serviceWorker' in navigator) || !('PushManager' in window) || !window.Notification) {
+      status.textContent = 'Auf dem iPhone geht der Ping, wenn du Mr. Ping über das Symbol auf dem Home-Bildschirm öffnest.'; return;
+    }
+    status.textContent = 'Einen Moment …';
+    Notification.requestPermission().then(function (erlaubt) {
+      if (erlaubt !== 'granted') throw new Error('Mitteilungen sind nicht erlaubt. In den Einstellungen bei «Mitteilungen» erlauben.');
+      return Promise.all([navigator.serviceWorker.register('sw.js').then(function () { return navigator.serviceWorker.ready; }), fetch(SERVER + '/vapid').then(function (r) { return r.json(); })]);
+    }).then(function (x) {
+      return x[0].pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(x[1].key) });
+    }).then(function (sub) {
+      return fetch(SERVER + '/abo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sub: sub.toJSON(), titel: titelListe() }) }).then(function (r) { if (!r.ok) throw new Error('Server sagt nein (' + r.status + ').'); return r.json(); });
+    }).then(function (a) {
+      try { localStorage.setItem('tp.pingId', a.id); } catch (e) {}
+      zeigeAn(); status.textContent = 'Eingeschaltet. Ein Probe-Ping kommt gleich.';
+      return fetch(SERVER + '/test?id=' + a.id, { method: 'POST' });
+    }).catch(function (e) { status.textContent = (e && e.message && !/fetch|network/i.test(e.message)) ? e.message : 'Server gerade nicht erreichbar. Später nochmals tippen.'; });
   });
   // Glocke: Ping-Ton und Wackeln
   var gl = $('pingGlocke');
