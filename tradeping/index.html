@@ -182,24 +182,48 @@ footer b{color:var(--ink2);font-weight:600}
 .figur-hero b{display:block;color:#e8be5c;font-size:18px;line-height:1.25}
 .figur-hero span{display:block;font-size:14px;line-height:1.4;color:#e9e3d6;margin-top:2px}
 .figur-logo{width:40px;height:40px;border-radius:50%;border:2px solid #e8be5c;object-fit:cover}
-#figurStart{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:max(28px,env(safe-area-inset-top,0px)) 24px max(28px,env(safe-area-inset-bottom,0px));text-align:center;color:#f6efe0;background:radial-gradient(1.5px 1.5px at 12% 18%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 82% 12%,#ffe9a8,transparent),radial-gradient(1px 1px at 70% 30%,#ffe9a8,transparent),radial-gradient(1px 1px at 22% 72%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 88% 80%,#ffe9a8,transparent),radial-gradient(120% 80% at 50% 0%,#1B2C6B 0%,#0E1838 60%,#060A1C 100%);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
-#figurStart[hidden]{display:none!important}
-#figurStart img{width:min(64vw,260px);height:min(64vw,260px);border-radius:32px;border:3px solid #F2C14E;object-fit:cover;box-shadow:0 0 0 6px rgba(242,193,78,.08),0 18px 60px rgba(242,193,78,.25);animation:figurAtmen 5s ease-in-out infinite}
 @keyframes figurAtmen{50%{transform:scale(1.02);box-shadow:0 0 0 6px rgba(242,193,78,.14),0 18px 70px rgba(242,193,78,.38)}}
 @media (prefers-reduced-motion:reduce){#figurStart img{animation:none}}
-#figurStart h1{margin:4px 0 0;font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:2.6rem;line-height:1;color:#F2C14E}
-#figurStart p{margin:0;max-width:300px;font-size:1.05rem;line-height:1.45;color:#e9e3d6}
-#figurStart button{margin-top:6px;min-height:52px;padding:0 34px;border:0;border-radius:999px;background:#F2C14E;color:#0E1838;font:700 1.05rem system-ui,-apple-system,sans-serif;box-shadow:0 8px 24px rgba(242,193,78,.3);cursor:pointer}
 /* Figuren-Look */
 :root{--teal:#E8BE5C;--teal-d:#B8902F;--gold:#F2C14E}
-#figurStart{background:repeating-linear-gradient(90deg,rgba(242,193,78,.05) 0 1px,transparent 1px 22px),radial-gradient(60% 40% at 50% 38%,rgba(242,193,78,.22),transparent 70%),radial-gradient(1.5px 1.5px at 12% 8%,rgba(255,233,168,.7),transparent),radial-gradient(1px 1px at 84% 14%,rgba(255,233,168,.6),transparent),radial-gradient(1.5px 1.5px at 66% 40%,rgba(255,233,168,.35),transparent),radial-gradient(1px 1px at 30% 62%,rgba(255,233,168,.4),transparent),radial-gradient(120% 80% at 50% 0%,#1B2C6B 0%,#0E1838 60%,#060A1C 100%)}
-#figurStart h1{letter-spacing:.04em}
+
+/* Mr. Ping Bühne + Übungstopf */
+.ping-buehne{position:relative;margin:4px 0 16px;border-radius:26px;overflow:hidden;border:1px solid rgba(245,196,81,.45);box-shadow:0 18px 50px rgba(0,0,0,.45),0 0 40px rgba(245,196,81,.12)}
+.ping-buehne img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;animation:pingAtmen 5s ease-in-out infinite;transform-origin:50% 90%}
+@keyframes pingAtmen{50%{transform:scale(1.015) translateY(-3px)}}
+.ping-buehne .unten{position:absolute;left:0;right:0;bottom:0;padding:60px 16px 16px;background:linear-gradient(transparent,rgba(5,11,31,.92) 60%);display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center}
+.ping-buehne .unten b{font-size:22px;color:var(--gold);letter-spacing:.01em}
+.ping-buehne .unten span{font-size:14px;color:#e9e3d6}
+.ping-reden{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:14px 24px;font-weight:700;font-size:17px;background:var(--gold);color:#2a1d00;box-shadow:0 8px 24px rgba(245,196,81,.35);text-decoration:none}
+.ping-reden:active{transform:scale(.96)}
+.ping-glocke{position:absolute;right:14px;top:14px;width:52px;height:52px;border-radius:50%;border:0;background:rgba(5,11,31,.6);font-size:26px;display:grid;place-items:center;box-shadow:0 0 0 1px rgba(245,196,81,.5)}
+.ping-glocke.klingelt{animation:klingeln .7s ease}
+@keyframes klingeln{20%{transform:rotate(-18deg)}40%{transform:rotate(15deg)}60%{transform:rotate(-10deg)}80%{transform:rotate(6deg)}}
+.topf{margin:0 0 18px;padding:16px;border-radius:22px;background:var(--card);border:1px solid var(--line2)}
+.topf h2{margin:0 0 2px;font-size:19px}.topf .unter{margin:0 0 12px;color:var(--muted);font-size:13.5px}
+.topf-zahl{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px}
+.topf-zahl b{font-size:30px;font-weight:800;letter-spacing:-.02em}.topf-zahl span{font-size:15px;font-weight:700}
+.plus{color:var(--green)}.minus{color:var(--red)}
+.balken{position:relative;height:12px;border-radius:99px;background:rgba(120,160,230,.14);overflow:hidden;margin-bottom:6px}
+.balken i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width .6s var(--ease)}
+.balken .pause{position:absolute;left:25%;top:-2px;bottom:-2px;width:2px;background:var(--red)}
+.balken-txt{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:12px}
+.pos{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;box-sizing:border-box;min-width:0;padding:12px;border-radius:16px;background:rgba(10,22,48,.7);border:1px solid var(--line);margin-top:10px}
+.pos-kopf{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pos-kopf input{flex:1;min-width:0;background:none;border:0;border-bottom:1px dashed var(--line2);font-weight:700;font-size:17px;padding:4px 0}
+.pos-kopf .w{font-weight:700;white-space:nowrap;font-size:15px}
+.pos-felder{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.pos-felder label{min-width:0}
+.pos-felder label{display:grid;gap:2px;font-size:11.5px;color:var(--muted)}
+.pos-felder input{width:100%;min-width:0;box-sizing:border-box;background:rgba(120,160,230,.08);border:1px solid var(--line);border-radius:10px;padding:9px 8px;font-size:16px}
+.pos-info{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12.5px;color:var(--ink2)}
+.pos-info .warn{color:var(--red);font-weight:700}.pos-info .gut{color:var(--green);font-weight:700}
+.topf-hinweis{margin:12px 0 0;font-size:12.5px;color:var(--muted)}
+.topf-alarm{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:rgba(255,123,114,.12);color:#ffb3ad;font-size:14px;font-weight:600}
 </style>
 </head>
 <body>
 <script src="../nova/intro.js" data-art="funken" data-bild="ping-3d.jpg" data-text="Ping! Mr. Ping ist da."></script>
-<div id="figurStart" role="dialog" aria-label="Mr. Ping"><img src="figur-gross.jpg" alt="Mr. Ping"><h1>Mr. Ping</h1><p>Ein Ping, nur wenn es zählt. Keine Anlageberatung.</p><button type="button" id="figurStartGo">Zum Radar</button></div>
-<script>(function(){var s=document.getElementById('figurStart');try{if(sessionStorage.getItem('figurStart'))s.hidden=true;}catch(e){}document.getElementById('figurStartGo').onclick=function(){s.hidden=true;try{sessionStorage.setItem('figurStart','1');}catch(e){}};})();</script>
+
 
 <div class="wrap">
   <header class="top">
@@ -210,7 +234,23 @@ footer b{color:var(--ink2);font-weight:600}
     <div class="stand" id="stand" aria-live="polite"><b>Kurse laden …</b></div>
   </header>
 
-  <div class="figur-hero"><img src="figur.jpg" alt=""><div><b>Mr. Ping ist bereit.</b><span>Ich melde mich nur, wenn eine deiner Marken erreicht ist.</span></div></div>
+  <section class="ping-buehne" aria-label="Mr. Ping">
+    <img src="ping-3d.jpg" alt="Mr. Ping mit seiner goldenen Glocke">
+    <button class="ping-glocke" id="pingGlocke" type="button" aria-label="Glocke läuten">🔔</button>
+    <div class="unten"><b>Mr. Ping</b><span>Dein Begleiter für den Übungstopf. Keine Anlageberatung.</span>
+      <a class="ping-reden" href="../nova/reden.html?f=mr.%20ping">📞 Mit Mr. Ping reden</a></div>
+  </section>
+
+  <section class="topf" id="topf" aria-label="Mein Übungstopf">
+    <h2>Mein Übungstopf</h2>
+    <p class="unter">CHF 200, vier Titel zu je CHF 50, selbst gekauft in Yuh. Kurse trägst du von Hand aus Yuh ein.</p>
+    <div class="topf-zahl"><b id="topfWert">CHF 200.00</b><span id="topfDiff">±0.00 %</span></div>
+    <div class="balken" aria-hidden="true"><i id="topfBalken" style="width:50%"></i><span class="pause" title="Pause bei −25 %"></span></div>
+    <div class="balken-txt"><span>Pause bei −25 %</span><span>Gewinn markieren ab +30 %</span></div>
+    <div id="topfAlarm"></div>
+    <div id="topfListe"></div>
+    <p class="topf-hinweis">Regeln aus deiner Leitlinie: Verlustgrenze pro Titel −15 % (nie nach unten schieben), Pause bei −25 % im ganzen Topf, ab +30 % die Hälfte als Gewinn markieren. Mr. Ping sieht diese Liste, wenn du mit ihm redest.</p>
+  </section>
   <div class="radar-box">
     <div class="radar" id="radar">
       <svg class="rings" viewBox="0 0 100 100" aria-hidden="true">
@@ -737,15 +777,6 @@ window.__tp = { items:function(){ return items; }, log:function(){ return log; }
 @keyframes filmDrift{to{transform:translate(8%,-6%) scale(1.12)}}
 button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.96)}
 :root{--fa1:#3FC1A5;--fa2:#E5484D;--fgold:#F2C14E}
-#figurStart{overflow:hidden;isolation:isolate}
-#figurStart::before{content:"";position:absolute;inset:-40px;z-index:-1;background:url(figur-gross.jpg) center/cover;filter:blur(28px) saturate(1.5);opacity:.45;transform:scale(1.15)}
-#figurStart::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 45% at 18% 85%,color-mix(in srgb,var(--fa1) 55%,transparent),transparent),radial-gradient(55% 40% at 85% 20%,color-mix(in srgb,var(--fa2) 50%,transparent),transparent),linear-gradient(180deg,rgba(14,24,56,.35),rgba(6,10,28,.85))}
-#figurStart img{border-color:var(--fgold);box-shadow:0 0 0 6px rgba(242,193,78,.1),0 0 60px color-mix(in srgb,var(--fa1) 60%,transparent),0 18px 60px rgba(0,0,0,.4);animation:filmSchweben 4.6s ease-in-out infinite;cursor:pointer}
-#figurStart h1{background:linear-gradient(90deg,var(--fgold),var(--fa1),var(--fa2),var(--fgold));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:filmGlanz 6s linear infinite}
-#figurStart h1,#figurStart p,#figurStart button{animation-fill-mode:both}
-#figurStart p{animation:filmAuf .8s .25s ease-out both}
-#figurStart button{background:linear-gradient(135deg,var(--fgold),color-mix(in srgb,var(--fgold) 60%,var(--fa1)));box-shadow:0 8px 24px color-mix(in srgb,var(--fa1) 45%,transparent);animation:filmAuf .8s .45s ease-out both,filmPuls 2.6s 1.4s ease-in-out infinite}
-#figurStart.geht{animation:filmIris .7s ease-in forwards}
 .film-funke{position:absolute;width:6px;height:6px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#fff 0,var(--c,#F2C14E) 45%,transparent 70%);opacity:0;animation:filmFunkeln var(--d,5s) var(--v,0s) ease-in-out infinite}
 .figur-hero{background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--fa1) 45%,#1d2c66) 0%,#0f1b3d 60%,color-mix(in srgb,var(--fa2) 35%,#0f1b3d) 100%)!important;isolation:isolate;animation:filmAuf .7s ease-out both}
 .figur-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:url(figur-gross.jpg) right center/60% auto no-repeat;opacity:.18;filter:blur(2px) saturate(1.4);mask-image:linear-gradient(90deg,transparent 20%,#000)}
@@ -807,5 +838,69 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 })();
 </script>
 <script src="../apps/sprechen/sprechen.js" data-figur="mrping" data-name="Mr. Ping" data-stimme-handy="mann" data-tempo="0.92" data-bild="figur.jpg" data-audio="audio/mrping/" data-unten="18" data-saetze='{"gruss": ["Guten Tag, schön, dass Sie da sind. Ich bin Mister Ping und behalte Ihre Marken ganz in Ruhe für Sie im Blick."], "lob": ["Sehr elegant gemacht. Geduld ist die feinste Strategie, und Sie haben sie."], "mut": ["Nur keine Eile. Wenn ich mich nicht melde, ist alles ruhig, und Sie dürfen sich entspannen."], "frage": ["Tragen Sie einfach Ihre Marke in der Watchlist ein. Sobald sie erreicht ist, melde ich mich sofort bei Ihnen. Beraten darf ich Sie allerdings nicht, entscheiden tun immer Sie."], "abschied": ["Auf Wiedersehen. Ich halte hier für Sie Wache."]}' defer></script>
+
+<script>
+// Übungstopf: vier Titel, alles nur auf diesem Handy (tp.topf). Mr. Ping liest die Liste beim Reden.
+(function () {
+  var KEY = 'tp.topf', $ = function (id) { return document.getElementById(id); };
+  var topf; try { topf = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  if (!Array.isArray(topf) || topf.length !== 4) topf = [0, 1, 2, 3].map(function () { return { name: '', einsatz: 50, kauf: null, jetzt: null }; });
+  function speichern() { try { localStorage.setItem(KEY, JSON.stringify(topf)); } catch (e) {} }
+  function zahl(v) { v = String(v == null ? '' : v).replace(/[’' ]/g, '').replace(',', '.'); var n = parseFloat(v); return isNaN(n) ? null : n; }
+  function chf(n) { return 'CHF ' + n.toLocaleString('de-CH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function wert(p) { return p.kauf && p.jetzt ? p.einsatz * p.jetzt / p.kauf : p.einsatz; }
+  function zeichnen() {
+    var liste = $('topfListe'); liste.innerHTML = '';
+    topf.forEach(function (p, i) {
+      var d = document.createElement('div'); d.className = 'pos';
+      var w = wert(p), pr = p.kauf && p.jetzt ? (p.jetzt / p.kauf - 1) * 100 : null;
+      var info = [];
+      if (p.kauf) info.push('Verlustgrenze: <b>' + (p.kauf * 0.85).toFixed(2) + '</b>');
+      if (p.kauf) info.push('Gewinnmarke: <b>' + (p.kauf * 1.3).toFixed(2) + '</b>');
+      if (pr != null && pr <= -15) info.push('<span class="warn">Verlustgrenze erreicht</span>');
+      if (pr != null && pr >= 30) info.push('<span class="gut">+30 % erreicht: Hälfte als Gewinn markieren</span>');
+      d.innerHTML = '<div class="pos-kopf"><input aria-label="Titel ' + (i + 1) + '" placeholder="Titel ' + (i + 1) + ' (z. B. Name aus Yuh)" maxlength="40"><span class="w ' + (pr == null ? '' : pr >= 0 ? 'plus' : 'minus') + '">' + chf(w) + (pr == null ? '' : ' · ' + (pr >= 0 ? '+' : '') + pr.toFixed(1) + ' %') + '</span></div>' +
+        '<div class="pos-felder"><label>Einsatz CHF<input inputmode="decimal" data-k="einsatz"></label><label>Kaufkurs<input inputmode="decimal" data-k="kauf" placeholder="—"></label><label>Kurs jetzt<input inputmode="decimal" data-k="jetzt" placeholder="—"></label></div>' +
+        (info.length ? '<div class="pos-info">' + info.join('') + '</div>' : '');
+      var nm = d.querySelector('.pos-kopf input'); nm.value = p.name || '';
+      nm.addEventListener('change', function () { p.name = nm.value.trim(); speichern(); });
+      d.querySelectorAll('.pos-felder input').forEach(function (inp) {
+        var k = inp.getAttribute('data-k'); inp.value = p[k] == null ? '' : p[k];
+        inp.addEventListener('change', function () { var n = zahl(inp.value); p[k] = k === 'einsatz' ? (n || 0) : n; speichern(); zeichnen(); });
+      });
+      liste.appendChild(d);
+    });
+    var einsatz = topf.reduce(function (a, p) { return a + (p.einsatz || 0); }, 0) || 200;
+    var total = topf.reduce(function (a, p) { return a + wert(p); }, 0);
+    var diff = (total / einsatz - 1) * 100;
+    $('topfWert').textContent = chf(total);
+    $('topfDiff').textContent = (diff >= 0 ? '+' : '') + diff.toFixed(2) + ' %';
+    $('topfDiff').className = diff >= 0 ? 'plus' : 'minus';
+    $('topfBalken').style.width = Math.max(2, Math.min(100, 50 + diff)) + '%';
+    $('topfAlarm').innerHTML = diff <= -25 ? '<p class="topf-alarm">Der Topf ist 25 % im Minus. Deine Regel sagt: Pause machen und mit Mr. Ping in Ruhe besprechen.</p>' : '';
+  }
+  zeichnen();
+  // Der Topf reist im Link mit zur Bühne, damit Mr. Ping ihn auch in der Home-Bildschirm-App kennt.
+  document.querySelectorAll('a[href*="reden.html"]').forEach(function (a) {
+    a.addEventListener('click', function () {
+      var basis = a.getAttribute('href').split('#')[0];
+      a.setAttribute('href', basis + '#topf=' + encodeURIComponent(JSON.stringify(topf)));
+    });
+  });
+  // Glocke: Ping-Ton und Wackeln
+  var gl = $('pingGlocke');
+  gl.addEventListener('click', function () {
+    gl.classList.remove('klingelt'); void gl.offsetWidth; gl.classList.add('klingelt');
+    try {
+      var ac = new (window.AudioContext || window.webkitAudioContext)(), t = ac.currentTime;
+      [1318, 1975].forEach(function (f, i) {
+        var o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = f; o.type = 'sine';
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.25 / (i + 1), t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.2);
+        o.connect(g).connect(ac.destination); o.start(t); o.stop(t + 1.3);
+      });
+    } catch (e) {}
+  });
+})();
+</script>
 </body>
 </html>
