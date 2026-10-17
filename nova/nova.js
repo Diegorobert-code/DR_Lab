@@ -3,7 +3,8 @@
    Optional: data-nova-figur="otti"  (wer spricht; sonst aus FIGUREN nach App),
              data-nova-unten="90"   (Knopf höher, z. B. über einer Leiste),
              data-nova-kind="1"     (Kinder-App: keine Einstellungen, keine Bauwünsche),
-             data-nova-knopf="0"    (kein Knopf, nur die Stimme für die App selbst).
+             data-nova-knopf="0"    (kein Knopf, nur die Stimme für die App selbst),
+             data-nova-bild="figur.jpg" (Bild der Figur auf dem Knopf statt Nova).
    Persönlichkeit je App: nova/seelen.js vor nova.js laden (window.NOVA_SEELEN).
    Nova redet nur mit Sense Engine (eigener Server). Die Stimmen kommen von dort (/v1/stimme,
    ElevenLabs); der Schlüssel liegt nur auf dem Server. Ohne Server oder über dem Deckel
@@ -33,7 +34,9 @@
   // Abstand des Knopfs vom unteren Rand in px, z. B. über einer Leiste.
   var UNTEN = parseInt(attr('data-nova-unten', '16'), 10) || 16;
   // Novas Gesicht kommt immer aus dem Film (nova.jpg neben diesem Skript), nie gezeichnet.
-  var BILD = me && me.src ? new URL('nova.jpg', me.src).href : '../nova/nova.jpg';
+  // Andere Figur: data-nova-bild="figur.jpg" (relativ zur App-Seite).
+  var BILD = attr('data-nova-bild', '') ? new URL(attr('data-nova-bild', ''), location.href).href
+    : (me && me.src ? new URL('nova.jpg', me.src).href : '../nova/nova.jpg');
   var K = { addr: 'drlab-hermes-adresse', key: 'drlab-hermes-passwort', ton: 'drlab-stimme-an' };
 
   function get(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }
