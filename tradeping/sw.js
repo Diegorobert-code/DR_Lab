@@ -1,5 +1,5 @@
 // TradePing – Offline-Cache (nur eigene Dateien, keine Kursdaten)
-const CACHE = 'tp-v2';
+const CACHE = 'tp-v3';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './figur.jpg'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
@@ -11,7 +11,7 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   if (new URL(e.request.url).origin !== self.location.origin) return; // Kurse nie cachen
   e.respondWith(
-    fetch(e.request).then(r => {
+    fetch(e.request.mode === 'navigate' ? e.request.url : e.request, { cache: 'no-cache' }).then(r => {
       const copy = r.clone();
       caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
       return r;
