@@ -41,7 +41,8 @@
   // Live-Gespräch (hören, denken, sprechen gleichzeitig, unterbrechbar) über einen ElevenLabs Agent je Figur.
   // Die Agents sind nur von diegorobert-code.github.io aus erreichbar und haben ein Tageslimit.
   var AGENTEN = {
-    'otti': 'agent_4801m55hqwdpeq0ry4awvx45rz5t'
+    'otti': 'agent_4801m55hqwdpeq0ry4awvx45rz5t',
+    'kiki': 'agent_0401m55r02rvf96a1xrxv1njqbh3'
     // 'sparky': 'agent_7401m55j20jwek69gsh3gkfhaa77'  (wartet auf «Sparky live Go»)
   };
   var AGENT = AGENTEN[FIGUR] || '';
