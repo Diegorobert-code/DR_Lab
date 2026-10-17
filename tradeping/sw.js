@@ -1,6 +1,6 @@
 // TradePing – Offline-Cache (nur eigene Dateien, keine Kursdaten)
-const CACHE = 'tp-v1';
-const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png'];
+const CACHE = 'tp-v2';
+const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './figur.jpg'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
 });
