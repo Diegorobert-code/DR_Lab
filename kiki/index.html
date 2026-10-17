@@ -1,0 +1,1407 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Kiki singt">
+<meta name="theme-color" content="#0f1b3d">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Kiki, der singende Koala: Töne treffen, Tonleitern, Lieder und dein Stimmraum.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta property="og:title" content="Kiki – der singende Koala"><meta property="og:description" content="Kiki, der singende Koala: Töne treffen, Tonleitern, Lieder und dein Stimmraum."><meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/kiki/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://diegorobert-code.github.io/DR_Lab/kiki/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Kiki – der singende Koala</title>
+<style>
+:root{
+  --night:#0f1b3d; --night2:#18295a; --night3:#22397a; --card:rgba(255,255,255,.07); --line:rgba(255,255,255,.13);
+  --ink:#f6f1e4; --ink2:#c9cfe4; --muted:#8f9ac0;
+  --gold:#f2c14e; --gold-d:#d9a22e; --gold-l:rgba(242,193,78,.16);
+  --good:#7fdca4; --coral:#ff8a7a;
+  --r:24px; --ease:cubic-bezier(.22,.8,.26,1);
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+  --font:"Fredoka",ui-rounded,-apple-system,"SF Pro Rounded",system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;min-height:100%;background:var(--night);color:var(--ink)}
+body{font-family:var(--font);font-size:18px;line-height:1.45;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  background:radial-gradient(120% 70% at 50% -10%,#2b4596 0%,rgba(43,69,150,0) 60%),linear-gradient(180deg,var(--night) 0%,#0b1430 100%);min-height:100vh;min-height:100dvh}
+#sky{position:fixed;inset:0;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:calc(12px + var(--sat)) 16px calc(24px + var(--sab))}
+button{font-family:inherit;color:inherit}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:52px}
+.back{display:inline-flex;align-items:center;gap:6px;min-height:48px;padding:0 16px;border-radius:99px;border:1px solid var(--line);background:var(--card);font-size:17px;font-weight:500;cursor:pointer}
+.back[hidden]{display:none}
+.brand{font-weight:600;font-size:20px;letter-spacing:.01em}
+.brand span{color:var(--gold)}
+.stars{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:99px;background:var(--gold-l);color:var(--gold);font-weight:600;font-size:18px}
+.kiki-foto-wrap{display:flex;justify-content:center;margin:6px 0 4px}
+.kiki-foto{width:min(62vw,250px);height:min(62vw,250px);border-radius:28%;border:3px solid #F2C14E;object-fit:cover;box-shadow:0 0 0 6px rgba(242,193,78,.1),0 0 50px rgba(143,211,168,.45),0 18px 50px rgba(0,0,0,.4);animation:filmSchweben 4.6s ease-in-out infinite;cursor:pointer}
+.screen{display:none;animation:fade .35s var(--ease)}
+.screen.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h1{font-size:30px;line-height:1.15;margin:4px 0 8px;font-weight:600;text-align:center}
+h2{font-size:24px;margin:0 0 6px;font-weight:600}
+p{margin:0 0 10px}
+.muted{color:var(--muted)}
+.center{text-align:center}
+.kiki-stage{position:relative;display:flex;justify-content:center;margin:6px 0 0}
+.kiki{width:220px;height:220px;filter:drop-shadow(0 18px 30px rgba(0,0,0,.35))}
+.kiki.small{width:120px;height:120px}
+.bubble{position:relative;background:#fffaf0;color:#2a2340;border-radius:22px;padding:14px 18px;font-size:19px;font-weight:500;line-height:1.35;text-align:center;margin:10px auto 16px;max-width:420px;box-shadow:0 10px 30px -12px rgba(0,0,0,.5);min-height:58px}
+.bubble:before{content:"";position:absolute;top:-10px;left:50%;margin-left:-11px;border:11px solid transparent;border-top:0;border-bottom-color:#fffaf0}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:62px;border:0;border-radius:20px;padding:12px 20px;font-size:20px;font-weight:600;cursor:pointer;transition:transform .15s var(--ease),filter .2s}
+.btn:active{transform:scale(.97)}
+.btn.gold{background:linear-gradient(180deg,#ffd76e,var(--gold) 60%,var(--gold-d));color:#2a1f05;box-shadow:0 10px 26px -10px rgba(242,193,78,.7)}
+.btn.soft{background:var(--card);border:1px solid var(--line);color:var(--ink);font-weight:500}
+.btn.small{min-height:52px;font-size:17px}
+.row{display:flex;gap:10px}
+.row>*{flex:1}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;cursor:pointer;text-align:left;transition:transform .15s var(--ease),background .2s;min-height:140px;display:flex;flex-direction:column;justify-content:space-between}
+.card:active{transform:scale(.97);background:rgba(255,255,255,.11)}
+.card .ic{font-size:34px;line-height:1}
+.card b{display:block;font-size:20px;font-weight:600;margin-top:8px}
+.card small{display:block;color:var(--ink2);font-size:15px;line-height:1.3}
+.card.wide{grid-column:1/-1;min-height:96px;flex-direction:row;align-items:center;gap:14px;justify-content:flex-start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:12px 0}
+/* Ton-Leiter */
+.trainer{display:flex;gap:14px;align-items:stretch;margin:6px 0 12px}
+.ladder{position:relative;flex:0 0 112px;height:330px;border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid var(--line);overflow:hidden}
+.ladder .tick{position:absolute;left:0;right:0;height:1px;background:rgba(255,255,255,.07)}
+.ladder .band{position:absolute;left:6px;right:6px;border-radius:14px;background:var(--gold-l);border:2px solid var(--gold);transition:height .3s,top .3s,background .2s}
+.ladder.hit .band{background:rgba(127,220,164,.25);border-color:var(--good)}
+.ladder .tlabel{position:absolute;left:0;right:0;text-align:center;font-weight:700;font-size:20px;color:var(--gold);transform:translateY(-50%);pointer-events:none}
+.ladder.hit .tlabel{color:var(--good)}
+.ball{position:absolute;left:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0%,#ffe6a3 30%,var(--gold) 70%);box-shadow:0 0 22px rgba(242,193,78,.75);transition:top .09s linear,opacity .25s;opacity:0}
+.ball.on{opacity:1}
+.ladder.hit .ball{background:radial-gradient(circle at 35% 30%,#fff 0%,#c9f5da 30%,var(--good) 70%);box-shadow:0 0 26px rgba(127,220,164,.9)}
+.arrow{position:absolute;left:0;right:0;text-align:center;font-size:22px;opacity:.85;pointer-events:none}
+.side{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
+.side .kiki-stage{margin:0}
+.hint{font-size:22px;font-weight:600;text-align:center;min-height:62px;display:flex;align-items:center;justify-content:center;line-height:1.2}
+.hint.good{color:var(--good)}
+.meter{height:16px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid var(--line)}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--good));border-radius:99px;transition:width .1s linear}
+.notebig{display:flex;align-items:center;justify-content:center;gap:10px;font-size:15px;color:var(--ink2)}
+.dot{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;font-weight:700;font-size:20px;color:#1b1630}
+.mini{font-size:14px;color:var(--muted);text-align:center}
+/* Lieder */
+.lyrics{display:flex;flex-direction:column;gap:8px;line-height:1;margin:0}
+.lyrics .line{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;width:100%}
+.lyrics .line.far{display:none}
+.lyrics .line.next{opacity:.45;transform:scale(.92)}
+#s-train.songmode .ladder{height:260px}
+#s-train.songmode .kiki{width:100px;height:100px}
+#s-train.songmode .panel{margin:6px 0 8px;padding:12px 10px}
+.syl{display:inline-flex;flex-direction:column;align-items:center;gap:4px;padding:6px 7px 7px;border-radius:12px;font-size:19px;font-weight:500;color:var(--ink2);background:rgba(255,255,255,.04);transition:background .2s,color .2s,transform .2s}
+.syl i{width:10px;height:10px;border-radius:50%;opacity:.9}
+.syl.now{background:var(--gold);color:#2a1f05;transform:scale(1.08)}
+.syl.done{color:var(--good)}
+.songlist{display:flex;flex-direction:column;gap:10px}
+.toggle{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:6px 2px;border-bottom:1px solid var(--line);font-size:17px}
+.toggle:last-child{border-bottom:0}
+.seg{display:inline-flex;flex:none;background:rgba(255,255,255,.06);border-radius:99px;padding:3px;border:1px solid var(--line)}
+.seg button{border:0;background:transparent;min-height:42px;padding:0 13px;border-radius:99px;font-size:15px;font-weight:500;cursor:pointer;color:var(--ink2)}
+.seg button.on{background:var(--gold);color:#2a1f05;font-weight:600}
+.balloon-box{height:190px;display:flex;align-items:center;justify-content:center}
+.balloon{width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0%,#ffb3c1 25%,#ff7a93 70%,#e0556f 100%);box-shadow:0 12px 30px -10px rgba(255,122,147,.7);transition:transform 4s ease-in-out}
+.balloon.big{transform:scale(2.4)}
+.balloon.out{transition-duration:6s}
+.warmdots{display:flex;justify-content:center;gap:8px;margin:2px 0 4px}
+.warmdots i{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.18)}
+.warmdots i.on{background:var(--gold)}.warmdots i.done{background:var(--good)}
+.room{position:relative;flex:0 0 112px;height:330px;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:rgba(255,255,255,.04)}
+.room .zone{position:absolute;left:0;right:0;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;font-size:13px;color:var(--muted)}
+.room .z-hi{top:0;height:34%;background:rgba(120,170,255,.07)}
+.room .z-mid{top:34%;height:30%;background:rgba(255,255,255,.03)}
+.room .z-lo{top:64%;bottom:0;background:rgba(160,120,90,.09)}
+.rband{position:absolute;left:10px;right:10px;border-radius:14px;background:linear-gradient(180deg,rgba(127,220,164,.55),rgba(242,193,78,.55));border:2px solid var(--gold);opacity:0;transition:all .4s var(--ease)}
+.rband.on{opacity:1}
+.rcomfy{position:absolute;left:50%;z-index:2;font-size:26px;transform:translate(-50%,-50%);opacity:0;transition:top .4s,opacity .3s}
+.rcomfy.on{opacity:1}
+.room .ball{width:30px;height:30px;margin:-15px 0 0 -15px}
+.steps{display:flex;align-items:flex-end;gap:3px;height:120px;margin-top:6px}
+.steps div{flex:1;border-radius:8px 8px 4px 4px;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;font-size:13px;font-weight:600;color:#1b1630;padding-top:4px}
+.steps span{font-size:11px;color:var(--muted);text-align:center;flex:1}
+.steplbl{display:flex;gap:3px;margin-top:4px}
+.syl small{font-size:11px;opacity:.75;font-weight:500}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 4px}
+.keys button{min-height:84px;border:0;border-radius:20px;font-size:24px;font-weight:700;color:#1b1630;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.15);transition:transform .12s}
+.keys button small{font-size:13px;font-weight:600;opacity:.75}
+.keys button.on{transform:scale(1.07);box-shadow:0 0 0 4px #fff,0 0 26px rgba(255,255,255,.6)}
+canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.mirror-note{display:flex;align-items:center;justify-content:center;gap:14px;font-size:44px;font-weight:700;min-height:70px}
+.err{background:rgba(255,138,122,.14);border:1px solid rgba(255,138,122,.4);color:#ffd2cb;border-radius:18px;padding:12px 14px;font-size:16px;margin:10px 0}
+.err[hidden]{display:none}
+.burst{position:fixed;inset:0;pointer-events:none;z-index:5;overflow:hidden}
+.burst span{position:absolute;font-size:30px;animation:fly 1.6s var(--ease) forwards}
+@keyframes fly{0%{transform:translate(0,0) scale(.4);opacity:0}15%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.15) rotate(var(--rot));opacity:0}}
+.foot{font-size:13px;color:var(--muted);text-align:center;margin-top:18px}
+/* Kiki-Animationen */
+.kiki .blink{animation:blink 4.6s infinite;transform-origin:center;transform-box:fill-box}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.kiki .earL,.kiki .earR{transform-box:fill-box;transform-origin:50% 80%}
+.kiki.listen .earL{animation:earL 1.2s ease-in-out infinite}
+.kiki.listen .earR{animation:earR 1.2s ease-in-out infinite}
+@keyframes earL{0%,100%{transform:rotate(0)}50%{transform:rotate(-7deg)}}
+@keyframes earR{0%,100%{transform:rotate(0)}50%{transform:rotate(7deg)}}
+.kiki .mOpen,.kiki .eHappy,.kiki .notes{display:none}
+.kiki.sing .mOpen{display:inline}.kiki.sing .mSmile{display:none}
+.kiki.sing .notes{display:inline}
+.kiki.sing .mOpen{animation:mouth .45s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+@keyframes mouth{from{transform:scaleY(.65)}to{transform:scaleY(1.1)}}
+.kiki.happy .eOpen{display:none}.kiki.happy .eHappy{display:inline}
+.kiki.happy .body{animation:hop .5s ease-in-out 2}
+.kiki .body{transform-box:fill-box;transform-origin:50% 100%}
+@keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.kiki .notes text{animation:float 1.6s ease-in-out infinite}
+.kiki .notes text:nth-child(2){animation-delay:.5s}
+.kiki .notes text:nth-child(3){animation-delay:1s}
+@keyframes float{0%{opacity:0;transform:translateY(8px)}30%{opacity:1}100%{opacity:0;transform:translateY(-18px)}}
+.kiki .idle{animation:breathe 3.4s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.015,.99)}}
+.kiki.dance .body{animation:sway .6s ease-in-out infinite alternate}
+.kiki.dance .notes{display:inline}
+.kiki.dance .eOpen{display:none}.kiki.dance .eHappy{display:inline}
+@keyframes sway{from{transform:rotate(-5deg) translateY(0)}to{transform:rotate(5deg) translateY(-4px)}}
+.stage-deco{position:absolute;inset:0;pointer-events:none}
+.kiki-stage.big{height:250px;align-items:flex-end}
+.kiki-stage.big .kiki{position:relative;z-index:1;margin-bottom:6px}
+.moon{position:absolute;top:4px;right:calc(50% - 150px);width:74px;height:74px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff7da,#f2d88f 60%,#d9b65e);box-shadow:0 0 50px rgba(242,216,143,.55)}
+.moon:after{content:"";position:absolute;width:12px;height:12px;border-radius:50%;background:rgba(190,150,70,.35);top:22px;left:40px;box-shadow:-18px 18px 0 -2px rgba(190,150,70,.3)}
+.branch{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:340px;height:60px}
+.kiki-tip{display:flex;align-items:center;gap:10px;background:var(--gold-l);border:1px solid rgba(242,193,78,.35);border-radius:18px;padding:8px 12px;margin:8px 0 12px;font-size:16px}
+.kiki-tip .kiki{width:64px;height:64px;flex:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:380px){.ladder{flex-basis:96px;height:300px}.kiki{width:190px;height:190px}h1{font-size:27px}}
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<!-- Kiki als Vorlage -->
+<template id="kikiTpl">
+<svg class="kiki" viewBox="0 0 200 210" role="img" aria-label="Kiki, der Koala">
+  <defs>
+    <radialGradient id="fur" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#c3cad8"/><stop offset=".6" stop-color="#9aa3b8"/><stop offset="1" stop-color="#737d95"/></radialGradient>
+    <radialGradient id="earIn" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#ffd7dc"/><stop offset="1" stop-color="#eaa4b0"/></radialGradient>
+    <radialGradient id="noseG" cx="40%" cy="30%" r="75%"><stop offset="0" stop-color="#5a5f74"/><stop offset=".55" stop-color="#2c3044"/><stop offset="1" stop-color="#1a1d2b"/></radialGradient>
+    <linearGradient id="goldG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#d9a22e"/></linearGradient>
+    <radialGradient id="bellyG" cx="50%" cy="30%" r="70%"><stop offset="0" stop-color="#eef1f7"/><stop offset="1" stop-color="#c7cede"/></radialGradient>
+  </defs>
+  <g class="body">
+    <g class="idle">
+      <!-- Körper -->
+      <ellipse cx="100" cy="188" rx="58" ry="30" fill="url(#fur)"/>
+      <ellipse cx="100" cy="192" rx="34" ry="20" fill="url(#bellyG)"/>
+      <!-- Mikrofon in der Pfote -->
+      <g transform="translate(146 150) rotate(18)">
+        <rect x="-4" y="6" width="8" height="30" rx="4" fill="#3a3550"/>
+        <circle cx="0" cy="0" r="11" fill="url(#goldG)"/>
+        <path d="M-7 -3h14M-8 2h16" stroke="#b9861f" stroke-width="1.4" stroke-linecap="round"/>
+      </g>
+      <ellipse cx="140" cy="182" rx="15" ry="12" fill="#8992a8"/>
+      <!-- Ohren -->
+      <g class="earL"><circle cx="42" cy="62" r="38" fill="url(#fur)"/><circle cx="44" cy="65" r="23" fill="url(#earIn)"/>
+        <path d="M14 48c4-6 8-4 10-10M10 66c5-2 6-6 12-6" stroke="#e7ebf3" stroke-width="3" stroke-linecap="round" fill="none" opacity=".7"/></g>
+      <g class="earR"><circle cx="158" cy="62" r="38" fill="url(#fur)"/><circle cx="156" cy="65" r="23" fill="url(#earIn)"/>
+        <path d="M186 48c-4-6-8-4-10-10M190 66c-5-2-6-6-12-6" stroke="#e7ebf3" stroke-width="3" stroke-linecap="round" fill="none" opacity=".7"/></g>
+      <!-- Kopf -->
+      <ellipse cx="100" cy="104" rx="70" ry="62" fill="url(#fur)"/>
+      <ellipse cx="100" cy="134" rx="40" ry="26" fill="#d4d9e5" opacity=".75"/>
+      <!-- Goldene Haarspange (Stern) -->
+      <path d="M128 52l3.2 6.6 7.2 1-5.2 5 1.3 7.2-6.5-3.4-6.5 3.4 1.3-7.2-5.2-5 7.2-1z" fill="url(#goldG)" stroke="#b9861f" stroke-width="1"/>
+      <!-- Wangen -->
+      <ellipse cx="58" cy="124" rx="12" ry="7" fill="#ff9fb0" opacity=".45"/>
+      <ellipse cx="142" cy="124" rx="12" ry="7" fill="#ff9fb0" opacity=".45"/>
+      <!-- Augen offen -->
+      <g class="eOpen">
+        <g class="blink"><ellipse cx="72" cy="98" rx="14" ry="16" fill="#fff"/><circle cx="74" cy="101" r="10" fill="#1b2030"/><circle cx="77" cy="96" r="4" fill="#fff"/><circle cx="70" cy="105" r="1.8" fill="#fff" opacity=".8"/></g>
+        <g class="blink"><ellipse cx="128" cy="98" rx="14" ry="16" fill="#fff"/><circle cx="126" cy="101" r="10" fill="#1b2030"/><circle cx="129" cy="96" r="4" fill="#fff"/><circle cx="122" cy="105" r="1.8" fill="#fff" opacity=".8"/></g>
+      </g>
+      <!-- Augen fröhlich -->
+      <g class="eHappy" stroke="#1b2030" stroke-width="5" stroke-linecap="round" fill="none">
+        <path d="M60 101q12-14 24 0"/><path d="M116 101q12-14 24 0"/>
+      </g>
+      <!-- Nase -->
+      <path d="M100 100c13 0 19 9 19 21 0 11-8 17-19 17s-19-6-19-17c0-12 6-21 19-21z" fill="url(#noseG)"/>
+      <ellipse cx="94" cy="109" rx="5" ry="3.5" fill="#fff" opacity=".35"/>
+      <!-- Mund -->
+      <path class="mSmile" d="M88 146q12 10 24 0" stroke="#2c3044" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+      <ellipse class="mOpen" cx="100" cy="149" rx="9" ry="8" fill="#5a2a3a"/>
+    </g>
+  </g>
+  <g class="notes" fill="#f2c14e" font-size="22" font-family="serif">
+    <text x="18" y="150">♪</text><text x="168" y="120">♫</text><text x="30" y="30">♪</text>
+  </g>
+</svg>
+</template>
+
+<div class="wrap">
+  <header class="top">
+    <button class="back" id="back" hidden aria-label="Zurück">‹ Zurück</button>
+    <div class="brand" id="brand">Kiki <span>singt</span></div>
+    <div style="display:flex;gap:8px;align-items:center" data-feedback-slot><div class="stars" aria-label="Sterne"><span>★</span><span id="starCount">0</span></div></div>
+  </header>
+
+  <!-- Start -->
+  <section class="screen on" id="s-home">
+    <div class="kiki-foto-wrap"><img class="kiki-foto" src="figur-gross.jpg" alt="Kiki, der singende Koala" data-sag="homeBubble"></div>
+    <h1>Kiki, der singende Koala</h1>
+    <div class="bubble" id="homeBubble">Hallo, ich bin Kiki! Ich singe soo gern. Wollen wir zusammen singen?</div>
+    <button class="btn gold" id="startBtn">🎤 Kiki, wir möchten singen lernen</button>
+    <div class="err" id="micErr" hidden></div>
+    <p class="mini" style="margin-top:12px">Kiki braucht das Mikrofon, um zuzuhören. Nichts wird aufgenommen oder gesendet, alles bleibt auf diesem Handy.</p>
+  </section>
+
+  <!-- Menü -->
+  <section class="screen" id="s-menu">
+    <div class="kiki-stage" data-kiki="small"></div>
+    <div class="bubble" id="menuBubble">Juhu! Was wollen wir heute singen?</div>
+    <div class="grid">
+      <button class="card wide" data-go="warm"><span class="ic">🎈</span><span><b>Aufwärmen</b><small>Atmen, summen, Sirene · zuerst, 2 Minuten</small></span></button>
+      <button class="card wide" data-go="room"><span class="ic">🏠</span><span><b>Mein Stimmraum</b><small>Wie tief und wie hoch kann ich singen?</small></span></button>
+      <button class="card" data-go="tone"><span class="ic">🎯</span><span><b>Ton treffen</b><small>Kiki singt vor, du singst nach</small></span></button>
+      <button class="card" data-go="scale"><span class="ic">🪜</span><span><b>Tonleitern</b><small>Do-Re-Mi, Dur, Moll, Terzen</small></span></button>
+      <button class="card" data-go="songs"><span class="ic">🦆</span><span><b>Lieder</b><small>Kinderlieder und bekannte Lieder</small></span></button>
+      <button class="card wide" data-go="pitch"><span class="ic">🎹</span><span><b>Ton vorgeben</b><small>Kiki spielt den Ton, so lange ihr wollt</small></span></button>
+      <button class="card" data-go="mirror"><span class="ic">🌈</span><span><b>Stimm-Spiegel</b><small>Sieh deine Stimme</small></span></button>
+      <button class="card wide" data-go="settings"><span class="ic">⚙️</span><span><b>Für Eltern</b><small>Stimmlage, wie genau, Kikis Stimme</small></span></button>
+    </div>
+  </section>
+
+  <!-- Trainer (Ton treffen, Tonleiter, Lieder) -->
+  <section class="screen" id="s-train">
+    <h2 class="center" id="trainTitle">Ton treffen</h2>
+    <div id="lyricsBox" class="panel" hidden><div class="lyrics" id="lyrics"></div></div>
+    <div class="trainer">
+      <div class="ladder" id="ladder">
+        <div class="band" id="band"></div>
+        <div class="tlabel" id="tlabel"></div>
+        <div class="arrow" id="arrowUp" style="top:6px">⬆</div>
+        <div class="arrow" id="arrowDn" style="bottom:6px">⬇</div>
+        <div class="ball" id="ball"></div>
+      </div>
+      <div class="side">
+        <div class="kiki-stage" data-kiki="small"></div>
+        <div class="hint" id="hint">Hör gut zu …</div>
+        <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+        <div class="notebig" id="youNote"></div>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom:10px">
+      <button class="btn soft small" id="replayBtn">🔊 Nochmal hören</button>
+      <button class="btn soft small" id="skipBtn">⏭ Weiter</button>
+    </div>
+    <button class="btn gold" id="mainBtn">▶︎ Los geht's</button>
+    <p class="mini" id="trainFoot" style="margin-top:10px">Tipp: Handy auf Armlänge halten. Kein Ton? Seitenschalter am iPhone auf laut stellen.</p>
+  </section>
+
+  <!-- Tonleitern lernen -->
+  <section class="screen" id="s-scales">
+    <h2 class="center">Tonleitern lernen</h2>
+    <div class="kiki-tip"><span data-kiki="small"></span><span id="scaleTip">Do, Re, Mi … Wähl eine Übung. Ich singe in deiner Höhe vor.</span></div>
+    <div class="panel">
+      <div class="toggle"><span>Tonart</span><span class="seg" id="keySeg"></span></div>
+      <div class="toggle"><span>Kiki singt vor</span><span class="seg" id="vorSeg"><button data-v="1">jeden Ton</button><button data-v="0">nur den 1.</button></span></div>
+    </div>
+    <div class="songlist" id="scaleList"></div>
+    <div class="panel">
+      <h2 style="font-size:19px">So ist eine Dur-Tonleiter gebaut</h2>
+      <div class="steps" id="stepsViz"></div>
+      <p class="muted" style="font-size:15px;margin:8px 0 0">Ganz – Ganz – <b>Halb</b> – Ganz – Ganz – Ganz – <b>Halb</b>. Die kleinen Schritte liegen zwischen Mi–Fa und Ti–Do. Moll hat die Halbtonschritte an anderen Stellen (2–3 und 5–6), darum klingt es weicher und trauriger.</p>
+    </div>
+  </section>
+
+  <!-- Lieder-Auswahl -->
+  <section class="screen" id="s-songs">
+    <div class="kiki-stage" data-kiki="small"></div>
+    <div class="bubble">Welches Lied singen wir? Du kannst es zuerst anhören.</div>
+    <div class="songlist" id="songlist"></div>
+  </section>
+
+  <!-- Aufwärmen -->
+  <section class="screen" id="s-warm">
+    <h2 class="center" id="warmTitle">Aufwärmen</h2>
+    <div class="warmdots" id="warmDots"><i></i><i></i><i></i></div>
+    <div class="kiki-stage" data-kiki="small"></div>
+    <div class="balloon-box"><div class="balloon" id="balloon"></div></div>
+    <div class="hint" id="warmHint">Bereit?</div>
+    <div class="meter" aria-hidden="true" style="margin:4px 0 14px"><i id="warmMeter"></i></div>
+    <div class="row" style="margin-bottom:10px"><button class="btn soft small" id="warmSkip">⏭ Weiter</button></div>
+    <button class="btn gold" id="warmBtn">▶︎ Los geht's</button>
+  </section>
+
+  <!-- Stimmraum -->
+  <section class="screen" id="s-room">
+    <h2 class="center" id="roomTitle">Mein Stimmraum</h2>
+    <div class="trainer">
+      <div class="room" id="room">
+        <div class="zone z-hi"><span>🐦 hoch</span></div>
+        <div class="zone z-mid"><span>🏠 Mitte</span></div>
+        <div class="zone z-lo"><span>🐻 tief</span></div>
+        <div class="rband" id="rband"></div>
+        <div class="rcomfy" id="rcomfy">🐨</div>
+        <div class="ball" id="rball"></div>
+      </div>
+      <div class="side">
+        <div class="kiki-stage" data-kiki="small"></div>
+        <div class="hint" id="roomHint">Wir messen deinen Stimmraum.</div>
+        <div class="meter" aria-hidden="true"><i id="roomMeter"></i></div>
+        <div class="notebig" id="roomNote"></div>
+      </div>
+    </div>
+    <div class="panel" id="roomResult" hidden></div>
+    <div class="row" style="margin-bottom:10px"><button class="btn soft small" id="roomDone">✓ Fertig</button></div>
+    <button class="btn gold" id="roomBtn">▶︎ Messen</button>
+    <p class="mini" style="margin-top:10px">Kiki merkt sich deinen Stimmraum und singt dann die Übungen genau in deiner Höhe. Nur Zahlen, keine Aufnahme.</p>
+  </section>
+
+  <!-- Ton vorgeben -->
+  <section class="screen" id="s-pitch">
+    <h2 class="center">Ton vorgeben</h2>
+    <div class="kiki-tip"><span data-kiki="small"></span><span>Tipp auf eine Taste, dann spiele ich den Ton. Mit «Ton halten» klingt er weiter, bis ihr Stopp drückt.</span></div>
+    <div class="keys" id="keys"></div>
+    <div class="panel">
+      <div class="toggle"><span>Ton halten</span><span class="seg" id="holdSeg"><button data-v="0">kurz</button><button data-v="1">halten</button></span></div>
+    </div>
+    <button class="btn gold" id="pitchStop">■ Stopp</button>
+    <p class="mini" style="margin-top:10px">Kein Ton? Lautstärke am iPhone hoch. Die Töne liegen in eurer Stimmhöhe (siehe «Mein Stimmraum»).</p>
+  </section>
+
+  <!-- Stimm-Spiegel -->
+  <section class="screen" id="s-mirror">
+    <h2 class="center">Stimm-Spiegel</h2>
+    <div class="kiki-tip"><span data-kiki="small"></span><span>Sing hoch und tief, ich male deine Stimme. Bei schönen langen Tönen tanze ich!</span></div>
+    <div class="mirror-note" id="mirrorNote">…</div>
+    <canvas id="mirror"></canvas>
+    <p class="mini" style="margin-top:10px">Probier: wie eine Sirene rauf und runter, oder ganz lange einen Ton halten.</p>
+  </section>
+
+  <!-- Einstellungen -->
+  <section class="screen" id="s-settings">
+    <h2>Für Eltern</h2>
+    <div class="panel">
+      <div class="toggle"><span>Kiki singt vor in …</span><span class="seg" data-set="octave"><button data-v="4">hoher Lage</button><button data-v="3">tiefer Lage</button></span></div>
+      <p class="mini" style="text-align:left;margin:6px 0 4px">Hohe Lage passt für Kinder und Frauen, tiefe Lage für Männer. Eine Oktave höher oder tiefer zählt immer auch als getroffen, so könnt ihr zusammen singen.</p>
+      <div class="toggle"><span>Wie genau?</span><span class="seg" data-set="tol"><button data-v="60">leicht</button><button data-v="35">mittel</button><button data-v="20">genau</button></span></div>
+      <div class="toggle"><span>Kiki spricht</span><span class="seg" data-set="voice"><button data-v="1">an</button><button data-v="0">aus</button></span></div>
+      <div class="toggle"><span>Übungen im eigenen Stimmraum</span><span class="seg" data-set="room"><button data-v="1">an</button><button data-v="0">aus</button></span></div>
+      <p class="mini" style="text-align:left;margin:6px 0 4px">Ist der Stimmraum gemessen, singt Kiki die Übungen und Lieder in der Höhe, die zur Stimme passt. Sonst gilt die Lage oben.</p>
+      <div class="toggle"><span>Kiki singt jeden Ton vor (Lieder)</span><span class="seg" data-set="prompt"><button data-v="1">an</button><button data-v="0">aus</button></span></div>
+    </div>
+    <div class="panel">
+      <h2 style="font-size:19px">So klappt es gut</h2>
+      <p class="muted" style="font-size:16px">1. Ruhiger Raum, Handy auf Armlänge.<br>2. Zuerst zuhören, dann auf «a» oder «u» singen.<br>3. Kurz und spielerisch, 10 Minuten reichen. Nach oben und unten zeigen hilft Kindern.<br>4. Kein Ton? Seitenschalter am iPhone auf laut stellen.</p>
+      <p class="muted" style="font-size:16px">Datenschutz: Das Mikrofon wird nur zum Zuhören benutzt. Es wird nichts aufgenommen, gespeichert oder verschickt. Nur Sterne, Einstellungen und die Lern-Zahlen bleiben auf diesem Handy.</p>
+    </div>
+    <div class="panel">
+      <h2 style="font-size:19px">Was Kiki sich merkt</h2>
+      <div id="memList" class="muted" style="font-size:16px"></div>
+      <p class="mini" style="text-align:left;margin:8px 0 0">Kiki lernt mit: Töne, die noch schwer sind, kommen bei «Ton treffen» öfter, und Kiki erinnert sich an das Lieblingslied. Gespeichert werden nur Zahlen (welcher Ton wie oft getroffen wurde), keine Stimme, nur auf diesem Handy.</p>
+      <label style="display:flex;gap:10px;align-items:flex-start;margin:12px 0 8px;font-size:16px"><input type="checkbox" id="shareOk" style="width:22px;height:22px;flex:none;margin-top:2px"> <span>Ich bin einverstanden, dass DR Lab diese Lern-Zahlen (ohne Namen, ohne Stimme) lesen und für die Weiterentwicklung von Kiki nutzen darf.</span></label>
+      <div class="row"><button class="btn soft small" id="memShare">📤 Erfahrung teilen</button><button class="btn soft small" id="memClear">🧽 Alles vergessen</button></div>
+      <p class="mini" id="shareMsg" style="text-align:left;margin:8px 0 0"></p>
+    </div>
+    <div class="panel">
+      <h2 style="font-size:19px">Name des Kindes (freiwillig)</h2>
+      <div class="row"><input id="kidName" maxlength="24" autocomplete="off" placeholder="z. B. Lena" style="flex:2;min-height:52px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font:inherit;font-size:18px;padding:0 14px"><button class="btn soft small" id="kidSave" style="flex:1">Speichern</button></div>
+      <p class="mini" style="text-align:left;margin:8px 0 0">Kiki begrüsst dann mit Namen. Der Name bleibt nur auf diesem Handy.</p>
+    </div>
+    <button class="btn soft small" id="resetStars">Sterne zurücksetzen</button>
+    <p class="foot">Kiki singt · ein DR Lab Projekt</p>
+  </section>
+</div>
+<div class="burst" id="burst"></div>
+
+<script>
+(() => {
+'use strict';
+/* ---------- Speicher (nur Einstellungen + Sterne) ---------- */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem('kiki_'+k); return v === null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('kiki_'+k, JSON.stringify(v)); }catch(e){} }
+};
+const S = { octave: store.get('octave', 4), tol: store.get('tol', 60), voice: store.get('voice', 1), prompt: store.get('prompt', 1), vor: store.get('vor', 1), key: store.get('key', 0), room: store.get('room', 1) };
+let stars = store.get('stars', 0);
+const $ = id => document.getElementById(id);
+$('starCount').textContent = stars;
+
+/* ---------- Was Kiki sich merkt (nur auf diesem Handy) ---------- */
+const mem = Object.assign({notes:{}, songs:{}, lo:null, hi:null, days:[], hits:0}, store.get('mem', {}));
+const saveMem = () => store.set('mem', mem);
+function memDay(){ const d = new Date().toISOString().slice(0,10); if (!mem.days.includes(d)){ mem.days.push(d); if (mem.days.length > 90) mem.days.shift(); saveMem(); } }
+function memNote(m, hit, secs){
+  const k = NAMES[((Math.round(m)%12)+12)%12], n = mem.notes[k] || (mem.notes[k] = {t:0, h:0, s:0});
+  n.t++; if (hit){ n.h++; n.s += secs || 0; mem.hits++; } memDay(); saveMem();
+}
+function memSong(id, key){ const x = mem.songs[id] || (mem.songs[id] = {l:0, s:0, d:0}); x[key]++; memDay(); saveMem(); }
+function noteRate(k){ const n = mem.notes[k]; return n ? (n.h + 1)/(n.t + 2) : .5; }
+function bestNote(){ let b = null, bv = 0; for (const k in mem.notes){ const n = mem.notes[k]; if (n.h >= 2 && noteRate(k) > bv){ bv = noteRate(k); b = k; } } return b; }
+function practiceNote(){ let b = null, bv = 1; for (const k in mem.notes){ const n = mem.notes[k]; if (n.t >= 2 && noteRate(k) < .6 && noteRate(k) < bv){ bv = noteRate(k); b = k; } } return b; }
+function favSong(){ let b = null, bv = 0; SONGS.forEach(x => { const v = mem.songs[x.id]; if (v){ const sc = v.l + v.s*2 + v.d*3; if (sc > bv){ bv = sc; b = x; } } }); return bv >= 3 ? b : null; }
+let rangeT = 0, rangeM = null;
+function memRange(m, dt){   // nur gehaltene Töne zählen für den Stimmumfang
+  if (m == null || m < 40 || m > 90){ rangeT = 0; rangeM = null; return; }
+  if (rangeM != null && Math.abs(m - rangeM) < .5) rangeT += dt; else { rangeT = 0; rangeM = m; }
+  if (rangeT > .4){ const r = Math.round(m); if (mem.lo == null || r < mem.lo) mem.lo = r; if (mem.hi == null || r > mem.hi) mem.hi = r; }
+}
+function memGreeting(){
+  const nm0 = store.get('name', ''), hi = nm0 ? `Hallo ${nm0}! ` : '';
+  return hi + memGreeting0();
+}
+function memGreeting0(){
+  if (!mem.hits) return 'Juhu! Ich freu mich so! Was wollen wir heute singen?';
+  const fav = favSong(), best = bestNote(), pr = practiceNote();
+  const opts = [];
+  if (fav) opts.push(`Schön, dass du wieder da bist! Dein Lieblingslied ist «${fav.title}». Singen wir es?`);
+  if (best) opts.push(`Schön, dass du wieder da bist! Das ${best} triffst du schon super. Was singen wir heute?`);
+  if (pr) opts.push(`Hallo! Heute üben wir ein bisschen das ${pr}. Das schaffst du!`);
+  const sure = Object.keys(mem.notes).filter(k => mem.notes[k].h >= 2 && noteRate(k) >= .7);
+  if (sure.length >= 3 && !Object.values(mem.songs).some(v => v.d)) return `Kiki hat gemerkt: Du triffst ${sure.slice(0,3).join(', ')} schon super. Probieren wir die Tonleiter oder ein Lied?`;
+  return opts.length ? opts[Math.floor(Math.random()*opts.length)] : 'Schön, dass du wieder da bist! Was singen wir heute?';
+}
+
+/* ---------- Kiki einsetzen ---------- */
+const kikis = [];
+document.querySelectorAll('[data-kiki]').forEach(el => {
+  const node = $('kikiTpl').content.firstElementChild.cloneNode(true);
+  if (el.dataset.kiki === 'small') node.classList.add('small');
+  // eindeutige Gradient-IDs pro Kopie
+  const suf = '_' + kikis.length;
+  node.querySelectorAll('[id]').forEach(g => { g.id += suf; });
+  node.innerHTML = node.innerHTML.replace(/url\(#(\w+)\)/g, (m, id) => `url(#${id}${suf})`);
+  if (el.dataset.kiki === 'big'){
+    el.classList.add('big');
+    el.insertAdjacentHTML('afterbegin', `<div class="stage-deco" aria-hidden="true"><div class="moon"></div>
+      <svg class="branch" viewBox="0 0 340 60"><path d="M0 44 C70 30 140 52 200 40 S300 30 340 22" stroke="#6b4f3a" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <g fill="#7fbf9a"><ellipse cx="40" cy="30" rx="16" ry="6" transform="rotate(-25 40 30)"/><ellipse cx="70" cy="50" rx="15" ry="5.5" transform="rotate(20 70 50)"/>
+      <ellipse cx="250" cy="24" rx="16" ry="6" transform="rotate(-30 250 24)"/><ellipse cx="290" cy="42" rx="15" ry="5.5" transform="rotate(25 290 42)"/><ellipse cx="320" cy="14" rx="13" ry="5" transform="rotate(-15 320 14)"/></g>
+      <g fill="#a7dcbc"><ellipse cx="110" cy="52" rx="13" ry="5" transform="rotate(10 110 52)"/><ellipse cx="225" cy="50" rx="13" ry="5" transform="rotate(-12 225 50)"/></g></svg></div>`);
+  }
+  el.appendChild(node); kikis.push(node);
+});
+function kikiMood(m){
+  kikis.forEach(k => { k.classList.remove('sing','happy','listen','dance'); if (m) k.classList.add(m); });
+}
+
+/* ---------- Sternenhimmel ---------- */
+(function sky(){
+  const c = $('sky'), x = c.getContext('2d'); let pts = [];
+  function size(){ const d = devicePixelRatio || 1; c.width = innerWidth*d; c.height = innerHeight*d; c.style.width = innerWidth+'px'; c.style.height = innerHeight+'px'; x.setTransform(d,0,0,d,0,0);
+    pts = Array.from({length: 60}, () => ({x: Math.random()*innerWidth, y: Math.random()*innerHeight*.7, r: Math.random()*1.3+.3, p: Math.random()*6})); }
+  size(); addEventListener('resize', size);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function draw(t){ x.clearRect(0,0,innerWidth,innerHeight);
+    for (const s of pts){ const a = .35 + .4*Math.sin(t/900 + s.p); x.fillStyle = `rgba(255,236,190,${a})`; x.beginPath(); x.arc(s.x, s.y, s.r, 0, 7); x.fill(); }
+    if (!reduce) requestAnimationFrame(draw); }
+  requestAnimationFrame(draw);
+})();
+
+/* ---------- Noten ---------- */
+const NAMES = ['C','Cis','D','Dis','E','F','Fis','G','Gis','A','B','H'];
+const COLORS = ['#ff6b6b','#ff8f5a','#ffa94d','#ffc14d','#ffe066','#8ce99a','#63e6be','#4fd1c5','#4dabf7','#748ffc','#b197fc','#f783ac'];
+const hz = m => 440*Math.pow(2,(m-69)/12);
+const toMidi = f => 69 + 12*Math.log2(f/440);
+const noteName = m => NAMES[((Math.round(m)%12)+12)%12];
+const noteColor = m => COLORS[((Math.round(m)%12)+12)%12];
+function dotHTML(m){ return `<span class="dot" style="background:${noteColor(m)}">${noteName(m)}</span>`; }
+
+/* ---------- Audio ---------- */
+let ac = null, analyser = null, master = null, stream = null, srcNode = null, buf = null;
+function setSession(t){ try{ if (navigator.audioSession) navigator.audioSession.type = t; }catch(e){} }
+async function initAudio(){
+  if (!ac){
+    const AC = window.AudioContext || window.webkitAudioContext;
+    ac = new AC();
+    const comp = ac.createDynamicsCompressor(); comp.threshold.value = -18; comp.ratio.value = 4; comp.connect(ac.destination);
+    master = ac.createGain(); master.gain.value = 1.4; master.connect(comp);
+    analyser = ac.createAnalyser(); analyser.fftSize = 2048; buf = new Float32Array(analyser.fftSize);
+  }
+  if (ac.state !== 'running') { try{ await ac.resume(); }catch(e){} }
+  unlockSpeaker();
+}
+/* iPhone: Ein leises HTML-Audio im Hintergrund sorgt dafür, dass Kikis Töne auch bei Stummschalter hörbar sind */
+let silentEl = null;
+function unlockSpeaker(){
+  if (silentEl) { if (silentEl.paused) silentEl.play().catch(() => {}); return; }
+  try{
+    const sr = 8000, n = sr/2, b = new ArrayBuffer(44 + n*2), v = new DataView(b);
+    const w = (o, t) => [...t].forEach((c, i) => v.setUint8(o+i, c.charCodeAt(0)));
+    w(0,'RIFF'); v.setUint32(4, 36 + n*2, true); w(8,'WAVE'); w(12,'fmt '); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+    v.setUint32(24,sr,true); v.setUint32(28,sr*2,true); v.setUint16(32,2,true); v.setUint16(34,16,true); w(36,'data'); v.setUint32(40,n*2,true);
+    silentEl = new Audio(URL.createObjectURL(new Blob([b], {type:'audio/wav'})));
+    silentEl.loop = true; silentEl.setAttribute('playsinline', ''); silentEl.volume = .01;
+    silentEl.play().catch(() => {});
+  }catch(e){}
+}
+async function micOn(){
+  if (stream) return true;
+  setSession('play-and-record');
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false, noiseSuppression:false, autoGainControl:false}});
+  }catch(e){ showMicError(e); return false; }
+  await initAudio();
+  srcNode = ac.createMediaStreamSource(stream); srcNode.connect(analyser);
+  return true;
+}
+function micOff(){
+  if (!stream) return;
+  saveMem();
+  stream.getTracks().forEach(t => t.stop()); try{ srcNode.disconnect(); }catch(e){}
+  stream = null; srcNode = null;
+}
+function showMicError(e){
+  const box = $('micErr');
+  box.hidden = false;
+  if (!navigator.mediaDevices || !window.isSecureContext) box.textContent = 'Dieses Gerät erlaubt hier kein Mikrofon. Bitte die Seite in Safari öffnen.';
+  else box.innerHTML = 'Kiki kann dich noch nicht hören. Bitte das Mikrofon erlauben: im iPhone unter <b>Einstellungen › Apps › Safari › Mikrofon</b> auf «Fragen» oder «Erlauben» stellen, dann die Seite neu laden.';
+  go('home');
+}
+const wait = ms => new Promise(r => setTimeout(r, ms));
+/* weicher Flötenton */
+function tone(midi, dur, when){
+  const t0 = (when ?? ac.currentTime) + .02, f = hz(midi);
+  const g = ac.createGain(); g.connect(master);
+  g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(.5, t0+.06);
+  g.gain.setValueAtTime(.5, t0+Math.max(.08, dur-.14)); g.gain.linearRampToValueAtTime(0, t0+dur);
+  const o1 = ac.createOscillator(); o1.type = 'sine'; o1.frequency.value = f;
+  const o2 = ac.createOscillator(); o2.type = 'triangle'; o2.frequency.value = f*2;
+  const g2 = ac.createGain(); g2.gain.value = .3; o2.connect(g2); g2.connect(g); // Obertöne: auf kleinen Handy-Lautsprechern besser hörbar
+  const lfo = ac.createOscillator(), lg = ac.createGain(); lfo.frequency.value = 5.2; lg.gain.setValueAtTime(0, t0); lg.gain.linearRampToValueAtTime(f*.004, t0+Math.min(.5,dur));
+  lfo.connect(lg); lg.connect(o1.frequency); lg.connect(o2.frequency);
+  o1.connect(g);
+  [o1,o2,lfo].forEach(o => { o.start(t0); o.stop(t0+dur+.05); });
+}
+let playToken = 0;
+async function play(seq, beat){  // seq: [{m, d}] ; liefert Promise; Mikrofon aus
+  micOff(); setSession('playback'); await initAudio();
+  const my = ++playToken; kikiMood('sing');
+  let t = ac.currentTime + .05;
+  for (const n of seq){ tone(n.m, n.d*beat*.95, t); n._at = t; t += n.d*beat; }
+  const total = (t - ac.currentTime)*1000;
+  await wait(total + 60);
+  if (my === playToken) kikiMood(null);
+  return my === playToken;
+}
+/* Kikis Stimme */
+let deVoice = null;
+function pickVoice(){ const vs = speechSynthesis.getVoices(); deVoice = vs.find(v => /de[-_]CH/i.test(v.lang)) || vs.find(v => /^de/i.test(v.lang)) || null; }
+if ('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function say(text){
+  return new Promise(res => {
+    if (!S.voice || !('speechSynthesis' in window)) return res();
+    micOff(); setSession('playback');
+    try{
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = deVoice ? deVoice.lang : 'de-DE'; if (deVoice) u.voice = deVoice;
+      u.pitch = 1.35; u.rate = .98;
+      let done = false; const fin = () => { if (!done){ done = true; res(); } };
+      u.onend = fin; u.onerror = fin; setTimeout(fin, 900 + text.length*90);
+      speechSynthesis.speak(u);
+    }catch(e){ res(); }
+  });
+}
+
+/* ---------- Tonhöhe erkennen (McLeod-Verfahren) ---------- */
+const nsdf = new Float32Array(1100);
+function detect(){
+  analyser.getFloatTimeDomainData(buf);
+  const n = buf.length, sr = ac.sampleRate;
+  let rms = 0; for (let i = 0; i < n; i++) rms += buf[i]*buf[i];
+  rms = Math.sqrt(rms/n);
+  if (rms < .012) return null;
+  const minLag = Math.floor(sr/1100), maxLag = Math.min(Math.floor(sr/65), n-1, nsdf.length-1);
+  const W = n - maxLag;
+  for (let tau = minLag; tau <= maxLag; tau++){
+    let acf = 0, m = 0;
+    for (let i = 0; i < W; i++){ const a = buf[i], b = buf[i+tau]; acf += a*b; m += a*a + b*b; }
+    nsdf[tau] = m > 0 ? 2*acf/m : 0;
+  }
+  // Spitzen nach dem ersten Nulldurchgang
+  let tau = minLag; while (tau < maxLag && nsdf[tau] > 0) tau++;
+  const peaks = []; let best = -1, bestV = -1, globalMax = 0;
+  for (; tau < maxLag; tau++){
+    if (nsdf[tau] > 0){
+      if (nsdf[tau] > bestV){ bestV = nsdf[tau]; best = tau; }
+    } else if (best > 0){ peaks.push(best); globalMax = Math.max(globalMax, bestV); best = -1; bestV = -1; }
+  }
+  if (best > 0){ peaks.push(best); globalMax = Math.max(globalMax, bestV); }
+  if (!peaks.length || globalMax < .55) return null;
+  const pick = peaks.find(p => nsdf[p] >= globalMax*.88);
+  const a = nsdf[pick-1], b = nsdf[pick], c = nsdf[pick+1];
+  const shift = (a - 2*b + c) ? .5*(a - c)/(a - 2*b + c) : 0;
+  const f = sr/(pick + shift);
+  if (f < 65 || f > 1100) return null;
+  return {f, clarity: b, rms};
+}
+let hist = [];
+function smoothMidi(m){
+  if (m == null){ hist = []; return null; }
+  hist.push(m); if (hist.length > 5) hist.shift();
+  const s = hist.slice().sort((x,y) => x-y); return s[Math.floor(s.length/2)];
+}
+/* Abstand in Cent, Oktave egal */
+function diffCents(m, target){
+  let d = (m - target)*100;
+  d = ((d % 1200) + 1800) % 1200 - 600;
+  return d;
+}
+
+/* ---------- Navigation ---------- */
+let current = 'home';
+const stopAll = () => { listenCb = null; playToken++; micOff(); if (drone) droneStop(); try{ speechSynthesis.cancel(); }catch(e){} kikiMood(null); trainer.active = false; };
+function go(name){
+  if (name !== current) stopAll();
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === 's-'+name));
+  current = name;
+  $('back').hidden = (name === 'home' || name === 'menu');
+  scrollTo(0,0);
+}
+document.addEventListener('drlab-feedback-open', stopAll);
+$('back').onclick = () => { if (current === 'train' && trainer.from === 'songs'){ songList(); go('songs'); } else if (current === 'train' && trainer.from === 'scales'){ startScales(); } else go('menu'); };
+document.querySelectorAll('[data-go]').forEach(b => b.onclick = async () => {
+  await initAudio();
+  const g = b.dataset.go;
+  if (g === 'tone') startTone();
+  else if (g === 'scale') startScales();
+  else if (g === 'songs') { songList(); go('songs'); }
+  else if (g === 'settings') { renderMem(); go('settings'); }
+  else if (g === 'mirror') startMirror();
+  else if (g === 'warm') startWarm();
+  else if (g === 'room') startRoom();
+  else if (g === 'pitch') startPitch();
+  else go(g);
+});
+
+/* ---------- Start ---------- */
+$('startBtn').onclick = async () => {
+  await initAudio();
+  $('micErr').hidden = true;
+  const ok = await micOn();   // Erlaubnis einmal holen
+  if (!ok) return;
+  micOff();
+  go('menu');
+  kikiMood('happy');
+  const greet = memGreeting(); $('menuBubble').textContent = greet;
+  await say(greet);
+  kikiMood(null);
+};
+
+/* ---------- Hörschleife ---------- */
+let listenCb = null, lastT = 0;
+function loop(t){
+  const dt = Math.min(.1, (t - lastT)/1000 || 0); lastT = t;
+  if (listenCb && stream && ac){
+    const r = detect();
+    const m = smoothMidi(r ? toMidi(r.f) : null);
+    listenCb(m, dt);
+  }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* ---------- Trainer-Anzeige ---------- */
+const RANGE = 700; // Cent sichtbar über/unter dem Ziel
+const trainer = {active:false, target:60, hold:0, need:.8, from:null};
+function ladderShow(target){
+  const L = $('ladder'), h = L.clientHeight;
+  const bandH = Math.max(34, h*(S.tol*2)/(RANGE*2) + 18);
+  $('band').style.height = bandH + 'px'; $('band').style.top = (h/2 - bandH/2) + 'px';
+  $('tlabel').style.top = (h/2) + 'px'; $('tlabel').textContent = noteName(target);
+  if (!L.querySelector('.tick')){
+    for (let s = -6; s <= 6; s++){ const d = document.createElement('div'); d.className = 'tick'; d.style.top = (h/2 - s*100/RANGE*h/2) + 'px'; L.prepend(d); }
+  }
+  L.classList.remove('hit'); $('ball').classList.remove('on'); $('meter').style.width = '0';
+  $('arrowUp').style.opacity = $('arrowDn').style.opacity = .25;
+}
+function ladderUpdate(m, dt){
+  const L = $('ladder'), h = L.clientHeight, ball = $('ball');
+  if (m == null){
+    ball.classList.remove('on'); L.classList.remove('hit'); kikis.forEach(k => k.classList.remove('dance'));
+    trainer.hold = Math.max(0, trainer.hold - dt*.6);
+    $('youNote').innerHTML = '';
+    if (trainer.active) setHint('Sing mit «aaa» …');
+  } else {
+    const d = diffCents(m, trainer.target);
+    const y = h/2 - Math.max(-1, Math.min(1, d/RANGE))*(h/2 - 22);
+    ball.style.top = y + 'px'; ball.classList.add('on');
+    const inTune = Math.abs(d) <= S.tol;
+    L.classList.toggle('hit', inTune);
+    kikis.forEach(k => k.classList.toggle('dance', inTune));
+    $('youNote').innerHTML = 'Du singst ' + dotHTML(m);
+    if (inTune){ trainer.hold += dt; setHint('Genau so! Halten …', true); }
+    else {
+      trainer.hold = Math.max(0, trainer.hold - dt*.5);
+      if (d < 0) setHint(Math.abs(d) > 250 ? 'Höher, wie ein Vogel ⬆' : 'Ein bisschen höher ⬆');
+      else setHint(Math.abs(d) > 250 ? 'Tiefer, wie ein Bär ⬇' : 'Ein bisschen tiefer ⬇');
+    }
+    $('arrowUp').style.opacity = (!inTune && d < 0) ? 1 : .25;
+    $('arrowDn').style.opacity = (!inTune && d > 0) ? 1 : .25;
+  }
+  $('meter').style.width = Math.min(100, trainer.hold/trainer.need*100) + '%';
+}
+function setHint(t, good){ const el = $('hint'); el.textContent = t; el.classList.toggle('good', !!good); }
+function addStars(n){
+  stars += n; store.set('stars', stars); $('starCount').textContent = stars;
+  burst(n > 1 ? 18 : 10);
+}
+function burst(n){
+  const b = $('burst'), cx = innerWidth/2, cy = innerHeight*.45;
+  for (let i = 0; i < n; i++){
+    const s = document.createElement('span'); s.textContent = ['★','♪','♫','✨'][i%4];
+    s.style.left = cx + 'px'; s.style.top = cy + 'px'; s.style.color = i%2 ? '#f2c14e' : '#7fdca4';
+    const a = Math.random()*Math.PI*2, r = 120 + Math.random()*140;
+    s.style.setProperty('--dx', Math.cos(a)*r + 'px'); s.style.setProperty('--dy', Math.sin(a)*r - 60 + 'px'); s.style.setProperty('--rot', (Math.random()*80-40) + 'deg');
+    b.appendChild(s); setTimeout(() => s.remove(), 1700);
+  }
+}
+const PRAISE = ['Super! Genau getroffen!', 'Wow, toll gesungen!', 'Bravo! Das war genau richtig!', 'Juhu, du hast den Ton getroffen!', 'Wunderschön! Noch einer?'];
+const praise = () => PRAISE[Math.floor(Math.random()*PRAISE.length)];
+
+/* ---------- Übung 1: Ton treffen ---------- */
+let toneState = {last:null, count:0, timer:0};
+function toneTarget(){
+  const base = baseC(); // C4 = 60, oder passend zum Stimmraum
+  let pool = [2,4,5,7,9];       // D E F G A
+  if (mem.hits >= 6 || toneState.count >= 6) pool = [0,2,4,5,7,9,11,12];
+  // nur Töne, die im gemessenen Stimmraum liegen (wenn genug übrig bleiben)
+  const rm = useRoom();
+  if (rm){ const inRoom = pool.filter(r => base + r >= rm.lo && base + r <= rm.hi); if (inRoom.length >= 3) pool = inRoom; }
+  // ganz am Anfang: G, dann E (leicht für Kinder)
+  if (mem.hits < 3){ if (toneState.count === 0) return base + 7; if (toneState.count === 1) return base + 4; }
+  // Kiki lernt: Töne, die noch schwer sind, kommen öfter
+  const cand = pool.filter(r => base + r !== toneState.last);
+  const w = cand.map(r => 1 + 2*(1 - noteRate(NAMES[r%12])));
+  let x = Math.random()*w.reduce((a,b) => a+b, 0), i = 0;
+  while (i < w.length - 1 && x > w[i]){ x -= w[i]; i++; }
+  return base + cand[i];
+}
+function setupTrainUI(title, withLyrics){
+  $('trainTitle').textContent = title;
+  $('lyricsBox').hidden = !withLyrics;
+  $('s-train').classList.toggle('songmode', !!withLyrics);
+  go('train');
+  ladderShow(trainer.target);
+}
+function startTone(){
+  trainer.from = 'menu'; trainer.mode = 'tone'; toneState = {last:null, count:0};
+  trainer.target = toneTarget();
+  setupTrainUI('Ton treffen', false);
+  setHint('Hör gut zu …'); $('youNote').innerHTML = '';
+  $('mainBtn').textContent = '▶︎ Los geht\'s'; $('mainBtn').hidden = false;
+  $('mainBtn').onclick = () => toneRound(true);
+  $('replayBtn').onclick = () => toneRound(false);
+  $('skipBtn').onclick = () => { toneState.last = trainer.target; trainer.target = toneTarget(); toneRound(false); };
+}
+async function toneRound(intro){
+  $('mainBtn').hidden = true;
+  trainer.active = false; listenCb = null;
+  ladderShow(trainer.target);
+  if (intro && toneState.count === 0) await say('Hör gut zu. Ich singe dir einen Ton vor. Dann singst du ihn nach!');
+  setHint('Kiki singt vor … 🎵'); $('youNote').innerHTML = 'Zielton ' + dotHTML(trainer.target);
+  const ok = await play([{m: trainer.target, d: 1}], 1.5);
+  if (!ok || current !== 'train') return;
+  await listenFor(1, 14, async (secs) => {
+    memNote(trainer.target, true, secs);
+    toneState.count++; toneState.last = trainer.target;
+    addStars(1); kikiMood('happy'); setHint('★ ' + 'Getroffen!', true);
+    await say(praise());
+    await wait(500);
+    if (current !== 'train' || trainer.mode !== 'tone') return;
+    trainer.target = toneTarget();
+    toneRound(false);
+  }, async () => {
+    memNote(trainer.target, false);
+    setHint('Hör nochmal zu 👂');
+    await say('Hör nochmal genau zu.');
+    if (current === 'train' && trainer.mode === 'tone') toneRound(false);
+  });
+}
+/* allgemeines Zuhören bis Treffer */
+async function listenFor(need, timeoutS, onHit, onTimeout){
+  trainer.hold = 0; trainer.need = need; trainer.active = true; hist = [];
+  setHint('Jetzt du! 🎤');
+  kikiMood('listen');
+  const ok = await micOn(); if (!ok) return;
+  const myTok = playToken; let elapsed = 0, fired = false;
+  listenCb = (m, dt) => {
+    if (myTok !== playToken || fired) return;
+    elapsed += dt;
+    memRange(m, dt);
+    ladderUpdate(m, dt);
+    if (trainer.hold >= trainer.need){ fired = true; listenCb = null; trainer.active = false; micOff(); onHit(elapsed); }
+    else if (timeoutS && elapsed > timeoutS && trainer.hold < .2){ fired = true; listenCb = null; trainer.active = false; micOff(); onTimeout && onTimeout(); }
+  };
+}
+
+/* ---------- Übung 2 + 3: Tonleiter und Lieder ---------- */
+/* ---------- Tonleitern lernen ---------- */
+const SOLF = ['Do','Re','Mi','Fa','So','La','Ti'];
+const MAJOR = [0,2,4,5,7,9,11], MINOR = [0,2,3,5,7,8,10];
+const KEYS = [[0,'C'],[2,'D'],[4,'E'],[5,'F'],[7,'G'],[9,'A']];
+const LESSONS = [
+  {id:'dur-auf',   ic:'🪜', title:'1 · Do-Re-Mi aufwärts', sub:'Die Dur-Tonleiter, Schritt für Schritt hoch', deg:[0,1,2,3,4,5,6,7]},
+  {id:'dur-aufab', ic:'⛰️', title:'2 · Hoch und wieder runter', sub:'Do bis Do und zurück', deg:[0,1,2,3,4,5,6,7,6,5,4,3,2,1,0]},
+  {id:'fuenf',     ic:'🖐️', title:'3 · Fünf-Ton-Leiter', sub:'Do-Re-Mi-Fa-So-Fa-Mi-Re-Do · klassisches Einsingen', deg:[0,1,2,3,4,3,2,1,0]},
+  {id:'terzen',    ic:'🦘', title:'4 · Terzen-Sprünge', sub:'Do-Mi, Re-Fa, Mi-So … Sprünge treffen', deg:[0,2,1,3,2,4,3,5,4,6,5,7]},
+  {id:'dreiklang', ic:'🔺', title:'5 · Dreiklang', sub:'Do-Mi-So-Do und zurück', deg:[0,2,4,7,4,2,0]},
+  {id:'moll',      ic:'🌙', title:'6 · Moll-Tonleiter', sub:'Weicher, trauriger Klang, auf und ab', deg:[0,1,2,3,4,5,6,7,6,5,4,3,2,1,0], minor:true},
+];
+function scaleRoot(){
+  // Grundton der Tonart, passend zur Stimme: Mitte der Leiter nah am Wohlfühlton
+  const rm = useRoom(), comfy = rm && rm.comfy != null ? rm.comfy : baseC() + 5;
+  let m = baseC() + S.key;
+  while (m + 5 - comfy > 6) m -= 12;
+  while (comfy - (m + 5) > 6) m += 12;
+  return m;
+}
+function lessonSeq(L){
+  const root = scaleRoot(), sc = L.minor ? MINOR : MAJOR;
+  return L.deg.map(d => { const o = Math.floor(d/7), k = d%7, m = root + sc[k] + 12*o; return {m, d: 1, t: `${SOLF[k]} <small>${noteName(m)}</small>`}; });
+}
+function scaleSeq(){ return lessonSeq(LESSONS[0]); }
+function startScales(){
+  go('scales');
+  const ks = $('keySeg'); ks.innerHTML = '';
+  KEYS.forEach(([v, n]) => { const b = document.createElement('button'); b.textContent = n; b.classList.toggle('on', S.key === v); b.onclick = () => { S.key = v; store.set('key', v); startScales(); }; ks.appendChild(b); });
+  $('vorSeg').querySelectorAll('button').forEach(b => { b.classList.toggle('on', +b.dataset.v === +S.vor); b.onclick = () => { S.vor = +b.dataset.v; store.set('vor', S.vor); startScales(); }; });
+  const keyName = KEYS.find(k => k[0] === S.key)[1];
+  const box = $('scaleList'); box.innerHTML = '';
+  const done = mem.scales || {};
+  LESSONS.forEach(L => {
+    const el = document.createElement('button'); el.className = 'card wide';
+    const tn = L.minor ? keyName.toLowerCase() + '-Moll' : keyName + '-Dur';
+    el.innerHTML = `<span class="ic">${L.ic}</span><span><b>${L.title}${done[L.id] ? ' ✓' : ''}</b><small>${L.sub} · ${tn}${done[L.id] ? ' · ' + done[L.id] + '× geschafft' : ''}</small></span>`;
+    el.onclick = async () => { await initAudio(); startSeq(L.title.replace(/^\d · /, '') + ' · ' + tn, lessonSeq(L), null, {from: 'scales', lesson: L.id}); };
+    box.appendChild(el);
+  });
+  // Bauplan der Dur-Tonleiter
+  const v = $('stepsViz'); v.innerHTML = '';
+  const root = scaleRoot();
+  MAJOR.concat([12]).forEach((st, i) => {
+    const d = document.createElement('div'); const m = root + st;
+    d.style.height = (30 + st*6) + 'px'; d.style.background = noteColor(m);
+    d.innerHTML = `${SOLF[i % 7]}<br>${noteName(m)}`; v.appendChild(d);
+  });
+}
+// Melodien in C-Dur, Mitte = C4 (60); d = Schläge; br = Zeilenumbruch danach
+const SONGS = [
+  {id:'entchen', title:'Alle meine Entchen', ic:'🦆', bpm:110, notes:[
+    [60,'Al'],[62,'le'],[64,'mei'],[65,'ne'],[67,'Ent',2],[67,'chen',2,1],
+    [69,'schwim'],[69,'men'],[69,'auf'],[69,'dem'],[67,'See',4,1],
+    [69,'schwim'],[69,'men'],[69,'auf'],[69,'dem'],[67,'See',4,1],
+    [65,'Köpf'],[65,'chen'],[65,'in'],[65,'das'],[64,'Was',2],[64,'ser',2,1],
+    [62,'Schwänz'],[62,'chen'],[62,'in'],[62,'die'],[60,'Höh!',4]]},
+  {id:'jakob', title:'Bruder Jakob', ic:'🔔', bpm:100, notes:[
+    [60,'Bru'],[62,'der'],[64,'Ja'],[60,'kob,',1,1],[60,'Bru'],[62,'der'],[64,'Ja'],[60,'kob,',1,1],
+    [64,'schläfst'],[65,'du'],[67,'noch?',2,1],[64,'schläfst'],[65,'du'],[67,'noch?',2,1],
+    [67,'Hörst',.75],[69,'du',.25],[67,'nicht',.5],[65,'die',.5],[64,'Glo'],[60,'cken?',1,1],
+    [67,'Hörst',.75],[69,'du',.25],[67,'nicht',.5],[65,'die',.5],[64,'Glo'],[60,'cken?',1,1],
+    [60,'Ding'],[55,'dang'],[60,'dong!',2,1],[60,'Ding'],[55,'dang'],[60,'dong!',2]]},
+  {id:'haenschen', title:'Hänschen klein', ic:'🎒', bpm:115, notes:[
+    [67,'Häns'],[64,'chen'],[64,'klein',2],[65,'ging'],[62,'al'],[62,'lein',2,1],
+    [60,'in'],[62,'die'],[64,'wei'],[65,'te'],[67,'Welt'],[67,'hin'],[67,'ein.',2,1],
+    [67,'Stock'],[64,'und'],[64,'Hut',2],[65,'steht'],[62,'ihm'],[62,'gut,',2,1],
+    [60,'ist'],[64,'gar'],[67,'wohl'],[67,'ge'],[60,'mut.',4,1],
+    [62,'A'],[62,'ber'],[62,'Mut'],[62,'ter'],[62,'wei'],[64,'net'],[65,'sehr,',2,1],
+    [64,'hat'],[64,'ja'],[64,'nun'],[64,'kein'],[64,'Häns'],[65,'chen'],[67,'mehr.',2,1],
+    [67,'Da'],[64,'be'],[64,'sinnt',2],[65,'sich'],[62,'das'],[62,'Kind,',2,1],
+    [60,'eilt'],[64,'nach'],[67,'Haus'],[67,'ge'],[60,'schwind.',4]]},
+  // Bekannte Lieder, alle gemeinfrei (Komponist/Texter seit über 70 Jahren tot oder Volksgut)
+  {id:'freude', cat:'gross', title:'Ode an die Freude', sub:'Beethoven · Freude, schöner Götterfunken', ic:'🎻', bpm:100, notes:[
+    [64,'Freu'],[64,'de,'],[65,'schö'],[67,'ner'],[67,'Göt'],[65,'ter'],[64,'fun'],[62,'ken,',1,1],
+    [60,'Toch'],[60,'ter'],[62,'aus'],[64,'E',1.5],[62,'ly',.5],[62,'si',1],[62,'um.',1,1],
+    [64,'Wir'],[64,'be'],[65,'tre'],[67,'ten'],[67,'feu'],[65,'er'],[64,'trun'],[62,'ken,',1,1],
+    [60,'himm'],[60,'li'],[62,'sche,'],[64,'dein',1.5],[62,'Hei',.5],[60,'lig',1],[60,'tum!',2]]},
+  {id:'grace', cat:'gross', title:'Amazing Grace', sub:'Englisches Volkslied · ruhig und lang', ic:'🕊️', bpm:85, notes:[
+    [55,'A'],[60,'ma',2],[64,'zing'],[64,'grace',2],[62,'how'],[60,'sweet',2],[57,'the'],[55,'sound,',2,1],
+    [55,'that'],[60,'saved',2],[64,'a'],[64,'wretch',2],[62,'like'],[67,'me.',3]]},
+  {id:'saints', cat:'gross', title:'When the Saints', sub:'Gospel · fröhlich', ic:'🎺', bpm:120, notes:[
+    [60,'Oh'],[64,'when'],[65,'the'],[67,'saints',4,1],
+    [60,'go'],[64,'mar'],[65,'ching'],[67,'in,',4,1],
+    [60,'oh'],[64,'when'],[65,'the'],[67,'saints',2],[64,'go'],[60,'mar',2],[64,'ching'],[62,'in,',4,1],
+    [64,'Oh'],[64,'Lord,'],[62,'I'],[60,'want',2],[60,'to'],[64,'be'],[67,'in'],[67,'that'],[67,'num'],[65,'ber',3,1],
+    [64,'when'],[65,'the'],[67,'saints',2],[64,'go'],[60,'mar',2],[62,'ching'],[60,'in.',4]]},
+  {id:'geburtstag', cat:'gross', title:'Zum Geburtstag viel Glück', sub:'Happy Birthday · für jedes Fest', ic:'🎂', bpm:110, notes:[
+    [55,'Zum',.75],[55,'Ge',.25],[57,'burts'],[55,'tag'],[60,'viel'],[59,'Glück,',2,1],
+    [55,'zum',.75],[55,'Ge',.25],[57,'burts'],[55,'tag'],[62,'viel'],[60,'Glück,',2,1],
+    [55,'zum',.75],[55,'Ge',.25],[67,'burts'],[64,'tag,'],[60,'lie'],[59,'bes'],[57,'Kind,',2,1],
+    [65,'zum',.75],[65,'Ge',.25],[64,'burts'],[60,'tag'],[62,'viel'],[60,'Glück!',2]]}
+];
+function songSeq(song){
+  const shift = baseC() - 60;
+  return song.notes.map(([m,t,d,br]) => ({m: m+shift, t, d: d || 1, br: !!br}));
+}
+function songList(){
+  const box = $('songlist'); box.innerHTML = '';
+  const fav = favSong();
+  [['kind','Kinderlieder'],['gross','Bekannte Lieder']].forEach(([cat, label]) => {
+    const h = document.createElement('h2'); h.textContent = label; h.style.cssText = 'font-size:19px;margin:8px 4px 0'; box.appendChild(h);
+    SONGS.filter(s => (s.cat || 'kind') === cat).forEach(s => {
+      const el = document.createElement('button'); el.className = 'card wide';
+      const v = mem.songs[s.id], done = v && v.d ? ` · ${v.d}× geschafft` : '';
+      el.innerHTML = `<span class="ic">${s.ic}</span><span><b>${s.title}${fav === s ? ' ⭐' : ''}</b><small>${fav === s ? 'Dein Lieblingslied' : (s.sub || s.notes.length + ' Töne · Kiki hilft bei jedem Ton')}${done}</small></span>`;
+      el.onclick = async () => { await initAudio(); startSeq(s.title, songSeq(s), s); };
+      box.appendChild(el);
+    });
+  });
+}
+songList();
+let seq = null;
+function renderLyrics(){
+  const box = $('lyrics'); box.innerHTML = '';
+  let line = document.createElement('div'); line.className = 'line'; box.appendChild(line);
+  seq.items.forEach((n,i) => {
+    n.line = box.children.length - 1;
+    const s = document.createElement('span'); s.className = 'syl';
+    s.innerHTML = `<i style="background:${noteColor(n.m)}"></i>${n.t}`; line.appendChild(s);
+    if (n.br && i < seq.items.length - 1){ line = document.createElement('div'); line.className = 'line'; box.appendChild(line); }
+  });
+  markSyl(seq.i);
+}
+function markSyl(i){
+  document.querySelectorAll('.syl').forEach((el, k) => { el.classList.toggle('now', k === i); el.classList.toggle('done', k < i); });
+  const n = seq.items[Math.min(i, seq.items.length - 1)], cur = n ? n.line : 0;
+  document.querySelectorAll('.lyrics .line').forEach((el, k) => { el.classList.toggle('far', k < cur || k > cur + 1); el.classList.toggle('next', k === cur + 1); });
+}
+function startSeq(title, items, song, opts){
+  trainer.from = song ? 'songs' : (opts && opts.from) || 'menu'; trainer.mode = 'seq';
+  seq = {title, items, song, i:0, lesson: opts && opts.lesson};
+  trainer.target = items[0].m;
+  setupTrainUI(title, true);
+  renderLyrics();
+  setHint(song ? 'Zuerst anhören?' : 'Bereit?'); $('youNote').innerHTML = '';
+  $('mainBtn').hidden = false;
+  $('mainBtn').textContent = song ? '🎤 Mitsingen' : '▶︎ Los geht\'s';
+  $('mainBtn').onclick = () => seqStep(true);
+  $('replayBtn').textContent = song ? '🔊 Ganzes Lied' : '🔊 Alle anhören';
+  $('replayBtn').onclick = playWhole;
+  $('skipBtn').onclick = () => { if (seq.i < seq.items.length){ seq.i++; seqStep(false); } };
+}
+async function playWhole(){
+  listenCb = null; trainer.active = false; micOff();
+  $('mainBtn').hidden = false; $('mainBtn').textContent = '🎤 Mitsingen';
+  const beat = 60/(seq.song ? seq.song.bpm : 90);
+  const tok = playToken + 1;
+  setHint('Kiki singt das Lied 🎵');
+  const items = seq.items;
+  if (seq.song) memSong(seq.song.id, 'l');
+  const p = play(items.map(n => ({m:n.m, d:n.d})), beat);
+  // Silben mitlaufen lassen
+  let acc = 0;
+  items.forEach((n, i) => { setTimeout(() => { if (playToken === tok && current === 'train') markSyl(i); }, acc*beat*1000 + 60); acc += n.d; });
+  const ok = await p;
+  if (ok && current === 'train'){ markSyl(seq.i); setHint('Jetzt singen wir zusammen!'); }
+}
+async function seqStep(first){
+  $('mainBtn').hidden = true;
+  $('replayBtn').textContent = '🔊 Ton nochmal';
+  $('replayBtn').onclick = () => seqStep(false);
+  listenCb = null; trainer.active = false;
+  if (seq.i >= seq.items.length) return seqDone();
+  const n = seq.items[seq.i];
+  trainer.target = n.m; ladderShow(n.m); markSyl(seq.i);
+  $('youNote').innerHTML = 'Zielton ' + dotHTML(n.m);
+  if (first && seq.i === 0 && seq.song) memSong(seq.song.id, 's');
+  if (first && seq.i === 0) await say(seq.song ? 'Ich singe dir jeden Ton vor, du singst ihn nach.' : (S.vor !== 0 ? 'Ich singe vor, du singst nach. Do, Re, Mi!' : 'Ich gebe dir den ersten Ton. Den Rest findest du selbst!'));
+  if (current !== 'train') return;
+  if (first || (seq.song ? S.prompt : S.vor !== 0)){
+    setHint('Kiki singt «' + n.t + '» 🎵');
+    const ok = await play([{m:n.m, d:1}], seq.song ? .8 : 1.1);
+    if (!ok || current !== 'train') return;
+  }
+  await listenFor(seq.song ? .35 : .6, 0, (secs) => {
+    memNote(n.m, true, secs);
+    burst(4);
+    seq.i++;
+    if (current === 'train') seqStep(false);
+  });
+}
+async function seqDone(){
+  if (seq.song) memSong(seq.song.id, 'd');
+  markSyl(seq.items.length); setHint('Geschafft! ★★★', true);
+  kikiMood('happy'); addStars(3);
+  if (seq.lesson){ mem.scales = mem.scales || {}; mem.scales[seq.lesson] = (mem.scales[seq.lesson] || 0) + 1; saveMem(); }
+  await say(seq.song ? 'Bravo! Du hast das ganze Lied gesungen!' : 'Super! Tonleiter geschafft!');
+  if (current !== 'train') return;
+  seq.i = 0;
+  $('mainBtn').hidden = false; $('mainBtn').textContent = '🔁 Nochmal';
+  $('mainBtn').onclick = () => { renderLyrics(); seqStep(false); };
+  $('replayBtn').textContent = seq.song ? '🔊 Ganzes Lied' : '🔊 Alle anhören';
+  $('replayBtn').onclick = playWhole;
+}
+
+/* ---------- Aufwärmen: Ballon-Atmen, Summen, Sirene ---------- */
+let warm = null;
+function warmDots(i){ document.querySelectorAll('#warmDots i').forEach((d, k) => { d.classList.toggle('on', k === i); d.classList.toggle('done', k < i); }); }
+function warmHint(t, good){ const el = $('warmHint'); el.textContent = t; el.classList.toggle('good', !!good); }
+function startWarm(){
+  go('warm');
+  warm = {step: 0, tok: playToken};
+  warmDots(-1); $('warmTitle').textContent = 'Aufwärmen'; warmHint('Zuerst wärmen wir die Stimme auf.');
+  $('balloon').className = 'balloon'; $('warmMeter').style.width = '0';
+  $('warmBtn').hidden = false; $('warmBtn').textContent = '▶︎ Los geht\'s';
+  $('warmBtn').onclick = () => warmStep(0);
+  $('warmSkip').onclick = () => warmStep(Math.min(3, warm.step + 1));
+}
+const warmAlive = tok => current === 'warm' && tok === playToken;
+async function warmStep(i){
+  listenCb = null; micOff(); try{ speechSynthesis.cancel(); }catch(e){}
+  playToken++; const tok = playToken; warm.step = i;
+  $('warmBtn').hidden = true; $('warmMeter').style.width = '0'; kikiMood(null);
+  const b = $('balloon'); b.className = 'balloon'; b.style.transform = ''; b.style.transition = (i === 1 || i === 2) ? 'transform .12s' : '';
+  warmDots(i);
+  if (i === 0){
+    $('warmTitle').textContent = '1 · Ballon-Atmen';
+    await say('Wir atmen wie ein Ballon. Langsam einatmen, und dann ganz leise sss machen.');
+    for (let k = 0; k < 3; k++){
+      if (!warmAlive(tok)) return;
+      b.className = 'balloon big'; warmHint('Einatmen … 🎈');
+      for (let n = 4; n > 0; n--){ $('warmMeter').style.width = ((5-n)/4*100) + '%'; await wait(1000); if (!warmAlive(tok)) return; }
+      b.className = 'balloon out'; warmHint('Langsam raus: sss …');
+      for (let n = 6; n > 0; n--){ $('warmMeter').style.width = (n-1)/6*100 + '%'; await wait(1000); if (!warmAlive(tok)) return; }
+    }
+    return warmStep(1);
+  }
+  if (i === 1){
+    $('warmTitle').textContent = '2 · Summen wie eine Biene';
+    await say('Jetzt summen wir wie eine Biene. Mmmm. Irgendein Ton, ganz bequem.');
+    if (!warmAlive(tok)) return;
+    warmHint('Summ «mmm» … 🐝'); kikiMood('listen');
+    if (!await micOn()) return;
+    let held = 0; hist = [];
+    listenCb = (m, dt) => {
+      if (!warmAlive(tok)) return;
+      memRange(m, dt);
+      if (m != null){ held += dt; b.style.transform = `scale(${1.3 + .25*Math.sin(performance.now()/90)})`; }
+      else { held = Math.max(0, held - dt*.5); b.style.transform = ''; }
+      $('warmMeter').style.width = Math.min(100, held/3*100) + '%';
+      if (held >= 3){ listenCb = null; micOff(); burst(6); warmHint('Wunderbar gesummt!', true); kikiMood('happy'); wait(1200).then(() => warmAlive(tok) && warmStep(2)); }
+    };
+    return;
+  }
+  if (i === 2){
+    $('warmTitle').textContent = '3 · Sirene';
+    await say('Jetzt machen wir eine Sirene. Von ganz tief nach ganz hoch: uuuuiii!');
+    if (!warmAlive(tok)) return;
+    warmHint('Von tief nach hoch: uuuiii 🚒'); kikiMood('listen');
+    if (!await micOn()) return;
+    let lo = null, hi = null; hist = [];
+    listenCb = (m, dt) => {
+      if (!warmAlive(tok)) return;
+      memRange(m, dt);
+      if (m == null){ b.style.transform = ''; return; }
+      lo = lo == null ? m : Math.min(lo, m); hi = hi == null ? m : Math.max(hi, m);
+      const span = hi - lo;
+      b.style.transform = `translateY(${-Math.max(-60, Math.min(60, (m - lo - 3)*8))}px)`;
+      $('warmMeter').style.width = Math.min(100, span/7*100) + '%';
+      if (span >= 7){ listenCb = null; micOff(); burst(8); warmHint('Tatüü! Super Sirene!', true); kikiMood('happy'); wait(1200).then(() => warmAlive(tok) && warmStep(3)); }
+    };
+    return;
+  }
+  // fertig
+  $('warmTitle').textContent = 'Aufgewärmt!';
+  mem.warm = (mem.warm || 0) + 1; memDay(); saveMem();
+  addStars(2); kikiMood('happy'); warmHint('Deine Stimme ist bereit ★★', true);
+  b.className = 'balloon big';
+  await say('Super aufgewärmt! Jetzt kann es losgehen.');
+  if (!warmAlive(tok)) return;
+  $('warmBtn').hidden = false; $('warmBtn').textContent = '🎤 Zum Singen';
+  $('warmBtn').onclick = () => go('menu');
+}
+
+/* ---------- Mein Stimmraum ---------- */
+const nm = m => NAMES[((m%12)+12)%12] + (Math.floor(m/12) - 1);
+function useRoom(){ return S.room && mem.room && mem.room.lo != null && mem.room.hi != null ? mem.room : null; }
+/* C, um den die Übungen liegen: so gewählt, dass die Mitte (F) nah am Wohlfühlton ist */
+function baseC(){
+  const rm = useRoom();
+  if (!rm) return S.octave*12 + 12;
+  const c = rm.comfy != null ? rm.comfy : Math.round((rm.lo + rm.hi)/2);
+  return 60 + Math.round((c - 65)/12)*12;
+}
+const RLO = 43, RHI = 84; // G2 … C6
+function roomY(m){ const h = $('room').clientHeight; return h - (Math.max(RLO, Math.min(RHI, m)) - RLO)/(RHI - RLO)*h; }
+function roomDraw(lo, hi, comfy){
+  const band = $('rband'), c = $('rcomfy');
+  if (lo != null && hi != null){ const t = roomY(hi + .5), b = roomY(lo - .5); band.style.top = t + 'px'; band.style.height = Math.max(8, b - t) + 'px'; band.classList.add('on'); }
+  else band.classList.remove('on');
+  if (comfy != null){ c.style.top = roomY(comfy) + 'px'; c.classList.add('on'); } else c.classList.remove('on');
+}
+function roomHint(t, good){ const el = $('roomHint'); el.textContent = t; el.classList.toggle('good', !!good); }
+let room = null;
+function startRoom(){
+  go('room');
+  room = {step: -1, lo: null, hi: null, comfy: null};
+  $('roomResult').hidden = true; $('roomDone').hidden = true; $('rball').classList.remove('on'); $('roomMeter').style.width = '0'; $('roomNote').innerHTML = '';
+  const rm = mem.room;
+  if (rm && rm.lo != null){ roomDraw(rm.lo, rm.hi, rm.comfy); roomShowResult(false); roomHint('Das ist dein Stimmraum.'); $('roomBtn').textContent = '🔁 Neu messen'; }
+  else { roomDraw(null, null, null); roomHint('Wir messen deinen Stimmraum.'); $('roomBtn').textContent = '▶︎ Messen'; }
+  $('roomBtn').hidden = false; $('roomBtn').onclick = () => roomStep(0);
+  $('roomDone').onclick = () => roomStep(room.step + 1);
+}
+/* Ton gilt erst, wenn er ein bisschen gehalten wird */
+function stableTracker(need){ let t = 0, ref = null; return (m, dt) => { if (m == null){ t = 0; ref = null; return null; } if (ref != null && Math.abs(m - ref) < .6){ t += dt; ref = ref*.8 + m*.2; } else { t = 0; ref = m; } return t >= need ? Math.round(ref) : null; }; }
+const roomAlive = tok => current === 'room' && tok === playToken;
+async function roomStep(i){
+  listenCb = null; micOff(); try{ speechSynthesis.cancel(); }catch(e){}
+  playToken++; const tok = playToken; room.step = i;
+  $('roomBtn').hidden = true; $('roomResult').hidden = true; $('roomMeter').style.width = '0';
+  const ball = $('rball');
+  if (i === 0){ room.lo = room.hi = room.comfy = null; roomDraw(null, null, null); }
+  if (i > 2) return roomFinish(tok);
+  const steps = [
+    {title:'1 · Ganz tief', say:'Sing einen ganz tiefen Ton, wie ein grosser Bär. Brumm!', hint:'Ganz tief, wie ein Bär 🐻', need:.6},
+    {title:'2 · Ganz hoch', say:'Und jetzt ganz hoch, wie ein kleiner Vogel. Piep!', hint:'Ganz hoch, wie ein Vogel 🐦', need:.6},
+    {title:'3 · Wohlfühlton', say:'Zum Schluss: Sing einen Ton, der sich ganz bequem anfühlt. Aaah.', hint:'Ganz bequem: aaah 🏠', need:1.5}
+  ][i];
+  $('roomTitle').textContent = steps.title;
+  await say(steps.say);
+  if (!roomAlive(tok)) return;
+  roomHint(steps.hint); kikiMood('listen');
+  $('roomDone').hidden = false; $('roomDone').textContent = i === 2 ? '✓ Fertig' : '✓ Weiter';
+  if (!await micOn()) return;
+  const track = stableTracker(steps.need); hist = [];
+  let got = 0;
+  listenCb = (m, dt) => {
+    if (!roomAlive(tok)) return;
+    memRange(m, dt);
+    if (m == null){ ball.classList.remove('on'); }
+    else { ball.style.top = roomY(m) + 'px'; ball.classList.add('on'); $('roomNote').innerHTML = 'Du singst ' + dotHTML(m); }
+    const n = track(m, dt);
+    if (n == null) return;
+    if (i === 0 && (room.lo == null || n < room.lo)){ room.lo = n; got++; if (room.hi == null) room.hi = n; }
+    else if (i === 1 && (room.hi == null || n > room.hi)){ room.hi = n; got++; if (room.lo == null) room.lo = n; }
+    else if (i === 2 && room.comfy == null){ room.comfy = n; got++; }
+    else return;
+    roomDraw(room.lo, room.hi, room.comfy);
+    $('roomMeter').style.width = '100%';
+    if (i === 2){ listenCb = null; micOff(); burst(6); roomStep(3); }
+    else roomHint((i === 0 ? 'Tief: ' : 'Hoch: ') + nm(n) + ' · noch ' + (i === 0 ? 'tiefer?' : 'höher?'), true);
+  };
+}
+async function roomFinish(tok){
+  $('roomDone').hidden = true; $('roomTitle').textContent = 'Mein Stimmraum'; $('rball').classList.remove('on');
+  if (room.lo == null || room.hi == null || room.hi - room.lo < 4){ roomHint('Kiki hat noch nicht genug gehört. Nochmal?'); $('roomBtn').hidden = false; $('roomBtn').textContent = '🔁 Nochmal'; return; }
+  if (room.comfy == null) room.comfy = Math.round((room.lo + room.hi)/2);
+  if (room.comfy < room.lo) room.lo = room.comfy; if (room.comfy > room.hi) room.hi = room.comfy;
+  const before = mem.room && mem.room.lo != null ? mem.room.hi - mem.room.lo : null;
+  mem.room = {lo: room.lo, hi: room.hi, comfy: room.comfy, date: new Date().toISOString().slice(0,10)};
+  mem.rooms = (mem.rooms || []).concat([mem.room]).slice(-20);
+  memDay(); saveMem();
+  roomDraw(room.lo, room.hi, room.comfy);
+  const span = room.hi - room.lo;
+  addStars(2); kikiMood('happy');
+  roomShowResult(true);
+  const grew = before != null && span > before;
+  roomHint(grew ? 'Dein Stimmraum ist gewachsen! 🌱' : 'Gemessen! ★★', true);
+  await say(grew ? `Wow! Dein Stimmraum ist um ${span - before} Töne gewachsen!` : `Super! Dein Stimmraum geht von ${noteName(room.lo)} bis ${noteName(room.hi)}. Jetzt singe ich die Übungen genau in deiner Höhe.`);
+  if (!roomAlive(tok)) return;
+  $('roomBtn').hidden = false; $('roomBtn').textContent = '🎤 Zum Singen'; $('roomBtn').onclick = () => go('menu');
+}
+function spanWords(n){ if (n >= 24) return 'zwei Oktaven und mehr'; if (n >= 12) return 'über eine Oktave'; if (n >= 7) return 'eine halbe Oktave und mehr'; return n + ' Halbtöne'; }
+function roomShowResult(fresh){
+  const rm = mem.room, el = $('roomResult'); if (!rm) return;
+  const span = rm.hi - rm.lo, hist = (mem.rooms || []).slice(-5);
+  el.innerHTML = `<b>Von ${nm(rm.lo)} bis ${nm(rm.hi)}</b> · ${spanWords(span)}<br>Wohlfühlton: ${dotHTML(rm.comfy)} ${nm(rm.comfy)}<br><span class="muted" style="font-size:14px">Gemessen am ${rm.date}${hist.length > 1 ? ' · Verlauf: ' + hist.map(h => (h.hi - h.lo)).join(' → ') + ' Halbtöne' : ''}</span>`;
+  el.hidden = false;
+}
+
+/* ---------- Ton vorgeben ---------- */
+let drone = null, pitchHold = store.get('hold', 0);
+function droneStop(){ if (!drone) return; const {g, os} = drone, t = ac.currentTime; g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0, t + .15); os.forEach(o => o.stop(t + .2)); drone = null; kikiMood(null); document.querySelectorAll('.keys button').forEach(b => b.classList.remove('on')); }
+function droneStart(m){
+  droneStop(); const f = hz(m), t = ac.currentTime;
+  const g = ac.createGain(); g.connect(master); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.45, t + .08);
+  const o1 = ac.createOscillator(); o1.type = 'sine'; o1.frequency.value = f; o1.connect(g);
+  const o2 = ac.createOscillator(); o2.type = 'triangle'; o2.frequency.value = f*2; const g2 = ac.createGain(); g2.gain.value = .3; o2.connect(g2); g2.connect(g);
+  [o1, o2].forEach(o => o.start(t)); drone = {g, os:[o1, o2]}; kikiMood('sing');
+}
+function startPitch(){
+  go('pitch');
+  const box = $('keys'); box.innerHTML = ''; const b0 = baseC();
+  MAJOR.concat([12]).forEach((st, i) => {
+    const m = b0 + st, k = document.createElement('button');
+    k.style.background = noteColor(m); k.innerHTML = `${noteName(m)}<small>${SOLF[i % 7]}</small>`;
+    k.onclick = async () => {
+      await initAudio(); micOff(); setSession('playback'); playToken++;
+      const was = k.classList.contains('on');
+      droneStop(); if (was && pitchHold) return;
+      k.classList.add('on');
+      if (pitchHold) droneStart(m);
+      else { await play([{m, d:1}], 2); k.classList.remove('on'); }
+    };
+    box.appendChild(k);
+  });
+  $('holdSeg').querySelectorAll('button').forEach(b => { b.classList.toggle('on', +b.dataset.v === +pitchHold); b.onclick = () => { pitchHold = +b.dataset.v; store.set('hold', pitchHold); droneStop(); startPitch(); }; });
+  $('pitchStop').onclick = () => { playToken++; droneStop(); };
+}
+
+/* ---------- Übung 4: Stimm-Spiegel ---------- */
+const trace = [];
+async function startMirror(){
+  go('mirror');
+  const cv = $('mirror'), d = devicePixelRatio || 1;
+  cv.width = cv.clientWidth*d; cv.height = cv.clientHeight*d;
+  const x = cv.getContext('2d'); x.setTransform(d,0,0,d,0,0);
+  trace.length = 0;
+  const ok = await micOn(); if (!ok) return;
+  const W = cv.clientWidth, H = cv.clientHeight;
+  const lo = 43, hi = 84; // G2 … C6
+  const yOf = m => H - (m - lo)/(hi - lo)*H;
+  listenCb = (m, dt) => {
+    memRange(m, dt);
+    trace.push(m); if (trace.length > 240) trace.shift();
+    x.clearRect(0,0,W,H);
+    for (let k = lo; k <= hi; k++){ if ([0,4,7].includes(k%12)){ x.fillStyle = 'rgba(255,255,255,.06)'; x.fillRect(0, yOf(k), W, 1); if (k%12 === 0){ x.fillStyle = 'rgba(255,255,255,.35)'; x.font = '12px Fredoka, sans-serif'; x.fillText('C', 6, yOf(k) - 3); } } }
+    x.lineWidth = 6; x.lineCap = 'round';
+    for (let i = 1; i < trace.length; i++){
+      const a = trace[i-1], b = trace[i]; if (a == null || b == null) continue;
+      x.strokeStyle = noteColor(b);
+      x.beginPath(); x.moveTo((i-1)/240*W, yOf(a)); x.lineTo(i/240*W, yOf(b)); x.stroke();
+    }
+    $('mirrorNote').innerHTML = m == null ? '<span class="muted" style="font-size:22px">Sing etwas …</span>' : dotHTML(m);
+  };
+}
+
+/* ---------- Einstellungen ---------- */
+document.querySelectorAll('.seg').forEach(seg => {
+  const k = seg.dataset.set;
+  const sync = () => seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.v === +S[k]));
+  seg.querySelectorAll('button').forEach(b => b.onclick = () => { S[k] = +b.dataset.v; store.set(k, S[k]); sync(); });
+  sync();
+});
+function memSummary(){
+  const nm = m => NAMES[((m%12)+12)%12] + (Math.floor(m/12) - 1);
+  const notes = Object.keys(mem.notes).sort((a,b) => NAMES.indexOf(a) - NAMES.indexOf(b)).map(k => { const n = mem.notes[k]; return `${k}: ${n.h} von ${n.t}` + (n.h ? `, ⌀ ${(n.s/n.h).toFixed(1)} s` : ''); });
+  const songs = SONGS.filter(x => mem.songs[x.id]).map(x => { const v = mem.songs[x.id]; return `${x.title}: ${v.l}× angehört, ${v.s}× begonnen, ${v.d}× geschafft`; });
+  return {notes, songs, range: mem.lo != null ? `${nm(mem.lo)} bis ${nm(mem.hi)}` : null, best: bestNote(), pr: practiceNote(), fav: favSong(), days: mem.days.length};
+}
+function renderMem(){
+  const x = memSummary(), el = $('memList');
+  if (!mem.hits && !x.songs.length && !mem.warm && !mem.room){ el.textContent = 'Noch nichts. Nach dem ersten Singen steht hier, was Kiki gelernt hat.'; return; }
+  el.innerHTML = [
+    `<b>Übungstage:</b> ${x.days}`,
+    mem.warm ? `<b>Aufgewärmt:</b> ${mem.warm}×` : '',
+    x.best ? `<b>Sicher:</b> ${x.best}` : '', x.pr ? `<b>Noch üben:</b> ${x.pr}` : '',
+    x.fav ? `<b>Lieblingslied:</b> ${x.fav.title}` : '',
+    mem.room ? `<b>Stimmraum:</b> ${nm(mem.room.lo)} bis ${nm(mem.room.hi)}, Wohlfühlton ${nm(mem.room.comfy)} (${mem.room.date})` : '',
+    x.range ? `<b>Gehört beim Singen:</b> ${x.range}` : '',
+    x.notes.length ? `<b>Töne getroffen:</b> ${x.notes.join(' · ')}` : '',
+    x.songs.length ? `<b>Lieder:</b> ${x.songs.join(' · ')}` : ''
+  ].filter(Boolean).join('<br>');
+}
+$('memClear').onclick = () => { if (!confirm('Soll Kiki alles vergessen?')) return; Object.assign(mem, {notes:{}, songs:{}, lo:null, hi:null, days:[], hits:0}); saveMem(); renderMem(); };
+$('memShare').onclick = async () => {
+  if (!$('shareOk').checked){ $('shareMsg').textContent = 'Bitte zuerst das Häkchen setzen.'; return; }
+  const x = memSummary();
+  const text = ['KIKI SINGT – Lern-Erfahrung (für Sense Engine)', `Datum: ${new Date().toISOString().slice(0,10)}`, `Übungstage: ${x.days}`, `Einstellung: Lage ${S.octave === 4 ? 'hoch' : 'tief'}, Genauigkeit ±${S.tol} Cent`, x.best ? `Sicher: ${x.best}` : '', x.pr ? `Noch üben: ${x.pr}` : '', x.fav ? `Lieblingslied: ${x.fav.title}` : '', mem.room ? `Stimmraum: ${nm(mem.room.lo)} bis ${nm(mem.room.hi)}, Wohlfühlton ${nm(mem.room.comfy)}` : '', x.range ? `Gehört beim Singen: ${x.range}` : '', x.notes.length ? 'Töne: ' + x.notes.join('; ') : '', x.songs.length ? 'Lieder: ' + x.songs.join('; ') : '', 'Einwilligung: ja · ohne Namen · ohne Stimme', '', 'Sense Engine (JSON):', JSON.stringify(Object.keys(mem.notes).map(k => ({app:'Kiki', art: noteRate(k) < .6 ? 'schwierig' : 'fortschritt', zeit: new Date().toISOString().slice(0,16), daten:{uebung:'ton-treffen', ton:k, versuche: mem.notes[k].t, getroffen: mem.notes[k].h, sterne: stars}, einwilligung:true})))].filter(Boolean).join('\n');
+  try{ if (navigator.share){ await navigator.share({title: 'Kiki – Lern-Erfahrung', text}); $('shareMsg').textContent = 'Geteilt. Danke!'; return; } }catch(e){ if (e && e.name === 'AbortError') return; }
+  try{ await navigator.clipboard.writeText(text); $('shareMsg').textContent = 'Kopiert. Du kannst es jetzt an DR Lab schicken.'; }catch(e){ $('shareMsg').textContent = text; }
+};
+$('kidName').value = store.get('name', '');
+$('kidSave').onclick = () => { const n = $('kidName').value.trim().slice(0, 24); store.set('name', n); $('kidSave').textContent = 'Gespeichert ✓'; setTimeout(() => $('kidSave').textContent = 'Speichern', 1500); homeGreet(); };
+function homeGreet(){ const n = store.get('name', ''); $('homeBubble').textContent = n ? `Hallo ${n}! Ich bin Kiki, der singende Koala. Wollen wir zusammen singen?` : 'Hallo, ich bin Kiki! Ich singe soo gern. Wollen wir zusammen singen?'; }
+homeGreet();
+$('resetStars').onclick = () => { stars = 0; store.set('stars', 0); $('starCount').textContent = 0; };
+
+/* Offline */
+if ('serviceWorker' in navigator && location.protocol === 'https:' && /github\.io$/.test(location.hostname)) navigator.serviceWorker.register('sw.js').catch(() => {});
+document.addEventListener('visibilitychange', () => { if (document.hidden){ stopAll(); if (current !== 'home' && current !== 'menu') go('menu'); } });
+})();
+</script>
+<!-- Figuren-Film (Trickfilm-Look): Farben, Funken, Atmen, Tipp-Reaktion, Szenenwechsel. Nur Optik. -->
+<style id="figurFilmCss">
+.film-aurora{position:fixed;inset:-20%;z-index:-1;pointer-events:none;filter:blur(60px);opacity:.5}
+.film-aurora i{position:absolute;border-radius:50%;animation:filmDrift 18s ease-in-out infinite alternate}
+.film-aurora i:nth-child(1){width:55vmax;height:55vmax;left:-10%;top:45%;background:radial-gradient(circle,color-mix(in srgb,var(--fa1) 60%,transparent),transparent 65%)}
+.film-aurora i:nth-child(2){width:45vmax;height:45vmax;right:-15%;top:5%;background:radial-gradient(circle,rgba(242,193,78,.35),transparent 65%);animation-duration:24s}
+.film-aurora i:nth-child(3){width:50vmax;height:50vmax;left:25%;top:-20%;background:radial-gradient(circle,color-mix(in srgb,var(--fa2) 45%,transparent),transparent 65%);animation-duration:30s}
+#filmFunken{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+@keyframes filmDrift{to{transform:translate(8%,-6%) scale(1.12)}}
+button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.96)}
+:root{--fa1:#8FD3A8;--fa2:#E58FA8;--fgold:#F2C14E}
+#figurStart{overflow:hidden;isolation:isolate}
+#figurStart::before{content:"";position:absolute;inset:-40px;z-index:-1;background:url(figur-gross.jpg) center/cover;filter:blur(28px) saturate(1.5);opacity:.45;transform:scale(1.15)}
+#figurStart::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 45% at 18% 85%,color-mix(in srgb,var(--fa1) 55%,transparent),transparent),radial-gradient(55% 40% at 85% 20%,color-mix(in srgb,var(--fa2) 50%,transparent),transparent),linear-gradient(180deg,rgba(14,24,56,.35),rgba(6,10,28,.85))}
+#figurStart img{border-color:var(--fgold);box-shadow:0 0 0 6px rgba(242,193,78,.1),0 0 60px color-mix(in srgb,var(--fa1) 60%,transparent),0 18px 60px rgba(0,0,0,.4);animation:filmSchweben 4.6s ease-in-out infinite;cursor:pointer}
+#figurStart h1{background:linear-gradient(90deg,var(--fgold),var(--fa1),var(--fa2),var(--fgold));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:filmGlanz 6s linear infinite}
+#figurStart h1,#figurStart p,#figurStart button{animation-fill-mode:both}
+#figurStart p{animation:filmAuf .8s .25s ease-out both}
+#figurStart button{background:linear-gradient(135deg,var(--fgold),color-mix(in srgb,var(--fgold) 60%,var(--fa1)));box-shadow:0 8px 24px color-mix(in srgb,var(--fa1) 45%,transparent);animation:filmAuf .8s .45s ease-out both,filmPuls 2.6s 1.4s ease-in-out infinite}
+#figurStart.geht{animation:filmIris .7s ease-in forwards}
+.film-funke{position:absolute;width:6px;height:6px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#fff 0,var(--c,#F2C14E) 45%,transparent 70%);opacity:0;animation:filmFunkeln var(--d,5s) var(--v,0s) ease-in-out infinite}
+.figur-hero{background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--fa1) 45%,#1d2c66) 0%,#0f1b3d 60%,color-mix(in srgb,var(--fa2) 35%,#0f1b3d) 100%)!important;isolation:isolate;animation:filmAuf .7s ease-out both}
+.figur-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:url(figur-gross.jpg) right center/60% auto no-repeat;opacity:.18;filter:blur(2px) saturate(1.4);mask-image:linear-gradient(90deg,transparent 20%,#000)}
+.figur-hero img{animation:filmSchweben 4.6s ease-in-out infinite;cursor:pointer;border-color:var(--fgold)!important;box-shadow:0 0 22px color-mix(in srgb,var(--fa1) 65%,transparent)!important}
+.figur-hero span.film-neu{animation:filmAuf .45s ease-out both}
+.figur-hero b{background:linear-gradient(90deg,var(--fgold),var(--fa1));-webkit-background-clip:text;background-clip:text;color:transparent!important}
+.film-hops{animation:filmHops .6s cubic-bezier(.3,1.6,.5,1)!important}
+.figur-logo{animation:filmSchweben 5s ease-in-out infinite}
+.film-auf{animation:filmAuf .6s ease-out both}
+.film-stern{position:fixed;z-index:100000;pointer-events:none;width:10px;height:10px;margin:-5px 0 0 -5px;background:var(--c,#F2C14E);clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);animation:filmStern .75s ease-out forwards}
+@keyframes filmSchweben{0%,100%{transform:translateY(0) rotate(-1deg) scale(1)}50%{transform:translateY(-7px) rotate(1deg) scale(1.025)}}
+@keyframes filmGlanz{to{background-position:300% 0}}
+@keyframes filmAuf{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes filmPuls{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes filmIris{0%{clip-path:circle(150% at 50% 40%)}100%{clip-path:circle(0% at 50% 40%)}}
+@keyframes filmFunkeln{0%,100%{opacity:0;transform:translateY(0) scale(.4)}40%{opacity:1;transform:translateY(-18px) scale(1)}80%{opacity:0;transform:translateY(-40px) scale(.6)}}
+@keyframes filmHops{0%{transform:scale(1)}30%{transform:scale(1.18) rotate(-6deg)}60%{transform:scale(.95) rotate(4deg)}100%{transform:scale(1)}}
+@keyframes filmStern{0%{opacity:1;transform:translate(0,0) scale(.4) rotate(0)}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(1.1) rotate(160deg)}}
+@media (prefers-reduced-motion:reduce){#figurStart *,#figurStart,.figur-hero,.figur-hero img,.figur-logo,.film-auf,.film-funke,#figurStart h1{animation:none!important}.film-funke{opacity:.6}.film-aurora i{animation:none!important}}
+</style>
+<script>
+(function(){
+  var ruhig=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var SAETZE=["Hihi, das kitzelt! Singst du mit mir?", "Ich hab mein goldenes Mikrofon dabei.", "Zuerst gut zuhören, dann singen wir zusammen.", "Jeder Ton ist ein kleines Abenteuer!"],si=0;
+  var farben=['#F2C14E','#8FD3A8','#E58FA8','#ffffff'];
+  // Farbschleier + aufsteigende Funken (wie Fias Nest)
+  var au=document.createElement('div');au.className='film-aurora';au.setAttribute('aria-hidden','true');au.innerHTML='<i></i><i></i><i></i>';document.body.prepend(au);
+  if(!ruhig){var cv=document.createElement('canvas');cv.id='filmFunken';cv.setAttribute('aria-hidden','true');document.body.prepend(cv);var cx=cv.getContext('2d'),W,H,P=[],dp=devicePixelRatio||1;
+    function gr(){W=cv.width=innerWidth*dp;H=cv.height=innerHeight*dp}gr();addEventListener('resize',gr);
+    function hx(c){c=c.replace('#','');return parseInt(c.substr(0,2),16)+','+parseInt(c.substr(2,2),16)+','+parseInt(c.substr(4,2),16)}
+    var tone=[hx('#F2C14E'),hx('#8FD3A8'),hx('#E58FA8')];
+    function neu(){return{x:Math.random()*W,y:H+10,r:(1+Math.random()*2.2)*dp,v:(.25+Math.random()*.6)*dp,s:Math.random()*6.28,a:.4+Math.random()*.5,c:tone[Math.random()*3|0]}}
+    for(var j=0;j<22;j++){var q=neu();q.y=Math.random()*H;P.push(q)}
+    (function tick(){if(!document.hidden){cx.clearRect(0,0,W,H);for(var n=0;n<P.length;n++){var p=P[n];p.y-=p.v;p.s+=.02;p.x+=Math.sin(p.s)*.4*dp;if(p.y<-10)P[n]=neu();
+      var g=cx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);g.addColorStop(0,'rgba('+p.c+','+p.a+')');g.addColorStop(1,'rgba('+p.c+',0)');cx.fillStyle=g;cx.beginPath();cx.arc(p.x,p.y,p.r*4,0,6.29);cx.fill()}}requestAnimationFrame(tick)})();}
+  var s=document.getElementById('figurStart');
+  if(s){
+    for(var i=0;i<16;i++){var f=document.createElement('i');f.className='film-funke';f.style.left=(5+Math.random()*90)+'%';f.style.top=(8+Math.random()*84)+'%';f.style.setProperty('--c',farben[i%3]);f.style.setProperty('--d',(3.5+Math.random()*3)+'s');f.style.setProperty('--v',(Math.random()*4)+'s');s.appendChild(f);}
+    var go=document.getElementById('figurStartGo');
+    if(go)go.onclick=function(e){sterne(e.clientX,e.clientY,10);try{sessionStorage.setItem('figurStart','1');}catch(x){}
+      if(ruhig){s.hidden=true;return;}s.classList.add('geht');setTimeout(function(){s.hidden=true;s.classList.remove('geht');},700);};
+  }
+  function sterne(x,y,n){if(ruhig||!x)return;for(var i=0;i<n;i++){var st=document.createElement('i');st.className='film-stern';var w=Math.random()*Math.PI*2,r=30+Math.random()*40;st.style.left=x+'px';st.style.top=y+'px';st.style.setProperty('--x',Math.cos(w)*r+'px');st.style.setProperty('--y',Math.sin(w)*r+'px');st.style.setProperty('--c',farben[i%4]);document.body.appendChild(st);setTimeout(st.remove.bind(st),800);}}
+  // Figur reagiert auf Tipp
+  document.addEventListener('click',function(e){
+    var t=e.target;
+    var fig=t.closest&&t.closest('#figurStart img,.figur-hero img,.figur-logo,[data-sag]');
+    if(fig){fig.classList.remove('film-hops');void fig.offsetWidth;fig.classList.add('film-hops');sterne(e.clientX,e.clientY,8);
+      var sp=fig.dataset.sag?document.getElementById(fig.dataset.sag):(fig.closest('.figur-hero')&&fig.closest('.figur-hero').querySelector('span'));if(sp&&SAETZE.length){sp.textContent=SAETZE[si++%SAETZE.length];sp.classList.remove('film-neu');void sp.offsetWidth;sp.classList.add('film-neu');}return;}
+    var b=t.closest&&t.closest('button,.btn,[role=button]');
+    if(b&&b.id!=='figurStartGo')sterne(e.clientX,e.clientY,5);
+  },true);
+  document.addEventListener('animationend',function(e){if(e.animationName==='filmHops')e.target.classList.remove('film-hops');});
+  // Karten gleiten wie Filmszenen herein
+  if(!ruhig&&'IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('film-auf');io.unobserve(en.target);}});},{rootMargin:'0px 0px -8% 0px'});
+    document.querySelectorAll('.card, .panel').forEach(function(k){if(k.getBoundingClientRect().top>innerHeight)io.observe(k);});
+  }
+})();
+</script>
+
+<style>/* Kiki: Farbschleier über dem Sternenhimmel, unter dem Inhalt */.film-aurora,#filmFunken{z-index:0!important}.film-aurora{opacity:.75}</style>
+<script src="feedback.js" data-app="Kiki" defer></script>
+</body>
+</html>
