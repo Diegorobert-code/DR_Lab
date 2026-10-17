@@ -47,9 +47,9 @@
     }
 
     return {
-      // offen: 0 = Ruhe, 1 = weit offen; leicht negativ schliesst den Mund ein wenig.
+      // offen: 0 = wie im Bild, 1 = weit offen, negativ = Mund geht zu.
       setze: function (offen) {
-        var d = Math.round(Math.max(-0.3, Math.min(1, offen)) * max * 2) / 2;
+        var d = Math.round(Math.max(-1, Math.min(1, offen)) * max * 2) / 2;
         if (d === jetzt) return;
         jetzt = d; zeichne(d);
       }
