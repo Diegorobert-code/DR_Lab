@@ -882,6 +882,19 @@ const IOS_TEMPO = (/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.plat
 /* Echte Stimmen (ElevenLabs), einmal aufgenommen und als mp3 in der App: läuft ohne Internet, nichts vom Kind geht raus.
    Liegt für einen Satz keine Aufnahme vor (z.B. mit dem Namen des Kindes), liest die Gerätestimme vor. */
 const STIMME = { set: new Set(), audio: null };
+// Figuren mit eigener Server-Stimme (Sense Engine, sense-klein.py STIMMEN).
+const NOVA_STIMME_FIG = { otti: 'otti', nova: 'nova', kiki: 'kiki', fompa: 'fompa' };
+let NOVA_FEST = null;
+function novaErlaubt(k){
+  if (!k) return false;
+  if (!NOVA_FEST){
+    NOVA_FEST = new Set();
+    try { (window.MS_TEXTE ? window.MS_TEXTE() : []).forEach(x => NOVA_FEST.add(x.key)); } catch(e){}
+    // Ottis Sätze auf der Startseite (Begrüssung ohne Namen).
+    try { sunnyLines.concat(['Guten Morgen', 'Hallo', 'Guten Abend', 'Psst, gute Nacht'].map(g => g + '! Schön, dass du da bist.')).forEach(t => NOVA_FEST.add(TTS.key(t))); } catch(e){}
+  }
+  return NOVA_FEST.has(k);
+}
 function stimmeHash(t){ let h = 0x811c9dc5; for (const c of t){ h ^= c.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8,'0'); }
 function stimmeWer(o){ if (o.lang === 'en' || o.flat) return ''; if (o.who) return o.who; const t = typeof TALKERS !== 'undefined' && Object.keys(TALKERS).find(k => TALKERS[k].pitch === o.pitch); return (!t || t === 'sunny') ? 'otti' : t; }
 fetch('stimme/index.json').then(r => r.ok ? r.json() : []).then(l => { (l || []).forEach(k => STIMME.set.add(k)); }).catch(() => {});
@@ -902,13 +915,14 @@ const TTS = {
     return r; },
   voice(){ const vs=this.voices(); if(!vs.length) return null; return vs.find(v=>v.name===S.voice) || vs.slice().sort((a,b)=>this.rank(b)-this.rank(a))[0]; },
   clean(t){ return t.replace(/[«»„“"‹›]/g,'').replace(/\s*–\s*/g,', ').replace(/\s*…\s*/g,' ... ').trim(); },
-  stop(){ this.token++; clearTimeout(this.timer); if (STIMME.audio){ try{ STIMME.audio.pause(); }catch(e){} STIMME.audio = null; } if(this.ok){ try{ speechSynthesis.cancel(); }catch(e){} } },
+  stop(){ this.token++; clearTimeout(this.timer); if (window.NovaStimme) NovaStimme.stopp(); if (STIMME.audio){ try{ STIMME.audio.pause(); }catch(e){} STIMME.audio = null; } if(this.ok){ try{ speechSynthesis.cancel(); }catch(e){} } },
   speak(list, o={}){
     this.stop();
     if (typeof list === 'string') list = [list];
     const tok = this.token; let i = o.start || 0;
     const hasRec = list.some(t => STIMME.set.has(this.key(t, o)));
     if (!this.ok && !hasRec){ if(o.onEnd) setTimeout(()=>{ if(tok===this.token) o.onEnd(); }, 50); return; }
+    let nurGeraet = false; // Server-Stimme für diesen Satz fehlt: Gerätestimme
     const next = () => {
       if (tok !== this.token) return;
       if (i >= list.length){ o.onEnd && o.onEnd(); return; }
@@ -926,6 +940,18 @@ const TTS = {
         a.onerror = () => { if (done || tok !== this.token) return; STIMME.set.delete(k); next(); };
         clearTimeout(this.timer); this.timer = setTimeout(fin, 4000 + text.length * 150 / S.rate);
         a.play().catch(() => a.onerror());
+        return;
+      }
+      // Mit Server (nova/nova.js): Otti, Nova, Kiki und Fompa mit ihrer eigenen Stimme.
+      // Nur feste App-Sätze (Aufnahme-Liste), nie Sätze mit dem Namen oder den Worten des Kindes.
+      const fig = k && NOVA_STIMME_FIG[k.split('/')[0]], ng = nurGeraet; nurGeraet = false;
+      if (fig && !ng && window.NovaStimme && NovaStimme.aktiv() && novaErlaubt(k)){
+        NovaStimme.vorladen(list.slice(i + 1, i + 3).filter(x => novaErlaubt(this.key(x, o))).map(x => this.clean(x)), fig);
+        NovaStimme.sprich(text, { figur: fig, geraet: false }).then(ok => {
+          if (tok !== this.token) return;
+          if (ok){ i++; setTimeout(next, o.gap == null ? 40 : o.gap); return; }
+          nurGeraet = true; next();
+        });
         return;
       }
       if (!this.ok){ i++; setTimeout(next, 50); return; }
