@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Fompa – Steuern</title>
+<meta name="theme-color" content="#14213d">
+<meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fompa">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-96.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>
+:root{--bg:#f6f2e9;--card:#fff;--ink:#1c2233;--muted:#626a7a;--accent:#14213d;--gold:#b8862b;--goldsoft:#f3e6c8;--line:#e4dccb;--ok:#3d7a4a;--warn:#a2581b;--f:-apple-system,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1527;--card:#18203a;--ink:#ecebe6;--muted:#9aa3b6;--accent:#e2b552;--gold:#e2b552;--goldsoft:#2a2a2a;--line:#283252;--ok:#7fc28c;--warn:#e6a066}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:400 17px/1.5 var(--f);padding:max(16px,env(safe-area-inset-top)) 16px max(28px,env(safe-area-inset-bottom))}
+.w{max-width:640px;margin:0 auto;display:grid;gap:14px}
+header{display:flex;gap:14px;align-items:center}
+header img{width:72px;height:72px;border-radius:20px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+h1{font-size:24px;margin:0}
+h2{font-size:19px;margin:0 0 8px}
+.sub{color:var(--muted);margin:0;font-size:15px}
+.bubble{background:var(--goldsoft);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:16px;position:relative}
+.bubble b{color:var(--gold)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tab{min-height:48px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 16px var(--f);cursor:pointer}
+.tab.on{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.btn{min-height:52px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 16px var(--f);cursor:pointer;padding:0 16px}
+.btn.main{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.btn.small{min-height:44px;font-size:14px}
+.btn.del{color:var(--warn)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:grid;gap:4px;font-size:14px;color:var(--muted)}
+input,select,textarea{width:100%;min-height:48px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:400 17px var(--f);padding:10px 12px}
+textarea{min-height:120px;font-size:15px}
+.form{display:grid;gap:10px}
+.shot{display:grid;place-items:center;min-height:150px;border:2px dashed var(--line);border-radius:16px;color:var(--muted);cursor:pointer;overflow:hidden;text-align:center;padding:10px}
+.shot img{max-width:100%;max-height:260px;border-radius:10px}
+.hint{color:var(--muted);font-size:14px;margin:0}
+.total{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;color:var(--muted)}
+.total strong{font-size:24px;color:var(--ink)}
+.cats{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.cats li{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.cats .head{display:flex;justify-content:space-between;gap:10px;cursor:pointer}
+.cats .nr{color:var(--gold);font-weight:700;margin-right:6px}
+.cats .sum{white-space:nowrap;font-variant-numeric:tabular-nums}
+.cats .empty{color:var(--muted);font-size:14px}
+.belege{display:grid;gap:8px;margin-top:8px}
+.beleg{display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;border-top:1px solid var(--line);padding-top:8px}
+.beleg img,.beleg .noimg{width:64px;height:64px;object-fit:cover;border-radius:10px;background:var(--bg)}
+.beleg small{display:block;color:var(--muted);font-size:13px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--line)}
+.dot.ok{background:var(--ok)}
+.hidden{display:none!important}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px;background:var(--card);color:var(--ink);cursor:pointer;min-height:36px}
+.foot{color:var(--muted);font-size:13px;text-align:center}
+.foot a{color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ok);color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="w">
+  <header>
+    <img src="icon-180.png" alt="Fompa">
+    <div>
+      <h1>Fompa · Steuern</h1>
+      <p class="sub">Belege fotografieren, ordnen, zusammenzählen. Alles bleibt auf deinem Handy. <a href="../apps/">Alle Apps</a></p>
+    </div>
+  </header>
+
+  <div class="bubble" id="bubble"></div>
+
+  <div class="row">
+    <label>Steuerjahr
+      <select id="year"></select>
+    </label>
+    <div class="card total" style="align-self:end"><span>Total</span><strong id="total">0.00</strong></div>
+  </div>
+
+  <nav class="tabs">
+    <button class="tab on" data-tab="neu">Beleg</button>
+    <button class="tab" data-tab="liste">Ordner</button>
+    <button class="tab" data-tab="paket">Paket</button>
+  </nav>
+
+  <!-- Beleg erfassen -->
+  <section id="neu" class="card form">
+    <h2 id="formTitle">Neuer Beleg</h2>
+    <div class="shot" id="shot">📷 Foto vom Beleg machen<br><small>oder Bild/PDF auswählen</small></div>
+    <input type="file" id="file" accept="image/*,application/pdf" capture="environment" class="hidden">
+    <label>Aussteller
+      <input id="from" list="fromList" placeholder="z. B. Krankenkasse, Vermieter" autocomplete="off">
+      <datalist id="fromList"></datalist>
+    </label>
+    <div class="chips" id="suggest"></div>
+    <label>Ordner
+      <select id="cat"></select>
+    </label>
+    <div class="row">
+      <label>Betrag CHF
+        <input id="amount" inputmode="decimal" placeholder="0.00">
+      </label>
+      <label>Datum
+        <input id="date" type="date">
+      </label>
+    </div>
+    <label>Notiz (optional)
+      <input id="note" placeholder="z. B. Frage an den Steuerberater">
+    </label>
+    <button class="btn main" id="save">Beleg ablegen</button>
+    <button class="btn hidden" id="cancel">Abbrechen</button>
+  </section>
+
+  <!-- Ordner -->
+  <section id="liste" class="hidden">
+    <p class="hint" style="margin-bottom:8px">Grün = Beleg vorhanden. Leere Ordner zeigen, was noch fehlt. Tippen öffnet den Ordner.</p>
+    <ul class="cats" id="cats"></ul>
+  </section>
+
+  <!-- Paket -->
+  <section id="paket" class="hidden" style="display:grid;gap:12px">
+    <div class="card">
+      <h2>Paket für den Steuerberater</h2>
+      <p class="hint">Ein ZIP mit einem Ordner pro Nummer, Dateinamen wie <code>3_Krankenkasse_CSS_2026-01.jpg</code> und einer Übersicht (00_Uebersicht.csv). Du entscheidest selbst, wem du es schickst.</p>
+      <div style="display:grid;gap:8px;margin-top:10px">
+        <button class="btn main" id="zip">ZIP erstellen</button>
+        <button class="btn" id="csv">Nur Übersicht (CSV)</button>
+      </div>
+      <p class="hint" id="missing" style="margin-top:10px"></p>
+    </div>
+    <div class="card">
+      <h2>Eigene Nummern</h2>
+      <p class="hint">Wie in deiner Excel-Datei: eine Zeile pro Ordner, <code>Nummer;Bezeichnung</code>. Bestehende Belege behalten ihre Nummer.</p>
+      <textarea id="catText" spellcheck="false"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="catSave">Speichern</button>
+        <button class="btn" id="catReset">Vorschlag laden</button>
+      </div>
+    </div>
+    <details class="card">
+      <summary><b>Was Fompa sich merkt</b></summary>
+      <p class="hint">Fompa merkt sich, welcher Aussteller in welchen Ordner gehört, und schlägt ihn beim nächsten Mal vor. Nur auf diesem Handy, nichts wird gesendet.</p>
+      <ul id="memory" class="hint"></ul>
+      <button class="btn small del" id="forget">Vergessen</button>
+    </details>
+    <details class="card">
+      <summary><b>Alles löschen</b></summary>
+      <p class="hint">Löscht alle Belege dieses Steuerjahres auf diesem Handy. Vorher das ZIP sichern.</p>
+      <button class="btn del" id="wipe">Steuerjahr löschen</button>
+    </details>
+  </section>
+
+  <p class="foot">Fompa ordnet und rechnet, ist aber keine Steuerberatung. Ob etwas abziehbar ist, entscheidet dein Steuerberater oder das Steueramt.<br>Belege bleiben auf deinem Gerät (kein Server, kein Konto).</p>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// Fompa – Steuer-Belege. Speicher: nur IndexedDB auf dem Gerät.
+const $ = s => document.querySelector(s);
+const DEFAULT_CATS = `1;Lohnausweis und Einkommen
+2;Praxis Einnahmen
+3;Krankenkasse
+4;Krankheitskosten selbst bezahlt
+5;AHV SVA Beiträge
+6;Säule 3a
+7;Praxis Miete
+8;Praxis Versicherungen
+9;Telefon Internet Software
+10;Weiterbildung Fachliteratur
+11;Werbung Website
+12;Anschaffungen Laptop Handy
+13;Bank- und Depotauszüge
+14;Unterhaltsbeiträge
+15;Spenden
+16;Schuldzinsen
+17;Diverses`;
+
+const TIPS = [
+  'Ich bin <b>Fompa</b>. Du fotografierst, ich ordne und zähle. Ob etwas abziehbar ist, sagt dein Steuerberater.',
+  'Ein Beleg pro Foto. Mehrere Seiten? Einfach nacheinander ablegen, ich halte sie im gleichen Ordner zusammen.',
+  'Unleserliche Zahl? Lass den Betrag leer, ich markiere den Beleg als «Betrag fehlt».',
+  'Im Kanton Zürich ist die Frist meist der 31. März. Verlängern geht online.',
+  'Leere Ordner sind kein Fehler. Sie zeigen nur, was noch fehlt.'
+];
+
+let db, year, cats = [], belege = [], editId = null, photo = null, memory = {};
+
+function openDB(){
+  return new Promise((ok, no) => {
+    const r = indexedDB.open('fompa', 1);
+    r.onupgradeneeded = () => {
+      const d = r.result;
+      const s = d.createObjectStore('belege', {keyPath:'id'});
+      s.createIndex('year', 'year');
+      d.createObjectStore('kv');
+    };
+    r.onsuccess = () => ok(r.result);
+    r.onerror = () => no(r.error);
+  });
+}
+function tx(store, mode, fn){
+  return new Promise((ok, no) => {
+    const t = db.transaction(store, mode); const s = t.objectStore(store);
+    const res = fn(s); t.oncomplete = () => ok(res && res.result); t.onerror = () => no(t.error);
+  });
+}
+const kvGet = k => tx('kv','readonly', s => s.get(k));
+const kvSet = (k,v) => tx('kv','readwrite', s => s.put(v,k));
+
+function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2200); }
+const chf = n => (Math.round(n*100)/100).toLocaleString('de-CH',{minimumFractionDigits:2,maximumFractionDigits:2});
+const parseAmt = s => { const n = parseFloat(String(s).replace(/['\s]/g,'').replace(',','.')); return isFinite(n) ? n : null; };
+const safe = s => String(s||'').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/Ä/g,'Ae').replace(/Ö/g,'Oe').replace(/Ü/g,'Ue').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w.-]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+const esc = s => String(s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function parseCats(txt){
+  return txt.split('\n').map(l => l.trim()).filter(Boolean).map(l => {
+    const i = l.indexOf(';'); return i < 0 ? {nr:l, name:l} : {nr:l.slice(0,i).trim(), name:l.slice(i+1).trim()};
+  });
+}
+
+async function loadYear(){
+  cats = parseCats((await kvGet('cats-'+year)) || (await kvGet('cats-last')) || DEFAULT_CATS);
+  belege = await new Promise(ok => {
+    const out = []; const r = db.transaction('belege').objectStore('belege').index('year').openCursor(IDBKeyRange.only(year));
+    r.onsuccess = () => { const c = r.result; if (c){ out.push(c.value); c.continue(); } else ok(out); };
+  });
+  belege.sort((a,b) => (a.date||'').localeCompare(b.date||''));
+  renderAll();
+}
+
+function renderAll(){
+  $('#cat').innerHTML = cats.map(c => `<option value="${esc(c.nr)}">${esc(c.nr)} · ${esc(c.name)}</option>`).join('');
+  $('#catText').value = cats.map(c => c.nr+';'+c.name).join('\n');
+  $('#total').textContent = chf(belege.reduce((s,b) => s + (b.amount||0), 0));
+  const froms = [...new Set(Object.keys(memory))];
+  $('#fromList').innerHTML = froms.map(f => `<option value="${esc(f)}">`).join('');
+  renderCats(); renderMemory(); renderMissing();
+}
+
+const urls = [];
+function imgURL(b){ if(!b.blob || !b.type.startsWith('image/')) return ''; const u = URL.createObjectURL(b.blob); urls.push(u); return u; }
+
+function renderCats(){
+  urls.splice(0).forEach(u => URL.revokeObjectURL(u));
+  const known = new Set(cats.map(c => c.nr));
+  const extra = [...new Set(belege.map(b => b.cat).filter(n => !known.has(n)))].map(n => ({nr:n, name:'(nicht mehr in der Liste)'}));
+  $('#cats').innerHTML = [...cats, ...extra].map(c => {
+    const list = belege.filter(b => b.cat === c.nr);
+    const sum = list.reduce((s,b) => s + (b.amount||0), 0);
+    return `<li><div class="head" data-open="${esc(c.nr)}"><span><span class="dot ${list.length?'ok':''}"></span><span class="nr">${esc(c.nr)}</span>${esc(c.name)}</span>
+      <span class="sum">${list.length ? list.length+' · '+chf(sum) : '<span class="empty">fehlt</span>'}</span></div>
+      <div class="belege hidden" data-body="${esc(c.nr)}">${list.map(b => `<div class="beleg">
+        ${imgURL(b) ? `<img src="${imgURL(b)}" alt="">` : `<div class="noimg" style="display:grid;place-items:center">📄</div>`}
+        <div>${esc(b.from)||'ohne Aussteller'}<small>${b.date||'ohne Datum'} · ${b.amount==null?'<b style="color:var(--warn)">Betrag fehlt</b>':'CHF '+chf(b.amount)}${b.note?' · '+esc(b.note):''}</small></div>
+        <button class="btn small" data-edit="${b.id}">Ändern</button></div>`).join('') || '<p class="hint">Noch kein Beleg.</p>'}</div></li>`;
+  }).join('');
+}
+
+function renderMemory(){
+  const e = Object.entries(memory);
+  $('#memory').innerHTML = e.length ? e.map(([f,c]) => `<li>${esc(f)} → Ordner ${esc(c)}</li>`).join('') : '<li>Noch nichts. Nach den ersten Belegen steht hier, was Fompa gelernt hat.</li>';
+}
+
+function renderMissing(){
+  const empty = cats.filter(c => !belege.some(b => b.cat === c.nr));
+  const noAmt = belege.filter(b => b.amount == null).length;
+  $('#missing').textContent = (empty.length ? 'Noch leer: ' + empty.map(c => c.nr).join(', ') + '. ' : 'Alle Ordner haben Belege. ') + (noAmt ? noAmt + ' Beleg(e) ohne Betrag.' : '');
+}
+
+function suggest(){
+  const f = $('#from').value.trim().toLowerCase();
+  const hit = Object.entries(memory).find(([k]) => k.toLowerCase() === f);
+  $('#suggest').innerHTML = hit && $('#cat').value !== hit[1] ? `<button class="chip" data-cat="${esc(hit[1])}">Wie letztes Mal: Ordner ${esc(hit[1])}</button>` : '';
+  if (hit && !editId) $('#cat').value = hit[1];
+}
+
+async function shrink(file){
+  if (!file.type.startsWith('image/')) return file;
+  try {
+    const bmp = await createImageBitmap(file);
+    const k = Math.min(1, 2000 / Math.max(bmp.width, bmp.height));
+    const c = document.createElement('canvas'); c.width = Math.round(bmp.width*k); c.height = Math.round(bmp.height*k);
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    return await new Promise(ok => c.toBlob(b => ok(b || file), 'image/jpeg', .85));
+  } catch { return file; }
+}
+
+function showPhoto(blob){
+  if (!blob){ $('#shot').innerHTML = '📷 Foto vom Beleg machen<br><small>oder Bild/PDF auswählen</small>'; return; }
+  $('#shot').innerHTML = blob.type.startsWith('image/') ? `<img src="${URL.createObjectURL(blob)}" alt="Beleg">` : '📄 PDF ausgewählt';
+}
+
+function resetForm(){
+  editId = null; photo = null; showPhoto(null);
+  ['#from','#amount','#note'].forEach(s => $(s).value = '');
+  const today = new Date().toISOString().slice(0,10);
+  $('#date').value = today.startsWith(String(year)) ? today : year + '-12-31';
+  $('#formTitle').textContent = 'Neuer Beleg'; $('#save').textContent = 'Beleg ablegen';
+  $('#cancel').classList.add('hidden'); $('#suggest').innerHTML = '';
+}
+
+async function save(){
+  const amt = $('#amount').value.trim() ? parseAmt($('#amount').value) : null;
+  if ($('#amount').value.trim() && amt == null){ toast('Betrag bitte als Zahl, z. B. 123.45'); return; }
+  const old = editId ? belege.find(b => b.id === editId) : null;
+  if (!photo && !old){ toast('Zuerst ein Foto vom Beleg'); return; }
+  const b = {
+    id: editId || (Date.now().toString(36) + Math.random().toString(36).slice(2,6)),
+    year, cat: $('#cat').value, from: $('#from').value.trim(), amount: amt,
+    date: $('#date').value, note: $('#note').value.trim(),
+    blob: photo || old.blob, type: (photo || old.blob).type || 'image/jpeg'
+  };
+  await tx('belege','readwrite', s => s.put(b));
+  if (b.from){ memory[b.from] = b.cat; await kvSet('memory', memory); }
+  toast(old ? 'Geändert' : 'Abgelegt in Ordner ' + b.cat);
+  resetForm(); await loadYear();
+}
+
+async function edit(id){
+  const b = belege.find(x => x.id === id); if (!b) return;
+  editId = id; photo = null; showPhoto(b.blob);
+  $('#from').value = b.from; $('#cat').value = b.cat; $('#amount').value = b.amount==null ? '' : b.amount;
+  $('#date').value = b.date; $('#note').value = b.note;
+  $('#formTitle').textContent = 'Beleg ändern'; $('#save').textContent = 'Speichern';
+  $('#cancel').classList.remove('hidden');
+  if (!document.querySelector('#delOne')){
+    const d = document.createElement('button'); d.className = 'btn del'; d.id = 'delOne'; d.textContent = 'Beleg löschen';
+    d.onclick = async () => { if (!confirm('Diesen Beleg löschen?')) return; await tx('belege','readwrite', s => s.delete(editId)); resetForm(); d.remove(); await loadYear(); toast('Gelöscht'); };
+    $('#cancel').after(d);
+  }
+  tab('neu');
+}
+
+function tab(name){
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === name));
+  ['neu','liste','paket'].forEach(n => $('#'+n).classList.toggle('hidden', n !== name));
+  if (name !== 'neu' || !editId){ const d = $('#delOne'); if (d && !editId) d.remove(); }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ---------- Export: CSV + ZIP (ohne Bibliothek, unkomprimiert) ---------- */
+function fileName(b, i){
+  const c = cats.find(x => x.nr === b.cat) || {nr:b.cat, name:'Ordner'};
+  const ext = b.type === 'application/pdf' ? 'pdf' : (b.type === 'image/png' ? 'png' : 'jpg');
+  return `${safe(c.nr)}_${safe(c.name)}/${safe(c.nr)}_${safe(c.name)}_${safe(b.from)||'Beleg'}_${(b.date||'').slice(0,7)||'ohne-Datum'}_${i}.${ext}`;
+}
+function csvText(){
+  const q = v => '"' + String(v==null?'':v).replace(/"/g,'""') + '"';
+  const rows = [['Nummer','Bezeichnung','Dateiname','Datum','Aussteller','Betrag CHF','Status','Bemerkung']];
+  cats.forEach(c => {
+    const list = belege.filter(b => b.cat === c.nr);
+    if (!list.length) rows.push([c.nr, c.name, '', '', '', '', 'fehlt', '']);
+    list.forEach(b => rows.push([c.nr, c.name, fileName(b, belege.indexOf(b)+1).split('/')[1], b.date, b.from, b.amount==null?'':b.amount.toFixed(2), b.amount==null?'Betrag fehlt':'vorhanden', b.note]));
+  });
+  rows.push(['','Total','','','', belege.reduce((s,b)=>s+(b.amount||0),0).toFixed(2), '', '']);
+  return '﻿' + rows.map(r => r.map(q).join(';')).join('\r\n');
+}
+const CRC = (() => { const t = new Uint32Array(256); for (let n=0;n<256;n++){ let c=n; for (let k=0;k<8;k++) c = c&1 ? 0xEDB88320^(c>>>1) : c>>>1; t[n]=c>>>0; } return t; })();
+function crc32(u8){ let c = 0xFFFFFFFF; for (let i=0;i<u8.length;i++) c = CRC[(c^u8[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+async function makeZip(files){
+  const enc = new TextEncoder(), parts = [], central = []; let off = 0;
+  for (const f of files){
+    const name = enc.encode(f.name), data = f.data instanceof Uint8Array ? f.data : new Uint8Array(await f.data.arrayBuffer());
+    const crc = crc32(data), h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0,0x04034b50,true); h.setUint16(4,20,true); h.setUint16(6,0x0800,true); h.setUint16(8,0,true);
+    h.setUint16(10,0,true); h.setUint16(12,0x21,true); h.setUint32(14,crc,true); h.setUint32(18,data.length,true); h.setUint32(22,data.length,true);
+    h.setUint16(26,name.length,true); h.setUint16(28,0,true);
+    parts.push(h.buffer, name, data);
+    const c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0,0x02014b50,true); c.setUint16(4,20,true); c.setUint16(6,20,true); c.setUint16(8,0x0800,true); c.setUint16(10,0,true);
+    c.setUint16(12,0,true); c.setUint16(14,0x21,true); c.setUint32(16,crc,true); c.setUint32(20,data.length,true); c.setUint32(24,data.length,true);
+    c.setUint16(28,name.length,true); c.setUint32(42,off,true);
+    central.push(c.buffer, name);
+    off += 30 + name.length + data.length;
+  }
+  const size = central.reduce((s,p) => s + (p.byteLength||p.length), 0), e = new DataView(new ArrayBuffer(22));
+  e.setUint32(0,0x06054b50,true); e.setUint16(8,files.length,true); e.setUint16(10,files.length,true); e.setUint32(12,size,true); e.setUint32(16,off,true);
+  return new Blob([...parts, ...central, e.buffer], {type:'application/zip'});
+}
+async function deliver(blob, name){
+  const file = new File([blob], name, {type: blob.type});
+  if (navigator.canShare && navigator.canShare({files:[file]})){
+    try { await navigator.share({files:[file], title:name}); return; } catch(e){ if (e.name === 'AbortError') return; }
+  }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+
+/* ---------- Start ---------- */
+(async () => {
+  db = await openDB();
+  memory = (await kvGet('memory')) || {};
+  const now = new Date().getFullYear(), last = await kvGet('year');
+  year = last || (new Date().getMonth() < 6 ? now - 1 : now);
+  $('#year').innerHTML = [now-2, now-1, now, now+1].map(y => `<option ${y==year?'selected':''}>${y}</option>`).join('');
+  $('#bubble').innerHTML = TIPS[Math.floor(Date.now()/864e5) % TIPS.length];
+  await loadYear(); resetForm();
+
+  $('#year').onchange = async e => { year = +e.target.value; await kvSet('year', year); await loadYear(); resetForm(); };
+  document.querySelectorAll('.tab').forEach(t => t.onclick = () => tab(t.dataset.tab));
+  $('#shot').onclick = () => $('#file').click();
+  $('#file').onchange = async e => { const f = e.target.files[0]; if (!f) return; photo = await shrink(f); showPhoto(photo); e.target.value=''; };
+  $('#from').oninput = suggest;
+  $('#suggest').onclick = e => { const c = e.target.dataset.cat; if (c){ $('#cat').value = c; $('#suggest').innerHTML=''; } };
+  $('#save').onclick = save;
+  $('#cancel').onclick = () => { resetForm(); const d=$('#delOne'); if(d) d.remove(); };
+  $('#cats').onclick = e => {
+    const ed = e.target.closest('[data-edit]'); if (ed){ edit(ed.dataset.edit); return; }
+    const h = e.target.closest('[data-open]'); if (h) document.querySelector(`[data-body="${CSS.escape(h.dataset.open)}"]`).classList.toggle('hidden');
+  };
+  $('#catSave').onclick = async () => { const t = $('#catText').value; if (!parseCats(t).length) return; await kvSet('cats-'+year, t); await kvSet('cats-last', t); await loadYear(); toast('Nummern gespeichert'); };
+  $('#catReset').onclick = () => { $('#catText').value = DEFAULT_CATS; toast('Vorschlag geladen, noch speichern'); };
+  $('#forget').onclick = async () => { memory = {}; await kvSet('memory', memory); renderAll(); toast('Vergessen'); };
+  $('#wipe').onclick = async () => {
+    if (!confirm(`Alle ${belege.length} Belege von ${year} auf diesem Handy löschen?`)) return;
+    await tx('belege','readwrite', s => belege.forEach(b => s.delete(b.id))); await loadYear(); toast('Gelöscht');
+  };
+  $('#csv').onclick = () => deliver(new Blob([csvText()], {type:'text/csv'}), `Steuern-${year}-Uebersicht.csv`);
+  $('#zip').onclick = async () => {
+    if (!belege.length){ toast('Noch keine Belege'); return; }
+    toast('ZIP wird erstellt …');
+    const root = `Steuern-${year}`;
+    const files = [{name:`${root}/00_Uebersicht.csv`, data:new TextEncoder().encode(csvText())}];
+    cats.forEach(c => { if (!belege.some(b => b.cat === c.nr)) files.push({name:`${root}/${safe(c.nr)}_${safe(c.name)}/.leer`, data:new Uint8Array(0)}); });
+    belege.forEach((b,i) => files.push({name:`${root}/${fileName(b, i+1)}`, data:b.blob}));
+    await deliver(await makeZip(files), `${root}.zip`);
+  };
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+})();
+</script>
+<script src="../nova/seelen.js" defer></script>
+<script src="../nova/nova.js" data-nova-bild="icon-192.png" data-nova-app="Fompa" defer></script>
+</body>
+</html>
