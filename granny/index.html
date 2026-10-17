@@ -218,6 +218,8 @@
   // Sprechen: langsam und deutlich
   function sag(text){
     $('blase').textContent=text;
+    // Grannys eigene Stimme (Sense Engine), nur auf Deutsch; sonst die Gerätestimme.
+    if(window.NovaStimme&&NovaStimme.aktiv()&&/^de/i.test(L().voice)){NovaStimme.sprich(text);return;}
     try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=L().voice;u.rate=.85;u.pitch=1.05;
       const v=speechSynthesis.getVoices().find(v=>v.lang.replace('_','-').startsWith(L().voice.slice(0,2)));if(v)u.voice=v;speechSynthesis.speak(u);}catch(e){}
   }
@@ -413,5 +415,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
   }
 })();
 </script>
+<script src="../nova/seelen.js" defer></script>
+<script src="../nova/nova.js" data-nova-app="Granny" data-nova-knopf="0" defer></script>
 </body>
 </html>
