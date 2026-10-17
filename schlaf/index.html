@@ -51,29 +51,31 @@ main,#start{position:relative;z-index:1}
 .big{font-size:1.05rem;padding:13px 26px}
 main{max-width:440px;margin:0 auto;padding-block:max(20px,env(safe-area-inset-top,0px)) 40px;display:flex;flex-direction:column;gap:22px}
 .tag{align-self:flex-start;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);border-radius:99px;padding:3px 10px}
-header h1{font-family:var(--display);font-weight:400;font-size:2.2rem;line-height:1.1;margin:0;text-wrap:balance}
+header h1{font-family:var(--display);font-weight:400;font-size:2.2rem;color:var(--gold);line-height:1.1;margin:0;text-wrap:balance}
 header p{margin:6px 0 0;color:var(--muted)}
 .nest{position:relative;display:grid;place-items:center;height:230px}
 .glow{position:absolute;width:190px;height:190px;border-radius:50%;
   background:radial-gradient(circle,rgba(255,138,61,.55),rgba(217,119,87,.18) 45%,transparent 70%);
   transition:transform 1s ease,opacity 1.6s ease}
-#fia{position:relative;width:200px;height:200px;border-radius:50%;object-fit:cover;-webkit-mask-image:radial-gradient(circle,#000 58%,transparent 71%);mask-image:radial-gradient(circle,#000 58%,transparent 71%);transition:opacity 1.6s ease, transform 1.6s ease}
+#fia{position:relative;width:190px;height:190px;border-radius:22%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 0 6px rgba(242,193,78,.08),0 14px 50px rgba(255,138,61,.3);transition:opacity 1.6s ease, transform 1.6s ease}
 .say{font-family:var(--display);font-style:italic;font-size:1.25rem;text-align:center;margin:0;min-height:2.6em;text-wrap:balance}
 ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
-li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;padding:14px;border:1px solid var(--line);border-radius:14px;transition:opacity .8s,border-color .8s}
+li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;padding:16px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(160deg,rgba(27,44,107,.55),rgba(14,24,56,.75));box-shadow:0 8px 24px rgba(0,0,0,.25);transition:opacity .8s,border-color .8s}
 li.done{opacity:.45}
-li.active{border-color:var(--gold)}
+li.active{border-color:var(--gold);box-shadow:0 0 0 1px rgba(242,193,78,.35),0 10px 30px rgba(255,138,61,.18)}
 .dot{width:22px;height:22px;border-radius:50%;margin-top:2px;background:radial-gradient(circle,var(--gold),var(--ember) 60%,transparent 72%);box-shadow:0 0 14px var(--ember);transition:all 1s}
 li.done .dot{background:#26304f;box-shadow:none}
 li h2{font-size:1.05rem;font-weight:600;margin:0}
 li p{margin:2px 0 10px;color:var(--muted);font-size:.93rem}
 li .text{min-width:0}
-button{font:inherit;font-weight:500;color:var(--night);background:var(--gold);border:0;border-radius:99px;padding:9px 18px;cursor:pointer}
-button.ghost{background:transparent;color:var(--gold);border:1px solid var(--line)}
+button{font:inherit;font-weight:600;color:var(--night);background:linear-gradient(180deg,#F7D27A,var(--gold));border:0;border-radius:99px;padding:10px 20px;cursor:pointer;box-shadow:0 4px 18px rgba(242,193,78,.3)}
+button.ghost{background:transparent;color:var(--gold);border:1px solid var(--line);box-shadow:none}
 button:focus-visible{outline:2px solid var(--cream);outline-offset:3px}
 button[disabled]{opacity:.4;cursor:default}
 .count{font-variant-numeric:tabular-nums;color:var(--gold);font-size:.9rem;margin-left:8px}
 .end{text-align:center;color:var(--muted);font-size:.85rem}
+.say{color:var(--cream)}
+.back{align-self:flex-start;padding:6px 14px;font-size:.85rem}
 .note{font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -88,7 +90,7 @@ button[disabled]{opacity:.4;cursor:default}
   <p class="small">Morgen, Mittagsnest und Glutmodus folgen.</p>
 </section>
 <main hidden>
-  <span class="tag">Entwurf · Abendritual</span>
+  <button class="ghost back" id="back">‹ Fias Nest</button>
   <header>
     <h1>Ausglühen mit Fia</h1>
     <p>Drei kleine Schritte. Du musst heute nichts mehr lösen.</p>
@@ -155,6 +157,7 @@ $('b2').onclick=async()=>{
 $('b3').onclick=()=>{finish(3);$('s3').classList.remove('active');
   $('fia').style.opacity='.55';$('fia').style.transform='translateY(6px)';say('Schlaf gut.');$('end').hidden=false;$('reset').hidden=false;};
 $('reset').onclick=()=>location.reload();
+$('back').onclick=()=>location.reload();
 $('go').onclick=()=>{$('start').hidden=true;document.querySelector('main').hidden=false;scrollTo(0,0);};
 stage(0);
 </script>
