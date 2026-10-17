@@ -247,7 +247,7 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
   <header class="top">
     <button class="back" id="back" hidden aria-label="Zurück">‹ Zurück</button>
     <div class="brand" id="brand">Kiki <span>singt</span></div>
-    <div class="stars" aria-label="Sterne"><span>★</span><span id="starCount">0</span></div>
+    <div style="display:flex;gap:8px;align-items:center" data-feedback-slot><div class="stars" aria-label="Sterne"><span>★</span><span id="starCount">0</span></div></div>
   </header>
 
   <!-- Start -->
@@ -665,6 +665,7 @@ function go(name){
   $('back').hidden = (name === 'home' || name === 'menu');
   scrollTo(0,0);
 }
+document.addEventListener('drlab-feedback-open', stopAll);
 $('back').onclick = () => { if (current === 'train' && trainer.from === 'songs'){ songList(); go('songs'); } else if (current === 'train' && trainer.from === 'scales'){ startScales(); } else go('menu'); };
 document.querySelectorAll('[data-go]').forEach(b => b.onclick = async () => {
   await initAudio();
@@ -1317,5 +1318,6 @@ if ('serviceWorker' in navigator && location.protocol === 'https:' && /github\.i
 document.addEventListener('visibilitychange', () => { if (document.hidden){ stopAll(); if (current !== 'home' && current !== 'menu') go('menu'); } });
 })();
 </script>
+<script src="feedback.js" data-app="Kiki" defer></script>
 </body>
 </html>
