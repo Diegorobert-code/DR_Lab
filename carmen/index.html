@@ -135,9 +135,28 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 .check{display:flex;gap:10px;align-items:flex-start;font-size:15px;margin:10px 0}
 .check input{width:24px;height:24px;flex:0 0 24px;accent-color:var(--gold)}
 .foot-note{font-size:13px;color:var(--muted);text-align:center;margin-top:18px}
+
+#figurStart{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:max(28px,env(safe-area-inset-top,0px)) 24px max(28px,env(safe-area-inset-bottom,0px));text-align:center;color:#f6efe0;background:radial-gradient(1.5px 1.5px at 12% 18%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 82% 12%,#ffe9a8,transparent),radial-gradient(1px 1px at 70% 30%,#ffe9a8,transparent),radial-gradient(1px 1px at 22% 72%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 88% 80%,#ffe9a8,transparent),radial-gradient(120% 80% at 50% 0%,#1B2C6B 0%,#0E1838 60%,#060A1C 100%);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+#figurStart[hidden]{display:none!important}
+#figurStart img{width:min(64vw,260px);height:min(64vw,260px);border-radius:32px;border:3px solid #F2C14E;object-fit:cover;box-shadow:0 0 0 6px rgba(242,193,78,.08),0 18px 60px rgba(242,193,78,.25);animation:figurAtmen 5s ease-in-out infinite}
+@keyframes figurAtmen{50%{transform:scale(1.02);box-shadow:0 0 0 6px rgba(242,193,78,.14),0 18px 70px rgba(242,193,78,.38)}}
+@media (prefers-reduced-motion:reduce){#figurStart img{animation:none}}
+#figurStart h1{margin:4px 0 0;font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:2.6rem;line-height:1;color:#F2C14E}
+#figurStart p{margin:0;max-width:300px;font-size:1.05rem;line-height:1.45;color:#e9e3d6}
+#figurStart button{margin-top:6px;min-height:52px;padding:0 34px;border:0;border-radius:999px;background:#F2C14E;color:#0E1838;font:700 1.05rem system-ui,-apple-system,sans-serif;box-shadow:0 8px 24px rgba(242,193,78,.3);cursor:pointer}
+#figurStart{overflow:hidden;isolation:isolate}
+#figurStart::before{content:"";position:absolute;inset:-40px;z-index:-1;background:url(figur-gross.jpg) center/cover;filter:blur(28px) saturate(1.5);opacity:.45;transform:scale(1.15)}
+#figurStart img{border-color:var(--fgold);box-shadow:0 0 0 6px rgba(242,193,78,.1),0 0 60px color-mix(in srgb,var(--fa1) 60%,transparent),0 18px 60px rgba(0,0,0,.4);animation:filmSchweben 4.6s ease-in-out infinite;cursor:pointer}
+#figurStart h1{background:linear-gradient(90deg,var(--fgold),var(--fa1),var(--fa2),var(--fgold));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:filmGlanz 6s linear infinite}
+#figurStart h1,#figurStart p,#figurStart button{animation-fill-mode:both}
+#figurStart p{animation:filmAuf .8s .25s ease-out both}
+#figurStart button{background:linear-gradient(135deg,var(--fgold),color-mix(in srgb,var(--fgold) 60%,var(--fa1)));box-shadow:0 8px 24px color-mix(in srgb,var(--fa1) 45%,transparent);animation:filmAuf .8s .45s ease-out both,filmPuls 2.6s 1.4s ease-in-out infinite}
+#figurStart.geht{animation:filmIris .7s ease-in forwards}
 </style>
 </head>
 <body>
+<div id="figurStart" role="dialog" aria-label="Carmencita"><img src="figur-gross.jpg" alt="Carmencita"><h1>Carmencita</h1><p>¡Hola! Hör zuerst die Musik, deine Füsse kommen von allein.</p><button type="button" id="figurStartGo">¡Vamos!</button></div>
+<script>(function(){var s=document.getElementById('figurStart');try{if(sessionStorage.getItem('figurStart'))s.hidden=true;}catch(e){}document.getElementById('figurStartGo').onclick=function(){s.hidden=true;try{sessionStorage.setItem('figurStart','1');}catch(e){}};})();</script>
 <div class="wrap">
   <header class="top">
     <button class="back" id="back" hidden>‹ Zurück</button>
@@ -147,7 +166,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 
   <!-- START -->
   <section class="screen on" id="s-home">
-    <div class="stage"><svg class="carmen" id="carmen-home" viewBox="0 0 200 240" aria-label="Carmen"><use href="#carmen-art"/></svg></div>
+    <div class="stage" data-sag="home-say"><svg class="carmen" id="carmen-home" viewBox="0 0 200 240" aria-label="Carmen"><use href="#carmen-art"/></svg></div>
     <div class="bubble" id="home-say">¡Hola! Ich bin Carmen. Hör zuerst die Musik, deine Füsse kommen von allein.</div>
     <button class="btn gold" id="go-next">Weiter üben</button>
     <div class="sec">Stufen</div>
@@ -806,6 +825,86 @@ $("[data-go=ws]").addEventListener("click",()=>renderWs());
 renderHome();
 if("speechSynthesis" in window) speechSynthesis.onvoiceschanged=()=>{voices=speechSynthesis.getVoices()};
 document.addEventListener("visibilitychange",()=>{ if(document.hidden){ if(W&&W.run){W.run=false;$("#ws-play").textContent="▶ Weiter";} stop();camStop();} });
+})();
+</script>
+<!-- Figuren-Film (Trickfilm-Look): Farben, Funken, Atmen, Tipp-Reaktion, Szenenwechsel. Nur Optik. -->
+<style id="figurFilmCss">
+.film-aurora{position:fixed;inset:-20%;z-index:-1;pointer-events:none;filter:blur(60px);opacity:.5}
+.film-aurora i{position:absolute;border-radius:50%;animation:filmDrift 18s ease-in-out infinite alternate}
+.film-aurora i:nth-child(1){width:55vmax;height:55vmax;left:-10%;top:45%;background:radial-gradient(circle,color-mix(in srgb,var(--fa1) 60%,transparent),transparent 65%)}
+.film-aurora i:nth-child(2){width:45vmax;height:45vmax;right:-15%;top:5%;background:radial-gradient(circle,rgba(242,193,78,.35),transparent 65%);animation-duration:24s}
+.film-aurora i:nth-child(3){width:50vmax;height:50vmax;left:25%;top:-20%;background:radial-gradient(circle,color-mix(in srgb,var(--fa2) 45%,transparent),transparent 65%);animation-duration:30s}
+#filmFunken{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+@keyframes filmDrift{to{transform:translate(8%,-6%) scale(1.12)}}
+button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.96)}
+:root{--fa1:#E5484D;--fa2:#2EC4B6;--fgold:#F2C14E}
+#figurStart{overflow:hidden;isolation:isolate}
+#figurStart::before{content:"";position:absolute;inset:-40px;z-index:-1;background:url(figur-gross.jpg) center/cover;filter:blur(28px) saturate(1.5);opacity:.45;transform:scale(1.15)}
+#figurStart::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 45% at 18% 85%,color-mix(in srgb,var(--fa1) 55%,transparent),transparent),radial-gradient(55% 40% at 85% 20%,color-mix(in srgb,var(--fa2) 50%,transparent),transparent),linear-gradient(180deg,rgba(14,24,56,.35),rgba(6,10,28,.85))}
+#figurStart img{border-color:var(--fgold);box-shadow:0 0 0 6px rgba(242,193,78,.1),0 0 60px color-mix(in srgb,var(--fa1) 60%,transparent),0 18px 60px rgba(0,0,0,.4);animation:filmSchweben 4.6s ease-in-out infinite;cursor:pointer}
+#figurStart h1{background:linear-gradient(90deg,var(--fgold),var(--fa1),var(--fa2),var(--fgold));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:filmGlanz 6s linear infinite}
+#figurStart h1,#figurStart p,#figurStart button{animation-fill-mode:both}
+#figurStart p{animation:filmAuf .8s .25s ease-out both}
+#figurStart button{background:linear-gradient(135deg,var(--fgold),color-mix(in srgb,var(--fgold) 60%,var(--fa1)));box-shadow:0 8px 24px color-mix(in srgb,var(--fa1) 45%,transparent);animation:filmAuf .8s .45s ease-out both,filmPuls 2.6s 1.4s ease-in-out infinite}
+#figurStart.geht{animation:filmIris .7s ease-in forwards}
+.film-funke{position:absolute;width:6px;height:6px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#fff 0,var(--c,#F2C14E) 45%,transparent 70%);opacity:0;animation:filmFunkeln var(--d,5s) var(--v,0s) ease-in-out infinite}
+.figur-hero{background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--fa1) 45%,#1d2c66) 0%,#0f1b3d 60%,color-mix(in srgb,var(--fa2) 35%,#0f1b3d) 100%)!important;isolation:isolate;animation:filmAuf .7s ease-out both}
+.figur-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:url(figur-gross.jpg) right center/60% auto no-repeat;opacity:.18;filter:blur(2px) saturate(1.4);mask-image:linear-gradient(90deg,transparent 20%,#000)}
+.figur-hero img{animation:filmSchweben 4.6s ease-in-out infinite;cursor:pointer;border-color:var(--fgold)!important;box-shadow:0 0 22px color-mix(in srgb,var(--fa1) 65%,transparent)!important}
+.figur-hero span.film-neu{animation:filmAuf .45s ease-out both}
+.figur-hero b{background:linear-gradient(90deg,var(--fgold),var(--fa1));-webkit-background-clip:text;background-clip:text;color:transparent!important}
+.film-hops{animation:filmHops .6s cubic-bezier(.3,1.6,.5,1)!important}
+.figur-logo{animation:filmSchweben 5s ease-in-out infinite}
+.film-auf{animation:filmAuf .6s ease-out both}
+.film-stern{position:fixed;z-index:100000;pointer-events:none;width:10px;height:10px;margin:-5px 0 0 -5px;background:var(--c,#F2C14E);clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);animation:filmStern .75s ease-out forwards}
+@keyframes filmSchweben{0%,100%{transform:translateY(0) rotate(-1deg) scale(1)}50%{transform:translateY(-7px) rotate(1deg) scale(1.025)}}
+@keyframes filmGlanz{to{background-position:300% 0}}
+@keyframes filmAuf{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes filmPuls{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes filmIris{0%{clip-path:circle(150% at 50% 40%)}100%{clip-path:circle(0% at 50% 40%)}}
+@keyframes filmFunkeln{0%,100%{opacity:0;transform:translateY(0) scale(.4)}40%{opacity:1;transform:translateY(-18px) scale(1)}80%{opacity:0;transform:translateY(-40px) scale(.6)}}
+@keyframes filmHops{0%{transform:scale(1)}30%{transform:scale(1.18) rotate(-6deg)}60%{transform:scale(.95) rotate(4deg)}100%{transform:scale(1)}}
+@keyframes filmStern{0%{opacity:1;transform:translate(0,0) scale(.4) rotate(0)}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(1.1) rotate(160deg)}}
+@media (prefers-reduced-motion:reduce){#figurStart *,#figurStart,.figur-hero,.figur-hero img,.figur-logo,.film-auf,.film-funke,#figurStart h1{animation:none!important}.film-funke{opacity:.6}.film-aurora i{animation:none!important}}
+</style>
+<script>
+(function(){
+  var ruhig=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var SAETZE=["¡Hola! Tanzt du mit mir?", "Eins, zwei, drei … und Pause. Genau so!", "Lächeln gehört zum Schritt dazu.", "Die Musik trägt dich, du musst nur zuhören."],si=0;
+  var farben=['#F2C14E','#E5484D','#2EC4B6','#ffffff'];
+  // Farbschleier + aufsteigende Funken (wie Fias Nest)
+  var au=document.createElement('div');au.className='film-aurora';au.setAttribute('aria-hidden','true');au.innerHTML='<i></i><i></i><i></i>';document.body.prepend(au);
+  if(!ruhig){var cv=document.createElement('canvas');cv.id='filmFunken';cv.setAttribute('aria-hidden','true');document.body.prepend(cv);var cx=cv.getContext('2d'),W,H,P=[],dp=devicePixelRatio||1;
+    function gr(){W=cv.width=innerWidth*dp;H=cv.height=innerHeight*dp}gr();addEventListener('resize',gr);
+    function hx(c){c=c.replace('#','');return parseInt(c.substr(0,2),16)+','+parseInt(c.substr(2,2),16)+','+parseInt(c.substr(4,2),16)}
+    var tone=[hx('#F2C14E'),hx('#E5484D'),hx('#2EC4B6')];
+    function neu(){return{x:Math.random()*W,y:H+10,r:(1+Math.random()*2.2)*dp,v:(.25+Math.random()*.6)*dp,s:Math.random()*6.28,a:.4+Math.random()*.5,c:tone[Math.random()*3|0]}}
+    for(var j=0;j<22;j++){var q=neu();q.y=Math.random()*H;P.push(q)}
+    (function tick(){if(!document.hidden){cx.clearRect(0,0,W,H);for(var n=0;n<P.length;n++){var p=P[n];p.y-=p.v;p.s+=.02;p.x+=Math.sin(p.s)*.4*dp;if(p.y<-10)P[n]=neu();
+      var g=cx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);g.addColorStop(0,'rgba('+p.c+','+p.a+')');g.addColorStop(1,'rgba('+p.c+',0)');cx.fillStyle=g;cx.beginPath();cx.arc(p.x,p.y,p.r*4,0,6.29);cx.fill()}}requestAnimationFrame(tick)})();}
+  var s=document.getElementById('figurStart');
+  if(s){
+    for(var i=0;i<16;i++){var f=document.createElement('i');f.className='film-funke';f.style.left=(5+Math.random()*90)+'%';f.style.top=(8+Math.random()*84)+'%';f.style.setProperty('--c',farben[i%3]);f.style.setProperty('--d',(3.5+Math.random()*3)+'s');f.style.setProperty('--v',(Math.random()*4)+'s');s.appendChild(f);}
+    var go=document.getElementById('figurStartGo');
+    if(go)go.onclick=function(e){sterne(e.clientX,e.clientY,10);try{sessionStorage.setItem('figurStart','1');}catch(x){}
+      if(ruhig){s.hidden=true;return;}s.classList.add('geht');setTimeout(function(){s.hidden=true;s.classList.remove('geht');},700);};
+  }
+  function sterne(x,y,n){if(ruhig||!x)return;for(var i=0;i<n;i++){var st=document.createElement('i');st.className='film-stern';var w=Math.random()*Math.PI*2,r=30+Math.random()*40;st.style.left=x+'px';st.style.top=y+'px';st.style.setProperty('--x',Math.cos(w)*r+'px');st.style.setProperty('--y',Math.sin(w)*r+'px');st.style.setProperty('--c',farben[i%4]);document.body.appendChild(st);setTimeout(st.remove.bind(st),800);}}
+  // Figur reagiert auf Tipp
+  document.addEventListener('click',function(e){
+    var t=e.target;
+    var fig=t.closest&&t.closest('#figurStart img,.figur-hero img,.figur-logo,[data-sag]');
+    if(fig){fig.classList.remove('film-hops');void fig.offsetWidth;fig.classList.add('film-hops');sterne(e.clientX,e.clientY,8);
+      var sp=fig.dataset.sag?document.getElementById(fig.dataset.sag):(fig.closest('.figur-hero')&&fig.closest('.figur-hero').querySelector('span'));if(sp&&SAETZE.length){sp.textContent=SAETZE[si++%SAETZE.length];sp.classList.remove('film-neu');void sp.offsetWidth;sp.classList.add('film-neu');}return;}
+    var b=t.closest&&t.closest('button,.btn,[role=button]');
+    if(b&&b.id!=='figurStartGo')sterne(e.clientX,e.clientY,5);
+  },true);
+  document.addEventListener('animationend',function(e){if(e.animationName==='filmHops')e.target.classList.remove('film-hops');});
+  // Karten gleiten wie Filmszenen herein
+  if(!ruhig&&'IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('film-auf');io.unobserve(en.target);}});},{rootMargin:'0px 0px -8% 0px'});
+    document.querySelectorAll('.item,.card').forEach(function(k){if(k.getBoundingClientRect().top>innerHeight)io.observe(k);});
+  }
 })();
 </script>
 </body>
