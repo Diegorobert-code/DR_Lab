@@ -7,6 +7,7 @@
      data-unten="96"           Abstand des Knopfs vom unteren Rand in px (bei Tab-Leisten)
      data-handystimme="nein"   ohne Audio-Datei nicht mit der Handystimme vorlesen
      data-saetze='{"gruss":["…"]}' eigene feste Sätze pro Kategorie (Fallback, solange keine Audios da sind)
+     data-stil="sprachnachricht" Antwort als Sprachnachricht (Abspielknopf + Wellen, Text als Untertitel)
    Verlauf bleibt auf dem Gerät. Ohne Endpunkt geht nichts weg. Keine Schlüssel in der App. */
 (() => {
   'use strict';
@@ -19,6 +20,7 @@
   const ENDPOINT = d.endpoint || '';
   const UNTEN = parseInt(d.unten || '18', 10);
   const HANDY = d.handystimme !== 'nein';
+  const SN = d.stil === 'sprachnachricht';
   const KEY = 'drlab_sprechen_' + FIG;
   const ruhig = matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   const store = {
@@ -107,6 +109,15 @@
   .sp-ein button{min-width:46px;min-height:46px;border-radius:14px;border:0;background:#F2C14E;color:#0E1838;font-size:18px;font-weight:700;cursor:pointer}
   .sp-ein .sp-mic{background:rgba(255,255,255,.1);color:inherit}
   .sp-ein .sp-mic.rec{background:#d6413b;color:#fff}
+  .sp-sn{display:flex;align-items:center;gap:10px;margin-top:8px;background:rgba(255,255,255,.08);border-radius:18px 18px 18px 6px;padding:8px 12px 8px 8px}
+  .sp-sn button{flex:none;width:42px;height:42px;border-radius:50%;border:0;background:#F2C14E;color:#0E1838;font-size:16px;cursor:pointer;padding:0}
+  .sp-sn img{flex:none;width:34px;height:34px;border-radius:50%;border:2px solid #F2C14E;object-fit:cover}
+  .sp-welle{flex:1;display:flex;align-items:center;gap:2px;height:30px}
+  .sp-welle i{flex:1;border-radius:2px;background:rgba(255,255,255,.35)}
+  .sp-welle i.an{background:#F2C14E}
+  .sp-zeit{flex:none;font-size:12px;color:#c9d2ee;font-variant-numeric:tabular-nums;min-width:30px;text-align:right}
+  .sp-sn.notfall{background:rgba(214,65,59,.25)}
+  .sp-sn + .sp-sie{font-size:14px;color:#c9d2ee;margin-top:6px}
   .sp-klein{margin-top:8px;font-size:12px;color:#9aa6c8}
   @keyframes spSchweben{50%{transform:translateY(-5px)}}
   @keyframes spPuls{50%{box-shadow:0 0 0 12px rgba(214,65,59,.25),0 0 30px rgba(214,65,59,.5)}}
@@ -141,7 +152,7 @@
   }
   function oeffnen(){
     blase.classList.add('on');
-    if (!sie.textContent) sie.textContent = 'Hallo, ich bin ' + NAME + '. Sag mir einfach, was du brauchst.';
+    if (!sie.textContent){ const g = (eigene.gruss && eigene.gruss[0]) || ('Hallo, ich bin ' + NAME + '. Sag mir einfach, was du brauchst.'); if (SN) nachricht({text:g}, false); else sie.textContent = g; }
   }
 
   // Zuhören (Spracherkennung im Browser)
@@ -162,17 +173,46 @@
 
   // Antworten (Figurenstimme, sonst Text)
   let spieler = null;
-  function stopp(){ if (spieler){ spieler.pause(); spieler = null; } try{ speechSynthesis.cancel(); }catch(e){} knopf.classList.remove('spricht'); }
+  let lauf = null;
+  function stopp(){ if (spieler){ spieler.pause(); spieler = null; } try{ speechSynthesis.cancel(); }catch(e){} knopf.classList.remove('spricht'); if (lauf) lauf(); }
+  // Sprachnachricht: Abspielknopf, Wellen, Dauer; Text bleibt als Untertitel
+  const fmtZeit = t => Math.floor(t / 60) + ':' + String(Math.round(t % 60)).padStart(2, '0');
+  function nachricht(a, sofort){
+    const alt = blase.querySelector('.sp-sn'); if (alt) alt.remove();
+    const sn = document.createElement('div'); sn.className = 'sp-sn' + (a.notfall ? ' notfall' : '');
+    const dauer = Math.max(2, Math.round(a.text.length / 14));
+    let w = ''; for (let i = 0; i < 28; i++){ const h = 25 + Math.abs(Math.sin(i * 1.7 + a.text.length)) * 75; w += '<i style="height:' + h.toFixed(0) + '%"></i>'; }
+    sn.innerHTML = '<button type="button" aria-label="Sprachnachricht abspielen">▶</button><div class="sp-welle">' + w + '</div><span class="sp-zeit">' + fmtZeit(dauer) + '</span><img src="' + BILD + '" alt="">';
+    sie.before(sn); sie.textContent = a.text; sie.classList.toggle('notfall', !!a.notfall);
+    const b = sn.querySelector('button'), striche = sn.querySelectorAll('i'), zeit = sn.querySelector('.sp-zeit');
+    let tick = null, laeuft = false;
+    const zeige = f => { const n = Math.round(f * striche.length); striche.forEach((x, i) => x.classList.toggle('an', i < n)); };
+    const ende = () => { laeuft = false; clearInterval(tick); b.textContent = '▶'; zeige(0); zeit.textContent = fmtZeit(dauer); lauf = null; };
+    b.onclick = () => {
+      if (laeuft){ stopp(); return; }
+      stopp(); laeuft = true; b.textContent = '❚❚'; lauf = ende;
+      const t0 = Date.now();
+      tick = setInterval(() => {
+        let f;
+        if (spieler && spieler.duration) f = spieler.currentTime / spieler.duration;
+        else f = Math.min(1, (Date.now() - t0) / (dauer * 1000));
+        zeige(f); zeit.textContent = fmtZeit(dauer * (1 - f));
+      }, 150);
+      sprechen(a, ende, true);
+    };
+    if (sofort && !stumm) b.onclick();
+  }
   async function senden(t){
     t = (t || '').trim(); if (!t) return;
     feld.value = ''; du.textContent = '«' + t + '»'; sie.textContent = '…'; sie.classList.remove('notfall');
     const a = await antwort(t);
+    if (SN){ nachricht(a, true); return; }
     sie.textContent = a.text; if (a.notfall) sie.classList.add('notfall');
     sprechen(a);
   }
-  function sprechen(a){
-    stopp(); if (stumm) return;
-    const an = () => { if (!ruhig) knopf.classList.add('spricht'); }, aus = () => knopf.classList.remove('spricht');
+  function sprechen(a, fertig, laut){
+    if (!SN) stopp(); if (stumm && !laut) return;
+    const an = () => { if (!ruhig) knopf.classList.add('spricht'); }, aus = () => { knopf.classList.remove('spricht'); if (fertig) fertig(); };
     if (a.audio){
       spieler = new Audio(a.audio); spieler.preload = 'auto';
       spieler.onplay = an; spieler.onended = aus;
@@ -183,7 +223,7 @@
     handy(a.text, an, aus);
   }
   function handy(text, an, aus){
-    if (!HANDY || !window.speechSynthesis) return;
+    if (!HANDY || !window.speechSynthesis){ if (SN) setTimeout(aus, Math.max(2, text.length / 14) * 1000); return; }
     try{
       const u = new SpeechSynthesisUtterance(text); u.lang = 'de-DE'; u.rate = 1; u.pitch = 1.05;
       const v = speechSynthesis.getVoices().filter(x => /^de/i.test(x.lang));
