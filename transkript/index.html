@@ -341,7 +341,7 @@ function callHermes(text){
 }
 function askHermes(t){
   showAnswer('Sende an Hermes …');
-  callHermes(t).then(showAnswer, function(e){ showAnswer('Nicht gesendet: ' + e.message + ' Dein Text ist kopiert und im Verlauf.'); try { navigator.clipboard.writeText(t); } catch(x){} });
+  callHermes(t).then(function(a){ showAnswer(a); if (window.NovaStimme && NovaStimme.aktiv()) NovaStimme.sprich(a); }, function(e){ showAnswer('Nicht gesendet: ' + e.message + ' Dein Text ist kopiert und im Verlauf.'); try { navigator.clipboard.writeText(t); } catch(x){} });
 }
 hState();
 
@@ -371,5 +371,6 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catc
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>
+<script src="../nova/nova.js" data-nova-app="Transkript" data-nova-knopf="0" defer></script>
 </body>
 </html>
