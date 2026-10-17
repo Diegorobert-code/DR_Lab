@@ -139,10 +139,15 @@ pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px s
       <datalist id="fromList"></datalist>
     </label>
     <div class="chips" id="suggest"></div>
-    <label class="nurBuch">Kategorie (Buchhaltung)
-      <input id="kat" list="katList" placeholder="z. B. DR Lab Software" autocomplete="off">
-      <datalist id="katList"></datalist>
-    </label>
+    <div class="row nurBuch">
+      <label>Kategorie
+        <select id="haupt"><option>Privat</option><option>Ferien</option><option>Praxis</option><option>DR Lab</option><option>Unklar</option></select>
+      </label>
+      <label>Genauer (freiwillig)
+        <input id="unter" list="unterList" placeholder="z. B. Kaffee" autocomplete="off">
+        <datalist id="unterList"></datalist>
+      </label>
+    </div>
     <div class="row">
       <label>Betrag CHF
         <input id="amount" inputmode="decimal" placeholder="0.00">
@@ -160,7 +165,7 @@ pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px s
         <input id="fix" placeholder="z. B. monatlich" autocomplete="off">
       </label>
     </div>
-    <label><span id="catLabel">Steuer-Ordner</span>
+    <label id="catRow"><span id="catLabel">Steuer-Ordner</span>
       <select id="cat"></select>
     </label>
     <label>Notiz (freiwillig)
@@ -177,7 +182,7 @@ pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px s
       <select id="monatSel"></select>
     </label>
     <div class="sum3">
-      <div class="card"><small>Diese Woche</small><strong id="sumWoche">0.00</strong></div>
+      <div class="card"><small>Privat diese Woche</small><strong id="sumWoche">0.00</strong><small id="wocheBudget">Budget 138</small></div>
       <div class="card"><small id="sumMonatLabel">Monat</small><strong id="sumMonat">0.00</strong></div>
     </div>
     <div class="card"><h2>Nach Kategorie</h2><div id="katSum"></div></div>
@@ -262,7 +267,21 @@ const DEFAULT_CATS = `1;Lohnausweis und Einkommen
 15;Spenden
 16;Schuldzinsen
 17;Diverses`;
-const KATS = ['Essen und Trinken','Lebensmittel','Kaffee und Snacks','Restaurant','Ausgang','Kleider','Haushalt','Mobilität','Gesundheit','Praxis Miete','Praxis Material','Praxis Versicherungen','Praxis/DR Lab Software','DR Lab Software','DR Lab App-Produktion','DR Lab Programmierer','DR Lab Nova','Werbung','Weiterbildung','Telefon Internet','Privat','Ferien','Unklar'];
+// Kategorien wie im Buchhaltung-Thread: nur Praxis und DR Lab bekommen einen Steuer-Ordner
+const HAUPT = ['Privat','Ferien','Praxis','DR Lab','Unklar'];
+const UNTER = {Privat:['Essen','Kaffee und Snacks','Lebensmittel','Restaurant','Ausgang','Mila','Kleider','Haushalt','Mobilität','Gesundheit'], Ferien:['Essen','Hotel','Reise'], Praxis:['Miete','Material','Versicherungen','Weiterbildung','Telefon Internet','Werbung'], 'DR Lab':['Software','Programmierer','App-Produktion','Nova'], Unklar:[]};
+const MIT_ORDNER = h => h === 'Praxis' || h === 'DR Lab';
+const WOCHE_PRIVAT = 138;
+const splitKat = k => { k = String(k||''); const h = HAUPT.find(x => k === x || k.startsWith(x + ' ')); return h ? {h, u: k.slice(h.length).trim()} : {h: k ? 'Unklar' : 'Privat', u: k}; };
+const getKat = () => ($('#haupt').value + ' ' + $('#unter').value.trim()).trim();
+function setKat(k){ const {h,u} = splitKat(k); $('#haupt').value = h; $('#unter').value = u; katChanged(); }
+function katChanged(){
+  const h = $('#haupt').value;
+  $('#unterList').innerHTML = (UNTER[h]||[]).map(x => `<option value="${esc(x)}">`).join('');
+  const zeig = mode !== 'buch' || MIT_ORDNER(h);
+  $('#catRow').classList.toggle('hidden', !zeig);
+  if (!zeig) $('#cat').value = '';
+}
 
 const TIPS = {
   buch: [
@@ -341,7 +360,6 @@ function renderAll(){
   if ([...$('#cat').options].some(o => o.value === keep)) $('#cat').value = keep;
   $('#catText').value = cats.map(c => c.nr+';'+c.name).join('\n');
   $('#fromList').innerHTML = Object.keys(memory).map(f => `<option value="${esc(f)}">`).join('');
-  $('#katList').innerHTML = [...new Set([...KATS, ...zettel.filter(isBuch).map(z => z.kat).filter(Boolean)])].map(k => `<option value="${esc(k)}">`).join('');
   if (mode === 'buch'){
     const m = ymd(new Date()).slice(0,7);
     $('#totalLabel').textContent = String(year) === m.slice(0,4) ? MONATE[+m.slice(5)-1] : 'Jahr';
@@ -428,7 +446,10 @@ function renderMonat(){
   const list = zettel.filter(z => isBuch(z) && m && (z.date||'').startsWith(m));
   const heute = new Date(), mo = new Date(heute); mo.setDate(heute.getDate() - ((heute.getDay()+6)%7));
   const von = ymd(mo), bis = ymd(heute);
-  $('#sumWoche').textContent = chf(sum(zettel.filter(z => isBuch(z) && z.date >= von && z.date <= bis)));
+  const privat = sum(zettel.filter(z => isBuch(z) && splitKat(z.kat).h === 'Privat' && z.date >= von && z.date <= bis));
+  $('#sumWoche').textContent = chf(privat);
+  $('#sumWoche').style.color = privat > WOCHE_PRIVAT ? 'var(--warn)' : '';
+  $('#wocheBudget').textContent = privat > WOCHE_PRIVAT ? `${chf(privat - WOCHE_PRIVAT)} über Budget ${WOCHE_PRIVAT}` : `noch ${chf(WOCHE_PRIVAT - privat)} von ${WOCHE_PRIVAT}`;
   $('#sumMonatLabel').textContent = m ? monatName(m) : 'Monat';
   $('#sumMonat').textContent = chf(sum(list));
   const k = {}; list.forEach(z => { const n = z.kat || 'ohne Kategorie'; k[n] = (k[n]||0) + (z.amount||0); });
@@ -449,7 +470,7 @@ function suggest(){
   const key = Object.keys(memory).find(k => k.toLowerCase() === f);
   const m = key && merk(key);
   if (!m){ $('#suggest').innerHTML = ''; return; }
-  if (!editId){ if (m.kat && !$('#kat').value) $('#kat').value = m.kat; if (m.cat && [...$('#cat').options].some(o => o.value === m.cat)) $('#cat').value = m.cat; }
+  if (!editId){ if (m.kat) setKat(m.kat); if (m.cat && [...$('#cat').options].some(o => o.value === m.cat)) $('#cat').value = m.cat; }
   $('#suggest').innerHTML = `<span class="hint">Wie letztes Mal: ${[m.kat, m.cat && 'Ordner '+m.cat].filter(Boolean).map(esc).join(', ')}</span>`;
 }
 async function shrink(file){
@@ -469,7 +490,8 @@ function showPhoto(blob){
 function defaultDate(){ const t = ymd(new Date()); return t.startsWith(String(year)) ? t : year + '-12-31'; }
 function resetForm(){
   editId = null; photo = null; showPhoto(null);
-  ['#from','#amount','#note','#kat','#paid','#fix'].forEach(s => $(s).value = '');
+  ['#from','#amount','#note','#unter','#paid','#fix'].forEach(s => $(s).value = '');
+  $('#haupt').value = 'Privat'; katChanged();
   if (mode === 'buch') $('#cat').value = '';
   $('#date').value = defaultDate();
   $('#formTitle').textContent = 'Neuer Zettel'; $('#save').textContent = 'Ins Glas legen';
@@ -481,6 +503,7 @@ async function save(){
   const old = editId ? zettel.find(b => b.id === editId) : null;
   const kind = old ? old.kind : (mode === 'buch' ? 'ausgabe' : 'steuer');
   if (!photo && !old && !$('#from').value.trim() && amt == null){ toast('Foto, Wofür oder Betrag eintragen'); return; }
+  if (kind === 'ausgabe' && !MIT_ORDNER($('#haupt').value)) $('#cat').value = '';
   if (kind !== 'ausgabe' && !$('#cat').value){ toast('Bitte einen Steuer-Ordner wählen'); return; }
   const blob = photo || (old && old.blob) || null;
   const z = {
@@ -488,7 +511,7 @@ async function save(){
     year: +String($('#date').value || defaultDate()).slice(0,4) || year, kind,
     cat: $('#cat').value, from: $('#from').value.trim(), amount: amt,
     date: $('#date').value, note: $('#note').value.trim(),
-    kat: $('#kat').value.trim(), paid: $('#paid').value.trim(), fix: $('#fix').value.trim(),
+    kat: kind === 'ausgabe' ? getKat() : '', paid: $('#paid').value.trim(), fix: $('#fix').value.trim(),
     blob, type: blob ? (blob.type || 'image/jpeg') : ''
   };
   await tx('belege','readwrite', s => s.put(z));
@@ -503,7 +526,7 @@ function edit(id){
   setMode(isBuch(z) ? 'buch' : 'steuer', true);
   editId = id; photo = null; showPhoto(z.blob);
   $('#from').value = z.from||''; $('#cat').value = z.cat||''; $('#amount').value = z.amount==null ? '' : z.amount;
-  $('#date').value = z.date||''; $('#note').value = z.note||''; $('#kat').value = z.kat||''; $('#paid').value = z.paid||''; $('#fix').value = z.fix||'';
+  $('#date').value = z.date||''; $('#note').value = z.note||''; setKat(z.kat||''); $('#paid').value = z.paid||''; $('#fix').value = z.fix||'';
   $('#formTitle').textContent = 'Zettel ändern'; $('#save').textContent = 'Speichern';
   $('#cancel').classList.remove('hidden'); $('#delOne').classList.remove('hidden');
   tab('neu');
@@ -520,6 +543,7 @@ function setMode(m, still){
   $('#catLabel').textContent = m === 'buch' ? 'Steuer-Ordner (freiwillig)' : 'Steuer-Ordner';
   const t = TIPS[m]; $('#bubble').innerHTML = t[Math.floor(Date.now()/864e5) % t.length];
   try { localStorage.setItem('fompa-mode', m); } catch {}
+  katChanged();
   if (!still){ resetForm(); tab('neu'); }
   renderAll();
 }
@@ -548,20 +572,20 @@ function verstehe(t){
   resetForm(); tab('neu');
   $('#from').value = was; $('#amount').value = betrag.toFixed(2); $('#date').value = ymd(d);
   if (zahl) $('#paid').value = zahl[1];
-  const kw = KONSUM.find(([re]) => re.test(s)); if (kw) $('#kat').value = kw[1];
+  const kw = KONSUM.find(([re]) => re.test(s)); if (kw) setKat(kw[1]);
   suggest();
   return `Notiert: ${was || 'ohne Namen'}, CHF ${chf(betrag)}${zahl ? ', ' + zahl[1] : ''}. Schau kurz drüber und tipp auf «Ins Glas legen», dann kommt der Zettel zu den anderen.`;
 }
 window.SPRECHEN_EINGABE = verstehe;
 // Konsum: Kategorie aus dem Gesagten erraten (Fompas Gedächtnis hat Vorrang)
 const KONSUM = [
-  [/\b(kaffee|cappuccino|espresso|gipfeli|croissant|snack|glace)\b/, 'Kaffee und Snacks'],
-  [/\b(restaurant|znacht|zmittag|mittagessen|abendessen|pizza|sushi|kebab|take ?away)\b/, 'Restaurant'],
-  [/\b(bier|wein|drink|apéro|apero|club)\b/, 'Ausgang'],
-  [/\b(migros|coop|denner|aldi|lidl|volg|spar|einkauf|lebensmittel|gemüse|brot)\b/, 'Lebensmittel'],
-  [/\b(sbb|zvv|tram|bus|zug|taxi|uber|benzin|parkieren|velo)\b/, 'Mobilität'],
-  [/\b(apotheke|arzt|zahnarzt|drogerie)\b/, 'Gesundheit'],
-  [/\b(kleider|schuhe|zara|h&m)\b/, 'Kleider'],
+  [/\b(kaffee|cappuccino|espresso|gipfeli|croissant|snack|glace)\b/, 'Privat Kaffee und Snacks'],
+  [/\b(restaurant|znacht|zmittag|mittagessen|abendessen|pizza|sushi|kebab|take ?away)\b/, 'Privat Restaurant'],
+  [/\b(bier|wein|drink|apéro|apero|club)\b/, 'Privat Ausgang'],
+  [/\b(migros|coop|denner|aldi|lidl|volg|spar|einkauf|lebensmittel|gemüse|brot)\b/, 'Privat Lebensmittel'],
+  [/\b(sbb|zvv|tram|bus|zug|taxi|uber|benzin|parkieren|velo)\b/, 'Privat Mobilität'],
+  [/\b(apotheke|arzt|zahnarzt|drogerie)\b/, 'Privat Gesundheit'],
+  [/\b(kleider|schuhe|zara|h&m)\b/, 'Privat Kleider'],
   [/\b(server|software|abo|app|domain|hosting)\b/, 'DR Lab Software'],
   [/\b(miete)\b/, 'Praxis Miete']
 ];
@@ -635,6 +659,7 @@ function fillYears(){
   $('#shot').onclick = () => $('#file').click();
   $('#file').onchange = async e => { const f = e.target.files[0]; if (!f) return; photo = await shrink(f); showPhoto(photo); e.target.value=''; };
   $('#from').oninput = suggest;
+  $('#haupt').onchange = katChanged;
   $('#save').onclick = save;
   $('#cancel').onclick = resetForm;
   $('#delOne').onclick = async () => { if (!confirm('Diesen Zettel löschen?')) return; await tx('belege','readwrite', s => s.delete(editId)); resetForm(); await loadYear(); toast('Gelöscht'); };
