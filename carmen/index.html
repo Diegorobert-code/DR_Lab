@@ -788,7 +788,8 @@ function renderWs(){
 }
 function wsOpen(k){ W={k,idx:0,el:0,run:false,lastMove:-1}; $("#ws-pick").hidden=true;$("#ws-run").hidden=false;$("#ws-done").hidden=true;
   $("#ws-title").textContent="Einheit "+k+" · "+WS[k].t.split(" · ")[1]; buildCounts($("#counts-ws"),[1,2,3,4,5,6,7,8]); wsShow(); $("#ws-play").textContent="▶ Los"; }
-function sayDe(txt){ try{ if(!("speechSynthesis" in window))return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(txt); u.lang="de-DE"; u.rate=1.05;
+function sayDe(txt){ try{ if(window.NovaStimme&&NovaStimme.aktiv()){ NovaStimme.sprich(txt); return; } // Carmencitas eigene Stimme (Sense Engine)
+  if(!("speechSynthesis" in window))return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(txt); u.lang="de-DE"; u.rate=1.05;
   const v=(voices||speechSynthesis.getVoices()).find(v=>/^de/i.test(v.lang)); if(v)u.voice=v; speechSynthesis.speak(u);}catch(e){} }
 const mmss=x=>{x=Math.max(0,Math.ceil(x));return Math.floor(x/60)+":"+String(x%60).padStart(2,"0")};
 function wsShow(){ const bl=wsBlocks(W.k), b=bl[W.idx], rest=BLOCK_S-W.el;
@@ -908,5 +909,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 })();
 </script>
 <script src="../apps/sprechen/sprechen.js" data-figur="carmencita" data-name="Carmencita" data-bild="figur.jpg" data-audio="audio/carmencita/" data-unten="18" data-saetze='{"gruss": ["¡Hola! Ich bin Carmencita. Tanzt du mit mir?"], "lob": ["¡Muy bien! Deine Füsse tanzen schon ganz von allein."], "mut": ["Langsam ist auch schön. Hör auf die Musik, eins, zwei, drei, Pause."], "frage": ["Tipp auf «Weiter üben», dann zeige ich dir den nächsten Schritt."]}' defer></script>
+<script src="../nova/seelen.js" defer></script>
+<script src="../nova/nova.js" data-nova-app="Carmencita" data-nova-figur="carmencita" defer></script>
 </body>
 </html>
