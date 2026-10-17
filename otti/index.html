@@ -52,6 +52,7 @@
   .knopf.aktiv { background:#d6304a; color:#fff; }
   .knopf:focus-visible { outline:3px solid #fff; outline-offset:4px; }
   .hinweis { color:var(--leise); font-size:13px; margin-top:8px; text-align:center; min-height:18px; }
+  .vergessen { margin-top:6px; background:none; border:0; color:var(--leise); font:13px system-ui, sans-serif; text-decoration:underline; cursor:pointer; opacity:.8; }
   @media (prefers-reduced-motion: reduce) { .atmen { animation:none; } }
 </style>
 </head>
@@ -69,6 +70,7 @@
 
 <button class="knopf" id="knopf" type="button" aria-label="Gespräch starten">🎙</button>
 <div class="hinweis" id="hinweis"></div>
+<button class="vergessen" id="vergessen" type="button" hidden>Otti vergisst alles</button>
 
 <script src="elevenlabs-client-1.26.0.js"></script>
 <script src="../nova/mund.js"></script>
@@ -105,7 +107,30 @@
     figur.classList.remove('hopsen'); void figur.offsetWidth; figur.classList.add('hopsen'); funken(10);
   }
 
+  // Gedächtnis: worüber ihr geredet habt, nur auf diesem Handy gespeichert.
+  var GED = 'otti_gedaechtnis', jetztGesagt = [];
+  function gedaechtnis() { try { return JSON.parse(localStorage.getItem(GED)) || []; } catch (e) { return []; } }
+  function merken() {
+    if (jetztGesagt.length < 2) { jetztGesagt = []; return; }
+    var t = jetztGesagt.join('\n'); if (t.length > 900) t = t.slice(-900);
+    var g = gedaechtnis(); g.push({ d: new Date().toLocaleDateString('de-CH'), t: t });
+    try { localStorage.setItem(GED, JSON.stringify(g.slice(-4))); } catch (e) {}
+    jetztGesagt = []; vergessenZeigen();
+  }
+  function erinnerung() {
+    var g = gedaechtnis();
+    return g.length ? g.map(function (x) { return 'Am ' + x.d + ':\n' + x.t; }).join('\n\n') : 'Noch nichts. Ihr redet zum ersten Mal.';
+  }
+  var vergessen = $('vergessen');
+  function vergessenZeigen() { vergessen.hidden = !gedaechtnis().length; }
+  vergessen.addEventListener('click', function () {
+    try { localStorage.removeItem(GED); } catch (e) {}
+    vergessenZeigen(); status.textContent = 'Erledigt. Otti fängt neu an.';
+  });
+  vergessenZeigen();
+
   function zeile(wer, t) {
+    jetztGesagt.push((wer === 'du' ? 'Gegenüber: ' : 'Otti: ') + t);
     var d = document.createElement('div'); d.className = 'z ' + wer; d.textContent = t;
     text.appendChild(d); text.scrollTop = text.scrollHeight;
     while (text.children.length > 30) text.removeChild(text.firstChild);
@@ -155,6 +180,7 @@
       var c = await ElevenLabsClient.Conversation.startSession({
         agentId: AGENT,
         connectionType: 'websocket',
+        dynamicVariables: { letztes_mal: erinnerung() },
         onConnect: function () { status.textContent = 'Otti hört zu.'; hopsen(); },
         onDisconnect: function () { ende('Bis bald! Tipp auf den Knopf, dann bin ich wieder da.'); },
         onError: function (m) { hinweis.textContent = 'Fehler: ' + (m || 'unbekannt'); },
@@ -176,6 +202,7 @@
   }
 
   function ende(t) {
+    if (conv) merken();
     conv = null; startet = false;
     buehne.classList.remove('hoert', 'spricht');
     knopfZeigen();
