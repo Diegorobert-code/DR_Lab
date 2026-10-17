@@ -910,6 +910,8 @@ function startExercise(){
 
 /* ---------- Vorlesen ---------- */
 function speak(text){
+  // Mit Server: Sparkys eigene Stimme (nova/nova.js). Sonst die Gerätestimme.
+  if (window.NovaStimme && NovaStimme.aktiv()){ NovaStimme.sprich(text); return; }
   if (!('speechSynthesis' in window)){ alert('Vorlesen wird von diesem Browser nicht unterstützt.'); return; }
   speechSynthesis.cancel();
   var u = new SpeechSynthesisUtterance(text);

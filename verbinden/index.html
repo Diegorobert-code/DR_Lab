@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0E1838">
+<title>Handy verbinden</title>
+<style>
+:root{--bg:#0E1838;--card:#16244a;--ink:#f6efe0;--mute:#b9c2dc;--gold:#F2C14E;--ok:#7ad39b;--err:#ff8a8a}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(120% 80% at 50% 0%,#22356e 0%,#0E1838 60%,#060A1C 100%);color:var(--ink);font:17px/1.5 system-ui,-apple-system,sans-serif;padding:max(24px,env(safe-area-inset-top)) 16px 40px}
+main{max-width:460px;margin:0 auto}
+h1{font-size:26px;margin:8px 0 4px;color:var(--gold)}
+p{margin:8px 0;color:var(--mute)}
+.card{background:var(--card);border:1px solid #2b3d70;border-radius:20px;padding:18px;margin:16px 0}
+button{font:inherit;font-weight:600;border:0;border-radius:14px;padding:13px 18px;background:var(--gold);color:#1b2240;cursor:pointer;width:100%}
+button.soft{background:#24386e;color:var(--ink)}
+#qr{background:#fff;border-radius:16px;padding:14px;margin:14px auto 6px;max-width:300px}
+#qr svg{display:block;width:100%;height:auto}
+.ok{color:var(--ok)}.err{color:var(--err)}
+ol{padding-left:22px;color:var(--mute)}
+a{color:var(--gold)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+  <h1>Handy verbinden</h1>
+  <p>Verbindet ein Gerät mit deiner Sense Engine, damit die Figuren mit ihrer eigenen Stimme sprechen. Ohne Kopieren.</p>
+
+  <!-- Am Mac: Verbindung ist da, QR zeigen -->
+  <section class="card" id="geber" hidden>
+    <ol>
+      <li>«QR-Code zeigen» tippen.</li>
+      <li>Mit der iPhone-Kamera auf den Code halten und den gelben Link antippen.</li>
+      <li>Das iPhone öffnet diese Seite in Safari und ist verbunden.</li>
+    </ol>
+    <button id="zeigen">QR-Code zeigen</button>
+    <div id="qrbox" hidden>
+      <div id="qr" aria-label="QR-Code mit der Verbindung"></div>
+      <p class="err">Der Code enthält dein Passwort: kein Foto, kein Bildschirmfoto. Er verschwindet nach 2 Minuten.</p>
+      <button class="soft" id="weg">Code ausblenden</button>
+    </div>
+  </section>
+
+  <!-- Am Handy: nach dem Scannen -->
+  <section class="card" id="nehmer" hidden>
+    <p id="nehmerText">Verbindung gespeichert. Ich teste …</p>
+    <button class="soft" id="testen">Nochmals testen</button>
+    <p>Apps auf dem Home-Bildschirm (mit Icon) haben einen eigenen Speicher. Für sie: Code kopieren, die App öffnen, auf die Figur unten rechts tippen, «Verbindung einsetzen».</p>
+    <button id="kopieren">Code für Home-Bildschirm-Apps kopieren</button>
+    <p>Jetzt die Apps in Safari öffnen, z. B. <a href="../kiki/">Kiki</a>, <a href="../mondschein/">Mondschein</a>, <a href="../jackie/">Jackie</a>.</p>
+  </section>
+
+  <!-- Weder noch -->
+  <section class="card" id="leer" hidden>
+    <p>Auf diesem Gerät ist noch keine Verbindung gespeichert.</p>
+    <p>Öffne diese Seite zuerst am Mac, wo die Sense Engine schon verbunden ist, und scanne dort den QR-Code mit dem Handy.</p>
+  </section>
+</main>
+<script src="qrcode.js"></script>
+<script>
+(function () {
+  var K = { addr: 'drlab-hermes-adresse', key: 'drlab-hermes-passwort' };
+  function get(k) { try { var v = localStorage.getItem(k); return v === null ? '' : JSON.parse(v); } catch (e) { return ''; } }
+  function put(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+  var $ = function (id) { return document.getElementById(id); };
+
+  // Daten kommen im #-Teil des Links: der wird nie an einen Server geschickt.
+  var h = new URLSearchParams(location.hash.slice(1));
+  var a = (h.get('a') || '').trim(), k = (h.get('k') || '').trim();
+  if (a || k) try { history.replaceState(null, '', location.pathname); } catch (e) {}
+
+  function testen() {
+    var t = $('nehmerText');
+    t.className = ''; t.textContent = 'Ich teste die Verbindung …';
+    fetch(String(get(K.addr)).replace(/\/+$/, '') + '/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + get(K.key), 'X-Nova-App': 'Verbinden' },
+      body: JSON.stringify({ model: 'sense-engine', messages: [{ role: 'user', content: 'Antworte nur mit: Verbindung steht.' }] })
+    }).then(function (r) {
+      if (r.status === 401 || r.status === 403) throw new Error('Das Passwort stimmt nicht. Am Mac einen neuen Code zeigen und nochmals scannen.');
+      if (!r.ok) throw new Error('Der Server meldet Fehler ' + r.status + '.');
+      t.className = 'ok'; t.textContent = 'Verbunden. Die Figuren sprechen jetzt auch auf diesem Gerät mit ihrer eigenen Stimme.';
+    }).catch(function (e) {
+      t.className = 'err'; t.textContent = e instanceof TypeError ? 'Server nicht erreichbar.' : e.message;
+    });
+  }
+
+  if (/^https:\/\//.test(a) && k) {
+    put(K.addr, a.replace(/\/+$/, '')); put(K.key, k);
+    $('nehmer').hidden = false; testen();
+  } else if (/^https:\/\//.test(get(K.addr)) && get(K.key)) {
+    $('geber').hidden = false;
+  } else {
+    $('leer').hidden = false;
+  }
+  $('testen').onclick = testen;
+  $('kopieren').onclick = function () {
+    var code = 'NOVA:' + btoa(unescape(encodeURIComponent(get(K.addr) + '\n' + get(K.key))));
+    var ok = function () { $('kopieren').textContent = 'Kopiert ✓ Jetzt die App öffnen'; };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(ok, function () { window.prompt('Code kopieren:', code); });
+    else window.prompt('Code kopieren:', code);
+  };
+
+  var timer = null;
+  function weg() { $('qr').innerHTML = ''; $('qrbox').hidden = true; $('zeigen').hidden = false; clearTimeout(timer); }
+  $('zeigen').onclick = function () {
+    var link = location.origin + location.pathname + '#a=' + encodeURIComponent(get(K.addr)) + '&k=' + encodeURIComponent(get(K.key));
+    var q = qrcode(0, 'M'); q.addData(link); q.make();
+    $('qr').innerHTML = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+    $('qrbox').hidden = false; $('zeigen').hidden = true;
+    timer = setTimeout(weg, 120000);
+  };
+  $('weg').onclick = weg;
+})();
+</script>
+</body>
+</html>

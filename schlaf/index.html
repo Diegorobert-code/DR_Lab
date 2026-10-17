@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fias Nest">
+<meta name="theme-color" content="#0E1838">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Fias Nest">
+<meta property="og:description" content="Abendritual mit Fia: Licht runter, 5 Seufzer, Handy weg.">
+<meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/schlaf/og.png">
+<meta property="og:type" content="website">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Fias Nest</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Figtree:wght@400;500;600&display=swap">
+<style>
+body{margin:0}
+/* Layout: Startbild mit Fia (Tinko-Figur) als Titel, dann eine Handy-Spalte mit drei Glut-Stufen; Nachtblau wie Fias Sternenhimmel, Gold wie ihre Glut */
+:root{
+  --night:#0E1838; --night-deep:#060A1C; --sky:#1B2C6B; --gold:#F2C14E; --coral:#D97757; --ember:#FF8A3D;
+  --cream:#F5E6D3; --muted:#AEB8DA; --line:rgba(242,193,78,.22);
+  --display:"Newsreader",Georgia,serif; --body:"Figtree",system-ui,sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--night);color:var(--cream);font-family:var(--body);font-size:16px;line-height:1.5;
+  transition:background 1.6s ease;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body[data-stage="1"]{background:#0B1430}
+body[data-stage="2"]{background:#091026}
+body[data-stage="3"]{background:var(--night-deep)}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;transition:opacity 1.6s;
+  background:radial-gradient(1.5px 1.5px at 12% 18%,var(--gold),transparent),radial-gradient(1px 1px at 78% 9%,var(--cream),transparent),
+  radial-gradient(2px 2px at 88% 30%,var(--gold),transparent),radial-gradient(1px 1px at 30% 6%,var(--cream),transparent),
+  radial-gradient(1.5px 1.5px at 62% 22%,var(--gold),transparent),radial-gradient(1px 1px at 6% 44%,var(--cream),transparent),
+  radial-gradient(1px 1px at 94% 58%,var(--cream),transparent),radial-gradient(1.5px 1.5px at 20% 70%,var(--gold),transparent),
+  radial-gradient(ellipse at 50% -10%,rgba(27,44,107,.75),transparent 60%)}
+body[data-stage="3"]::before{opacity:.35}
+main,#start{position:relative;z-index:1}
+#start{max-width:440px;margin:0 auto;padding-block:max(28px,env(safe-area-inset-top,0px)) 40px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px}
+.cover{width:min(78vw,320px);aspect-ratio:1;max-width:100%;border-radius:22%;border:3px solid var(--gold);object-fit:cover;
+  box-shadow:0 0 0 6px rgba(242,193,78,.08),0 18px 60px rgba(255,138,61,.28);animation:breathe 6s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(1.02);box-shadow:0 0 0 6px rgba(242,193,78,.12),0 18px 70px rgba(255,138,61,.4)}}
+#start h1{font-family:var(--display);font-weight:400;font-size:2.8rem;line-height:1;margin:6px 0 0;color:var(--gold)}
+#start .lead{margin:0;font-size:1.1rem}
+#start .small{margin:0;color:var(--muted);font-size:.85rem}
+.big{font-size:1.05rem;padding:13px 26px}
+main{max-width:440px;margin:0 auto;padding-block:max(20px,env(safe-area-inset-top,0px)) 40px;display:flex;flex-direction:column;gap:22px}
+.tag{align-self:flex-start;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);border-radius:99px;padding:3px 10px}
+header h1{font-family:var(--display);font-weight:400;font-size:2.2rem;color:var(--gold);line-height:1.1;margin:0;text-wrap:balance}
+header p{margin:6px 0 0;color:var(--muted)}
+.nest{position:relative;display:grid;place-items:center;height:230px}
+.glow{position:absolute;width:190px;height:190px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,138,61,.55),rgba(217,119,87,.18) 45%,transparent 70%);
+  transition:transform 1s ease,opacity 1.6s ease}
+#fia{position:relative;width:190px;height:190px;border-radius:22%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 0 6px rgba(242,193,78,.08),0 14px 50px rgba(255,138,61,.3);transition:opacity 1.6s ease, transform 1.6s ease}
+.say{font-family:var(--display);font-style:italic;font-size:1.25rem;text-align:center;margin:0;min-height:2.6em;text-wrap:balance}
+ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;padding:16px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(160deg,rgba(27,44,107,.55),rgba(14,24,56,.75));box-shadow:0 8px 24px rgba(0,0,0,.25);transition:opacity .8s,border-color .8s}
+li.done{opacity:.45}
+li.active{border-color:var(--gold);box-shadow:0 0 0 1px rgba(242,193,78,.35),0 10px 30px rgba(255,138,61,.18)}
+.dot{width:22px;height:22px;border-radius:50%;margin-top:2px;background:radial-gradient(circle,var(--gold),var(--ember) 60%,transparent 72%);box-shadow:0 0 14px var(--ember);transition:all 1s}
+li.done .dot{background:#26304f;box-shadow:none}
+li h2{font-size:1.05rem;font-weight:600;margin:0}
+li p{margin:2px 0 10px;color:var(--muted);font-size:.93rem}
+li .text{min-width:0}
+button{font:inherit;font-weight:600;color:var(--night);background:linear-gradient(180deg,#F7D27A,var(--gold));border:0;border-radius:99px;padding:10px 20px;cursor:pointer;box-shadow:0 4px 18px rgba(242,193,78,.3)}
+button.ghost{background:transparent;color:var(--gold);border:1px solid var(--line);box-shadow:none}
+button:focus-visible{outline:2px solid var(--cream);outline-offset:3px}
+button[disabled]{opacity:.4;cursor:default}
+.count{font-variant-numeric:tabular-nums;color:var(--gold);font-size:.9rem;margin-left:8px}
+.end{text-align:center;color:var(--muted);font-size:.85rem}
+.say{color:var(--cream)}
+.back{align-self:flex-start;padding:6px 14px;font-size:.85rem}
+.note{font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+
+/* Farbe + Bewegung: Koralle/Gold-Schleier, Funken, Sterne funkeln, Fia schwebt */
+.aurora{position:fixed;inset:-20%;z-index:0;pointer-events:none;filter:blur(60px);opacity:.55;transition:opacity 1.6s}
+.aurora i{position:absolute;border-radius:50%;animation:drift 18s ease-in-out infinite alternate}
+.aurora i:nth-child(1){width:55vmax;height:55vmax;left:-10%;top:45%;background:radial-gradient(circle,rgba(217,119,87,.55),transparent 65%)}
+.aurora i:nth-child(2){width:45vmax;height:45vmax;right:-15%;top:5%;background:radial-gradient(circle,rgba(242,193,78,.35),transparent 65%);animation-duration:24s}
+.aurora i:nth-child(3){width:50vmax;height:50vmax;left:25%;top:-20%;background:radial-gradient(circle,rgba(110,90,220,.35),transparent 65%);animation-duration:30s}
+@keyframes drift{to{transform:translate(8%,-6%) scale(1.12)}}
+body[data-stage="2"] .aurora{opacity:.35} body[data-stage="3"] .aurora{opacity:.15}
+#sparks{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+body::before{animation:twinkle 5s ease-in-out infinite alternate}
+@keyframes twinkle{to{opacity:.55}}
+#fia{animation:float 6s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px) rotate(-1.5deg)}}
+#start h1,header h1{background:linear-gradient(90deg,var(--ember),var(--gold) 45%,#FFE6A6);-webkit-background-clip:text;background-clip:text;color:transparent}
+#start>*,main>*{animation:rise .8s ease both}
+#start>*:nth-child(2),main>*:nth-child(2){animation-delay:.08s}
+#start>*:nth-child(3),main>*:nth-child(3){animation-delay:.16s}
+#start>*:nth-child(4),main>*:nth-child(4){animation-delay:.24s}
+#start>*:nth-child(5),main>*:nth-child(5){animation-delay:.32s}
+#start>*:nth-child(n+6),main>*:nth-child(n+6){animation-delay:.4s}
+@keyframes rise{from{opacity:.001;transform:translateY(12px)}}
+li.active .dot{animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 22px 4px var(--ember)}}
+button{transition:transform .15s,box-shadow .3s} button:active{transform:scale(.96)}
+.tag{background:rgba(217,119,87,.18)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<canvas id="sparks" aria-hidden="true"></canvas>
+<section id="start">
+  <span class="tag">Entwurf</span>
+  <img class="cover" src="icon-512.png" alt="Fia schläft im Nest unter Sternen">
+  <h1>Fias Nest</h1>
+  <p class="lead">Ruhig schlafen, mit Fia.</p>
+  <button class="big" id="go">Abendritual beginnen</button>
+  <p class="small">Morgen, Mittagsnest und Glutmodus folgen.</p>
+</section>
+<main hidden>
+  <button class="ghost back" id="back">‹ Fias Nest</button>
+  <header>
+    <h1>Ausglühen mit Fia</h1>
+    <p>Drei kleine Schritte. Du musst heute nichts mehr lösen.</p>
+  </header>
+
+  <div class="nest" aria-hidden="true">
+    <div class="glow" id="glow"></div>
+    <img id="fia" src="icon-512.png" alt="">
+  </div>
+
+  <p class="say" id="say">Schön, dass du da bist. Wir glühen jetzt langsam aus.</p>
+
+  <ol>
+    <li id="s1" class="active">
+      <span class="dot"></span>
+      <div class="text">
+        <h2>Licht runter</h2>
+        <p>Deckenlicht aus, eine kleine warme Lampe an.</p>
+        <button id="b1">Erledigt</button>
+      </div>
+    </li>
+    <li id="s2">
+      <span class="dot"></span>
+      <div class="text">
+        <h2>5 Seufzer mit Fia</h2>
+        <p>Zweimal durch die Nase einatmen, lang durch den Mund aus.</p>
+        <button id="b2" disabled>Atmen starten</button><span class="count" id="count"></span>
+      </div>
+    </li>
+    <li id="s3">
+      <span class="dot"></span>
+      <div class="text">
+        <h2>Handy weg</h2>
+        <p>Leg es ausserhalb vom Bett hin. Fia hält die Nacht für dich.</p>
+        <button id="b3" disabled>Gute Nacht</button>
+      </div>
+    </li>
+  </ol>
+
+  <p class="end" id="end" hidden>Fia schläft. Morgen stehst du auf wie ein Phönix.</p>
+  <button class="ghost" id="reset" hidden>Nochmals von vorn</button>
+
+  <p class="note">Entwurf Projekt 4, nur zum Anschauen. Kein medizinisches Angebot. Wenn du seit Wochen schlecht schläfst, sprich mit deiner Hausärztin oder deinem Hausarzt.</p>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const say=t=>{$('say').textContent=t};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function stage(n){document.body.dataset.stage=n;$('glow').style.opacity=[1,.8,.55,.25][n];}
+function finish(i){$('s'+i).classList.replace('active','done');const nx=$('s'+(i+1));if(nx){nx.classList.add('active');$('b'+(i+1)).disabled=false;}stage(i);}
+$('b1').onclick=()=>{finish(1);say('Gut so. Das warme Licht sagt deinem Körper: Es wird Abend.');};
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+$('b2').onclick=async()=>{
+  $('b2').disabled=true;const g=$('glow');
+  for(let i=1;i<=5;i++){
+    $('count').textContent=i+' / 5';
+    say('Einatmen …');g.style.transform='scale(1.25)';await wait(reduce?400:2000);
+    say('… und noch ein bisschen');g.style.transform='scale(1.4)';await wait(reduce?300:1000);
+    say('Lang ausatmen');g.style.transform='scale(.85)';await wait(reduce?600:6000);
+  }
+  g.style.transform='';$('count').textContent='';finish(2);say('Spürst du, wie es ruhiger wird?');
+};
+$('b3').onclick=()=>{finish(3);$('s3').classList.remove('active');
+  $('fia').style.animation='none';$('fia').style.opacity='.55';$('fia').style.transform='translateY(6px)';say('Schlaf gut.');$('end').hidden=false;$('reset').hidden=false;};
+$('reset').onclick=()=>location.reload();
+$('back').onclick=()=>location.reload();
+$('go').onclick=()=>{$('start').hidden=true;document.querySelector('main').hidden=false;scrollTo(0,0);};
+stage(0);
+(function(){const c=$('sparks'),x=c.getContext('2d');if(reduce)return;let w,h,P=[];
+function size(){w=c.width=innerWidth*devicePixelRatio;h=c.height=innerHeight*devicePixelRatio}size();addEventListener('resize',size);
+function spawn(){return{x:Math.random()*w,y:h+10,r:(1+Math.random()*2.2)*devicePixelRatio,v:(.25+Math.random()*.6)*devicePixelRatio,s:Math.random()*6.28,a:.5+Math.random()*.5,hue:Math.random()<.5?'255,138,61':'242,193,78'}}
+for(let i=0;i<26;i++){const p=spawn();p.y=Math.random()*h;P.push(p)}
+(function tick(){x.clearRect(0,0,w,h);const k=[1,.8,.5,.25][+document.body.dataset.stage||0];
+for(const p of P){p.y-=p.v;p.s+=.02;p.x+=Math.sin(p.s)*.4*devicePixelRatio;if(p.y<-10)Object.assign(p,spawn());
+const g=x.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);g.addColorStop(0,`rgba(${p.hue},${p.a*k})`);g.addColorStop(1,`rgba(${p.hue},0)`);x.fillStyle=g;x.beginPath();x.arc(p.x,p.y,p.r*4,0,6.29);x.fill()}
+requestAnimationFrame(tick)})()})();
+
+</script>
+
+<script src="../nova/seelen.js" defer></script>
+<script src="../nova/nova.js" data-nova-bild="icon-192.png" data-nova-app="Fias Nest" defer></script>
+</body>
+</html>

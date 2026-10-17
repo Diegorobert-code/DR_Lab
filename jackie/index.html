@@ -969,16 +969,19 @@ function germanVoice(){
   return vs.find(v=>/de[-_]CH/i.test(v.lang)) || vs.find(v=>/^de/i.test(v.lang)) || null;
 }
 function say(text, opts){
+  // Mit Server: Jackies eigene Stimme (nova/nova.js). Sonst die Gerätestimme.
+  if(window.NovaStimme && NovaStimme.aktiv()){ NovaStimme.sprich(text,{onEnd:opts&&opts.onend}); return true; }
   if(!('speechSynthesis' in window)) return false;
   const u=new SpeechSynthesisUtterance(text); u.lang='de-CH'; const v=germanVoice(); if(v){u.voice=v;u.lang=v.lang;}
   u.rate=(opts&&opts.rate)||0.95; if(opts&&opts.onend) u.onend=opts.onend;
   speechSynthesis.speak(u); return true;
 }
 function setSpeakLabel(t){ const s=$('btnSpeak').querySelector('span'); if(s) s.textContent=t; }
-function stopSpeak(){ try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){} setSpeakLabel('Vorlesen'); }
+function stopSpeak(){ if(window.NovaStimme) NovaStimme.stopp(); try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){} setSpeakLabel('Vorlesen'); }
 $('btnSpeak').addEventListener('click', ()=>{
-  if(!('speechSynthesis' in window)){ toast('Vorlesen geht auf diesem Gerät leider nicht.'); return; }
-  if(speechSynthesis.speaking){ stopSpeak(); return; }
+  const nova = window.NovaStimme && NovaStimme.aktiv();
+  if(!nova && !('speechSynthesis' in window)){ toast('Vorlesen geht auf diesem Gerät leider nicht.'); return; }
+  if((window.NovaStimme && NovaStimme.spricht()) || ('speechSynthesis' in window && speechSynthesis.speaking)){ stopSpeak(); return; }
   setSpeakLabel('Stopp');
   say(speakText,{onend:()=>setSpeakLabel('Vorlesen')});
 });
