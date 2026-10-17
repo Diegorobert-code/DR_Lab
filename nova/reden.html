@@ -58,6 +58,7 @@
   .hinweis { color:var(--leise); font-size:13px; margin-top:8px; text-align:center; min-height:18px; }
   .vergessen { margin-top:6px; background:none; border:0; color:var(--leise); font:13px system-ui, sans-serif; text-decoration:underline; cursor:pointer; opacity:.8; }
   @media (prefers-reduced-motion: reduce) { .atmen { animation:none; } }
+.lernen{display:block;margin:10px auto 0;max-width:340px;font-size:13px;line-height:1.35;color:#d9d2c3;text-align:center}.lernen input{width:18px;height:18px;vertical-align:-3px;accent-color:#f2c14e}.lernen small{display:block;color:#a9a294}
 </style>
 </head>
 <body>
@@ -76,6 +77,7 @@
 
 <button class="knopf" id="knopf" type="button" aria-label="Gespräch starten">🎙</button>
 <div class="hinweis" id="hinweis"></div>
+<label class="lernen" id="lernenBox"><input type="checkbox" id="lernen"> Nova darf aus diesem Gespräch lernen <small>(nur Diego und Team, auf unserem Server in der Schweiz)</small></label>
 <button class="vergessen" id="vergessen" type="button" hidden><span id="vname">Otti</span> vergisst alles</button>
 
 <script src="elevenlabs-client-1.26.0.js"></script>
@@ -158,8 +160,23 @@
     var t = jetztGesagt.join('\n'); if (t.length > 900) t = t.slice(-900);
     var g = gedaechtnis(); g.push({ d: new Date().toLocaleDateString('de-CH'), t: t });
     try { localStorage.setItem(GED, JSON.stringify(g.slice(-4))); } catch (e) {}
+    if (lernenAn()) zuNova(t);
     jetztGesagt = []; vergessenZeigen();
   }
+  // Nova lernt: mit Einwilligung geht jedes Gespräch als Erfahrung in die Sense Engine.
+  // Adresse und Passwort sind die aus «Handy verbinden»; ohne Verbindung bleibt alles nur auf dem Handy.
+  function hol(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+  function lernenAn() { try { return localStorage.getItem('nova_lernen') === '1'; } catch (e) { return false; } }
+  function zuNova(text) {
+    var a = String(hol('drlab-hermes-adresse') || '').trim().replace(/\/+$/, ''), k = hol('drlab-hermes-passwort');
+    if (!a || !k) return;
+    fetch(a + '/erfahrung', { method: 'POST', keepalive: true,
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + k },
+      body: JSON.stringify({ app: 'Live ' + NAME, art: 'gespraech', frage: text, antwort: '' }) }).catch(function () {});
+  }
+  var lernen = $('lernen');
+  lernen.checked = lernenAn();
+  lernen.addEventListener('change', function () { try { localStorage.setItem('nova_lernen', lernen.checked ? '1' : '0'); } catch (e) {} });
   function erinnerung() {
     var g = gedaechtnis();
     return g.length ? g.map(function (x) { return 'Am ' + x.d + ':\n' + x.t; }).join('\n\n') : 'Noch nichts. Ihr redet zum ersten Mal.';
