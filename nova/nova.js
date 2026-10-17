@@ -44,6 +44,22 @@
     put(K.addr, decodeURIComponent(fromLink));
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
   }
+  // Verbindungscode von der Seite «Handy verbinden» (verbinden/): «NOVA:» + base64(Adresse \n Passwort).
+  // Apps auf dem iPhone-Home-Bildschirm haben einen eigenen Speicher, darum dieser Weg ohne Tippen.
+  function codeNehmen(t) {
+    var m = String(t || '').match(/NOVA:([A-Za-z0-9+\/=_-]+)/);
+    if (!m) return false;
+    try {
+      var teile = decodeURIComponent(escape(atob(m[1].replace(/-/g, '+').replace(/_/g, '/')))).split('\n');
+      if (!/^https:\/\//.test(teile[0]) || !teile[1]) return false;
+      put(K.addr, teile[0].replace(/\/+$/, '')); put(K.key, teile[1].trim());
+      return true;
+    } catch (e) { return false; }
+  }
+  var fromCode = (location.hash.match(/nova=([^&]+)/) || [])[1];
+  if (fromCode && codeNehmen('NOVA:' + decodeURIComponent(fromCode))) {
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  }
   function addr() { return String(get(K.addr, '') || '').trim().replace(/\/+$/, ''); }
   function ready() { return /^https:\/\//.test(addr()) && !!get(K.key, ''); }
 
@@ -233,6 +249,7 @@
     '.nova-set{padding:10px 14px;border-top:1px solid #d6def5;background:#eef2ff;display:grid;gap:6px;font-size:13px}' +
     '.nova-set input{font:inherit;padding:8px 10px;border:1px solid #c5d0ee;border-radius:9px;background:#fff;color:#14213d}' +
     '.nova-set summary{cursor:pointer;color:#4a5679}' +
+    '.nova-code button{font:inherit;font-size:13px;border:1px solid #c5d0ee;border-radius:9px;padding:6px 10px;background:transparent;color:inherit;cursor:pointer}' +
     '@media (prefers-color-scheme:dark){.nova-panel{background:#101a33;color:#e8edff}.nova-msg.du{background:#24386e}.nova-msg.nova{background:#16244a;border-color:#2b3d70}.nova-row,.nova-opt{background:#16244a;border-color:#2b3d70;color:#aab6da}.nova-row input,.nova-set input{background:#0c1530;color:#e8edff;border-color:#2b3d70}.nova-set{background:#13203f;border-color:#2b3d70}.nova-row button.mic{background:#24386e;color:#cfe0ff}}' +
     '@media (prefers-reduced-motion:no-preference){.nova-btn[data-wach="1"]{animation:novaGlow 2.6s ease-in-out infinite}}' +
     '@keyframes novaGlow{50%{box-shadow:0 0 0 6px rgba(127,178,255,.45),0 6px 18px rgba(20,40,110,.35)}}';
@@ -258,6 +275,7 @@
       '<form class="nova-row"><input class="nova-in" type="text" id="nova-in" autocomplete="off">' +
       '<button type="button" class="mic" aria-label="Sprechen">🎙</button><button type="submit">Senden</button></form>' +
       '<label class="nova-opt"><input type="checkbox" id="nova-wunsch"> Als Bauwunsch an Claude</label>' +
+      '<div class="nova-opt nova-code"><button type="button" class="nova-einsetzen">Verbindung einsetzen</button></div>' +
       '<details class="nova-set"><summary>Verbindung zu Sense Engine</summary>' +
       '<input id="nova-addr" type="url" placeholder="https://sense-…sslip.io">' +
       '<input id="nova-key" type="password" placeholder="Passwort" autocomplete="off">' +
@@ -288,6 +306,7 @@
       $('#nova-addr').value = addr();
       $('#nova-key').value = get(K.key, '') ? '••••••••' : '';
       if (!w) $('.nova-set').open = true;
+      $('.nova-code').hidden = w;
       tonZeigen();
     }
     function say(who, text) {
@@ -305,6 +324,17 @@
       } else {
         aufhoeren();
       }
+    });
+
+    // Code von «Handy verbinden» einsetzen (Zwischenablage, sonst Eingabefeld).
+    $('.nova-einsetzen').addEventListener('click', function () {
+      function fertig(t) {
+        if (codeNehmen(t)) { stimme.pauseBis = 0; state(); say('nova', 'Danke, jetzt bin ich wach.'); }
+        else if (t !== null) say('nova', 'Das war kein Verbindungscode. Auf der Seite «Handy verbinden» den Code kopieren.');
+      }
+      var cb = navigator.clipboard && navigator.clipboard.readText;
+      if (cb) navigator.clipboard.readText().then(fertig, function () { fertig(window.prompt('Verbindungscode einsetzen:')); });
+      else fertig(window.prompt('Verbindungscode einsetzen:'));
     });
 
     $('.nova-save').addEventListener('click', function () {
