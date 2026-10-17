@@ -518,7 +518,7 @@
         return libLaden();
       }, function () { throw new Error('mic'); }).then(function () {
         return window.ElevenLabsClient.Conversation.startSession({
-          agentId: AGENT, connectionType: 'webrtc',
+          agentId: AGENT, connectionType: 'websocket',
           onConnect: function () { liveText.textContent = NAME + ' hört zu.'; },
           onDisconnect: function () { if (live || liveStartet) liveEnde('Bis bald!'); },
           onError: function (m) { liveText.textContent = 'Fehler: ' + (m || 'unbekannt'); },
