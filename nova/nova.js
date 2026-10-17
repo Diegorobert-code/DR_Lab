@@ -44,12 +44,13 @@
     'otti': 'agent_4801m55hqwdpeq0ry4awvx45rz5t',
     'jackie': 'agent_7501m55rzxb0fdv9j4n97jtnbk08',
     'kiki': 'agent_0401m55r02rvf96a1xrxv1njqbh3',
-    'mr. ping': 'agent_5601m55s9kdcebzrh23262ytezm2'
+    'mr. ping': 'agent_5601m55s9kdcebzrh23262ytezm2',
+    'nova': 'agent_4201m55seyhdexd96tkaxt72hmaq'
     // 'sparky': 'agent_7401m55j20jwek69gsh3gkfhaa77'  (wartet auf «Sparky live Go»)
   };
   var AGENT = AGENTEN[FIGUR] || '';
   // Figuren mit Gesicht, das mitspricht: Live-Gespräch auf der grossen Bühne (nova/reden.html).
-  var BUEHNE = { 'otti': 1, 'jackie': 1, 'kiki': 1, 'mr. ping': 1 }[FIGUR] && me && me.src ? new URL('reden.html?f=' + encodeURIComponent(FIGUR), me.src).href : '';
+  var BUEHNE = { 'otti': 1, 'jackie': 1, 'kiki': 1, 'mr. ping': 1, 'nova': 1 }[FIGUR] && me && me.src ? new URL('reden.html?f=' + encodeURIComponent(FIGUR), me.src).href : '';
   var LIVE_LIB = me && me.src ? new URL('elevenlabs-client-1.26.0.js', me.src).href : '../nova/elevenlabs-client-1.26.0.js';
 
   function get(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }
