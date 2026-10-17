@@ -267,6 +267,8 @@
     '.nova-live button{font:inherit;font-weight:600;border:0;border-radius:999px;padding:10px 16px;background:#f5c542;color:#2a1d00;cursor:pointer;white-space:nowrap}' +
     '.nova-live button.an{background:#d6304a;color:#fff}.nova-live span{font-size:13px}' +
     '.nova-btn.live-hoert{box-shadow:0 0 0 4px #7fd4ff,0 6px 18px rgba(20,40,110,.35)}.nova-btn.live-spricht{box-shadow:0 0 0 4px #f5c542,0 6px 18px rgba(20,40,110,.35)}' +
+    '.nova-pille{position:fixed;right:84px;bottom:calc(' + (UNTEN + 10) + 'px + env(safe-area-inset-bottom,0px));z-index:2147483000;border:0;border-radius:999px;padding:12px 18px;font:600 16px system-ui,-apple-system,sans-serif;background:#f5c542;color:#2a1d00;box-shadow:0 6px 18px rgba(0,0,0,.35);cursor:pointer;white-space:nowrap}' +
+    '.nova-pille.an{background:#d6304a;color:#fff}' +
     '@media (prefers-color-scheme:dark){.nova-live{background:#2b2410;border-color:#5a4a14;color:#f4e6b0}}' +
     '@keyframes novaGlow{50%{box-shadow:0 0 0 6px rgba(127,178,255,.45),0 6px 18px rgba(20,40,110,.35)}}';
 
@@ -471,6 +473,17 @@
     var live = null, liveStartet = false, livePuls = 0;
     var liveBar = $('.nova-live'), liveKnopf = $('.nova-live-knopf'), liveText = $('.nova-live-text');
     if (AGENT) liveBar.hidden = false;
+    // Gut sichtbar neben dem Figuren-Knopf: ein Tipp startet das Live-Gespräch direkt.
+    var pille = null;
+    if (AGENT) {
+      pille = el('button', { 'class': 'nova-pille', type: 'button' }, '');
+      pille.textContent = '📞 Mit ' + NAME + ' reden';
+      document.body.appendChild(pille);
+      pille.addEventListener('click', function () {
+        if (panel.hidden) btn.click();
+        liveKnopf.click();
+      });
+    }
     function libLaden() {
       if (window.ElevenLabsClient) return Promise.resolve();
       return new Promise(function (ok, nein) {
@@ -482,6 +495,7 @@
       var an = !!live || liveStartet;
       liveKnopf.classList.toggle('an', an);
       liveKnopf.textContent = an ? '■ Auflegen' : '📞 Live reden';
+      if (pille) { pille.classList.toggle('an', an); pille.textContent = an ? '■ Auflegen' : '📞 Mit ' + NAME + ' reden'; }
     }
     function liveTakt() {
       if (!live) { btn.style.transform = ''; return; }
