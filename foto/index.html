@@ -316,6 +316,7 @@ $("micBtn").addEventListener("click",function(){
 if(!SR)$("micHint").textContent="Tipp: Auf diesem Gerät ins Textfeld tippen und das Tastatur-Mikrofon nutzen.";
 
 function speak(t){
+  if(window.NovaStimme&&NovaStimme.aktiv()){NovaStimme.sprich(t);return}
   if(!("speechSynthesis" in window)){toast("Vorlesen ist hier nicht verfügbar.");return}
   speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="de-CH";
   var v=speechSynthesis.getVoices().filter(function(x){return /^de/i.test(x.lang)});
