@@ -18,8 +18,9 @@
     radial-gradient(2px 2px at 12% 18%, #fff8 50%, transparent 51%), radial-gradient(1.5px 1.5px at 78% 12%, #fff9 50%, transparent 51%),
     radial-gradient(2px 2px at 64% 30%, #fff6 50%, transparent 51%), radial-gradient(1.5px 1.5px at 30% 8%, #fff7 50%, transparent 51%),
     radial-gradient(2px 2px at 90% 40%, #fff5 50%, transparent 51%), radial-gradient(1.5px 1.5px at 6% 44%, #fff6 50%, transparent 51%); }
-  .wahl { display:flex; gap:10px; margin:6px 0 2px; }
-  .wahl a { width:42px; height:42px; border-radius:50%; overflow:hidden; box-shadow:0 0 0 2px #ffffff22; opacity:.7; transition:transform .15s, opacity .15s; }
+  .wahl { display:flex; gap:10px; margin:6px 0 2px; max-width:100%; overflow-x:auto; padding:4px 6px; scrollbar-width:none; }
+  .wahl::-webkit-scrollbar { display:none; }
+  .wahl a { flex:none; width:42px; height:42px; border-radius:50%; overflow:hidden; box-shadow:0 0 0 2px #ffffff22; opacity:.7; transition:transform .15s, opacity .15s; }
   .wahl a img { width:100%; height:100%; object-fit:cover; display:block; }
   .wahl a.an { box-shadow:0 0 0 3px var(--gold), 0 0 16px #f5c54288; opacity:1; transform:scale(1.08); }
   .zurueck { position:fixed; left:12px; top:calc(env(safe-area-inset-top) + 8px); width:44px; height:44px; display:grid; place-items:center;
@@ -93,10 +94,21 @@
       mund: { linie: [[318, 388], [335, 402], [360, 410], [400, 412], [430, 408], [448, 400]], lippe: 426, kinn: 500, max: 22 } },
     nova: { name: 'Nova', agent: 'agent_4201m55seyhdexd96tkaxt72hmaq', bild: 'nova-3d.jpg', gedaechtnis: true, welt: true,
       mund: { linie: [[520, 684], [545, 694], [580, 700], [620, 700], [660, 690], [690, 668], [705, 636]], lippe: 738, kinn: 792, max: 22 } },
+    sparky: { name: 'Sparky', agent: 'agent_7401m55j20jwek69gsh3gkfhaa77', bild: 'figuren/sparky.jpg',
+      mund: { linie: [[440, 790], [470, 808], [500, 820], [560, 832], [600, 824], [640, 804], [690, 780]], lippe: 852, kinn: 905, max: 18, innen: [90, 28, 34] } },
+    'coin maker': { name: 'Coin Maker', agent: 'agent_2001m55ss61fe5wb1qct4b8bqkz3', bild: 'figuren/coinmaker.jpg',
+      mund: { linie: [[464, 446], [484, 480], [520, 488], [560, 498], [590, 506], [614, 512]], lippe: 526, kinn: 600, max: 20 } },
+    flo: { name: 'Flo', agent: 'agent_0001m55ss8s7eb0vnzr6f1vz1tf0', bild: 'figuren/flo.jpg',
+      mund: { linie: [[404, 564], [432, 604], [460, 623], [500, 630], [540, 626], [570, 619], [598, 609]], lippe: 656, kinn: 702, max: 22 } },
+    fompa: { name: 'Fompa', agent: 'agent_5401m55ssbdheqwtyw4131dqya8w', bild: 'figuren/fompa.jpg',
+      mund: { linie: [[420, 398], [448, 438], [480, 444], [520, 452], [550, 456], [586, 448]], lippe: 480, kinn: 530, max: 20 } },
+    sunny: { name: 'Sunny', agent: 'agent_4201m55ssdr3fksaey0x2yh1vpmh', bild: 'figuren/sunny.jpg',
+      mund: { linie: [[416, 488], [440, 523], [480, 532], [520, 546], [560, 559], [592, 562], [646, 540]], lippe: 586, kinn: 640, max: 22 } },
     kiki: { name: 'Kiki', agent: 'agent_0401m55r02rvf96a1xrxv1njqbh3', bild: '../kiki/kiki-3d.jpg', ruhe: -0.4,
       mund: { linie: [[372, 652], [400, 700], [440, 708], [480, 718], [520, 722], [560, 722], [600, 722], [614, 724]], lippe: 795, kinn: 865, max: 22 } }
   };
-  var BILDCHEN = { nova: 'nova-3d.jpg', otti: '../otti/icon-180.png', kiki: '../kiki/icon-180.png', jackie: '../jackie/icon-180.png', 'mr. ping': '../tradeping/icon-180.png' };
+  var BILDCHEN = { nova: 'nova-3d.jpg', otti: '../otti/icon-180.png', kiki: '../kiki/icon-180.png', jackie: '../jackie/icon-180.png', 'mr. ping': '../tradeping/icon-180.png',
+    sparky: 'figuren/sparky-klein.jpg', 'coin maker': 'figuren/coinmaker-klein.jpg', flo: 'figuren/flo-klein.jpg', fompa: 'figuren/fompa-klein.jpg', sunny: 'figuren/sunny-klein.jpg' };
   var KEY = (new URLSearchParams(location.search).get('f') || 'otti').toLowerCase();
   var F = FIGUREN[KEY] || FIGUREN.otti, NAME = F.name, AGENT = F.agent, RUHE = F.ruhe || 0;
   document.title = NAME;
@@ -107,7 +119,7 @@
   // Alle Figuren in einer App: so teilen sie dasselbe Gedächtnis, und Nova sieht alles.
   Object.keys(BILDCHEN).forEach(function (k) {
     var a = document.createElement('a'); a.href = '?f=' + encodeURIComponent(k); a.setAttribute('aria-label', 'Mit ' + FIGUREN[k].name + ' reden');
-    if (k === KEY) a.className = 'an';
+    if (k === KEY) { a.className = 'an'; setTimeout(function () { a.scrollIntoView({ inline: 'center', block: 'nearest' }); }, 50); }
     var im = document.createElement('img'); im.src = BILDCHEN[k]; im.alt = ''; a.appendChild(im);
     a.addEventListener('click', function (e) { e.preventDefault(); if (conv) { var c = conv; ende(); c.endSession().catch(function () {}); } location.replace(a.href); });
     $('wahl').appendChild(a);
@@ -175,7 +187,7 @@
   // Nova verbindet: sie bekommt, was die anderen Figuren auf diesem Handy erlebt haben.
   function welt() {
     var teile = [];
-    ['otti', 'kiki', 'jackie', 'mr. ping'].forEach(function (k) {
+    ['otti', 'kiki', 'jackie', 'mr. ping', 'sparky', 'coin maker', 'flo', 'fompa', 'sunny'].forEach(function (k) {
       var g = []; try { g = JSON.parse(localStorage.getItem(k === 'otti' ? 'otti_gedaechtnis' : 'gedaechtnis_' + k)) || []; } catch (e) {}
       g.slice(-2).forEach(function (x) { teile.push(FIGUREN[k].name + ' am ' + x.d + ':\n' + String(x.t).slice(-450)); });
     });
