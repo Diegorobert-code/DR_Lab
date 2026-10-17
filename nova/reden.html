@@ -18,6 +18,10 @@
     radial-gradient(2px 2px at 12% 18%, #fff8 50%, transparent 51%), radial-gradient(1.5px 1.5px at 78% 12%, #fff9 50%, transparent 51%),
     radial-gradient(2px 2px at 64% 30%, #fff6 50%, transparent 51%), radial-gradient(1.5px 1.5px at 30% 8%, #fff7 50%, transparent 51%),
     radial-gradient(2px 2px at 90% 40%, #fff5 50%, transparent 51%), radial-gradient(1.5px 1.5px at 6% 44%, #fff6 50%, transparent 51%); }
+  .wahl { display:flex; gap:10px; margin:6px 0 2px; }
+  .wahl a { width:42px; height:42px; border-radius:50%; overflow:hidden; box-shadow:0 0 0 2px #ffffff22; opacity:.7; transition:transform .15s, opacity .15s; }
+  .wahl a img { width:100%; height:100%; object-fit:cover; display:block; }
+  .wahl a.an { box-shadow:0 0 0 3px var(--gold), 0 0 16px #f5c54288; opacity:1; transform:scale(1.08); }
   .zurueck { position:fixed; left:12px; top:calc(env(safe-area-inset-top) + 8px); width:44px; height:44px; display:grid; place-items:center;
     color:var(--gold); font-size:34px; text-decoration:none; z-index:2; }
   h1 { margin:4px 0 0; font-size:22px; letter-spacing:.5px; color:var(--gold); }
@@ -59,6 +63,7 @@
 <div class="sterne"></div>
 <a class="zurueck" id="zurueck" href="#" aria-label="Zurück">‹</a>
 <h1 id="name">Otti</h1>
+<nav class="wahl" id="wahl" aria-label="Mit wem reden?"></nav>
 <div class="status" id="status">Tipp auf den Knopf und rede mit mir.</div>
 
 <div class="buehne atmen" id="buehne" role="img" aria-label="Figur">
@@ -86,9 +91,12 @@
       mund: { linie: [[420, 662], [440, 702], [470, 720], [510, 736], [550, 746], [590, 746], [624, 731]], lippe: 774, kinn: 835, max: 26 } },
     'mr. ping': { name: 'Mr. Ping', agent: 'agent_5601m55s9kdcebzrh23262ytezm2', bild: '../tradeping/ping-3d.jpg', positionen: true,
       mund: { linie: [[318, 388], [335, 402], [360, 410], [400, 412], [430, 408], [448, 400]], lippe: 426, kinn: 500, max: 22 } },
+    nova: { name: 'Nova', agent: 'agent_4201m55seyhdexd96tkaxt72hmaq', bild: 'nova-3d.jpg', gedaechtnis: true, welt: true,
+      mund: { linie: [[520, 684], [545, 694], [580, 700], [620, 700], [660, 690], [690, 668], [705, 636]], lippe: 738, kinn: 792, max: 22 } },
     kiki: { name: 'Kiki', agent: 'agent_0401m55r02rvf96a1xrxv1njqbh3', bild: '../kiki/kiki-3d.jpg', ruhe: -0.4,
       mund: { linie: [[372, 652], [400, 700], [440, 708], [480, 718], [520, 722], [560, 722], [600, 722], [614, 724]], lippe: 795, kinn: 865, max: 22 } }
   };
+  var BILDCHEN = { nova: 'nova-3d.jpg', otti: '../otti/icon-180.png', kiki: '../kiki/icon-180.png', jackie: '../jackie/icon-180.png', 'mr. ping': '../tradeping/icon-180.png' };
   var KEY = (new URLSearchParams(location.search).get('f') || 'otti').toLowerCase();
   var F = FIGUREN[KEY] || FIGUREN.otti, NAME = F.name, AGENT = F.agent, RUHE = F.ruhe || 0;
   document.title = NAME;
@@ -96,6 +104,14 @@
   var buehne = $('buehne'), figur = $('figur');
   var knopf = $('knopf'), status = $('status'), text = $('text'), hinweis = $('hinweis');
   var conv = null, startet = false, mund = null, offen = RUHE, spitze = 0.15;
+  // Alle Figuren in einer App: so teilen sie dasselbe Gedächtnis, und Nova sieht alles.
+  Object.keys(BILDCHEN).forEach(function (k) {
+    var a = document.createElement('a'); a.href = '?f=' + encodeURIComponent(k); a.setAttribute('aria-label', 'Mit ' + FIGUREN[k].name + ' reden');
+    if (k === KEY) a.className = 'an';
+    var im = document.createElement('img'); im.src = BILDCHEN[k]; im.alt = ''; a.appendChild(im);
+    a.addEventListener('click', function (e) { e.preventDefault(); if (conv) { var c = conv; ende(); c.endSession().catch(function () {}); } location.replace(a.href); });
+    $('wahl').appendChild(a);
+  });
   $('name').textContent = NAME; $('vname').textContent = NAME;
   $('zurueck').addEventListener('click', function (e) { e.preventDefault(); if (history.length > 1) history.back(); else location.href = '../apps/'; });
 
@@ -123,7 +139,7 @@
   }
 
   // Gedächtnis: worüber ihr geredet habt, nur auf diesem Handy gespeichert.
-  var GED = 'gedaechtnis_' + KEY, jetztGesagt = [];
+  var GED = KEY === 'otti' ? 'otti_gedaechtnis' : 'gedaechtnis_' + KEY, jetztGesagt = [];
   function gedaechtnis() { try { return JSON.parse(localStorage.getItem(GED)) || []; } catch (e) { return []; } }
   function merken() {
     if (jetztGesagt.length < 2) { jetztGesagt = []; return; }
@@ -137,7 +153,7 @@
     return g.length ? g.map(function (x) { return 'Am ' + x.d + ':\n' + x.t; }).join('\n\n') : 'Noch nichts. Ihr redet zum ersten Mal.';
   }
   var vergessen = $('vergessen');
-  function vergessenZeigen() { vergessen.hidden = !F.gedaechtnis || !gedaechtnis().length; }
+  function vergessenZeigen() { vergessen.hidden = !gedaechtnis().length; }
   vergessen.addEventListener('click', function () {
     try { localStorage.removeItem(GED); } catch (e) {}
     vergessenZeigen(); status.textContent = 'Erledigt. ' + NAME + ' fängt neu an.';
@@ -154,6 +170,24 @@
       if (x.under != null) t += ', Ping unter ' + x.under; if (x.over != null) t += ', Ping über ' + x.over;
       return t;
     }).join('; ');
+  }
+
+  // Nova verbindet: sie bekommt, was die anderen Figuren auf diesem Handy erlebt haben.
+  function welt() {
+    var teile = [];
+    ['otti', 'kiki', 'jackie', 'mr. ping'].forEach(function (k) {
+      var g = []; try { g = JSON.parse(localStorage.getItem(k === 'otti' ? 'otti_gedaechtnis' : 'gedaechtnis_' + k)) || []; } catch (e) {}
+      g.slice(-2).forEach(function (x) { teile.push(FIGUREN[k].name + ' am ' + x.d + ':\n' + String(x.t).slice(-450)); });
+    });
+    var p = positionen(); if (p.indexOf('Noch nicht') !== 0) teile.push('Mr. Pings Titel: ' + p);
+    return teile.length ? teile.join('\n\n') : 'Noch nichts gespeichert.';
+  }
+  function variablen() {
+    var v = {};
+    if (F.gedaechtnis) v.letztes_mal = erinnerung();
+    if (F.positionen) v.positionen = positionen();
+    if (F.welt) v.welt = welt();
+    return Object.keys(v).length ? v : undefined;
   }
 
   function zeile(wer, t) {
@@ -207,7 +241,7 @@
       var c = await ElevenLabsClient.Conversation.startSession({
         agentId: AGENT,
         connectionType: 'websocket',
-        dynamicVariables: F.gedaechtnis ? { letztes_mal: erinnerung() } : F.positionen ? { positionen: positionen() } : undefined,
+        dynamicVariables: variablen(),
         onConnect: function () { status.textContent = NAME + ' hört zu.'; hopsen(); },
         onDisconnect: function () { ende('Bis bald! Tipp auf den Knopf, dann bin ich wieder da.'); },
         onError: function (m) { hinweis.textContent = 'Fehler: ' + (m || 'unbekannt'); },
