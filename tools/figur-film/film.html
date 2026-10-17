@@ -64,9 +64,9 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
   // Figur reagiert auf Tipp
   document.addEventListener('click',function(e){
     var t=e.target;
-    var fig=t.closest&&t.closest('#figurStart img,.figur-hero img,.figur-logo');
+    var fig=t.closest&&t.closest('#figurStart img,.figur-hero img,.figur-logo,[data-sag]');
     if(fig){fig.classList.remove('film-hops');void fig.offsetWidth;fig.classList.add('film-hops');sterne(e.clientX,e.clientY,8);
-      var sp=fig.closest('.figur-hero')&&fig.closest('.figur-hero').querySelector('span');if(sp&&SAETZE.length){sp.textContent=SAETZE[si++%SAETZE.length];sp.classList.remove('film-neu');void sp.offsetWidth;sp.classList.add('film-neu');}return;}
+      var sp=fig.dataset.sag?document.getElementById(fig.dataset.sag):(fig.closest('.figur-hero')&&fig.closest('.figur-hero').querySelector('span'));if(sp&&SAETZE.length){sp.textContent=SAETZE[si++%SAETZE.length];sp.classList.remove('film-neu');void sp.offsetWidth;sp.classList.add('film-neu');}return;}
     var b=t.closest&&t.closest('button,.btn,[role=button]');
     if(b&&b.id!=='figurStartGo')sterne(e.clientX,e.clientY,5);
   },true);
