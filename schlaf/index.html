@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fias Nest">
+<meta name="theme-color" content="#140F24">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Fias Nest">
+<meta property="og:description" content="Abendritual mit Fia: Licht runter, 5 Seufzer, Handy weg.">
+<meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/schlaf/og.png">
+<meta property="og:type" content="website">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Fias Nest</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Figtree:wght@400;500;600&display=swap">
+<style>
+body{margin:0}
+/* Layout: eine Handy-Spalte, Fia oben im Nest, darunter drei Glut-Stufen; die Seite wird mit jeder erledigten Stufe dunkler */
+:root{
+  --night:#140F24; --night-deep:#0B0815; --gold:#F2C14E; --coral:#D97757; --ember:#FF8A3D;
+  --cream:#F5E6D3; --muted:#B8A9C2; --line:rgba(242,193,78,.22);
+  --display:"Newsreader",Georgia,serif; --body:"Figtree",system-ui,sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--night);color:var(--cream);font-family:var(--body);font-size:16px;line-height:1.5;
+  transition:background 1.6s ease;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body[data-stage="1"]{background:#110C1E}
+body[data-stage="2"]{background:#0E0A18}
+body[data-stage="3"]{background:var(--night-deep)}
+main{max-width:440px;margin:0 auto;padding-block:max(20px,env(safe-area-inset-top,0px)) 40px;display:flex;flex-direction:column;gap:22px}
+.tag{align-self:flex-start;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);border-radius:99px;padding:3px 10px}
+header h1{font-family:var(--display);font-weight:400;font-size:2.2rem;line-height:1.1;margin:0;text-wrap:balance}
+header p{margin:6px 0 0;color:var(--muted)}
+.nest{position:relative;display:grid;place-items:center;height:230px}
+.glow{position:absolute;width:190px;height:190px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,138,61,.55),rgba(217,119,87,.18) 45%,transparent 70%);
+  transition:transform 1s ease,opacity 1.6s ease}
+#fia{position:relative;width:200px;height:200px;border-radius:50%;object-fit:cover;-webkit-mask-image:radial-gradient(circle,#000 58%,transparent 71%);mask-image:radial-gradient(circle,#000 58%,transparent 71%);transition:opacity 1.6s ease, transform 1.6s ease}
+.say{font-family:var(--display);font-style:italic;font-size:1.25rem;text-align:center;margin:0;min-height:2.6em;text-wrap:balance}
+ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;padding:14px;border:1px solid var(--line);border-radius:14px;transition:opacity .8s,border-color .8s}
+li.done{opacity:.45}
+li.active{border-color:var(--gold)}
+.dot{width:22px;height:22px;border-radius:50%;margin-top:2px;background:radial-gradient(circle,var(--gold),var(--ember) 60%,transparent 72%);box-shadow:0 0 14px var(--ember);transition:all 1s}
+li.done .dot{background:#3a2a2a;box-shadow:none}
+li h2{font-size:1.05rem;font-weight:600;margin:0}
+li p{margin:2px 0 10px;color:var(--muted);font-size:.93rem}
+li .text{min-width:0}
+button{font:inherit;font-weight:500;color:var(--night);background:var(--gold);border:0;border-radius:99px;padding:9px 18px;cursor:pointer}
+button.ghost{background:transparent;color:var(--gold);border:1px solid var(--line)}
+button:focus-visible{outline:2px solid var(--cream);outline-offset:3px}
+button[disabled]{opacity:.4;cursor:default}
+.count{font-variant-numeric:tabular-nums;color:var(--gold);font-size:.9rem;margin-left:8px}
+.end{text-align:center;color:var(--muted);font-size:.85rem}
+.note{font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <span class="tag">Entwurf · Abendritual</span>
+  <header>
+    <h1>Ausglühen mit Fia</h1>
+    <p>Drei kleine Schritte. Du musst heute nichts mehr lösen.</p>
+  </header>
+
+  <div class="nest" aria-hidden="true">
+    <div class="glow" id="glow"></div>
+    <img id="fia" src="icon-512.png" alt="">
+  </div>
+
+  <p class="say" id="say">Schön, dass du da bist. Wir glühen jetzt langsam aus.</p>
+
+  <ol>
+    <li id="s1" class="active">
+      <span class="dot"></span>
+      <div class="text">
+        <h2>Licht runter</h2>
+        <p>Deckenlicht aus, eine kleine warme Lampe an.</p>
+        <button id="b1">Erledigt</button>
+      </div>
+    </li>
+    <li id="s2">
+      <span class="dot"></span>
+      <div class="text">
+        <h2>5 Seufzer mit Fia</h2>
+        <p>Zweimal durch die Nase einatmen, lang durch den Mund aus.</p>
+        <button id="b2" disabled>Atmen starten</button><span class="count" id="count"></span>
+      </div>
+    </li>
+    <li id="s3">
+      <span class="dot"></span>
+      <div class="text">
+        <h2>Handy weg</h2>
+        <p>Leg es ausserhalb vom Bett hin. Fia hält die Nacht für dich.</p>
+        <button id="b3" disabled>Gute Nacht</button>
+      </div>
+    </li>
+  </ol>
+
+  <p class="end" id="end" hidden>Fia schläft. Morgen stehst du auf wie ein Phönix.</p>
+  <button class="ghost" id="reset" hidden>Nochmals von vorn</button>
+
+  <p class="note">Entwurf Projekt 4, nur zum Anschauen. Kein medizinisches Angebot. Wenn du seit Wochen schlecht schläfst, sprich mit deiner Hausärztin oder deinem Hausarzt.</p>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const say=t=>{$('say').textContent=t};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function stage(n){document.body.dataset.stage=n;$('glow').style.opacity=[1,.8,.55,.25][n];}
+function finish(i){$('s'+i).classList.replace('active','done');const nx=$('s'+(i+1));if(nx){nx.classList.add('active');$('b'+(i+1)).disabled=false;}stage(i);}
+$('b1').onclick=()=>{finish(1);say('Gut so. Das warme Licht sagt deinem Körper: Es wird Abend.');};
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+$('b2').onclick=async()=>{
+  $('b2').disabled=true;const g=$('glow');
+  for(let i=1;i<=5;i++){
+    $('count').textContent=i+' / 5';
+    say('Einatmen …');g.style.transform='scale(1.25)';await wait(reduce?400:2000);
+    say('… und noch ein bisschen');g.style.transform='scale(1.4)';await wait(reduce?300:1000);
+    say('Lang ausatmen');g.style.transform='scale(.85)';await wait(reduce?600:6000);
+  }
+  g.style.transform='';$('count').textContent='';finish(2);say('Spürst du, wie es ruhiger wird?');
+};
+$('b3').onclick=()=>{finish(3);$('s3').classList.remove('active');
+  $('fia').style.opacity='.55';$('fia').style.transform='translateY(6px)';say('Schlaf gut.');$('end').hidden=false;$('reset').hidden=false;};
+$('reset').onclick=()=>location.reload();
+stage(0);
+</script>
+
+</body>
+</html>
