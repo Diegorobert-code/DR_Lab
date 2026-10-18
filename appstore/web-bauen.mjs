@@ -18,6 +18,11 @@ fs.mkdirSync(path.join(www, 'native'), { recursive: true });
 
 fs.cpSync(path.join(repo, app.ordner), path.join(www, app.ordner), { recursive: true });
 if (app.nova && fs.existsSync(path.join(repo, 'nova'))) fs.cpSync(path.join(repo, 'nova'), path.join(www, 'nova'), { recursive: true });
+// Gemeinsame Bausteine aus apps/ mitnehmen, wenn die App sie lädt (z. B. ../apps/sprechen/sprechen.js).
+for (const m of fs.readFileSync(path.join(repo, app.ordner, 'index.html'), 'utf8').matchAll(/src="\.\.\/apps\/([a-z0-9-]+)\//g)) {
+  const ziel = path.join(www, 'apps', m[1]);
+  if (!fs.existsSync(ziel)) fs.cpSync(path.join(repo, 'apps', m[1]), ziel, { recursive: true });
+}
 fs.cpSync(path.join(hier, 'shared', 'fonts'), path.join(www, 'native', 'fonts'), { recursive: true });
 fs.copyFileSync(path.join(hier, 'shared', 'native.js'), path.join(www, 'native', 'native.js'));
 const core = path.join(projekt, 'node_modules', '@capacitor', 'core', 'dist', 'capacitor.js');
