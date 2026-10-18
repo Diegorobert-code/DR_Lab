@@ -2,7 +2,7 @@
 
 Stand 12.10.2026. Alles ist vorbereitet. Du brauchst nur noch deinen MacBook mit Xcode. Eingereicht wird erst, wenn du selbst auf «Zur Prüfung einreichen» tippst.
 
-Vier Apps sind bereit: **Mondschein**, **HumanSpark**, **TradePing**, **Jackie's Advice**.
+Fünf Apps sind bereit: **Mondschein**, **HumanSpark**, **TradePing**, **Jackie's Advice** und **Fias Nest** (seit 18.10.2026, Ordner `appstore/fiasnest/`, Bundle-ID `ch.drlab.fiasnest`).
 Pro App liegt alles in `appstore/<app>/`: die iPhone-App (`ios/`), die Texte (`store/texte.md`), das Icon (`store/icon-1024.png`) und die Screenshots (`store/screenshots-6.9/`).
 
 ## Einmalig auf dem MacBook (gratis)
@@ -38,6 +38,7 @@ Pro App liegt alles in `appstore/<app>/`: die iPhone-App (`ios/`), die Texte (`s
 - Nova aus der Cloud ist noch nicht drin, die Apps laufen ganz auf dem iPhone. So gilt überall «keine Daten erhoben». Nova kommt mit einem Update, wenn der Server läuft (dann passen wir die Datenschutz-Angaben an).
 - TradePing: echte iPhone-Mitteilungen statt Web-Mitteilungen (solange die App offen ist).
 - HumanSpark: Reiter «Ideen» ausgeblendet (Guthaben wären bei Apple nur als In-App-Kauf erlaubt). Polar H10 geht auf dem iPhone nicht (Apple erlaubt kein Web-Bluetooth).
+- Fias Nest: ohne Funkenmarkt und ohne Nova (v1.0 ganz auf dem iPhone). Ton läuft auch bei Lautlos-Schalter. Schriften Fraunces und Inter statt Newsreader und Figtree.
 - Mondschein: nur Hochformat, Elternsperre jetzt mit Mal-Rechnung in Worten (Apple verlangt für Kinder-Apps eine Sperre, die Kinder nicht lösen).
 
 ## Neu bauen (nur falls nötig)
@@ -49,6 +50,6 @@ Zum Hochladen nach App Store Connect, sobald das Developer-Konto aktiv ist:
 1. App Store Connect → Benutzer und Zugriff → Integrationen → App Store Connect API → Schlüssel erzeugen (Rolle **Admin**, nötig fürs automatische Signieren). Die .p8-Datei einmal laden.
 2. Team-ID steht unter developer.apple.com/account → Mitgliedschaft.
 3. GitHub → DR_Lab → Settings → Secrets and variables → Actions → vier Einträge: `ASC_KEY_ID` (Schlüssel-ID), `ASC_ISSUER_ID` (Aussteller-ID), `ASC_KEY_P8` (ganzer Inhalt der .p8-Datei), `APPLE_TEAM_ID`.
-4. Die vier App-Einträge in App Store Connect müssen schon angelegt sein (Schritt 8 oben).
+4. Die App-Einträge in App Store Connect müssen schon angelegt sein (Schritt 8 oben).
 5. Actions → «iPhone-Apps bauen» → «Run workflow» → «Hochladen» anhaken. Nach ca. 20 Min. liegen die Builds in TestFlight.
 Eingereicht wird dadurch nichts; «Zur Prüfung einreichen» machst du weiterhin selbst.
