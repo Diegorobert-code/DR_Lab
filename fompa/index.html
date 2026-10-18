@@ -201,6 +201,12 @@ pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px s
       <button class="btn" id="exShare">Als CSV teilen</button>
     </div>
     <pre id="exPre"></pre>
+    <details style="margin-top:12px">
+      <summary><b>Bestehende Ausgaben einlesen</b></summary>
+      <p class="hint">Zeilen aus der Ausgaben-Liste einfügen (Datum;Wofuer;Kategorie;Betrag CHF;Bezahlt mit;Beleg;Fixkosten, optional Steuer-Ordner). Doppelte Zeilen überspringt Fompa.</p>
+      <textarea id="impText" spellcheck="false" placeholder="2026-10-11;Server;DR Lab Software;35.00;Twint;;jaehrlich"></textarea>
+      <button class="btn" id="imp" style="margin-top:8px;width:100%">Einlesen</button>
+    </details>
   </section>
 
   <!-- Steuern: Ordner -->
@@ -213,7 +219,7 @@ pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px s
   <section id="paket" class="hidden" style="display:grid;gap:12px">
     <div class="card">
       <h2>Paket für den Steuerberater</h2>
-      <p class="hint">Ein ZIP mit einem Ordner pro Nummer, Dateinamen wie <code>3_Krankenkasse_CSS_2026-01.jpg</code> und einer Übersicht (00_Uebersicht.csv). Zettel aus der Buchhaltung mit Steuer-Ordner sind dabei. Du entscheidest selbst, wem du es schickst.</p>
+      <p class="hint">Ein ZIP mit einem Ordner pro Nummer, Dateinamen wie <code>6000_Miete-Praxis_Vermieter_2026-01.jpg</code> und einer Übersicht (00_Uebersicht.csv). Zettel aus der Buchhaltung mit Steuer-Ordner sind dabei. Du entscheidest selbst, wem du es schickst.</p>
       <div style="display:grid;gap:8px;margin-top:10px">
         <button class="btn main" id="zip">ZIP erstellen</button>
         <button class="btn" id="csv">Nur Übersicht (CSV)</button>
@@ -222,7 +228,7 @@ pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px s
     </div>
     <div class="card">
       <h2>Eigene Nummern</h2>
-      <p class="hint">Wie in deiner Excel-Datei: eine Zeile pro Ordner, <code>Nummer;Bezeichnung</code>. Bestehende Zettel behalten ihre Nummer.</p>
+      <p class="hint">Vorgabe: die Konten aus deiner Erfolgsrechnung (3000–6640, 1500, 1520) und private Ordner P1–P9. Eine Zeile pro Ordner, <code>Nummer;Bezeichnung</code>. Bestehende Zettel behalten ihre Nummer.</p>
       <textarea id="catText" spellcheck="false"></textarea>
       <div class="row" style="margin-top:8px">
         <button class="btn" id="catSave">Speichern</button>
@@ -250,27 +256,54 @@ pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px s
 // Fompa – Buchhaltung und Steuern. Speicher: nur IndexedDB auf dem Gerät.
 // Ein Zettel = ein Eintrag in «belege». kind 'ausgabe' = Buchhaltung, sonst Steuer-Beleg. cat = Steuer-Ordner ('' = keiner).
 const $ = s => document.querySelector(s);
-const DEFAULT_CATS = `1;Lohnausweis und Einkommen
-2;Praxis Einnahmen
-3;Krankenkasse
-4;Krankheitskosten selbst bezahlt
-5;AHV SVA Beiträge
-6;Säule 3a
-7;Praxis Miete
-8;Praxis Versicherungen
-9;Telefon Internet Software
-10;Weiterbildung Fachliteratur
-11;Werbung Website
-12;Anschaffungen Laptop Handy
-13;Bank- und Depotauszüge
-14;Unterhaltsbeiträge
-15;Spenden
-16;Schuldzinsen
-17;Diverses`;
+// Nummern wie in Diegos Erfolgsrechnung (Konten) plus private Steuer-Ordner P1–P10
+const DEFAULT_CATS = `3000;Einnahmen Praxis
+4000;Materialaufwand und Verbrauchsmaterial
+5700;AHV und Personenversicherungen
+5720;Unfallversicherung Verbandsbeitrag
+6000;Miete Praxis- und Büroräume
+6100;Unterhalt Reparaturen Ersatzanschaffungen
+6120;Berufskleider
+6300;Sachversicherungen
+6310;Berufshaftpflichtversicherung
+6400;Elektrizität Kehricht Entsorgung
+6500;Büro- und EDV-Material
+6510;Telefon
+6520;Porto Werbesendungen
+6530;Buchführung und Beratung
+6540;Fachliteratur Zeitungsabo
+6550;Weiterbildung
+6560;Mitgliederbeiträge Spenden
+6570;EDV-Support Software
+6580;Internet Homepage Gebühren
+6590;Übriger Betriebsaufwand
+6600;Werbung Inserate Drucksachen
+6630;Repräsentationsspesen
+6635;Restaurant und Bewirtung
+6640;Reisespesen Hotel Weiterbildung Ausland
+1500;Anschaffungen
+1520;EDV-Anlage Anschaffungen Homepage
+P1;Lohnausweis und weitere Einkommen
+P2;Krankenkasse
+P3;Krankheitskosten selbst bezahlt
+P4;Säule 3a
+P5;Unterhaltsbeiträge
+P6;Bank- und Depotauszüge
+P7;Spenden privat
+P8;Schuldzinsen
+P9;Diverses`;
 // Kategorien wie im Buchhaltung-Thread: nur Praxis und DR Lab bekommen einen Steuer-Ordner
 const HAUPT = ['Privat','Ferien','Praxis','DR Lab','Unklar'];
 const UNTER = {Privat:['Essen','Kaffee und Snacks','Lebensmittel','Restaurant','Ausgang','Mila','Kleider','Haushalt','Mobilität','Gesundheit'], Ferien:['Essen','Hotel','Reise'], Praxis:['Miete','Material','Versicherungen','Weiterbildung','Telefon Internet','Werbung'], 'DR Lab':['Software','Programmierer','App-Produktion','Nova'], Unklar:[]};
 const MIT_ORDNER = h => h === 'Praxis' || h === 'DR Lab';
+// Konto-Vorschlag aus Kategorie (nur ein Vorschlag, der Steuerberater entscheidet)
+const KONTO = {'Praxis Miete':'6000','Praxis Material':'4000','Praxis Versicherungen':'6300','Praxis Weiterbildung':'6550','Praxis Telefon Internet':'6510','Praxis Werbung':'6600',
+  'DR Lab Software':'6570','DR Lab Programmierer':'6590','DR Lab App-Produktion':'6590','DR Lab Nova':'6580'};
+function kontoVorschlag(){
+  if (mode !== 'buch' || editId) return;
+  const k = KONTO[getKat()] || ($('#haupt').value === 'DR Lab' ? '6590' : '');
+  if (k && [...$('#cat').options].some(o => o.value === k)) $('#cat').value = k;
+}
 const WOCHE_PRIVAT = 138;
 const splitKat = k => { k = String(k||''); const h = HAUPT.find(x => k === x || k.startsWith(x + ' ')); return h ? {h, u: k.slice(h.length).trim()} : {h: k ? 'Unklar' : 'Privat', u: k}; };
 const getKat = () => ($('#haupt').value + ' ' + $('#unter').value.trim()).trim();
@@ -280,7 +313,7 @@ function katChanged(){
   $('#unterList').innerHTML = (UNTER[h]||[]).map(x => `<option value="${esc(x)}">`).join('');
   const zeig = mode !== 'buch' || MIT_ORDNER(h);
   $('#catRow').classList.toggle('hidden', !zeig);
-  if (!zeig) $('#cat').value = '';
+  if (!zeig) $('#cat').value = ''; else if (!$('#cat').value) kontoVorschlag();
 }
 
 const TIPS = {
@@ -459,10 +492,32 @@ function renderMonat(){
 function exportZeilen(){
   const m = $('#exSel').value;
   return zettel.filter(z => isBuch(z) && (!m || (z.date||'').startsWith(m)))
-    .map(z => [z.date||'', ascii(z.from), ascii(z.kat), z.amount==null ? '' : z.amount.toFixed(2), ascii(z.paid), z.blob ? 'Foto in Fompa' : '', ascii(z.fix), z.cat||''].join(';'));
+    .map(z => [z.date||'', ascii(z.from), ascii(z.kat), z.amount==null ? '' : z.amount.toFixed(2), ascii(z.paid), z.blob ? 'Foto in Fompa' : ascii((z.note||'').startsWith('Beleg: ') ? z.note.slice(7) : ''), ascii(z.fix), z.cat||''].join(';'));
 }
 const EX_KOPF = 'Datum;Wofuer;Kategorie;Betrag CHF;Bezahlt mit;Beleg;Fixkosten;Steuer-Ordner';
 function renderExport(){ const z = exportZeilen(); $('#exPre').textContent = z.length ? EX_KOPF + '\n' + z.join('\n') : 'Noch keine Ausgaben.'; }
+
+async function importieren(){
+  const zeilen = $('#impText').value.split(/\r?\n/).map(l => l.trim()).filter(l => l && !/^datum;/i.test(l));
+  let neu = 0, doppelt = 0, fehler = 0;
+  const schluessel = z => [z.date, z.from, (z.amount||0).toFixed(2)].join('|');
+  const bekannt = new Set(zettel.filter(isBuch).map(schluessel));
+  const liste = [];
+  for (const l of zeilen){
+    const c = l.split(';'); const amt = parseAmt(c[3]);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(c[0]||'') || amt == null){ fehler++; continue; }
+    const {h,u} = splitKat(c[2]);
+    const z = {id: Date.now().toString(36) + Math.random().toString(36).slice(2,8), year: +c[0].slice(0,4), kind:'ausgabe',
+      date:c[0], from:(c[1]||'').trim(), kat:(h + ' ' + u).trim(), amount:amt, paid:(c[4]||'').trim(), fix:(c[6]||'').trim(),
+      note:(c[5]||'').trim() ? 'Beleg: ' + c[5].trim() : '', cat: MIT_ORDNER(h) ? (c[7]||'').trim() : '', blob:null, type:''};
+    if (bekannt.has(schluessel(z))){ doppelt++; continue; }
+    bekannt.add(schluessel(z)); liste.push(z); neu++;
+  }
+  if (liste.length) await tx('belege','readwrite', s => liste.forEach(z => s.put(z)));
+  $('#impText').value = '';
+  toast(`${neu} eingelesen` + (doppelt ? `, ${doppelt} doppelt` : '') + (fehler ? `, ${fehler} unlesbar` : ''));
+  await loadYear();
+}
 
 /* ---------- Formular ---------- */
 function suggest(){
@@ -659,7 +714,9 @@ function fillYears(){
   $('#shot').onclick = () => $('#file').click();
   $('#file').onchange = async e => { const f = e.target.files[0]; if (!f) return; photo = await shrink(f); showPhoto(photo); e.target.value=''; };
   $('#from').oninput = suggest;
-  $('#haupt').onchange = katChanged;
+  $('#haupt').onchange = () => { $('#cat').value = ''; katChanged(); };
+  $('#unter').onchange = () => { $('#cat').value = ''; kontoVorschlag(); };
+  $('#imp').onclick = importieren;
   $('#save').onclick = save;
   $('#cancel').onclick = resetForm;
   $('#delOne').onclick = async () => { if (!confirm('Diesen Zettel löschen?')) return; await tx('belege','readwrite', s => s.delete(editId)); resetForm(); await loadYear(); toast('Gelöscht'); };
