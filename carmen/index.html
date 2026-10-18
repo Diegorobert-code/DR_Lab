@@ -175,6 +175,8 @@ input[type=range]{width:100%;accent-color:var(--gold)}
     <div class="list">
       <button class="item" data-go="ws"><div class="ic">✦</div><div class="tx"><b>Tanz-Fitness 30 Min.</b><span>4 Wochen, 2× pro Woche: Merengue, Salsa, Cumbia, Reggaeton, Samba</span></div><div class="badge" id="ws-badge"></div></button>
     </div>
+    <div class="sec">Weitere Tänze</div>
+    <div class="list" id="dances"></div>
     <div class="sec">Mehr</div>
     <div class="list">
       <button class="item" data-go="band"><div class="ic">♫</div><div class="tx"><b>Band &amp; Metronom</b><span>Instrumente einzeln, Tempo frei, Clave 2-3 oder 3-2</span></div></button>
@@ -379,6 +381,17 @@ const STEPS={
     seq:{1:{f:"L",p:[-20,-46],t:"Links vor"},2:{f:"R",w:1,t:"Gewicht auf rechts"},3:{f:"L",p:[-20,0],t:"Links zusammen"},
          5:{f:"R",p:[20,0],r:150,t:"Rechts, Drehung nach rechts"},6:{f:"L",p:[-20,0],r:300,t:"Links, weiter drehen"},7:{f:"R",p:[20,0],r:360,t:"Rechts, angekommen"}}}
 };
+STEPS.merengue={title:"Merengue-Marsch",ic:"M",short:"Auf jeden Schlag ein Schritt, Hüfte folgt",style:"merengue",bpm:110,
+  tapOn:[1,2,3,4,5,6,7,8],hint:"bei jedem Schlag",
+  intro:"Auf jedem Schlag das Gewicht wechseln, Knie weich. Die Hüfte bewegt sich von allein.",
+  seq:{1:{f:"L",w:1,t:"Links"},2:{f:"R",w:1,t:"Rechts"},3:{f:"L",w:1,t:"Links"},4:{f:"R",w:1,t:"Rechts"},
+       5:{f:"L",w:1,t:"Links"},6:{f:"R",w:1,t:"Rechts"},7:{f:"L",w:1,t:"Links"},8:{f:"R",w:1,t:"Rechts"}}};
+STEPS.bachata={title:"Bachata-Grundschritt",ic:"B",short:"Drei Schritte zur Seite, auf 4 tippen",style:"bachata",bpm:110,keepY:1,
+  tapOn:[1,2,3,4,5,6,7,8],hint:"bei jedem Schlag, auch beim Tippen auf 4 und 8",
+  intro:"Seitlich 1-2-3, auf 4 nur antippen und Hüfte heben. Dann zurück 5-6-7, auf 8 antippen.",
+  seq:{1:{f:"L",p:[-50,0],t:"Links zur Seite"},2:{f:"R",p:[-10,0],t:"Rechts ran"},3:{f:"L",p:[-80,0],t:"Links zur Seite"},4:{f:"R",p:[-40,0],w:1,t:"Rechts antippen, Hüfte"},
+       5:{f:"R",p:[0,0],t:"Rechts zur Seite"},6:{f:"L",p:[-40,0],t:"Links ran"},7:{f:"R",p:[30,0],t:"Rechts zur Seite"},8:{f:"L",p:[-10,0],w:1,t:"Links antippen, Hüfte"}}};
+const DANCES=["merengue","bachata"];
 const ORDER=["hoeren","grund","seite","rueck","drehung"];
 const STEP_COUNTS=[1,2,3,5,6,7];
 const sayNum={1:"uno",2:"dos",3:"tres",4:"cuatro",5:"cinco",6:"seis",7:"siete",8:"ocho"};
@@ -460,8 +473,8 @@ function schedule(){
     if((P.mode==="step"||P.mode==="hoeren")&&!P.cam&&cyc>P.scored){clearInterval(P.timer);P.timer=null;setTimeout(()=>{if(P.running)finish()},Math.max(0,(t-ctx.currentTime+outLat())*1000)+250);return}
     if(s16%4===0){const count=s16/4+1; P.beats.push({t,count,cyc});
       if(st==="salsa"){ if(on.klick) SND.klick(t,count===1||count===5);
-        if(on.campana) SND.campana(t,count===1||count===5);
-        if(mem.voice&&P.bpm<=110&&(P.mode==="step"||P.mode==="hoeren")) speak(sayNum[count],t,count); }
+        if(on.campana) SND.campana(t,count===1||count===5); }
+      if(mem.voice&&P.bpm<=110&&(P.mode==="step"||P.mode==="hoeren")) speak(sayNum[count],t,count);
     }
     if(st==="salsa"){ if(s16%2===0){
       const i=s16/2, inBar=i%8, barG=Math.floor(P.i/16), ch=CH[barG%4], nxt=CH[(barG+1)%4];
@@ -474,6 +487,7 @@ function schedule(){
   }
 }
 /* Weitere Rhythmen für den Workshop, alles im Handy erzeugt (16tel-Raster, 32 pro 8 Schläge) */
+const BCH=[{b:45,n:[69,72,76]},{b:50,n:[69,74,77]},{b:52,n:[68,71,76]},{b:45,n:[69,72,76]}]; // Am Dm E Am
 const STYLE={
   merengue:(s,t,e,ch)=>{ if(s%4===0)SND.kick(t,.7); if(s%2===0||s%4===3)SND.shaker(t,s%4===0?.22:.12,.05);
     if(s%8===4)SND.snare(t,.35); if(s%8===7)SND.snare(t,.15);
@@ -487,6 +501,12 @@ const STYLE={
     if(s%16===0)SND.bajo(t,ch.b,e*7); if(s%16===8)SND.bajo(t,ch.b,e*7); },
   samba:(s,t,e,ch)=>{ if(s%8===0)SND.surdo(t,.35); if(s%8===4)SND.surdo(t,.7); SND.shaker(t,s%4===3?.2:.08,.03);
     if([0,3,6,10,12].includes(s%16))SND.clave(t); if(s%16===0)SND.piano(t,ch.n); },
+  bachata:(s,t,e)=>{ const c=BCH[Math.floor(P.i/16)%4];
+    if(s%2===0)SND.shaker(t,s%4===0?.2:.1,.05);                       // Güira
+    if(s%4===0)SND.conga(t,s%16===12?"open":"slap");                  // Bongo, offen auf 4
+    if(s%16===12)SND.kick(t,.55);                                     // Betonung auf 4 und 8
+    if(s%16===0)SND.bajo(t,c.b,e*5); if(s%16===6)SND.bajo(t,c.b+7,e*2); if(s%16===8)SND.bajo(t,c.b+12,e*3);
+    if(s%2===0)SND.piano(t,[c.n[(s/2)%3]]); },                        // Gitarren-Arpeggio
   warm:(s,t,e,ch)=>{ if(s%4===0)SND.kick(t,.5); if(s%4===2)SND.shaker(t,.15,.06); if(s%16===0)SND.bajo(t,ch.b,e*7); if(s%8===4)SND.snare(t,.18); },
   cool:(s,t,e,ch)=>{ if(s%16===0)SND.pad(t,ch.n,e*15); if(s%8===0)SND.shaker(t,.05,.2); }
 };
@@ -494,7 +514,7 @@ let voices=null;
 function speak(w,t,count){
   if(!("speechSynthesis" in window)) return;
   if(STEPS[P.step]&&STEPS[P.step].tapOn&&!STEPS[P.step].tapOn.includes(count)) return;
-  if(P.mode!=="hoeren"&&!STEP_COUNTS.includes(count)) return;
+  if(P.mode!=="hoeren"&&!tapTargets().includes(count)) return;
   const ms=(t-ctx.currentTime+outLat())*1000-140;
   setTimeout(()=>{ if(!P.running)return; try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(w);u.lang="es-ES";u.rate=1.5;u.volume=.9;
     voices=voices||speechSynthesis.getVoices();const v=voices.find(v=>/^es/i.test(v.lang)&&/female|mónica|monica|paulina|marisol/i.test(v.name))||voices.find(v=>/^es/i.test(v.lang));if(v)u.voice=v;speechSynthesis.speak(u);}catch(e){} },Math.max(0,ms));
@@ -590,7 +610,7 @@ function manualStep(){
   try{ if(mem.voice&&"speechSynthesis" in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(sayNum[c]);u.lang="es-ES";u.rate=1.1;speechSynthesis.speak(u);} }catch(_){}
 }
 function setManual(v){ P.manual=v; manualCount=0; $("#manual").textContent=v?"Zurück zum Takt mit Musik":"Ohne Musik: Schritt für Schritt";
-  $("#meterbox").hidden=v; $("#fb").textContent=""; $("#tap-hint").textContent=v?"für den nächsten Schritt":(STEPS[P.step].tapOn?"auf 1 und 5":"bei jedem Schritt (nicht auf 4 und 8)");
+  $("#meterbox").hidden=v; $("#fb").textContent=""; $("#tap-hint").textContent=v?"für den nächsten Schritt":(STEPS[P.step].hint||(STEPS[P.step].tapOn?"auf 1 und 5":"bei jedem Schritt (nicht auf 4 und 8)"));
   if(v){ stop(); $("#say-big").textContent="Schritt für Schritt"; $("#say-sub").textContent="Tippe unten. Jedes Tippen ist ein Schlag."; feet={L:[...HOME.L],R:[...HOME.R]};rot=0;placeFeet(false);} }
 $("#manual").onclick=()=>setManual(!P.manual);
 function tap(ev){ ev.preventDefault(); if(P.manual){ manualStep(); return; } if(!ctx||!P.running) return; const t=ctx.currentTime;
@@ -643,6 +663,10 @@ function renderHome(){
   ORDER.forEach((id,k)=>{const s=STEPS[id],m=mem.steps[id];const b=document.createElement("button");b.className="item";
     b.innerHTML=`<div class="ic">${s.ic}</div><div class="tx"><b>${k}. ${s.title}</b><span>${s.short}</span></div><div class="badge">${m?m.best+" %":""}</div>`;
     b.onclick=()=>openPractice(id,"step"); L.appendChild(b);});
+  const D=$("#dances"); D.innerHTML="";
+  DANCES.forEach(id=>{const s=STEPS[id],m=mem.steps[id];const b=document.createElement("button");b.className="item";
+    b.innerHTML=`<div class="ic">${s.ic}</div><div class="tx"><b>${s.title}</b><span>${s.short}</span></div><div class="badge">${m?m.best+" %":""}</div>`;
+    b.onclick=()=>openPractice(id,"step"); D.appendChild(b);});
   const sg=suggestion(); $("#go-next").textContent=`Weiter: ${STEPS[sg.id].title} · ${sg.bpm}`;
   $("#go-next").onclick=()=>openPractice(sg.id,"step",sg.bpm);
   const days=mem.days.length;
@@ -657,18 +681,18 @@ function renderChips(el){
     c.onclick=()=>{on[k]=on[k]?0:1;c.classList.toggle("on",!!on[k]);}; el.appendChild(c);});
 }
 function openPractice(id,mode,bpm){
-  stop(true); P.style="salsa"; P.step=id; P.mode=mode==="free"?"free":(id==="hoeren"?"hoeren":"step"); P.cam=false;
+  stop(true); P.style=(mode!=="free"&&STEPS[id].style)||"salsa"; P.step=id; P.mode=mode==="free"?"free":(id==="hoeren"?"hoeren":"step"); P.cam=false;
   const S=STEPS[id];
-  setBpm(bpm||mem.bpm[id]||90);
+  setBpm(bpm||mem.bpm[id]||STEPS[id].bpm||90);
   if(P.mode==="free"){ $("#p-title").textContent="Band & Metronom"; $("#p-intro").textContent="Schalte Instrumente ein und aus. Hör, wie sie zusammen den Takt bauen. Die Clave ist der Herzschlag.";
     on={klick:0,clave:1,campana:1,conga:1,bajo:1,piano:1}; buildCounts($("#counts"),[1,2,3,4,5,6,7,8]); }
   else { $("#p-title").textContent=S.title; $("#p-intro").textContent=S.intro;
     on=id==="hoeren"?{klick:0,clave:1,campana:1,conga:1,bajo:1,piano:1}:{klick:1,clave:1,campana:1,conga:1,bajo:1,piano:1};
     buildCounts($("#counts"),S.tapOn); }
   $("#floor").hidden=(P.mode!=="step"); $("#tap").hidden=$("#meterbox").hidden=(P.mode==="free");
-  $("#tap-hint").textContent=S.tapOn?"auf 1 und 5":"bei jedem Schritt (nicht auf 4 und 8)";
+  $("#tap-hint").textContent=S.hint||(S.tapOn?"auf 1 und 5":"bei jedem Schritt (nicht auf 4 und 8)");
   $("#say-big").textContent=P.mode==="free"?"♫":"Bereit?"; $("#say-sub").textContent=P.mode==="free"?"Tippe auf Start.":"Tippe auf Start. Die erste Runde hörst du nur zu.";
-  $("#fb").textContent=""; renderChips($("#chips"));
+  $("#fb").textContent=""; renderChips($("#chips")); $("#chips").hidden=(P.style!=="salsa");
   P.manual=false; $("#manual").hidden=(P.mode!=="step"); setManual(false); $("#say-big").textContent=P.mode==="free"?"♫":"Bereit?";
   feet={L:[...HOME.L],R:[...HOME.R]};rot=0;placeFeet(false);$("#ghost").style.opacity=0;
   if(P.mode==="step"){const seq=stepFor(id);const ne=seq[1];if(ne&&ne.p){$("#ghost").style.opacity=1;$("#ghost").style.transform=`translate(${ne.p[0]*1.25}px,${ne.p[1]*1.25}px)`;}}
@@ -698,7 +722,7 @@ function renderMem(){
   const L=$("#mem-list"); const rows=[];
   rows.push(["Geübte Runden",mem.rounds]); rows.push(["Übungstage",mem.days.length]);
   rows.push(["Rolle",mem.role==="lead"?"Führen":"Folgen"]); rows.push(["Kopfhörer-Ausgleich",mem.calib+" ms"]);
-  for(const id of ORDER){const s=mem.steps[id]; if(!s)continue;
+  for(const id of ORDER.concat(DANCES)){const s=mem.steps[id]; if(!s)continue;
     rows.push([STEPS[id].title,`beste ${s.best} % · zuletzt ${s.last} % · ${s.avg<0?"eher früh":"eher spät"} (${Math.abs(s.avg)} ms) · sicher bis ${s.bestBpm||"–"}`]);}
   const sg=suggestion(); rows.push(["Carmens Vorschlag",`${STEPS[sg.id].title} bei ${sg.bpm}`]);
   L.innerHTML=rows.map(r=>`<div class="m"><span>${r[0]}</span><span class="muted" style="text-align:right">${r[1]}</span></div>`).join("");
