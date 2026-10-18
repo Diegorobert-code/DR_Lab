@@ -216,24 +216,30 @@ footer .nums{display:flex;justify-content:center;flex-wrap:wrap;gap:0 14px;margi
 .figur-hero b{display:block;color:#e8be5c;font-size:18px;line-height:1.25}
 .figur-hero span{display:block;font-size:14px;line-height:1.4;color:#e9e3d6;margin-top:2px}
 .figur-logo{width:40px;height:40px;border-radius:50%;border:2px solid #e8be5c;object-fit:cover}
-#figurStart{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:max(28px,env(safe-area-inset-top,0px)) 24px max(28px,env(safe-area-inset-bottom,0px));text-align:center;color:#f6efe0;background:radial-gradient(1.5px 1.5px at 12% 18%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 82% 12%,#ffe9a8,transparent),radial-gradient(1px 1px at 70% 30%,#ffe9a8,transparent),radial-gradient(1px 1px at 22% 72%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 88% 80%,#ffe9a8,transparent),radial-gradient(120% 80% at 50% 0%,#1B2C6B 0%,#0E1838 60%,#060A1C 100%);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
-#figurStart[hidden]{display:none!important}
-#figurStart img{width:min(64vw,260px);height:min(64vw,260px);border-radius:32px;border:3px solid #F2C14E;object-fit:cover;box-shadow:0 0 0 6px rgba(242,193,78,.08),0 18px 60px rgba(242,193,78,.25);animation:figurAtmen 5s ease-in-out infinite}
 @keyframes figurAtmen{50%{transform:scale(1.02);box-shadow:0 0 0 6px rgba(242,193,78,.14),0 18px 70px rgba(242,193,78,.38)}}
 @media (prefers-reduced-motion:reduce){#figurStart img{animation:none}}
-#figurStart h1{margin:4px 0 0;font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:2.6rem;line-height:1;color:#F2C14E}
-#figurStart p{margin:0;max-width:300px;font-size:1.05rem;line-height:1.45;color:#e9e3d6}
-#figurStart button{margin-top:6px;min-height:52px;padding:0 34px;border:0;border-radius:999px;background:#F2C14E;color:#0E1838;font:700 1.05rem system-ui,-apple-system,sans-serif;box-shadow:0 8px 24px rgba(242,193,78,.3);cursor:pointer}
 /* Figuren-Look */
 :root{--bg:#0E1838;--bg2:#13204a;--card:#17255a;--ink:#f6efe4;--ink2:#ddd4c8;--muted:#a9b1cc;--line:#2a3a72;--accent:#C99A3E;--accent-d:#A97E2C;--accent-l:#2b3263;--accent-xl:#1c2856;--sage-l:#1f3550;--sand-l:#22305f;--sky-l:#1f2d5e;--plum-l:#2a2a5e;--red:#ff8f80;--red-l:#3a2236;color-scheme:dark}
 html,body{background:radial-gradient(1.5px 1.5px at 12% 8%,rgba(255,233,168,.7),transparent),radial-gradient(1px 1px at 84% 14%,rgba(255,233,168,.6),transparent),radial-gradient(1.5px 1.5px at 66% 40%,rgba(255,233,168,.35),transparent),radial-gradient(1px 1px at 30% 62%,rgba(255,233,168,.4),transparent),radial-gradient(120% 60% at 50% 0%,#22356e 0%,#0E1838 55%,#0a1230 100%) fixed #0E1838}
 h1 em{color:#F2C14E}
-#figurStart{background:radial-gradient(60% 40% at 50% 38%,rgba(243,183,160,.22),transparent 70%),radial-gradient(40% 30% at 50% 70%,rgba(91,130,190,.25),transparent 70%),radial-gradient(1.5px 1.5px at 12% 8%,rgba(255,233,168,.7),transparent),radial-gradient(1px 1px at 84% 14%,rgba(255,233,168,.6),transparent),radial-gradient(1.5px 1.5px at 66% 40%,rgba(255,233,168,.35),transparent),radial-gradient(1px 1px at 30% 62%,rgba(255,233,168,.4),transparent),radial-gradient(120% 80% at 50% 0%,#22356e 0%,#0E1838 60%,#060A1C 100%)}
+
+/* Jackie-Bühne im 3D-Look */
+.jk-buehne{position:relative;margin:4px 0 18px;border-radius:26px;overflow:hidden;border:1px solid rgba(168,121,42,.45);box-shadow:0 18px 50px -12px rgba(60,35,10,.45),0 0 40px rgba(242,193,78,.18)}
+.jk-buehne img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;animation:jkAtmen 5s ease-in-out infinite;transform-origin:50% 90%}
+@keyframes jkAtmen{50%{transform:scale(1.015) translateY(-3px)}}
+.jk-buehne .unten{position:absolute;left:0;right:0;bottom:0;padding:70px 16px 16px;background:linear-gradient(transparent,rgba(20,12,30,.9) 62%);display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center}
+.jk-buehne .unten b{font-family:var(--serif,Georgia),serif;font-size:24px;color:#f2c14e}
+.jk-buehne .unten span{font-size:14px;line-height:1.4;color:#f3ece4;max-width:300px}
+.jk-reden{display:inline-flex;align-items:center;gap:8px;margin-top:4px;border-radius:999px;padding:14px 24px;font-weight:700;font-size:17px;background:#f2c14e;color:#2a1d00;box-shadow:0 8px 24px rgba(242,193,78,.35);text-decoration:none}
+.jk-reden:active{transform:scale(.96)}
+@media (prefers-reduced-motion:reduce){.jk-buehne img{animation:none}}
+.ob-jackie{overflow:hidden;padding:0!important;border:3px solid #f2c14e;box-shadow:0 0 40px rgba(242,193,78,.35)!important}.ob-jackie img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;animation:jkAtmen 5s ease-in-out infinite}
+header.top .pill{background:rgba(20,30,70,.6)!important;color:#f3ece4!important;border-color:rgba(242,193,78,.35)!important;backdrop-filter:blur(6px)}
 </style>
 </head>
 <body>
-<div id="figurStart" role="dialog" aria-label="Jackie"><img src="figur-gross.jpg" alt="Jackie"><h1>Jackie</h1><p>Erzähl mir, was los ist. Wir finden den nächsten Schritt.</p><button type="button" id="figurStartGo">Los geht's</button></div>
-<script>(function(){var s=document.getElementById('figurStart');try{if(sessionStorage.getItem('figurStart'))s.hidden=true;}catch(e){}document.getElementById('figurStartGo').onclick=function(){s.hidden=true;try{sessionStorage.setItem('figurStart','1');}catch(e){}};})();</script>
+<script src="../nova/intro.js" data-art="portal" data-bild="schuhmacher.jpg" data-fokus="0.55,0.3" data-text="Willkommen in der Werkstatt vom Schuhmacher"></script>
+
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
@@ -273,7 +279,11 @@ h1 em{color:#F2C14E}
 
   <!-- HOME -->
   <section id="vHome">
-    <div class="figur-hero"><img src="figur.jpg" alt=""><div><b>Ich bin Jackie.</b><span>Erzähl mir, was los ist. Wir finden zusammen den nächsten Schritt.</span></div></div>
+    <section class="jk-buehne" aria-label="Jackie">
+      <img src="jackie-3d.jpg" alt="Jackie" width="1024" height="1024">
+      <div class="unten"><b>Ich bin Jackie.</b><span>Erzähl mir, was los ist. Wir finden zusammen den nächsten Schritt.</span>
+      <a class="jk-reden" href="../nova/reden.html?f=jackie">📞 Mit Jackie reden</a></div>
+    </section>
     <span class="eyebrow" id="greetEyebrow">Guten Tag</span>
     <h1 id="greet">Hallo,<br><em>schön, dass du da bist.</em></h1>
     <p class="lead" id="greetLead">Erzähl mir, was dich gerade beschäftigt. Ich höre zu – ohne zu urteilen.</p>
@@ -460,7 +470,7 @@ h1 em{color:#F2C14E}
 <!-- ONBOARDING -->
 <div class="ob hide" id="ob">
   <div class="ob-in" id="obName">
-    <div class="ob-art"><svg class="i"><use href="#i-sun"/></svg></div>
+    <div class="ob-art ob-jackie"><img src="jackie-3d.jpg" alt="Jackie"></div>
     <h1>Hallo,<br><em>schön, dass du da bist.</em></h1>
     <p class="lead" style="margin:0 auto">Wie darf ich dich nennen? Ganz freiwillig – dein Name bleibt nur auf diesem Handy.</p>
     <input type="text" id="nameInput" maxlength="30" autocomplete="given-name" placeholder="Dein Vorname (optional)" aria-label="Vorname">
@@ -1258,15 +1268,6 @@ if(!store.get('onboarded',false)){ obOpen(true); setTimeout(()=>{ try{ $('nameIn
 @keyframes filmDrift{to{transform:translate(8%,-6%) scale(1.12)}}
 button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.96)}
 :root{--fa1:#E58FA8;--fa2:#5B8DEF;--fgold:#F2C14E}
-#figurStart{overflow:hidden;isolation:isolate}
-#figurStart::before{content:"";position:absolute;inset:-40px;z-index:-1;background:url(figur-gross.jpg) center/cover;filter:blur(28px) saturate(1.5);opacity:.45;transform:scale(1.15)}
-#figurStart::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 45% at 18% 85%,color-mix(in srgb,var(--fa1) 55%,transparent),transparent),radial-gradient(55% 40% at 85% 20%,color-mix(in srgb,var(--fa2) 50%,transparent),transparent),linear-gradient(180deg,rgba(14,24,56,.35),rgba(6,10,28,.85))}
-#figurStart img{border-color:var(--fgold);box-shadow:0 0 0 6px rgba(242,193,78,.1),0 0 60px color-mix(in srgb,var(--fa1) 60%,transparent),0 18px 60px rgba(0,0,0,.4);animation:filmSchweben 4.6s ease-in-out infinite;cursor:pointer}
-#figurStart h1{background:linear-gradient(90deg,var(--fgold),var(--fa1),var(--fa2),var(--fgold));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:filmGlanz 6s linear infinite}
-#figurStart h1,#figurStart p,#figurStart button{animation-fill-mode:both}
-#figurStart p{animation:filmAuf .8s .25s ease-out both}
-#figurStart button{background:linear-gradient(135deg,var(--fgold),color-mix(in srgb,var(--fgold) 60%,var(--fa1)));box-shadow:0 8px 24px color-mix(in srgb,var(--fa1) 45%,transparent);animation:filmAuf .8s .45s ease-out both,filmPuls 2.6s 1.4s ease-in-out infinite}
-#figurStart.geht{animation:filmIris .7s ease-in forwards}
 .film-funke{position:absolute;width:6px;height:6px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#fff 0,var(--c,#F2C14E) 45%,transparent 70%);opacity:0;animation:filmFunkeln var(--d,5s) var(--v,0s) ease-in-out infinite}
 .figur-hero{background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--fa1) 45%,#1d2c66) 0%,#0f1b3d 60%,color-mix(in srgb,var(--fa2) 35%,#0f1b3d) 100%)!important;isolation:isolate;animation:filmAuf .7s ease-out both}
 .figur-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:url(figur-gross.jpg) right center/60% auto no-repeat;opacity:.18;filter:blur(2px) saturate(1.4);mask-image:linear-gradient(90deg,transparent 20%,#000)}
