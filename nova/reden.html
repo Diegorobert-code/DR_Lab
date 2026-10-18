@@ -224,7 +224,30 @@
       g.slice(-2).forEach(function (x) { teile.push(FIGUREN[k].name + ' am ' + x.d + ':\n' + String(x.t).slice(-450)); });
     });
     var p = positionen(); if (p.indexOf('Noch nicht') !== 0) teile.push('Mr. Pings Titel: ' + p);
+    if (serverWelt) teile.push('Aus der Sense Engine (andere Apps, KI-Verse):\n' + serverWelt);
     return teile.length ? teile.join('\n\n') : 'Noch nichts gespeichert.';
+  }
+  // Novas Rückweg: was andere Figuren, Apps und das KI-Verse ihr über die Sense Engine erzählt haben.
+  // Nur mit «Handy verbinden»; antwortet der Server nicht schnell, startet das Gespräch ohne.
+  var serverWelt = '';
+  function serverHolen() {
+    var a = String(hol('drlab-hermes-adresse') || '').trim().replace(/\/+$/, ''), k = hol('drlab-hermes-passwort');
+    if (!a || !k || !window.fetch) return Promise.resolve();
+    var ab = window.AbortController ? new AbortController() : null;
+    var uhr = setTimeout(function () { if (ab) ab.abort(); }, 2500);
+    return fetch(a + '/erfahrung', { headers: { 'Authorization': 'Bearer ' + k }, signal: ab ? ab.signal : undefined })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        var l = Array.isArray(d) ? d : null;
+        if (!l && d && typeof d === 'object') for (var x in d) if (Array.isArray(d[x])) { l = d[x]; break; }
+        if (!l || !l.length) return;
+        serverWelt = l.slice(-8).map(function (e) {
+          var t = String(e.frage || e.text || '').slice(-350), an = String(e.antwort || '').slice(0, 200);
+          return (e.app || 'Unbekannt') + (e.art ? ' (' + e.art + ')' : '') + ':\n' + t + (an ? '\nAntwort: ' + an : '');
+        }).join('\n\n');
+      })
+      .catch(function () {})
+      .then(function () { clearTimeout(uhr); });
   }
   function variablen() {
     var v = {};
@@ -281,6 +304,7 @@
       hinweis.textContent = 'Einstellungen › Safari › Mikrofon erlauben, dann nochmal tippen.';
       return;
     }
+    if (F.welt) await serverHolen();
     try {
       var c = await ElevenLabsClient.Conversation.startSession({
         agentId: AGENT,
