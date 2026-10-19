@@ -55,7 +55,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .card{background:var(--card);border:2px solid var(--line);border-radius:24px;padding:16px;margin-bottom:14px}
 .muted{color:var(--muted)}
 .small{font-size:14px}
-.foot{text-align:center;font-size:12.5px;color:var(--muted);margin:22px 0 4px;line-height:1.5}
+.foot{text-align:center;font-size:14px;color:var(--muted);margin:22px 0 4px;line-height:1.5}
 .toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 70px);transform:translateX(-50%) translateY(-20px);background:var(--night);color:#fff6e3;padding:12px 18px;border-radius:16px;font-size:16px;max-width:calc(100% - 32px);opacity:0;pointer-events:none;transition:.3s;z-index:50;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.25)}
 .toast.on{opacity:1;transform:translateX(-50%)}
 :root[data-night="1"] .toast{background:#2a3563}
@@ -132,7 +132,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .t1{background:var(--moon)} .t2{background:var(--mint)} .t3{background:var(--peach)} .t4{background:var(--lav)}
 :root:not([data-night="1"]) .tile{color:#1d2a4f}
 :root[data-night="1"] .t1{color:#141a33}
-.tile small{font-size:13px;font-weight:600;opacity:.8}
+.tile small{font-size:16px;font-weight:600;opacity:.85}
 .hold{--p:0;touch-action:none;-webkit-touch-callout:none}
 .hold:before{content:"";position:absolute;inset:0;background:conic-gradient(rgba(29,42,79,.22) calc(var(--p)*1turn),transparent 0);pointer-events:none}
 /* Geschichten-Liste */
@@ -329,7 +329,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 <body>
 <script src="../nova/intro.js" data-art="funken" data-bild="figur-gross.jpg" data-text="Willkommen im Mondschein-Wald"></script>
 <div id="figurStart" role="dialog" aria-label="Otti"><img src="figur-gross.jpg" alt="Otti"><h1>Otti</h1><p>Gutenachtgeschichten aus dem Mondschein-Land.</p><button type="button" id="figurStartGo">Los geht's</button></div>
-<script>(function(){var s=document.getElementById('figurStart');try{if(sessionStorage.getItem('figurStart'))s.hidden=true;}catch(e){}document.getElementById('figurStartGo').onclick=function(){s.hidden=true;try{sessionStorage.setItem('figurStart','1');}catch(e){}};})();</script>
+<script>(function(){var s=document.getElementById('figurStart');try{if(sessionStorage.getItem('figurStart')||localStorage.getItem('ms_figurStart')||location.hash==='#gutenacht')s.hidden=true;}catch(e){}document.getElementById('figurStartGo').onclick=function(){s.hidden=true;try{sessionStorage.setItem('figurStart','1');}catch(e){}};})();</script>
 
 <!-- gemeinsame Farbverläufe für alle Figuren -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -359,6 +359,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
     <div class="bubble" id="greet">Hallo! Schön, dass du da bist.</div>
     <button class="sunnybtn" id="homeSunny" aria-label="Otti sagt Hallo"></button>
   </div>
+  <button class="sternchip" id="homeSterne" type="button" hidden><span aria-hidden="true">⭐</span> <b id="homeSterneN">0</b> <span id="homeSterneT">Mondsterne</span></button>
   <button class="letterbtn" id="homeLetter" hidden><span class="env" aria-hidden="true"><svg viewBox="0 0 64 48"><rect x="3" y="5" width="58" height="40" rx="8" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M5 9 L32 29 L59 9" fill="none" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M32 22 C27 18 26 14 29 13 C31 12.5 32 14.5 32 15 C32 14.5 33 12.5 35 13 C38 14 37 18 32 22 Z" fill="#ff7c9c"/></svg></span><span><b id="homeLetterT">Ein Brief für dich</b><small>Otti liest dir eine Gutenachtgeschichte vor</small></span></button>
   <button class="btn wide favbtn" id="homeFav" hidden><span aria-hidden="true">⭐</span><span><b id="homeFavT">Deine Lieblingsgeschichte</b><small>Otti erzählt sie dir gerne nochmal</small></span></button>
   <button class="btn wide gnbtn" id="homeGN"><span class="mo" aria-hidden="true">🌙</span><span>Gute Nacht mit Otti<small>Zähne, Geschichte, Atmen, Nachtlicht</small></span></button>
@@ -367,7 +368,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
   <div class="tiles">
     <button class="tile t2 big4" data-go="games"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="12" r="7" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3"/><path d="M32 20v18M32 38l-10 16M32 38l10 16M32 26l-14-8M32 26l14-8" stroke="#1d2a4f" stroke-width="4.5" stroke-linecap="round" fill="none"/><path d="M8 58h48" stroke="#5fb26b" stroke-width="4" stroke-linecap="round"/></svg>Spiele<small>bewegen &amp; Memory</small></button>
     <button class="tile t1 big4" data-go="stories"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 16q12-6 24 2v36q-12-8-24-2z" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M56 16q-12-6-24 2v36q12-8 24-2z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M47 22a7 7 0 1 0 5 10 5.5 5.5 0 1 1-5-10z" fill="#f2b43a"/></svg>Geschichten<small>hören &amp; erfinden</small></button>
-    <button class="tile t3 big4" data-go="talk"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 14h34a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6H24l-10 9v-9H8a6 6 0 0 1-6-6V20a6 6 0 0 1 6-6z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M50 26h6a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6h-2v7l-8-7h-6" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><circle cx="16" cy="27" r="2.6" fill="#1d2a4f"/><circle cx="25" cy="27" r="2.6" fill="#1d2a4f"/><circle cx="34" cy="27" r="2.6" fill="#1d2a4f"/></svg>Reden<small>mit Otti und allen Freunden</small></button>
+    <button class="tile t3 big4" data-go="talk"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 14h34a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6H24l-10 9v-9H8a6 6 0 0 1-6-6V20a6 6 0 0 1 6-6z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M50 26h6a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6h-2v7l-8-7h-6" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><circle cx="16" cy="27" r="2.6" fill="#1d2a4f"/><circle cx="25" cy="27" r="2.6" fill="#1d2a4f"/><circle cx="34" cy="27" r="2.6" fill="#1d2a4f"/></svg>Reden<small>mit Otti &amp; Freunden</small></button>
     <button class="tile t4 big4" data-go="guide"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M40 8a22 22 0 1 0 16 34A18 18 0 0 1 40 8z" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="14" r="2.4" fill="#fff"/><path d="M14 52q4 4 8 0M26 54q4 4 8 0" stroke="#1d2a4f" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>KI-Leitfaden<small>zum Einschlafen</small></button>
   </div>
   <button class="btn wide holdbtn hold parentbtn" id="parentsHold" aria-label="Für Eltern – 3 Sekunden gedrückt halten"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="28" width="36" height="28" rx="7" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M22 28v-7a10 10 0 0 1 20 0v7" fill="none" stroke="#1d2a4f" stroke-width="4"/><circle cx="32" cy="41" r="4" fill="#1d2a4f"/></svg>Für Eltern (3 Sek. halten)</button>
@@ -614,6 +615,18 @@ h3.ch{font-size:19px;margin-bottom:10px}
   </div>
 
   <div class="card">
+    <h3 class="ch">📊 Otti lernt mit</h3>
+    <label class="check"><input type="checkbox" id="lernen"> <span>Einmal am Tag nur Zahlen an DR Lab schicken (z. B. «4 Geschichten, 2 Memory»). Nie Stimme, Bild, Namen oder Text.</span></label>
+    <p class="small muted" id="lernInfo" style="margin:8px 0 0"></p>
+  </div>
+
+  <div class="card">
+    <h3 class="ch">📞 Live reden (Internet)</h3>
+    <p class="small muted" id="liveInfo" style="margin:0 0 10px"></p>
+    <button class="btn wide" id="liveWeg" hidden>Einverständnis zurücknehmen</button>
+  </div>
+
+  <div class="card">
     <h3 class="ch">🎬 So geht Mondschein</h3>
     <p class="small muted" style="margin:0 0 10px">Die kurze Einführung vom ersten Start nochmals ansehen.</p>
     <button class="btn wide" id="tourNochmal">▶ Einführung zeigen</button>
@@ -638,9 +651,9 @@ h3.ch{font-size:19px;margin-bottom:10px}
     <input type="range" id="rate" min="0.7" max="1.3" step="0.05">
     <label class="small muted" for="vol" style="display:block;margin-top:6px">Lautstärke: <b id="volLbl">100%</b></label>
     <input type="range" id="vol" min="0.1" max="1" step="0.05">
-    <label class="small muted" for="voiceSel" style="display:block;margin-top:6px">Stimme</label>
-    <select class="in" id="voiceSel"><option value="">Automatisch (Deutsch)</option></select>
-    <button class="btn wide" id="rateTest" style="margin-top:10px">🔊 Probe hören</button>
+    <select class="in" id="voiceSel" hidden><option value="">Automatisch (Deutsch)</option></select>
+    <p class="small muted" style="margin:10px 0 0">Die Handystimme bleibt aus, weil sie wie ein Roboter klingt. Otti spricht hörbar, sobald seine echten Aufnahmen da sind oder Nova verbunden ist. Bis dahin steht jeder Satz als Text da, und Otti blättert im eingestellten Tempo weiter: schön zum Selbst-Vorlesen.</p>
+    <button class="btn wide" id="rateTest" style="margin-top:10px">▶ Tempo ausprobieren</button>
   </div>
 
   <div class="card">
@@ -696,7 +709,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 
   <div class="card info">
     <h3 class="ch">🔒 Datenschutz</h3>
-    <p>Alles bleibt auf diesem Handy: Einstellungen, Botschaften, Ideen, Kamerabilder. Es gibt kein Konto und keine Werbung. Mondschein sendet nichts ins Internet, ausser du gibst selbst eine Idee oder Nachricht weiter.</p>
+    <p>Alles bleibt auf diesem Handy: Einstellungen, Botschaften, Ideen, Kamerabilder. Es gibt kein Konto und keine Werbung. Mondschein sendet nichts ins Internet, ausser du gibst selbst eine Idee oder Nachricht weiter, setzt das Häkchen bei «Otti lernt mit» (nur Zahlen) oder startest mit deinem Ja ein Live-Gespräch.</p>
     <p class="small muted">Gesprochenes wird nur zum Verstehen kurz vom Gerät (z. B. Apple-Diktat) umgewandelt und nicht gespeichert.</p>
   </div>
   <div class="card info">
@@ -738,6 +751,15 @@ h3.ch{font-size:19px;margin-bottom:10px}
 
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="win" id="liveGate" role="dialog" aria-modal="true" aria-label="Für Eltern">
+  <div class="card" style="max-width:420px">
+    <h3 style="font-size:21px;margin:4px 0 8px">Für Eltern, einmal kurz</h3>
+    <p style="font-size:16px;margin:0 0 8px">Im Live-Gespräch hört Otti wirklich zu. Dafür geht die Stimme deines Kindes über das Internet an den Sprachdienst ElevenLabs (USA), der Ottis Antwort macht.</p>
+    <p style="font-size:16px;margin:0 0 12px">Bitte sei dabei und lass dein Kind keinen Nachnamen, keine Adresse und keine Telefonnummer sagen.</p>
+    <button class="btn wide big primary holdbtn hold" id="liveJa">Einverstanden: 3 Sekunden halten</button>
+    <button class="btn wide" id="liveNein" style="margin-top:10px">Lieber ohne Internet</button>
+  </div>
+</div>
 <div id="tour" hidden role="dialog" aria-label="Willkommen bei Mondschein">
   <div class="tour-karte">
     <div class="tour-bild" id="tourBild"></div>
@@ -762,7 +784,7 @@ const store = {
   get(k, d){ try{ const v = localStorage.getItem('ms_'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
   set(k, v){ try{ localStorage.setItem('ms_'+k, JSON.stringify(v)); }catch(e){} }
 };
-const S = Object.assign({rate:1, vol:1, limit:0, night:'auto', voice:'', name:'', hear:'auto'}, store.get('settings', {}));
+const S = Object.assign({rate:1, vol:1, limit:0, night:'on', voice:'', name:'', hear:'auto'}, store.get('settings', {}));
 const saveS = () => store.set('settings', S);
 // Einmalig: altes, zu langsames Vorlese-Tempo auf «normal» stellen.
 if (S.rateV !== 2){ if (!(S.rate >= 1)) S.rate = 1; S.rateV = 2; saveS(); }
@@ -770,6 +792,14 @@ const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let toastT;
+/* ---------- Mondsterne: für jede fertige Geschichte, jedes gewonnene Memory, jeden ganzen Abend ---------- */
+function zahl(k){ const z = store.get('zahlen', {}); z[k] = (z[k] || 0) + 1; store.set('zahlen', z); }
+function mondstern(grund){
+  const n = store.get('mondsterne', 0) + 1; store.set('mondsterne', n);
+  zahl(grund || 'stern');
+  try{ if (navigator.vibrate) navigator.vibrate([20, 40, 20]); }catch(e){}
+  return n;
+}
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'), 2600); }
 
 /* ---------- Figuren (eigene SVG-Zeichnungen) ---------- */
@@ -976,6 +1006,18 @@ const IOS_TEMPO = (/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.plat
 /* Echte Stimmen (ElevenLabs), einmal aufgenommen und als mp3 in der App: läuft ohne Internet, nichts vom Kind geht raus.
    Liegt für einen Satz keine Aufnahme vor (z.B. mit dem Namen des Kindes), liest die Gerätestimme vor. */
 const STIMME = { set: new Set(), audio: null };
+// Handystimme (speechSynthesis) ist aus. Hörbar spricht Otti nur mit Aufnahmen in stimme/ oder mit verbundener Nova.
+const HANDYSTIMME = false;
+let noteAC = null;
+function leiseNote(i){
+  try{
+    noteAC = noteAC || new (window.AudioContext || window.webkitAudioContext)();
+    if (noteAC.state === 'suspended') noteAC.resume();
+    const hz = [523, 587, 659, 784, 659, 587][i % 6], t = noteAC.currentTime, o = noteAC.createOscillator(), g = noteAC.createGain();
+    o.type = 'sine'; o.frequency.value = hz; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.025 * (S.vol == null ? 1 : +S.vol), t + .02); g.gain.exponentialRampToValueAtTime(.0005, t + .7);
+    o.connect(g); g.connect(noteAC.destination); o.start(t); o.stop(t + .75);
+  }catch(e){}
+}
 // Figuren mit eigener Server-Stimme (Sense Engine, sense-klein.py STIMMEN).
 // Traumli (intern fompa) nicht: die Server-Stimme «fompa» gehört Fompa, dem Löwenäffchen der Steuer-App.
 // Tropfi (intern kiki) nicht: die Server-Stimme «kiki» gehört Kiki, dem singenden Koala.
@@ -993,7 +1035,8 @@ function novaErlaubt(k){
 }
 function stimmeHash(t){ let h = 0x811c9dc5; for (const c of t){ h ^= c.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8,'0'); }
 function stimmeWer(o){ if (o.lang === 'en' || o.flat) return ''; if (o.who) return o.who; const t = typeof TALKERS !== 'undefined' && Object.keys(TALKERS).find(k => TALKERS[k].pitch === o.pitch); return (!t || t === 'sunny') ? 'otti' : t; }
-fetch('stimme/index.json').then(r => r.ok ? r.json() : []).then(l => { (l || []).forEach(k => STIMME.set.add(k)); }).catch(() => {});
+// stimme/index.json listet die aufgenommenen Sätze (leer, bis tools/stimmen sie aufnimmt).
+fetch('stimme/index.json').then(r => r.ok ? r.json() : []).then(l => { (Array.isArray(l) ? l : []).forEach(k => STIMME.set.add(k)); }).catch(() => {});
 const TTS = {
   ok: 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined',
   // Für das Aufnahme-Werkzeug: Sprecher + Text so, wie die App sie sucht.
@@ -1017,7 +1060,6 @@ const TTS = {
     if (typeof list === 'string') list = [list];
     const tok = this.token; let i = o.start || 0;
     const hasRec = list.some(t => STIMME.set.has(this.key(t, o)));
-    if (!this.ok && !hasRec){ if(o.onEnd) setTimeout(()=>{ if(tok===this.token) o.onEnd(); }, 50); return; }
     let nurGeraet = false; // Server-Stimme für diesen Satz fehlt: Gerätestimme
     const next = () => {
       if (tok !== this.token) return;
@@ -1050,6 +1092,9 @@ const TTS = {
         });
         return;
       }
+      // Keine Handystimme mehr (klang roboterhaft, Diego 19.10.): der Satz steht als Text da,
+      // Otti blättert im Tempo eines vorlesenden Erwachsenen weiter. Eine leise Spieldosen-Note als Zeichen.
+      if (!HANDYSTIMME){ if (o.ton !== false) leiseNote(i); this.timer = setTimeout(() => { if (tok !== this.token) return; i++; next(); }, (o.lang === 'en' ? 500 : 700) + text.length * 72 / (S.rate || 1)); return; }
       if (!this.ok){ i++; setTimeout(next, 50); return; }
       const u = new SpeechSynthesisUtterance(text);
       if (o.lang === 'en'){ const ev = this.ok ? speechSynthesis.getVoices().filter(x => /^en/i.test(x.lang)).sort((a,b) => this.rank(b)-this.rank(a) + (/en[-_]GB/i.test(b.lang)?5:0) - (/en[-_]GB/i.test(a.lang)?5:0))[0] : null; if (ev){ u.voice = ev; u.lang = ev.lang; } else u.lang = 'en-GB'; }
@@ -1244,6 +1289,17 @@ function greeting(){
 }
 function renderHome(){
   $('#greet').textContent = greeting();
+  const ms = store.get('mondsterne', 0), alt = store.get('mondsterneGesehen', 0);
+  $('#homeSterneN').textContent = ms; $('#homeSterneT').textContent = ms === 1 ? 'Mondstern' : 'Mondsterne';
+  $('#homeSterne').hidden = !ms;
+  if (ms > alt){
+    store.set('mondsterneGesehen', ms);
+    setTimeout(() => {
+      const c = $('#homeSterne'); c.classList.remove('neu'); void c.offsetWidth; c.classList.add('neu');
+      if (window.filmSterne){ const r = c.getBoundingClientRect(); window.filmSterne(r.left + r.width / 2, r.top + r.height / 2, 12); }
+      $('#greet').textContent = ms - alt > 1 ? `${ms - alt} neue Mondsterne! Du hast jetzt ${ms}.` : `Ein neuer Mondstern für dich! Jetzt hast du ${ms}.`;
+    }, 500);
+  }
   // Tagsüber winkt Otti (Filmclip aus «Otti und Nova»), nachts ruhige Wald-Szene.
   $('#homeSunny').innerHTML = isNight()
     ? `<span class="filmcard"><img id="homeSzene" src="szene-ruhig.jpg" alt="Otti im Mondschein-Wald"><i class="glitzer g1"></i><i class="glitzer g2"></i><i class="glitzer g3"></i></span>`
@@ -1258,6 +1314,10 @@ function renderHome(){
 const sunnyLines = ['Na, wollen wir eine Geschichte hören?', 'Ich bin Otti. Meine Stacheln sind ganz weich – fast.', 'Tropfi und Nova warten schon auf dich!', 'Weisst du, was ich am liebsten mag? Walderdbeeren!', 'Hihi, das kitzelt!'];
 let sunnyIdx = 0;
 $('#homeLetter').addEventListener('click', () => { const L = letterSel(); if (L) openLetter(L, 'home'); });
+$('#homeSterne').addEventListener('click', () => {
+  const n = store.get('mondsterne', 0);
+  $('#greet').textContent = `Du hast schon ${n} ${n === 1 ? 'Mondstern' : 'Mondsterne'}! Für jede Geschichte, jedes Memory und jeden ganzen Abend gibt es einen.`;
+});
 $('#homeSunny').addEventListener('click', () => {
   const line = sunnyIdx === 0 ? greeting() : sunnyLines[(sunnyIdx-1) % sunnyLines.length];
   sunnyIdx++;
@@ -1670,6 +1730,7 @@ $('#rContent').addEventListener('keydown', e => { if (e.target.id==='rType' && e
 function finishStory(){
   TTS.stop(); R.reading = false;
   if (R.story.id){ const d = store.get('done', {}); d[R.story.id] = Date.now(); store.set('done', d); }
+  mondstern('geschichten'); setTimeout(() => toast('⭐ Ein Mondstern für dich!'), 900);
   $('#rBody').hidden = true; $('#rEnd').hidden = false;
   const f = $('#rEndFig'); f.innerHTML = sunnySVG({sleep:true, cls:'float'}); f.firstElementChild.style.width='170px'; f.firstElementChild.style.height='170px';
   const nm = (R.story.kid || S.name);
@@ -1809,6 +1870,7 @@ function winGame(){
   const s = $('#gWinFig .fig'); s.style.width='150px'; s.style.height='150px';
   $('#gWinText').textContent = `Alle 6 Paare gefunden – in ${game.moves} Zügen!`;
   $('#gWin').classList.add('on');
+  mondstern('memory');
   TTS.speak(`Super gemacht${S.name ? ', '+S.name : ''}! Du hast alle Paare gefunden.`);
 }
 $('#mem').addEventListener('click', e => { const b=e.target.closest('[data-card]'); if (b) flip(+b.dataset.card); });
@@ -2384,7 +2446,7 @@ $('#tReset').addEventListener('click', () => { const u=usage(); u.ms=0; u.bonus=
 $('#rate').addEventListener('input', e => { S.rate = +e.target.value; $('#rateLbl').textContent = rateLabel(S.rate); saveS(); });
 $('#vol').addEventListener('input', e => { S.vol = +e.target.value; $('#volLbl').textContent = Math.round(S.vol*100)+'%'; saveS(); });
 $('#voiceSel').addEventListener('change', e => { S.voice = e.target.value; saveS(); });
-$('#rateTest').addEventListener('click', () => { if (!TTS.ok){ toast('Vorlesen geht auf diesem Gerät nicht.'); return; } TTS.speak('Hallo, ich bin Otti. So schnell lese ich dir vor. Gute Nacht!'); });
+$('#rateTest').addEventListener('click', () => { toast('Hallo, ich bin Otti. So schnell blättere ich weiter.'); TTS.speak(['Hallo, ich bin Otti.', 'So schnell blättere ich weiter.', 'Gute Nacht!']); });
 $('#pNameSave').addEventListener('click', () => { S.name = cleanName($('#pName').value).slice(0,24); saveS(); $('#pName').value = S.name; toast(S.name ? `Gespeichert: ${S.name}` : 'Name gelöscht'); });
 $('#chips').addEventListener('click', e => { const b=e.target.closest('[data-chip]'); if(!b) return; const t=$('#ideaText'); t.value = (t.value.trim() ? t.value.trim()+'\n' : '') + b.dataset.chip; t.focus(); });
 function ideas(){ return store.get('ideas', []); }
@@ -2980,7 +3042,7 @@ window.MS_TEXTE = () => {
   const ritStand = () => { const r = store.get('ritual', {}); return r.tag === tag() ? r : {tag: tag(), ok: []}; };
   function ritOk(id){
     const r = ritStand(); if (!r.ok.includes(id)) r.ok.push(id); store.set('ritual', r);
-    if (r.ok.length === SCHRITTE.length){ const a = store.get('abende', []); if (!a.includes(r.tag)){ a.push(r.tag); store.set('abende', a.slice(-400)); } }
+    if (r.ok.length === SCHRITTE.length){ const a = store.get('abende', []); if (!a.includes(r.tag)){ a.push(r.tag); store.set('abende', a.slice(-400)); mondstern('abende'); } }
   }
   function storyVorschlag(){
     const done = store.get('done', {});
@@ -3172,11 +3234,63 @@ window.MS_TEXTE = () => {
   $('#tourWeiter').addEventListener('click', () => { if (tourI < TOUR.length - 1){ tourI++; tourZeigen(); } else tourEnde(); });
   $('#tourSkip').addEventListener('click', tourEnde);
   $('#tourNochmal').addEventListener('click', tourStart);
-  if (!store.get('tourGesehen', 0) && location.hash !== '#gutenacht') setTimeout(() => {
+  // Erster Start: keine Textkarten. Otti grüsst, und der Mond-Knopf leuchtet als klarer erster Schritt.
+  // Die Einführung gibt es weiter im Elternbereich.
+  function ersterSchritt(){
+    if (store.get('gnGetippt', 0)) return;
+    $('#homeGN').classList.add('lockt');
+    $('#greet').textContent = `Hallo${S.name ? ', ' + S.name : ''}! Ich bin Otti. Tipp auf den Mond, dann machen wir es uns gemütlich.`;
+    const h = $('#homeSunny'); h.classList.remove('hopp'); void h.offsetWidth; h.classList.add('hopp');
+  }
+  if (location.hash !== '#gutenacht') setTimeout(() => {
     const fs = document.getElementById('figurStart');
-    if (!fs || fs.hidden) tourStart();
-    else document.getElementById('figurStartGo').addEventListener('click', () => setTimeout(tourStart, 750), {once:true});
+    if (!fs || fs.hidden) ersterSchritt();
+    else document.getElementById('figurStartGo').addEventListener('click', () => setTimeout(ersterSchritt, 750), {once:true});
   }, 400);
+  $('#homeGN').addEventListener('click', () => { store.set('gnGetippt', 1); $('#homeGN').classList.remove('lockt'); });
+
+  /* ---------- Live-Reden über den Nova-Knopf nur mit dem Ja der Eltern (gleich wie in der Otti-App) ---------- */
+  const LIVE_OK = 'otti_eltern_ok';
+  const liveOk = () => { try{ return localStorage.getItem(LIVE_OK) === '1'; }catch(e){ return false; } };
+  let liveZiel = null;
+  document.addEventListener('click', e => {
+    const t = e.target && e.target.closest && e.target.closest('.nova-pille, .nova-live-knopf');
+    if (!t || liveOk()) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    liveZiel = t; TTS.stop(); $('#liveGate').classList.add('on');
+  }, true);
+  holdButton($('#liveJa'), () => {
+    try{ localStorage.setItem(LIVE_OK, '1'); }catch(e){}
+    $('#liveGate').classList.remove('on');
+    const z = liveZiel; liveZiel = null; if (z) setTimeout(() => z.click(), 50);
+  });
+  $('#liveNein').addEventListener('click', () => { $('#liveGate').classList.remove('on'); liveZiel = null; });
+
+  /* ---------- Lern-Zahlen: nur mit Häkchen, nur Zahlen, einmal am Tag über Nova (/erfahrung) ---------- */
+  const lernenAn = () => store.get('lernen', 0) === 1;
+  const novaWert = k => { let v = ''; try{ v = localStorage.getItem(k) || ''; v = JSON.parse(v); }catch(e){} return String(v || '').trim(); };
+  function lernZahlenSchicken(){
+    if (!lernenAn() || !navigator.onLine) return;
+    const heute = new Date().toISOString().slice(0, 10);
+    if (store.get('lernenTag', '') === heute) return;
+    const a = novaWert('drlab-hermes-adresse').replace(/\/+$/, ''), k = novaWert('drlab-hermes-passwort');
+    if (!/^https:\/\//.test(a) || !k) return;
+    const z = Object.assign({}, store.get('zahlen', {}), { mondsterne: store.get('mondsterne', 0), abende: store.get('abende', []).length });
+    fetch(a + '/erfahrung', { method:'POST', keepalive:true, headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + k },
+      body: JSON.stringify({ app:'Mondschein', art:'lernzahlen', frage: JSON.stringify(z), antwort:'' }) })
+      .then(r => { if (r.ok) store.set('lernenTag', heute); }).catch(() => {});
+  }
+  function lernInfo(){
+    $('#lernen').checked = lernenAn();
+    $('#lernInfo').textContent = !lernenAn() ? 'Aus. Nichts verlässt das Handy.' : novaWert('drlab-hermes-adresse') ? 'An. Zuletzt geschickt: ' + (store.get('lernenTag', '') || 'noch nie') + '.' : 'An, aber Nova ist auf diesem Handy noch nicht verbunden. Dann wird nichts geschickt.';
+    $('#liveInfo').textContent = liveOk() ? 'Du hast dem Live-Gespräch zugestimmt. Die Stimme deines Kindes geht dabei an ElevenLabs (USA).' : 'Noch nicht zugestimmt. Otti fragt dich vor dem ersten Live-Gespräch.';
+    $('#liveWeg').hidden = !liveOk();
+  }
+  $('#lernen').addEventListener('change', e => { store.set('lernen', e.target.checked ? 1 : 0); lernInfo(); lernZahlenSchicken(); });
+  $('#liveWeg').addEventListener('click', () => { try{ localStorage.removeItem(LIVE_OK); }catch(e){} lernInfo(); });
+  new MutationObserver(() => { if ($('#s-parents').classList.contains('on')) lernInfo(); }).observe($('#s-parents'), { attributes:true, attributeFilter:['class'] });
+  addEventListener('online', lernZahlenSchicken);
+  setTimeout(lernZahlenSchicken, 5000);
 
   /* ---------- Ohne Internet: freundlicher Hinweis ---------- */
   addEventListener('offline', () => toast('Kein Internet? Kein Problem: Geschichten, Spiele und Nachtlicht gehen weiter.'));
@@ -3190,7 +3304,7 @@ window.MS_TEXTE = () => {
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>
-<script src="../nova/nova.js" data-nova-app="Mondschein" data-nova-kind="1" data-nova-bild="figur.jpg" defer></script>
+<script src="../nova/nova.js" data-nova-app="Mondschein" data-nova-kind="1" data-nova-bild="figur.jpg" data-nova-geraetestimme="0" defer></script>
 <script src="feedback.js" data-app="Mondschein" defer></script>
 <!-- Figuren-Film (Trickfilm-Look): Farben, Funken, Atmen, Tipp-Reaktion, Szenenwechsel. Nur Optik. -->
 <style id="figurFilmCss">
@@ -3251,9 +3365,10 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
   if(s){
     for(var i=0;i<16;i++){var f=document.createElement('i');f.className='film-funke';f.style.left=(5+Math.random()*90)+'%';f.style.top=(8+Math.random()*84)+'%';f.style.setProperty('--c',farben[i%3]);f.style.setProperty('--d',(3.5+Math.random()*3)+'s');f.style.setProperty('--v',(Math.random()*4)+'s');s.appendChild(f);}
     var go=document.getElementById('figurStartGo');
-    if(go)go.onclick=function(e){sterne(e.clientX,e.clientY,10);try{sessionStorage.setItem('figurStart','1');}catch(x){}
+    if(go)go.onclick=function(e){sterne(e.clientX,e.clientY,10);try{sessionStorage.setItem('figurStart','1');localStorage.setItem('ms_figurStart','1');}catch(x){}
       if(ruhig){s.hidden=true;return;}s.classList.add('geht');setTimeout(function(){s.hidden=true;s.classList.remove('geht');},700);};
   }
+  window.filmSterne=function(x,y,n){sterne(x,y,n);};
   function sterne(x,y,n){if(ruhig||!x)return;for(var i=0;i<n;i++){var st=document.createElement('i');st.className='film-stern';var w=Math.random()*Math.PI*2,r=30+Math.random()*40;st.style.left=x+'px';st.style.top=y+'px';st.style.setProperty('--x',Math.cos(w)*r+'px');st.style.setProperty('--y',Math.sin(w)*r+'px');st.style.setProperty('--c',farben[i%4]);document.body.appendChild(st);setTimeout(st.remove.bind(st),800);}}
   // Figur reagiert auf Tipp
   document.addEventListener('click',function(e){
@@ -3297,11 +3412,11 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 /* ---------- Gute-Nacht-Knopf ---------- */
 .gnbtn{display:flex;align-items:center;gap:12px;justify-content:flex-start;text-align:left;background:linear-gradient(135deg,#24336b,#121a3d);color:#fff6d6;border:2px solid #f2c14e;box-shadow:0 5px 0 #0b1026,0 0 24px rgba(242,193,78,.35);margin-bottom:12px}
 .gnbtn .mo{font-size:34px;filter:drop-shadow(0 0 8px rgba(255,214,107,.8));animation:float 4.5s ease-in-out infinite}
-.gnbtn small{display:block;font-weight:600;opacity:.85;font-size:13px}
+.gnbtn small{display:block;font-weight:600;opacity:.85;font-size:16px}
 .rit-list{display:grid;gap:10px}
 .rit{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border-radius:22px;padding:12px 14px;border:2px solid var(--line,#d9def0);background:var(--card,#fff);color:inherit;font:inherit;font-weight:800;font-size:17px;cursor:pointer}
 .rit .nr{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:24px;background:var(--sky)}
-.rit small{display:block;font-weight:600;opacity:.75;font-size:13px}
+.rit small{display:block;font-weight:600;opacity:.8;font-size:16px}
 .rit.ok{border-color:#5fb26b}.rit.ok .nr{background:#c9ecc9}
 .rit.next{box-shadow:0 0 0 3px rgba(242,193,78,.6)}
 .rit-head{text-align:center;margin:4px 0 12px}
@@ -3324,7 +3439,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 @keyframes ottiSchlaf{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
 .favbtn{margin-bottom:12px;display:flex;align-items:center;gap:12px;justify-content:flex-start;text-align:left;background:linear-gradient(135deg,#fff3c4,#ffd66b);color:#1d2a4f;border:2px solid #f2b43a}
 .favbtn>span:first-child{font-size:30px}
-.favbtn small{display:block;font-weight:600;opacity:.8;font-size:13px}
+.favbtn small{display:block;font-weight:600;opacity:.8;font-size:16px}
 #tour{position:fixed;inset:0;z-index:2147483500;background:rgba(5,9,30,.82);display:flex;align-items:center;justify-content:center;padding:16px}
 #tour[hidden]{display:none}
 #tour .tour-karte{width:100%;max-width:400px;background:linear-gradient(160deg,#1b2a63,#0e1740);color:#fff6e3;border:2px solid #f2c14e;border-radius:26px;padding:20px 18px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:filmAuf .4s ease}
@@ -3337,6 +3452,18 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 #tour .btn{color:#1d2a4f}
 @media (prefers-reduced-motion:reduce){.fig.otti-wippt{animation:none!important}}
 @media (prefers-reduced-motion:reduce){.stage.kino>.kul svg,.stage.kino>.kul .kinobild,.kul .tw,.kul .tw2,.kul .steig,.kul .steig2,.kul .blink,.kul .schweb,#nachtlicht .nl-mond{animation:none!important}}
+/* ---------- Runde 3: erster Eindruck ---------- */
+.sternchip{display:flex;align-items:center;gap:6px;margin:12px auto 0;min-height:44px;padding:0 18px;border-radius:999px;border:2px solid var(--moon2);background:var(--card);font-weight:800;font-size:17px;box-shadow:var(--shadow)}
+.sternchip b{font-size:19px}
+.sternchip.neu{animation:sternNeu .7s cubic-bezier(.3,1.6,.5,1)}
+@keyframes sternNeu{40%{transform:scale(1.25) rotate(-4deg)}}
+.gnbtn.lockt{animation:gnLockt 2.4s ease-in-out infinite}
+@keyframes gnLockt{0%,60%,100%{box-shadow:0 5px 0 #0b1026,0 0 24px rgba(242,193,78,.35)}30%{box-shadow:0 5px 0 #0b1026,0 0 0 6px rgba(242,193,78,.45),0 0 40px rgba(242,193,78,.6)}}
+:root[data-night="1"] .tile svg{background:#fff6e3;border-radius:18px;padding:5px;box-sizing:content-box;width:54px;height:54px}
+:root[data-night="1"] .tile:before{opacity:.35}
+:root[data-night="1"] .parentbtn{color:#b9c1dc}
+:root[data-night="1"] .muted{color:#a3aac4}
+@media (prefers-reduced-motion:reduce){.gnbtn.lockt,.sternchip.neu{animation:none}}
 </style>
 
 </body>
