@@ -488,7 +488,7 @@ const DB = [
  ["melone","Melone",["melone","melonen","wassermelone","honigmelone"],250,"Portion",[30,.6,.2,7,.4,7,.2,10,8,0,0],"fr"],
  ["steinobst","Steinobst",["kirschen","zwetschgen","pflaumen","aprikosen","pfirsich","pfirsiche","nektarine","nektarinen"],150,"Portion",[50,.9,.2,11,1.8,12,.3,10,7,0,0],"fr"],
  ["doerr","Trockenfrüchte",["datteln","dörrfrüchte","doerrfruechte","trockenfrüchte","rosinen","feigen","dörrbirnen"],40,"Handvoll",[290,2.5,.4,66,7,50,1.5,45,0,0,0]],
- ["pilze","Pilze",["pilze","champignons","steinpilze","eierschwämmli","eierschwaemmli"],150,"Portion",[22,3,.3,3,1,3,.5,9,2,.2,0],"v"],
+ ["pilze","Pilze",["pilze","pilzen","champignon","champignons","steinpilze","eierschwämmli","eierschwaemmli"],150,"Portion",[22,3,.3,3,1,3,.5,9,2,.2,0],"v"],
  ["mais","Mais",["mais","maiskolben"],150,"Portion",[86,3.3,1.4,19,2.7,2,.5,37,7,0,0],"v"],
  ["kuerbis","Kürbis",["kürbis","kuerbis","süsskartoffel","suesskartoffel","süsskartoffeln","suesskartoffeln"],200,"Portion",[60,1.3,.1,14,2.8,25,.6,20,10,0,0],"v"],
  ["grbohnen","Grüne Bohnen",["grüne bohnen","gruene bohnen","bohnen grün","fisolen"],150,"Portion",[31,1.8,.2,7,2.7,37,1,25,12,0,0],"v"],
@@ -815,6 +815,14 @@ $("#cancel").onclick=closeSheet;$("#sheetbg").onclick=closeSheet;
 /* ---------- Eingabe ---------- */
 $("#send").onclick=()=>{const v=$("#txt").value;if(v.trim())openSheet(v)};
 $("#txt").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#send").click()}});
+/* Flo-Gespräch: wer Flo sein Essen erzählt, bekommt es gleich zum Bestätigen */
+window.SPRECHEN_EIGEN=t=>{
+  const l=parse(t).filter(i=>i.food); if(!l.length) return null;
+  const n=[...new Set(l.map(i=>BYID[i.food][1]))];
+  const liste=n.length>1?n.slice(0,-1).join(", ")+" und "+n[n.length-1]:n[0];
+  setTimeout(()=>{const b=document.querySelector(".sp-blase");if(b)b.classList.remove("on");openSheet(t)},2500);
+  return {text:`Mmh, ${liste}. Ich habe es notiert, schau kurz, ob die Mengen stimmen.`};
+};
 $("#txt").addEventListener("input",function(){this.style.height="auto";this.style.height=Math.min(120,this.scrollHeight)+"px"});
 const EX=["Heute Morgen zwei Eier und Brot, mittags Pasta und nachmittags einen Apfel","Birchermüesli und ein Cappuccino","45 Minuten joggen und 8000 Schritte","Zmittag Pouletcurry mit Reis","Znacht Salat, 150 g Lachs und Kartoffeln"];
 $("#examples").innerHTML=EX.map(x=>`<button class="chip">${x.length>34?x.slice(0,32)+"…":x}</button>`).join("");
