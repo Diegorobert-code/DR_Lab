@@ -1,7 +1,7 @@
 /* TradePing – Runde 2 (19.10.2026)
    Aus den Threads «Börse während der Ferien» und «Börse heute»:
    «Wie sieht die Börse heute aus?» (Mr. Ping fasst zusammen, mit Server freier),
-   Aufteilungs-Rechner (1, 2 oder 4 Titel: Gebühren, Break-even, Regel mind. CHF 100),
+   Aufteilungs-Rechner (1, 2 oder 4 Titel: Gebühren, Break-even, Regel mind. CHF 50),
    Ping-Plan 15:35 / 18:35 / 21:35 (Mr. Ping zeigt die Tafel, solange die App offen ist),
    Termine der Woche (Zahlen, Teuerung …) mit Erinnerung am Vortag,
    Kaufdaten zum Weitergeben (Titel, Einsatz, Kaufkurs), Willkommen beim ersten Start,
@@ -61,7 +61,7 @@
     var us = M.boerse('America/New_York', 570, 960), ch = M.boerse('Europe/Zurich', 540, 1050);
     var teile = [];
     teile.push(us.offen ? 'Die US-Börse ist offen.' : ch.offen ? 'Die Schweizer Börse ist offen, New York öffnet um ' + us.um + '.' : 'Die Börsen sind gerade zu' + (us.um ? ', New York öffnet um ' + us.um : '') + '.');
-    if (!z.length) teile.push('Noch keine Titel mit Kurs. Trag Titel im Übungstopf oder in der Watchlist ein, dann sage ich dir, was läuft.');
+    if (!z.length) teile.push('Noch keine Titel mit Kurs. Trag Titel im Spieltopf oder in der Watchlist ein, dann sage ich dir, was läuft.');
     else {
       var auf = z.slice().sort(function (a, b) { return b.d - a.d; })[0], ab = z.slice().sort(function (a, b) { return a.d - b.d; })[0];
       var ruhig = z.every(function (x) { return Math.abs(x.d) < 2; });
@@ -96,14 +96,14 @@
   }
 
   /* ---------- Aufteilungs-Rechner ---------- */
-  var aufK = M.karte('mpAufteilung', 'Wie aufteilen?', 'Gleicher Topf, verschieden viele Titel: Was kosten die Gebühren hin und zurück, ab wann bist du im Plus? Regel: mindestens CHF 100 pro Titel.',
+  var aufK = M.karte('mpAufteilung', 'Wie aufteilen?', 'Gleicher Topf, verschieden viele Titel: Was kosten die Gebühren hin und zurück, ab wann bist du im Plus? Regel: mindestens CHF 50 pro Titel.',
     '<div class="mp-felder"><label>Topf CHF<input id="mp2Topf" inputmode="decimal" placeholder="200"></label><label>Art<select id="mp2Art"><option value="usd">Aktien in USD</option><option value="chf">Aktien in CHF</option><option value="krypto">Krypto</option></select></label></div>' +
     '<div id="mp2Auf"></div>');
   function aufteilung() {
     var topfCHF = zahl($('mp2Topf').value) || (M.settings().topf > 0 ? M.settings().topf : 200), art = $('mp2Art').value;
     var zeilen = [1, 2, 4, 5].map(function (n) {
-      var je = topfCHF / n, g = (M.gebuehr(je, art) * 2) * n, be = topfCHF ? g / topfCHF * 100 : 0, ok = je >= 100;
-      return '<tr><td>' + n + ' × ' + Math.round(je) + '</td><td>' + chf(g) + '</td><td>' + proz(be) + '</td><td class="' + (ok ? 'ok' : 'no') + '">' + (ok ? '✓' : 'unter 100') + '</td></tr>';
+      var je = topfCHF / n, g = (M.gebuehr(je, art) * 2) * n, be = topfCHF ? g / topfCHF * 100 : 0, ok = je >= 50;
+      return '<tr><td>' + n + ' × ' + Math.round(je) + '</td><td>' + chf(g) + '</td><td>' + proz(be) + '</td><td class="' + (ok ? 'ok' : 'no') + '">' + (ok ? '✓' : 'unter 50') + '</td></tr>';
     });
     $('mp2Auf').innerHTML = '<table class="mp2-tabelle"><tr><th>Titel</th><th>Gebühren</th><th>Break-even</th><th>Regel</th></tr>' + zeilen.join('') + '</table>' +
       '<p class="note" style="margin:8px 0 0">Gerechnet mit den Yuh-Sätzen, bitte in der App nachprüfen.' + (topfCHF > 2000 ? ' Ab diesem Topf gilt zusätzlich: höchstens 5 % pro Titel.' : '') + ' Keine Anlageberatung.</p>';
@@ -138,7 +138,7 @@
 
   /* ---------- Termine der Woche ---------- */
   var terminK = M.karte('mpTermineWoche', 'Termine der Woche', 'Zum Beispiel Quartalszahlen, US-Teuerung oder Zinsentscheid. Mr. Ping erinnert dich am Tag davor.',
-    '<div id="mp2Termine"></div><div class="mp-felder"><label>Datum<input id="mp2TDatum" type="date"></label><label>Was<input id="mp2TWas" placeholder="z. B. Zahlen NVDA" maxlength="60"></label></div>' +
+    '<div id="mp2Termine"></div><div class="mp-felder"><label>Datum<input id="mp2TDatum" type="date"></label><label>Was<input id="mp2TWas" placeholder="z. B. Quartalszahlen" maxlength="60"></label></div>' +
     '<div class="mp-reihe"><button class="btn ghost" type="button" id="mp2TAdd">+ Termin</button></div>');
   function renderTermine() {
     R.termine = R.termine.filter(function (x) { return tageBis(x.datum) >= -1; }).sort(function (a, b) { return a.datum.localeCompare(b.datum); });
@@ -153,7 +153,7 @@
     '<div class="mp-reihe"><button class="btn ghost" type="button" id="mp2Kauf">📤 Kaufdaten teilen</button></div><p class="note" id="mp2KaufInfo" style="margin:6px 0 0"></p>');
   function kaufdaten() {
     var p = M.topf().filter(function (x) { return x.einsatz > 0; });
-    if (!p.length) { $('mp2KaufInfo').textContent = 'Im Übungstopf steht noch kein Titel mit Einsatz.'; return; }
+    if (!p.length) { $('mp2KaufInfo').textContent = 'Im Spieltopf steht noch kein Titel mit Einsatz.'; return; }
     var t = ['KAUFDATEN TradePing · ' + datumCH(heute()) + new Date().getFullYear()].concat(p.map(function (x) {
       return String(x.symbol || x.name || '?').toUpperCase() + ' · Einsatz CHF ' + x.einsatz + (x.kauf ? ' · Kaufkurs ' + x.kauf : ' · Kaufkurs fehlt') + (x.stueck ? ' · Stück ' + x.stueck : '');
     })).concat(['Bitte Grenzen (−15 %) und Ziel (+30 %) im Ping-Plan einrichten. Keine Anlageberatung.']).join('\n');
@@ -164,7 +164,7 @@
   function willkommen() {
     if (R.willkommen) return;
     var w = document.createElement('div'); w.className = 'mp2-will'; w.setAttribute('role', 'dialog'); w.setAttribute('aria-modal', 'true');
-    w.innerHTML = '<div><img src="figur-gross.jpg" alt="Mr. Ping"><h2>Guten Tag, ich bin Mr. Ping</h2><p>Ich halte Wache über deine Marken und rechne ruhig mit.</p><ul><li>Marke eintragen, ich melde mich, wenn sie erreicht ist.</li><li>Vor jedem Kauf: Gebühren, Break-even, Chance zu Risiko.</li><li>Regeln: mindestens CHF 100 pro Titel, Grenze vor dem Kauf, Pause ab −25 %.</li><li>Kaufen tust nur du. Ich bin keine Anlageberatung.</li></ul><div class="mp-reihe"><button class="btn pri" type="button" id="mp2WillOk">Los geht\'s</button></div></div>';
+    w.innerHTML = '<div><img src="figur-gross.jpg" alt="Mr. Ping"><h2>Guten Tag, ich bin Mr. Ping</h2><p>Ich halte Wache über deine Marken und rechne ruhig mit.</p><ul><li>Marke eintragen, ich melde mich, wenn sie erreicht ist.</li><li>Vor jedem Kauf: Gebühren, Break-even, Chance zu Risiko.</li><li>Regeln: mindestens CHF 50 pro Titel, Grenze vor dem Kauf, Pause ab −25 %.</li><li>Kaufen tust nur du. Ich bin keine Anlageberatung.</li></ul><div class="mp-reihe"><button class="btn pri" type="button" id="mp2WillOk">Los geht\'s</button></div></div>';
     document.body.appendChild(w);
     $('mp2WillOk').onclick = function () { R.willkommen = true; r2Save(); w.remove(); M.pose('jubel', 'Schön, dass Sie da sind. Ich halte Wache.'); };
   }

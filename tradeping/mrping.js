@@ -259,7 +259,7 @@
     var x = tafelDaten(), out = [];
     function e(s) { return html ? esc(s) : s; }
     out.push(e('Ping ' + hhmm(Date.now()) + ' (' + x.basis + ')'));
-    if (!x.zeilen.length) out.push(e('Noch keine Kurse. Trag im Übungstopf Kürzel und'), e('Kaufkurs ein oder füge Krypto zur Watchlist hinzu.'));
+    if (!x.zeilen.length) out.push(e('Noch keine Kurse. Trag im Spieltopf Kürzel und'), e('Kaufkurs ein oder füge Krypto zur Watchlist hinzu.'));
     x.zeilen.forEach(function (z) {
       var pf = z.d == null ? ' ' : z.d >= 0.05 ? '▲' : z.d <= -0.05 ? '▼' : '=';
       var links = (z.ping ? 'PING ' : '     ') + pf + ' ' + (z.sym + '     ').slice(0, 5) + ' ' + (kurs(z.p) + '         ').slice(0, 8) + ' ' + proz(z.d) + (z.h24 ? ' 24h' : '') + (z.regel ? '  ' + z.regel : '');
@@ -287,7 +287,7 @@
     '<label>Art<select id="mpArt"><option value="usd">Aktie in USD</option><option value="chf">Aktie in CHF</option><option value="krypto">Krypto</option></select></label>' +
     '<label>Verlustgrenze %<input id="mpStop" inputmode="decimal" value="15"></label>' +
     '<label>Ziel %<input id="mpZiel" inputmode="decimal" value="30"></label>' +
-    '<label class="ganz">Kürzel (freiwillig)<input id="mpSym" autocapitalize="characters" autocomplete="off" maxlength="12" placeholder="z. B. NVDA"></label>' +
+    '<label class="ganz">Kürzel (freiwillig)<input id="mpSym" autocapitalize="characters" autocomplete="off" maxlength="12" placeholder="Kürzel"></label>' +
     '</div><div class="mp-ergebnis" id="mpRechnung" aria-live="polite"></div>' +
     '<div class="mp-reihe"><button class="btn ghost" type="button" id="mpInsJournal">📒 Als Trade ins Journal</button></div>');
   function rechne() {
@@ -299,7 +299,7 @@
     var verlust = ein * stop / 100 + g, gewinn = ein * ziel / 100 - g, cr = verlust > 0 ? gewinn / verlust : 0;
     var s = settings(), topfCHF = s.topf > 0 ? s.topf : 200, maxP = art === 'krypto' ? 10 : (s.topfMax > 0 ? s.topfMax : 5);
     var regeln = [];
-    if (ein && ein < 100) regeln.push('<span class="mp-no">Unter CHF 100:</span> Die Mindestgebühr frisst viel weg. Spieltopf-Regel: mindestens CHF 100 pro Titel' + (topfCHF >= 100 ? ', bei deinem Topf also höchstens ' + Math.max(1, Math.floor(topfCHF / 100)) + ' Titel' : '') + '.');
+    if (ein && ein < 50) regeln.push('<span class="mp-no">Unter CHF 50:</span> Die Mindestgebühr frisst viel weg. Spieltopf-Regel: mindestens CHF 50 pro Titel' + (topfCHF >= 50 ? ', bei deinem Topf also höchstens ' + Math.max(1, Math.floor(topfCHF / 50)) + ' Titel' : '') + '.');
     if (topfCHF > 2000 && ein > topfCHF * maxP / 100) regeln.push('<span class="mp-no">Mehr als ' + maxP + ' % vom Topf</span> (CHF ' + topfCHF + '). Deine Leitlinie: ' + (art === 'krypto' ? 'Krypto höchstens 10 %.' : 'höchstens ' + maxP + ' % pro Titel.') + ' Nur ein Hinweis, keine Sperre.');
     if (art === 'krypto' && stop && stop < 20) regeln.push('Krypto schwankt stark. Deine Leitlinie schlägt −20 % als Grenze vor.');
     if (sym && ruestung(sym)) regeln.push('<span class="mp-no">' + esc(sym) + ' ist ein Rüstungstitel.</span> Deine Leitlinie: keine Rüstung. Mr. Ping begleitet das nicht.');
@@ -317,7 +317,7 @@
   function jSave() { save(K.journal, journal); }
   var jk = karte('mpJournal', 'Trading-Journal', 'Pro Trade eine Zeile: Grund vorher, Lehre nachher. Bei «Papier» handelt Mr. Ping selbst nach deinen Regeln (Verlustgrenze und Ziel) und schreibt es auf. Echtes Geld bewegt nur du.',
     '<div class="mp-felder">' +
-    '<label>Titel / Kürzel<input id="jSym" autocapitalize="characters" autocomplete="off" maxlength="12" placeholder="z. B. NVDA"></label>' +
+    '<label>Titel / Kürzel<input id="jSym" autocapitalize="characters" autocomplete="off" maxlength="12" placeholder="Kürzel"></label>' +
     '<label>Art<select id="jArt"><option value="papier">Papier (Mr. Ping handelt)</option><option value="echt">Echt (Yuh, du handelst)</option></select></label>' +
     '<label>Einsatz CHF<input id="jEin" inputmode="decimal" placeholder="100"></label>' +
     '<label>Kaufkurs<input id="jKauf" inputmode="decimal" placeholder="Kurs beim Kauf"></label>' +
@@ -399,9 +399,9 @@
     save(K.verlauf, verlauf);
   }
   var bereich = 'woche';
-  var wk = karte('mpWoche', 'Verlauf und Wochenbilanz', 'Wie sich dein Übungstopf bewegt hat, und was Mr. Ping daraus lernt. Er schlägt höchstens vor, du entscheidest.',
+  var wk = karte('mpWoche', 'Verlauf und Wochenbilanz', 'Wie sich dein Spieltopf bewegt hat, und was Mr. Ping daraus lernt. Er schlägt höchstens vor, du entscheidest.',
     '<div class="mp-seg" role="group" aria-label="Zeitraum"><button type="button" data-b="heute">Heute</button><button type="button" data-b="woche">Woche</button><button type="button" data-b="alles">Alles</button></div>' +
-    '<svg class="mp-spark" id="mpSpark" viewBox="0 0 300 90" preserveAspectRatio="none" role="img" aria-label="Verlauf des Übungstopfs"></svg>' +
+    '<svg class="mp-spark" id="mpSpark" viewBox="0 0 300 90" preserveAspectRatio="none" role="img" aria-label="Verlauf des Spieltopfs"></svg>' +
     '<div class="mp-ergebnis" id="mpBilanz"></div>');
   function renderVerlauf() {
     document.querySelectorAll('#mpWoche [data-b]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.b === bereich)); });
@@ -428,7 +428,7 @@
     var lehre = oft.length ? 'Die untere Marke bei ' + oft.join(', ') + ' wurde diese Woche mehrmals berührt. Ist sie zu eng gesetzt? Verschieben nur nach oben, nie nach unten. Du entscheidest.' :
       pings.length ? 'Die Pings kamen, die Regeln haben gehalten. Weiter so, in Ruhe.' : 'Ruhige Woche. Kein Ping heisst: alles ruhig.';
     $('mpBilanz').innerHTML = '<p><b>Letzte 7 Tage</b></p><p>Pings: ' + pings.length + (pings.length ? ' (' + pings.slice(0, 40).map(function (e) { return e.sym; }).filter(function (v, i, a) { return a.indexOf(v) === i; }).join(', ') + ')' : '') + '</p>' +
-      (bew != null ? '<p>Übungstopf: <b class="' + (bew >= 0 ? 'mp-ok' : 'mp-no') + '">' + chf(bew) + '</b></p>' : '') +
+      (bew != null ? '<p>Spieltopf: <b class="' + (bew >= 0 ? 'mp-ok' : 'mp-no') + '">' + chf(bew) + '</b></p>' : '') +
       (zuW.length ? '<p>Journal: ' + zuW.length + ' Trade(s) abgeschlossen</p>' : '') +
       '<p>Mr. Ping prüft sich: ' + lehre + '</p>';
   }
@@ -485,7 +485,7 @@
   nach(spielSek, rechner); nach(rechner, jk); nach(jk, wk);
   var footer = document.querySelector('.wrap footer');
   if (footer) { footer.parentNode.insertBefore(lex, footer); footer.parentNode.insertBefore(merkt, footer); }
-  // Pause-Hinweis mit Jackie im Übungstopf
+  // Pause-Hinweis mit Jackie im Spieltopf
   var pauseBox = document.createElement('div'); pauseBox.id = 'mpPause';
   var alarm = $('topfAlarm'); if (alarm) nach(alarm, pauseBox);
   function renderPause() {

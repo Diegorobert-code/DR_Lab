@@ -231,6 +231,29 @@ footer b{color:var(--ink2);font-weight:600}
 .pos-info .warn{color:var(--red);font-weight:700}.pos-info .gut{color:var(--green);font-weight:700}
 .topf-hinweis{margin:12px 0 0;font-size:12.5px;color:var(--muted)}
 .topf-alarm{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:rgba(255,123,114,.12);color:#ffb3ad;font-size:14px;font-weight:600}
+.topf-gv{margin:-4px 0 10px;font-size:14px;color:var(--ink2)}
+.pos-kopf .nm{flex:1;min-width:0;font-weight:700;font-size:17px;overflow-wrap:anywhere}
+.pos-meta{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.pos-gv{font-size:14px;font-weight:700;color:var(--ink2)}.pos-gv.plus{color:var(--green)}.pos-gv.minus{color:var(--red)}
+.pos-zeile{display:flex;flex-wrap:wrap;gap:8px;align-items:end}
+.pos-zeile label{flex:1 1 100%;min-width:0;display:block;font-size:11.5px;color:var(--muted)}
+.pos-zeile input{display:block;margin-top:2px;width:100%;min-width:0;box-sizing:border-box;background:rgba(120,160,230,.08);border:1px solid var(--line);border-radius:10px;padding:9px 8px;font-size:16px;color:var(--ink)}
+.pos-zeile .btn{flex:1 1 0;min-height:44px;padding:0 12px;font-size:14px}
+.pos.grenze{border-color:rgba(255,123,114,.7);box-shadow:0 0 0 1px rgba(255,123,114,.35)}
+.tp-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px;padding:14px;border-radius:16px;background:rgba(10,22,48,.85);border:1px solid rgba(245,196,81,.45)}
+.tp-form[hidden]{display:none}
+.tp-form h3{grid-column:1/-1;margin:0;font-size:16px;color:var(--gold)}
+.tp-form label{display:block;min-width:0;font-size:12px;color:var(--muted)}
+.tp-form .ganz{grid-column:1/-1}
+.tp-form input,.tp-form select{display:block;width:100%;min-width:0;box-sizing:border-box;margin-top:3px;min-height:46px;border-radius:11px;border:1px solid var(--line2);background:#081329;color:var(--ink);padding:8px 10px;font-size:16px}
+.tp-fehler{margin:0;color:#ffb3ad;font-size:13.5px;min-height:0}
+.tp-knoepfe{display:flex;gap:8px;flex-wrap:wrap}.tp-knoepfe .btn{flex:1 1 120px;min-height:48px}
+.tp-kurse{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0 6px;font-size:13px;color:var(--muted)}
+.tp-kurse .btn{min-height:44px;font-size:14px;padding:0 12px}
+.tp-kurse span{flex:1 1 160px;min-width:0}
+.tp-sicherung{margin-top:10px;padding:10px 12px;border-radius:14px;border:1px solid var(--line)}
+.tp-sicherung summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--ink2);min-height:32px;display:flex;align-items:center}
+.tp-sicherung textarea{width:100%;box-sizing:border-box;border-radius:10px;border:1px solid var(--line2);background:#081329;color:var(--ink);font:12px/1.4 ui-monospace,Menlo,monospace;padding:8px;margin:6px 0}
 </style>
 </head>
 <body>
@@ -249,21 +272,42 @@ footer b{color:var(--ink2);font-weight:600}
   <section class="ping-buehne" aria-label="Mr. Ping">
     <img src="ping-3d.jpg" alt="Mr. Ping mit seiner goldenen Glocke">
     <button class="ping-glocke" id="pingGlocke" type="button" aria-label="Glocke läuten">🔔</button>
-    <div class="unten"><b>Mr. Ping</b><span>Dein Begleiter für den Übungstopf. Keine Anlageberatung.</span>
+    <div class="unten"><b>Mr. Ping</b><span>Dein Begleiter für den Spieltopf. Spielgeld, kein Rat.</span>
       <div style="display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap"><a class="ping-reden" href="../nova/reden.html?f=mr.%20ping">📞 Mit Mr. Ping reden</a><span data-feedback-slot></span></div></div>
   </section>
 
-  <section class="topf" id="topf" aria-label="Mein Übungstopf">
-    <h2>Mein Übungstopf</h2>
-    <p class="unter">CHF 200, vier Titel zu je CHF 50, selbst gekauft in Yuh. Trag pro Titel das Kürzel ein (z. B. AAPL), dann kommen die echten Kurse von selbst.</p>
-    <div class="topf-zahl"><b id="topfWert">CHF 200.00</b><span id="topfDiff">±0.00 %</span></div>
+  <section class="topf" id="topf" aria-label="Mein Spieltopf">
+    <h2>Mein Spieltopf</h2>
+    <p class="unter">Was du bei Yuh gekauft hast, hier eintragen: Name, Betrag, Kaufkurs. Alles bleibt nur auf diesem Handy. <b>Spielgeld, kein Rat.</b></p>
+    <div class="topf-zahl"><b id="topfWert">CHF 0.00</b><span id="topfDiff">±0.00 %</span></div>
+    <p class="topf-gv" id="topfGV">Noch kein Titel eingetragen.</p>
     <div class="balken" aria-hidden="true"><i id="topfBalken" style="width:50%"></i><span class="pause" title="Pause bei −25 %"></span></div>
     <div class="balken-txt"><span>Pause bei −25 %</span><span>Gewinn markieren ab +30 %</span></div>
-    <div id="topfAlarm"></div>
+    <div id="topfAlarm" role="alert"></div>
+    <div id="topfListe"></div>
+    <button type="button" class="add" id="tpNeu">+ Titel eintragen</button>
+    <form class="tp-form" id="tpForm" hidden autocomplete="off">
+      <h3 id="tpFormTitel">Titel eintragen</h3>
+      <label class="ganz">Name oder Kürzel<input id="tpName" maxlength="40" autocapitalize="characters" spellcheck="false" required></label>
+      <label>Börse<select id="tpBoerse"><option>Yuh</option><option>Swissquote</option><option>PostFinance</option><option>neon</option><option>Andere</option></select></label>
+      <label>Datum<input id="tpDatum" type="date"></label>
+      <label>Kaufbetrag CHF<input id="tpBetrag" inputmode="decimal" placeholder="50" required></label>
+      <label>Kaufkurs<input id="tpKauf" inputmode="decimal" placeholder="pro Stück" required></label>
+      <label>Stück (freiwillig)<input id="tpStueck" inputmode="decimal" placeholder="—"></label>
+      <label>Verlustgrenze %<input id="tpGrenze" inputmode="decimal" placeholder="15"></label>
+      <p class="tp-fehler ganz" id="tpFehler" role="alert"></p>
+      <div class="tp-knoepfe ganz"><button type="submit" class="btn pri" id="tpSpeichern">Speichern</button><button type="button" class="btn ghost" id="tpAbbrechen">Abbrechen</button></div>
+    </form>
+    <div class="tp-kurse"><button type="button" class="btn ghost" id="tpKurseHolen">↻ Kurse abrufen</button><span id="tpKursInfo" aria-live="polite">Kurs jetzt kannst du immer von Hand eintragen.</span></div>
     <button type="button" class="ping-an" id="pingAn">🔔 Ping aufs Handy einschalten</button>
     <p class="ping-status" id="pingStatus" aria-live="polite"></p>
-    <div id="topfListe"></div>
-    <p class="topf-hinweis">Regeln aus deiner Leitlinie: Verlustgrenze pro Titel −15 % (nie nach unten schieben), Pause bei −25 % im ganzen Topf, ab +30 % die Hälfte als Gewinn markieren. Mr. Ping pingt bei −5 %, −10 %, −15 % und +30 % gegenüber dem Kaufkurs, während die US-Börse offen ist. Kaufkurs bitte in der Währung der Aktie (bei US-Aktien Dollar). Mr. Ping sieht diese Liste, wenn du mit ihm redest.</p>
+    <details class="tp-sicherung"><summary>Sicherung: Export / Import als Text</summary>
+      <p class="note">Export kopiert alle Titel als Text (z. B. in Notizen sichern). Import liest so einen Text wieder ein und ersetzt die Liste.</p>
+      <textarea id="tpText" rows="4" aria-label="Sicherungstext" spellcheck="false"></textarea>
+      <div class="tp-knoepfe"><button type="button" class="btn ghost" id="tpExport">📤 Export</button><button type="button" class="btn ghost" id="tpImport">📥 Import</button></div>
+      <p class="note" id="tpSichInfo" aria-live="polite"></p>
+    </details>
+    <p class="topf-hinweis">Regeln aus deiner Leitlinie: mindestens CHF 50 pro Titel, eigene Verlustgrenze pro Titel (Standard −15 %, nie nach unten schieben), Pause bei −25 % im ganzen Topf, ab +30 % die Hälfte als Gewinn markieren. Kaufkurs und Kurs jetzt in derselben Währung eintragen (bei US-Aktien Dollar). TradePing schlägt keine Titel vor. Spielgeld, kein Rat: du entscheidest.</p>
   </section>
   <div class="radar-box">
     <div class="radar" id="radar">
@@ -323,7 +367,7 @@ footer b{color:var(--ink2);font-weight:600}
       </div>
       <div class="topfbar" aria-hidden="true"><i id="topfFill"></i></div>
       <p class="note" id="topfWarn" style="margin:8px 0 0"></p>
-      <p class="note" style="margin:8px 0 0">Deine Regeln: mindestens CHF 100 pro Titel, feste Grenzen vor dem Kauf, Pause ab −25 % im Topf. Den %-Hinweis pro Titel gibt es erst ab Topf über CHF 2000. TradePing rechnet nur nach, du entscheidest.</p>
+      <p class="note" style="margin:8px 0 0">Deine Regeln: mindestens CHF 50 pro Titel (Topf CHF 200 = 4 Titel à 50), feste Grenzen vor dem Kauf, Pause ab −25 % im Topf. Den %-Hinweis pro Titel gibt es erst ab Topf über CHF 2000. TradePing rechnet nur nach, du entscheidest.</p>
     </div>
   </section>
 
@@ -395,6 +439,8 @@ if (!Array.isArray(items)) {
 items.forEach(function(i){ if (i.sym === 'SMI' && i.cur === 'CHF') i.cur = 'Punkte'; });
 var log = load(K.log, []);
 var set = load(K.set, {}); if (typeof set !== 'object' || !set) set = {};
+// Topf-Standard CHF 200 (Diego spielt ab 20.10.2026 mit 4 Titeln à CHF 50).
+if (set.topf === undefined) { set.topf = 200; try { localStorage.setItem(K.set, JSON.stringify(set)); } catch (e) {} }
 if (set.sound == null) set.sound = true;
 function persist(){ save(K.items, items); save(K.log, log); save(K.set, set); wacheSync(false); }
 
@@ -678,8 +724,8 @@ function topfMax(){ return set.topfMax > 0 ? set.topfMax : 5; }
 function risiko(it){
   if (!(it.ein > 0)) return null;
   var verlust = it.stop > 0 ? round2(it.ein * it.stop / 100) : null;
-  // Spieltopf-Regel: mindestens CHF 100 pro Titel (sonst frisst die Mindestgebühr). Der %-Hinweis gilt erst ab Topf über CHF 2000.
-  return { verlust: verlust, zuviel: set.topf > 2000 && it.ein > set.topf * topfMax() / 100, zuklein: it.ein < 100 };
+  // Spieltopf-Regel: mindestens CHF 50 pro Titel (sonst frisst die Mindestgebühr). Der %-Hinweis gilt erst ab Topf über CHF 2000.
+  return { verlust: verlust, zuviel: set.topf > 2000 && it.ein > set.topf * topfMax() / 100, zuklein: it.ein < 50 };
 }
 function renderTopf(){
   var ein = 0, verl = 0, zuviel = [], zuklein = [], n = 0;
@@ -693,8 +739,8 @@ function renderTopf(){
   f.style.width = (q * 100).toFixed(1) + '%'; f.classList.toggle('over', topf != null && ein > topf);
   var w = [];
   if (topf && ein > topf) w.push('Mehr eingesetzt als im Topf.');
-  if (zuklein.length) w.push(zuklein.join(', ') + ': unter CHF 100 pro Titel, die Mindestgebühr frisst viel weg.');
-  if (topf && n > Math.max(1, Math.floor(topf / 100))) w.push('Bei CHF ' + num(topf) + ' passen höchstens ' + Math.max(1, Math.floor(topf / 100)) + ' Titel à mindestens CHF 100.');
+  if (zuklein.length) w.push(zuklein.join(', ') + ': unter CHF 50 pro Titel, die Mindestgebühr frisst viel weg.');
+  if (topf && n > Math.max(1, Math.floor(topf / 50))) w.push('Bei CHF ' + num(topf) + ' passen höchstens ' + Math.max(1, Math.floor(topf / 50)) + ' Titel à mindestens CHF 50.');
   if (zuviel.length) w.push(zuviel.join(', ') + ': mehr als ' + String(topfMax()).replace('.', ',') + ' % vom Topf.');
   if (topf) w.push('Pause-Grenze −25 %: CHF ' + num(round2(topf * 0.25)) + '.');
   $('topfWarn').textContent = w.join(' ');
@@ -1055,47 +1101,144 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 <script src="../apps/sprechen/sprechen.js" data-figur="mrping" data-name="Mr. Ping" data-stimme-handy="mann" data-tempo="0.92" data-bild="figur.jpg" data-audio="audio/mrping/" data-unten="18" data-saetze='{"gruss": ["Guten Tag, schön, dass Sie da sind. Ich bin Mister Ping und behalte Ihre Marken ganz in Ruhe für Sie im Blick."], "lob": ["Sehr elegant gemacht. Geduld ist die feinste Strategie, und Sie haben sie."], "mut": ["Nur keine Eile. Wenn ich mich nicht melde, ist alles ruhig, und Sie dürfen sich entspannen."], "frage": ["Tragen Sie einfach Ihre Marke in der Watchlist ein. Sobald sie erreicht ist, melde ich mich sofort bei Ihnen. Beraten darf ich Sie allerdings nicht, entscheiden tun immer Sie."], "abschied": ["Auf Wiedersehen. Ich halte hier für Sie Wache."]}' defer></script>
 
 <script>
-// Übungstopf: vier Titel, alles nur auf diesem Handy (tp.topf). Mr. Ping liest die Liste beim Reden.
+// Spieltopf: Titel eintragen wie bei Yuh gekauft, alles nur auf diesem Handy (tp.topf). Mr. Ping liest die Liste beim Reden.
 (function () {
   var KEY = 'tp.topf', $ = function (id) { return document.getElementById(id); };
   var topf; try { topf = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
-  if (!Array.isArray(topf) || topf.length !== 4) topf = [0, 1, 2, 3].map(function () { return { name: '', symbol: '', einsatz: 50, kauf: null, jetzt: null }; });
-  topf.forEach(function (p) { p.live = false; if (p.symbol == null) p.symbol = ''; });
+  if (!Array.isArray(topf)) topf = [];
+  function neueId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function aufraeumen(p) {
+    if (!p || typeof p !== 'object') return null;
+    var n = String(p.name || p.symbol || '').trim().slice(0, 40); if (!n) return null;
+    return { id: p.id || neueId(), name: n, symbol: String(p.symbol || '').toUpperCase().replace(/[^A-Z0-9.:\-]/g, '').slice(0, 15), boerse: String(p.boerse || 'Yuh').slice(0, 20),
+      einsatz: zahl(p.einsatz) || 0, kauf: zahl(p.kauf), jetzt: zahl(p.jetzt), datum: /^\d{4}-\d{2}-\d{2}$/.test(p.datum || '') ? p.datum : '', stueck: zahl(p.stueck),
+      grenze: zahl(p.grenze) > 0 && zahl(p.grenze) < 100 ? zahl(p.grenze) : 15, gepingt: !!p.gepingt, live: false };
+  }
+  function zahl(v) { if (typeof v === 'number') return isFinite(v) ? v : null; v = String(v == null ? '' : v).replace(/[’' ]/g, '').replace(',', '.'); var n = parseFloat(v); return isNaN(n) ? null : n; }
+  // Alte Vierer-Liste (leere Felder à CHF 50) übernehmen: nur ausgefüllte Titel bleiben.
+  topf = topf.map(aufraeumen).filter(Boolean);
   function speichern() { try { localStorage.setItem(KEY, JSON.stringify(topf)); } catch (e) {} }
-  function zahl(v) { v = String(v == null ? '' : v).replace(/[’' ]/g, '').replace(',', '.'); var n = parseFloat(v); return isNaN(n) ? null : n; }
+  speichern();
   function chf(n) { return 'CHF ' + n.toLocaleString('de-CH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function kurs(n) { return n == null ? '—' : n.toLocaleString('de-CH', { maximumFractionDigits: n >= 100 ? 2 : 4 }); }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function heute() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function datumCH(d) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || ''); return m ? m[3] + '.' + m[2] + '.' + m[1] : ''; }
   function wert(p) { return p.kauf && p.jetzt ? p.einsatz * p.jetzt / p.kauf : p.einsatz; }
+  function prozent(p) { return p.kauf && p.jetzt ? (p.jetzt / p.kauf - 1) * 100 : null; }
+  function vz(n) { return (n >= 0 ? '+' : '−') + Math.abs(n).toLocaleString('de-CH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  var M = function () { return window.__mrping; };
+
+  /* ---------- Verlustgrenze: Ping, wenn erreicht ---------- */
+  function glocke() { try { var ac = new (window.AudioContext || window.webkitAudioContext)(), t = ac.currentTime; [988, 740].forEach(function (f, i) { var o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = f; g.gain.setValueAtTime(0.0001, t + i * .25); g.gain.exponentialRampToValueAtTime(0.2, t + i * .25 + .01); g.gain.exponentialRampToValueAtTime(0.0001, t + i * .25 + .9); o.connect(g).connect(ac.destination); o.start(t + i * .25); o.stop(t + i * .25 + 1); }); } catch (e) {} }
+  function grenzenPruefen() {
+    var neu = [];
+    topf.forEach(function (p) {
+      var pr = prozent(p); if (pr == null) return;
+      if (pr <= -p.grenze) { if (!p.gepingt) { p.gepingt = true; neu.push(p); } }
+      else if (p.gepingt) p.gepingt = false;
+    });
+    speichern();
+    if (!neu.length) return;
+    var txt = 'PING: ' + neu.map(function (p) { return p.name + ' hat deine Verlustgrenze −' + p.grenze + ' % erreicht'; }).join(' · ') + '.';
+    glocke();
+    try { if (window.Notification && Notification.permission === 'granted') new Notification('TradePing', { body: txt, icon: 'icon-192.png', tag: 'tp-grenze' }); } catch (e) {}
+    try { if (M()) { M().toast(txt); M().pose('warn', txt + ' Du hast die Grenze vor dem Kauf gesetzt, du entscheidest.'); } } catch (e) {}
+    var gl = $('pingGlocke'); if (gl) { gl.classList.remove('klingelt'); void gl.offsetWidth; gl.classList.add('klingelt'); }
+  }
+
+  /* ---------- Liste zeichnen ---------- */
+  var loeschBereit = null;
   function zeichnen() {
     var liste = $('topfListe'); liste.innerHTML = '';
-    topf.forEach(function (p, i) {
-      var d = document.createElement('div'); d.className = 'pos';
-      var w = wert(p), pr = p.kauf && p.jetzt ? (p.jetzt / p.kauf - 1) * 100 : null;
+    topf.forEach(function (p) {
+      var d = document.createElement('div'), w = wert(p), pr = prozent(p), gv = w - p.einsatz, erreicht = pr != null && pr <= -p.grenze;
+      d.className = 'pos' + (erreicht ? ' grenze' : ''); d.setAttribute('data-id', p.id);
       var info = [];
-      if (p.kauf) info.push('Verlustgrenze: <b>' + (p.kauf * 0.85).toFixed(2) + '</b>');
-      if (p.kauf) info.push('Gewinnmarke: <b>' + (p.kauf * 1.3).toFixed(2) + '</b>');
-      if (pr != null && pr <= -15) info.push('<span class="warn">Verlustgrenze erreicht</span>');
+      if (p.kauf) info.push('<span>Grenze −' + p.grenze + ' %: <b>' + kurs(p.kauf * (1 - p.grenze / 100)) + '</b></span>');
+      if (p.kauf) info.push('<span>+30 %: <b>' + kurs(p.kauf * 1.3) + '</b></span>');
+      if (erreicht) info.push('<span class="warn">🔔 Verlustgrenze erreicht</span>');
       if (pr != null && pr >= 30) info.push('<span class="gut">+30 % erreicht: Hälfte als Gewinn markieren</span>');
-      d.innerHTML = '<div class="pos-kopf"><input aria-label="Titel ' + (i + 1) + '" placeholder="Titel ' + (i + 1) + '" maxlength="40"><span class="w ' + (pr == null ? '' : pr >= 0 ? 'plus' : 'minus') + '">' + chf(w) + (pr == null ? '' : ' · ' + (pr >= 0 ? '+' : '') + pr.toFixed(1) + ' %') + '</span></div>' +
-        '<div class="pos-felder"><label>Kürzel<input data-k="symbol" placeholder="z. B. AAPL" autocapitalize="characters" autocomplete="off" spellcheck="false" maxlength="15"></label><label>Einsatz CHF<input inputmode="decimal" data-k="einsatz"></label><label>Kaufkurs<input inputmode="decimal" data-k="kauf" placeholder="—"></label><label>Kurs jetzt' + (p.live ? ' <span class="live">● live</span>' : '') + '<input inputmode="decimal" data-k="jetzt" placeholder="—"></label></div>' +
+      var meta = [p.boerse, p.datum ? datumCH(p.datum) : '', 'Betrag ' + chf(p.einsatz), 'Kauf ' + kurs(p.kauf), p.stueck ? p.stueck + ' Stk.' : ''].filter(Boolean).join(' · ');
+      var kl = pr == null ? '' : pr >= 0 ? 'plus' : 'minus';
+      d.innerHTML = '<div class="pos-kopf"><span class="nm">' + esc(p.name) + '</span><span class="w ' + kl + '">' + chf(w) + '</span></div>' +
+        '<div class="pos-meta">' + esc(meta) + '</div>' +
+        '<div class="pos-gv ' + kl + '">' + (pr == null ? 'Gewinn/Verlust: Kurs jetzt eintragen' : 'Gewinn/Verlust ' + vz(gv) + ' CHF · ' + (pr >= 0 ? '+' : '') + pr.toFixed(1) + ' %') + '</div>' +
+        '<div class="pos-zeile"><label>Kurs jetzt' + (p.live ? ' <span class="live">● abgerufen</span>' : '') + '<input inputmode="decimal" data-jetzt placeholder="von Hand" aria-label="Kurs jetzt ' + esc(p.name) + '"></label>' +
+        '<button type="button" class="btn ghost" data-edit>✎ Ändern</button><button type="button" class="btn ghost" data-weg>' + (loeschBereit === p.id ? 'Wirklich löschen?' : '🗑 Löschen') + '</button></div>' +
         (info.length ? '<div class="pos-info">' + info.join('') + '</div>' : '');
-      var nm = d.querySelector('.pos-kopf input'); nm.value = p.name || '';
-      nm.addEventListener('change', function () { p.name = nm.value.trim(); speichern(); abgleichen(); });
-      d.querySelectorAll('.pos-felder input').forEach(function (inp) {
-        var k = inp.getAttribute('data-k'); inp.value = p[k] == null ? '' : p[k];
-        inp.addEventListener('change', function () { if (k === 'symbol') { p.symbol = inp.value.toUpperCase().replace(/[^A-Z0-9.:\-]/g, ''); p.live = false; speichern(); zeichnen(); abgleichen(); holen(); return; } var n = zahl(inp.value); p[k] = k === 'einsatz' ? (n || 0) : n; if (k === 'jetzt') p.live = false; speichern(); zeichnen(); if (k === 'kauf') abgleichen(); });
+      var inp = d.querySelector('[data-jetzt]'); inp.value = p.jetzt == null ? '' : String(p.jetzt);
+      inp.addEventListener('change', function () { p.jetzt = zahl(inp.value); p.live = false; grenzenPruefen(); zeichnen(); });
+      d.querySelector('[data-edit]').addEventListener('click', function () { formAuf(p); });
+      d.querySelector('[data-weg]').addEventListener('click', function () {
+        if (loeschBereit !== p.id) { loeschBereit = p.id; zeichnen(); return; }
+        loeschBereit = null; topf = topf.filter(function (x) { return x.id !== p.id; }); speichern(); zeichnen(); abgleichen();
       });
       liste.appendChild(d);
     });
-    var einsatz = topf.reduce(function (a, p) { return a + (p.einsatz || 0); }, 0) || 200;
+    var einsatz = topf.reduce(function (a, p) { return a + (p.einsatz || 0); }, 0);
     var total = topf.reduce(function (a, p) { return a + wert(p); }, 0);
-    var diff = (total / einsatz - 1) * 100;
+    var diff = einsatz ? (total / einsatz - 1) * 100 : 0;
     $('topfWert').textContent = chf(total);
     $('topfDiff').textContent = (diff >= 0 ? '+' : '') + diff.toFixed(2) + ' %';
     $('topfDiff').className = diff >= 0 ? 'plus' : 'minus';
+    $('topfGV').innerHTML = topf.length ? topf.length + ' Titel · eingesetzt ' + chf(einsatz) + ' · Gewinn/Verlust <b class="' + (total - einsatz >= 0 ? 'plus' : 'minus') + '">' + vz(total - einsatz) + ' CHF</b>' : 'Noch kein Titel eingetragen. Tippe auf «+ Titel eintragen».';
     $('topfBalken').style.width = Math.max(2, Math.min(100, 50 + diff)) + '%';
-    $('topfAlarm').innerHTML = diff <= -25 ? '<p class="topf-alarm">Der Topf ist 25 % im Minus. Deine Regel sagt: Pause machen und mit Mr. Ping in Ruhe besprechen.</p>' : '';
+    $('topfAlarm').innerHTML = einsatz && diff <= -25 ? '<p class="topf-alarm">Der Topf ist 25 % im Minus. Deine Regel sagt: Pause machen und mit Mr. Ping in Ruhe besprechen.</p>' : '';
   }
-  zeichnen();
+
+  /* ---------- Eintragen / Ändern (30 Sekunden am iPhone) ---------- */
+  var editId = null, form = $('tpForm');
+  function formAuf(p) {
+    editId = p ? p.id : null;
+    $('tpFormTitel').textContent = p ? 'Titel ändern' : 'Titel eintragen';
+    $('tpName').value = p ? p.name : '';
+    $('tpBoerse').value = p ? p.boerse : 'Yuh'; if (!$('tpBoerse').value) $('tpBoerse').value = 'Andere';
+    $('tpDatum').value = p ? (p.datum || '') : heute();
+    $('tpBetrag').value = p ? String(p.einsatz) : '50';
+    $('tpKauf').value = p && p.kauf != null ? String(p.kauf) : '';
+    $('tpStueck').value = p && p.stueck != null ? String(p.stueck) : '';
+    $('tpGrenze').value = p ? String(p.grenze) : '15';
+    $('tpFehler').textContent = '';
+    form.hidden = false; $('tpNeu').hidden = true;
+    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(function () { $('tpName').focus(); }, 50);
+  }
+  function formZu() { form.hidden = true; editId = null; $('tpNeu').hidden = false; }
+  $('tpNeu').addEventListener('click', function () { formAuf(null); });
+  $('tpAbbrechen').addEventListener('click', formZu);
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = $('tpName').value.trim(), betrag = zahl($('tpBetrag').value), kauf = zahl($('tpKauf').value), st = zahl($('tpStueck').value), gr = zahl($('tpGrenze').value);
+    var err = !name ? 'Bitte Name oder Kürzel eintragen.' : !(betrag > 0) ? 'Bitte den Kaufbetrag in CHF eintragen.' : !(kauf > 0) ? 'Bitte den Kaufkurs eintragen (steht in Yuh beim Kauf).' : gr != null && !(gr > 0 && gr < 100) ? 'Die Verlustgrenze muss zwischen 0 und 100 % liegen.' : '';
+    if (err) { $('tpFehler').textContent = err; return; }
+    var sym = /^[A-Za-z0-9.:\-]{1,12}$/.test(name) ? name.toUpperCase() : '';
+    var alt = editId ? topf.find(function (x) { return x.id === editId; }) : null;
+    var p = aufraeumen({ id: editId || null, name: sym || name, symbol: sym, boerse: $('tpBoerse').value, einsatz: betrag, kauf: kauf, jetzt: alt ? alt.jetzt : null, datum: $('tpDatum').value, stueck: st, grenze: gr || 15 });
+    if (alt) { p.gepingt = alt.gepingt && alt.grenze === p.grenze; topf[topf.indexOf(alt)] = p; } else topf.push(p);
+    formZu(); grenzenPruefen(); zeichnen(); abgleichen();
+    try { if (M()) M().toast(alt ? 'Geändert' : p.name + ' eingetragen'); } catch (e2) {}
+    if (!alt && p.symbol && kursOk) holen(false);
+  });
+
+  /* ---------- Sicherung als Text ---------- */
+  $('tpExport').addEventListener('click', function () {
+    var t = 'TRADEPING-SICHERUNG ' + heute() + '\n' + JSON.stringify(topf.map(function (p) { var c = {}; for (var k in p) if (k !== 'live') c[k] = p[k]; return c; }));
+    $('tpText').value = t; $('tpText').select();
+    var nein = function () { $('tpSichInfo').textContent = 'Der Text steht oben. Bitte von Hand kopieren und in Notizen sichern.'; };
+    try { navigator.clipboard.writeText(t).then(function () { $('tpSichInfo').textContent = 'Kopiert. In Notizen einfügen und aufbewahren.'; }, nein); } catch (e) { nein(); }
+  });
+  $('tpImport').addEventListener('click', function () {
+    var t = $('tpText').value, i = t.indexOf('['), daten = null;
+    try { daten = JSON.parse(i >= 0 ? t.slice(i) : t); } catch (e) {}
+    if (daten && !Array.isArray(daten) && Array.isArray(daten.titel)) daten = daten.titel;
+    var neu = Array.isArray(daten) ? daten.map(aufraeumen).filter(Boolean) : [];
+    if (!neu.length) { $('tpSichInfo').textContent = 'Das sieht nicht wie eine TradePing-Sicherung aus. Bitte den ganzen Export-Text einfügen.'; return; }
+    topf = neu; speichern(); zeichnen(); abgleichen();
+    $('tpSichInfo').textContent = neu.length + ' Titel eingelesen.';
+  });
+
+  grenzenPruefen(); zeichnen();
   // Der Topf reist im Link mit zur Bühne, damit Mr. Ping ihn auch in der Home-Bildschirm-App kennt.
   document.querySelectorAll('a[href*="reden.html"]').forEach(function (a) {
     a.addEventListener('click', function () {
@@ -1103,21 +1246,32 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
       a.setAttribute('href', basis + '#topf=' + encodeURIComponent(JSON.stringify(topf)));
     });
   });
-  // Echte Kurse und Ping kommen vom eigenen Server (Schlüssel bleibt dort).
-  var SERVER = 'https://sense-179-237-127-58.sslip.io/kursping';
-  function holen() {
-    var s = topf.map(function (p) { return p.symbol; }).filter(Boolean);
-    if (!s.length || document.hidden) return;
-    fetch(SERVER + '/kurse?s=' + encodeURIComponent(s.join(',')), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (k) {
-      var neu = false;
-      topf.forEach(function (p) { if (p.symbol && typeof k[p.symbol] === 'number') { p.jetzt = k[p.symbol]; p.live = true; neu = true; } });
-      if (neu) { speichern(); zeichnen(); }
-    }).catch(function () {});
+  // Kurse vom eigenen Server (Schlüssel bleibt dort). Klappt es nicht: freundlich melden, Kurs von Hand.
+  var SERVER = 'https://sense-179-237-127-58.sslip.io/kursping', kursOk = false, kursFehler = 0;
+  function holen(vonHand) {
+    var s = topf.map(function (p) { return p.symbol; }).filter(Boolean), info = $('tpKursInfo');
+    if (!s.length) { if (vonHand) info.textContent = 'Kein Kürzel eingetragen. Kurs jetzt bitte von Hand eintragen.'; return; }
+    if (document.hidden) return;
+    if (vonHand) info.textContent = 'Kurse werden abgerufen …';
+    var ctl = window.AbortController ? new AbortController() : null, to = setTimeout(function () { if (ctl) ctl.abort(); }, 10000);
+    fetch(SERVER + '/kurse?s=' + encodeURIComponent(s.join(',')), ctl ? { cache: 'no-store', signal: ctl.signal } : { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error('HTTP'); return r.json(); }).then(function (k) {
+      clearTimeout(to); var n = 0;
+      topf.forEach(function (p) { if (p.symbol && k && typeof k[p.symbol] === 'number') { p.jetzt = k[p.symbol]; p.live = true; n++; } });
+      kursOk = true; kursFehler = 0;
+      info.textContent = n ? n + ' Kurs' + (n === 1 ? '' : 'e') + ' abgerufen, ' + new Date().toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' }) + '. Von Hand ändern geht immer.' : 'Für deine Kürzel kam kein Kurs. Bitte von Hand eintragen.';
+      if (n) { grenzenPruefen(); zeichnen(); }
+    }).catch(function () {
+      clearTimeout(to); kursFehler++;
+      info.textContent = 'Kurse gerade nicht abrufbar. Kein Problem: trag den Kurs jetzt von Hand ein (steht in Yuh).';
+    });
   }
-  holen(); setInterval(holen, 60000);
-  document.addEventListener('visibilitychange', function () { if (!document.hidden) holen(); });
+  holen(false);
+  // Nur weiter automatisch abrufen, wenn die Quelle erreichbar ist (sonst keine wiederholten Fehlversuche).
+  setInterval(function () { if (kursOk && kursFehler < 3) holen(false); }, 60000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && kursOk) holen(false); });
+  $('tpKurseHolen').addEventListener('click', function () { holen(true); });
   function pingId() { try { return localStorage.getItem('tp.pingId'); } catch (e) { return null; } }
-  function titelListe() { return topf.filter(function (p) { return p.symbol; }).map(function (p) { return { symbol: p.symbol, name: p.name, kauf: p.kauf }; }); }
+  function titelListe() { return topf.filter(function (p) { return p.symbol; }).map(function (p) { return { symbol: p.symbol, name: p.name, kauf: p.kauf, grenze: p.grenze }; }); }
   function abgleichen() {
     var id = pingId(); if (!id) return;
     fetch(SERVER + '/abo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, titel: titelListe() }) }).catch(function () {});
