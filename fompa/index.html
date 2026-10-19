@@ -150,6 +150,20 @@ details.card > summary{font-weight:600}
 .check{display:flex;gap:10px;align-items:flex-start;color:var(--ink);font-size:15px}
 .check input{flex:none;margin-top:2px}
 .antwort{white-space:pre-wrap;background:var(--goldsoft);border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px;font-size:15px}
+.vorlesen{justify-self:start;margin-top:-6px;border:1px solid var(--line);border-radius:999px;background:var(--card2);color:var(--ink);font:600 14px var(--f);min-height:40px;padding:0 14px;cursor:pointer}
+.stepper{display:grid;grid-template-columns:56px 1fr 56px;gap:10px;align-items:center;text-align:center;margin-top:8px}
+.onb{position:fixed;inset:0;z-index:2147483000;background:rgba(5,10,30,.82);display:grid;place-items:center;padding:16px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.onbKarte{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px 18px;display:grid;gap:12px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.onbKarte h2{margin:0;font:700 24px var(--serif);color:var(--gold)}
+.onbKarte p{margin:0}
+.onbKarte .form{text-align:left}
+.figur.onbFigur{position:relative;margin:0 auto;width:120px;height:120px}
+.onbPunkte{display:flex;gap:6px;justify-content:center}
+.onbPunkte i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.onbPunkte i.on{background:var(--gold)}
+.figur.echt img{transform:none!important}
+#rechnungen .eintrag,#verkauf .eintrag,#proKuerzel .eintrag,#faellig .eintrag{grid-template-columns:1fr}
+#rechnungen .knoepfe,#verkauf .knoepfe,#proKuerzel .knoepfe,#faellig .knoepfe{justify-content:flex-start}
 @media (max-width:340px){.duo{width:190px}.figur,.duo .funken{width:96px;height:96px}.duo svg.glasbild{width:84px;height:100px}}
 </style>
 </head>
@@ -197,6 +211,7 @@ details.card > summary{font-weight:600}
   </div>
 
   <div class="bubble" id="bubble" aria-live="polite"></div>
+  <button class="vorlesen" id="vorlesen" aria-label="Fompa liest vor">🔊 Fompa liest vor</button>
 
   <div class="row" id="jahrRow">
     <label>Jahr
@@ -324,6 +339,27 @@ details.card > summary{font-weight:600}
       <p class="hint" id="missing" style="margin-top:10px"></p>
     </div>
     <div class="card">
+      <h2>Jahres-Check</h2>
+      <p class="hint">Hochrechnung aus deinen Zetteln. Einnahmen kommen aus Ordner 3000 oder aus dem Feld unten. Alles Schätzungen, der Steuerberater entscheidet.</p>
+      <div class="liste" id="jahrCheck"></div>
+      <details style="margin-top:8px">
+        <summary><b>Werte eintragen</b></summary>
+        <div class="form" style="margin-top:8px">
+          <div class="row">
+            <label>Einnahmen bis heute CHF<input id="jUmsatz" inputmode="decimal" placeholder="leer = aus 3000"></label>
+            <label>Ziel 3a dieses Jahr CHF<input id="j3a" inputmode="decimal" placeholder="z. B. Höchstbetrag"></label>
+          </div>
+          <label>Steuer-Rücklage in % vom Gewinn<input id="jProzent" inputmode="decimal" placeholder="z. B. 12"></label>
+          <button class="btn" id="jSave">Rechnen</button>
+        </div>
+      </details>
+    </div>
+    <div class="card">
+      <h2>Beleg-Check</h2>
+      <p class="hint">Fompa schaut, was dem Steuerberater auffallen würde.</p>
+      <div class="liste" id="belegCheck"></div>
+    </div>
+    <div class="card">
       <h2>Steuer-Fahrplan</h2>
       <div class="liste" id="fahrplan"></div>
       <p class="hint" style="margin-top:8px">Fristen sind übliche Richtwerte für den Kanton Zürich. Was genau gilt, steht auf deiner Steuererklärung oder sagt dein Steuerberater.</p>
@@ -346,6 +382,10 @@ details.card > summary{font-weight:600}
 
   <!-- Plan: Woche -->
   <section id="woche" class="hidden" style="display:grid;gap:12px">
+    <div class="card">
+      <h2>Heute für dich</h2>
+      <div class="liste" id="heute"></div>
+    </div>
     <div class="card">
       <h2>Diese Woche</h2>
       <p class="hint" id="wocheVonBis"></p>
@@ -459,11 +499,54 @@ details.card > summary{font-weight:600}
         <summary><b>+ Rechnung</b></summary>
         <div class="form" style="margin-top:8px">
           <div class="row3">
-            <label>Kürzel<input id="rKuerzel" maxlength="5" placeholder="AB" autocomplete="off" style="text-transform:uppercase"></label>
+            <label>Kürzel<input id="rKuerzel" maxlength="6" placeholder="AB" autocomplete="off" style="text-transform:uppercase"></label>
             <label>Betrag<input id="rBetrag" inputmode="decimal" placeholder="0.00"></label>
             <label>Datum<input id="rDatum" type="date"></label>
           </div>
+          <label>Rechnungs-Nr. (freiwillig)<input id="rNr" inputmode="numeric" placeholder="z. B. 1001" autocomplete="off"></label>
           <button class="btn main" id="rAdd">Hinzufügen</button>
+        </div>
+      </details>
+    </div>
+    <div class="card" id="kuerzelCard">
+      <h2>Pro Kürzel</h2>
+      <p class="hint">Wer wie viel offen hat, was überfällig ist und was als Nächstes kommt.</p>
+      <div class="liste" id="proKuerzel"></div>
+      <div class="antwort hidden" id="mahnBox" aria-live="polite"></div>
+      <details style="margin-top:8px">
+        <summary><b>Absender, Fristen, Betreibungssatz</b></summary>
+        <div class="form" style="margin-top:8px">
+          <label>Absender (erscheint unter dem Gruss)<textarea id="mAbsender" placeholder="Debitorenmanagement&#10;Praxis …, Vorname Name&#10;Strasse, PLZ Ort" style="min-height:96px"></textarea></label>
+          <div class="row">
+            <label>Zahlungsfrist Rechnung (Tage)<input id="mZiel" inputmode="numeric" placeholder="30"></label>
+            <label>Frist Mahnung (Tage)<input id="mFrist" inputmode="numeric" placeholder="10"></label>
+          </div>
+          <label>Satz in der 2. Mahnung<input id="mBetreib" placeholder="Ohne Zahlung bis zur Frist leiten wir die Betreibung ein."></label>
+          <button class="btn" id="mSave">Speichern</button>
+          <p class="hint">Gegenüber Klientinnen und Klienten tritt nur die Praxis auf. Fompa schreibt den Text, schicken tust du selbst.</p>
+        </div>
+      </details>
+    </div>
+    <div class="card">
+      <h2>Noch nicht verrechnet</h2>
+      <p class="hint">Sitzungen, für die es noch keine Rechnung gibt. Erst als Rechnung erstellen, dann erscheinen sie oben.</p>
+      <div class="stepper"><button class="btn small" id="uvMinus" aria-label="Eine weniger">−</button><div><div class="zahl" id="uvZahl">0</div><small class="hint" id="uvBetrag"></small></div><button class="btn small" id="uvPlus" aria-label="Eine mehr">+</button></div>
+    </div>
+    <div class="card">
+      <h2>Dinge verkaufen</h2>
+      <p class="hint">Was zu Hause weg kann. Fompa schreibt das Inserat für Tutti oder Ricardo, inserieren tust du selbst.</p>
+      <div class="liste" id="verkauf"></div>
+      <div id="verkaufSumme"></div>
+      <div class="antwort hidden" id="inseratBox"></div>
+      <details style="margin-top:8px">
+        <summary><b>+ Ding</b></summary>
+        <div class="form" style="margin-top:8px">
+          <label>Was<input id="vWas" placeholder="z. B. Velo, Lampe, Stuhl" autocomplete="off"></label>
+          <div class="row">
+            <label>Wunschpreis CHF<input id="vPreis" inputmode="decimal" placeholder="0"></label>
+            <label>Zustand<select id="vZustand"><option>wie neu</option><option>gut</option><option>gebraucht</option><option>defekt</option></select></label>
+          </div>
+          <button class="btn main" id="vAdd">Hinzufügen</button>
         </div>
       </details>
     </div>
@@ -478,9 +561,22 @@ details.card > summary{font-weight:600}
     <button class="btn small del" id="forget">Vergessen</button>
   </details>
 
-  <p class="foot">Fompa ordnet und rechnet, ist aber keine Steuer- oder Finanzberatung. Ob etwas abziehbar ist, entscheidet dein Steuerberater oder das Steueramt. Bei Klientinnen und Klienten nur Kürzel verwenden.<br>Zettel bleiben auf deinem Gerät (kein Konto). Ein Server bekommt nur etwas, wenn du es antippst.</p>
+  <p class="foot">Fompa ordnet und rechnet, ist aber keine Steuer- oder Finanzberatung. Ob etwas abziehbar ist, entscheidet dein Steuerberater oder das Steueramt. Bei Klientinnen und Klienten nur Kürzel verwenden.<br>Zettel bleiben auf deinem Gerät (kein Konto). Ein Server bekommt nur etwas, wenn du es antippst.<br><a href="#" id="einfuehrung">Einführung nochmals ansehen</a></p>
 </div>
 <div class="toast" id="toast"></div>
+<div class="onb hidden" id="onb" role="dialog" aria-modal="true" aria-labelledby="onbTitel">
+  <div class="onbKarte">
+    <div class="figur onbFigur" id="onbFigur"><img src="fompa-posen.jpg" alt="Fompa" width="360" height="360"><span class="glanz"></span></div>
+    <h2 id="onbTitel"></h2>
+    <p id="onbText"></p>
+    <div id="onbFeld"></div>
+    <div class="onbPunkte" id="onbPunkte"></div>
+    <div class="row">
+      <button class="btn" id="onbSkip">Überspringen</button>
+      <button class="btn main" id="onbWeiter">Weiter</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // Fompa – Buchhaltung, Steuern, Woche und Ziele. Speicher: nur IndexedDB auf dem Gerät.
@@ -666,6 +762,7 @@ function renderAll(){
   }
   renderGlas(); renderCats(); renderMemory(); renderMissing(); renderMonate(); renderMonat(); renderExport();
   renderFahrplan(); renderWoche(); renderKapital(); renderZiele(); renderOffen(); renderLern(); renderBubble();
+  renderProKuerzel(); jahresCheck(); belegCheck(); renderVerkauf(); renderHeute();
 }
 
 /* ---------- Fompa in Posen ---------- */
@@ -678,6 +775,7 @@ function pose(name, zeichen, ms = 1800){
   if (name) f.classList.add(name);
   if (zeichen){ z.textContent = zeichen; void z.offsetWidth; z.classList.add('an'); }
   if (name === 'freut') funken();
+  poseBild(name);
   poseT = setTimeout(ruhe, ms);
 }
 function ruhe(){
@@ -686,6 +784,7 @@ function ruhe(){
   z.className = 'zeichen'; z.textContent = '';
   if (h >= 23 || h < 6){ f.classList.add('schlaeft'); z.textContent = 'z'; z.classList.add('zzz'); }
   else f.classList.remove('schlaeft');
+  if (typeof poseBild === 'function') poseBild(null);
 }
 function funken(){
   const box = $('#funken'); box.classList.remove('an');
@@ -1041,10 +1140,10 @@ function renderOffen(){
   const in30 = faellig.filter(x => tageBis(x.datum) <= 30).reduce((s,x) => s + x.betrag, 0);
   $('#faelligSumme').innerHTML = faellig.length ? `<div class="kat gross"><span>Nächste 30 Tage</span><span>${chf(in30)}</span></div><div class="kat"><span>Endzahl pro Monat</span><span>${chf(mt)}</span></div><div class="kat"><span>Endzahl pro Jahr</span><span>${chf(mt*12)}</span></div>` : '';
   // Rechnungen
-  const MAHN = ['offen','Erinnerung','1. Mahnung','2. Mahnung'];
+  const MAHN = STUFE;
   const r = rechnungen.slice().sort((a,b) => (a.status === 'offen' ? 0 : 1) - (b.status === 'offen' ? 0 : 1) || a.datum.localeCompare(b.datum));
   $('#rechnungen').innerHTML = r.map(x => { const alt = -tageBis(x.datum);
-    const st = x.status === 'offen' ? `${MAHN[x.mahn||0]} · ${alt} Tage offen` : x.status === 'bezahlt' ? '✓ bezahlt' + (x.ueberraschung ? ' (Überraschung!)' : '') : `abgeschrieben${x.erinnern ? ' · Betreibung prüfen ab ' + datumCH(x.erinnern) : ''}`;
+    const st = x.status === 'offen' ? `${x.nr ? 'Nr. ' + esc(x.nr) + ' · ' : ''}${MAHN[x.mahn||0]} · ${ueberfaellig(x) ? '<span style="color:var(--warn)">überfällig seit ' + (-tageBis(faelligAm(x))) + ' Tagen</span>' : 'fällig ' + datumCH(faelligAm(x))}` : x.status === 'bezahlt' ? '✓ bezahlt' + (x.ueberraschung ? ' (Überraschung!)' : '') : `abgeschrieben${x.erinnern ? ' · Betreibung prüfen ab ' + datumCH(x.erinnern) : ''}`;
     const kn = x.status === 'offen'
       ? `<button class="btn small" data-mahn="${x.id}">${(x.mahn||0) < 3 ? '+ Mahnstufe' : 'Mahnstufe'}</button><button class="btn small" data-rbez="${x.id}">Bezahlt</button><button class="btn small del" data-rab="${x.id}">Abschreiben</button>`
       : x.status === 'abgeschrieben' ? `<button class="btn small" data-rbez="${x.id}">Doch bezahlt</button><button class="btn small del" data-rweg="${x.id}" aria-label="Entfernen">✕</button>` : `<button class="btn small del" data-rweg="${x.id}" aria-label="Entfernen">✕</button>`;
@@ -1073,7 +1172,7 @@ async function faelligBezahlt(id){
 }
 async function rechnungAendern(id, was){
   const r = rechnungen.find(x => x.id === id); if (!r) return;
-  if (was === 'mahn'){ r.mahn = Math.min(3, (r.mahn||0) + 1); toast(['','Erinnerung','1. Mahnung','2. Mahnung'][r.mahn] + ' notiert. Senden machst du selbst.'); pose('denkt', '!'); }
+  if (was === 'mahn'){ r.mahn = Math.min(3, (r.mahn||0) + 1); toast(STUFE[r.mahn] + ' notiert. Senden machst du selbst.'); pose('denkt', '!'); }
   if (was === 'bez'){ r.ueberraschung = r.status === 'abgeschrieben'; r.status = 'bezahlt'; r.bezahlt = ymd(new Date());
     if (r.ueberraschung){ pose('staunt', '!', 2400); muenzRegen(26); toast(`Überraschung: ${r.kuerzel} hat bezahlt, CHF ${chf(r.betrag)} Gewinn`); } else { pose('freut', '✓'); toast(`${r.kuerzel} bezahlt`); } }
   if (was === 'ab'){ if (!confirm(`Rechnung ${r.kuerzel} abschreiben? Zahlt jemand doch, ist es eine Überraschung.`)) return; r.status = 'abgeschrieben'; r.erinnern = plusMonate(ymd(new Date()), 6); toast('Abgeschrieben. In einem halben Jahr erinnere ich dich an den Entscheid.'); }
@@ -1245,6 +1344,14 @@ function verstehe(t){
   const s = String(t).toLowerCase();
   // Fragen an Fompa ohne Betrag
   if (!/\d/.test(s)){
+    if (/(schuld|mahn|offene rechnung|überfällig|ueberfaellig|wer hat .*bezahlt)/.test(s)){
+      gehZu('offen'); const g = proKuerzel(); pose('rechnet');
+      if (!g.length) return 'Es sind keine offenen Klientenrechnungen eingetragen. Schön.';
+      const ueber = g.filter(x => x.ueberSum), tot = g.reduce((a,x) => a + x.offen, 0), ue = ueber.reduce((a,x) => a + x.ueberSum, 0);
+      return `${g.length} ${g.length === 1 ? 'Kürzel hat' : 'Kürzel haben'} zusammen ${chf(tot)} Franken offen${ue ? ', davon ' + chf(ue) + ' überfällig' : ''}.` + (ueber.length ? ` Am meisten überfällig ist ${ueber[0].k} mit ${chf(ueber[0].ueberSum)}. Die Mahntexte liegen unter «Pro Kürzel» bereit, schicken tust du selbst.` : '');
+    }
+    if (/(verkauf|inserat)/.test(s)){ gehZu('offen'); return verkauf.length ? `Auf deiner Verkaufsliste stehen ${verkauf.length} Dinge. Tipp auf «Inserat», dann schreibe ich den Text.` : 'Deine Verkaufsliste ist noch leer. Unter «Dinge verkaufen» trägst du ein, was weg kann.'; }
+    if (/(steuer|mwst|3a|rücklage|ruecklage)/.test(s)){ setMode('steuer'); tab('paket'); return 'Unter «Paket» findest du den Jahres-Check: Hochrechnung, MWST-Hinweis, 3a und Steuer-Rücklage. Ich bin keine Steuerberatung, ich rechne nur.'; }
     if (/(übrig|uebrig|noch|budget|ausgeben|woche)/.test(s) && wocheStand){
       const w = wocheStand; pose('rechnet');
       if (!w.budget) return 'Du hast noch kein Wochengeld festgelegt. Unter «Woche und Ziele» trägst du es ein, dann rechne ich für dich.';
@@ -1375,6 +1482,209 @@ function fillYears(){
   const ys = [...new Set([now-2, now-1, now, now+1, year])].sort();
   $('#year').innerHTML = ys.map(y => `<option ${y==year?'selected':''}>${y}</option>`).join('');
 }
+/* ---------- Runde 2: Posen-Bilder, Vorlesen, Mahntexte, Jahres-Check, Verkaufen, Heute, Einführung ---------- */
+// Tinko-Posen: liegt posen/<pose>.jpg im App-Ordner und steht in posen/posen.json, nimmt Fompa das echte Bild.
+// Sonst bleibt es beim einen Bild mit CSS-Animation.
+let POSEN = [];
+fetch('posen/posen.json', {cache:'no-cache'}).then(r => r.ok ? r.json() : null).then(j => { if (j && Array.isArray(j.posen)) POSEN = j.posen.map(String); }).catch(() => {});
+function poseBild(name){
+  const img = $('#figur img'); if (!img) return;
+  const n = name || (new Date().getHours() >= 23 || new Date().getHours() < 6 ? 'schlaeft' : 'ruhe');
+  const echt = POSEN.includes(n);
+  const src = echt ? 'posen/' + n + '.jpg' : 'fompa-posen.jpg';
+  if (img.getAttribute('src') !== src) img.setAttribute('src', src);
+  $('#figur').classList.toggle('echt', echt);
+}
+// Fompa liest vor: Figurenstimme über nova.js, sonst Gerätestimme
+function vorlesen(text){
+  const t = String(text || '').replace(/\s+/g, ' ').trim(); if (!t) return;
+  pose('freut', '♪', 2200);
+  if (window.NovaStimme && NovaStimme.sprich){ NovaStimme.sprich(t); return; }
+  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'de-CH'; u.rate = .95; speechSynthesis.speak(u); } catch { toast('Vorlesen geht auf diesem Gerät nicht'); }
+}
+function bubbleText(){ const c = $('#bubble').cloneNode(true); c.querySelectorAll('.bk').forEach(b => b.remove()); return c.textContent; }
+
+/* Offene Rechnungen: fällig nach Zahlungsfrist, Übersicht pro Kürzel, Mahntext zum Kopieren */
+const zielTage = () => num(einst.mZiel, 30) || 30;
+const mahnFrist = () => num(einst.mFrist, 10) || 10;
+const faelligAm = r => plusTage(r.datum, zielTage());
+const ueberfaellig = r => r.status === 'offen' && tageBis(faelligAm(r)) < 0;
+const STUFE = ['offen','Zahlungserinnerung','1. Mahnung','2. Mahnung'];
+function proKuerzel(){
+  const g = {};
+  rechnungen.filter(r => r.status === 'offen').forEach(r => { (g[r.kuerzel] = g[r.kuerzel] || []).push(r); });
+  return Object.entries(g).map(([k, list]) => {
+    const ueber = list.filter(ueberfaellig), stufe = Math.max(0, ...ueber.map(r => r.mahn || 0));
+    const letzte = ueber.map(r => r.mahnDatum || '').sort().pop() || '';
+    const wartenBis = letzte && stufe > 0 ? plusTage(letzte, mahnFrist()) : '';
+    const alt = Math.max(...list.map(r => -tageBis(r.datum)));
+    let schritt, bereit = false;
+    if (!ueber.length){ const n = list.map(faelligAm).sort()[0]; schritt = 'warten, fällig ' + datumCH(n); }
+    else if (wartenBis && tageBis(wartenBis) >= 0) schritt = `${STUFE[stufe]} läuft bis ${datumCH(wartenBis)}`;
+    else if (stufe >= 3) schritt = 'Betreibung prüfen (dein Entscheid)';
+    else { schritt = STUFE[stufe + 1]; bereit = true; }
+    return {k, list, ueber, stufe, alt, schritt, bereit, offen: list.reduce((s,r) => s + r.betrag, 0), ueberSum: ueber.reduce((s,r) => s + r.betrag, 0)};
+  }).sort((a,b) => b.ueberSum - a.ueberSum || b.offen - a.offen);
+}
+function renderProKuerzel(){
+  const g = proKuerzel();
+  $('#kuerzelCard').classList.toggle('hidden', !rechnungen.length);
+  $('#proKuerzel').innerHTML = g.map(x => `<div class="eintrag"><div><b>${esc(x.k)}</b> · ${x.list.length} ${x.list.length === 1 ? 'Rechnung' : 'Rechnungen'} · CHF ${chf(x.offen)}<small>${x.ueberSum ? `<span style="color:var(--warn)">überfällig ${chf(x.ueberSum)}</span> · ` : ''}älteste ${x.alt} Tage · nächster Schritt: ${esc(x.schritt)}</small></div>
+    <div class="knoepfe">${x.bereit ? `<button class="btn small" data-mahntext="${esc(x.k)}">Text schreiben</button>` : ''}</div></div>`).join('') || '<p class="hint">Alle Rechnungen sind bezahlt. Schön.</p>';
+  $('#mAbsender').value = einst.mAbsender || ''; $('#mZiel').value = einst.mZiel || ''; $('#mFrist').value = einst.mFrist || ''; $('#mBetreib').value = einst.mBetreib || '';
+  const uv = Math.max(0, Math.round(num(einst.unverrechnet))); $('#uvZahl').textContent = uv;
+  $('#uvBetrag').textContent = uv ? (preis() ? `≈ CHF ${chf(uv * preis())} noch verrechnen` : 'Preis pro Sitzung unter «Woche» eintragen') : 'Alles verrechnet';
+}
+function mahnText(k){
+  const x = proKuerzel().find(g => g.k === k); if (!x) return '';
+  const st = x.stufe + 1, titel = STUFE[st].toUpperCase(), heute = ymd(new Date()), frist = plusTage(heute, mahnFrist());
+  const ab = (einst.mAbsender || 'Debitorenmanagement\nPraxis').trim();
+  const zeilen = x.ueber.slice().sort((a,b) => a.datum.localeCompare(b.datum)).map(r => `${String(r.nr || '–').padEnd(8)} ${datumCH(r.datum).padEnd(16)} ${chf(r.betrag).padStart(10)}`);
+  const total = x.ueberSum, mehr = x.ueber.length > 1;
+  const schluss = st === 3 ? (einst.mBetreib || 'Ohne Zahlung bis zur Frist leiten wir die Betreibung ein.') : st === 2 ? 'Ohne Zahlungseingang bis zur Frist folgt die 2. Mahnung.' : 'Ohne Zahlungseingang bis zur Frist folgt die 1. Mahnung.';
+  return `Betreff: ${STUFE[st]} – Ref. ${k} – offener Betrag CHF ${chf(total)}
+
+${ab}
+
+Referenz: ${k}
+Datum: ${datumCH(heute)}
+
+${titel}
+
+Guten Tag
+
+Gemäss unserer Buchhaltung ${mehr ? 'sind folgende Rechnungen' : 'ist folgende Rechnung'} nach Ablauf der Zahlungsfrist offen:
+
+Rg-Nr.   Rechnungsdatum      Betrag CHF
+${zeilen.join('\n')}
+---------------------------------------
+Total offen                CHF ${chf(total)}
+
+Zahlungsfrist: ${datumCH(frist)} (${mahnFrist()} Tage)
+Zahlungsart: mit dem QR-Einzahlungsschein der Originalrechnung, Kopie auf Anfrage.
+
+${schluss}
+Hat sich Ihre Zahlung mit diesem Schreiben gekreuzt, ist es gegenstandslos.
+Rückfragen: Antwort auf diese Mail unter Angabe der Referenz.
+
+Freundliche Grüsse
+${ab}`;
+}
+function zeigeMahnText(k){
+  const t = mahnText(k), box = $('#mahnBox'); if (!t) return;
+  const x = proKuerzel().find(g => g.k === k);
+  box.classList.remove('hidden');
+  box.innerHTML = `<b>${esc(STUFE[x.stufe + 1])} für ${esc(k)}</b> · Anrede und Text kannst du hier anpassen.<textarea id="mahnText" spellcheck="false" style="min-height:280px;margin-top:8px;font:14px/1.4 ui-monospace,Menlo,monospace">${esc(t)}</textarea>
+    <div class="chips" style="margin-top:8px"><button class="chip gold" data-mahn-copy="1">Kopieren</button><button class="chip" data-mahn-mail="1">Als Mail-Entwurf</button><button class="chip" data-mahn-notiz="${esc(k)}">${esc(STUFE[x.stufe + 1])} notieren</button><button class="chip" data-mahn-zu="1">Schliessen</button></div>
+    <p class="hint" style="margin-top:6px">Fompa schickt nichts. Mail-Entwurf öffnet dein Mailprogramm ohne Adresse.</p>`;
+  pose('rechnet', null, 2000);
+  box.scrollIntoView({behavior:'smooth', block:'start'});
+}
+async function mahnNotieren(k){
+  const x = proKuerzel().find(g => g.k === k); if (!x) return;
+  const st = Math.min(3, x.stufe + 1), heute = ymd(new Date());
+  x.ueber.forEach(r => { r.mahn = st; r.mahnDatum = heute; });
+  await kvSet('rechnungen', rechnungen); zaehle('mahntext');
+  $('#mahnBox').classList.add('hidden');
+  toast(`${STUFE[st]} für ${k} notiert. Frist bis ${datumCH(plusTage(heute, mahnFrist()))}.`); pose('denkt', '!');
+  renderAll();
+}
+
+/* Steuern: Jahres-Check und Beleg-Check */
+function jahresCheck(){
+  const jetzt = new Date(), dieses = year === jetzt.getFullYear();
+  const tage = dieses ? Math.max(1, Math.round((jetzt - new Date(year, 0, 1)) / 864e5) + 1) : 365, jahrTage = 365;
+  const ein3000 = sum(zettel.filter(z => z.cat === '3000'));
+  const ein = einst.jUmsatz ? num(einst.jUmsatz) : ein3000;
+  const aufwand = sum(zettel.filter(z => z.cat && /^\d/.test(z.cat) && z.cat !== '3000'));
+  const f = jahrTage / tage, hoch = ein * f, gewinn = ein - aufwand, gewinnHoch = (ein - aufwand) * f;
+  const p3a = sum(zettel.filter(z => z.cat === 'P4')), ziel3a = num(einst.j3a), proz = num(einst.jProzent);
+  const bisSilvester = dieses ? tageBis(year + '-12-31') : 0;
+  const out = [];
+  out.push(`<div class="kat"><span>Einnahmen bis ${dieses ? 'heute' : 'Jahresende'}${einst.jUmsatz ? '' : ' (Ordner 3000)'}</span><span>${chf(ein)}</span></div>`);
+  if (dieses && ein) out.push(`<div class="kat"><span>Hochgerechnet aufs Jahr</span><span>≈ ${chf0(hoch)}</span></div>`);
+  out.push(`<div class="kat"><span>Aufwand mit Konto-Ordner</span><span>${chf(aufwand)}</span></div>`);
+  if (ein) out.push(`<div class="kat gross"><span>Gewinn ${dieses ? 'hochgerechnet' : ''}</span><span>≈ ${chf0(dieses ? gewinnHoch : gewinn)}</span></div>`);
+  if (ein && !aufwand) out.push('<p class="hint">Noch kein Aufwand mit Konto erfasst. Ohne Ausgaben sieht es aus, als wäre alles Gewinn.</p>');
+  if (hoch >= 100000) out.push('<p class="hint" style="color:var(--warn)">Umsatz über CHF 100\'000: Bitte mit dem Treuhand klären, ob eine MWST-Pflicht besteht. Heilbehandlungen können ausgenommen sein.</p>');
+  else if (hoch >= 85000) out.push('<p class="hint">Der Umsatz nähert sich CHF 100\'000. Ab dort die MWST-Frage mit dem Treuhand klären.</p>');
+  out.push(`<div class="kat"><span>3a einbezahlt (Ordner P4)</span><span>${chf(p3a)}${ziel3a ? ' von ' + chf(ziel3a) : ''}</span></div>`);
+  if (ziel3a > p3a && dieses) out.push(`<p class="hint">Noch CHF ${chf(ziel3a - p3a)} bis zum 3a-Ziel, ${bisSilvester} Tage bis 31.12. Einzahlung muss bis dahin auf dem Konto sein.</p>`);
+  if (proz && ein){ const r = Math.max(0, (dieses ? gewinnHoch : gewinn) * proz / 100); out.push(`<div class="kat"><span>Steuer-Rücklage ${proz} %</span><span>≈ ${chf0(r)}</span></div><div class="kat"><span>pro Monat zurücklegen</span><span>≈ ${chf0(r / 12)}</span></div>`); }
+  else out.push('<p class="hint">Trag unter «Werte eintragen» einen Prozentsatz ein, dann rechnet Fompa die Steuer-Rücklage.</p>');
+  $('#jahrCheck').innerHTML = out.join('');
+  $('#jUmsatz').value = einst.jUmsatz || ''; $('#j3a').value = einst.j3a || ''; $('#jProzent').value = einst.jProzent || '';
+}
+function belegCheck(){
+  const st = zettel.filter(z => z.cat), out = [];
+  const ohneBild = st.filter(z => !z.blob), ohneBetrag = zettel.filter(z => z.amount == null);
+  const gesehen = {}, doppelt = [];
+  zettel.forEach(z => { const k = [z.date, z.amount, (z.from||'').toLowerCase()].join('|'); if (z.amount != null && gesehen[k]) doppelt.push(z); else gesehen[k] = 1; });
+  const unk = zettel.filter(z => isBuch(z) && splitKat(z.kat).h === 'Unklar');
+  const z3 = (list) => list.slice(0, 4).map(z => `<button class="chip" data-edit="${z.id}">${esc(z.from || 'Zettel')} ${z.amount == null ? '' : chf(z.amount)}</button>`).join('');
+  if (ohneBild.length) out.push(`<div style="border-top:1px solid var(--line);padding:8px 0">📷 ${ohneBild.length} ${ohneBild.length === 1 ? 'Zettel' : 'Zettel'} mit Steuer-Ordner ohne Foto. Beleg nachfotografieren, wenn er noch da ist.<div class="chips" style="margin-top:6px">${z3(ohneBild)}</div></div>`);
+  if (ohneBetrag.length) out.push(`<div style="border-top:1px solid var(--line);padding:8px 0">✎ ${ohneBetrag.length} ohne Betrag.<div class="chips" style="margin-top:6px">${z3(ohneBetrag)}</div></div>`);
+  if (doppelt.length) out.push(`<div style="border-top:1px solid var(--line);padding:8px 0">⧉ ${doppelt.length} vielleicht doppelt (gleiches Datum, Betrag und Wofür).<div class="chips" style="margin-top:6px">${z3(doppelt)}</div></div>`);
+  if (unk.length) out.push(`<div style="border-top:1px solid var(--line);padding:8px 0">? ${unk.length} noch unklar.<div class="chips" style="margin-top:6px"><button class="chip gold" data-go="offen">Klären</button></div></div>`);
+  $('#belegCheck').innerHTML = out.join('') || `<p class="hint">${zettel.length ? 'Alles sauber. Fompa findet nichts, was auffällt.' : 'Noch keine Zettel. Sobald welche da sind, schaut Fompa sie durch.'}</p>`;
+}
+
+/* Dinge verkaufen */
+let verkauf = [];
+function renderVerkauf(){
+  const v = verkauf.slice().sort((a,b) => (a.status === 'verkauft') - (b.status === 'verkauft'));
+  $('#verkauf').innerHTML = v.map(x => `<div class="eintrag"><div><b>${esc(x.was)}</b> · CHF ${chf0(x.status === 'verkauft' ? x.erloes : x.preis)}<small>${esc(x.zustand)} · ${x.status === 'verkauft' ? '✓ verkauft ' + datumCH(x.am) : x.status === 'inseriert' ? 'inseriert' : 'Idee'}</small></div>
+    <div class="knoepfe">${x.status !== 'verkauft' ? `<button class="btn small" data-inserat="${x.id}">Inserat</button>${x.status === 'idee' ? `<button class="btn small" data-vinser="${x.id}">Inseriert</button>` : ''}<button class="btn small" data-vverk="${x.id}">Verkauft</button>` : ''}<button class="btn small del" data-vweg="${x.id}" aria-label="Entfernen">✕</button></div></div>`).join('') || '<p class="hint">Noch nichts auf der Liste. Was du nicht mehr brauchst, wird hier Geld.</p>';
+  const verk = verkauf.filter(x => x.status === 'verkauft').reduce((s,x) => s + (x.erloes||0), 0), noch = verkauf.filter(x => x.status !== 'verkauft').reduce((s,x) => s + (x.preis||0), 0);
+  $('#verkaufSumme').innerHTML = verkauf.length ? `<div class="kat gross"><span>Schon verkauft</span><span>${chf0(verk)}</span></div><div class="kat"><span>Noch möglich</span><span>${chf0(noch)}</span></div>` : '';
+}
+function inseratText(x){
+  return `${x.was} (${x.zustand})\n\nPreis: CHF ${chf0(x.preis)}, Verhandlungsbasis\nZustand: ${x.zustand}\nAbholung nach Absprache, Bezahlung bar oder Twint.\n\nBei Interesse einfach melden.`;
+}
+async function verkaufAendern(id, was){
+  const x = verkauf.find(v => v.id === id); if (!x) return;
+  if (was === 'inserat'){ const b = $('#inseratBox'); b.classList.remove('hidden'); b.innerHTML = `<b>Inserat für ${esc(x.was)}</b><textarea id="inseratText" style="min-height:150px;margin-top:8px">${esc(inseratText(x))}</textarea><div class="chips" style="margin-top:8px"><button class="chip gold" data-ins-copy="1">Kopieren</button><button class="chip" data-ins-zu="1">Schliessen</button></div>`; pose('denkt', '✎'); return; }
+  if (was === 'inser'){ x.status = 'inseriert'; toast('Inseriert, viel Glück'); }
+  if (was === 'verk'){ const p = prompt(`Für wie viel CHF verkauft?`, String(x.preis || '')); if (p === null) return; x.erloes = num(p, x.preis); x.status = 'verkauft'; x.am = ymd(new Date()); muenzRegen(20); pose('staunt', '!', 2400); toast(`${x.was} verkauft: CHF ${chf0(x.erloes)}. Trag es unter Konten ein.`); zaehle('verkauft'); }
+  if (was === 'weg'){ if (!confirm('Eintrag entfernen?')) return; verkauf = verkauf.filter(v => v !== x); }
+  await kvSet('verkauf', verkauf); renderVerkauf();
+}
+
+/* Heute für dich: das Wichtigste des Tages in einer Liste */
+function renderHeute(){
+  const out = hinweise().slice();
+  const heute = ymd(new Date());
+  const bereit = proKuerzel().filter(g => g.bereit);
+  if (bereit.length) out.push(`${bereit.length === 1 ? 'Bei <b>' + esc(bereit[0].k) + '</b> ist' : 'Bei <b>' + bereit.length + ' Kürzeln</b> ist'} die nächste Mahnstufe fällig. Der Text ist bereit.<div class="bk"><button class="chip gold" data-go="offen">Ansehen</button></div>`);
+  const uv = Math.round(num(einst.unverrechnet)); if (uv > 0) out.push(`${uv} ${uv === 1 ? 'Sitzung ist' : 'Sitzungen sind'} noch nicht verrechnet.<div class="bk"><button class="chip gold" data-go="offen">Ansehen</button></div>`);
+  if (konten.length && !staende.some(s => s.datum === heute)) out.push('Magst du heute den Stand speichern? So siehst du den Tagesgewinn.<div class="bk"><button class="chip gold" data-go="kapital">Kapital</button></div>');
+  const idee = verkauf.filter(v => v.status === 'idee'); if (idee.length) out.push(`${idee.length} ${idee.length === 1 ? 'Ding wartet' : 'Dinge warten'} aufs Inserat.<div class="bk"><button class="chip gold" data-go="offen">Inserat schreiben</button></div>`);
+  $('#heute').innerHTML = out.map(t => `<div style="border-top:1px solid var(--line);padding:9px 0">${t}</div>`).join('') || '<p class="hint">Alles ruhig heute. Leg einfach jeden Zettel ins Glas, den Rest rechne ich.</p>';
+}
+
+/* Einführung beim ersten Start */
+const ONB = [
+  {t:'Hallo, ich bin Fompa', x:'Der Löwenaffe mit Brille. Ich sammle deine Zettel, rechne in Sitzungen und erinnere dich an alles, was fällig ist. Alles bleibt auf deinem Handy.', p:'freut'},
+  {t:'Dein Wochengeld', x:'Wie viel möchtest du pro Woche privat ausgeben, und was kostet eine Sitzung? Du kannst das auch später unter «Woche + Ziele» eintragen.', p:'rechnet', feld:true},
+  {t:'Zettel ins Glas', x:'Tipp unten rechts auf mein kleines Bild und sag zum Beispiel «Kaffee 4.80 mit Twint». Oder fotografiere eine Quittung. Jeder Zettel wird ein Stern in meinem Glas.', p:'staunt'},
+  {t:'Drei Bereiche', x:'Buchhaltung für jeden Tag, Steuern mit Ordnern und Paket für den Steuerberater, Woche + Ziele mit Kapital, Fälligkeiten und offenen Rechnungen. Ich bin keine Steuerberatung, ich ordne nur.', p:'denkt'}
+];
+let onbI = 0;
+function onbZeigen(i){
+  onbI = i; const s = ONB[i];
+  $('#onb').classList.remove('hidden'); $('#onbTitel').textContent = s.t; $('#onbText').textContent = s.x;
+  $('#onbFeld').innerHTML = s.feld ? `<div class="form"><div class="row"><label>Wochengeld CHF<input id="oWoche" inputmode="decimal" placeholder="z. B. 300" value="${esc(einst.wochengeld||'')}"></label><label>Preis pro Sitzung<input id="oPreis" inputmode="decimal" placeholder="z. B. 120" value="${esc(einst.preis||'')}"></label></div></div>` : '';
+  $('#onbPunkte').innerHTML = ONB.map((_, n) => `<i class="${n === i ? 'on' : ''}"></i>`).join('');
+  $('#onbWeiter').textContent = i === ONB.length - 1 ? 'Los geht\'s' : 'Weiter';
+  const f = $('#onbFigur'); f.classList.remove('freut','denkt','rechnet','staunt'); void f.offsetWidth; f.classList.add(s.p);
+  const img = f.querySelector('img'); img.src = POSEN.includes(s.p) ? 'posen/' + s.p + '.jpg' : 'fompa-posen.jpg';
+}
+async function onbWeiter(ende){
+  if ($('#oWoche')){ const w = $('#oWoche').value.trim(), p = $('#oPreis').value.trim(); if (w) einst.wochengeld = w; if (p) einst.preis = p; }
+  if (!ende && onbI < ONB.length - 1){ onbZeigen(onbI + 1); return; }
+  $('#onb').classList.add('hidden'); await kvSet('onboard', 1); await einstSpeichern(); pose('freut', '♪');
+}
+
 async function einstSpeichern(){ await kvSet('einst', einst); renderAll(); }
 (async () => {
   himmel(); ruhe();
@@ -1388,6 +1698,7 @@ async function einstSpeichern(){ await kvSet('einst', einst); renderAll(); }
   faellig = (await kvGet('faellig')) || [];
   rechnungen = (await kvGet('rechnungen')) || [];
   lern = (await kvGet('lern')) || {};
+  verkauf = (await kvGet('verkauf')) || [];
   fillYears();
   let m = 'buch'; try { m = localStorage.getItem('fompa-mode') || 'buch'; } catch {}
   await loadYear(); setMode(m);
@@ -1419,6 +1730,14 @@ async function einstSpeichern(){ await kvSet('einst', einst); renderAll(); }
     const bz = e.target.closest('[data-bezahlt]'); if (bz){ faelligBezahlt(bz.dataset.bezahlt); return; }
     const fw = e.target.closest('[data-fweg]'); if (fw){ if (confirm('Fälligkeit entfernen?')){ faellig = faellig.filter(x => x.id !== fw.dataset.fweg); kvSet('faellig', faellig).then(renderAll); } return; }
     for (const [attr, was] of [['data-mahn','mahn'],['data-rbez','bez'],['data-rab','ab'],['data-rweg','weg']]){ const b = e.target.closest('[' + attr + ']'); if (b){ rechnungAendern(b.getAttribute(attr), was); return; } }
+    const mt = e.target.closest('[data-mahntext]'); if (mt){ zeigeMahnText(mt.dataset.mahntext); return; }
+    if (e.target.closest('[data-mahn-copy]')){ const t = $('#mahnText').value; navigator.clipboard.writeText(t).then(() => { toast('Mahnung kopiert'); pose('freut', '✓'); }, () => { $('#mahnText').select(); toast('Bitte lange drücken und kopieren'); }); return; }
+    if (e.target.closest('[data-mahn-mail]')){ const t = $('#mahnText').value, m = t.match(/^Betreff: (.*)\n+/); location.href = 'mailto:?subject=' + encodeURIComponent(m ? m[1] : 'Mahnung') + '&body=' + encodeURIComponent(m ? t.slice(m[0].length) : t); return; }
+    const mn = e.target.closest('[data-mahn-notiz]'); if (mn){ mahnNotieren(mn.dataset.mahnNotiz); return; }
+    if (e.target.closest('[data-mahn-zu]')){ $('#mahnBox').classList.add('hidden'); return; }
+    for (const [attr, was] of [['data-inserat','inserat'],['data-vinser','inser'],['data-vverk','verk'],['data-vweg','weg']]){ const b = e.target.closest('[' + attr + ']'); if (b){ verkaufAendern(b.getAttribute(attr), was); return; } }
+    if (e.target.closest('[data-ins-copy]')){ navigator.clipboard.writeText($('#inseratText').value).then(() => toast('Inserat kopiert'), () => toast('Bitte lange drücken und kopieren')); return; }
+    if (e.target.closest('[data-ins-zu]')){ $('#inseratBox').classList.add('hidden'); return; }
     const kw = e.target.closest('[data-konto-weg]'); if (kw){ if (confirm('Konto entfernen?')){ konten = konten.filter(x => x.id !== kw.dataset.kontoWeg); kvSet('konten', konten).then(renderAll); } return; }
   });
   $('#konten').addEventListener('change', kontoAendern);
@@ -1441,10 +1760,10 @@ async function einstSpeichern(){ await kvSet('einst', einst); renderAll(); }
     await kvSet('faellig', faellig); $('#fWas').value = ''; $('#fBetrag').value = ''; toast('Fälligkeit notiert'); pose('rechnet'); renderAll();
   };
   $('#rAdd').onclick = async () => {
-    const k = $('#rKuerzel').value.trim().toUpperCase().replace(/[^A-ZÄÖÜ0-9.]/g, '').slice(0,5), b = parseAmt($('#rBetrag').value), d = $('#rDatum').value;
+    const k = $('#rKuerzel').value.trim().toUpperCase().replace(/[^A-ZÄÖÜ0-9.]/g, '').slice(0,6), b = parseAmt($('#rBetrag').value), d = $('#rDatum').value;
     if (!k || b == null || !d){ toast('Kürzel, Betrag und Datum eintragen'); pose('denkt', '?'); return; }
-    rechnungen.push({id: neueId(), kuerzel: k, betrag: b, datum: d, mahn: 0, status: 'offen'});
-    await kvSet('rechnungen', rechnungen); $('#rKuerzel').value = ''; $('#rBetrag').value = ''; toast('Rechnung notiert'); renderAll();
+    rechnungen.push({id: neueId(), kuerzel: k, betrag: b, datum: d, mahn: 0, status: 'offen', nr: $('#rNr').value.trim().slice(0,12)});
+    await kvSet('rechnungen', rechnungen); $('#rKuerzel').value = ''; $('#rBetrag').value = ''; $('#rNr').value = ''; toast('Rechnung notiert'); renderAll();
   };
   $('#monatSel').onchange = renderMonat;
   $('#exSel').onchange = renderExport;
@@ -1474,6 +1793,15 @@ async function einstSpeichern(){ await kvSet('einst', einst); renderAll(); }
   };
   if (/eingang/.test(location.hash)){ history.replaceState(null, '', location.pathname); eingangAusTranskript(); }
   addEventListener('hashchange', () => { if (/eingang/.test(location.hash)){ history.replaceState(null, '', location.pathname); eingangAusTranskript(); } });
+  $('#vorlesen').onclick = () => vorlesen(bubbleText());
+  $('#mSave').onclick = async () => { einst.mAbsender = $('#mAbsender').value.trim(); einst.mZiel = $('#mZiel').value.trim(); einst.mFrist = $('#mFrist').value.trim(); einst.mBetreib = $('#mBetreib').value.trim(); await einstSpeichern(); toast('Gespeichert'); pose('freut', '✓'); };
+  const uvSetzen = async d => { einst.unverrechnet = Math.max(0, Math.round(num(einst.unverrechnet)) + d); await einstSpeichern(); pose(d > 0 ? 'denkt' : 'freut', d > 0 ? '+' : '✓', 1000); };
+  $('#uvPlus').onclick = () => uvSetzen(1); $('#uvMinus').onclick = () => uvSetzen(-1);
+  $('#vAdd').onclick = async () => { const was = $('#vWas').value.trim(); if (!was){ toast('Was möchtest du verkaufen?'); pose('denkt', '?'); return; } verkauf.push({id: neueId(), was, preis: num($('#vPreis').value), zustand: $('#vZustand').value, status: 'idee'}); await kvSet('verkauf', verkauf); $('#vWas').value = ''; $('#vPreis').value = ''; toast('Auf der Liste'); pose('freut', '✓'); renderVerkauf(); renderHeute(); };
+  $('#jSave').onclick = async () => { einst.jUmsatz = $('#jUmsatz').value.trim(); einst.j3a = $('#j3a').value.trim(); einst.jProzent = $('#jProzent').value.trim(); await einstSpeichern(); pose('rechnet'); toast('Gerechnet'); };
+  $('#onbWeiter').onclick = () => onbWeiter(false); $('#onbSkip').onclick = () => onbWeiter(true);
+  $('#einfuehrung').onclick = e => { e.preventDefault(); onbZeigen(0); };
+  if (!(await kvGet('onboard')) && !zettel.length) setTimeout(() => onbZeigen(0), 600);
   setTimeout(() => pose('freut', '♪', 1600), 900);
   setTimeout(lernWeitergeben, 4000);
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});

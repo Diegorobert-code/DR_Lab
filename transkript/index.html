@@ -69,6 +69,9 @@ summary{font-weight:600;cursor:pointer}
 .hist .hdel{min-height:44px;margin-top:6px;padding:0 14px;font-size:14px}
 .hist time{display:block;color:var(--muted);font-size:13px}
 .foot{color:var(--muted);font-size:13px;text-align:center}
+.willkommen{background:rgba(242,193,78,.13);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:15px}
+.willkommen b{color:#f2c14e}
+.answer .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);background:#1f6b3a;color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;z-index:99}
 .toast.show{opacity:1}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -84,6 +87,11 @@ summary{font-weight:600;cursor:pointer}
       <p class="sub">Reinreden, Fompa schreibt mit. Der Text bleibt auf deinem Handy. <a href="../fompa/">Fompa</a> · <a href="https://diegorobert-code.github.io/Stimmraum/sense/">Sense Engine</a> · <a href="../apps/">Alle Apps</a></p>
     </div>
     <span data-feedback-slot></span>
+  </div>
+
+  <div class="willkommen hidden" id="willkommen">
+    <b>Hallo, ich bin Fompa.</b> Tipp auf «Reinreden» und sprich einfach. Ich schreibe mit und korrigiere Verhörer wie «Pompa» → «Fompa». «Aufräumen» nimmt Füllwörter raus, «Stichworte» macht eine Liste, «An Fompa» macht aus Beträgen Zettel. Alles bleibt auf deinem Handy.
+    <button class="btn" id="willkommenOk" style="margin-top:8px;width:100%">Verstanden</button>
   </div>
 
   <button class="mic" id="mic" aria-label="Reinreden starten">
@@ -103,6 +111,12 @@ summary{font-weight:600;cursor:pointer}
     <button class="btn" id="anFompa">An Fompa (Zettel)</button>
     <button class="btn" id="brief">Als Brief kopieren</button>
   </div>
+  <div class="row">
+    <button class="btn" id="aufraeumen">Aufräumen</button>
+    <button class="btn" id="stichworte">Stichworte</button>
+    <button class="btn" id="vorlesen">🔊 Vorlesen</button>
+  </div>
+  <div class="answer hidden" id="fompaAntwort" aria-live="polite"></div>
 
   <div class="send">
     <p>Direkt senden (Text wird auch kopiert):</p>
@@ -423,7 +437,7 @@ var LKEY = 'drlab-transkript-lernen', lern = get(LKEY, {});
 var zaehlT = null;
 window.zaehl = function(k, n){ lern[k] = (lern[k] || 0) + (n || 1); clearTimeout(zaehlT); zaehlT = setTimeout(function(){ put(LKEY, lern); renderZahlen(); }, 400); }
 function renderZahlen(){
-  var z = [['Diktate gespeichert', lern.diktate || 0], ['Wörter insgesamt', lern.woerter || 0], ['An Fompa geschickt', lern.fompa || 0], ['Als Brief kopiert', lern.brief || 0]];
+  var z = [['Diktate gespeichert', lern.diktate || 0], ['Wörter insgesamt', lern.woerter || 0], ['An Fompa geschickt', lern.fompa || 0], ['Als Brief kopiert', lern.brief || 0], ['Aufgeräumt', lern.aufgeraeumt || 0], ['Stichworte gemacht', lern.stichworte || 0]];
   var el = $('zahlen'); el.textContent = '';
   z.forEach(function(x){ var d = document.createElement('div'), a = document.createElement('span'), b = document.createElement('span'); a.textContent = x[0]; b.textContent = x[1]; d.appendChild(a); d.appendChild(b); el.appendChild(d); });
 }
@@ -469,6 +483,56 @@ function renderHist(){
 }
 renderHist();
 ui(false);
+
+/* Runde 2: Aufräumen, Stichworte, Vorlesen, Willkommen, Posen-Bilder */
+var FUELL = /(^|\s)(äh+m?|ähm|ehm|öhm|hm+|halt so|sozusagen|irgendwie so)(?=[\s,.!?]|$)/gi;
+function aufraeumenLokal(t){
+  t = clean(t).replace(FUELL, '$1');
+  t = t.replace(/\b(\w+)(\s+\1\b)+/gi, '$1');           // «der der» → «der»
+  t = t.replace(/\b(genau|also|okay|ok)([,.]?\s+\1\b)+/gi, '$1');
+  t = t.replace(/[ \t]{2,}/g, ' ').replace(/\s+([,.!?:])/g, '$1').replace(/,\s*,/g, ',');
+  return cap(t.trim());
+}
+function stichworteLokal(t){
+  t = aufraeumenLokal(t);
+  return t.replace(/([.!?])\s+/g, '$1\n').split(/\n+/).map(function(x){ return x.trim().replace(/^(also|genau|und|dann|okay),?\s+/i, ''); })
+    .filter(function(x){ return x.split(/\s+/).length >= 3; })
+    .map(function(x){ return '• ' + (x.length > 110 ? x.slice(0, 107) + ' …' : x); }).join('\n');
+}
+function zeigeFompa(titel, text, ersetzen){
+  var el = $('fompaAntwort'); el.textContent = '';
+  var h = document.createElement('b'); h.textContent = titel; el.appendChild(h);
+  var p = document.createElement('div'); p.style.whiteSpace = 'pre-wrap'; p.textContent = text; el.appendChild(p);
+  var k = document.createElement('div'); k.className = 'chips';
+  [['Übernehmen', function(){ ta.value = text; put(KEY, text); base = text; skip = raw.length; el.classList.add('hidden'); toast('Übernommen'); fompa('freut'); }, ersetzen],
+   ['Kopieren', function(){ try { navigator.clipboard.writeText(text).then(function(){ toast('Kopiert'); }); } catch(e){} }, true],
+   ['Schliessen', function(){ el.classList.add('hidden'); }, true]].forEach(function(x){
+    if (!x[2]) return; var b = document.createElement('button'); b.className = 'btn'; b.textContent = x[0]; b.addEventListener('click', x[1]); k.appendChild(b); });
+  el.appendChild(k); el.classList.remove('hidden');
+}
+function mitServer(auftrag, t, lokal, titel, ersetzen){
+  if (!t){ toast('Noch kein Text'); return; }
+  if (want){ stopAll(''); if (rec) try { rec.stop(); } catch(e){} }
+  var l = lokal(t); fompa('freut');
+  if (!hermesReady()){ zeigeFompa(titel, l || t, ersetzen); return; }
+  zeigeFompa(titel + ' (Fompa denkt nach …)', l || t, ersetzen);
+  callHermes(auftrag + '\n\n' + t).then(function(a){ zeigeFompa(titel, String(a).trim(), ersetzen); }, function(){ zeigeFompa(titel + ' (ohne Server)', l || t, ersetzen); });
+}
+$('aufraeumen').addEventListener('click', function(){ zaehl('aufgeraeumt'); mitServer('Korrigiere in diesem diktierten Text nur Verhörer, Satzzeichen und Füllwörter. Inhalt und Reihenfolge bleiben gleich, Schweizer Schreibweise ohne ß. Gib nur den Text zurück.', ta.value.trim(), aufraeumenLokal, 'Aufgeräumt', true); });
+$('stichworte').addEventListener('click', function(){ zaehl('stichworte'); mitServer('Mach aus diesem diktierten Text eine kurze Stichwortliste mit «• » am Zeilenanfang, höchstens zehn Punkte, Schweizer Schreibweise ohne ß. Nur die Liste.', ta.value.trim(), stichworteLokal, 'Stichworte', true); });
+$('vorlesen').addEventListener('click', function(){
+  var t = ta.value.trim(); if (!t){ toast('Noch kein Text'); return; }
+  fompa('freut');
+  if (window.NovaStimme && NovaStimme.sprich){ NovaStimme.sprich(t.slice(0, 1500)); return; }
+  try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t.slice(0, 1500)); u.lang = 'de-CH'; speechSynthesis.speak(u); } catch(e){ toast('Vorlesen geht hier nicht'); }
+});
+if (!get('drlab-transkript-willkommen', false)) $('willkommen').classList.remove('hidden');
+$('willkommenOk').addEventListener('click', function(){ put('drlab-transkript-willkommen', true); $('willkommen').classList.add('hidden'); fompa('freut'); });
+/* Tinko-Posen von Fompa: ../fompa/posen/<pose>.jpg, wenn in posen.json eingetragen */
+var POSEN = [];
+fetch('../fompa/posen/posen.json', { cache: 'no-cache' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ if (j && j.posen) POSEN = j.posen; }).catch(function(){});
+var alteFompa = window.fompa;
+window.fompa = function(p){ alteFompa(p); var img = $('fompa').querySelector('img'), n = p === 'hoert' ? 'hoert' : p || 'ruhe'; img.src = POSEN.indexOf(n) >= 0 ? '../fompa/posen/' + n + '.jpg' : '../fompa/fompa-posen.jpg'; };
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
 })();
 </script>
