@@ -43,7 +43,7 @@
   .buehne { position:relative; width:min(76vw, 360px, 37vh); aspect-ratio:4/5; border-radius:32px; overflow:hidden; flex:none; cursor:pointer;
     background:radial-gradient(16% 13% at 82% 14%, #fff3b0 0 55%, #f5c54255 60%, transparent 75%), radial-gradient(90% 60% at 50% 25%, #1b2c66 0%, #0f1b44 55%, #070d24 100%);
     box-shadow:0 16px 48px #0008, 0 0 0 3px #f5c54233; transition:box-shadow .3s; }
-  body.imspiel .buehne { width:min(56vw, 260px, 27vh); }
+  body.imspiel .buehne { width:min(56vw, 260px, 25vh); }
   .buehne.hoert { box-shadow:0 16px 48px #0008, 0 0 0 4px #7fd4ff, 0 0 40px #7fd4ff66; }
   .buehne.spricht { box-shadow:0 16px 48px #0008, 0 0 0 4px var(--gold), 0 0 44px #f5c54277; }
   .fw { position:absolute; inset:0; transform-origin:50% 100%; will-change:transform; }
@@ -255,8 +255,107 @@
   @keyframes fallen { to { transform:translate(var(--x, 0), 105vh) rotate(var(--r, 540deg)); opacity:.4; } }
   .flugstern { position:fixed; z-index:70; font-size:26px; pointer-events:none; transition:transform .7s cubic-bezier(.5,-.3,.6,1); }
 
+
+  /* Runde 4: robust auf dem Handy (kein Zoom bei Doppeltipp, kein Text-Markieren, kein Ziehen) */
+  html { touch-action:manipulation; -webkit-text-size-adjust:100%; }
+  body { -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; overscroll-behavior:none; }
+  textarea, input, .merkt { -webkit-user-select:text; user-select:text; }
+  img { -webkit-user-drag:none; }
+  .kopfrechts { grid-column:3; justify-self:end; display:flex; gap:8px; align-items:center; }
+  .sternpill { grid-column:auto; }
+  .tonknopf { width:44px; height:44px; border-radius:50%; border:1px solid var(--rand); background:var(--flaeche); font-size:20px; cursor:pointer; display:grid; place-items:center; padding:0;
+    transition:transform .12s var(--ease); }
+  .tonknopf:active { transform:scale(.9); }
+  .feldzu { flex:none; width:44px; height:44px; border-radius:50%; border:1px solid #ffffff33; background:#00000033; font-size:22px; font-weight:800; cursor:pointer; padding:0;
+    display:grid; place-items:center; transition:transform .12s var(--ease); }
+  .feldzu:active { transform:scale(.9); }
+  .feldrechts { flex:none; display:flex; flex-direction:column; align-items:flex-end; gap:4px; }
+  .feldzahl.plopp { animation:plopp .35s var(--federn); }
+  .stufe { display:flex; gap:4px; padding:0 4px; } .stufe[hidden] { display:none; }
+  .stufe i { width:12px; height:12px; border-radius:50%; background:#ffffff2e; transition:background .3s, transform .3s var(--federn); }
+  .stufe i.an { background:var(--gold); transform:scale(1.15); box-shadow:0 0 8px #f5c54299; }
+  .ansage { display:flex; flex-direction:column; align-items:center; gap:8px; border:0; background:none; cursor:pointer; padding:8px 16px; animation:grossAuf .7s var(--federn) both; }
+  .ansage .e { font-size:88px; line-height:1; animation:wippen 1.6s ease-in-out infinite; }
+  .ansage b { font-size:26px; color:var(--gold); }
+  .ansage small { font-size:17px; color:var(--leise); font-weight:700; }
+  @keyframes wippen { 50% { transform:translateY(-6px) rotate(-4deg); } }
+  .band { display:flex; flex-direction:column; align-items:center; gap:4px; animation:bandAuf 1.25s var(--ease) both; }
+  .band b { font-size:40px; color:var(--gold); text-shadow:0 0 24px #f5c54288; letter-spacing:1px; }
+  .band span { font-size:28px; letter-spacing:6px; }
+  @keyframes bandAuf { 0% { opacity:0; transform:scale(.4) rotate(-6deg); } 25% { opacity:1; transform:scale(1.12) rotate(2deg); } 40% { transform:scale(1); } 85% { opacity:1; transform:scale(1); } 100% { opacity:0; transform:scale(1.3); } }
+  .finger { position:fixed; left:0; top:0; z-index:66; font-size:44px; pointer-events:none; filter:drop-shadow(0 4px 6px #0008); will-change:transform; animation:ebAuf .3s ease both; }
+  .finger span { display:block; animation:fingerTipp 1s .2s ease-in-out infinite; }
+  @keyframes fingerTipp { 45%, 55% { transform:translateY(14px) scale(.9); } }
+  .endkarte { display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center; width:100%; max-width:340px; }
+  .endoben { display:flex; align-items:center; gap:16px; }
+  .endkarte .pokal { font-size:64px; line-height:1; animation:drehenGross 1.2s var(--federn) both; filter:drop-shadow(0 0 20px #f5c54288); }
+  .endzeile { font-size:24px; font-weight:900; color:var(--gold); letter-spacing:1px; white-space:pre; }
+  .sternreihe { display:flex; gap:4px; font-size:32px; }
+  .sternreihe span { animation:grossAuf .6s var(--federn) both; }
+  .nochmal { min-width:240px; font-size:22px; min-height:60px; animation:zAuf .35s var(--ease) both, locken 2.4s 1.5s ease-in-out infinite; }
+  .endwahl { display:flex; gap:8px; width:100%; }
+  .endwahl button { flex:1; min-height:48px; border:2px solid #ffffff2a; background:#ffffff12; color:var(--text); border-radius:16px; font-weight:700; font-size:16px; cursor:pointer; padding:8px;
+    transition:transform .12s var(--ease); }
+  .endwahl button:active { transform:scale(.96); }
+  .versteck.raschelt { animation:zittern .3s ease-in-out 4; }
+  .versteck.tier { opacity:1; background:#9be37c22; }
+  .ding.gold { filter:drop-shadow(0 0 10px #f5c542) drop-shadow(0 0 4px #fff); font-size:52px; }
+  .ding.faellt { animation:faellt var(--d, 3s) linear forwards; }
+  @keyframes faellt { from { transform:translateY(-40px) rotate(-20deg); } to { transform:translateY(var(--fall, 400px)) rotate(160deg); } }
+  .zug.tanz .e { animation:tanzE .5s ease-in-out infinite alternate; }
+  @keyframes tanzE { from { transform:rotate(-10deg) translateY(0); } to { transform:rotate(10deg) translateY(-8px); } }
+  .zug.stopp b { color:#7fd4ff; font-size:26px; }
+  .bildwahl { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+  .bild { width:96px; height:96px; border-radius:24px; border:2px solid #f5c542aa; background:#ffffff14; font-size:52px; cursor:pointer; display:grid; place-items:center; padding:0;
+    transition:transform .15s var(--federn), background .2s; animation:grossAuf .5s var(--federn) both; }
+  .bild:nth-child(2) { animation-delay:.08s; } .bild:nth-child(3) { animation-delay:.16s; }
+  .bild.zahl { font-size:44px; font-weight:900; color:var(--gold); }
+  .bild:active { transform:scale(.9); }
+  .bild.richtig, .wahl button.richtig { background:#9be37c44; border-color:#9be37c; animation:hops .6s var(--ease); }
+  .bild.leer, .wahl button.leer { opacity:.4; }
+  .bild.wackeln { animation:nein .5s ease-in-out; }
+  .zaehlbild { font-size:40px; letter-spacing:4px; text-align:center; animation:grossAuf .5s var(--federn) both; }
+  .fakt { background:#fffdf5; color:#22201a; border-radius:18px; padding:8px 16px; max-width:340px; font-size:16px; line-height:1.4; animation:zAuf .35s var(--ease) both; }
+  .fakt b { display:block; margin-bottom:2px; }
+  .feldinhalt.oben > :first-child { margin-top:0; }
+  .spieler { display:flex; gap:8px; width:100%; max-width:360px; justify-content:center; flex:none; }
+  .sp { flex:1; display:flex; align-items:center; gap:8px; min-height:48px; padding:4px 12px; border-radius:999px; border:2px solid #ffffff22; background:#00000030; color:var(--text);
+    opacity:.6; transition:opacity .3s, transform .3s var(--federn), border-color .3s; cursor:pointer; }
+  .sp .e { font-size:26px; } .sp .n { flex:1; text-align:left; font-weight:700; font-size:16px; } .sp b { font-size:22px; color:var(--gold); }
+  .sp.dran { opacity:1; border-color:var(--gold); transform:scale(1.04); box-shadow:0 0 16px #f5c54255; }
+  .dranband { position:absolute; left:50%; top:64px; z-index:5; transform:translateX(-50%); white-space:nowrap; background:var(--gold); color:#2a1d00; font-weight:900; font-size:20px;
+    border-radius:999px; padding:8px 20px; box-shadow:0 8px 24px #0008; pointer-events:none; }
+  .dranband[hidden] { display:none; }
+  .dranband.rein { animation:dranRein .5s var(--federn) both; }
+  @keyframes dranRein { from { opacity:0; transform:translate(-50%, -12px) scale(.7); } }
+  .memo { display:grid; grid-template-columns:repeat(var(--sp, 4), 1fr); gap:8px; width:100%; max-width:360px; }
+  .mk { aspect-ratio:3/4; max-height:96px; border:0; padding:0; background:none; cursor:pointer; perspective:600px; width:100%; }
+  .mk-in { position:relative; display:block; width:100%; height:100%; transform-style:preserve-3d; transition:transform .45s var(--ease); }
+  .mk.offen .mk-in { transform:rotateY(180deg); }
+  .mk-zu, .mk-auf { position:absolute; inset:0; display:grid; place-items:center; border-radius:14px; -webkit-backface-visibility:hidden; backface-visibility:hidden; }
+  .mk-zu { background:linear-gradient(150deg, #2a4a9a, #182f6b); border:2px solid #f5c54266; font-size:22px; }
+  .mk-auf { background:#fffdf5; transform:rotateY(180deg); font-size:36px; border:2px solid #fff; }
+  .mk.paar .mk-auf { background:#e9f9d9; border-color:#9be37c; }
+  .mk.paar { animation:hops .6s var(--ease); }
+  .blattinnen { max-height:calc(100vh - 24px); max-height:calc(100dvh - 24px); overflow-y:auto; overscroll-behavior:contain; }
+  .zuzweit-t { margin:16px 0 8px; font-size:17px; color:var(--gold); text-align:center; }
+  .sk.zwei { background:#f5c54214; border-color:#f5c54255; }
+  .sk { min-height:96px; }
+  /* Lustige Kleinigkeiten auf der Bühne */
+  .jongl { position:absolute; left:30%; top:8%; width:40%; height:30%; pointer-events:none; z-index:3; }
+  .jongl span { position:absolute; left:0; bottom:0; font-size:26px; animation:jongl 1.2s ease-in-out 3 both; }
+  @keyframes jongl { 0% { transform:translate(0, 0); } 25% { transform:translate(30%, -110%); } 50% { transform:translate(260%, 0); } 75% { transform:translate(130%, -60%); } 100% { transform:translate(0, 0); } }
+  .flatter { position:absolute; left:-12%; top:20%; font-size:30px; pointer-events:none; z-index:3; animation:flatter 3.6s ease-in-out both; }
+  @keyframes flatter { 0% { transform:translate(0, 0) rotate(10deg); } 30% { transform:translate(180%, 60%) rotate(-10deg); } 60% { transform:translate(250%, 160%) scale(.9); }
+    70% { transform:translate(250%, 160%) scale(.9) rotate(8deg); } 100% { transform:translate(520%, -120%) rotate(-20deg); opacity:0; } }
+  .note { position:absolute; top:40%; font-size:26px; color:var(--gold); pointer-events:none; z-index:3; animation:notenflug 2s ease-out both; }
+  @keyframes notenflug { from { transform:translateY(0); opacity:0; } 20% { opacity:1; } to { transform:translate(20px, -110px) rotate(20deg); opacity:0; } }
+  .schnuppe { position:absolute; left:70%; top:4%; font-size:34px; z-index:4; cursor:pointer; padding:8px; animation:schnuppe 2.6s ease-in both; touch-action:manipulation; }
+  .schnuppe.gefangen { animation:dingPop .4s ease-out forwards; }
+  @keyframes schnuppe { from { transform:translate(0, 0); opacity:0; } 10% { opacity:1; } to { transform:translate(-260%, 160%); opacity:0; } }
   @media (max-height:720px) { .knopf .rund { width:72px; height:72px; font-size:30px; } .aktion .rund { width:52px; height:52px; font-size:24px; } h1 { font-size:24px; }
-    .versteck { width:72px; height:72px; font-size:40px; } .tippding { width:104px; height:104px; font-size:52px; } }
+    .versteck { width:72px; height:72px; font-size:40px; } .tippding { width:104px; height:104px; font-size:52px; }
+    .bild { width:80px; height:80px; font-size:44px; } .ansage .e { font-size:64px; } .mk { max-height:80px; } .endkarte .pokal { font-size:48px; } .nochmal { min-height:52px; } }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
     .konfetti { display:none; }
@@ -272,7 +371,10 @@
 <header class="kopf">
   <button class="elternknopf" id="elternHalten" type="button" aria-label="Für Eltern – 3 Sekunden gedrückt halten"><span aria-hidden="true">🔒</span></button>
   <h1>Otti</h1>
-  <button class="sternpill" id="sternpill" type="button" aria-label="Deine Sterne"><span aria-hidden="true">⭐</span><span id="sternzahl">0</span></button>
+  <div class="kopfrechts">
+    <button class="tonknopf" id="tonKnopf" type="button" aria-label="Ton aus" aria-pressed="true">🔊</button>
+    <button class="sternpill" id="sternpill" type="button" aria-label="Deine Sterne"><span aria-hidden="true">⭐</span><span id="sternzahl">0</span></button>
+  </div>
 </header>
 <div class="status" id="status" aria-live="polite">&nbsp;</div>
 
@@ -286,7 +388,12 @@
 
 <div class="text" id="text" aria-live="polite"></div>
 <section class="feld" id="feld" aria-live="polite" aria-label="Spiel">
-  <div class="feldkopf"><div class="blase" id="blase"></div><div class="feldzahl" id="feldzahl"></div></div>
+  <div class="feldkopf">
+    <button class="feldzu" id="feldZu" type="button" aria-label="Zurück zur Spielauswahl">←</button>
+    <div class="blase" id="blase"></div>
+    <div class="feldrechts"><div class="feldzahl" id="feldzahl"></div><div class="stufe" id="stufe" hidden></div></div>
+  </div>
+  <div class="dranband" id="dranBand" hidden aria-live="assertive"></div>
   <div class="zeitbalken" id="zeitbalken" hidden><i id="zeitlauf"></i></div>
   <div class="feldinhalt" id="feldinhalt"></div>
 </section>
@@ -307,11 +414,16 @@
     <div class="griff" aria-hidden="true"></div>
     <h2>Was spielen wir?</h2>
     <div class="spielkarten">
-      <button class="sk" type="button" data-spiel="verstecken"><span class="e" aria-hidden="true">🙈</span><b>Verstecken</b><small>Otti versteckt sich. Findest du ihn?</small></button>
-      <button class="sk" type="button" data-spiel="sammeln"><span class="e" aria-hidden="true">🍓</span><b>Beeren sammeln</b><small>Schnell tippen, bevor sie weg sind</small></button>
-      <button class="sk" type="button" data-spiel="machmit"><span class="e" aria-hidden="true">🤸</span><b>Mach mit!</b><small>Hüpfen, strecken, schütteln</small></button>
-      <button class="sk" type="button" data-spiel="geschichte"><span class="e" aria-hidden="true">📖</span><b>Weiter-Geschichte</b><small>Du entscheidest, wie es weitergeht</small></button>
-      <button class="sk breit" type="button" data-spiel="fragen"><span class="e" aria-hidden="true">🎲</span><span><b>Fragespiel</b><br><small>Otti fragt, du tippst die Antwort</small></span></button>
+      <button class="sk" type="button" data-spiel="verstecken"><span class="e" aria-hidden="true">🙈</span><b>Verstecken</b><small>Findest du Otti?</small></button>
+      <button class="sk" type="button" data-spiel="sammeln"><span class="e" aria-hidden="true">🍓</span><b>Beeren sammeln</b><small>Schnell tippen!</small></button>
+      <button class="sk" type="button" data-spiel="machmit"><span class="e" aria-hidden="true">🤸</span><b>Mach mit!</b><small>Hüpfen, tanzen, Stopp!</small></button>
+      <button class="sk" type="button" data-spiel="geschichte"><span class="e" aria-hidden="true">📖</span><b>Geschichte</b><small>Du entscheidest</small></button>
+      <button class="sk breit" type="button" data-spiel="fragen"><span class="e" aria-hidden="true">🎲</span><span><b>Fragespiel</b><br><small>Fragen und Rätsel</small></span></button>
+    </div>
+    <h3 class="zuzweit-t"><span aria-hidden="true">🧒👨</span> Zu zweit spielen</h3>
+    <div class="spielkarten">
+      <button class="sk zwei" type="button" data-spiel="memory"><span class="e" aria-hidden="true">🃏</span><b>Memory</b><small>Abwechselnd aufdecken</small></button>
+      <button class="sk zwei" type="button" data-spiel="quiz"><span class="e" aria-hidden="true">🏆</span><b>Otti-Quiz</b><small>Wer weiss mehr?</small></button>
     </div>
     <button class="nein" id="wahlZu" type="button">Zurück</button>
   </div>
@@ -445,63 +557,220 @@
   }
   var stillSeit = Date.now();
   document.addEventListener('pointerdown', function () { stillSeit = Date.now(); }, true);
+
+  /* Otti schaut zum Finger: überall auf dem Bildschirm, nicht nur auf der Bühne. Der Finger hat Vorrang vor dem Kippen. */
+  if (puppe && puppe.zeiger) {
+    var echteNeigung = null;
+    try { Object.defineProperty(puppe, 'neigung', { configurable: true, get: function () { return puppe.zeiger.aktiv > 0 ? null : echteNeigung; }, set: function (v) { echteNeigung = v; } }); } catch (e) {}
+    var schauZu = function (e) {
+      var r = buehne.getBoundingClientRect(); if (!r.width) return;
+      puppe.zeiger.x = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width - .5) * 1.6));
+      puppe.zeiger.y = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height - .45) * 1.4));
+      puppe.zeiger.aktiv = 2.2;
+    };
+    document.addEventListener('pointerdown', schauZu, true);
+    document.addEventListener('pointermove', function (e) { if (e.pointerType === 'mouse' || e.buttons) schauZu(e); }, { passive: true, capture: true });
+  }
+
+  /* Wenn niemand tippt: lustige Kleinigkeiten (gähnen, Beeren jonglieren, Schmetterling, niesen, summen, Sternschnuppe) */
+  function deko(cls, inhalt, ms) { var d = el('div', cls, inhalt); d.setAttribute('aria-hidden', 'true'); buehne.appendChild(d); setTimeout(function () { d.remove(); }, ms); return d; }
+  function hochSchauen(x, y, sek) { if (puppe && puppe.blick) { puppe.blick.x = x; puppe.blick.y = y; puppe.blick.naechst = puppe.t + (sek || 2.5); } }
+  var TRICKS = {
+    gaehnen: function () {
+      klang('gaehnen'); bewegung('strecken');
+      if (puppe && puppe._effekt) puppe._effekt(2.2, function (p, k) { var e = Math.sin(Math.PI * Math.min(1, k * 1.15)); p.auf += 1.5 * e; p.rund += .9 * e; p.glanz -= .5 * e; p.ky -= .006 * e; p.neig += .05 * e; });
+      if (!spielAktiv) statusSetzen(zufall(['Uaaah … Otti gähnt.', 'Otti wird ein bisschen müde.']));
+    },
+    jonglieren: function () {
+      var j = deko('jongl', '', 3400);
+      ['🍓', '🫐', '🍒'].forEach(function (b, i) { var s = el('span', '', b); s.style.animationDelay = (i * .4) + 's'; j.appendChild(s); });
+      hochSchauen(0, -.7, 3); kurzZustand('freut', 3000);
+      [0, .4, .8, 1.2, 1.6, 2, 2.4].forEach(function (t, i) { note(PENTA[(i * 2) % 6 + 1], t, .25, 'kalimba', .08); });
+      if (!spielAktiv) statusSetzen('Schau, Otti jongliert!');
+    },
+    schmetterling: function () {
+      deko('flatter', '🦋', 3600); hochSchauen(.5, -.4, 1.4);
+      setTimeout(function () { hochSchauen(0, .1, 1.5); kurzZustand('denkt', 900); }, 1300);
+      setTimeout(function () { klang('hatschi'); bewegung('nein'); if (!spielAktiv) statusSetzen('Hatschi! Der Schmetterling kitzelt.'); }, 2300);
+    },
+    summen: function () {
+      klang('summen'); bewegung('neugierig');
+      for (var i = 0; i < 4; i++) (function (i) { setTimeout(function () { var n = deko('note', zufall(['♪', '♫', '♩']), 2000); n.style.left = (55 + i * 7) + '%'; }, i * 450); })(i);
+    },
+    sternschnuppe: function () {
+      var s = deko('schnuppe', '🌠', 2600);
+      s.setAttribute('aria-hidden', 'false'); s.setAttribute('role', 'button'); s.setAttribute('aria-label', 'Sternschnuppe fangen');
+      hochSchauen(-.6, -.8, 2);
+      s.addEventListener('pointerdown', function (e) {
+        e.stopPropagation(); if (s.classList.contains('gefangen')) return;
+        s.classList.add('gefangen'); klang('ueberraschung'); sternDazu(s); kurzZustand('freut', 1600); bewegung('hops3');
+        sagKurz(zufall(['Du hast die Sternschnuppe gefangen! Wünsch dir was!', 'Wow, eine Sternschnuppe! Die gehört dir.', 'Gefangen! Ein Wunsch-Stern für dich.']));
+      });
+      note(1568, 0, 1.2, 'glocke', .05); note(2093, .2, 1.2, 'glocke', .04);
+    },
+    stacheln: function () { bewegung('wind'); klang('rascheln'); if (puppe) pr('tipp'); if (!spielAktiv) statusSetzen('Otti schüttelt seine Stacheln aus.'); }
+  };
+  var trickLetzt = 0, trickName = '';
+  function kleinigkeit() {
+    var namen = Object.keys(TRICKS).filter(function (n) { return n !== trickName; });
+    trickName = zufall(namen); trickLetzt = Date.now(); TRICKS[trickName]();
+  }
   setInterval(function () {
-    if (conv || versteckt || spielAktiv || sprechMund || document.hidden) return;
+    if (conv || versteckt || sprechMund || document.hidden || pausiert) return;
     var still = Date.now() - stillSeit;
-    if (still > 90000) { if (!buehne.classList.contains('schlaeft')) { schlafen(true); statusSetzen('Otti ist eingeschlafen. Tipp ihn sanft an.'); } return; }
-    if (!ruhig && still > 8000 && Math.random() < .35) bewegung(zufall(['neugierig', 'neugierig', 'strecken']));
-  }, 6000);
+    if (!spielAktiv && still > 90000) { if (!buehne.classList.contains('schlaeft')) { schlafen(true); statusSetzen('Otti ist eingeschlafen. Tipp ihn sanft an.'); } return; }
+    if (buehne.classList.contains('schlaeft')) return;
+    if (!ruhig && still > (spielAktiv ? 16000 : 9000) && Date.now() - trickLetzt > 14000 && Math.random() < .6) kleinigkeit();
+  }, 3000);
 
   /* ================= Funken, Klänge, Vibration ================= */
-  function funken(n) {
+  function funken(n, vonEl) {
     if (ruhig) return;
+    var ziel = buehne, x0 = 35, y0 = 40;
     for (var i = 0; i < n; i++) {
       var f = document.createElement('div'); f.className = 'funke';
       var w = Math.random() * Math.PI * 2, r = 60 + Math.random() * 90;
-      f.style.left = (35 + Math.random() * 30) + '%'; f.style.top = (40 + Math.random() * 25) + '%';
+      if (vonEl && vonEl.getBoundingClientRect) {
+        var b = vonEl.getBoundingClientRect(); f.style.position = 'fixed'; f.style.zIndex = 66;
+        f.style.left = (b.left + b.width / 2) + 'px'; f.style.top = (b.top + b.height / 2) + 'px'; ziel = document.body;
+      } else { f.style.left = (x0 + Math.random() * 30) + '%'; f.style.top = (y0 + Math.random() * 25) + '%'; }
       f.style.setProperty('--dx', Math.cos(w) * r + 'px'); f.style.setProperty('--dy', Math.sin(w) * r - 40 + 'px');
-      buehne.appendChild(f); setTimeout(function (e) { e.remove(); }.bind(null, f), 1100);
+      ziel.appendChild(f); setTimeout(function (e) { e.remove(); }.bind(null, f), 1100);
     }
   }
-  // Alle Klänge entstehen im Handy (keine Aufnahmen, keine Stimmen, keine fremde Musik).
-  var ac = null;
+  /* Alle Klänge entstehen im Handy: kleine Instrumente aus Web Audio (Marimba, Glöckchen, Flöte, Kalimba), warm gefiltert,
+     mit etwas Raumhall und Begrenzer, damit nichts schrill oder zu laut wird. Keine Aufnahmen, keine Stimmen, keine fremde Musik. */
+  var ac = null, master = null, hall = null, tonAn = lies('otti_ton', '1') !== '0';
+  var PENTA = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.66, 1318.5]; // C-Dur pentatonisch: klingt immer freundlich
   function audio() {
-    try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); return ac; } catch (e) { return null; }
+    if (!tonAn) return null;
+    try {
+      if (!ac) {
+        ac = new (window.AudioContext || window.webkitAudioContext)();
+        var komp = ac.createDynamicsCompressor(); komp.threshold.value = -20; komp.knee.value = 12; komp.ratio.value = 5; komp.attack.value = .004; komp.release.value = .25;
+        var warm = ac.createBiquadFilter(); warm.type = 'lowpass'; warm.frequency.value = 4200; warm.Q.value = .5;
+        master = ac.createGain(); master.gain.value = .6;
+        master.connect(warm); warm.connect(komp); komp.connect(ac.destination);
+        // Raumhall aus selbst gerechnetem Nachklang (sanft abfallendes Rauschen)
+        var sek = 1.6, n = Math.floor(ac.sampleRate * sek), ir = ac.createBuffer(2, n, ac.sampleRate);
+        for (var c = 0; c < 2; c++) { var d = ir.getChannelData(c); for (var i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 3.2); }
+        hall = ac.createConvolver(); hall.buffer = ir; var hg = ac.createGain(); hg.gain.value = .28; hall.connect(hg); hg.connect(warm);
+      }
+      if (ac.state === 'suspended') ac.resume();
+      return ac;
+    } catch (e) { return null; }
   }
-  function ton(hz, start, dauer, art, laut, bis) {
+  // Ein Ton eines kleinen Instruments. art: marimba | glocke | floete | kalimba | holz | bass
+  function note(hz, start, dauer, art, laut) {
+    var a = audio(); if (!a || !hz) return;
+    var t = a.currentTime + (start || 0); dauer = dauer || .5; laut = laut == null ? .16 : laut;
+    var g = a.createGain(); g.gain.value = laut; g.connect(master);
+    var s = a.createGain(); s.gain.value = art === 'holz' ? .15 : .55; g.connect(s); s.connect(hall);
+    function teil(typ, f, amp, att, aus, vib) {
+      var o = a.createOscillator(), og = a.createGain();
+      o.type = typ; o.frequency.setValueAtTime(f, t);
+      og.gain.setValueAtTime(0, t); og.gain.linearRampToValueAtTime(amp, t + att); og.gain.exponentialRampToValueAtTime(.0001, t + aus);
+      if (vib) { var l = a.createOscillator(), lg = a.createGain(); l.frequency.value = 5.2; lg.gain.value = f * .006; l.connect(lg); lg.connect(o.frequency); l.start(t + .12); l.stop(t + aus + .05); }
+      o.connect(og); og.connect(g); o.start(t); o.stop(t + aus + .05);
+    }
+    if (art === 'glocke') { teil('sine', hz, 1, .004, dauer * 1.6); teil('sine', hz * 2, .28, .004, dauer * .8); teil('sine', hz * 3.01, .08, .002, dauer * .35); }
+    else if (art === 'floete') { teil('sine', hz, .9, .07, dauer, true); teil('triangle', hz, .12, .09, dauer * .9); }
+    else if (art === 'kalimba') { teil('sine', hz, 1, .003, dauer); teil('triangle', hz * 2, .1, .002, dauer * .3); teil('sine', hz * 5.4, .05, .001, .06); }
+    else if (art === 'holz') { teil('sine', hz, 1, .002, .09); teil('triangle', hz * 1.5, .25, .001, .04); }
+    else if (art === 'bass') { teil('sine', hz, 1, .01, dauer); teil('triangle', hz * 2, .12, .01, dauer * .5); }
+    else { teil('sine', hz, 1, .004, dauer); teil('sine', hz * 4, .22, .002, Math.min(.18, dauer * .3)); teil('sine', hz * 10, .04, .001, .03); } // marimba
+  }
+  function gleiten(von, bis, start, dauer, laut, art) {
     var a = audio(); if (!a) return;
-    var o = a.createOscillator(), g = a.createGain(), t = a.currentTime + (start || 0);
-    o.type = art || 'sine'; o.frequency.setValueAtTime(hz, t); if (bis) o.frequency.exponentialRampToValueAtTime(bis, t + dauer);
-    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(laut || .07, t + .012); g.gain.exponentialRampToValueAtTime(.0006, t + dauer);
-    o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + dauer + .05);
+    var t = a.currentTime + (start || 0), o = a.createOscillator(), g = a.createGain();
+    o.type = art || 'sine'; o.frequency.setValueAtTime(von, t); o.frequency.exponentialRampToValueAtTime(bis, t + dauer);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(laut || .1, t + .03); g.gain.exponentialRampToValueAtTime(.0001, t + dauer);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + dauer + .05);
   }
-  function rauschen(start, dauer, laut, hz) {
+  function rauschen(start, dauer, laut, hz, bisHz) {
     var a = audio(); if (!a) return;
     var n = Math.floor(a.sampleRate * dauer), b = a.createBuffer(1, n, a.sampleRate), d = b.getChannelData(0);
-    for (var i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+    for (var i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.sin(Math.PI * i / n);
     var s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain(), t = a.currentTime + (start || 0);
-    f.type = 'bandpass'; f.frequency.value = hz || 2500; f.Q.value = .8; g.gain.value = laut || .12;
-    s.buffer = b; s.connect(f); f.connect(g); g.connect(a.destination); s.start(t);
+    f.type = 'bandpass'; f.frequency.setValueAtTime(hz || 2500, t); if (bisHz) f.frequency.exponentialRampToValueAtTime(bisHz, t + dauer); f.Q.value = .9; g.gain.value = laut || .12;
+    s.buffer = b; s.connect(f); f.connect(g); g.connect(master); s.start(t);
   }
+  function melodie(noten, art, laut, tempo) { // noten: [[Hz, Schlag, Dauer in Schlägen], …]
+    tempo = tempo || .16;
+    noten.forEach(function (n) { note(n[0], n[1] * tempo, (n[2] || 1) * tempo * 2.2, art || 'marimba', laut); });
+  }
+  var C4 = 261.63, D4 = 293.66, E4 = 329.63, F4 = 349.23, G4 = 392, A4 = 440, B4 = 493.88, C5 = 523.25, D5 = 587.33, E5 = 659.25, F5 = 698.46, G5 = 783.99, A5 = 880, C6 = 1046.5;
+  // Erkennungsmelodie je Spiel (selbst geschrieben)
+  var SPIELMELODIE = {
+    verstecken: [[G4, 0], [C5, 1], [E5, 2], [D5, 3.5], [C5, 4], [G4, 5, 2]],
+    sammeln: [[C5, 0], [C5, .5], [E5, 1], [G5, 1.5], [E5, 2.5], [G5, 3], [C6, 4, 2]],
+    machmit: [[C4 * 2, 0], [G4, 1], [C5, 1.5], [G4, 2.5], [C5, 3], [E5, 3.5], [G5, 4.5, 2]],
+    geschichte: [[E5, 0, 2], [D5, 2], [C5, 3], [D5, 4], [E5, 5], [G5, 6, 3]],
+    fragen: [[C5, 0], [E5, 1], [G5, 2], [E5, 3], [A5, 4, 2], [G5, 6, 2]],
+    memory: [[E5, 0], [G5, .5], [E5, 1.5], [G5, 2], [C6, 3, 2], [A5, 5], [G5, 6, 2]],
+    quiz: [[G4, 0], [B4, .5], [D5, 1], [G5, 2], [F5, 3], [D5, 3.5], [G5, 4.5, 2]]
+  };
+  var feierI = 0;
   function klang(art, x) {
-    if (art === 'tipp') ton(880, 0, .35);
-    else if (art === 'stern') { ton(1047, 0, .4); ton(1319, .08, .5); }
-    else if (art === 'feier') [784, 988, 1175, 1568].forEach(function (h, i) { ton(h, i * .09, .6); });
-    else if (art === 'jubel') [659, 784, 1047].forEach(function (h, i) { ton(h, i * .07, .45, 'triangle', .06); });
-    else if (art === 'falsch') ton(330, 0, .35, 'triangle', .06, 220);
-    else if (art === 'pop') ton(600 + (x || 0) * 45, 0, .16, 'triangle', .07, 1200 + (x || 0) * 60);
-    else if (art === 'rascheln') { rauschen(0, .25, .14, 3200); rauschen(.18, .2, .1, 2600); }
-    else if (art === 'tick') ton(1400, 0, .06, 'square', .025);
-    else if (art === 'wind') rauschen(0, .45, .16, 900);
-    else if (art === 'plumps') ton(220, 0, .25, 'sine', .1, 110);
-    else if (art === 'jingle') [523, 659, 784, 659, 880, 784].forEach(function (h, i) { ton(h, i * .12, .3, 'triangle', .05); });
+    x = x || 0;
+    if (art === 'tipp') note(zufall(PENTA.slice(2, 7)), 0, .45, 'kalimba', .14);
+    else if (art === 'stern') { var h = PENTA[(x % 5) + 2]; note(h, 0, .5, 'glocke', .12); note(h * 1.5, .09, .7, 'glocke', .1); }
+    else if (art === 'feier') {
+      var M = [[[C5, 0], [E5, 1], [G5, 2], [C6, 3, 3], [G5, 3, 3], [E5, 3, 3]], [[G5, 0], [E5, 1], [G5, 2], [A5, 3], [G5, 4], [C6, 5, 4]],
+        [[E5, 0], [D5, .5], [E5, 1], [G5, 2], [A5, 3], [C6, 4, 4], [E5, 4, 4]], [[C5, 0], [D5, 1], [E5, 2], [G5, 3], [E5, 4], [G5, 4.5], [C6, 5.5, 4]]];
+      melodie(M[feierI++ % M.length], 'marimba', .15, .13); melodie([[C4, 0, 4], [G4 / 2, 3, 4]], 'bass', .12, .13);
+      [C6, 1318.5, 1568].forEach(function (h, i) { note(h, .75 + i * .07, 1, 'glocke', .05); });
+    }
+    else if (art === 'level') { [C5, E5, G5, C6].forEach(function (h, i) { note(h, i * .08, .6, 'glocke', .11); }); note(C4, 0, .8, 'bass', .1); }
+    else if (art === 'jubel') { var J = [[E5, G5, C6], [D5, G5, B4 * 2], [C5, E5, A5], [G5, A5, C6], [E5, A5, C6]]; zufall(J).forEach(function (h, i) { note(h, i * .07, .5, 'marimba', .13); }); }
+    else if (art === 'falsch') { note(E4, 0, .35, 'marimba', .12); note(C4, .14, .5, 'marimba', .11); }
+    else if (art === 'pop') { note(PENTA[x % PENTA.length], 0, .3, 'kalimba', .15); gleiten(300, 900, 0, .08, .05); }
+    else if (art === 'rascheln') { rauschen(0, .22, .1, 3000); rauschen(.16, .2, .07, 2400); }
+    else if (art === 'tick') note(x ? 1568 : 1046.5, 0, .1, 'holz', .12);
+    else if (art === 'wind') rauschen(0, .55, .14, 500, 1600);
+    else if (art === 'plumps') { gleiten(320, 110, 0, .3, .12); rauschen(.05, .15, .05, 600); }
+    else if (art === 'whoosh') rauschen(0, .35, .1, 600, 3000);
+    else if (art === 'hihi') { var b = zufall([1046.5, 1174.66, 1318.5]); [0, 1, 2].forEach(function (i) { gleiten(b * (1 - i * .06), b * .9 * (1 - i * .06), i * .11, .09, .05, 'triangle'); }); }
+    else if (art === 'gaehnen') { gleiten(700, 260, 0, 1.3, .08, 'triangle'); rauschen(.1, 1.1, .03, 900, 400); }
+    else if (art === 'hatschi') { gleiten(500, 900, 0, .35, .05, 'triangle'); rauschen(.42, .25, .16, 3200, 1500); }
+    else if (art === 'karte') { rauschen(0, .12, .07, 2600, 4000); note(zufall(PENTA), .02, .2, 'kalimba', .07); }
+    else if (art === 'dran') melodie(x ? [[G5, 0], [E5, 1], [C6, 2, 2]] : [[C5, 0], [E5, 1], [G5, 2, 2]], 'glocke', .1, .12);
+    else if (art === 'ueberraschung') { [C6, 1318.5, 1568, 2093].forEach(function (h, i) { note(h, i * .05, .5, 'glocke', .07); }); rauschen(0, .4, .03, 6000); }
+    else if (art === 'jingle') melodie(SPIELMELODIE[x] || SPIELMELODIE.fragen, 'marimba', .14, .14);
+    else if (art === 'summen') melodie([[E5, 0, 2], [G5, 2], [E5, 3], [D5, 4, 2], [C5, 6, 3]], 'floete', .08, .22);
     else if (art === 'schlaflied') {
       // Selbst geschriebene Spieldosen-Melodie (frei von Rechten Dritter).
       [[659, 0], [587, .45], [523, .9], [587, 1.35], [659, 1.8], [659, 2.25], [659, 2.7], [587, 3.4], [587, 3.85], [659, 4.3], [523, 4.9]]
-        .forEach(function (n) { ton(n[0], n[1], .9, 'sine', .05); ton(n[0] * 2, n[1], .4, 'sine', .015); });
+        .forEach(function (n) { note(n[0], n[1], 1.2, 'glocke', .08); });
     }
   }
+  // Tanzmusik für den Stopp-Tanz: läuft, bis stopp() kommt (Schritte werden fortlaufend geplant).
+  function tanzmusik() {
+    var a = audio(), an = true, schlag = 0, T = .2, naechste = a ? a.currentTime + .05 : 0, id = 0;
+    var MEL = [C5, E5, G5, E5, A5, G5, E5, D5, C5, E5, G5, C6, A5, G5, E5, G5], BASS = [C4, C4, G4 / 2 * 2, G4, A4 / 2 * 2, A4, F4, G4];
+    function plane() {
+      if (!an || !ac) return;
+      while (naechste < ac.currentTime + .4) {
+        var dt = naechste - ac.currentTime;
+        if (schlag % 2 === 0) note(BASS[(schlag / 2) % BASS.length] / 2, dt, .35, 'bass', .13);
+        note(MEL[schlag % MEL.length], dt, .25, 'marimba', schlag % 4 === 0 ? .12 : .08);
+        if (schlag % 4 === 2) note(2400, dt, .05, 'holz', .05);
+        schlag++; naechste += T;
+      }
+      id = setTimeout(plane, 120);
+    }
+    if (a) plane();
+    return { stopp: function () { an = false; clearTimeout(id); } };
+  }
   function summ(m) { try { if (navigator.vibrate) navigator.vibrate(m); } catch (e) {} }
+  function tonZeigen() { var b = $('tonKnopf'); if (!b) return; b.textContent = tonAn ? '🔊' : '🔇'; b.setAttribute('aria-label', tonAn ? 'Ton aus' : 'Ton an'); b.setAttribute('aria-pressed', String(tonAn)); }
+  $('tonKnopf').addEventListener('click', function () {
+    tonAn = !tonAn; schreib('otti_ton', tonAn ? '1' : '0'); tonZeigen();
+    if (tonAn) { klang('jubel'); sagKurz('Juhui, ich höre wieder Musik!'); }
+    else { if (ac && ac.state === 'running') ac.suspend().catch(function () {}); stimmeStopp(); sagKurz('Psst, jetzt ganz leise.'); }
+    if (tonAn && ac) ac.resume().catch(function () {});
+  });
+  tonZeigen();
 
   /* ================= Ottis Stimme =================
      Mit Nova-Server: Ottis echte Stimme (/v1/stimme, einmal geladen, dann im Handy gespeichert). Die Puppe bewegt
@@ -509,10 +778,11 @@
      zur Sprechblase (puppe.sprich) und brabbelt leise. */
   var sprechMund = false, sprechTok = 0, aktivAudio = null, stimmePauseBis = 0;
   function brabbeln(t, fertig) {
-    var lang = Math.min(2.2, .35 + t.length * .028), tonleiter = [523, 587, 659, 784, 880], a = audio();
-    if (a) for (var s = 0; s < lang; s += .085 + Math.random() * .03) {
+    // Otti «brabbelt» leise auf einem warmen Marimba-Ton (keine Stimme, keine Handystimme)
+    var lang = Math.min(1.8, .3 + t.length * .022), tonleiter = [392, 440, 523.25, 587.33, 659.25], a = audio();
+    if (a) for (var s = 0; s < lang; s += .11 + Math.random() * .05) {
       var h = zufall(tonleiter) * (/\?\s*$/.test(t) && s > lang - .3 ? 1.25 : 1);
-      ton(h, s, .07, 'triangle', .03);
+      note(h, s, .16, 'marimba', .045);
     }
     sprechMund = true;
     setTimeout(function () { sprechMund = false; }, lang * 1000);
@@ -537,13 +807,18 @@
         }).catch(function () { return null; });
     });
   }
+  // Wird ein Satz von einem neuen Satz abgelöst, läuft sein «danach» trotzdem weiter (sonst bleibt ein Spiel hängen).
+  // Nur ein bewusstes Stopp (stimmeStopp) bricht das «danach» ab.
+  var offenesDanach = null;
   function sprechen(t, fertig) {
+    if (offenesDanach) { var vorher = offenesDanach; offenesDanach = null; setTimeout(vorher, 0); }
     var tok = ++sprechTok, zu = false, weg = false, spielt = false;
-    var aus = function () { if (zu || tok !== sprechTok) return; zu = true; sprechMund = false; buehne.classList.remove('spricht'); if (fertig) fertig(); };
+    if (fertig) offenesDanach = fertig;
+    var aus = function () { if (zu || tok !== sprechTok) return; zu = true; sprechMund = false; buehne.classList.remove('spricht'); if (offenesDanach === fertig) offenesDanach = null; if (fertig) fertig(); };
     function ohneTon() { if (weg || zu || tok !== sprechTok) return; weg = true; if (puppe) puppe.sprich(t); brabbeln(t, aus); }
     buehne.classList.add('spricht'); sprechMund = true;
     var warte = setTimeout(ohneTon, 1500); // Server zu langsam: lieber gleich die Sprechblase
-    serverStimme(t).then(function (b) {
+    (tonAn ? serverStimme(t) : Promise.resolve(null)).then(function (b) {
       clearTimeout(warte);
       if (tok !== sprechTok || weg) return;
       if (!b) { ohneTon(); return; }
@@ -557,7 +832,7 @@
     });
   }
   function stimmeStopp() {
-    sprechTok++; sprechMund = false; buehne.classList.remove('spricht');
+    offenesDanach = null; sprechTok++; sprechMund = false; buehne.classList.remove('spricht');
     if (aktivAudio) { try { aktivAudio.pause(); } catch (e) {} aktivAudio = null; }
     if (window.NovaStimme) window.NovaStimme.stopp();
   }
@@ -595,7 +870,7 @@
       }); });
       setTimeout(function () { s.remove(); fertig(); }, 720);
     }
-    if (n % 5 === 0) setTimeout(function () {
+    if (n % 5 === 0 && !spielAktiv) setTimeout(function () {
       feiern(n === 5 ? 'Fünf Sterne!' : n + ' Sterne!', n === 5 ? 'Deine ersten fünf Sterne. Otti ist ganz stolz auf dich.' : 'Schon ' + n + ' Sterne im Glas. Du bist ein Spiel-Profi.');
     }, 900);
   }
@@ -672,7 +947,7 @@
     var f = fsMerk(), g = gedaechtnis(), n = sterne(), z = zahlen(), teile = [];
     teile.push(n ? '⭐ ' + n + (n === 1 ? ' Stern' : ' Sterne') + ' gesammelt.' : '⭐ Noch keine Sterne. Die gibt es beim Spielen.');
     var lieb = Object.keys(z).filter(function (k) { return /^spiel_/.test(k); }).sort(function (a, b) { return z[b] - z[a]; })[0];
-    if (lieb) teile.push('🎮 Lieblingsspiel: ' + ({ spiel_verstecken: 'Verstecken', spiel_sammeln: 'Beeren sammeln', spiel_machmit: 'Mach mit!', spiel_geschichte: 'Weiter-Geschichte', spiel_fragen: 'Fragespiel' }[lieb] || '') + '.');
+    if (lieb) teile.push('🎮 Lieblingsspiel: ' + ({ spiel_verstecken: 'Verstecken', spiel_sammeln: 'Beeren sammeln', spiel_machmit: 'Mach mit!', spiel_geschichte: 'Weiter-Geschichte', spiel_fragen: 'Fragespiel', spiel_memory: 'Memory zu zweit', spiel_quiz: 'Otti-Quiz zu zweit' }[lieb] || '') + '.');
     if (f.length) teile.push('💛 Mag gerne: ' + f.join(', ') + '.');
     teile.push(g.length ? '🗨️ Aus den Gesprächen:\n' + erinnerung() : '🗨️ Noch kein Live-Gespräch.');
     m.textContent = teile.join('\n\n');
@@ -797,7 +1072,8 @@
   /* ================= Auf Otti tippen ================= */
   var TIPP = [['Hihi, das kitzelt!', 'freuen'], ['Hallo du! Schön, dass du da bist.', 'hops'], ['Meine Stacheln sind ganz weich. Fast.', 'neugierig'],
     ['Weisst du, was ich am liebsten mag? Walderdbeeren!', 'strecken'], ['Hopp, hopp! Schau, wie hoch ich hüpfe.', 'hops3'], ['Psst, der Mond schaut uns zu.', 'neugierig'],
-    ['Ich kann mich ganz klein machen. Schau!', 'igelball'], ['Spielen wir zusammen? Tipp auf «Spielen».', 'tanzen']];
+    ['Ich kann mich ganz klein machen. Schau!', 'igelball'], ['Spielen wir zusammen? Tipp auf «Spielen».', 'tanzen'],
+    ['Huiii, ich drehe mich!', 'drehen'], ['Stampf, stampf, ich bin ein Elefant!', 'stampfen'], ['Hihi, nicht an der Nase!', 'nein'], ['Kannst du so hoch hüpfen wie ich?', 'hops3']];
   var tippI = 0, ersterTipp = lies('otti_getippt', '') !== '1';
   function ottiTippen() {
     if (spielAktiv && spielTipp) { spielTipp(); return; }
@@ -811,8 +1087,8 @@
       statusSetzen('Tipp auf «Spielen».');
       return;
     }
-    if (conv || spielAktiv) { bewegung('hops'); return; }
-    var x = TIPP[tippI++ % TIPP.length]; bewegung(x[1]); pose('lacht', 1600); sagKurz(x[0]);
+    if (conv || spielAktiv) { bewegung('hops'); klang('hihi'); return; }
+    var x = ohneWdh(TIPP, 'tipp'); bewegung(x[1]); pose('lacht', 1600); kurzZustand('freut', 1300); if (Math.random() < .4) setTimeout(function () { klang('hihi'); }, 250); sagKurz(x[0]);
   }
   buehne.addEventListener('click', ottiTippen);
   buehne.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); ottiTippen(); } });
@@ -839,222 +1115,431 @@
     if (!spielAktiv) sagKurz(zufall(['Hallo! Ich winke dir zu!', 'Huhu! Schön, dass du da bist!', 'Winke, winke!']));
   });
 
-  /* ================= Mitmach-Spiele ================= */
-  var spielAktiv = null, spielTipp = null, timer = [];
+  /* ================= Otti reagiert: jedes Mal ein bisschen anders ================= */
+  var LOB = [['Super!', 'freuen'], ['Wow, du bist ja flink!', 'hops3'], ['Juhui!', 'tanzen'], ['Bravo, bravo!', 'drehen'], ['Hihi, toll gemacht!', 'freuen'],
+    ['Genau so!', 'hops'], ['Du bist ein Stern!', 'strecken'], ['Ja! Meine Stacheln kribbeln vor Freude.', 'tanzen'], ['Mega!', 'hops3'], ['Hui, das war gut!', 'drehen']];
+  var TROST = [['Hoppla! Nochmal.', 'nein'], ['Fast! Probier weiter.', 'neugierig'], ['Hihi, knapp daneben.', 'wind'], ['Nicht schlimm. Du schaffst das!', 'nein'],
+    ['Huch! Das war es nicht.', 'neugierig'], ['Oh, das kitzelt. Weiter!', 'wind']];
+  var STUPS = ['Psst, tipp hier!', 'Ich warte auf dich …', 'Hallo? Du bist dran!', 'Schau, da! Tipp drauf.', 'Na, traust du dich?', 'Ich bin gespannt …'];
+  var STUFE_LOB = ['Level geschafft! Jetzt wird es kniffliger.', 'Wow! Bereit für das nächste Level?', 'Super! Weiter geht es, ein bisschen schwerer.',
+    'Hui, du bist gut! Hältst du mit?', 'Geschafft! Jetzt kommt eine Überraschung.', 'Bravo! Noch ein Level, dann feiern wir.'];
+  var ENDE_TEXT = ['Alles geschafft! Du bist ein Spiel-Champion!', 'Wow, alle drei Level! Ich bin sooo stolz auf dich.', 'Juhui, gewonnen! Das feiern wir mit Konfetti.',
+    'Du hast es geschafft! Meine Stacheln tanzen vor Freude.', 'Hurra! Du bist der Star im Mondschein-Wald.'];
+  var NOCHMAL_TEXT = ['Nochmal! Juhui!', 'Auf ein Neues!', 'Los geht es, noch einmal!', 'Hihi, du willst nochmal? Ich auch!', 'Okay, diesmal bin ich noch schneller!'];
+  var zuletzt = {};
+  function ohneWdh(liste, key) { var i, n = 0; do { i = Math.floor(Math.random() * liste.length); } while (liste.length > 1 && i === zuletzt[key] && ++n < 9); zuletzt[key] = i; return liste[i]; }
+  function ottiFreut(text, vonEl) {
+    var x = ohneWdh(LOB, 'lob'); bewegung(x[1]); kurzZustand('freut', 1400);
+    klang(Math.random() < .3 ? 'hihi' : 'jubel'); summ([12, 30, 12]); funken(10, vonEl);
+    blase(text || x[0]);
+  }
+  function ottiTrost(text) { var x = ohneWdh(TROST, 'trost'); bewegung(x[1]); klang('falsch'); summ(25); blase(text || x[0]); }
+
+  /* Zeigefinger: zeigt, wo man tippen soll (verschwindet beim ersten Tipp) */
+  var fingerEl = null, fingerZiel = null, fingerRaf = 0;
+  function finger(ziel) {
+    fingerWeg(); if (!ziel || !ziel.isConnected) return;
+    fingerZiel = ziel; fingerEl = el('div', 'finger'); fingerEl.appendChild(el('span', '', '👆')); fingerEl.setAttribute('aria-hidden', 'true'); document.body.appendChild(fingerEl);
+    (function pos() {
+      if (!fingerEl) return;
+      if (!fingerZiel || !fingerZiel.isConnected) { fingerWeg(); return; }
+      var r = fingerZiel.getBoundingClientRect(); fingerEl.style.transform = 'translate(' + Math.round(r.left + r.width / 2 - 14) + 'px,' + Math.round(r.top + r.height * .55) + 'px)';
+      fingerRaf = requestAnimationFrame(pos);
+    })();
+  }
+  function fingerWeg() { cancelAnimationFrame(fingerRaf); if (fingerEl) fingerEl.remove(); fingerEl = null; fingerZiel = null; }
+  document.addEventListener('pointerdown', fingerWeg, true);
+
+  /* ================= Mitmach-Spiele: Ansage, Level 1–3, Feier, «Nochmal?» ================= */
+  var spielAktiv = null, spielTipp = null, timer = [], stupsT = 0;
   function nach(ms, f) { var id = setTimeout(function () { weiterWenn(f); }, ms); timer.push(id); return id; }
-  function feldLeeren() { $('feldinhalt').innerHTML = ''; $('feldinhalt').classList.remove('wiese'); $('feldzahl').textContent = ''; $('zeitbalken').hidden = true; }
+  function feldLeeren() { fingerWeg(); var f = $('feldinhalt'); f.innerHTML = ''; f.className = 'feldinhalt'; $('feldzahl').textContent = ''; $('zeitbalken').hidden = true; }
   function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
-  function spielKnopfZeigen() { var an = !!spielAktiv || fragen.an; $('spielT').textContent = an ? 'Aufhören' : 'Spielen'; $('spielKnopf').classList.toggle('an', an); }
+  function knopfEl(cls, txt, fn) { var b = el('button', cls, txt); b.type = 'button'; if (fn) b.onclick = fn; return b; }
+  function stufeZeigen(n, max) { var z = $('stufe'); z.innerHTML = ''; z.hidden = !n; for (var i = 1; i <= (max || 3); i++) z.appendChild(el('i', i <= n ? 'an' : '')); z.setAttribute('aria-label', n ? 'Level ' + n + ' von ' + (max || 3) : ''); }
+  function spielKnopfZeigen() { var an = !!spielAktiv; $('spielT').textContent = an ? 'Aufhören' : 'Spielen'; $('spielKnopf').classList.toggle('an', an); }
   function spielBeenden() {
     timer.forEach(clearTimeout); timer = [];
     if (spielAktiv && spielAktiv.stopp) try { spielAktiv.stopp(); } catch (e) {}
-    spielAktiv = null; spielTipp = null; fragenStopp();
-    document.body.classList.remove('imspiel'); feldLeeren(); stimmeStopp();
+    spielAktiv = null; spielTipp = null;
+    document.body.classList.remove('imspiel'); feldLeeren(); stufeZeigen(0); stimmeStopp(); $('dranBand').hidden = true;
     if (versteckt) bewegung('auftauchen');
     spielKnopfZeigen();
   }
-  function spielStarten(name) {
+  function spielStarten(name, nochmal) {
     $('spielwahl').hidden = true; tippWeg(); $('spielKnopf').classList.remove('lockt');
-    if (conv) return;
+    var S = SPIELE[name]; if (conv || !S) return;
     spielBeenden(); schlafen(false); zahl('spiel_' + name); stillSeit = Date.now();
-    if (name === 'fragen') { fragenStart(); return; }
-    spielAktiv = { name: name }; document.body.classList.add('imspiel'); spielKnopfZeigen();
-    statusSetzen(' '); klang('jingle'); feldLeeren();
-    SPIELE[name](spielAktiv);
+    var s = spielAktiv = { name: name, stufe: 0 }; document.body.classList.add('imspiel'); spielKnopfZeigen();
+    statusSetzen(' '); klang('jingle', name);
+    if (S.vorbereiten) S.vorbereiten(s);
+    // Ansage: grosses Bild, ein kurzer Satz, Melodie. Tippen überspringt.
+    var f = $('feldinhalt'), k = el('button', 'ansage'); k.type = 'button';
+    k.appendChild(el('span', 'e', S.icon)); k.appendChild(el('b', '', S.titel)); k.appendChild(el('small', '', '👆 Los geht’s!'));
+    f.appendChild(k); bewegung('hops'); kurzZustand('freut', 1200);
+    var los = false;
+    function weiter() { if (los || spielAktiv !== s) return; los = true; naechsteStufe(s); }
+    k.onclick = function () { klang('tipp'); stimmeStopp(); weiter(); };
+    s.ziel = function () { return k; };
+    sag(nochmal ? ohneWdh(NOCHMAL_TEXT, 'nochmal') : S.ansage, function () { nach(400, weiter); });
   }
-  function spielGeschafft(text, sternN, vonEl) {
-    var s = spielAktiv; if (!s) return;
-    spielTipp = null;
-    for (var i = 0; i < (sternN || 1); i++) (function (i) { nach(i * 450, function () { sternDazu(vonEl); }); })(i);
-    bewegung('tanzen'); klang('jubel');
-    sag(text, function () {
+  function naechsteStufe(s) {
+    if (spielAktiv !== s) return;
+    var S = SPIELE[s.name], max = S.stufen || 3;
+    s.stufe++; s.ziel = null;
+    if (s.stufe > max) { spielEnde(s); return; }
+    feldLeeren(); stufeZeigen(s.stufe, max);
+    var f = $('feldinhalt'), band = el('div', 'band');
+    band.appendChild(el('b', '', max > 1 ? 'Level ' + s.stufe : S.titel)); band.appendChild(el('span', '', '⭐'.repeat(s.stufe)));
+    f.appendChild(band); klang('level'); if (s.stufe > 1) bewegung('hops');
+    nach(1300, function () {
       if (spielAktiv !== s) return;
-      var f = $('feldinhalt'); f.innerHTML = '';
-      var w = el('div', 'wahl');
-      var b1 = el('button', '', '🔁 Nochmal'); b1.type = 'button'; b1.onclick = function () { spielStarten(s.name); };
-      var b2 = el('button', '', '🎮 Anderes Spiel'); b2.type = 'button'; b2.onclick = spielWahl;
-      var b3 = el('button', '', '👋 Fertig für heute'); b3.type = 'button'; b3.onclick = function () { spielBeenden(); winken(); sag('Das war schön mit dir. Bis bald!'); statusSetzen('Bis bald!'); };
-      w.appendChild(b1); w.appendChild(b2); w.appendChild(b3); f.appendChild(w);
+      feldLeeren(); stufeZeigen(s.stufe, max);
+      S.stufe(s, s.stufe, function () { stufeGeschafft(s); });
     });
+  }
+  function stufeGeschafft(s) {
+    if (spielAktiv !== s || s.fertigStufe === s.stufe) return;
+    s.fertigStufe = s.stufe; s.ziel = null; fingerWeg();
+    var max = SPIELE[s.name].stufen || 3;
+    if (s.stufe >= max) { nach(500, function () { spielEnde(s); }); return; }
+    klang('level'); kurzZustand('freut', 1600); bewegung('tanzen'); funken(16);
+    sag(ohneWdh(STUFE_LOB, 'stufe'), function () { nach(300, function () { naechsteStufe(s); }); });
+  }
+  function spielEnde(s) {
+    if (spielAktiv !== s) return;
+    s.ziel = null; feldLeeren(); stufeZeigen(0); $('dranBand').hidden = true;
+    var S = SPIELE[s.name], f = $('feldinhalt'), k = el('div', 'endkarte');
+    var text = S.endeText ? S.endeText(s) : ohneWdh(ENDE_TEXT, 'ende');
+    if (S.endeZeile) k.appendChild(el('div', 'endzeile', S.endeZeile(s)));
+    var oben = el('div', 'endoben'), reihe = el('div', 'sternreihe'), st = [];
+    oben.appendChild(el('span', 'pokal', zufall(['🏆', '🥇', '👑', '🌟', '🎉'])));
+    for (var i = 0; i < 3; i++) { var x = el('span', '', '⭐'); x.style.animationDelay = (.3 + i * .25) + 's'; reihe.appendChild(x); st.push(x); }
+    oben.appendChild(reihe); k.appendChild(oben);
+    var noch = knopfEl('gross-knopf nochmal', '🔁 Nochmal?', function () { klang('tipp'); spielStarten(s.name, true); });
+    k.appendChild(noch);
+    var w = el('div', 'endwahl');
+    w.appendChild(knopfEl('', '🎮 Anderes Spiel', function () { klang('tipp'); spielBeenden(); spielWahl(); }));
+    w.appendChild(knopfEl('', '👋 Fertig', function () { spielBeenden(); winken(); klang('summen'); sag(zufall(['Das war schön mit dir. Bis bald!', 'Danke fürs Spielen! Ich ruhe mich kurz aus.', 'Tschüss! Ich freu mich schon aufs nächste Mal.', 'Hihi, das war lustig. Bis bald!', 'Bis bald, mein Spielfreund!'])); statusSetzen('Bis bald!'); }));
+    k.appendChild(w); f.appendChild(k);
+    konfetti(); klang('feier'); summ([30, 50, 30, 50, 60]); bewegung('tanzen'); kurzZustand('freut', 2600); pose('lacht', 2400);
+    st.forEach(function (x, i) { nach(400 + i * 300, function () { sternDazu(x, true); }); });
+    blase(text); sprechen(text);
+    s.ziel = function () { return noch; };
+    zahl('geschafft_' + s.name);
   }
   function spielWahl() {
     if (conv) return;
     tippWeg(); $('spielKnopf').classList.remove('lockt');
-    $('spielwahl').hidden = false; klang('tipp');
-    setTimeout(function () { var b = document.querySelector('.sk'); if (b) b.focus(); }, 300);
+    $('spielwahl').hidden = false; klang('whoosh');
+    setTimeout(function () { var b = document.querySelector('.sk'); if (b) b.focus({ preventScroll: true }); }, 300);
   }
   $('spielKnopf').addEventListener('click', function () {
-    if (spielAktiv || fragen.an) { spielBeenden(); statusSetzen('Pause. Tipp auf «Spielen» für mehr.'); return; }
+    if (spielAktiv) { spielBeenden(); statusSetzen('Pause. Tipp auf «Spielen» für mehr.'); return; }
     spielWahl();
   });
+  $('feldZu').addEventListener('click', function () { klang('whoosh'); spielBeenden(); spielWahl(); });
   $('wahlZu').addEventListener('click', function () { $('spielwahl').hidden = true; });
   $('spielwahl').addEventListener('click', function (e) {
     if (e.target === this) { this.hidden = true; return; }
     var b = e.target.closest('[data-spiel]'); if (b) spielStarten(b.dataset.spiel);
   });
+  // Keine toten Momente: wartet Otti zu lange auf einen Tipp, stupst er an und zeigt mit dem Finger.
+  setInterval(function () {
+    if (!spielAktiv || pausiert || document.hidden || !spielAktiv.ziel) return;
+    var jetzt = Date.now();
+    if (jetzt - stillSeit > 6500 && jetzt - stupsT > 7000) {
+      var z = spielAktiv.ziel(); if (!z || !z.isConnected) return;
+      stupsT = jetzt; finger(z); blase(ohneWdh(STUPS, 'stups')); bewegung('neugierig'); klang('tipp');
+    }
+  }, 1000);
+
+  /* Zwei Spieler (Kind und Gross) für die Zusammen-Spiele */
+  var GROSSE = [['Papa', '👨'], ['Mama', '👩'], ['Grosi', '👵'], ['Götti', '🧔']];
+  function grossI() { return Math.min(GROSSE.length - 1, parseInt(lies('otti_gross', '0'), 10) || 0); }
+  function spielerBau(s) {
+    var g = GROSSE[grossI()];
+    s.sp = [{ n: 'Du', e: '🧒', p: 0 }, { n: g[0], e: g[1], p: 0 }]; s.dran = 0;
+  }
+  function spielerLeiste(s) {
+    var l = el('div', 'spieler');
+    s.sp.forEach(function (p, i) {
+      var c = el('button', 'sp' + (s.dran === i ? ' dran' : '')); c.type = 'button';
+      c.innerHTML = '<span class="e"></span><span class="n"></span><b></b>';
+      c.children[0].textContent = p.e; c.children[1].textContent = p.n; c.children[2].textContent = p.p;
+      c.setAttribute('aria-label', p.n + ': ' + p.p + ' Punkte');
+      if (i === 1) c.onclick = function () {
+        // Tipp auf die erwachsene Person: Papa → Mama → Grosi → Götti
+        var n = (grossI() + 1) % GROSSE.length; schreib('otti_gross', String(n)); p.n = GROSSE[n][0]; p.e = GROSSE[n][1]; klang('tipp'); spielerZeigen(s);
+      };
+      l.appendChild(c);
+    });
+    s.leiste = l; return l;
+  }
+  function spielerZeigen(s) {
+    if (!s.leiste) return;
+    s.sp.forEach(function (p, i) {
+      var c = s.leiste.children[i]; c.classList.toggle('dran', s.dran === i);
+      c.children[0].textContent = p.e; c.children[1].textContent = p.n; c.children[2].textContent = p.p; c.setAttribute('aria-label', p.n + ': ' + p.p + ' Punkte');
+    });
+  }
+  function duBistDran(s, fertig) {
+    var p = s.sp[s.dran], t = s.dran === 0 ? zufall(['Du bist dran!', 'Jetzt du!', 'Deine Runde!', 'Los, du!', 'Du darfst!']) : zufall(['Du bist dran, ' + p.n + '!', p.n + ', jetzt du!', 'Achtung, ' + p.n + ' ist dran!', 'Mal schauen, was ' + p.n + ' kann!', p.n + ', zeig, was du kannst!']);
+    spielerZeigen(s);
+    var b = $('dranBand'); b.textContent = p.e + ' ' + t; b.hidden = false; b.classList.remove('rein'); void b.offsetWidth; b.classList.add('rein');
+    klang('dran', s.dran); bewegung(s.dran ? 'neugierig' : 'hops');
+    sag(t, function () { nach(200, function () { b.hidden = true; if (fertig) fertig(); }); });
+  }
+  function zuZweitEnde(s) {
+    var a = s.sp[0], b = s.sp[1];
+    return a.e + ' ' + a.p + '  :  ' + b.p + ' ' + b.e;
+  }
+  function zuZweitText(s) {
+    var a = s.sp[0], b = s.sp[1];
+    if (a.p > b.p) return zufall(['Du hast gewonnen! Und ' + b.n + ' war auch super. Ihr seid ein tolles Team!', 'Juhui, du hast mehr Punkte als ' + b.n + '! Gebt euch ein High five!']);
+    if (b.p > a.p) return zufall([b.n + ' hat diesmal mehr Punkte. Nochmal? Dann zeigst du es ' + b.n + '!', 'Knapp! ' + b.n + ' hat gewonnen. Ihr seid ein super Team!']);
+    return 'Unentschieden! Ihr seid beide Champions. Gebt euch eine Umarmung!';
+  }
 
   var SPIELE = {};
 
-  /* --- 1. Verstecken: Otti taucht ab, das Kind sucht --- */
-  SPIELE.verstecken = function (s) {
-    var ORTE = [['🌳', 'hinter dem Baum'], ['🍄', 'unter dem Pilz'], ['🪨', 'hinter dem Stein'], ['🌻', 'bei der Blume'], ['🪵', 'im Holzstamm']];
-    var runde = 0;
-    function neueRunde() {
-      if (spielAktiv !== s) return;
-      runde++; var n = Math.min(5, runde + 2), ziel = Math.floor(Math.random() * n), falsch = 0, offen = false;
-      var orte = mischen(ORTE).slice(0, n);
-      $('feldzahl').textContent = 'Runde ' + runde + ' / 3';
-      var f = $('feldinhalt'); f.innerHTML = '';
-      sag(runde === 1 ? 'Augen zu! Ich verstecke mich.' : 'Nochmal! Diesmal verstecke ich mich besser.', function () {
+  /* --- 1. Verstecken: Otti versteckt sich, später werden die Verstecke gemischt --- */
+  var ORTE = [['🌳', 'hinter dem Baum'], ['🍄', 'unter dem Pilz'], ['🪨', 'hinter dem Stein'], ['🌻', 'bei der Blume'], ['🪵', 'im Holzstamm'], ['🌲', 'hinter der Tanne']];
+  var UEBERRASCHUNG = [['🐿️', 'Huch! Nur Eichhörnchen Flitz.'], ['🐸', 'Quak! Da wohnt Frosch Fridolin.'], ['🐞', 'Ein Marienkäfer sagt Hallo!'], ['🐭', 'Pieps! Maus Mimi schläft hier.'], ['🦋', 'Ein Schmetterling flattert weg!'], ['🐌', 'Schnecki! Hihi, die ist langsam.']];
+  SPIELE.verstecken = { icon: '🙈', titel: 'Verstecken', ansage: 'Ich verstecke mich. Findest du mich? Tipp auf das richtige Versteck!',
+    stufe: function (s, n, fertig) {
+      var anzahl = [0, 3, 4, 5][n], tausch = [0, 0, 3, 6][n], ms = [0, 0, 520, 400][n];
+      var orte = mischen(ORTE).slice(0, anzahl), zielI = Math.floor(Math.random() * anzahl), falsch = 0, offen = false;
+      var f = $('feldinhalt'), g = el('div', 'verstecke'), knoepfe = [];
+      $('feldzahl').textContent = '🔎';
+      orte.forEach(function (o, i) {
+        var b = knopfEl('versteck', o[0]); b.setAttribute('aria-label', o[1]); b.dataset.i = i;
+        b.addEventListener('click', function () { waehle(b, i, o); });
+        g.appendChild(b); knoepfe.push(b);
+      });
+      function waehle(b, i, o) {
+        if (!offen) return;
+        if (i === zielI) {
+          offen = false; s.ziel = null; b.classList.add('gefunden'); b.textContent = '🦔';
+          bewegung('auftauchen'); pose('lacht', 2000); sternDazu(b); funken(12, b); klang('jubel'); summ([20, 30, 20]); kurzZustand('freut', 1500);
+          sag(zufall(['Gefunden! Du bist eine super Sucherin, ein super Sucher!', 'Ertappt! Hihi, ' + o[1] + ' war ich.', 'Juhui, du hast mich gefunden!', 'Kuckuck! Da bin ich!', 'Mist, entdeckt! Hihi.', 'Wie hast du das so schnell gemerkt?']), function () { nach(300, fertig); });
+        } else {
+          falsch++; b.disabled = true; b.classList.add('wackeln', 'leer');
+          if (Math.random() < .45) { var u = ohneWdh(UEBERRASCHUNG, 'tier'); b.textContent = u[0]; b.classList.add('tier'); klang('ueberraschung'); blase(u[1]); }
+          else { b.textContent = '🍂'; klang('rascheln'); ottiTrost(zufall(['Hier nicht! Hihi.', 'Kalt, kalt!', 'Fast! Such weiter.', 'Nur Laub. Wo bin ich wohl?', 'Brrr, hier ist es leer.'])); }
+          if (falsch >= 2) { knoepfe[zielI].classList.add('zittert'); klang('rascheln'); blase('Psst … da drüben hat sich etwas bewegt!'); }
+        }
+      }
+      function oeffnen() {
         if (spielAktiv !== s) return;
-        bewegung('abtauchen'); klang('plumps');
-        var z = 3;
-        (function zaehlen() {
+        offen = true; s.ziel = function () { return g.querySelector('.versteck:not(:disabled)'); };
+        sag(zufall(['Wo bin ich? Tipp auf ein Versteck!', 'Rate mal, wo ich bin!', 'Na, wo hat sich Otti versteckt?']), function () {});
+        finger(knoepfe[(zielI + 1) % anzahl]);
+      }
+      if (!tausch) {
+        // Level 1: Augen zu, Otti taucht ab, 3-2-1
+        sag('Augen zu! Ich verstecke mich.', function () {
           if (spielAktiv !== s) return;
-          f.innerHTML = ''; f.appendChild(el('div', 'grosszahl', String(z))); klang('tick');
-          if (--z > 0) nach(800, zaehlen); else nach(800, zeigen);
-        })();
-      });
-      function zeigen() {
-        if (spielAktiv !== s) return;
-        f.innerHTML = ''; klang('rascheln');
-        var g = el('div', 'verstecke');
-        orte.forEach(function (o, i) {
-          var b = el('button', 'versteck', o[0]); b.type = 'button'; b.setAttribute('aria-label', o[1]);
-          b.addEventListener('click', function () {
-            if (!offen) return;
-            if (i === ziel) {
-              offen = false; b.classList.add('gefunden'); b.textContent = '🦔'; klang('jubel'); summ([20, 30, 20]);
-              bewegung('auftauchen'); pose('lacht', 2000); sternDazu(b);
-              sag(zufall(['Gefunden! Du bist eine super Sucherin, ein super Sucher!', 'Ertappt! Hihi, ' + o[1] + ' war ich.', 'Juhui, du hast mich gefunden!']), function () {
-                if (runde < 3) nach(500, neueRunde); else spielGeschafft('Dreimal gefunden! Du bist Versteck-Meister. Jetzt bin ich ganz aus der Puste.', 2, b);
-              });
-            } else {
-              falsch++; b.disabled = true; b.classList.add('wackeln', 'leer'); b.textContent = '🍂'; klang('rascheln');
-              blase(zufall(['Hier nicht! Hihi.', 'Kalt, kalt!', 'Fast! Such weiter.', 'Nur Laub. Wo bin ich wohl?']));
-              if (falsch >= 2) { g.children[ziel].classList.add('zittert'); blase('Psst … da drüben hat sich etwas bewegt!'); }
-            }
-          });
-          g.appendChild(b);
+          bewegung('abtauchen'); klang('plumps');
+          var z = 3;
+          (function zaehlen() {
+            if (spielAktiv !== s) return;
+            f.innerHTML = ''; f.appendChild(el('div', 'grosszahl', String(z))); klang('tick', z === 1);
+            if (--z > 0) nach(800, zaehlen); else nach(800, function () { f.innerHTML = ''; f.appendChild(g); klang('rascheln'); knoepfe[zielI].classList.add('raschelt'); oeffnen(); });
+          })();
         });
-        f.appendChild(g);
-        sag('Fertig! Wo bin ich? Tipp auf ein Versteck.', function () { offen = true; });
-        offen = true;
+        return;
       }
+      // Level 2 und 3: Otti hüpft sichtbar in ein Versteck, dann wird gemischt. Gut aufpassen!
+      f.appendChild(g);
+      sag(n === 2 ? 'Jetzt wird es schwer! Schau gut, wo ich reinhüpfe.' : 'Level 3! Ich mische ganz schnell. Augen auf!', function () {
+        if (spielAktiv !== s) return;
+        var zb = knoepfe[zielI];
+        zb.textContent = '🦔'; zb.classList.add('gefunden'); klang('hihi'); bewegung('abtauchen');
+        nach(1300, function () {
+          zb.textContent = orte[zielI][0]; zb.classList.remove('gefunden'); klang('plumps');
+          var runden = 0;
+          (function mische() {
+            if (spielAktiv !== s) return;
+            if (runden++ >= tausch) { nach(300, oeffnen); return; }
+            var a = Math.floor(Math.random() * anzahl), b = (a + 1 + Math.floor(Math.random() * (anzahl - 1))) % anzahl;
+            tausche(g, knoepfe[a], knoepfe[b], ms); klang('whoosh');
+            nach(ms + 120, mische);
+          })();
+        });
+      });
     }
-    spielTipp = function () { if (versteckt) blase('Hihi, ich bin nicht mehr da! Such mich unten.'); };
-    neueRunde();
   };
-
-  /* --- 2. Beeren sammeln: schnell tippen --- */
-  SPIELE.sammeln = function (s) {
-    var DINGE = ['🍓', '🫐', '🍎', '🍓', '🌰', '🍒'], ZIEL = 12, ZEIT = 35000, n = 0, laeuft = false, ende = 0, spawnT = 0;
-    var f = $('feldinhalt'); f.classList.add('wiese');
-    $('feldzahl').textContent = '🧺 0 / ' + ZIEL;
-    sag('Mein Bäuchlein knurrt! Hilf mir Beeren sammeln. Tipp sie an, bevor sie weg sind!', function () {
-      if (spielAktiv !== s) return;
-      laeuft = true; ende = Date.now() + ZEIT;
-      var zb = $('zeitbalken'), zl = $('zeitlauf'); zb.hidden = false;
-      zl.style.transition = 'none'; zl.style.transform = 'scaleX(1)'; void zl.offsetWidth;
-      zl.style.transition = 'transform ' + (ZEIT / 1000) + 's linear'; zl.style.transform = 'scaleX(0)';
-      blase('Los geht\'s!'); naechstes();
-      nach(ZEIT, fertig);
+  // Zwei Knöpfe tauschen ihren Platz mit einem kleinen Bogen (FLIP: nur transform, flüssig)
+  function tausche(g, a, b, ms) {
+    var ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(), p = document.createElement('i');
+    g.replaceChild(p, a); g.replaceChild(a, b); g.replaceChild(b, p);
+    [[a, ra, -1], [b, rb, 1]].forEach(function (x) {
+      var e = x[0], r = e.getBoundingClientRect(), dx = x[1].left - r.left, dy = x[1].top - r.top;
+      e.style.transition = 'none'; e.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+      void e.offsetWidth;
+      e.style.transition = 'transform ' + ms + 'ms cubic-bezier(.45,.05,.3,1)'; e.style.transform = 'translate(0,' + (x[2] * 6) + 'px)';
+      setTimeout(function () { e.style.transform = ''; }, ms * .6);
+      setTimeout(function () { e.style.transition = ''; }, ms + 80);
     });
-    function naechstes() {
-      if (!laeuft || spielAktiv !== s) return;
-      var schnecke = Math.random() < .12, d = el('button', 'ding', schnecke ? '🐌' : zufall(DINGE));
-      d.type = 'button'; d.setAttribute('aria-label', schnecke ? 'Schnecke' : 'Beere');
-      d.style.left = (12 + Math.random() * 76) + '%'; d.style.top = (18 + Math.random() * 68) + '%';
-      var weg = setTimeout(function () { d.classList.add('weg'); setTimeout(function () { d.remove(); }, 260); }, Math.max(1100, 2000 - n * 60));
-      d.addEventListener('pointerdown', function (e) {
-        e.preventDefault(); clearTimeout(weg); if (d.classList.contains('pop')) return;
-        d.classList.add('pop'); setTimeout(function () { d.remove(); }, 300);
-        if (schnecke) { klang('falsch'); bewegung('nein'); blase('Oh, das ist Schnecki! Die essen wir nicht, die ist meine Freundin.'); return; }
-        n++; klang('pop', n); summ(8); $('feldzahl').textContent = '🧺 ' + n + ' / ' + ZIEL;
-        if (n % 3 === 0) { bewegung('hops'); blase(zufall(['Mmh!', 'Fein!', 'Lecker!', 'Noch mehr!', 'Mampf, mampf!'])); }
-        if (n >= ZIEL) fertig();
+  }
+
+  /* --- 2. Beeren sammeln: Level 1 langsam, Level 2 mit Schnecken, Level 3 fallen Beeren vom Baum, Goldbeere --- */
+  SPIELE.sammeln = { icon: '🍓', titel: 'Beeren sammeln', ansage: 'Mein Bäuchlein knurrt! Tipp die Beeren an, bevor sie weg sind!',
+    stufe: function (s, n, fertig) {
+      var ZIEL = [0, 8, 10, 12][n], ZEIT = 25000, bleibt = [0, 2600, 1900, 1700][n], takt = [0, 950, 760, 620][n], schnecken = n > 1, fallen = n === 3;
+      var DINGE = ['🍓', '🫐', '🍎', '🍓', '🌰', '🍒'], z = 0, laeuft = false, spawnT = 0, letzt = 0, combo = 0;
+      var f = $('feldinhalt'); f.classList.add('wiese');
+      $('feldzahl').textContent = '🧺 0 / ' + ZIEL;
+      var ansage = n === 1 ? 'Los! Tipp schnell auf die Beeren.' : n === 2 ? 'Achtung! Schnecki kommt auch. Schnecken nicht antippen!' : 'Jetzt fallen die Beeren vom Baum! Und such die goldene Beere!';
+      sag(ansage, function () {
+        if (spielAktiv !== s) return;
+        laeuft = true;
+        var zb = $('zeitbalken'), zl = $('zeitlauf'); zb.hidden = false;
+        zl.style.transition = 'none'; zl.style.transform = 'scaleX(1)'; void zl.offsetWidth;
+        zl.style.transition = 'transform ' + (ZEIT / 1000) + 's linear'; zl.style.transform = 'scaleX(0)';
+        naechstes(); s.ziel = function () { return f.querySelector('.ding:not(.pop):not(.weg)'); };
+        nach(ZEIT, ende);
       });
-      f.appendChild(d);
-      spawnT = nach(Math.max(520, 950 - n * 30), naechstes);
+      function naechstes() {
+        if (!laeuft || spielAktiv !== s) return;
+        var r = Math.random(), art = schnecken && r < .14 ? 'schnecke' : n === 3 && r > .93 ? 'gold' : 'beere';
+        var d = knopfEl('ding' + (art === 'gold' ? ' gold' : ''), art === 'schnecke' ? '🐌' : art === 'gold' ? '🍓' : zufall(DINGE));
+        d.setAttribute('aria-label', art === 'schnecke' ? 'Schnecke' : art === 'gold' ? 'Goldene Beere' : 'Beere');
+        d.style.left = (12 + Math.random() * 76) + '%';
+        var dauer = bleibt;
+        if (fallen && art !== 'schnecke') {
+          var h = f.clientHeight; dauer = 2600 + Math.random() * 900;
+          d.style.top = '0%'; d.classList.add('faellt'); d.style.setProperty('--fall', (h + 40) + 'px'); d.style.setProperty('--d', dauer + 'ms');
+        } else d.style.top = (22 + Math.random() * 64) + '%';
+        var weg = setTimeout(function () { if (d.classList.contains('faellt')) { d.remove(); return; } d.classList.add('weg'); setTimeout(function () { d.remove(); }, 260); }, dauer);
+        d.addEventListener('pointerdown', function (e) {
+          e.preventDefault(); clearTimeout(weg); if (d.classList.contains('pop') || !laeuft) return;
+          var rr = d.getBoundingClientRect(); d.style.transform = getComputedStyle(d).transform === 'none' ? '' : getComputedStyle(d).transform;
+          d.classList.remove('faellt'); d.classList.add('pop'); setTimeout(function () { d.remove(); }, 300);
+          if (art === 'schnecke') { ottiTrost(zufall(['Oh, das ist Schnecki! Die essen wir nicht, die ist meine Freundin.', 'Hihi, Schnecki kitzelt! Nur Beeren bitte.', 'Nein, nein, nicht Schnecki!', 'Schnecki sagt: «Hallo!» Weiter sammeln!', 'Uii, Schnecki ist keine Beere!'])); return; }
+          var jetzt = Date.now(); combo = jetzt - letzt < 900 ? combo + 1 : 0; letzt = jetzt;
+          var plus = art === 'gold' ? 3 : 1; z += plus;
+          klang('pop', combo); summ(8);
+          if (art === 'gold') { klang('ueberraschung'); ottiFreut('Die goldene Beere! Drei auf einmal!', d); }
+          else if (combo >= 3 && combo % 3 === 0) ottiFreut(zufall(['Wow, so schnell!', 'Beeren-Blitz!', 'Du bist eine Beeren-Rakete!', 'Hui, ein Beeren-Regen!', 'Superschnell!']), d);
+          else if (z % 4 === 0) { bewegung('hops'); blase(zufall(['Mmh!', 'Fein!', 'Lecker!', 'Noch mehr!', 'Mampf, mampf!', 'Schmatz!'])); }
+          $('feldzahl').textContent = '🧺 ' + Math.min(z, ZIEL) + ' / ' + ZIEL;
+          var korb = $('feldzahl'); korb.classList.remove('plopp'); void korb.offsetWidth; korb.classList.add('plopp');
+          if (z >= ZIEL) ende();
+        });
+        f.appendChild(d);
+        spawnT = nach(Math.max(480, takt - z * 15), naechstes);
+      }
+      function ende() {
+        if (!laeuft || spielAktiv !== s) return;
+        laeuft = false; clearTimeout(spawnT); s.ziel = null;
+        Array.prototype.forEach.call(f.querySelectorAll('.ding'), function (d) { d.classList.add('weg'); });
+        $('zeitbalken').hidden = true;
+        sternDazu($('feldzahl'));
+        if (z >= ZIEL) { ottiFreut(); fertig(); }
+        else sag(zufall([z + ' Beeren, fein! Das reicht für ein Igel-Znüni.', 'Mmh, ' + z + ' Beeren! Mein Bauch ist zufrieden.', z + ' Beeren! Die Zeit war knapp, aber super.']), function () { fertig(); });
+      }
+      s.stopp = function () { laeuft = false; };
     }
-    function fertig() {
-      if (!laeuft || spielAktiv !== s) return;
-      laeuft = false; clearTimeout(spawnT);
-      Array.prototype.forEach.call(f.querySelectorAll('.ding'), function (d) { d.remove(); });
-      f.classList.remove('wiese');
-      var st = n >= ZIEL ? 3 : n >= 6 ? 2 : 1;
-      spielGeschafft(n >= ZIEL ? 'Ganze ' + n + ' Beeren! Mein Bäuchlein ist kugelrund. Danke!' : n + ' Beeren, fein! Das reicht für ein Igel-Znüni.', st, $('feldzahl'));
-    }
-    s.stopp = function () { laeuft = false; f.classList.remove('wiese'); };
   };
 
-  /* --- 3. Mach mit! Otti macht vor, das Kind macht nach --- */
-  SPIELE.machmit = function (s) {
-    var ZUEGE = [
-      { e: '🐸', t: 'Hüpf dreimal wie ein Frosch!', b: 'hops3' }, { e: '🦔', t: 'Roll dich ein, ganz klein wie ein Igelball!', b: 'igelball' },
-      { e: '🌙', t: 'Streck dich ganz gross, bis zum Mond!', b: 'strecken' }, { e: '👋', t: 'Wink mir zu!', b: 'winken' },
-      { e: '🔄', t: 'Dreh dich einmal im Kreis!', b: 'drehen' }, { e: '🐘', t: 'Stampf wie ein Elefant!', b: 'stampfen' },
-      { e: '💃', t: 'Tanz mit mir!', b: 'tanzen' }, { e: '🌬️', t: 'Schüttle das Handy wie der Wind!', b: 'wind', schuetteln: true }
-    ];
-    var liste = mischen(ZUEGE.filter(function (z) { return !z.schuetteln; })).slice(0, 4);
-    liste.splice(2, 0, ZUEGE[ZUEGE.length - 1]);
-    var i = 0, f = $('feldinhalt');
-    function zug() {
-      if (spielAktiv !== s) return;
-      if (i >= liste.length) { spielGeschafft('Du hast alles mitgemacht! Wir sind ein super Team.', 2, $('feldzahl')); return; }
-      var z = liste[i++]; $('feldzahl').textContent = i + ' / ' + liste.length;
-      f.innerHTML = '';
-      var k = el('div', 'zug'); k.appendChild(el('span', 'e', z.e)); k.appendChild(el('b', '', z.t)); f.appendChild(k);
-      if (z.b === 'winken') winken(); else bewegung(z.b);
-      sag((i === 1 ? 'Mach mit! ' : '') + z.t, function () {
+  /* --- 3. Mach mit! Level 1 nachmachen, Level 2 mit Schütteln, Level 3 Stopp-Tanz mit Musik --- */
+  var ZUEGE = [
+    { e: '🐸', t: 'Hüpf dreimal wie ein Frosch!', b: 'hops3' }, { e: '🦔', t: 'Roll dich ein, ganz klein wie ein Igelball!', b: 'igelball' },
+    { e: '🌙', t: 'Streck dich ganz gross, bis zum Mond!', b: 'strecken' }, { e: '👋', t: 'Wink mir zu!', b: 'winken' },
+    { e: '🔄', t: 'Dreh dich einmal im Kreis!', b: 'drehen' }, { e: '🐘', t: 'Stampf wie ein Elefant!', b: 'stampfen' },
+    { e: '💃', t: 'Tanz mit mir!', b: 'tanzen' }, { e: '🦩', t: 'Steh auf einem Bein wie ein Flamingo!', b: 'strecken' },
+    { e: '🐰', t: 'Hoppel wie ein Hase!', b: 'hops3' }, { e: '🤪', t: 'Mach eine lustige Grimasse!', b: 'neugierig' }
+  ];
+  SPIELE.machmit = { icon: '🤸', titel: 'Mach mit!', ansage: 'Ich mache etwas vor, du machst es nach. Steh auf, los geht es!',
+    stufe: function (s, n, fertig) {
+      var f = $('feldinhalt');
+      if (n === 3) { stopptanz(s, f, fertig); return; }
+      var liste = mischen(ZUEGE).slice(0, 3), i = 0;
+      if (n === 2) liste.splice(1, 0, { e: '🌬️', t: 'Schüttle das Handy wie der Wind!', b: 'wind', schuetteln: true });
+      function zug() {
         if (spielAktiv !== s) return;
-        if (z.schuetteln) schuetteln(k); else warten(k);
-      });
-    }
-    function warten(k) {
-      var ring = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      ring.setAttribute('viewBox', '0 0 64 64'); ring.setAttribute('class', 'ring');
-      ring.innerHTML = '<circle class="bahn" cx="32" cy="32" r="28"/><circle class="lauf" cx="32" cy="32" r="28"/>';
-      k.parentNode.appendChild(ring);
-      ring.style.setProperty('--d', '3.5s'); void ring.getBoundingClientRect(); ring.classList.add('laeuft');
-      for (var t = 0; t < 3; t++) nach(t * 1000 + 300, function () { klang('tick'); });
-      nach(3600, function () {
-        if (spielAktiv !== s) return;
-        ring.remove();
-        var b = el('button', 'gross-knopf', '✅ Geschafft!'); b.type = 'button'; k.parentNode.appendChild(b);
-        b.onclick = function () { b.disabled = true; sternDazu(b); bewegung('freuen'); sag(zufall(['Super gemacht!', 'Wow, genau so!', 'Bravo! Das kannst du gut.', 'Hihi, du bist lustig!']), function () { nach(300, zug); }); };
-      });
-    }
-    function schuetteln(k) {
-      var mess = el('div', 'messer'), lauf = el('i'); mess.appendChild(lauf);
-      var b = el('button', 'gross-knopf', '🌬️ Los, schütteln!'); b.type = 'button';
-      k.parentNode.appendChild(mess); k.parentNode.appendChild(b);
-      var stoesse = 0, NOETIG = 6, letzt = 0, fertig = false, gemerkt = false;
-      function stoss() {
-        if (fertig) return;
-        stoesse++; lauf.style.transform = 'scaleX(' + Math.min(1, stoesse / NOETIG) + ')'; klang('wind'); bewegung('wind'); summ(10);
-        if (stoesse >= NOETIG) { fertig = true; aus(); b.remove(); sternDazu(mess); sag('Huiii, was für ein Wind! Meine Stacheln flattern.', function () { nach(300, zug); }); }
+        if (i >= liste.length) { fertig(); return; }
+        var z = liste[i++]; $('feldzahl').textContent = i + ' / ' + liste.length;
+        f.innerHTML = '';
+        var k = el('div', 'zug'); k.appendChild(el('span', 'e', z.e)); k.appendChild(el('b', '', z.t)); f.appendChild(k);
+        if (z.b === 'winken') winken(); else bewegung(z.b);
+        sag(z.t, function () {
+          if (spielAktiv !== s) return;
+          if (z.schuetteln) schuetteln(k); else warten(k);
+        });
       }
-      function bewegt(e) {
-        var a = e.accelerationIncludingGravity || e.acceleration; if (!a) return;
-        gemerkt = true;
-        var m = Math.sqrt((a.x || 0) * (a.x || 0) + (a.y || 0) * (a.y || 0) + (a.z || 0) * (a.z || 0));
-        if (m > 19 && Date.now() - letzt > 280) { letzt = Date.now(); stoss(); }
+      function warten(k) {
+        var ring = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        ring.setAttribute('viewBox', '0 0 64 64'); ring.setAttribute('class', 'ring');
+        ring.innerHTML = '<circle class="bahn" cx="32" cy="32" r="28"/><circle class="lauf" cx="32" cy="32" r="28"/>';
+        k.parentNode.appendChild(ring);
+        ring.style.setProperty('--d', '3s'); void ring.getBoundingClientRect(); ring.classList.add('laeuft');
+        for (var t = 0; t < 3; t++) nach(t * 1000 + 200, function () { klang('tick'); });
+        nach(3100, function () {
+          if (spielAktiv !== s) return;
+          ring.remove();
+          var b = knopfEl('gross-knopf', '✅ Geschafft!'); k.parentNode.appendChild(b); s.ziel = function () { return b; };
+          b.onclick = function () { b.disabled = true; s.ziel = null; sternDazu(b); ottiFreut(null, b); nach(1100, zug); };
+        });
       }
-      function aus() { removeEventListener('devicemotion', bewegt); }
-      s.stopp = aus;
-      b.onclick = function () {
-        // Auf iPhones muss die Bewegung einmal erlaubt werden; ohne Sensor wird getippt.
-        var DM = window.DeviceMotionEvent;
-        var an = function () { addEventListener('devicemotion', bewegt); b.textContent = '🌬️ Schüttel, schüttel!'; b.className = 'gross-knopf zweit';
-          b.onclick = stoss;
-          nach(2500, function () { if (!gemerkt && !fertig) { b.textContent = '👆 Hier tippen, so oft du kannst'; } }); };
-        if (DM && typeof DM.requestPermission === 'function') DM.requestPermission().then(function (r) { if (r === 'granted') an(); else { b.textContent = '👆 Tippen statt schütteln'; b.onclick = stoss; } }, function () { b.onclick = stoss; stoss(); });
-        else if (DM) an(); else { b.textContent = '👆 Tippen statt schütteln'; b.onclick = stoss; }
-      };
+      function schuetteln(k) {
+        var mess = el('div', 'messer'), lauf = el('i'); mess.appendChild(lauf);
+        var b = knopfEl('gross-knopf', '🌬️ Los, schütteln!');
+        k.parentNode.appendChild(mess); k.parentNode.appendChild(b); s.ziel = function () { return b; };
+        var stoesse = 0, NOETIG = 6, letzt = 0, fertigS = false, gemerkt = false;
+        function stoss() {
+          if (fertigS) return;
+          stoesse++; lauf.style.transform = 'scaleX(' + Math.min(1, stoesse / NOETIG) + ')'; klang('wind'); bewegung('wind'); summ(10);
+          if (stoesse >= NOETIG) { fertigS = true; s.ziel = null; aus(); b.remove(); sternDazu(mess); kurzZustand('freut', 1400); sag(zufall(['Huiii, was für ein Wind! Meine Stacheln flattern.', 'Wusch! Fast hat es mich weggeweht!', 'Was für ein Sturm! Hihi.']), function () { nach(300, zug); }); }
+        }
+        function bewegt(e) {
+          var a = e.accelerationIncludingGravity || e.acceleration; if (!a) return;
+          gemerkt = true;
+          var m = Math.sqrt((a.x || 0) * (a.x || 0) + (a.y || 0) * (a.y || 0) + (a.z || 0) * (a.z || 0));
+          if (m > 19 && Date.now() - letzt > 280) { letzt = Date.now(); stoss(); }
+        }
+        function aus() { removeEventListener('devicemotion', bewegt); }
+        s.stopp = aus;
+        b.onclick = function () {
+          // Auf iPhones muss die Bewegung einmal erlaubt werden; ohne Sensor wird getippt.
+          var DM = window.DeviceMotionEvent;
+          var an = function () { addEventListener('devicemotion', bewegt); b.textContent = '🌬️ Schüttel, schüttel!'; b.className = 'gross-knopf zweit';
+            b.onclick = stoss; stoss();
+            nach(2500, function () { if (!gemerkt && !fertigS) b.textContent = '👆 Hier tippen, so oft du kannst'; }); };
+          if (DM && typeof DM.requestPermission === 'function') DM.requestPermission().then(function (r) { if (r === 'granted') an(); else { b.textContent = '👆 Tippen statt schütteln'; b.onclick = stoss; stoss(); } }, function () { b.onclick = stoss; stoss(); });
+          else if (DM) an(); else { b.textContent = '👆 Tippen statt schütteln'; b.onclick = stoss; stoss(); }
+        };
+      }
+      zug();
     }
-    zug();
   };
+  // Stopp-Tanz: Musik läuft, alle tanzen. Musik aus: einfrieren wie eine Statue!
+  function stopptanz(s, f, fertig) {
+    var runde = 0, musik = null;
+    s.stopp = function () { if (musik) musik.stopp(); };
+    sag('Level 3: Stopp-Tanz! Tanz zur Musik. Wenn sie aufhört: einfrieren!', runde1);
+    function runde1() {
+      if (spielAktiv !== s) return;
+      if (runde++ >= 3) { fertig(); return; }
+      $('feldzahl').textContent = runde + ' / 3';
+      f.innerHTML = ''; var k = el('div', 'zug tanz'); k.appendChild(el('span', 'e', '💃🕺')); k.appendChild(el('b', '', 'Tanzen!')); f.appendChild(k);
+      musik = tanzmusik(); bewegung('tanzen'); kurzZustand('freut', 6000);
+      var tanzT = setInterval(function () { if (spielAktiv === s) bewegung(zufall(['tanzen', 'drehen', 'hops3'])); }, 1900); timer.push(tanzT);
+      nach(3800 + Math.random() * 3500, function () {
+        clearInterval(tanzT); if (musik) musik.stopp(); musik = null;
+        klang('tick', true); pz('ruhig'); summ(60);
+        f.innerHTML = ''; var k2 = el('div', 'zug stopp'); k2.appendChild(el('span', 'e', '🧊')); k2.appendChild(el('b', '', 'STOPP! Einfrieren!')); f.appendChild(k2);
+        blase(zufall(['Stopp! Ganz still!', 'Einfrieren! Wie eine Statue!', 'Stopp! Nicht wackeln!']));
+        nach(2600, function () {
+          if (spielAktiv !== s) return;
+          var b = knopfEl('gross-knopf', '🧊 Ich war ganz still!'); f.appendChild(b); s.ziel = function () { return b; };
+          b.onclick = function () { b.disabled = true; s.ziel = null; sternDazu(b); ottiFreut(zufall(['Wow, eine perfekte Statue!', 'Hihi, du warst steinhart gefroren!', 'Super still! Und jetzt weiter!']), b); nach(1400, runde1); };
+        });
+      });
+    }
+  }
 
   /* --- 4. Weiter-Geschichte: das Kind entscheidet und hilft mit --- */
   var GESCHICHTEN = [
@@ -1077,67 +1562,73 @@
       f: { t: 'Kuckuck! Der Mond macht grosse Augen und lacht so sehr, dass der Schluckauf verschwindet. Was jetzt?', w: [['🌠 Eine Sternschnuppe', 'g'], ['🎶 Ein Schlaflied', 'h']], b: 'freuen' },
       g: { t: 'Der Mond schickt eine Sternschnuppe, nur für dich. Wünsch dir etwas Schönes, ganz leise. Gute Nacht!', ende: true },
       h: { t: 'Der Mond summt ein leises Lied, und die Sterne schaukeln mit. Schlaf gut!', ende: true, lied: true }
+    } },
+    { titel: 'Schneckis Geburtstag', szene: '🐌🎂', k: {
+      a: { t: 'Morgen hat Schnecki Geburtstag! Ich backe einen Kuchen. Was kommt hinein?', w: [['🍓 Erdbeeren', 'b'], ['🫐 Heidelbeeren', 'b'], ['🌰 Haselnüsse', 'c']], b: 'hops' },
+      b: { t: 'Mmh, Beeren! Jetzt rühren wir den Teig. Tipp sechsmal auf die Schüssel!', aktion: { n: 6, e: '🥣', l: 'Schüssel' }, weiter: 'd', b: 'drehen' },
+      c: { t: 'Knack! Die Nüsse sind hart. Tipp viermal, dann sind sie geknackt!', aktion: { n: 4, e: '🌰', l: 'Nuss' }, weiter: 'd', b: 'stampfen' },
+      d: { t: 'Der Kuchen ist im Ofen. Oh nein, wo sind die Kerzen? Findest du sie?', suchen: { n: 4, e: '📦', z: '🕯️' }, weiter: 'e', b: 'neugierig' },
+      e: { t: 'Schnecki kommt ganz langsam angekrochen. Alle singen! Und jetzt Kerzen auspusten. Wie?', w: [['🌬️ Ganz fest', 'f'], ['🤫 Ganz sanft', 'g']], b: 'freuen' },
+      f: { t: 'Puuuh! Alle Kerzen sind aus, und Schnecki lacht so sehr, dass ihr Häuschen wackelt. Alles Gute, Schnecki!', ende: true },
+      g: { t: 'Pfff … eine Kerze nach der anderen geht aus. Schnecki wünscht sich etwas, ganz leise. Was für ein schöner Tag!', ende: true, lied: true }
     } }
   ];
-  var geschichteI = Math.floor(Math.random() * GESCHICHTEN.length);
-  SPIELE.geschichte = function (s) {
-    var G = GESCHICHTEN[geschichteI++ % GESCHICHTEN.length], f = $('feldinhalt'), schritt = 0;
-    $('feldzahl').textContent = '📖';
-    function zeigen(id) {
-      if (spielAktiv !== s) return;
-      var x = G.k[id]; schritt++;
-      f.innerHTML = ''; f.appendChild(el('div', 'szene', G.szene));
-      if (x.b) { if (x.b === 'winken') winken(); else bewegung(x.b); }
-      sag(x.t, function () {
+  var geschichteI = parseInt(lies('otti_geschichte', '0'), 10) || 0;
+  SPIELE.geschichte = { icon: '📖', titel: 'Weiter-Geschichte', stufen: 1, ansage: 'Ich erzähle, du entscheidest, wie es weitergeht!',
+    endeText: function () { return zufall(['Ende! Du hast mitentschieden, wie die Geschichte geht. Toll!', 'Ende. Was für eine schöne Geschichte, und du hast mitgemacht!', 'Ende! Du bist eine richtige Geschichten-Erfinderin, ein Geschichten-Erfinder!']); },
+    stufe: function (s, n, fertig) {
+      var gi = geschichteI++ % GESCHICHTEN.length, G = GESCHICHTEN[gi], f = $('feldinhalt');
+      schreib('otti_geschichte', String(geschichteI));
+      stufeZeigen(gi + 1, GESCHICHTEN.length); $('feldzahl').textContent = '📖';
+      function zeigen(id) {
         if (spielAktiv !== s) return;
-        if (x.ende) {
-          if (x.lied) klang('schlaflied');
-          spielGeschafft(x.lied ? 'Ende. Du hast die Geschichte selbst erfunden!' : 'Ende. Du hast mitentschieden, wie die Geschichte geht. Toll!', 2, f.firstChild);
-          return;
-        }
-        if (x.w) {
-          var w = el('div', 'wahl');
-          x.w.forEach(function (o) {
-            var b = el('button', '', o[0]); b.type = 'button';
-            b.onclick = function () { klang('tipp'); w.remove(); zeigen(o[1]); };
-            w.appendChild(b);
-          });
-          f.appendChild(w);
-        } else if (x.aktion) tippAktion(x.aktion, function () { zeigen(x.weiter); });
-        else if (x.suchen) suchAktion(x.suchen, function () { zeigen(x.weiter); });
-      });
-    }
-    function tippAktion(a, weiter) {
-      var b = el('button', 'tippding', a.e), p = el('div', 'punkte2'), n = 0, gesperrt = false;
-      b.type = 'button'; b.setAttribute('aria-label', a.l);
-      for (var i = 0; i < a.n; i++) p.appendChild(el('i'));
-      b.onclick = function () {
-        if (gesperrt) return;
-        n++; p.children[n - 1].classList.add('an'); klang('pop', n * 2); summ(10);
-        b.style.transform = 'scale(' + (1 + n * .08) + ')'; b.style.boxShadow = '0 0 ' + (n * 12) + 'px #f5c542';
-        if (a.langsam) { gesperrt = true; setTimeout(function () { gesperrt = false; }, 1500); blase(n < a.n ? 'Ein … und aus. Schön.' : 'Wunderbar ruhig.'); }
-        if (n >= a.n) { gesperrt = true; sternDazu(b); bewegung('freuen'); setTimeout(weiter, 700); }
-      };
-      f.appendChild(b); if (a.n > 1) f.appendChild(p);
-    }
-    function suchAktion(a, weiter) {
-      var g = el('div', 'verstecke'), ziel = Math.floor(Math.random() * a.n), fertig = false;
-      for (var i = 0; i < a.n; i++) (function (i) {
-        var b = el('button', 'versteck', a.e); b.type = 'button'; b.setAttribute('aria-label', 'Blatt ' + (i + 1));
+        var x = G.k[id];
+        f.innerHTML = ''; f.appendChild(el('div', 'szene', G.szene));
+        if (x.b) { if (x.b === 'winken') winken(); else bewegung(x.b); }
+        sag(x.t, function () {
+          if (spielAktiv !== s) return;
+          if (x.ende) { if (x.lied) klang('schlaflied'); else klang('ueberraschung'); nach(x.lied ? 2500 : 600, fertig); return; }
+          if (x.w) {
+            var w = el('div', 'wahl');
+            x.w.forEach(function (o) { w.appendChild(knopfEl('', o[0], function () { klang('tipp'); s.ziel = null; w.remove(); zeigen(o[1]); })); });
+            f.appendChild(w); s.ziel = function () { return w.firstChild; };
+          } else if (x.aktion) tippAktion(x.aktion, function () { zeigen(x.weiter); });
+          else if (x.suchen) suchAktion(x.suchen, function () { zeigen(x.weiter); });
+        });
+      }
+      function tippAktion(a, weiter) {
+        var b = knopfEl('tippding', a.e), p = el('div', 'punkte2'), z = 0, gesperrt = false;
+        b.setAttribute('aria-label', a.l);
+        for (var i = 0; i < a.n; i++) p.appendChild(el('i'));
         b.onclick = function () {
-          if (fertig) return;
-          if (i === ziel) { fertig = true; b.textContent = a.z; b.classList.add('gefunden'); klang('jubel'); sternDazu(b); setTimeout(weiter, 800); }
-          else { b.disabled = true; b.classList.add('wackeln', 'leer'); klang('rascheln'); blase(zufall(['Nur Laub!', 'Hier nicht.', 'Such weiter!'])); }
+          if (gesperrt) return;
+          z++; p.children[z - 1].classList.add('an'); klang('pop', z * 2); summ(10);
+          b.style.transform = 'scale(' + (1 + z * .08) + ')'; b.style.boxShadow = '0 0 ' + (z * 12) + 'px #f5c542';
+          if (a.langsam) { gesperrt = true; setTimeout(function () { gesperrt = false; }, 1500); blase(z < a.n ? 'Ein … und aus. Schön.' : 'Wunderbar ruhig.'); }
+          if (z >= a.n) { gesperrt = true; s.ziel = null; sternDazu(b); ottiFreut(null, b); setTimeout(weiter, 900); }
         };
-        g.appendChild(b);
-      })(i);
-      f.appendChild(g);
+        f.appendChild(b); if (a.n > 1) f.appendChild(p);
+        s.ziel = function () { return b; }; finger(b);
+      }
+      function suchAktion(a, weiter) {
+        var g = el('div', 'verstecke'), ziel = Math.floor(Math.random() * a.n), fertigS = false;
+        for (var i = 0; i < a.n; i++) (function (i) {
+          var b = knopfEl('versteck', a.e); b.setAttribute('aria-label', 'Versteck ' + (i + 1));
+          b.onclick = function () {
+            if (fertigS) return;
+            if (i === ziel) { fertigS = true; s.ziel = null; b.textContent = a.z; b.classList.add('gefunden'); ottiFreut(null, b); sternDazu(b); setTimeout(weiter, 1000); }
+            else { b.disabled = true; b.classList.add('wackeln', 'leer'); klang('rascheln'); ottiTrost(zufall(['Hier nicht.', 'Such weiter!', 'Leer! Hihi.', 'Fast!'])); }
+          };
+          g.appendChild(b);
+        })(i);
+        f.appendChild(g); s.ziel = function () { return g.querySelector('.versteck:not(:disabled)'); };
+      }
+      blase(G.titel);
+      nach(500, function () { zeigen('a'); });
     }
-    blase(G.titel);
-    nach(600, function () { zeigen('a'); });
   };
 
-  /* --- 5. Fragespiel (im Verlauf, geht ohne Internet) --- */
+  /* --- 5. Fragespiel: Level 1 Lieblings-Fragen, Level 2 Tier-Rätsel, Level 3 Wer bin ich? --- */
   var FS = 'otti_fragespiel';
   function fsMerk() { try { return JSON.parse(localStorage.getItem(FS)) || []; } catch (e) { return []; } }
   function fsSetze(t) { var f = fsMerk().filter(function (x) { return x !== t; }); f.push(t); schreib(FS, JSON.stringify(f.slice(-12))); vergessenZeigen(); }
@@ -1145,49 +1636,192 @@
     { f: 'Was magst du lieber: Walderdbeeren oder Glace?', a: [['🍓 Walderdbeeren', 'Mmh, Walderdbeeren! Die mag ich auch am allerliebsten.'], ['🍦 Glace', 'Glace! Brrr, kalt an der Nase, aber so fein.'], ['😋 Beides', 'Beides? Du bist ja ein Schleckmaul, so wie ich!']] },
     { f: 'Welches Tier wärst du gerne?', a: [['🦔 Ein Igel', 'Ein Igel wie ich! Dann rollen wir uns zusammen ein.', 'igelball'], ['🐦 Ein Vogel', 'Ein Vogel! Dann fliegst du über den Mondschein-Wald.', 'strecken'], ['🦁 Ein Löwe', 'Ein Löwe! Roaar! Aber ein lieber Löwe, oder?', 'stampfen'], ['🐟 Ein Fisch', 'Ein Fisch! Blubb, blubb, im Meer ist es schön.', 'wind']] },
     { f: 'Was machen wir heute Abend?', a: [['📖 Geschichte', 'Eine Geschichte! Tipp unten auf «Geschichten», ich erzähle gern.'], ['🪥 Zähne putzen', 'Zähne putzen mit dem Zahnböcklein! Das machen wir unter «Gute Nacht».'], ['🤗 Kuscheln', 'Kuscheln ist das Schönste. Ich kuschle mit meinem Moos-Kissen.', 'igelball']] },
-    { f: 'Welche Farbe hat der Mond heute?', a: [['💛 Gelb', 'Gelb wie Honig! Der Mond lächelt bestimmt.'], ['🤍 Weiss', 'Weiss wie Schnee. Ganz hell und still.'], ['☁️ Ich sehe ihn nicht', 'Dann versteckt er sich hinter einer Wolke. Er ist trotzdem da.']] },
+    { f: 'Welche Farbe hat der Mond heute?', a: [['💛 Gelb', 'Gelb wie Honig! Der Mond lächelt bestimmt.'], ['🤍 Weiss', 'Weiss wie Schnee. Ganz hell und still.'], ['☁️ Sehe ihn nicht', 'Dann versteckt er sich hinter einer Wolke. Er ist trotzdem da.']] },
     { f: 'Was war heute schön?', a: [['⚽ Spielen', 'Spielen ist toll! Mit wem hast du gespielt?'], ['🍝 Essen', 'Mmh, Essen! Was gab es Feines?'], ['🌳 Draussen sein', 'Draussen ist es wunderbar. Ich schnuppere gern im Laub.'], ['🤔 Weiss nicht', 'Das ist okay. Manchmal merkt man das Schöne erst morgen.']] },
-    { f: 'Wollen wir zusammen atmen? Ganz tief ein … und aus.', a: [['😮‍💨 Ja', 'Ein … und aus. Schön. Mein Bauch ist jetzt ganz weich.', 'strecken'], ['🙂 Lieber nicht', 'Auch gut. Du entscheidest.']] },
-    { f: 'Wer ist dein bester Freund im Mondschein-Wald?', a: [['🦔 Otti', 'Ich? Oh, da werden meine Stacheln ganz rot!', 'tanzen'], ['💧 Tropfi', 'Tropfi leuchtet so schön. Tropfi mag dich bestimmt auch.'], ['🤖 Nova', 'Nova, der kleine Roboter! Er erklärt so gut.'], ['🐐 Das Zahnböcklein', 'Mäh! Das Zahnböcklein freut sich bestimmt.']] },
+    { f: 'Wer ist dein bester Freund im Mondschein-Wald?', a: [['🦔 Otti', 'Ich? Oh, da werden meine Stacheln ganz rot!', 'tanzen'], ['💧 Tropfi', 'Tropfi leuchtet so schön. Tropfi mag dich bestimmt auch.'], ['🤖 Nova', 'Nova, der kleine Roboter! Er erklärt so gut.'], ['🐐 Zahnböcklein', 'Mäh! Das Zahnböcklein freut sich bestimmt.']] },
     { f: 'Kannst du wie ein Igel schnüffeln?', a: [['👃 Schnüff schnüff', 'Hihi! Genau so! Du bist ein echter Igel.', 'neugierig'], ['🙈 Nein', 'Probier mal: Nase kraus und schnüff, schnüff!']] },
     { f: 'Was hörst du gerade?', a: [['🤫 Ganz still', 'Psst … ich höre es auch. Die Stille ist schön.', 'neugierig'], ['🎵 Musik', 'Musik! Da wackeln meine Stacheln im Takt.', 'tanzen'], ['🗣️ Stimmen', 'Stimmen von lieben Menschen. Das ist gemütlich.']] }
   ];
-  var fragen = { an: false, i: 0, box: null };
-  function fragenStopp() { fragen.an = false; if (fragen.box) { fragen.box.remove(); fragen.box = null; } spielKnopfZeigen(); }
-  function frage() {
-    if (!fragen.an) return;
-    var q = FRAGEN[fragen.i++ % FRAGEN.length];
-    bewegung('neugierig');
-    sag(q.f, function () {
-      if (!fragen.an) return;
-      if (fragen.box) fragen.box.remove();
-      var box = document.createElement('div'); box.className = 'chips';
-      q.a.concat([['👋 Tschüss', '']]).forEach(function (x) {
-        var b = document.createElement('button'); b.type = 'button'; b.textContent = x[0];
-        if (!x[1]) b.className = 'tschuess';
-        b.addEventListener('click', function () {
-          var r = b.getBoundingClientRect(), platz = el('div'); platz.style.cssText = 'position:fixed;pointer-events:none;left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px';
-          document.body.appendChild(platz); setTimeout(function () { platz.remove(); }, 900);
-          box.remove(); fragen.box = null; zeile('du', x[0], false);
-          if (!x[1]) { fragenStopp(); winken(); sag('Tschüss! Das war lustig. Bis bald!'); statusSetzen('Bis bald!'); return; }
-          var wort = x[0].replace(/^[^A-Za-zÄÖÜäöü]+/, '');
-          if (q.a.length > 2 && wort !== 'Weiss nicht') fsSetze(wort);
-          zahl('fragen'); funken(8); pose('lacht', 1800); bewegung(x[2] || 'freuen');
-          sternDazu(platz);
-          sag(x[1], function () { setTimeout(function () { weiterWenn(frage); }, 500); });
+  var TIERE = [['Wer macht «Muh»?', '🐄', ['🐄', '🐑', '🐸']], ['Wer macht «Quak»?', '🐸', ['🐶', '🐸', '🐄']], ['Wer macht «Mäh»?', '🐑', ['🐱', '🐓', '🐑']], ['Wer macht «Wuff»?', '🐶', ['🐶', '🦉', '🐟']],
+    ['Wer macht «Kikeriki»?', '🐓', ['🐝', '🐓', '🐄']], ['Wer macht «Uhu»?', '🦉', ['🦉', '🐸', '🐑']], ['Wer macht «Miau»?', '🐱', ['🐭', '🐶', '🐱']], ['Wer macht «Summ»?', '🐝', ['🐝', '🐌', '🐓']]];
+  var RAETSEL = [['Ich bin rund und leuchte in der Nacht. Wer bin ich?', '🌙', ['☀️', '🌙', '⚽']], ['Ich habe Stacheln und schnüffle im Laub. Wer bin ich?', '🦔', ['🐟', '🐦', '🦔']],
+    ['Ich bin rot, klein und süss. Igel mögen mich. Was bin ich?', '🍓', ['🍓', '🥕', '🍋']], ['Ich bin kalt und weiss und falle im Winter vom Himmel. Was bin ich?', '❄️', ['🌸', '❄️', '🔥']],
+    ['Ich habe acht Beine und spinne ein Netz. Wer bin ich?', '🕷️', ['🐞', '🐌', '🕷️']], ['Ich trage mein Haus auf dem Rücken und bin ganz langsam. Wer bin ich?', '🐌', ['🐌', '🐝', '🐭']],
+    ['Ich habe einen langen Rüssel und grosse Ohren. Wer bin ich?', '🐘', ['🦒', '🐘', '🐻']]];
+  SPIELE.fragen = { icon: '🎲', titel: 'Fragespiel', ansage: 'Ich frage, du tippst auf ein Bild. Erst Lieblings-Fragen, dann Rätsel!',
+    stufe: function (s, n, fertig) {
+      var f = $('feldinhalt'), i = 0, anz = n === 1 ? 2 : 3;
+      var liste = n === 1 ? mischen(FRAGEN).slice(0, 2) : mischen(n === 2 ? TIERE : RAETSEL).slice(0, 3);
+      function frage() {
+        if (spielAktiv !== s) return;
+        if (i >= anz) { fertig(); return; }
+        var q = liste[i++]; $('feldzahl').textContent = '❓ ' + i + ' / ' + anz; f.innerHTML = '';
+        bewegung('neugierig');
+        if (n === 1) {
+          sag(q.f, function () {
+            if (spielAktiv !== s) return;
+            var w = el('div', 'wahl');
+            q.a.forEach(function (x) {
+              w.appendChild(knopfEl('', x[0], function () {
+                s.ziel = null; w.remove(); klang('tipp');
+                var wort = x[0].replace(/^[^A-Za-zÄÖÜäöü]+/, '');
+                if (q.a.length > 2 && wort !== 'Weiss nicht') fsSetze(wort);
+                zahl('fragen'); pose('lacht', 1800); bewegung(x[2] || 'freuen'); kurzZustand('freut', 1200); funken(8);
+                f.appendChild(el('div', 'zug', '')).appendChild(el('span', 'e', x[0].split(' ')[0]));
+                sternDazu(f.lastChild);
+                sag(x[1], function () { nach(400, frage); });
+              }));
+            });
+            f.appendChild(w); s.ziel = function () { return w.firstChild; };
+          });
+          return;
+        }
+        // Rätsel: ein Bild ist richtig. Falsch? Nochmal probieren.
+        sag(q[0], function () {
+          if (spielAktiv !== s) return;
+          var g = el('div', 'bildwahl');
+          mischen(q[2]).forEach(function (e) {
+            var b = knopfEl('bild', e); b.setAttribute('aria-label', e);
+            b.onclick = function () {
+              if (e === q[1]) {
+                s.ziel = null; b.classList.add('richtig'); Array.prototype.forEach.call(g.children, function (x) { x.disabled = true; });
+                sternDazu(b); ottiFreut(zufall(['Richtig!', 'Genau!', 'Stimmt!', 'Ja, super geraten!', 'Hihi, du weisst alles!']), b);
+                nach(1500, frage);
+              } else { b.disabled = true; b.classList.add('wackeln', 'leer'); ottiTrost(); }
+            };
+            g.appendChild(b);
+          });
+          f.appendChild(g); s.ziel = function () { return g.querySelector('.bild:not(:disabled)'); };
         });
-        box.appendChild(b);
+      }
+      frage();
+    }
+  };
+
+  /* --- 6. Memory zu zweit: abwechselnd zwei Karten aufdecken. Paar gefunden? Nochmal! --- */
+  var MEMO_BILDER = ['🍓', '🌙', '⭐', '🍄', '🦋', '🐞', '🌻', '🍎', '🐸', '🦉', '🌰', '🐌'];
+  SPIELE.memory = { icon: '🃏', titel: 'Memory zu zweit', zuzweit: true, ansage: 'Memory zu zweit! Ihr deckt abwechselnd zwei Karten auf. Gleiche Bilder? Dann dürft ihr nochmal!',
+    vorbereiten: spielerBau, endeZeile: zuZweitEnde, endeText: zuZweitText,
+    stufe: function (s, n, fertig) {
+      var paare = [0, 3, 4, 6][n], bilder = mischen(MEMO_BILDER).slice(0, paare - 1).concat(['🦔']);
+      var karten = mischen(bilder.concat(bilder)), f = $('feldinhalt'), offen = [], gesperrt = true, gefunden = 0;
+      f.classList.add('oben');
+      f.appendChild(spielerLeiste(s));
+      var g = el('div', 'memo'); g.style.setProperty('--sp', paare <= 3 ? 3 : 4);
+      karten.forEach(function (bild, i) {
+        var k = knopfEl('mk'); k.setAttribute('aria-label', 'Karte ' + (i + 1));
+        k.innerHTML = '<span class="mk-in"><span class="mk-zu">🌙</span><span class="mk-auf"></span></span>';
+        k.querySelector('.mk-auf').textContent = bild; k.dataset.b = bild;
+        k.onclick = function () { tippe(k); };
+        g.appendChild(k);
       });
-      fragen.box = box; text.appendChild(box); text.scrollTo({ top: text.scrollHeight, behavior: ruhig ? 'auto' : 'smooth' });
-    });
-  }
-  function fragenStart() {
-    if (conv) return;
-    fragenStopp(); fragen.an = true; spielKnopfZeigen(); winken();
-    statusSetzen('Tipp auf eine Antwort. Jede gibt einen Stern.');
-    fragen.i = Math.floor(Math.random() * FRAGEN.length);
-    sag('Juhui, ein Fragespiel! Ich frage, du tippst.', frage);
-  }
+      f.appendChild(g);
+      $('feldzahl').textContent = '🃏 0 / ' + paare;
+      function bereit() { gesperrt = false; s.ziel = function () { return g.querySelector('.mk:not(.offen)'); }; }
+      duBistDran(s, bereit);
+      function tippe(k) {
+        if (gesperrt || k.classList.contains('offen') || offen.length >= 2) return;
+        k.classList.add('offen'); klang('karte'); offen.push(k); k.setAttribute('aria-label', k.dataset.b);
+        if (offen.length < 2) return;
+        gesperrt = true; s.ziel = null;
+        var a = offen[0], b = offen[1], p = s.sp[s.dran];
+        if (a.dataset.b === b.dataset.b) {
+          setTimeout(function () {
+            a.classList.add('paar'); b.classList.add('paar'); offen = []; p.p++; gefunden++;
+            $('feldzahl').textContent = '🃏 ' + gefunden + ' / ' + paare; spielerZeigen(s);
+            if (a.dataset.b === '🦔') { klang('ueberraschung'); ottiFreut('Das Otti-Paar! Ich tanze für dich!', b); bewegung('tanzen'); sternDazu(b); }
+            else ottiFreut(zufall([p.n === 'Du' ? 'Ein Paar! Du darfst nochmal.' : p.n + ' hat ein Paar! Nochmal!', 'Treffer! Nochmal!', 'Paar gefunden! Weiter so.', 'Juhui, zwei gleiche!', 'Bingo! Nochmal du.']), b);
+            if (gefunden >= paare) { setTimeout(fertig, 1300); return; }
+            setTimeout(function () { gesperrt = false; s.ziel = function () { return g.querySelector('.mk:not(.offen)'); }; }, 700);
+          }, 450);
+        } else {
+          setTimeout(function () {
+            if (spielAktiv !== s) return;
+            klang('falsch'); blase(zufall(['Nicht gleich. Gut merken!', 'Oh, verschieden!', 'Fast! Merkt euch, wo die waren.', 'Hihi, das war nix.', 'Schade! Jetzt der andere.']));
+            a.classList.remove('offen'); b.classList.remove('offen'); a.setAttribute('aria-label', 'Karte'); b.setAttribute('aria-label', 'Karte'); offen = [];
+            s.dran = 1 - s.dran;
+            setTimeout(function () { duBistDran(s, bereit); }, 500);
+          }, 1300);
+        }
+      }
+    }
+  };
+
+  /* --- 7. Otti-Quiz für zwei: das Kind tippt Bilder, die Grossen bekommen knifflige Igel-Fragen --- */
+  var KIND_Q = [
+    [['Wo ist der Mond?', '🌙', ['🌙', '☀️', '⭐']], ['Wo ist Otti?', '🦔', ['🐿️', '🦔', '🐰']], ['Was ist rot?', '🍓', ['🫐', '🥦', '🍓']], ['Wo ist der Pilz?', '🍄', ['🍄', '🌻', '🌳']]],
+    [['Welches Tier kann fliegen?', '🦋', ['🐌', '🦋', '🐢']], ['Was ist kalt?', '🧊', ['🔥', '☕', '🧊']], ['Wer hat Stacheln?', '🦔', ['🐶', '🦔', '🐱']], ['Was wächst am Baum?', '🍎', ['🍎', '🥕', '🥔']]],
+    [['Wie viele Beeren siehst du?', '3', ['2', '3', '4'], '🍓🍓🍓'], ['Wie viele Sterne siehst du?', '4', ['3', '5', '4'], '⭐⭐⭐⭐'], ['Was passt nicht dazu?', '🚗', ['🍎', '🚗', '🍌'], '🍎 🍌 🚗 🍐'], ['Wie viele Igel siehst du?', '2', ['1', '2', '3'], '🦔🦔']]
+  ];
+  var GROSS_Q = [
+    [['Wann ist ein Igel wach?', 2, ['Am Morgen', 'Am Mittag', 'In der Nacht'], 'Igel sind nachtaktiv. Tagsüber schlafen sie in einem Nest aus Laub.'],
+      ['Kann ein Igel schwimmen?', 0, ['Ja', 'Nein', 'Nur rückwärts'], 'Igel können schwimmen und sogar ein bisschen klettern.'],
+      ['Was macht ein Igel im Winter?', 0, ['Er schläft', 'Er fährt Ski', 'Er fliegt nach Süden'], 'Igel halten Winterschlaf, etwa von November bis März.']],
+    [['Wie viele Stacheln hat ein Igel ungefähr?', 2, ['50', '500', '6000'], 'Ein erwachsener Igel hat etwa 5000 bis 8000 Stacheln.'],
+      ['Was frisst ein Igel am liebsten?', 0, ['Käfer und Würmer', 'Äpfel und Milch', 'Gras'], 'Igel fressen vor allem Käfer, Raupen und Würmer. Milch vertragen sie nicht.'],
+      ['Wie viele Beine hat eine Spinne?', 1, ['6', '8', '10'], 'Spinnen haben acht Beine, Käfer und Ameisen nur sechs.']],
+    [['Wie sind die Stacheln eines neugeborenen Igels?', 1, ['Spitz und hart', 'Weich, unter der Haut', 'Golden'], 'Bei der Geburt liegen die Stacheln weich unter der Haut. So wird die Igel-Mama nicht gepiekst.'],
+      ['Wie lange braucht das Mondlicht bis zu uns?', 0, ['Gut 1 Sekunde', '1 Stunde', '1 Tag'], 'Das Licht vom Mond braucht nur gut eine Sekunde bis zur Erde.'],
+      ['Wie weit kann eine Eule den Kopf drehen?', 2, ['Ein Viertel', 'Halb herum', 'Fast ganz herum'], 'Eulen drehen den Kopf etwa dreiviertel herum, rund 270 Grad.'],
+      ['Warum leuchten Glühwürmchen?', 0, ['Um sich zu finden', 'Aus Angst', 'Gegen die Kälte'], 'Mit ihrem Licht finden sich Glühwürmchen-Männchen und -Weibchen in der Nacht.']]
+  ];
+  SPIELE.quiz = { icon: '🏆', titel: 'Otti-Quiz zu zweit', zuzweit: true, ansage: 'Otti-Quiz zu zweit! Du bekommst Bilder-Fragen, die Grossen knifflige Igel-Fragen. Wer weiss mehr?',
+    vorbereiten: spielerBau, endeZeile: zuZweitEnde, endeText: zuZweitText,
+    stufe: function (s, n, fertig) {
+      var f = $('feldinhalt'), kq = zufall(KIND_Q[n - 1]), gq = zufall(GROSS_Q[n - 1]), schritt = 0;
+      f.classList.add('oben');
+      function weiter() {
+        if (spielAktiv !== s) return;
+        f.innerHTML = ''; f.appendChild(spielerLeiste(s));
+        if (schritt === 2) { fertig(); return; }
+        s.dran = schritt++; spielerZeigen(s);
+        $('feldzahl').textContent = '❓ ' + schritt + ' / 2';
+        duBistDran(s, s.dran === 0 ? kindFrage : grossFrage);
+      }
+      function kindFrage() {
+        if (spielAktiv !== s) return;
+        if (kq[3]) f.appendChild(el('div', 'zaehlbild', kq[3]));
+        sag(kq[0], function () {
+          if (spielAktiv !== s) return;
+          var g = el('div', 'bildwahl');
+          kq[2].forEach(function (e) {
+            var b = knopfEl('bild' + (/^\d$/.test(e) ? ' zahl' : ''), e);
+            b.onclick = function () {
+              if (e === kq[1]) {
+                s.ziel = null; b.classList.add('richtig'); Array.prototype.forEach.call(g.children, function (x) { x.disabled = true; });
+                s.sp[0].p++; spielerZeigen(s); sternDazu(b); ottiFreut(zufall(['Richtig! Ein Punkt für dich!', 'Genau! Punkt!', 'Super, das stimmt!', 'Ja! Du bist schlau!', 'Bravo, Punkt für dich!']), b);
+                nach(1700, weiter);
+              } else { b.disabled = true; b.classList.add('wackeln', 'leer'); ottiTrost(zufall(['Fast! Probier nochmal.', 'Hmm, schau nochmal genau.', 'Nicht ganz! Noch ein Versuch.'])); }
+            };
+            g.appendChild(b);
+          });
+          f.appendChild(g); s.ziel = function () { return g.querySelector('.bild:not(:disabled)'); };
+        });
+      }
+      function grossFrage() {
+        if (spielAktiv !== s) return;
+        var p = s.sp[1];
+        sag(p.n + ', aufgepasst: ' + gq[0], function () {
+          if (spielAktiv !== s) return;
+          var w = el('div', 'wahl');
+          gq[2].forEach(function (t, i) {
+            w.appendChild(knopfEl('', ['🅰️', '🅱️', '©️'][i] + ' ' + t, function () {
+              s.ziel = null; Array.prototype.forEach.call(w.children, function (x, j) { x.disabled = true; if (j === gq[1]) x.classList.add('richtig'); });
+              var ok = i === gq[1];
+              if (ok) { p.p++; spielerZeigen(s); ottiFreut(zufall(['Richtig, ' + p.n + '! Ein Punkt!', 'Stimmt! ' + p.n + ' weiss viel!', 'Wow, ' + p.n + '!']), w.children[i]); }
+              else { ottiTrost(zufall(['Hihi, ' + p.n + ' weiss es nicht!', 'Ups, ' + p.n + '! Daneben.', 'Oh nein, ' + p.n + '! Das war falsch.'])); w.children[i].classList.add('leer'); }
+              var fakt = el('div', 'fakt'); fakt.appendChild(el('b', '', '💡 Wusstest du?')); fakt.appendChild(el('span', '', gq[3])); f.appendChild(fakt);
+              var faktT = nach(ok ? 1300 : 1500, function () { sprechen(gq[3]); });
+              var b = knopfEl('gross-knopf', 'Weiter ▶', function () { klang('tipp'); b.disabled = true; clearTimeout(faktT); stimmeStopp(); weiter(); }); f.appendChild(b);
+              s.ziel = function () { return b; };
+            }));
+          });
+          f.appendChild(w); s.ziel = function () { return w.firstChild; };
+        });
+      }
+      weiter();
+    }
+  };
 
   /* ================= Elternbereich ================= */
   var DAUER = 'otti_dauer';
@@ -1226,7 +1860,7 @@
   /* ================= Einführung für Eltern ================= */
   var TOUR = [
     ['Hallo, ich bin Otti!', 'Ein kleiner Igel aus dem Mondschein-Wald. Antippen, und er hüpft.'],
-    ['Spielen geht immer', 'Vier Mitmach-Spiele und ein Fragespiel, auch ohne Internet. Dein Kind tippt, sucht, hüpft und schüttelt. Dafür gibt es Sterne.'],
+    ['Spielen geht immer', 'Sieben Spiele mit je drei Levels, auch ohne Internet. Zwei davon spielt ihr zu zweit: Memory und Otti-Quiz. Der Ton-Knopf oben schaltet die Musik aus.'],
     ['Reden mit Internet', '«Reden» startet ein Live-Gespräch. Vorher fragt Otti einmal dich als Mama oder Papa.']
   ];
   var tourI = 0;
@@ -1259,6 +1893,9 @@
       }
     }, ruhig ? 50 : 650);
   })();
+  // Kinder-Schutz: kein Zoomen mit zwei Fingern (Safari), kein Kontextmenü auf Bildern
+  document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+  document.addEventListener('contextmenu', function (e) { if (!e.target.closest('textarea, input')) e.preventDefault(); });
   addEventListener('offline', function () { hinweis.textContent = 'Kein Internet. Spielen geht trotzdem.'; });
   addEventListener('online', function () { hinweis.textContent = ''; lernZahlenSchicken(); });
   setTimeout(lernZahlenSchicken, 4000);
