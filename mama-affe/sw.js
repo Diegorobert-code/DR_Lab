@@ -1,7 +1,8 @@
 /* Mama Affe: Offline-Kopie. Netz zuerst (immer die neuste Fassung), die Kopie nur als Ersatz ohne Netz.
    Speichert keine Eingaben, nur die Dateien der App. */
-const CACHE = 'mama-affe-v1';
-const DATEIEN = ['./', 'index.html', 'bereich.js', 'bereich.css', 'feedback.js', 'figur.jpg', 'icon-180.png', 'icon-192.png', 'posen/posen.json',
+const CACHE = 'mama-affe-v2';
+const DATEIEN = ['./', 'index.html', 'bereich.js', 'bereich.css', 'feedback.js', 'figur.jpg', 'icon-180.png', 'icon-192.png', 'icon-512.png', 'manifest.webmanifest', 'posen/posen.json',
+  'posen/winkt.jpg', 'posen/denkt.jpg', 'posen/schlaeft.jpg', 'posen/atmet.jpg', 'posen/turnt.jpg',
   '../nova/intro.js', '../nova/seelen.js', '../nova/nova.js', '../nova/nova.jpg'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(DATEIEN.map(f => c.add(f).catch(() => null)))).then(() => self.skipWaiting()));
