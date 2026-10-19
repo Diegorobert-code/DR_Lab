@@ -212,6 +212,22 @@ a.card{color:inherit;text-decoration:none}
 .stn.l .hier{right:-36px}.stn.r .hier{left:-36px}
 .buehne{position:fixed;inset:0;z-index:2147483100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 18px;text-align:center;background:radial-gradient(70% 55% at 50% 38%,rgba(242,193,78,.28),transparent 70%),rgba(6,10,28,.94);overflow:hidden}
 .buehne[hidden]{display:none}
+.card.hold{position:relative;overflow:hidden}
+.card.hold::before{content:"";position:absolute;inset:0;width:calc(var(--p,0)*100%);background:rgba(242,193,78,.3);pointer-events:none}
+.kiki-stage .kiki-pose{width:150px;height:150px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 30px rgba(143,211,168,.45);animation:kikiPose 3.6s ease-in-out infinite}
+.kiki-stage.big .kiki-pose{width:200px;height:200px;position:relative;z-index:1;margin-bottom:6px}
+.kiki-stage.mit-pose svg.kiki{display:none}
+@keyframes kikiPose{50%{transform:translateY(-4px) scale(1.02)}}
+.tour{position:fixed;inset:0;z-index:2147483200;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(6,10,28,.88)}
+.tour[hidden]{display:none}
+.tour-karte{width:100%;max-width:400px;text-align:center;background:linear-gradient(160deg,#1b2a63,#0e1740);border:2px solid var(--gold);border-radius:26px;padding:20px 18px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.tour-karte img{width:130px;height:130px;border-radius:50%;object-fit:cover;border:3px solid var(--gold)}
+.tour-karte h2{margin:12px 0 6px;font-size:22px;color:var(--gold)}
+.tour-karte p{margin:0 0 6px;font-size:17px;line-height:1.45}
+.tour-punkte{display:flex;gap:6px;justify-content:center;margin:12px 0}
+.tour-punkte i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25)}.tour-punkte i.an{background:var(--gold)}
+.tour-karte .btn{width:100%;margin-top:6px}
+@media (prefers-reduced-motion:reduce){.kiki-stage .kiki-pose{animation:none}}
 .buehne .vh{position:absolute;top:0;bottom:0;width:52%;z-index:3;background:repeating-linear-gradient(90deg,#1d2c66 0 18px,#14204d 18px 36px);box-shadow:inset 0 -30px 40px rgba(0,0,0,.35);transition:transform 1.3s var(--ease)}
 .buehne .vh:after{content:"";position:absolute;top:0;bottom:0;width:8px;background:linear-gradient(180deg,#ffe08a,#d9a22e)}
 .buehne .vh.l{left:0}.buehne .vh.l:after{right:0}.buehne .vh.r{right:0}.buehne .vh.r:after{left:0}
@@ -326,7 +342,7 @@ a.card{color:inherit;text-decoration:none}
       <button class="card" data-go="make"><span class="ic">✨</span><span><b>Lied erfinden</b><small>Kiki dichtet ein neues Lied für euch</small></span></button>
       <button class="card wide" data-go="path"><span class="ic">🏅</span><span><b>Kikis Sternenweg</b><small id="pathSub">Abzeichen sammeln, Schritt für Schritt</small></span></button>
       <a class="card wide" href="../mondschein/"><span class="ic">🦔</span><span><b>Kiki besucht Otti</b><small>Gutenacht-Geschichten in Mondschein</small></span></a>
-      <button class="card wide" data-go="settings"><span class="ic">⚙️</span><span><b>Für Eltern</b><small>Stimmlage, wie genau, Kikis Stimme</small></span></button>
+      <button class="card wide hold" id="elternHalten" aria-label="Für Eltern – 3 Sekunden gedrückt halten"><span class="ic">🔒</span><span><b>Für Eltern</b><small id="elternSub">3 Sekunden halten · Stimmlage, wie genau, Kikis Stimme</small></span></button>
     </div>
   </section>
 
@@ -501,11 +517,26 @@ a.card{color:inherit;text-decoration:none}
       <div class="row" style="margin-top:10px"><input id="duoName" maxlength="24" autocomplete="off" placeholder="Papa" style="flex:2;min-height:52px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font:inherit;font-size:18px;padding:0 14px"><button class="btn soft small" id="duoSave" style="flex:1">Speichern</button></div>
       <p class="mini" style="text-align:left;margin:8px 0 0">Zweite Stimme für «Zu zweit» (z. B. Papa, Mama). Eine Oktave tiefer zählt auch.</p>
     </div>
+    <div class="panel">
+      <h2 style="font-size:19px">🎬 Einführung</h2>
+      <p class="mini" style="text-align:left;margin:0 0 8px">Die kurze Einführung vom ersten Start nochmals ansehen.</p>
+      <button class="btn soft small" id="tourNochmal">▶ Einführung zeigen</button>
+    </div>
     <button class="btn soft small" id="resetStars">Sterne zurücksetzen</button>
     <p class="foot">Kiki singt · ein DR Lab Projekt</p>
   </section>
 </div>
 <div class="burst" id="burst"></div>
+<div class="tour" id="tour" hidden role="dialog" aria-modal="true" aria-labelledby="tourH">
+  <div class="tour-karte">
+    <img src="figur-gross.jpg" alt="Kiki">
+    <h2 id="tourH"></h2>
+    <p id="tourT"></p>
+    <div class="tour-punkte" id="tourP" aria-hidden="true"></div>
+    <button class="btn gold" id="tourWeiter">Weiter</button>
+    <button class="btn soft small" id="tourSkip">Überspringen</button>
+  </div>
+</div>
 <div class="buehne" id="buehne" hidden role="dialog" aria-modal="true" aria-labelledby="bTitle">
   <div class="spot" aria-hidden="true"></div>
   <div class="vh l" aria-hidden="true"></div><div class="vh r" aria-hidden="true"></div>
@@ -583,8 +614,29 @@ document.querySelectorAll('[data-kiki]').forEach(el => {
   }
   el.appendChild(node); kikis.push(node);
 });
+// Tinkos Kiki-Posen: posen/<pose>.jpg, Liste in posen/index.json (hallo, singt, hoert, freut, tanzt, verbeugt).
+// Fehlt eine Pose, bleibt die gezeichnete Kiki mit ihren CSS-Bewegungen.
+const KIKI_POSEN = {};
+const MOOD_POSE = {sing:'singt', happy:'freut', listen:'hoert', dance:'tanzt'};
+fetch('posen/index.json').then(r => r.ok ? r.json() : []).then(l => {
+  (Array.isArray(l) ? l : []).forEach(p => {
+    p = String(p).replace(/[^a-z0-9-]/g, ''); if (!p) return;
+    const im = new Image(); im.onload = () => { KIKI_POSEN[p] = im.src; if (p === 'verbeugt') document.querySelector('#buehne img').src = im.src; kikiMood(kikiMoodJetzt); }; im.src = 'posen/' + p + '.jpg';
+  });
+}).catch(() => {});
+let kikiMoodJetzt = null;
 function kikiMood(m){
+  kikiMoodJetzt = m;
   kikis.forEach(k => { k.classList.remove('sing','happy','listen','dance'); if (m) k.classList.add(m); });
+  const src = KIKI_POSEN[MOOD_POSE[m]] || KIKI_POSEN.hallo;
+  kikis.forEach(k => {
+    const st = k.parentNode; if (!st) return;
+    let im = st.querySelector('img.kiki-pose');
+    if (!src){ if (im) im.remove(); st.classList.remove('mit-pose'); return; }
+    if (!im){ im = document.createElement('img'); im.className = 'kiki-pose'; im.alt = 'Kiki'; st.appendChild(im); }
+    if (im.getAttribute('src') !== src) im.src = src;
+    st.classList.add('mit-pose');
+  });
 }
 
 /* ---------- Sternenhimmel ---------- */
@@ -690,7 +742,31 @@ async function play(seq, beat){  // seq: [{m, d}] ; liefert Promise; Mikrofon au
 let deVoice = null;
 function pickVoice(){ const vs = speechSynthesis.getVoices(); deVoice = vs.find(v => /de[-_]CH/i.test(v.lang)) || vs.find(v => /^de/i.test(v.lang)) || null; }
 if ('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+/* Kikis echte Sätze als Tondateien: stimme/saetze.json (Text → Datei), stimme/index.json (welche schon da sind).
+   Fehlt eine Datei, spricht Kiki wie bisher (Figurenstimme über Sense Engine oder Gerätestimme). */
+const KIKI_TON = new Map();
+Promise.all([fetch('stimme/saetze.json').then(r => r.ok ? r.json() : []), fetch('stimme/index.json').then(r => r.ok ? r.json() : [])])
+  .then(([saetze, da]) => { const ok = new Set(da || []); (saetze || []).forEach(x => { if (ok.has(x.id) && x.datei) KIKI_TON.set(x.text.trim(), 'stimme/' + x.datei); }); })
+  .catch(() => {});
+let kikiAudio = null;
+function sayDatei(src){
+  return new Promise(res => {
+    try{
+      if (kikiAudio) kikiAudio.pause();
+      const a = kikiAudio = new Audio(src); let done = false;
+      const fin = ok => { if (!done){ done = true; res(ok); } };
+      a.onended = () => fin(true); a.onerror = () => fin(false);
+      const p = a.play(); if (p && p.catch) p.catch(() => fin(false));
+      setTimeout(() => fin(true), 15000);
+    }catch(e){ res(false); }
+  });
+}
 function say(text){
+  const datei = S.voice && KIKI_TON.get(String(text).trim());
+  if (datei){ micOff(); setSession('playback'); return sayDatei(datei).then(ok => ok ? undefined : say0(text)); }
+  return say0(text);
+}
+function say0(text){
   return new Promise(res => {
     if (!S.voice || !('speechSynthesis' in window)) return res();
     micOff(); setSession('playback');
@@ -925,7 +1001,7 @@ async function toneRound(intro){
   ladderShow(trainer.target);
   const duo = toneState.duo;
   if (duo){ duoShow(); if (intro && toneState.count === 0) await say('Wir singen zu zweit! Ich singe einen Ton vor, dann ist einer von euch dran. Immer abwechselnd.'); await say(`${duo.names[duo.turn]}, jetzt du!`); if (current !== 'train') return; }
-  else if (intro && toneState.count === 0) await say('Hör gut zu. Ich singe dir einen Ton vor. Dann singst du ihn nach!');
+  else if (intro && toneState.count === 0) await say('Hör gut zu: Ich sing dir den Ton vor. Dann bist du dran.');
   setHint('Kiki singt vor … 🎵'); $('youNote').innerHTML = 'Zielton ' + dotHTML(trainer.target);
   const ok = await play([{m: trainer.target, d: 1}], 1.5);
   if (!ok || current !== 'train') return;
@@ -944,7 +1020,7 @@ async function toneRound(intro){
   }, async () => {
     memNote(trainer.target, false);
     setHint('Hör nochmal zu 👂');
-    await say('Hör nochmal genau zu.');
+    await say('Nicht ganz getroffen? Macht nichts. Wir probieren es einfach noch einmal, ganz locker.');
     if (current === 'train' && trainer.mode === 'tone') toneRound(false);
   });
 }
@@ -1343,7 +1419,7 @@ async function roomFinish(tok){
   roomShowResult(true);
   const grew = before != null && span > before;
   roomHint(grew ? 'Dein Stimmraum ist gewachsen! 🌱' : 'Gemessen! ★★', true);
-  await say(grew ? `Wow! Dein Stimmraum ist um ${span - before} Töne gewachsen!` : `Super! Dein Stimmraum geht von ${noteName(room.lo)} bis ${noteName(room.hi)}. Jetzt singe ich die Übungen genau in deiner Höhe.`);
+  await say(grew ? 'Dein Stimmraum ist gewachsen! Das hab ich genau gehört.' : `Super! Dein Stimmraum geht von ${noteName(room.lo)} bis ${noteName(room.hi)}. Jetzt singe ich die Übungen genau in deiner Höhe.`);
   if (!roomAlive(tok)) return;
   $('roomBtn').hidden = false; $('roomBtn').textContent = '🎤 Zum Singen'; $('roomBtn').onclick = () => go('menu');
 }
@@ -1797,6 +1873,46 @@ homeGreet();
 $('duoName').value = store.get('duo', '');
 $('duoSave').onclick = () => { store.set('duo', $('duoName').value.trim().slice(0, 24)); $('duoSave').textContent = 'Gespeichert ✓'; setTimeout(() => $('duoSave').textContent = 'Speichern', 1500); };
 $('resetStars').onclick = () => { stars = 0; store.set('stars', 0); $('starCount').textContent = 0; };
+
+/* ---------- Kiki im Menü antippen: sie tanzt und sagt etwas ---------- */
+const KIKI_TIPP = ['Ich brauch kurz eine Pause und knabbere ein Eukalyptusblatt. Mmh!', 'Hallo, ich bin Kiki! Wollen wir zusammen singen? Ich fang an, und du machst mit.', 'Das war wunderschön. Bis bald, und sing weiter, wann immer du magst!'];
+let kikiTippI = 0;
+document.addEventListener('click', e => {
+  const st = e.target.closest('#s-menu .kiki-stage'); if (!st) return;
+  const t = KIKI_TIPP[kikiTippI++ % KIKI_TIPP.length];
+  $('menuBubble').textContent = t; kikiMood('dance'); burst(8);
+  say(t).then(() => kikiMood(null));
+});
+
+/* ---------- Für Eltern: 3 Sekunden halten (Kinder-App) ---------- */
+(function(){
+  const b = $('elternHalten'); let t0 = 0, raf = 0;
+  const tick = () => { const p = Math.min(1, (performance.now() - t0)/3000); b.style.setProperty('--p', p.toFixed(3)); if (p >= 1){ t0 = 0; b.style.setProperty('--p', 0); renderMem(); go('settings'); return; } raf = requestAnimationFrame(tick); };
+  const stop = () => { if (!t0) return; const kurz = performance.now() - t0 < 2900; t0 = 0; cancelAnimationFrame(raf); b.style.setProperty('--p', 0); if (kurz){ $('elternSub').textContent = 'Bitte 3 Sekunden gedrückt halten 🔒'; setTimeout(() => $('elternSub').textContent = '3 Sekunden halten · Stimmlage, wie genau, Kikis Stimme', 2200); } };
+  b.addEventListener('pointerdown', e => { try{ b.setPointerCapture(e.pointerId); }catch(x){} t0 = performance.now(); raf = requestAnimationFrame(tick); });
+  b.addEventListener('pointerup', stop); b.addEventListener('pointercancel', stop);
+  b.addEventListener('contextmenu', e => e.preventDefault());
+  b.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && !e.repeat){ e.preventDefault(); t0 = performance.now(); raf = requestAnimationFrame(tick); } });
+  b.addEventListener('keyup', stop);
+})();
+
+/* ---------- Einführung beim ersten Mal im Menü ---------- */
+const TOUR = [
+  ['Hallo, ich bin Kiki!', 'Ich bin ein Koala und singe soo gern. Ich singe dir Töne vor, und du singst sie nach.'],
+  ['Heute mit Kiki', 'Der Tagesplan oben: Aufwärmen, drei Töne, ein Lied. Jeden Tag ein Häkchen und Sterne.'],
+  ['Spielen und singen', 'Echo-Spiel, Rhythmus, zu zweit mit Papa oder Mama, Lieder erfinden und Abzeichen auf Kikis Sternenweg.'],
+  ['Für Eltern', 'Unten 3 Sekunden halten: Stimmlage, wie genau, was Kiki sich merkt. Oben rechts 💬 für Wünsche an DR Lab.']
+];
+let tourI = 0;
+function tourZeigen(){ $('tourH').textContent = TOUR[tourI][0]; $('tourT').textContent = TOUR[tourI][1]; $('tourP').innerHTML = TOUR.map((_, i) => `<i class="${i === tourI ? 'an' : ''}"></i>`).join(''); $('tourWeiter').textContent = tourI === TOUR.length - 1 ? 'Los geht\'s ✨' : 'Weiter'; }
+function tourStart(){ tourI = 0; $('tour').hidden = false; tourZeigen(); }
+function tourEnde(){ $('tour').hidden = true; store.set('tour', 1); }
+$('tourWeiter').onclick = () => { if (tourI < TOUR.length - 1){ tourI++; tourZeigen(); } else tourEnde(); };
+$('tourSkip').onclick = tourEnde;
+$('tourNochmal').onclick = tourStart;
+const _goTour = go;
+go = function(name){ _goTour(name); if (name === 'menu' && !store.get('tour', 0) && $('tour').hidden) setTimeout(tourStart, 1600); };
+addEventListener('offline', () => { $('menuBubble').textContent = 'Kein Internet? Kein Problem, singen geht trotzdem. Alles läuft im Handy.'; });
 
 /* Offline */
 if ('serviceWorker' in navigator && location.protocol === 'https:' && /github\.io$/.test(location.hostname)) navigator.serviceWorker.register('sw.js').catch(() => {});

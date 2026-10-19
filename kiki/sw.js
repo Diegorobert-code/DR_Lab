@@ -1,6 +1,6 @@
 // Kiki singt – Offline-Cache (nur eigene Dateien, keine Daten)
-const CACHE = 'kiki-v13';
-const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-180.png', './icon-192.png', './icon-512.png', './feedback.js', './figur.jpg', './figur-gross.jpg', './kiki-3d.jpg'];
+const CACHE = 'kiki-v14';
+const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-180.png', './icon-192.png', './icon-512.png', './feedback.js', './figur.jpg', './figur-gross.jpg', './kiki-3d.jpg', './posen/index.json', './stimme/index.json', './stimme/saetze.json'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
 });
