@@ -241,6 +241,61 @@ a.card{color:inherit;text-decoration:none}
 .buehne .badge{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;margin:4px;padding:6px 12px;border-radius:99px;background:var(--gold-l);border:1px solid rgba(242,193,78,.5);color:var(--gold);font-weight:600;font-size:16px}
 .buehne .btn{position:relative;z-index:1;max-width:320px;margin-top:14px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ---------- Runde 3: erster Eindruck (HIG/Material: 8-px-Raster, 44-px-Ziele, 16-px-Schrift) ---------- */
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right));padding-bottom:calc(96px + var(--sab))}
+.mini{font-size:16px;line-height:1.4}
+.card small{font-size:16px;line-height:1.3;margin-top:4px}
+.foot{font-size:15px}
+.stn small{font-size:15px}
+.notebig{font-size:16px}
+.plan span{font-size:14px;padding:4px 10px}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:12px}
+.back:active,.chips button:active,.seg button:active,.stars:active{transform:scale(.95)}
+.back,.chips button,.seg button{transition:transform .15s var(--ease),background .2s}
+.nova-pille{display:none!important}
+/* Start */
+.hero{position:relative;display:flex;justify-content:center;margin:16px 0 8px}
+.hero .kiki-foto{width:min(68vw,272px);height:min(68vw,272px);animation:heroAuf .9s var(--ease) both,filmSchweben 4.6s 1s ease-in-out infinite}
+@keyframes heroAuf{from{opacity:0;transform:translateY(24px) scale(.86)}to{opacity:1;transform:none}}
+.hero-note{position:absolute;z-index:2;font-size:32px;color:var(--gold);text-shadow:0 0 16px rgba(242,193,78,.7);pointer-events:none;opacity:0;animation:noteFly 3.6s ease-in-out infinite}
+.hero-note.n1{left:calc(50% - 150px);top:30%}.hero-note.n2{right:calc(50% - 156px);top:8%;animation-delay:1.2s;color:#8fd3a8}.hero-note.n3{right:calc(50% - 140px);bottom:12%;animation-delay:2.4s;color:#e58fa8}
+@keyframes noteFly{0%{opacity:0;transform:translateY(12px) rotate(-8deg)}25%{opacity:1}100%{opacity:0;transform:translateY(-36px) rotate(10deg)}}
+.bubble.pop{opacity:0;transform:translateY(8px) scale(.92);transition:opacity .45s var(--ease),transform .55s cubic-bezier(.3,1.5,.5,1)}
+.bubble.pop.da{opacity:1;transform:none}
+#homeBubble{font-size:21px;margin:16px auto 24px;text-wrap:balance}
+.btn.big{min-height:64px;font-size:21px;border-radius:22px}
+#s-home #startBtn{animation:filmPuls 2.6s 2s ease-in-out infinite}
+.trust{text-align:center;color:var(--ink2);margin:16px 0 8px}
+.home-reden{display:flex;justify-content:center}
+#homeReden .nb-reden{display:inline-flex;align-items:center;justify-content:center;min-height:48px;margin:0;padding:0 20px;border-radius:99px;background:transparent;border:1px solid var(--line);color:var(--ink2);box-shadow:none;font:500 16px var(--font);text-decoration:none;transition:transform .15s var(--ease)}
+#homeReden .nb-reden:active{transform:scale(.96)}
+/* Menü */
+.menu-kopf{display:flex;align-items:center;gap:8px;margin:8px 0 16px}
+.menu-kopf .kiki-stage{flex:none;margin:0}
+.menu-kopf .kiki.small,.menu-kopf .kiki-stage .kiki-pose{width:96px;height:96px}
+.bubble.links{flex:1;margin:0;text-align:left;font-size:18px;min-height:0;padding:12px 16px}
+.bubble.links:before{top:50%;left:-10px;margin:-11px 0 0;border:11px solid transparent;border-left:0;border-right-color:#fffaf0}
+.card.heute{width:100%;min-height:112px;padding:16px;gap:16px;border-width:2px;box-shadow:0 12px 32px -14px rgba(242,193,78,.55)}
+.card.heute .ic{font-size:40px}
+.card.heute .los{flex:none;margin-left:auto;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:#2a1f05;font-size:18px;box-shadow:0 6px 18px -6px rgba(242,193,78,.8)}
+#s-menu .cat-h{font-size:20px;font-weight:600;margin:24px 4px 8px}
+#s-menu .grid .card{min-height:136px}
+.weg-karte{width:100%;margin-top:12px}
+.fort{display:block;height:8px;margin-top:8px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}
+.fort i{display:block;height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--good));transform:scaleX(.02);transform-origin:left;transition:transform .8s var(--ease)}
+details.mehr{margin:12px 0;border:1px solid var(--line);border-radius:var(--r);background:rgba(255,255,255,.03)}
+details.mehr summary{list-style:none;display:flex;align-items:center;justify-content:space-between;min-height:56px;padding:0 16px;font-size:18px;font-weight:500;cursor:pointer}
+details.mehr summary::-webkit-details-marker{display:none}
+details.mehr .pfeil{font-size:26px;color:var(--gold);transition:transform .25s var(--ease)}
+details.mehr[open] .pfeil{transform:rotate(90deg)}
+details.mehr .grid{padding:0 12px 12px}
+details.mehr[open] .grid{animation:fade .35s var(--ease)}
+.card.eltern{width:100%;min-height:64px;margin-top:8px;background:transparent;opacity:.9}
+.card.eltern .ic{font-size:24px}.card.eltern b{font-size:17px;margin:0}
+.stars.pop{animation:starPop .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes starPop{40%{transform:scale(1.25)}}
+@media (prefers-reduced-motion:reduce){.bubble.pop{opacity:1;transform:none}.hero-note{display:none}}
 @media (max-width:380px){.ladder{flex-basis:96px;height:300px}.kiki{width:190px;height:190px}h1{font-size:27px}}
 </style>
 </head>
@@ -315,35 +370,47 @@ a.card{color:inherit;text-decoration:none}
 
   <!-- Start -->
   <section class="screen on" id="s-home">
-    <div class="kiki-foto-wrap"><img class="kiki-foto" src="figur-gross.jpg" alt="Kiki, der singende Koala" data-sag="homeBubble"></div>
-    <h1>Kiki, der singende Koala</h1>
-    <div class="bubble" id="homeBubble">Hallo, ich bin Kiki! Ich singe soo gern. Wollen wir zusammen singen?</div>
-    <button class="btn gold" id="startBtn">🎤 Kiki, wir möchten singen lernen</button>
+    <h1 class="sr">Kiki, der singende Koala</h1>
+    <div class="hero" aria-hidden="false">
+      <span class="hero-note n1" aria-hidden="true">♪</span><span class="hero-note n2" aria-hidden="true">♫</span><span class="hero-note n3" aria-hidden="true">♪</span>
+      <img class="kiki-foto" src="figur-gross.jpg" alt="Kiki, der singende Koala. Tipp auf Kiki." width="250" height="250" fetchpriority="high" decoding="async" data-sag="homeBubble" id="homeKiki">
+    </div>
+    <div class="bubble pop" id="homeBubble" aria-live="polite">Hallo! Ich bin Kiki. Singst du mit mir?</div>
+    <button class="btn gold big" id="startBtn">🎤 Los, wir singen!</button>
     <div class="err" id="micErr" hidden></div>
-    <p class="mini" style="margin-top:12px">Kiki braucht das Mikrofon, um zuzuhören. Nichts wird aufgenommen oder gesendet, alles bleibt auf diesem Handy.</p>
+    <p class="mini trust">🔒 Kiki hört nur zu. Nichts wird aufgenommen.</p>
+    <div class="home-reden" id="homeReden"></div>
   </section>
 
   <!-- Menü -->
   <section class="screen" id="s-menu">
-    <div class="kiki-stage" data-kiki="small"></div>
-    <div class="bubble" id="menuBubble">Juhu! Was wollen wir heute singen?</div>
-    <div class="grid">
-      <button class="card wide heute" data-go="heute"><span class="ic">🌞</span><span><b>Heute mit Kiki</b><small id="planSub">Aufwärmen, 3 Töne, Lied des Tages</small><span class="plan" id="planDots"></span></span></button>
-      <button class="card wide" data-go="warm"><span class="ic">🎈</span><span><b>Aufwärmen</b><small>Atmen, summen, Sirene · zuerst, 2 Minuten</small></span></button>
-      <button class="card wide" data-go="room"><span class="ic">🏠</span><span><b>Mein Stimmraum</b><small>Wie tief und wie hoch kann ich singen?</small></span></button>
-      <button class="card" data-go="tone"><span class="ic">🎯</span><span><b>Ton treffen</b><small>Kiki singt vor, du singst nach</small></span></button>
-      <button class="card" data-go="scale"><span class="ic">🪜</span><span><b>Tonleitern</b><small>Do-Re-Mi, Dur, Moll, Terzen</small></span></button>
-      <button class="card" data-go="songs"><span class="ic">🦆</span><span><b>Lieder</b><small>Kinderlieder und bekannte Lieder</small></span></button>
-      <button class="card wide" data-go="pitch"><span class="ic">🎹</span><span><b>Ton vorgeben</b><small>Kiki spielt den Ton, so lange ihr wollt</small></span></button>
-      <button class="card" data-go="mirror"><span class="ic">🌈</span><span><b>Stimm-Spiegel</b><small>Sieh deine Stimme</small></span></button>
-      <button class="card" data-go="echo"><span class="ic">🦜</span><span><b>Echo-Spiel</b><small>Kiki singt eine kleine Melodie, du singst sie nach</small></span></button>
-      <button class="card" data-go="rhythm"><span class="ic">🥁</span><span><b>Rhythmus</b><small>Kiki trommelt, du klatschst nach</small></span></button>
-      <button class="card" data-go="duo"><span class="ic">👨‍👧</span><span><b>Zu zweit</b><small>Duett: abwechselnd Töne treffen</small></span></button>
-      <button class="card" data-go="make"><span class="ic">✨</span><span><b>Lied erfinden</b><small>Kiki dichtet ein neues Lied für euch</small></span></button>
-      <button class="card wide" data-go="path"><span class="ic">🏅</span><span><b>Kikis Sternenweg</b><small id="pathSub">Abzeichen sammeln, Schritt für Schritt</small></span></button>
-      <a class="card wide" href="../mondschein/"><span class="ic">🦔</span><span><b>Kiki besucht Otti</b><small>Gutenacht-Geschichten in Mondschein</small></span></a>
-      <button class="card wide hold" id="elternHalten" aria-label="Für Eltern – 3 Sekunden gedrückt halten"><span class="ic">🔒</span><span><b>Für Eltern</b><small id="elternSub">3 Sekunden halten · Stimmlage, wie genau, Kikis Stimme</small></span></button>
+    <div class="menu-kopf">
+      <div class="kiki-stage" data-kiki="small"></div>
+      <div class="bubble links" id="menuBubble">Juhu! Was wollen wir heute singen?</div>
     </div>
+    <button class="card wide heute" data-go="heute"><span class="ic">🌞</span><span><b>Heute mit Kiki</b><small id="planSub">Aufwärmen, 3 Töne, Lied des Tages</small><span class="plan" id="planDots"></span></span><span class="los" aria-hidden="true">▶</span></button>
+    <h2 class="cat-h">Spielen</h2>
+    <div class="grid">
+      <button class="card" data-go="tone"><span class="ic">🎯</span><span><b>Ton treffen</b><small>Kiki singt vor, du singst nach</small></span></button>
+      <button class="card" data-go="songs"><span class="ic">🦆</span><span><b>Lieder</b><small>Kinderlieder zum Mitsingen</small></span></button>
+      <button class="card" data-go="echo"><span class="ic">🦜</span><span><b>Echo-Spiel</b><small>Kleine Melodie nachsingen</small></span></button>
+      <button class="card" data-go="rhythm"><span class="ic">🥁</span><span><b>Rhythmus</b><small>Kiki trommelt, du klatschst</small></span></button>
+      <button class="card" data-go="mirror"><span class="ic">🌈</span><span><b>Stimm-Spiegel</b><small>Sieh deine Stimme</small></span></button>
+      <button class="card" data-go="make"><span class="ic">✨</span><span><b>Lied erfinden</b><small>Kiki dichtet für euch</small></span></button>
+    </div>
+    <button class="card wide weg-karte" data-go="path"><span class="ic">🏅</span><span style="flex:1;min-width:0"><b>Kikis Sternenweg</b><small id="pathSub">Abzeichen sammeln, Schritt für Schritt</small><span class="fort" aria-hidden="true"><i id="pathBar"></i></span></span></button>
+    <details class="mehr" id="mehr">
+      <summary><span>🎼 Mehr zum Üben</span><span class="pfeil" aria-hidden="true">›</span></summary>
+      <div class="grid">
+        <button class="card" data-go="warm"><span class="ic">🎈</span><span><b>Aufwärmen</b><small>Atmen, summen, Sirene</small></span></button>
+        <button class="card" data-go="room"><span class="ic">🏠</span><span><b>Mein Stimmraum</b><small>Wie tief, wie hoch?</small></span></button>
+        <button class="card" data-go="scale"><span class="ic">🪜</span><span><b>Tonleitern</b><small>Do-Re-Mi, Dur, Moll</small></span></button>
+        <button class="card" data-go="pitch"><span class="ic">🎹</span><span><b>Ton vorgeben</b><small>Kiki spielt den Ton</small></span></button>
+        <button class="card" data-go="duo"><span class="ic">👨‍👧</span><span><b>Zu zweit</b><small>Duett, abwechselnd</small></span></button>
+        <a class="card" href="../mondschein/"><span class="ic">🦔</span><span><b>Kiki besucht Otti</b><small>Gutenacht-Geschichten</small></span></a>
+      </div>
+    </details>
+    <button class="card wide hold eltern" id="elternHalten" aria-label="Für Eltern – 3 Sekunden gedrückt halten"><span class="ic">🔒</span><span><b>Für Eltern</b><small id="elternSub">3 Sekunden halten</small></span></button>
   </section>
 
   <!-- Trainer (Ton treffen, Tonleiter, Lieder) -->
@@ -530,7 +597,7 @@ a.card{color:inherit;text-decoration:none}
 <div class="tour" id="gate" hidden role="dialog" aria-modal="true" aria-labelledby="gateH">
   <div class="tour-karte">
     <h2 id="gateH">🔒 Nur für Eltern</h2>
-    <p>Bitte rechnen und die Zahl eintippen:</p>
+    <p id="gateInfo">Bitte rechnen und die Zahl eintippen:</p>
     <p id="gateQ" style="font-size:22px;font-weight:700"></p>
     <input id="gateIn" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="Ergebnis" style="width:100%;min-height:52px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font:inherit;font-size:20px;text-align:center;box-sizing:border-box">
     <p class="mini" id="gateMsg" style="min-height:20px;margin:6px 0"></p>
@@ -719,8 +786,8 @@ function micOff(){
 function showMicError(e){
   const box = $('micErr');
   box.hidden = false;
-  if (!navigator.mediaDevices || !window.isSecureContext) box.textContent = 'Dieses Gerät erlaubt hier kein Mikrofon. Bitte die Seite in Safari öffnen.';
-  else box.innerHTML = 'Kiki kann dich noch nicht hören. Bitte das Mikrofon erlauben: im iPhone unter <b>Einstellungen › Apps › Safari › Mikrofon</b> auf «Fragen» oder «Erlauben» stellen, dann die Seite neu laden.';
+  if (!navigator.mediaDevices || !window.isSecureContext) box.innerHTML = '<b>🙉 Hier darf Kiki nicht zuhören.</b><br>Bitte die Seite in Safari öffnen.';
+  else box.innerHTML = '<b>🙉 Oh, Kiki hört dich noch nicht.</b><br>Bitte das Mikrofon erlauben: iPhone <b>Einstellungen › Apps › Safari › Mikrofon</b> auf «Fragen» stellen, dann nochmal auf «Los, wir singen!» tippen.';
   go('home');
 }
 const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -945,7 +1012,7 @@ function ladderUpdate(m, dt){
 function setHint(t, good){ const el = $('hint'); el.textContent = t; el.classList.toggle('good', !!good); }
 function addStars(n){
   stars += n; store.set('stars', stars); $('starCount').textContent = stars;
-  burst(n > 1 ? 18 : 10);
+  burst(n > 1 ? 18 : 10); haptic(n > 1 ? [20, 40, 20] : 18); starPop();
   checkBadges();
 }
 function burst(n){
@@ -1527,6 +1594,7 @@ function renderPlan(){
   $('planSub').textContent = t.done ? 'Heute alles geschafft! Morgen gibt es ein neues Lied.' : 'Kikis Plan für heute, ca. 10 Minuten';
   const n = badgeList().filter(b => mem.badges && mem.badges[b.id]).length;
   $('pathSub').textContent = `${n} von ${BADGES.length} Abzeichen gesammelt`;
+  const pb = $('pathBar'); if (pb) pb.style.transform = `scaleX(${Math.max(.02, n/BADGES.length)})`;
 }
 function planCheck(){
   const t = planDay();
@@ -1597,7 +1665,7 @@ function buehne(o){
     setTimeout(() => el.classList.add('auf'), 60);
     micOff(); setSession('playback');
     if (ac){ if (o.applause) applaus(); else fanfare(); }
-    burst(16); kikiMood('happy');
+    burst(16); kikiMood('happy'); haptic([30, 50, 30, 50, 60]);
     const close = () => { el.hidden = true; el.classList.remove('auf'); kikiMood(null); $('bOk').onclick = null; bOpen = null; res(); setTimeout(flushBadges, 300); };
     bOpen = {badges: o.badges, res};
     $('bOk').onclick = close;
@@ -1879,7 +1947,7 @@ $('memShare').onclick = async () => {
 };
 $('kidName').value = store.get('name', '');
 $('kidSave').onclick = () => { const n = $('kidName').value.trim().slice(0, 24); store.set('name', n); $('kidSave').textContent = 'Gespeichert ✓'; setTimeout(() => $('kidSave').textContent = 'Speichern', 1500); homeGreet(); };
-function homeGreet(){ const n = store.get('name', ''); $('homeBubble').textContent = n ? `Hallo ${n}! Ich bin Kiki, der singende Koala. Wollen wir zusammen singen?` : 'Hallo, ich bin Kiki! Ich singe soo gern. Wollen wir zusammen singen?'; }
+function homeGreet(){ const n = store.get('name', ''); $('homeBubble').textContent = n ? `Hallo ${n}! Ich bin Kiki. Singst du mit mir?` : 'Hallo! Ich bin Kiki. Singst du mit mir?'; }
 homeGreet();
 $('duoName').value = store.get('duo', '');
 $('duoSave').onclick = () => { store.set('duo', $('duoName').value.trim().slice(0, 24)); $('duoSave').textContent = 'Gespeichert ✓'; setTimeout(() => $('duoSave').textContent = 'Speichern', 1500); };
@@ -1899,19 +1967,19 @@ document.addEventListener('click', e => {
 const GATE_W = {3:'drei',4:'vier',5:'fünf',6:'sechs',7:'sieben',8:'acht',9:'neun',12:'zwölf',13:'dreizehn',14:'vierzehn',15:'fünfzehn',16:'sechzehn',17:'siebzehn',18:'achtzehn',19:'neunzehn'};
 const gate = {a:0, b:0};
 function gateFrage(){ gate.a = 3 + Math.floor(Math.random()*7); gate.b = 12 + Math.floor(Math.random()*8); $('gateQ').textContent = `${GATE_W[gate.a]} mal ${GATE_W[gate.b]} = ?`; $('gateIn').value = ''; $('gateMsg').textContent = ''; }
-function gateOeffnen(){ stopAll(); gateFrage(); $('gate').hidden = false; setTimeout(() => { try{ $('gateIn').focus(); }catch(e){} }, 120); }
+function gateOeffnen(then, info){ stopAll(); gate.then = typeof then === 'function' ? then : null; $('gateInfo').textContent = info || 'Bitte rechnen und die Zahl eintippen:'; gateFrage(); $('gate').hidden = false; setTimeout(() => { try{ $('gateIn').focus(); }catch(e){} }, 120); }
 function gatePruefen(){
-  if (parseInt($('gateIn').value, 10) === gate.a * gate.b){ $('gate').hidden = true; renderMem(); go('settings'); }
+  if (parseInt($('gateIn').value, 10) === gate.a * gate.b){ $('gate').hidden = true; haptic(15); if (gate.then){ const f = gate.then; gate.then = null; f(); } else { renderMem(); go('settings'); } }
   else { $('gateMsg').textContent = 'Leider nicht richtig. Hier ist eine neue Aufgabe.'; const m = $('gateMsg').textContent; gateFrage(); $('gateMsg').textContent = m; }
 }
 $('gateOk').onclick = gatePruefen;
-$('gateNo').onclick = () => { $('gate').hidden = true; };
+$('gateNo').onclick = () => { $('gate').hidden = true; gate.then = null; };
 $('gateIn').addEventListener('keydown', e => { if (e.key === 'Enter') gatePruefen(); });
 
 (function(){
   const b = $('elternHalten'); let t0 = 0, raf = 0;
   const tick = () => { const p = Math.min(1, (performance.now() - t0)/3000); b.style.setProperty('--p', p.toFixed(3)); if (p >= 1){ t0 = 0; b.style.setProperty('--p', 0); gateOeffnen(); return; } raf = requestAnimationFrame(tick); };
-  const stop = () => { if (!t0) return; const kurz = performance.now() - t0 < 2900; t0 = 0; cancelAnimationFrame(raf); b.style.setProperty('--p', 0); if (kurz){ $('elternSub').textContent = 'Bitte 3 Sekunden gedrückt halten 🔒'; setTimeout(() => $('elternSub').textContent = '3 Sekunden halten · Stimmlage, wie genau, Kikis Stimme', 2200); } };
+  const stop = () => { if (!t0) return; const kurz = performance.now() - t0 < 2900; t0 = 0; cancelAnimationFrame(raf); b.style.setProperty('--p', 0); if (kurz){ $('elternSub').textContent = 'Bitte 3 Sekunden gedrückt halten 🔒'; setTimeout(() => $('elternSub').textContent = '3 Sekunden halten', 2200); } };
   b.addEventListener('pointerdown', e => { try{ b.setPointerCapture(e.pointerId); }catch(x){} t0 = performance.now(); raf = requestAnimationFrame(tick); });
   b.addEventListener('pointerup', stop); b.addEventListener('pointercancel', stop);
   b.addEventListener('contextmenu', e => e.preventDefault());
@@ -1921,10 +1989,9 @@ $('gateIn').addEventListener('keydown', e => { if (e.key === 'Enter') gatePruefe
 
 /* ---------- Einführung beim ersten Mal im Menü ---------- */
 const TOUR = [
-  ['Hallo, ich bin Kiki!', 'Ich bin ein Koala und singe soo gern. Ich singe dir Töne vor, und du singst sie nach.'],
-  ['Heute mit Kiki', 'Der Tagesplan oben: Aufwärmen, drei Töne, ein Lied. Jeden Tag ein Häkchen und Sterne.'],
-  ['Spielen und singen', 'Echo-Spiel, Rhythmus, zu zweit mit Papa oder Mama, Lieder erfinden und Abzeichen auf Kikis Sternenweg.'],
-  ['Für Eltern', 'Unten 3 Sekunden halten: Stimmlage, wie genau, was Kiki sich merkt. Oben rechts 💬 für Wünsche an DR Lab.']
+  ['Hallo, ich bin Kiki!', 'Ich singe vor, du singst nach. Ich höre dir zu.'],
+  ['Jeden Tag ein bisschen', 'Tipp oben auf «Heute mit Kiki». Für jedes Spiel gibt es Sterne ★'],
+  ['Für Eltern', 'Ganz unten «Für Eltern» 3 Sekunden halten: Einstellungen und was Kiki sich merkt.']
 ];
 let tourI = 0;
 function tourZeigen(){ $('tourH').textContent = TOUR[tourI][0]; $('tourT').textContent = TOUR[tourI][1]; $('tourP').innerHTML = TOUR.map((_, i) => `<i class="${i === tourI ? 'an' : ''}"></i>`).join(''); $('tourWeiter').textContent = tourI === TOUR.length - 1 ? 'Los geht\'s ✨' : 'Weiter'; }
@@ -1936,6 +2003,30 @@ $('tourNochmal').onclick = tourStart;
 const _goTour = go;
 go = function(name){ _goTour(name); if (name === 'menu' && !store.get('tour', 0) && $('tour').hidden) setTimeout(tourStart, 1600); };
 addEventListener('offline', () => { $('menuBubble').textContent = 'Kein Internet? Kein Problem, singen geht trotzdem. Alles läuft im Handy.'; });
+
+/* ---------- Runde 3: erster Eindruck ---------- */
+function haptic(p){ try{ if (navigator.vibrate && !matchMedia('(prefers-reduced-motion: reduce)').matches) navigator.vibrate(p); }catch(e){} }
+function starPop(){ const el = document.querySelector('.stars'); if (!el) return; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+// Tipp auf Kiki: sie hüpft (Figuren-Film) und sagt ihren Satz (Ton erst nach dem Tipp).
+$('homeKiki').addEventListener('click', () => { setTimeout(() => { initAudio().catch(() => {}); say($('homeBubble').textContent); }, 30); haptic(10); });
+// Sprechblase erscheint nach dem Intro mit kleinem Hüpfer.
+setTimeout(() => $('homeBubble').classList.add('da'), 350);
+// Live-Gespräch: Die Stimme geht dabei an Kikis Sprach-Dienst. Darum nur nach der Eltern-Rechnung.
+let redenOk = false;
+try{ redenOk = sessionStorage.getItem('kiki_reden_ok') === '1'; }catch(e){}
+document.addEventListener('click', e => {
+  const t = e.target.closest && e.target.closest('.nb-reden, .nova-pille, .nova-live-knopf');
+  if (!t || redenOk) return;
+  if (t.classList.contains('nova-live-knopf') && t.classList.contains('an')) return; // Auflegen geht immer
+  e.preventDefault(); e.stopImmediatePropagation();
+  gateOeffnen(() => { redenOk = true; try{ sessionStorage.setItem('kiki_reden_ok', '1'); }catch(x){} if (t.href) location.href = t.href; else t.click(); },
+    '📞 Beim Live-Gespräch hört Kikis Sprach-Dienst die Stimme. Bitte ein Erwachsener rechnen:');
+}, true);
+// «Mit Kiki reden» als ruhiger zweiter Knopf unter «Los, wir singen!» statt eigener grosser Bühne.
+document.addEventListener('DOMContentLoaded', () => {
+  const nb = document.querySelector('.nb-buehne');
+  if (nb){ const a = nb.querySelector('.nb-reden'); if (a){ a.textContent = '📞 Mit Kiki reden · mit Eltern'; $('homeReden').appendChild(a); } nb.remove(); }
+});
 
 /* Offline */
 if ('serviceWorker' in navigator && location.protocol === 'https:' && /github\.io$/.test(location.hostname)) navigator.serviceWorker.register('sw.js').catch(() => {});
@@ -2027,6 +2118,6 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 <script src="feedback.js" data-app="Kiki" defer></script>
 <script src="../nova/seelen.js" defer></script>
 <script src="../nova/buehne.js" data-figur="kiki" data-name="Kiki" data-bild="kiki-3d.jpg" data-satz="Komm, wir singen zusammen. Ich höre dir zu." defer></script>
-<script src="../nova/nova.js" data-nova-app="Kiki" data-nova-bild="figur.jpg" data-nova-kind="1" data-nova-unten="90" defer></script>
+<script src="../nova/nova.js" data-nova-app="Kiki" data-nova-bild="figur.jpg" data-nova-kind="1" defer></script>
 </body>
 </html>
