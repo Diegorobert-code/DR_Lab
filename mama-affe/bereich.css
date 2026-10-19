@@ -1,0 +1,156 @@
+/* Mama Affe – Aussehen (alles unter .ma gekapselt)
+   Alles ist unter .ma gekapselt, damit nichts in die umgebende App ausläuft. */
+.ma{
+  --bg:#10183a; --bg2:#1c1f4a; --card:#232a5c; --card2:#2b336b; --line:#3a4380;
+  --ink:#f5f1e8; --muted:#b9bcd9; --gold:#e8be5c; --gold2:#f5d68a; --coral:#ff8a6b;
+  --green:#7fd1a0; --red:#ff6b6b; --sky:#8fc7ff; --orange:#e9894a;
+  --r:18px; --font: ui-rounded,"SF Pro Rounded","Arial Rounded MT Bold",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme: dark;
+  position:relative; isolation:isolate; overflow-x:hidden;
+  background:linear-gradient(180deg,#0b1230 0%,#1c1f4a 55%,#2a1f48 100%);
+  color:var(--ink); font-family:var(--font); font-size:17px; line-height:1.5;
+  min-height:100%;
+}
+.ma *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+/* Nachtplatz: Sterne funkeln, Mond leuchtet */
+.ma .ma-sky{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.ma .ma-sky i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.6;animation:ma-twinkle 3s ease-in-out infinite}
+.ma .ma-sky .moon{position:absolute;right:-50px;top:110px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff6d8,#e8be5c 60%,rgba(232,190,92,0) 72%);opacity:.35;filter:blur(1px)}
+@keyframes ma-twinkle{0%,100%{opacity:.15}50%{opacity:.9}}
+.ma .wrap{max-width:560px;margin:0 auto;padding:16px 16px 24px}
+.ma header.top{display:flex;align-items:center;gap:8px;margin:4px 0 12px}
+.ma header.top img{width:44px;height:44px;border-radius:12px;border:2px solid var(--gold);object-fit:cover}
+.ma header.top .t{font-weight:700;color:var(--gold);font-size:1.1rem;flex:1;min-width:0}
+.ma .iconbtn{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:12px;min-width:44px;height:44px;font-size:1.2rem;cursor:pointer;flex:none}
+.ma h1{font-family:Georgia,serif;color:var(--gold);font-size:1.6rem;margin:8px 0 4px}
+.ma h2{font-size:1.2rem;margin:20px 0 8px;color:var(--gold2)}
+.ma h3{font-size:1.05rem;margin:4px 0 4px}
+.ma p{margin:6px 0}
+.ma ul{padding-left:20px;margin:6px 0}
+.ma .muted{color:var(--muted)}
+.ma .small{font-size:.88rem}
+.ma .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:12px 0}
+.ma .card.gold{border-color:var(--gold)}
+.ma .card.soft{background:rgba(255,255,255,.04)}
+.ma .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ma .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.ma .tile{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 8px;text-align:center;cursor:pointer;color:var(--ink);font:inherit;min-height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:transform .15s}
+.ma .tile:active{transform:scale(.96)}
+.ma .tile .e{font-size:2rem;line-height:1}
+.ma .tile .l{font-weight:600;font-size:.95rem}
+.ma .tile.sel{border-color:var(--gold);background:var(--card2)}
+.ma .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--gold);color:#1a1530;border:0;border-radius:14px;padding:12px 18px;font:inherit;font-weight:700;cursor:pointer;min-height:48px;text-decoration:none;text-align:center}
+.ma .btn.alt{background:var(--card2);color:var(--ink);border:1px solid var(--line)}
+.ma .btn.red{background:var(--red);color:#fff}
+.ma .btn.block{display:flex;width:100%;margin:8px 0}
+.ma .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ma .chip{background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-size:.9rem;cursor:pointer;min-height:40px}
+.ma .chip.sel{background:var(--gold);color:#1a1530;border-color:var(--gold);font-weight:700}
+.ma .compass{display:inline-flex;align-items:center;gap:6px;color:var(--gold);font-size:.85rem;border:1px solid var(--gold);border-radius:999px;padding:4px 10px}
+.ma .map{background:linear-gradient(135deg,#2b336b,#3a2f5c);border:1px dashed var(--gold);border-radius:var(--r);padding:14px;margin:12px 0}
+.ma .map .k{color:var(--gold);font-weight:700;font-size:.85rem;letter-spacing:.04em;text-transform:uppercase}
+.ma .steps{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.ma .steps span{background:rgba(255,255,255,.08);border-radius:10px;padding:4px 10px;font-size:.88rem}
+.ma .steps span.on{background:var(--gold);color:#1a1530;font-weight:700}
+.ma .q{font-size:2.2rem;font-weight:800;text-align:center;margin:12px 0;letter-spacing:.02em}
+.ma .answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ma .answers button{font:inherit;font-size:1.6rem;font-weight:800;padding:16px;border-radius:16px;border:2px solid var(--line);background:var(--card2);color:var(--ink);cursor:pointer;min-height:72px}
+.ma .answers button.ok{border-color:var(--green);background:#1f4a3a;animation:ma-pop .4s}
+.ma .answers button.no{border-color:var(--coral);opacity:.6;animation:ma-shake .35s}
+@keyframes ma-pop{50%{transform:scale(1.08)}}
+@keyframes ma-shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.ma .dots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
+.ma .dots i{width:18px;height:18px;border-radius:50%;background:var(--gold);display:inline-block}
+.ma .dots i.b{background:var(--sky)}
+.ma .timer{font-size:3rem;font-weight:800;text-align:center;color:var(--gold);font-variant-numeric:tabular-nums}
+.ma .breath{width:160px;height:160px;border-radius:50%;margin:16px auto;background:radial-gradient(circle,var(--gold2),var(--coral));transform:scale(.6);transition:transform 4s ease-in-out;box-shadow:0 0 50px rgba(255,138,107,.35)}
+.ma .breath.in{transform:scale(1)}
+.ma textarea,.ma input[type=text],.ma input[type=date],.ma input[type=number],.ma select{width:100%;background:#151c45;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit;font-size:16px}
+.ma textarea{min-height:90px;resize:vertical}
+.ma label{display:block;font-weight:600;margin:10px 0 4px}
+.ma label.cb{display:flex;gap:10px;align-items:flex-start;font-weight:400}
+.ma label.cb input{width:22px;height:22px;flex:none;margin-top:2px}
+.ma ul.clean{list-style:none;padding:0;margin:0}
+.ma ul.clean li{padding:10px 0;border-bottom:1px solid var(--line)}
+.ma .help a{color:var(--gold2)}
+.ma .danger{border-color:var(--red)!important}
+.ma nav.tabs{position:sticky;bottom:0;background:rgba(16,24,58,.96);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:5}
+.ma nav.tabs .in{max-width:560px;margin:0 auto;display:flex;justify-content:space-around}
+.ma nav.tabs button{background:none;border:0;color:var(--muted);font:inherit;font-size:.7rem;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 2px;min-width:48px;flex:1;cursor:pointer}
+.ma nav.tabs button .e{font-size:1.3rem}
+.ma nav.tabs button.sel{color:var(--gold)}
+.ma .foot{margin-top:28px;font-size:.8rem;color:var(--muted);text-align:center}
+.ma .check{display:flex;gap:12px;align-items:center;padding:12px;border-radius:14px;background:var(--card2);margin:8px 0;cursor:pointer;border:2px solid transparent}
+.ma .check.done{border-color:var(--green);opacity:.8}
+.ma .check .e{font-size:1.8rem}
+.ma .stars{color:var(--gold);letter-spacing:2px}
+.ma .toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:var(--ink);color:#1a1530;padding:10px 18px;border-radius:999px;font-weight:700;z-index:2147483000;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90vw;text-align:center}
+.ma .toast.on{opacity:1}
+.ma .pause{position:fixed;inset:0;background:rgba(10,14,36,.97);z-index:2147482000;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.ma .pause .card{max-width:480px;width:100%}
+.ma .hide{display:none!important}
+.ma .hold{position:relative;overflow:hidden}
+.ma .hold .bar{position:absolute;left:0;bottom:0;height:4px;background:var(--gold);width:0}
+.ma .week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:.75rem}
+.ma .week div{background:var(--card2);border-radius:10px;padding:6px 2px}
+.ma .week div b{display:block;font-size:1rem;color:var(--gold)}
+.ma .bar2{height:10px;border-radius:99px;background:var(--card2);overflow:hidden}
+.ma .bar2 span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--coral))}
+.ma details{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 16px;margin:10px 0}
+.ma details summary{cursor:pointer;font-weight:700;color:var(--gold2)}
+.ma ol{padding-left:22px;margin:6px 0}
+.ma ol li{margin:4px 0}
+
+/* ---------- Trickfilm-Bühne: Mama Affe in Posen ---------- */
+.ma .stage{position:relative;text-align:center;padding:10px 0 2px}
+.ma .actor{position:relative;display:inline-block;width:var(--sz,180px);height:var(--sz,180px)}
+.ma .actor .glow{position:absolute;inset:-14%;border-radius:50%;background:radial-gradient(circle,rgba(232,190,92,.45),rgba(232,190,92,0) 65%);animation:ma-glow 4s ease-in-out infinite}
+.ma .actor .body{position:absolute;inset:0;border-radius:32%;overflow:hidden;border:4px solid var(--gold);box-shadow:0 12px 40px rgba(0,0,0,.45),0 0 0 6px rgba(232,190,92,.15);transform-origin:50% 90%;animation:ma-idle 3.2s ease-in-out infinite;background:#3a2a1e}
+.ma .actor .body img{width:100%;height:100%;object-fit:cover;display:block}
+.ma .actor .prop{position:absolute;font-size:calc(var(--sz,180px) * .24);line-height:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
+.ma .actor .shadow{position:absolute;left:15%;right:15%;bottom:-14px;height:14px;border-radius:50%;background:rgba(0,0,0,.35);filter:blur(4px);animation:ma-shadow 3.2s ease-in-out infinite}
+@keyframes ma-glow{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes ma-idle{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-1.5deg)}}
+@keyframes ma-shadow{0%,100%{transform:scaleX(1);opacity:.35}50%{transform:scaleX(.85);opacity:.25}}
+/* Posen */
+.ma .actor.winkt .prop{right:-12%;top:8%;animation:ma-wave 1s ease-in-out infinite;transform-origin:20% 90%}
+@keyframes ma-wave{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(25deg)}}
+.ma .actor.denkt .body{animation:ma-think 4s ease-in-out infinite}
+.ma .actor.denkt .prop{right:-14%;top:-10%;animation:ma-float 3s ease-in-out infinite}
+@keyframes ma-think{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg) translateY(-3px)}}
+@keyframes ma-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.ma .actor.jubelt .body{animation:ma-jump .7s ease-in-out infinite}
+.ma .actor.jubelt .prop{left:-14%;top:-8%;animation:ma-spin 1.4s linear infinite}
+@keyframes ma-jump{0%,100%{transform:translateY(0) scale(1,1)}30%{transform:translateY(-18px) scale(.97,1.04)}60%{transform:translateY(0) scale(1.05,.95)}}
+@keyframes ma-spin{to{transform:rotate(360deg)}}
+.ma .actor.schlaeft .body{animation:ma-sleep 5s ease-in-out infinite;filter:brightness(.8) saturate(.9)}
+.ma .actor.schlaeft .prop{right:-10%;top:-6%;animation:ma-zz 2.5s ease-in-out infinite}
+@keyframes ma-sleep{0%,100%{transform:rotate(-6deg) scale(1)}50%{transform:rotate(-6deg) scale(1.03)}}
+@keyframes ma-zz{0%{opacity:0;transform:translate(0,10px)}50%{opacity:1}100%{opacity:0;transform:translate(14px,-18px)}}
+.ma .actor.atmet .body{animation:ma-breathe 8s ease-in-out infinite}
+.ma .actor.atmet .prop{left:-12%;bottom:4%;animation:ma-float 4s ease-in-out infinite}
+@keyframes ma-breathe{0%,100%{transform:scale(.94)}50%{transform:scale(1.04)}}
+.ma .actor.turnt .body{animation:ma-sway 1.6s ease-in-out infinite}
+.ma .actor.turnt .prop{left:-10%;bottom:-6%;animation:ma-wave 1.2s ease-in-out infinite}
+@keyframes ma-sway{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg) translateY(-4px)}}
+.ma .actor.zeigt .prop{right:-16%;top:30%;animation:ma-point 1.4s ease-in-out infinite}
+@keyframes ma-point{0%,100%{transform:translateX(0)}50%{transform:translateX(8px)}}
+.ma .bubble{position:relative;background:var(--ink);color:#1a1530;border-radius:18px;padding:12px 16px;margin:16px auto 4px;max-width:440px;font-weight:600;min-height:3em;animation:ma-in .5s ease-out}
+.ma .bubble:before{content:"";position:absolute;top:-10px;left:50%;margin-left:-10px;border:10px solid transparent;border-top:0;border-bottom-color:var(--ink)}
+.ma .bubble .cur{display:inline-block;width:2px;height:1em;background:#1a1530;vertical-align:-2px;animation:ma-blink .8s steps(1) infinite}
+@keyframes ma-blink{50%{opacity:0}}
+@keyframes ma-in{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+.ma .scene{animation:ma-in .45s ease-out}
+.ma .house{display:block;margin:4px auto 0;max-width:320px;width:100%;height:auto}
+.ma .house .win{animation:ma-twinkle 4s ease-in-out infinite}
+.ma .confetti{position:fixed;inset:0;pointer-events:none;z-index:2147483100;overflow:hidden}
+.ma .confetti i{position:absolute;top:-20px;font-size:22px;animation:ma-fall 1.8s ease-in forwards}
+@keyframes ma-fall{to{transform:translateY(110vh) rotate(540deg);opacity:.6}}
+@media (prefers-reduced-motion: reduce){
+  .ma *, .ma *:before{animation:none!important;transition:none!important}
+}
+/* In ein anderes Element gesetzt: keine eigene Mindesthöhe */
+.ma.eingebettet .wrap{padding-top:8px}
+/* Standalone: ganze Höhe, Leiste unten */
+.ma.voll{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+.ma.voll .wrap{flex:1;width:100%;padding-bottom:110px}
