@@ -319,11 +319,11 @@ footer b{color:var(--ink2);font-weight:600}
       <div class="row"><h2 id="hTopf" style="margin:0;font-size:17px">Spieltopf</h2><p id="topfTxt">Noch kein Einsatz eingetragen.</p></div>
       <div class="two" style="margin-top:10px">
         <div class="f" style="margin:0"><label for="tTopf">Topf (CHF)</label><input id="tTopf" inputmode="decimal" autocomplete="off" placeholder="z. B. 200"></div>
-        <div class="f" style="margin:0"><label for="tMax">Höchstens pro Titel (%)</label><input id="tMax" inputmode="decimal" autocomplete="off" placeholder="5"></div>
+        <div class="f" style="margin:0"><label for="tMax">Höchstens pro Titel (%), ab Topf über CHF 2000</label><input id="tMax" inputmode="decimal" autocomplete="off" placeholder="5"></div>
       </div>
       <div class="topfbar" aria-hidden="true"><i id="topfFill"></i></div>
       <p class="note" id="topfWarn" style="margin:8px 0 0"></p>
-      <p class="note" style="margin:8px 0 0">Deine Regeln: feste Grenzen vor dem Kauf, Pause ab −25 % im Topf. TradePing rechnet nur nach, du entscheidest.</p>
+      <p class="note" style="margin:8px 0 0">Deine Regeln: mindestens CHF 100 pro Titel, feste Grenzen vor dem Kauf, Pause ab −25 % im Topf. Den %-Hinweis pro Titel gibt es erst ab Topf über CHF 2000. TradePing rechnet nur nach, du entscheidest.</p>
     </div>
   </section>
 
@@ -678,11 +678,12 @@ function topfMax(){ return set.topfMax > 0 ? set.topfMax : 5; }
 function risiko(it){
   if (!(it.ein > 0)) return null;
   var verlust = it.stop > 0 ? round2(it.ein * it.stop / 100) : null;
-  return { verlust: verlust, zuviel: set.topf > 0 && it.ein > set.topf * topfMax() / 100 };
+  // Spieltopf-Regel: mindestens CHF 100 pro Titel (sonst frisst die Mindestgebühr). Der %-Hinweis gilt erst ab Topf über CHF 2000.
+  return { verlust: verlust, zuviel: set.topf > 2000 && it.ein > set.topf * topfMax() / 100, zuklein: it.ein < 100 };
 }
 function renderTopf(){
-  var ein = 0, verl = 0, zuviel = [];
-  items.forEach(function(it){ var r = risiko(it); if (!r) return; ein += it.ein; if (r.verlust != null) verl += r.verlust; if (r.zuviel) zuviel.push(it.sym); });
+  var ein = 0, verl = 0, zuviel = [], zuklein = [], n = 0;
+  items.forEach(function(it){ var r = risiko(it); if (!r) return; n++; ein += it.ein; if (r.verlust != null) verl += r.verlust; if (r.zuviel) zuviel.push(it.sym); if (r.zuklein) zuklein.push(it.sym); });
   var topf = set.topf > 0 ? set.topf : null;
   if ($('tTopf') !== document.activeElement) $('tTopf').value = topf ? String(topf) : '';
   if ($('tMax') !== document.activeElement) $('tMax').value = set.topfMax > 0 ? String(set.topfMax) : '';
@@ -692,6 +693,8 @@ function renderTopf(){
   f.style.width = (q * 100).toFixed(1) + '%'; f.classList.toggle('over', topf != null && ein > topf);
   var w = [];
   if (topf && ein > topf) w.push('Mehr eingesetzt als im Topf.');
+  if (zuklein.length) w.push(zuklein.join(', ') + ': unter CHF 100 pro Titel, die Mindestgebühr frisst viel weg.');
+  if (topf && n > Math.max(1, Math.floor(topf / 100))) w.push('Bei CHF ' + num(topf) + ' passen höchstens ' + Math.max(1, Math.floor(topf / 100)) + ' Titel à mindestens CHF 100.');
   if (zuviel.length) w.push(zuviel.join(', ') + ': mehr als ' + String(topfMax()).replace('.', ',') + ' % vom Topf.');
   if (topf) w.push('Pause-Grenze −25 %: CHF ' + num(round2(topf * 0.25)) + '.');
   $('topfWarn').textContent = w.join(' ');
@@ -974,6 +977,7 @@ window.__tp = { items:function(){ return items; }, log:function(){ return log; }
 })();
 </script>
 <script src="mrping.js" defer></script>
+<script src="mrping2.js" defer></script>
 <script src="feedback.js" data-app="TradePing" defer></script>
 <script src="../nova/seelen.js" defer></script>
 <script src="../nova/nova.js" data-nova-app="TradePing" data-nova-bild="figur.jpg" defer></script>

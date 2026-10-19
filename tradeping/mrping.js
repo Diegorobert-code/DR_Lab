@@ -158,6 +158,7 @@
   function pose(name, satz, gast) {
     if (satz) $('mpSatz').textContent = satz;
     szene.className = 'mp-szene' + (name ? ' pose-' + name : '');
+    if (window.MP_POSEBILD) window.MP_POSEBILD(name);
     var g = $('mpGast');
     if (gast) { g.src = gast.bild; g.alt = gast.name; g.classList.add('da'); } else g.classList.remove('da');
     clearTimeout(poseT);
@@ -172,7 +173,9 @@
     }
   }
   function sprich(text) {
-    if (!opt.spricht || !window.speechSynthesis || !text) return;
+    if (!opt.spricht || !text) return;
+    try { if (window.NovaStimme && window.NovaStimme.sprich) { window.NovaStimme.sprich(text); return; } } catch (e) {}
+    if (!window.speechSynthesis) return;
     try {
       var u = new SpeechSynthesisUtterance(text);
       var v = speechSynthesis.getVoices().filter(function (x) { return /^de/i.test(x.lang); });
@@ -296,8 +299,8 @@
     var verlust = ein * stop / 100 + g, gewinn = ein * ziel / 100 - g, cr = verlust > 0 ? gewinn / verlust : 0;
     var s = settings(), topfCHF = s.topf > 0 ? s.topf : 200, maxP = art === 'krypto' ? 10 : (s.topfMax > 0 ? s.topfMax : 5);
     var regeln = [];
-    if (ein && ein < 100) regeln.push('<span class="mp-no">Unter CHF 100:</span> Die Mindestgebühr frisst viel weg. Spieltopf-Regel: höchstens 2 Positionen à mindestens CHF 100.');
-    if (ein > topfCHF * maxP / 100) regeln.push('<span class="mp-no">Mehr als ' + maxP + ' % vom Topf</span> (CHF ' + topfCHF + '). Deine Leitlinie: ' + (art === 'krypto' ? 'Krypto höchstens 10 %.' : 'höchstens ' + maxP + ' % pro Titel.') + ' Nur ein Hinweis, keine Sperre.');
+    if (ein && ein < 100) regeln.push('<span class="mp-no">Unter CHF 100:</span> Die Mindestgebühr frisst viel weg. Spieltopf-Regel: mindestens CHF 100 pro Titel' + (topfCHF >= 100 ? ', bei deinem Topf also höchstens ' + Math.max(1, Math.floor(topfCHF / 100)) + ' Titel' : '') + '.');
+    if (topfCHF > 2000 && ein > topfCHF * maxP / 100) regeln.push('<span class="mp-no">Mehr als ' + maxP + ' % vom Topf</span> (CHF ' + topfCHF + '). Deine Leitlinie: ' + (art === 'krypto' ? 'Krypto höchstens 10 %.' : 'höchstens ' + maxP + ' % pro Titel.') + ' Nur ein Hinweis, keine Sperre.');
     if (art === 'krypto' && stop && stop < 20) regeln.push('Krypto schwankt stark. Deine Leitlinie schlägt −20 % als Grenze vor.');
     if (sym && ruestung(sym)) regeln.push('<span class="mp-no">' + esc(sym) + ' ist ein Rüstungstitel.</span> Deine Leitlinie: keine Rüstung. Mr. Ping begleitet das nicht.');
     var pause = topfStand(); if (pause.ein && pause.diff <= -25) regeln.push('<span class="mp-no">Pause-Regel aktiv:</span> Der Topf ist mehr als 25 % im Minus. Keine neuen Käufe bis nächsten Monat.');
@@ -578,5 +581,5 @@
   setInterval(function () { if (!document.hidden) kurseHolen(); }, 120000);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) { alles(); grundPose(); kurseHolen(); } });
   document.addEventListener('change', function (e) { if (e.target.closest && e.target.closest('#topfListe')) setTimeout(alles, 100); });
-  window.__mrping = { tafel: function () { return tafelText(false); }, gebuehr: gebuehr, boerse: boerse, journal: function () { return journal; }, pose: pose };
+  window.__mrping = { tafel: function () { return tafelText(false); }, gebuehr: gebuehr, boerse: boerse, journal: function () { return journal; }, pose: pose, sprich: sprich, kopieren: kopieren, toast: toastMp, topfStand: topfStand, topf: topf, tafelDaten: tafelDaten, karte: karte, nach: nach, settings: settings, lern: function () { return lern; }, lernSave: lernSave };
 })();

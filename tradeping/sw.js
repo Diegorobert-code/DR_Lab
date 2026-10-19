@@ -1,7 +1,7 @@
 // TradePing – Offline-Cache (nur eigene Dateien, keine Kursdaten)
-const CACHE = 'tp-v7';
+const CACHE = 'tp-v8';
 const SERVER = 'https://sense-179-237-127-58.sslip.io/kursping';
-const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './figur.jpg', './figur-gross.jpg', './ping-3d.jpg', './mrping.js', './feedback.js'];
+const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './figur.jpg', './figur-gross.jpg', './ping-3d.jpg', './mrping.js', './mrping2.js', './posen/posen.json', './feedback.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
 });
