@@ -40,6 +40,6 @@ Enthält die App Werbung? → **Nein**
 ## Konto löschen → entfällt (es gibt kein Konto)
 
 ## Berechtigungen der App (Stand 1.0)
-- Internet (Standard bei Capacitor; die App lädt nichts nach)
+- Internet (Standard bei Capacitor; die App lädt nichts nach. «Nova mit Server verbinden» ist im Store-Bau ausgeblendet)
 - Keine Kamera, kein Mikrofon, kein Standort, keine Kontakte
 - Sicherung in die Google-Cloud ausgeschaltet: Daten bleiben nur auf diesem Handy

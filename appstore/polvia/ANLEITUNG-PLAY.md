@@ -29,4 +29,5 @@ Hochgeladen wird nichts automatisch. Öffentlich geht die App erst mit GmbH und 
 - Automatischer Bau auf GitHub: `.github/workflows/android-build.yml` (Test-APK + Play-Bundle)
 - Texte: `store/texte-play.md` · Formulare: `store/app-inhalte-play.md` · Datenschutz: `store/datenschutz-polvia.html`
 - Grafiken: `store/play-icon-512.png`, `store/play-feature-1024x500.png`, `store/icon-1024.png`
-- Screenshots folgen, sobald die App im Ordner `polvia/` gebaut ist.
+- Screenshots: `store/screenshots-play/play-1…5` (1080 × 1920, mit Titel) · Rohbilder hell/dunkel in `roh/`
+- Im Store-Bau ausgeblendet: «Nova mit eigenem Server verbinden» (Version 1.0 = keine Daten erhoben)

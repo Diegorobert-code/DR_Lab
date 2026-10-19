@@ -11,29 +11,32 @@ Falls vergeben: `Polvia – Assistenz`
 
 **Kurzbeschreibung** (max. 80)
 ```
-Deine ruhige Assistenz für Projekte, Termine und Ideen. Alles bleibt bei dir.
+Firmen, Projekte und Privates an einem Ort. Nova ordnet, du entscheidest.
 ```
 
 **Vollständige Beschreibung** (max. 4000)
 ```
-Polvia ist die persönliche Assistenz für Menschen, die viele Projekte, Firmen und Rollen gleichzeitig führen. Privat und geschäftlich, an einem ruhigen Ort.
+Polvia ist die ruhige Assistenz für Menschen, die mehrere Firmen, Projekte und ein Privatleben gleichzeitig führen. Alles an einem Ort, Geschäft und Privat mit einem Tipp getrennt.
 
-DEIN MORGEN IN EINER MINUTE
-Das Morgenbriefing zeigt, was heute zählt: die drei wichtigsten Aufgaben, die nächsten Termine und was gestern liegen geblieben ist.
+DEIN TAG IN EINER MINUTE
+Das Briefing am Morgen zeigt, was heute zählt: Termine, fällige und überfällige Aufgaben, Delegiertes und den nächsten wichtigen Schritt. Auf Wunsch liest Nova es vor.
 
-ALLE PROJEKTE IM BLICK
-Jedes Projekt und jede Firma hat ihren eigenen Bereich mit Zielen, nächsten Schritten und Notizen. Ein Tipp, und du weisst, wo du stehst.
+ALLE FIRMEN UND BEREICHE IM BLICK
+Jede Firma und jeder Lebensbereich hat Projekte, offene Aufgaben und einen Fortschrittsring. Kritisches fällt sofort auf.
+
+DAS WICHTIGE ZUERST
+Aufgaben nach Überfällig, Heute und Später, mit Filter für Delegiertes und pro Bereich. Erfassen geht schnell: tippen oder sprechen.
+
+DIE WOCHE AUF EINEN BLICK
+Der Kalender zeigt deine Termine mit der Farbe ihres Bereichs.
 
 NOVA DENKT MIT
-Nova, deine Assistentin, sortiert Gedanken, macht aus Stichworten Aufgaben und schlägt Entwürfe vor. Entscheiden, senden und zahlen tust immer du selbst.
+Nova fasst den Tag zusammen, plant die Woche, bereitet Meetings vor, entwirft Mails, plant Reisen, wägt Entscheide ab und zeigt, was du abgeben kannst. Senden, buchen und zahlen tust immer du selbst.
 
-FÜR KLARE KÖPFE
-• Ruhiges Design in Nachtblau und Gold
-• Schnell erfasst: Reden oder tippen
-• Keine Werbung, kein Konto, kein Abo-Zwang
+DEINE DATEN BLEIBEN BEI DIR
+Kein Konto, keine Werbung, keine Auswertung. Alles liegt nur auf deinem Handy. Mit der Sicherung nimmst du deine Daten als Datei mit.
 
-DEINE DATEN GEHÖREN DIR
-Was du einträgst, bleibt auf deinem Handy. Kein Konto, keine Werbung, keine Auswertung. Gemacht in Zürich von DR Lab.
+Gemacht in Zürich von DR Lab.
 ```
 
 **App-Kategorie:** Produktivität
@@ -45,4 +48,4 @@ Was du einträgst, bleibt auf deinem Handy. Kein Konto, keine Werbung, keine Aus
 **Grafiken**
 - App-Symbol 512 × 512: `play-icon-512.png`
 - Vorstellungsgrafik 1024 × 500: `play-feature-1024x500.png`
-- Handy-Screenshots (mind. 2, 1080 × 1920): `screenshots-play/` (kommen, sobald die App gebaut ist)
+- Handy-Screenshots 1080 × 1920: `screenshots-play/play-1-heute.png` bis `play-5-start.png` (in dieser Reihenfolge)
