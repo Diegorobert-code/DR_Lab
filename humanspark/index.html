@@ -12,10 +12,11 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
 <title>HumanSpark</title>
+<meta property="og:title" content="Sparky – Human Sparks"><meta property="og:description" content="Sparky begleitet dich durch kleine Körperübungen."><meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/humanspark/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://diegorobert-code.github.io/DR_Lab/humanspark/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <style>
 :root{
   --bg:#f6f3ee; --card:#fffdf9; --ink:#1d2b35; --muted:#5f6d76; --line:#e2dcd2;
-  --navy:#1f3a4d; --navy2:#2d5a6b; --coral:#e8896b; --coral2:#c96a4e; --soft:#ece6dc;
+  --navy:#1f3a4d; --navy2:#2d5a6b; --coral:#c9973a; --coral2:#c96a4e; --soft:#ece6dc;
   --s1:#4f8a8b; --s2:#6f9e86; --s3:#b9a256; --s4:#d98f5c; --s5:#c96a4e;
   --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 }
@@ -92,7 +93,7 @@ textarea:focus,.inp:focus,select:focus{outline:2px solid var(--navy2);outline-of
 .check input{width:24px;height:24px;flex:none}
 .mic{background:var(--coral);color:#fff;min-height:64px;font-size:18px}
 .mic.on{background:#9a3d27;animation:pulse 1.4s infinite}
-@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(232,137,107,.25)}}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(201,151,58,.25)}}
 .entry{border-bottom:1px solid var(--line);padding:12px 0}
 .entry:last-child{border-bottom:0}
 .entry .top{display:flex;justify-content:space-between;gap:8px;font-size:14px;color:var(--muted)}
@@ -136,15 +137,30 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
 .native-app .web-only{display:none!important}
 .native-app .app-only{display:block}
 .native-app span.app-only{display:inline}
+.figur-hero{display:flex;gap:14px;align-items:center;margin:0 0 16px;padding:14px 16px;border-radius:20px;background:radial-gradient(130% 150% at 0% 0%,#26387a 0%,#0f1b3d 62%);color:#f6efe0;border:1px solid rgba(232,190,92,.5);box-shadow:0 8px 24px rgba(15,27,61,.22);position:relative;overflow:hidden}
+.figur-hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(1.5px 1.5px at 78% 22%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 90% 60%,#ffe9a8,transparent),radial-gradient(1px 1px at 64% 78%,#ffe9a8,transparent),radial-gradient(1px 1px at 55% 14%,#ffe9a8,transparent)}
+.figur-hero img{width:84px;height:84px;border-radius:50%;border:3px solid #e8be5c;flex:none;object-fit:cover;box-shadow:0 0 18px rgba(232,190,92,.45)}
+.figur-hero b{display:block;color:#e8be5c;font-size:18px;line-height:1.25}
+.figur-hero span{display:block;font-size:14px;line-height:1.4;color:#e9e3d6;margin-top:2px}
+.figur-logo{width:40px;height:40px;border-radius:50%;border:2px solid #e8be5c;object-fit:cover}
+@keyframes figurAtmen{50%{transform:scale(1.02);box-shadow:0 0 0 6px rgba(242,193,78,.14),0 18px 70px rgba(242,193,78,.38)}}
+@media (prefers-reduced-motion:reduce){#figurStart img{animation:none}}
+/* Figuren-Look */
+:root{--bg:#0E1838;--card:#16234f;--ink:#f3ecdf;--muted:#aab3cf;--line:#2a3a70;--navy:#E07B2E;--navy2:#B85F1E;--coral:#F2C14E;--coral2:#F29A4A;--soft:#1b2a5c;color-scheme:dark}
+html,body{background:radial-gradient(1.5px 1.5px at 12% 8%,rgba(255,233,168,.7),transparent),radial-gradient(1px 1px at 84% 14%,rgba(255,233,168,.6),transparent),radial-gradient(1.5px 1.5px at 66% 40%,rgba(255,233,168,.35),transparent),radial-gradient(1px 1px at 30% 62%,rgba(255,233,168,.4),transparent),radial-gradient(120% 60% at 50% 0%,#1B2C6B 0%,#0E1838 55%,#0a1230 100%) fixed #0E1838}
+h1{color:#F2C14E}
 </style>
 </head>
 <body>
+<script src="../nova/intro.js" data-art="funken" data-bild="../nova/figuren/sparky.jpg" data-text="Sparky ist da"></script>
+
 <div class="wrap">
   <header>
-    <img src="icon.svg" alt="">
+    <img class="figur-logo" src="figur.jpg" alt="">
     <div><h1>HumanSpark</h1><p>Körper und Kosmos · DR Lab</p></div>
   </header>
 
+  <div id="nbHier"></div>
   <div class="intro">
     <span class="vision web-only">Entwicklungsvision von DR Lab</span>
     <p class="web-only">HumanSpark liest deinen Körper und übersetzt ihn in eine kurze Sprache für die KI.</p>
@@ -885,6 +901,8 @@ function startExercise(){
 
 /* ---------- Vorlesen ---------- */
 function speak(text){
+  // Mit Server: Sparkys eigene Stimme (nova/nova.js). Sonst die Gerätestimme.
+  if (window.NovaStimme && NovaStimme.aktiv()){ NovaStimme.sprich(text); return; }
   if (!('speechSynthesis' in window)){ alert('Vorlesen wird von diesem Browser nicht unterstützt.'); return; }
   speechSynthesis.cancel();
   var u = new SpeechSynthesisUtterance(text);
@@ -1353,7 +1371,7 @@ function renderOutcome(e){
       '<tr><td>RMSSD</td><td>' + dash(e.start.rmssd, ' ms') + '</td><td>' + dash(e.end.rmssd, ' ms') + '</td></tr></table>';
   }
   h += '<h3 class="sub">Verlauf der Sitzung</h3>' + sessionSvg(e);
-  h += '<div class="legend">' + (e.source !== 'keine' ? '<span><i style="background:#1f3a4d"></i>RMSSD</span><span><i style="background:#e8896b"></i>Puls</span><span><i style="background:#cfccc6"></i>Klient spricht</span><span><i style="background:#e3eeec"></i>Ruhephase</span>' : '') +
+  h += '<div class="legend">' + (e.source !== 'keine' ? '<span><i style="background:#1f3a4d"></i>RMSSD</span><span><i style="background:#c9973a"></i>Puls</span><span><i style="background:#cfccc6"></i>Klient spricht</span><span><i style="background:#e3eeec"></i>Ruhephase</span>' : '') +
     MARKERS.map(function(m){ return '<span><i style="background:' + m.c + '"></i>' + m.l + '</span>'; }).join('') + '</div>';
   if (e.minutes && e.minutes.length){
     var nMin = Math.max(1, Math.ceil(e.dur / 60)), mm = {};
@@ -1399,7 +1417,7 @@ function sessionSvg(e){
     var bMin = Math.min.apply(null, bp.map(function(w){ return w.bpm; })) - 5, bMax = Math.max.apply(null, bp.map(function(w){ return w.bpm; })) + 5;
     var Yb = function(v){ return H - B - (v - bMin) / (bMax - bMin) * (H - T - B); };
     g += '<text x="' + (W - R + 6) + '" y="' + (T + 10) + '" font-size="12" fill="#c96a4e">' + bMax + '</text><text x="' + (W - R + 6) + '" y="' + (H - B) + '" font-size="12" fill="#c96a4e">' + bMin + '</text>';
-    g += '<path d="' + bp.map(function(w, i){ return (i ? 'L' : 'M') + X((w.t0 + w.t1) / 2).toFixed(1) + ' ' + Yb(w.bpm).toFixed(1); }).join(' ') + '" fill="none" stroke="#e8896b" stroke-width="2" stroke-dasharray="5 4"/>';
+    g += '<path d="' + bp.map(function(w, i){ return (i ? 'L' : 'M') + X((w.t0 + w.t1) / 2).toFixed(1) + ' ' + Yb(w.bpm).toFixed(1); }).join(' ') + '" fill="none" stroke="#c9973a" stroke-width="2" stroke-dasharray="5 4"/>';
   }
   if (!rm.length && !bp.length) g += '<text x="' + (W / 2) + '" y="' + (H / 2) + '" font-size="14" fill="#5f6d76" text-anchor="middle">' + (e.source === 'keine' ? 'Ohne Messung – nur Marker' : 'Keine auswertbaren Minuten') + '</text>';
   // Marker
@@ -1587,6 +1605,79 @@ sRefreshStart();
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>
-<script src="../nova/nova.js" data-nova-app="HumanSpark" defer></script>
+<script src="../nova/buehne.js" data-figur="sparky" data-name="Sparky" data-bild="../nova/figuren/sparky.jpg" data-satz="Kleine Körperübungen, ruhig und Schritt für Schritt." data-vor="#nbHier" defer></script>
+<script src="../nova/nova.js" data-nova-app="HumanSpark" data-nova-bild="figur.jpg" defer></script>
+<!-- Figuren-Film (Trickfilm-Look): Farben, Funken, Atmen, Tipp-Reaktion, Szenenwechsel. Nur Optik. -->
+<style id="figurFilmCss">
+.film-aurora{position:fixed;inset:-20%;z-index:-1;pointer-events:none;filter:blur(60px);opacity:.5}
+.film-aurora i{position:absolute;border-radius:50%;animation:filmDrift 18s ease-in-out infinite alternate}
+.film-aurora i:nth-child(1){width:55vmax;height:55vmax;left:-10%;top:45%;background:radial-gradient(circle,color-mix(in srgb,var(--fa1) 60%,transparent),transparent 65%)}
+.film-aurora i:nth-child(2){width:45vmax;height:45vmax;right:-15%;top:5%;background:radial-gradient(circle,rgba(242,193,78,.35),transparent 65%);animation-duration:24s}
+.film-aurora i:nth-child(3){width:50vmax;height:50vmax;left:25%;top:-20%;background:radial-gradient(circle,color-mix(in srgb,var(--fa2) 45%,transparent),transparent 65%);animation-duration:30s}
+#filmFunken{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+@keyframes filmDrift{to{transform:translate(8%,-6%) scale(1.12)}}
+button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.96)}
+:root{--fa1:#E07B2E;--fa2:#F25C54;--fgold:#F2C14E}
+.film-funke{position:absolute;width:6px;height:6px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#fff 0,var(--c,#F2C14E) 45%,transparent 70%);opacity:0;animation:filmFunkeln var(--d,5s) var(--v,0s) ease-in-out infinite}
+.figur-hero{background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--fa1) 45%,#1d2c66) 0%,#0f1b3d 60%,color-mix(in srgb,var(--fa2) 35%,#0f1b3d) 100%)!important;isolation:isolate;animation:filmAuf .7s ease-out both}
+.figur-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:url(figur-gross.jpg) right center/60% auto no-repeat;opacity:.18;filter:blur(2px) saturate(1.4);mask-image:linear-gradient(90deg,transparent 20%,#000)}
+.figur-hero img{animation:filmSchweben 4.6s ease-in-out infinite;cursor:pointer;border-color:var(--fgold)!important;box-shadow:0 0 22px color-mix(in srgb,var(--fa1) 65%,transparent)!important}
+.figur-hero span.film-neu{animation:filmAuf .45s ease-out both}
+.figur-hero b{background:linear-gradient(90deg,var(--fgold),var(--fa1));-webkit-background-clip:text;background-clip:text;color:transparent!important}
+.film-hops{animation:filmHops .6s cubic-bezier(.3,1.6,.5,1)!important}
+.figur-logo{animation:filmSchweben 5s ease-in-out infinite}
+.film-auf{animation:filmAuf .6s ease-out both}
+.film-stern{position:fixed;z-index:100000;pointer-events:none;width:10px;height:10px;margin:-5px 0 0 -5px;background:var(--c,#F2C14E);clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);animation:filmStern .75s ease-out forwards}
+@keyframes filmSchweben{0%,100%{transform:translateY(0) rotate(-1deg) scale(1)}50%{transform:translateY(-7px) rotate(1deg) scale(1.025)}}
+@keyframes filmGlanz{to{background-position:300% 0}}
+@keyframes filmAuf{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes filmPuls{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes filmIris{0%{clip-path:circle(150% at 50% 40%)}100%{clip-path:circle(0% at 50% 40%)}}
+@keyframes filmFunkeln{0%,100%{opacity:0;transform:translateY(0) scale(.4)}40%{opacity:1;transform:translateY(-18px) scale(1)}80%{opacity:0;transform:translateY(-40px) scale(.6)}}
+@keyframes filmHops{0%{transform:scale(1)}30%{transform:scale(1.18) rotate(-6deg)}60%{transform:scale(.95) rotate(4deg)}100%{transform:scale(1)}}
+@keyframes filmStern{0%{opacity:1;transform:translate(0,0) scale(.4) rotate(0)}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(1.1) rotate(160deg)}}
+@media (prefers-reduced-motion:reduce){#figurStart *,#figurStart,.figur-hero,.figur-hero img,.figur-logo,.film-auf,.film-funke,#figurStart h1{animation:none!important}.film-funke{opacity:.6}.film-aurora i{animation:none!important}}
+</style>
+<script>
+(function(){
+  var ruhig=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var SAETZE=["Tippst du mich an? Das kitzelt!", "Atme einmal tief. Ich mache mit.", "Schultern runter, ganz locker. So ist gut.", "Du bist heute schon da. Das zählt."],si=0;
+  var farben=['#F2C14E','#E07B2E','#F25C54','#ffffff'];
+  // Farbschleier + aufsteigende Funken (wie Fias Nest)
+  var au=document.createElement('div');au.className='film-aurora';au.setAttribute('aria-hidden','true');au.innerHTML='<i></i><i></i><i></i>';document.body.prepend(au);
+  if(!ruhig){var cv=document.createElement('canvas');cv.id='filmFunken';cv.setAttribute('aria-hidden','true');document.body.prepend(cv);var cx=cv.getContext('2d'),W,H,P=[],dp=devicePixelRatio||1;
+    function gr(){W=cv.width=innerWidth*dp;H=cv.height=innerHeight*dp}gr();addEventListener('resize',gr);
+    function hx(c){c=c.replace('#','');return parseInt(c.substr(0,2),16)+','+parseInt(c.substr(2,2),16)+','+parseInt(c.substr(4,2),16)}
+    var tone=[hx('#F2C14E'),hx('#E07B2E'),hx('#F25C54')];
+    function neu(){return{x:Math.random()*W,y:H+10,r:(1+Math.random()*2.2)*dp,v:(.25+Math.random()*.6)*dp,s:Math.random()*6.28,a:.4+Math.random()*.5,c:tone[Math.random()*3|0]}}
+    for(var j=0;j<22;j++){var q=neu();q.y=Math.random()*H;P.push(q)}
+    (function tick(){if(!document.hidden){cx.clearRect(0,0,W,H);for(var n=0;n<P.length;n++){var p=P[n];p.y-=p.v;p.s+=.02;p.x+=Math.sin(p.s)*.4*dp;if(p.y<-10)P[n]=neu();
+      var g=cx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);g.addColorStop(0,'rgba('+p.c+','+p.a+')');g.addColorStop(1,'rgba('+p.c+',0)');cx.fillStyle=g;cx.beginPath();cx.arc(p.x,p.y,p.r*4,0,6.29);cx.fill()}}requestAnimationFrame(tick)})();}
+  var s=document.getElementById('figurStart');
+  if(s){
+    for(var i=0;i<16;i++){var f=document.createElement('i');f.className='film-funke';f.style.left=(5+Math.random()*90)+'%';f.style.top=(8+Math.random()*84)+'%';f.style.setProperty('--c',farben[i%3]);f.style.setProperty('--d',(3.5+Math.random()*3)+'s');f.style.setProperty('--v',(Math.random()*4)+'s');s.appendChild(f);}
+    var go=document.getElementById('figurStartGo');
+    if(go)go.onclick=function(e){sterne(e.clientX,e.clientY,10);try{sessionStorage.setItem('figurStart','1');}catch(x){}
+      if(ruhig){s.hidden=true;return;}s.classList.add('geht');setTimeout(function(){s.hidden=true;s.classList.remove('geht');},700);};
+  }
+  function sterne(x,y,n){if(ruhig||!x)return;for(var i=0;i<n;i++){var st=document.createElement('i');st.className='film-stern';var w=Math.random()*Math.PI*2,r=30+Math.random()*40;st.style.left=x+'px';st.style.top=y+'px';st.style.setProperty('--x',Math.cos(w)*r+'px');st.style.setProperty('--y',Math.sin(w)*r+'px');st.style.setProperty('--c',farben[i%4]);document.body.appendChild(st);setTimeout(st.remove.bind(st),800);}}
+  // Figur reagiert auf Tipp
+  document.addEventListener('click',function(e){
+    var t=e.target;
+    var fig=t.closest&&t.closest('#figurStart img,.figur-hero img,.figur-logo');
+    if(fig){fig.classList.remove('film-hops');void fig.offsetWidth;fig.classList.add('film-hops');sterne(e.clientX,e.clientY,8);
+      var sp=fig.closest('.figur-hero')&&fig.closest('.figur-hero').querySelector('span');if(sp&&SAETZE.length){sp.textContent=SAETZE[si++%SAETZE.length];sp.classList.remove('film-neu');void sp.offsetWidth;sp.classList.add('film-neu');}return;}
+    var b=t.closest&&t.closest('button,.btn,[role=button]');
+    if(b&&b.id!=='figurStartGo')sterne(e.clientX,e.clientY,5);
+  },true);
+  document.addEventListener('animationend',function(e){if(e.animationName==='filmHops')e.target.classList.remove('film-hops');});
+  // Karten gleiten wie Filmszenen herein
+  if(!ruhig&&'IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('film-auf');io.unobserve(en.target);}});},{rootMargin:'0px 0px -8% 0px'});
+    document.querySelectorAll('.panel>*,.card').forEach(function(k){if(k.getBoundingClientRect().top>innerHeight)io.observe(k);});
+  }
+})();
+</script>
+<script src="../apps/sprechen/sprechen.js" data-figur="sparky" data-name="Sparky" data-bild="figur.jpg" data-audio="audio/sparky/" data-unten="18" data-saetze='{"gruss": ["Hey, ich bin Sparky! Lust auf eine kleine Übung?"], "lob": ["Wow, das hast du super gemacht! Ich wedle vor Freude mit dem Schwanz."], "mut": ["Ganz ruhig. Schultern runter, einmal tief atmen. Ich mache mit."], "frage": ["Tipp oben auf «Messen» oder «Sitzung», dann zeige ich dir alles Schritt für Schritt."]}' defer></script>
 </body>
 </html>

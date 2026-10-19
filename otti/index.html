@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Otti</title>
+<meta name="theme-color" content="#0b1a3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Otti">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  :root { --nacht:#0b1a3a; --nacht2:#16306b; --gold:#f5c542; --text:#f4f1e8; --leise:#b9c3e0; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { margin:0; height:100%; }
+  body { background:radial-gradient(120% 80% at 50% 0%, var(--nacht2), var(--nacht) 70%); color:var(--text);
+    font:16px/1.4 system-ui, -apple-system, sans-serif; display:flex; flex-direction:column; align-items:center;
+    padding:calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 16px); overflow:hidden; }
+  .sterne { position:fixed; inset:0; pointer-events:none; background-image:
+    radial-gradient(2px 2px at 12% 18%, #fff8 50%, transparent 51%), radial-gradient(1.5px 1.5px at 78% 12%, #fff9 50%, transparent 51%),
+    radial-gradient(2px 2px at 64% 30%, #fff6 50%, transparent 51%), radial-gradient(1.5px 1.5px at 30% 8%, #fff7 50%, transparent 51%),
+    radial-gradient(2px 2px at 90% 40%, #fff5 50%, transparent 51%), radial-gradient(1.5px 1.5px at 6% 44%, #fff6 50%, transparent 51%); }
+  h1 { margin:4px 0 0; font-size:22px; letter-spacing:.5px; color:var(--gold); }
+  .status { min-height:22px; color:var(--leise); font-size:15px; margin:2px 0 10px; text-align:center; }
+  .buehne { position:relative; width:min(86vw, 420px); aspect-ratio:1/1; border-radius:28px; overflow:hidden;
+    box-shadow:0 18px 50px #0008, 0 0 0 3px #f5c54233; transform-origin:50% 90%; transition:box-shadow .3s; }
+  .buehne.hoert { box-shadow:0 18px 50px #0008, 0 0 0 4px #7fd4ff, 0 0 40px #7fd4ff66; }
+  .buehne.spricht { box-shadow:0 18px 50px #0008, 0 0 0 4px var(--gold), 0 0 44px #f5c54277; }
+  .buehne canvas { position:absolute; inset:0; width:100%; height:100%; display:block; transform:scale(1.07); transform-origin:50% 85%; }
+  .buehne .glanz { position:absolute; inset:0; pointer-events:none; background:
+    radial-gradient(3px 3px at 24% 5%, #fff 50%, transparent 51%), radial-gradient(3px 3px at 36% 13%, #fff 50%, transparent 51%),
+    radial-gradient(2.5px 2.5px at 94% 2.5%, #fff 50%, transparent 51%), radial-gradient(2.5px 2.5px at 1% 35%, #fff 50%, transparent 51%);
+    animation:funkeln 2.6s ease-in-out infinite; }
+  @keyframes funkeln { 50% { opacity:.15; } }
+  .funke { position:absolute; width:10px; height:10px; border-radius:50%; background:radial-gradient(#fff, #f5c542 60%, transparent 70%);
+    pointer-events:none; animation:funke 1s ease-out forwards; }
+  @keyframes funke { to { transform:translate(var(--dx), var(--dy)) scale(.2); opacity:0; } }
+  .hopsen { animation:hopsen .55s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes hopsen { 30% { transform:translateY(-14px) scale(1.1); } 60% { transform:translateY(2px) scale(1.06); } }
+  .atmen { animation:atmen 3.6s ease-in-out infinite; }
+  @keyframes atmen { 50% { transform:scale(1.012) translateY(-2px); } }
+  .text { width:min(92vw, 460px); flex:1; min-height:0; overflow-y:auto; margin-top:14px; display:flex; flex-direction:column; gap:8px;
+    mask-image:linear-gradient(transparent, #000 18px); -webkit-mask-image:linear-gradient(transparent, #000 18px); padding-top:14px; }
+  .z { padding:8px 12px; border-radius:14px; max-width:86%; white-space:pre-wrap; }
+  .z.du { align-self:flex-end; background:#24386e; }
+  .z.otti { align-self:flex-start; background:#f4f1e8; color:#22201a; }
+  .knopf { margin-top:12px; width:88px; height:88px; border-radius:50%; border:0; cursor:pointer; font-size:34px;
+    background:var(--gold); color:#2a1d00; box-shadow:0 10px 28px #0007; display:grid; place-items:center; flex:none;
+    transition:transform .1s, background .2s; }
+  .knopf:active { transform:scale(.94); }
+  .knopf.aktiv { background:#d6304a; color:#fff; }
+  .knopf:focus-visible { outline:3px solid #fff; outline-offset:4px; }
+  .hinweis { color:var(--leise); font-size:13px; margin-top:8px; text-align:center; min-height:18px; }
+  .vergessen { margin-top:6px; background:none; border:0; color:var(--leise); font:13px system-ui, sans-serif; text-decoration:underline; cursor:pointer; opacity:.8; }
+  @media (prefers-reduced-motion: reduce) { .atmen { animation:none; } }
+</style>
+</head>
+<body>
+<script src="../nova/intro.js" data-art="funken" data-bild="otti-3d.jpg" data-text="Otti wartet im Mondschein-Wald"></script>
+<div class="sterne"></div>
+<h1>Otti</h1>
+<div class="status" id="status">Tipp auf den Knopf und rede mit mir.</div>
+
+<div class="buehne atmen" id="buehne" role="img" aria-label="Otti der Igel">
+  <canvas id="figur"></canvas>
+  <div class="glanz"></div>
+</div>
+
+<div class="text" id="text" aria-live="polite"></div>
+
+<button class="knopf" id="knopf" type="button" aria-label="Gespräch starten">🎙</button>
+<div class="hinweis" id="hinweis"></div>
+<button class="vergessen" id="vergessen" type="button" hidden>Otti vergisst alles</button>
+
+<script src="elevenlabs-client-1.26.0.js"></script>
+<script src="../nova/mund.js"></script>
+<script>
+(function () {
+  // Live-Gespräch mit Otti: ElevenLabs Agent (hören, denken mit Claude, sprechen mit Ottis Stimme).
+  // Der Agent ist nur von dieser Adresse aus erreichbar und hat ein Tageslimit.
+  var AGENT = 'agent_4801m55hqwdpeq0ry4awvx45rz5t';
+  var $ = function (id) { return document.getElementById(id); };
+  var buehne = $('buehne'), figur = $('figur');
+  var knopf = $('knopf'), status = $('status'), text = $('text'), hinweis = $('hinweis');
+  var conv = null, startet = false, mund = null, offen = 0, spitze = 0.15;
+
+  // Ottis Gesicht: Mund bewegt sich im Takt seiner Stimme (nova/mund.js).
+  var bild = new Image();
+  bild.onload = function () {
+    try {
+      mund = NovaMund(figur, bild, { linie: [[446, 786], [470, 797], [510, 805], [600, 805], [645, 797], [678, 776]], lippe: 858, kinn: 945, max: 30 });
+    } catch (e) { figur.getContext('2d').drawImage(bild, 0, 0); }
+  };
+  bild.src = 'otti-3d.jpg';
+
+  // Funken, wenn Otti sich freut.
+  function funken(n) {
+    for (var i = 0; i < n; i++) {
+      var f = document.createElement('div'); f.className = 'funke';
+      var w = Math.random() * Math.PI * 2, r = 60 + Math.random() * 90;
+      f.style.left = (35 + Math.random() * 30) + '%'; f.style.top = (40 + Math.random() * 25) + '%';
+      f.style.setProperty('--dx', Math.cos(w) * r + 'px'); f.style.setProperty('--dy', Math.sin(w) * r - 40 + 'px');
+      buehne.appendChild(f); setTimeout(function (e) { e.remove(); }.bind(null, f), 1100);
+    }
+  }
+  function hopsen() {
+    figur.classList.remove('hopsen'); void figur.offsetWidth; figur.classList.add('hopsen'); funken(10);
+  }
+
+  // Gedächtnis: worüber ihr geredet habt, nur auf diesem Handy gespeichert.
+  var GED = 'otti_gedaechtnis', jetztGesagt = [];
+  function gedaechtnis() { try { return JSON.parse(localStorage.getItem(GED)) || []; } catch (e) { return []; } }
+  function merken() {
+    if (jetztGesagt.length < 2) { jetztGesagt = []; return; }
+    var t = jetztGesagt.join('\n'); if (t.length > 900) t = t.slice(-900);
+    var g = gedaechtnis(); g.push({ d: new Date().toLocaleDateString('de-CH'), t: t });
+    try { localStorage.setItem(GED, JSON.stringify(g.slice(-4))); } catch (e) {}
+    jetztGesagt = []; vergessenZeigen();
+  }
+  function erinnerung() {
+    var g = gedaechtnis();
+    return g.length ? g.map(function (x) { return 'Am ' + x.d + ':\n' + x.t; }).join('\n\n') : 'Noch nichts. Ihr redet zum ersten Mal.';
+  }
+  var vergessen = $('vergessen');
+  function vergessenZeigen() { vergessen.hidden = !gedaechtnis().length; }
+  vergessen.addEventListener('click', function () {
+    try { localStorage.removeItem(GED); } catch (e) {}
+    vergessenZeigen(); status.textContent = 'Erledigt. Otti fängt neu an.';
+  });
+  vergessenZeigen();
+
+  function zeile(wer, t) {
+    jetztGesagt.push((wer === 'du' ? 'Gegenüber: ' : 'Otti: ') + t);
+    var d = document.createElement('div'); d.className = 'z ' + wer; d.textContent = t;
+    text.appendChild(d); text.scrollTop = text.scrollHeight;
+    while (text.children.length > 30) text.removeChild(text.firstChild);
+  }
+
+  // Mund und Kopf folgen der Stimme; beim Zuhören neigt Otti den Kopf.
+  var neigung = 0;
+  function takt() {
+    var ziel = 0, hoer = 0;
+    if (conv) {
+      var v = 0, iv = 0;
+      try { v = conv.getOutputVolume() || 0; } catch (e) {}
+      try { iv = conv.getInputVolume() || 0; } catch (e) {}
+      spitze = Math.max(spitze * 0.997, v, 0.08);
+      if (conv.__spricht) ziel = Math.min(1, Math.max(-0.25, (v / spitze) * 1.25 - 0.12));
+      else hoer = Math.min(1, iv * 4);
+    }
+    offen += (ziel - offen) * (ziel > offen ? 0.55 : 0.3);
+    if (mund) mund.setze(offen);
+    neigung += ((conv && !conv.__spricht ? 2 + hoer * 1.5 : 0) - neigung) * 0.08;
+    var hoch = conv && conv.__spricht ? Math.max(0, offen) * 4 : 0;
+    figur.style.transform = 'scale(1.07) rotate(' + neigung.toFixed(2) + 'deg) translateY(' + (-hoch).toFixed(1) + 'px)';
+    requestAnimationFrame(takt);
+  }
+  requestAnimationFrame(takt);
+
+  function knopfZeigen() {
+    var an = !!conv || startet;
+    knopf.classList.toggle('aktiv', an);
+    knopf.textContent = an ? '■' : '🎙';
+    knopf.setAttribute('aria-label', an ? 'Gespräch beenden' : 'Gespräch starten');
+  }
+
+  async function starten() {
+    if (startet || conv) return;
+    startet = true; knopfZeigen();
+    status.textContent = 'Otti wacht auf …'; hinweis.textContent = '';
+    try {
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (e) {
+      startet = false; knopfZeigen();
+      status.textContent = 'Ich brauche das Mikrofon.';
+      hinweis.textContent = 'Einstellungen › Safari › Mikrofon erlauben, dann nochmal tippen.';
+      return;
+    }
+    try {
+      var c = await ElevenLabsClient.Conversation.startSession({
+        agentId: AGENT,
+        connectionType: 'websocket',
+        dynamicVariables: { letztes_mal: erinnerung() },
+        onConnect: function () { status.textContent = 'Otti hört zu.'; hopsen(); },
+        onDisconnect: function () { ende('Bis bald! Tipp auf den Knopf, dann bin ich wieder da.'); },
+        onError: function (m) { hinweis.textContent = 'Fehler: ' + (m || 'unbekannt'); },
+        onMessage: function (m) { if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message); },
+        onModeChange: function (m) {
+          var sp = m && m.mode === 'speaking';
+          if (conv) conv.__spricht = sp;
+          buehne.classList.toggle('spricht', sp); buehne.classList.toggle('hoert', !sp);
+          status.textContent = sp ? 'Otti spricht …' : 'Otti hört zu.';
+        }
+      });
+      conv = c; startet = false; knopfZeigen();
+      buehne.classList.add('hoert');
+    } catch (e) {
+      startet = false; knopfZeigen();
+      status.textContent = 'Otti schläft gerade.';
+      hinweis.textContent = 'Keine Verbindung. Internet prüfen und nochmal tippen.';
+    }
+  }
+
+  function ende(t) {
+    if (conv) merken();
+    conv = null; startet = false;
+    buehne.classList.remove('hoert', 'spricht');
+    knopfZeigen();
+    if (t) status.textContent = t;
+  }
+
+  knopf.addEventListener('click', function () {
+    if (conv) { var c = conv; ende('Bis bald!'); c.endSession().catch(function () {}); }
+    else starten();
+  });
+  // Auf Otti tippen: er hüpft vor Freude.
+  buehne.addEventListener('click', hopsen);
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
+})();
+</script>
+</body>
+</html>
