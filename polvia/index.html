@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Polvia</title>
+<meta name="description" content="Persönliche Assistenz für Menschen mit vielen Projekten, Firmen und einem Privatleben.">
+<meta name="theme-color" content="#14213d">
+<meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Polvia">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-96.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div id="app" class="app" hidden>
+  <header class="top">
+    <div class="top-row">
+      <div>
+        <p class="datum" id="datum"></p>
+        <h1 id="gruss">Guten Tag</h1>
+      </div>
+      <button class="avatar" id="profil" type="button" aria-label="Profilbild"><span id="profilBild"></span></button>
+    </div>
+    <div class="modus" role="tablist" aria-label="Ansicht">
+      <button type="button" data-modus="alle" role="tab">Alles</button>
+      <button type="button" data-modus="geschaeft" role="tab">Geschäft</button>
+      <button type="button" data-modus="privat" role="tab">Privat</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="view" id="v-heute" data-titel="Heute"></section>
+    <section class="view" id="v-bereiche" data-titel="Bereiche" hidden></section>
+    <section class="view" id="v-aufgaben" data-titel="Aufgaben" hidden></section>
+    <section class="view" id="v-kalender" data-titel="Kalender" hidden></section>
+    <section class="view" id="v-nova" data-titel="Nova" hidden></section>
+  </main>
+
+  <form class="erfassen" id="erfassen" autocomplete="off">
+    <input id="erfassenText" type="text" placeholder="Nova, notier …  z. B. «Morgen 14 Uhr Call Team»" aria-label="Schnell erfassen" enterkeyhint="done">
+    <button type="button" class="rund mic" id="erfassenMic" aria-label="Diktieren">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12h-2Z"/></svg>
+    </button>
+    <button type="submit" class="rund go" aria-label="Erfassen">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg>
+    </button>
+  </form>
+
+  <nav class="leiste" aria-label="Navigation">
+    <button type="button" data-view="heute"><svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v1.06A7 7 0 0 1 18.94 11H20a1 1 0 1 1 0 2h-1.06A7 7 0 0 1 13 18.94V20a1 1 0 1 1-2 0v-1.06A7 7 0 0 1 5.06 13H4a1 1 0 1 1 0-2h1.06A7 7 0 0 1 11 5.06V4a1 1 0 0 1 1-1Zm0 4a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0 2.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"/></svg><span>Heute</span></button>
+    <button type="button" data-view="bereiche"><svg viewBox="0 0 24 24"><path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" opacity=".9"/></svg><span>Bereiche</span></button>
+    <button type="button" data-view="aufgaben"><svg viewBox="0 0 24 24"><path d="M9.5 16.2 5.3 12l-1.4 1.4 5.6 5.6L20.1 8.4 18.7 7z"/></svg><span>Aufgaben</span></button>
+    <button type="button" data-view="kalender"><svg viewBox="0 0 24 24"><path d="M7 2h2v2h6V2h2v2h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3V2Zm12 8H5v9h14v-9Z"/></svg><span>Kalender</span></button>
+    <button type="button" data-view="nova"><span class="orb"></span><span>Nova</span></button>
+  </nav>
+</div>
+
+<div class="intro" id="intro">
+  <div class="intro-in">
+    <div class="intro-logo"><img src="icon-512.png" alt=""></div>
+    <h1>Polvia</h1>
+    <p>Alle Firmen, Projekte und dein Privatleben an einem Ort. Nova ordnet, erinnert und bereitet vor. Du entscheidest.</p>
+    <label class="feld">Wie darf Nova dich nennen?
+      <input id="introName" type="text" placeholder="Vorname" autocomplete="given-name" maxlength="30">
+    </label>
+    <button class="btn haupt" id="introStart" type="button">Mit Beispieldaten starten</button>
+    <button class="btn" id="introLeer" type="button">Leer starten</button>
+    <p class="klein">Deine Daten bleiben auf diesem Gerät. Nichts wird gesendet, ausser du verbindest Nova selbst mit deinem Server.</p>
+  </div>
+</div>
+
+<div class="blatt-hg" id="blattHg" hidden></div>
+<div class="blatt" id="blatt" role="dialog" aria-modal="true" hidden></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="app.js"></script>
+<script>
+if ('serviceWorker' in navigator && location.protocol === 'https:' && !/githack/.test(location.host)) {
+  navigator.serviceWorker.register('sw.js').catch(function () {});
+}
+</script>
+</body>
+</html>
