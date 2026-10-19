@@ -53,6 +53,58 @@ p{margin:0 0 10px}
 .carmen.small{width:96px;height:115px}
 .carmen.dance #c-body{animation:sway .9s ease-in-out infinite alternate;transform-origin:100px 200px}
 @keyframes sway{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
+/* Trickfilm-Bühne Milulu */
+.milu-platz{position:relative;height:300px;margin:6px 0 0;border-radius:28px;overflow:hidden;border:1px solid rgba(242,193,78,.45);background:radial-gradient(120% 90% at 50% 0%,#24398a 0%,#122059 55%,#0b1430 100%);box-shadow:0 18px 44px -14px rgba(0,0,0,.6),0 0 40px rgba(229,72,77,.18);isolation:isolate}
+.milu-strasse{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.milu-strasse .lichter circle{fill:#ffd36e;filter:drop-shadow(0 0 5px #ffd36e);animation:lichtBlink 2.4s ease-in-out infinite}
+.milu-strasse .lichter circle:nth-child(2n){fill:#ff8a7a;filter:drop-shadow(0 0 5px #ff8a7a);animation-delay:-1.2s}
+.milu-strasse .lichter circle:nth-child(3n){fill:#7fe3d5;filter:drop-shadow(0 0 5px #7fe3d5);animation-delay:-.6s}
+@keyframes lichtBlink{50%{opacity:.45}}
+.milu-platz.puls .lichter circle{animation:none;opacity:1}
+.milu-tanz{position:absolute;left:50%;bottom:16px;width:188px;height:188px;margin-left:-94px;z-index:2}
+.milu-tanz .milu{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid var(--gold);box-shadow:0 0 0 6px rgba(242,193,78,.14),0 14px 30px rgba(0,0,0,.45),0 0 44px rgba(229,72,77,.45);cursor:pointer;display:block;transform-origin:50% 100%;animation:miluWiegen 2.4s ease-in-out infinite}
+@keyframes miluWiegen{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg) translateY(-4px)}}
+img.carmen{width:auto;height:auto;filter:none}
+.carmen.milu-klein{width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 30px rgba(229,72,77,.45)}
+img.carmen.dance{animation:miluSway .5s ease-in-out infinite alternate;transform-origin:50% 100%}
+@keyframes miluSway{from{transform:rotate(-6deg) translateY(0)}to{transform:rotate(6deg) translateY(-6px)}}
+.b1{animation:miluHopp .32s cubic-bezier(.3,1.6,.5,1)!important}.b2{animation:miluWipp .28s ease-out!important}
+@keyframes miluHopp{40%{transform:translateY(-14px) rotate(-5deg) scale(1.05)}}
+@keyframes miluWipp{40%{transform:translateY(-5px) rotate(3deg)}}
+.milu-req{position:absolute;right:-18px;top:-10px;font-size:44px;opacity:0;pointer-events:none}
+.milu-req.zeig{animation:reqAuf 1.6s ease-out}
+@keyframes reqAuf{0%{opacity:0;transform:translateY(20px) scale(.4)}25%{opacity:1;transform:translateY(-6px) scale(1.15) rotate(10deg)}75%{opacity:1}100%{opacity:0;transform:translateY(-36px)}}
+.milu.dreh{animation:miluDreh .9s cubic-bezier(.4,1.4,.5,1)!important}
+@keyframes miluDreh{50%{transform:rotate(-14deg) scale(1.08) translateY(-12px)}}
+.noten{position:absolute;inset:0;z-index:1;pointer-events:none}
+.noten i{position:absolute;bottom:60px;font-style:normal;font-size:26px;color:#ffd36e;opacity:0;animation:note 4.5s linear infinite}
+.noten i:nth-child(1){left:22%}.noten i:nth-child(2){left:70%;animation-delay:-1.5s;color:#7fe3d5}.noten i:nth-child(3){left:46%;animation-delay:-3s;color:#ff8a7a}
+@keyframes note{0%{opacity:0;transform:translateY(0) rotate(-10deg)}20%{opacity:1}100%{opacity:0;transform:translateY(-170px) rotate(15deg)}}
+.milu-takt-box{position:relative;display:flex;justify-content:center;margin:2px 0 6px}
+.carmen.milu-takt{width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 22px rgba(229,72,77,.45);transform-origin:50% 100%}
+.carmen.milu-takt.jubel{animation:miluDreh .7s ease!important}
+.milu-treffer{position:absolute;left:calc(50% + 50px);top:20px;font-weight:700;font-size:18px;opacity:0;white-space:nowrap}
+.milu-treffer.gut{color:var(--good)}.milu-treffer.nein{color:var(--coral)}
+.milu-treffer.zeig{animation:trefferAuf .9s ease-out}
+@keyframes trefferAuf{0%{opacity:0;transform:translateY(8px) scale(.6)}30%{opacity:1;transform:translateY(-4px) scale(1.1)}100%{opacity:0;transform:translateY(-20px)}}
+.freeze-stage .milu-freeze{width:200px;height:200px;border-radius:50%;object-fit:cover;border:4px solid var(--gold);box-shadow:0 0 40px rgba(229,72,77,.45);transition:filter .3s}
+.milu-freeze.eis{filter:saturate(.2) brightness(1.15) hue-rotate(160deg);border-color:#bfefff;box-shadow:0 0 50px rgba(160,230,255,.8)}
+.sticker-reihe{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:12px 0 4px}
+.sticker-reihe .st{font-size:22px;width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:var(--card);border:1px solid var(--line);filter:grayscale(1);opacity:.35}
+.sticker-reihe .st.hat{filter:none;opacity:1;background:var(--gold-l);border-color:rgba(242,193,78,.5)}
+.sticker-gross{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.stk{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px 10px;text-align:center;display:flex;flex-direction:column;gap:2px;opacity:.45;filter:grayscale(1)}
+.stk.hat{opacity:1;filter:none;border-color:rgba(242,193,78,.5);background:var(--gold-l)}
+.stk .em{font-size:40px}.stk b{font-size:17px}.stk span{font-size:13px;color:var(--muted)}
+.tipp-karte{margin:10px 0 4px;padding:14px 16px;border-radius:20px;background:linear-gradient(135deg,rgba(229,72,77,.18),rgba(46,196,182,.14));border:1px solid var(--line);display:flex;flex-direction:column;gap:4px}
+.tipp-karte b{color:var(--gold)}.tipp-karte small{color:var(--muted);font-size:14px}
+.konfetti{position:fixed;top:-12px;width:9px;height:14px;border-radius:2px;z-index:2147483600;pointer-events:none;animation:konfetti 2.4s ease-in forwards}
+@keyframes konfetti{to{transform:translate(var(--dx),105vh) rotate(720deg)}}
+.sticker-neu{position:fixed;left:16px;right:16px;top:calc(18px + var(--sat));z-index:2147483601;max-width:420px;margin:0 auto;background:#fffaf0;color:#2a2340;border-radius:22px;padding:14px 16px;display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center;box-shadow:0 14px 40px rgba(0,0,0,.45);animation:fade .4s var(--ease)}
+.sticker-neu .em{grid-row:span 2;font-size:40px}.sticker-neu span{font-size:15px;color:#6a6280}
+.sticker-neu.weg{opacity:0;transform:translateY(-20px);transition:all .5s}
+@media (prefers-reduced-motion:reduce){.milu-tanz .milu,.noten i,.milu-strasse .lichter circle,img.carmen.dance{animation:none!important}}
+@media (max-width:360px){.milu-platz{height:260px}.milu-tanz{width:160px;height:160px;margin-left:-80px}}
 .bubble{position:relative;background:#fffaf0;color:#2a2340;border-radius:22px;padding:14px 18px;font-size:19px;font-weight:500;line-height:1.35;text-align:center;margin:10px auto 16px;max-width:420px;box-shadow:0 10px 30px -12px rgba(0,0,0,.5)}
 .bubble:before{content:"";position:absolute;top:-10px;left:50%;margin-left:-11px;border:11px solid transparent;border-top:0;border-bottom-color:#fffaf0}
 .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:58px;border:0;border-radius:20px;padding:12px 20px;font-size:19px;font-weight:600;cursor:pointer;transition:transform .15s var(--ease)}
@@ -161,19 +213,43 @@ input[type=range]{width:100%;accent-color:var(--gold)}
   <header class="top">
     <button class="back" id="back" hidden>‹ Zurück</button>
     <div class="brand" id="brand">Milulu <span>·</span> Salsa</div>
-    <div class="pill" id="streak" title="Geübte Runden">★ <span id="rounds">0</span></div>
+    <div style="display:flex;gap:8px;align-items:center"><span data-feedback-slot></span><div class="pill" id="streak" title="Geübte Runden">★ <span id="rounds">0</span></div></div>
   </header>
 
   <!-- START -->
   <section class="screen on" id="s-home">
-    <div class="stage" data-sag="home-say"><svg class="carmen" id="carmen-home" viewBox="0 0 200 240" aria-label="Milulu"><use href="#carmen-art"/></svg></div>
+    <div class="milu-platz" id="milu-platz">
+      <svg class="milu-strasse" viewBox="0 0 400 230" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <circle cx="340" cy="38" r="20" fill="#fff4cf" opacity=".9"/><circle cx="350" cy="32" r="18" fill="#16265a"/>
+        <g class="haeuser">
+          <rect x="0" y="80" width="78" height="150" fill="#f29bb0"/><rect x="78" y="104" width="70" height="126" fill="#5fd0c0"/>
+          <rect x="252" y="96" width="74" height="134" fill="#f7cf62"/><rect x="326" y="74" width="74" height="156" fill="#8fb4ff"/>
+          <g fill="#2b3a7a" opacity=".55"><rect x="14" y="100" width="18" height="26" rx="9"/><rect x="46" y="100" width="18" height="26" rx="9"/><rect x="94" y="122" width="16" height="24" rx="8"/><rect x="120" y="122" width="16" height="24" rx="8"/>
+          <rect x="266" y="116" width="18" height="26" rx="9"/><rect x="296" y="116" width="18" height="26" rx="9"/><rect x="340" y="94" width="18" height="26" rx="9"/><rect x="370" y="94" width="18" height="26" rx="9"/></g>
+          <g class="fenster-licht" fill="#ffd36e"><rect x="14" y="150" width="18" height="24" rx="3"/><rect x="120" y="164" width="16" height="22" rx="3"/><rect x="296" y="160" width="18" height="24" rx="3"/><rect x="340" y="140" width="18" height="24" rx="3"/></g>
+          <g fill="#3a2a22" opacity=".7"><rect x="10" y="132" width="58" height="4"/><rect x="262" y="148" width="56" height="4"/><rect x="336" y="126" width="56" height="4"/></g>
+        </g>
+        <path d="M0 60 Q100 96 200 66 T400 58" fill="none" stroke="#3b2a1a" stroke-width="1.5" opacity=".6"/>
+        <g class="lichter"><circle cx="20" cy="66" r="4"/><circle cx="55" cy="76" r="4"/><circle cx="90" cy="84" r="4"/><circle cx="125" cy="84" r="4"/><circle cx="160" cy="76" r="4"/><circle cx="200" cy="66" r="4"/><circle cx="240" cy="64" r="4"/><circle cx="280" cy="64" r="4"/><circle cx="320" cy="62" r="4"/><circle cx="360" cy="60" r="4"/><circle cx="392" cy="58" r="4"/></g>
+        <path d="M0 214 H400 V230 H0Z" fill="#c9774a"/><path d="M0 204 H400 V216 H0Z" fill="#e2a06b"/>
+      </svg>
+      <div class="milu-tanz" data-sag="home-say"><img class="carmen milu" id="carmen-home" src="figur-gross.jpg" alt="Milulu" width="520" height="520"><span class="milu-req" id="milu-req" aria-hidden="true"></span></div>
+      <div class="noten" aria-hidden="true"><i>♪</i><i>♫</i><i>♪</i></div>
+    </div>
     <div class="bubble" id="home-say">¡Hola! Ich bin Milulu. Hör zuerst die Musik, deine Füsse kommen von allein.</div>
     <button class="btn gold" id="go-next">Weiter üben</button>
+    <div class="sticker-reihe" id="sticker-home" aria-label="Fiesta-Sticker"></div>
+    <div class="tipp-karte" id="tipp-karte"></div>
     <div class="sec">Stufen</div>
     <div class="list" id="levels"></div>
     <div class="sec">Milulu Workshop</div>
     <div class="list">
       <button class="item" data-go="ws"><div class="ic">✦</div><div class="tx"><b>Tanz-Fitness 30 Min.</b><span>4 Wochen, 2× pro Woche: Merengue, Salsa, Cumbia, Reggaeton, Samba</span></div><div class="badge" id="ws-badge"></div></button>
+    </div>
+    <div class="sec">Spielen</div>
+    <div class="list">
+      <button class="item" data-go="freeze"><div class="ic">❄</div><div class="tx"><b>Stopptanz mit Milulu</b><span>Tanzen, bis die Musik stoppt, dann einfrieren wie eine Statue. Auch für Kinder.</span></div><div class="badge" id="freeze-badge"></div></button>
+      <button class="item" data-go="sticker"><div class="ic">★</div><div class="tx"><b>Fiesta-Sticker</b><span>Sammle Sticker fürs Üben, nicht fürs Perfektsein</span></div><div class="badge" id="sticker-badge"></div></button>
     </div>
     <div class="sec">Weitere Tänze</div>
     <div class="list" id="dances"></div>
@@ -189,6 +265,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 
   <!-- ÜBEN -->
   <section class="screen" id="s-practice">
+    <div class="milu-takt-box"><img class="carmen milu-takt" id="milu-takt" src="figur.jpg" alt="" width="240" height="240"><span class="milu-treffer" id="milu-treffer"></span></div>
     <h2 id="p-title" class="center">Grundschritt</h2>
     <p id="p-intro" class="muted center small"></p>
     <div class="counts" id="counts"></div>
@@ -220,7 +297,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 
   <!-- ERGEBNIS -->
   <section class="screen" id="s-result">
-    <div class="stage"><svg class="carmen small dance" viewBox="0 0 200 240"><use href="#carmen-art"/></svg></div>
+    <div class="stage"><img class="carmen small dance milu-klein" src="figur.jpg" alt="Milulu" width="240" height="240"></div>
     <div class="result">
       <div class="score" id="r-score">0 %</div>
       <p class="muted" id="r-line">im Takt</p>
@@ -252,10 +329,28 @@ input[type=range]{width:100%;accent-color:var(--gold)}
       <div class="row"><button class="btn soft" id="ws-skip">Nächster Block ››</button></div>
     </div>
     <div id="ws-done" hidden class="center">
-      <div class="stage"><svg class="carmen small dance" viewBox="0 0 200 240"><use href="#carmen-art"/></svg></div>
+      <div class="stage"><img class="carmen small dance milu-klein" src="figur.jpg" alt="Milulu" width="240" height="240"></div>
       <div class="bubble" id="ws-done-say">¡Eso! Einheit geschafft.</div>
       <button class="btn gold" id="ws-back">Zur Workshop-Übersicht</button>
     </div>
+  </section>
+
+  <!-- STOPPTANZ -->
+  <section class="screen" id="s-freeze">
+    <h2 class="center">Stopptanz</h2>
+    <p class="muted center small">Tanz, solange die Musik spielt. Stoppt sie, frierst du ein, und Milulu sagt dir eine Pose. Jede Runde ein anderer Tanz.</p>
+    <div class="stage freeze-stage"><img class="carmen milu-freeze" id="milu-freeze" src="figur-gross.jpg" alt="Milulu" width="520" height="520"></div>
+    <div class="say"><div class="big" id="fz-big">¿Listo?</div><div class="sub" id="fz-sub">Platz frei machen, dann «Los».</div></div>
+    <div class="result"><div class="score" id="fz-runde">0 / 6</div><p class="muted" id="fz-tanz">Runde</p></div>
+    <div class="row" style="margin:10px 0"><button class="btn gold" id="fz-go">▶ Los</button></div>
+    <p class="foot-note">Platz frei räumen, rutschfeste Socken oder Schuhe. Bei Schmerzen Pause.</p>
+  </section>
+
+  <!-- STICKER -->
+  <section class="screen" id="s-sticker">
+    <h2 class="center">Fiesta-Sticker</h2>
+    <p class="muted center small">Milulu verteilt Sticker fürs Dranbleiben. Gespeichert nur auf diesem Gerät.</p>
+    <div class="sticker-gross" id="sticker-all"></div>
   </section>
 
   <!-- KAMERA -->
@@ -396,8 +491,12 @@ STEPS.cumbia={title:"Cumbia-Grundschritt",ic:"C",short:"Fuss zurück, wiegen, ra
   intro:"Links zurück, Gewicht nach vorn wiegen, Fuss ran. Dann rechts genauso. Knie weich, Oberkörper ruhig.",
   seq:{1:{f:"L",p:[-30,46],t:"Links zurück"},2:{f:"R",w:1,t:"Gewicht auf rechts"},3:{f:"L",p:[-20,0],t:"Links ran"},
        5:{f:"R",p:[30,46],t:"Rechts zurück"},6:{f:"L",w:1,t:"Gewicht auf links"},7:{f:"R",p:[20,0],t:"Rechts ran"}}};
+STEPS.kreuz={title:"Kreuzschritt (Shine)",ic:"✕",short:"Allein tanzen: Fuss kreuzt vorne über",solo:1,
+  intro:"Für Shines, wenn du allein tanzt. Links kreuzt vor dem rechten Fuss auf 1, zurück auf 3. Dann rechts kreuzt auf 5. Hüfte locker.",
+  seq:{1:{f:"L",p:[16,-24],t:"Links kreuzt vorne über"},2:{f:"R",w:1,t:"Gewicht auf rechts"},3:{f:"L",p:[-20,0],t:"Links zurück zur Seite"},
+       5:{f:"R",p:[-16,-24],t:"Rechts kreuzt vorne über"},6:{f:"L",w:1,t:"Gewicht auf links"},7:{f:"R",p:[20,0],t:"Rechts zurück zur Seite"}}};
 const DANCES=["merengue","bachata","cumbia"];
-const ORDER=["hoeren","grund","seite","rueck","drehung"];
+const ORDER=["hoeren","grund","seite","rueck","drehung","kreuz"];
 const STEP_COUNTS=[1,2,3,5,6,7];
 const sayNum={1:"uno",2:"dos",3:"tres",4:"cuatro",5:"cinco",6:"seis",7:"siete",8:"ocho"};
 
@@ -558,7 +657,8 @@ function buildCounts(el,tapOn){
     d.className="cnt "+(isStep?"step":"rest"); d.textContent=isStep?c:"·"+c; d.dataset.c=c; el.appendChild(d);}
 }
 function onBeat(b){
-  if(P.mode==="workshop") return;
+  miluBeat(b.count);
+  if(P.mode==="workshop"||P.mode==="freeze") return;
   const el=P.cam?$("#counts-cam"):$("#counts");
   el.querySelectorAll(".cnt").forEach(x=>{x.classList.toggle("now",+x.dataset.c===b.count); if(b.count===1)x.classList.remove("hit","off")});
   if(P.cam){ return; }
@@ -600,7 +700,7 @@ function registerHit(tAudio,el,fbEl,meterEl){
   const ms=Math.round(bd*1000); P.hits.set(key,ms); P.offs.push(ms);
   const a=Math.abs(ms); let txt,cls;
   if(a<=60){txt="¡Perfecto!";cls="good"} else if(a<=120){txt="Gut im Takt";cls="good"} else {txt=(ms<0?"zu früh ":"zu spät ")+a+" ms";cls="warn"}
-  fbEl.textContent=txt; fbEl.className="fb "+cls;
+  fbEl.textContent=txt; fbEl.className="fb "+cls; miluTreffer(a<=60?2:a<=120?1:0);
   if(meterEl){const i=document.createElement("i");i.style.left=(50+Math.max(-48,Math.min(48,ms/250*50)))+"%";meterEl.appendChild(i);setTimeout(()=>i.style.opacity=0,30);setTimeout(()=>i.remove(),1800);}
   const cc=(P.cam?$("#counts-cam"):$("#counts")).querySelector(`[data-c="${best.count}"]`); if(cc) cc.classList.add(a<=120?"hit":"off");
 }
@@ -635,7 +735,7 @@ function finish(){
   st.rounds++; st.last=score; st.avg=avg; if(score>st.best)st.best=score; if(score>=80&&P.bpm>st.bestBpm)st.bestBpm=P.bpm;
   mem.rounds++; mem.bpm[P.step]=P.bpm; mem.last=P.step; const d=new Date().toISOString().slice(0,10); if(!mem.days.includes(d))mem.days.push(d); save();
   $("#rounds").textContent=mem.rounds;
-  $("#r-score").textContent=score+" %";
+  $("#r-score").textContent=score+" %"; setTimeout(stickerPruefen,600);
   $("#r-line").textContent=`im Takt bei ${P.bpm} Schlägen · ${good} von ${total} Schritten`;
   let say;
   if(score>=80) say=P.bpm<110?"¡Eso! Das sitzt. Wir machen es ein bisschen schneller.":"¡Muy bien! Bereit für den nächsten Schritt.";
@@ -663,6 +763,7 @@ $("#back").onclick=()=>{ if(W){W.run=false;wsLock(false);} stop(); camStop(); sh
 $$("[data-go]").forEach(b=>b.onclick=()=>{const g=b.dataset.go; if(g==="band")openPractice("grund","free"); else show(g);});
 
 function renderHome(){
+  if(typeof renderSticker==="function"&&$("#sticker-home")) try{renderSticker()}catch(e){}
   $("#rounds").textContent=mem.rounds; $("#ws-badge").textContent=Object.keys(mem.ws||{}).length+" / 8";
   const L=$("#levels"); L.innerHTML="";
   ORDER.forEach((id,k)=>{const s=STEPS[id],m=mem.steps[id];const b=document.createElement("button");b.className="item";
@@ -844,14 +945,100 @@ async function wsLock(on_){ try{ if(on_&&navigator.wakeLock) wake=await navigato
 $("#ws-play").onclick=()=>{ if(!W)return; audio(); if(W.run){ W.run=false; stop(); wsLock(false); $("#ws-play").textContent="▶ Weiter"; } else { wsLock(true); wsStartBlock(W.el===0); } };
 $("#ws-skip").onclick=()=>{ if(!W)return; const was=W.run; W.run=false; stop(true); W.el=0; W.warned=false;
   if(W.idx>=wsBlocks(W.k).length-1) return wsFinish(); W.idx++; if(was){audio();wsStartBlock(true);} else wsShow(); };
-function wsFinish(){ W.run=false; stop(); wsLock(false); mem.ws=mem.ws||{}; mem.ws[W.k]=new Date().toISOString().slice(0,10); save();
+function wsFinish(){ W.run=false; stop(); wsLock(false); mem.ws=mem.ws||{}; mem.ws[W.k]=new Date().toISOString().slice(0,10); save(); setTimeout(stickerPruefen,800);
   sayDe("Eso! Einheit geschafft. Trink etwas Wasser.");
   $("#ws-run").hidden=true; $("#ws-done").hidden=false;
   const n=Object.keys(mem.ws).length; $("#ws-done-say").textContent=`¡Eso! Einheit ${W.k} geschafft. ${n} von 8 Einheiten. Trink etwas Wasser.`; }
 $("#ws-back").onclick=()=>renderWs();
 $("[data-go=ws]").addEventListener("click",()=>renderWs());
 
+/* ---------- Trickfilm: Milulu tanzt im Takt ---------- */
+const ruhigM=matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+function miluBeat(c){ if(ruhigM) return;
+  $$(".milu-takt,.milu,.milu-freeze").forEach(im=>{ if(P.mode==="freeze"&&FZ&&FZ.frozen) return; im.classList.remove("b1","b2"); void im.offsetWidth; im.classList.add(c===1||c===5?"b1":"b2"); });
+  const pl=$("#milu-platz"); if(pl&&(c===1||c===5)){ pl.classList.remove("puls"); void pl.offsetWidth; pl.classList.add("puls"); } }
+function miluTreffer(q){ const t=$("#milu-treffer"); if(!t) return; t.textContent=q===2?"¡Perfecto!":q===1?"¡Bien!":"¡Ay!"; t.className="milu-treffer "+(q?"gut":"nein"); void t.offsetWidth; t.classList.add("zeig");
+  const im=$("#milu-takt"); if(im&&q===2&&!ruhigM){im.classList.remove("jubel");void im.offsetWidth;im.classList.add("jubel");} }
+document.addEventListener("animationend",e=>{ if(/^milu(Hopp|Wipp|Dreh)$/.test(e.animationName)) e.target.classList.remove("b1","b2","jubel","dreh"); });
+const POSEN_REQ=["💃","🌺","🎵","✨","🪇"];
+$("#carmen-home").addEventListener("click",()=>{ const r=$("#milu-req"); r.textContent=POSEN_REQ[Math.floor(Math.random()*POSEN_REQ.length)]; r.classList.remove("zeig"); void r.offsetWidth; r.classList.add("zeig");
+  const im=$("#carmen-home"); im.classList.remove("dreh"); void im.offsetWidth; if(!ruhigM) im.classList.add("dreh"); });
+
+/* ---------- Tanz-Tipp des Tages (Haltung, Takt, Freude) ---------- */
+const TIPPS=[
+  ["Knie weich","Weiche Knie machen den Schritt leicht. Steif wird es schwer."],
+  ["Oberkörper ruhig","Die Füsse tanzen, die Schultern bleiben ruhig und locker."],
+  ["Klein ist schön","Kleine Schritte sind schneller und schöner als grosse."],
+  ["Auf den Ballen","Setz den Fuss mit dem Ballen auf, nicht mit der Ferse."],
+  ["Hör die Glocke","Die Glocke spielt auf jedem Schlag. Sie hilft dir, die 1 zu finden."],
+  ["Blick nach vorn","Schau nicht auf die Füsse. Ein Punkt an der Wand hilft beim Drehen."],
+  ["Lächeln","Lächeln gehört zum Tanz. Fehler auch. ¡No pasa nada!"],
+  ["Atmen","Atme ruhig weiter. Wer die Luft anhält, wird steif."],
+  ["Langsam lernen","Erst langsam sicher, dann schneller. Das Tempo kommt von allein."],
+  ["Wasser","Zwischen den Runden einen Schluck Wasser."]
+];
+const PALABRAS=[["uno, dos, tres","eins, zwei, drei"],["¡Eso!","Genau so!"],["¡Vamos!","Los geht's!"],["despacio","langsam"],["la vuelta","die Drehung"],["¡Sigue!","Mach weiter!"],["el ritmo","der Rhythmus"],["¡Qué bien!","Wie schön!"]];
+function renderTipp(){ const d=Math.floor(Date.now()/864e5), t=TIPPS[d%TIPPS.length], w=PALABRAS[d%PALABRAS.length];
+  $("#tipp-karte").innerHTML=""; const h=document.createElement("b"); h.textContent="Milulus Tipp: "+t[0];
+  const p=document.createElement("span"); p.textContent=t[1]; const w2=document.createElement("small"); w2.textContent="Spanisch-Wort des Tages: «"+w[0]+"» = "+w[1];
+  $("#tipp-karte").append(h,p,w2); }
+
+/* ---------- Fiesta-Sticker (nur auf dem Gerät) ---------- */
+const STICKER=[
+  ["erste","🎵","Erste Runde","Die erste Runde getanzt",()=>mem.rounds>=1],
+  ["zehn","🪇","Maracas","10 Runden getanzt",()=>mem.rounds>=10],
+  ["fuenfzig","🎺","Trompete","50 Runden getanzt",()=>mem.rounds>=50],
+  ["dreitage","🌺","Drei Tage","An 3 Tagen getanzt",()=>mem.days.length>=3],
+  ["woche","🌴","Eine Woche","An 7 Tagen getanzt",()=>mem.days.length>=7],
+  ["perfekt","⭐","Im Takt","Eine Runde mit 80 % oder mehr",()=>Object.values(mem.steps).some(s=>s.best>=80)],
+  ["basis","💃","Salsa-Basis","Grundschritt, Seitschritt und Rückschritt mit 80 %",()=>["grund","seite","rueck"].every(k=>mem.steps[k]&&mem.steps[k].best>=80)],
+  ["dreh","🌀","Die Drehung","Rechtsdrehung mit 80 %",()=>mem.steps.drehung&&mem.steps.drehung.best>=80],
+  ["welt","🌎","Weltreise","Merengue, Bachata und Cumbia ausprobiert",()=>DANCES.every(k=>mem.steps[k])],
+  ["schnell","⚡","Club-Tempo","80 % bei 150 Schlägen oder mehr",()=>Object.values(mem.steps).some(s=>s.bestBpm>=150)],
+  ["fitness","🔥","Tanz-Fitness","Eine Workshop-Einheit geschafft",()=>Object.keys(mem.ws||{}).length>=1],
+  ["workshop","🏆","Workshop komplett","Alle 8 Einheiten geschafft",()=>Object.keys(mem.ws||{}).length>=8],
+  ["statue","🧊","Statue","Einen Stopptanz fertig getanzt",()=>(mem.freeze||0)>=1]
+];
+function stickerHat(){ return STICKER.filter(x=>{try{return x[4]()}catch(e){return false}}).map(x=>x[0]); }
+function renderSticker(){
+  const hat=stickerHat(); $("#sticker-badge").textContent=hat.length+" / "+STICKER.length;
+  $("#freeze-badge").textContent=mem.freeze?mem.freeze+"×":"";
+  const r=$("#sticker-home"); r.innerHTML=""; STICKER.forEach(x=>{const i=document.createElement("span"); i.className="st"+(hat.includes(x[0])?" hat":""); i.textContent=x[1]; i.title=x[2]; r.appendChild(i);});
+  const a=$("#sticker-all"); a.innerHTML=""; STICKER.forEach(x=>{const d=document.createElement("div"); d.className="stk"+(hat.includes(x[0])?" hat":"");
+    const e=document.createElement("div"); e.className="em"; e.textContent=x[1]; const b=document.createElement("b"); b.textContent=x[2]; const s=document.createElement("span"); s.textContent=x[3]; d.append(e,b,s); a.appendChild(d);}); }
+function konfetti(){ if(ruhigM) return; const f=["#f2c14e","#E5484D","#2EC4B6","#ffffff","#ff8a7a"];
+  for(let i=0;i<40;i++){const c=document.createElement("i");c.className="konfetti";c.style.left=Math.random()*100+"vw";c.style.background=f[i%f.length];c.style.animationDelay=Math.random()*.6+"s";c.style.setProperty("--dx",(Math.random()*120-60)+"px");document.body.appendChild(c);setTimeout(()=>c.remove(),2800);} }
+function stickerPruefen(){ const hat=stickerHat(), alt=mem.sticker||[]; const neu=hat.filter(k=>!alt.includes(k)); mem.sticker=hat; save(); renderSticker();
+  if(!neu.length) return; const x=STICKER.find(s=>s[0]===neu[0]); konfetti();
+  const box=document.createElement("div"); box.className="sticker-neu"; box.innerHTML='<div class="em"></div><b></b><span></span>';
+  box.querySelector(".em").textContent=x[1]; box.querySelector("b").textContent="Neuer Sticker: "+x[2]; box.querySelector("span").textContent=x[3]; document.body.appendChild(box);
+  setTimeout(()=>box.classList.add("weg"),3200); setTimeout(()=>box.remove(),3800); sayDe("Eso! Neuer Sticker: "+x[2]+"."); }
+$("[data-go=sticker]").addEventListener("click",()=>renderSticker());
+
+/* ---------- Stopptanz ---------- */
+let FZ=null;
+const FZ_TAENZE=[["salsa",95,"Salsa"],["merengue",115,"Merengue"],["cumbia",100,"Cumbia"],["reggaeton",92,"Reggaeton"],["samba",100,"Samba"],["bachata",112,"Bachata"]];
+const FZ_POSEN=["Arme hoch wie Milulu!","Auf einem Bein, wie ein Flamingo!","Hände auf die Hüfte!","Wie eine Blume, ganz gross!","Ganz klein machen, wie eine Maus!","Eine Hand in die Luft, eine auf den Bauch!","Lächeln einfrieren!","Wie eine Statue im Park!"];
+function fzZeigen(){ $("#fz-runde").textContent=(FZ?FZ.runde:0)+" / 6"; }
+function fzTanz(){ if(!FZ||!FZ.run) return; const t=FZ_TAENZE[FZ.runde%FZ_TAENZE.length]; FZ.frozen=false; $("#milu-freeze").classList.remove("eis");
+  P.style=t[0]; P.mode="freeze"; P.step="grund"; P.cam=false; on={klick:0,clave:1,campana:1,conga:1,bajo:1,piano:1}; setBpm(t[1]); start(); P.mode="freeze";
+  $("#play").textContent="▶ Start"; $("#fz-big").textContent="¡Baila! "+t[2]; $("#fz-sub").textContent="Tanz frei, wie du willst."; $("#fz-tanz").textContent=t[2];
+  FZ.timer=setTimeout(fzStopp,5000+Math.random()*7000); }
+function fzStopp(){ if(!FZ||!FZ.run) return; stop(true); carmenDance(false); FZ.frozen=true; FZ.runde++; fzZeigen();
+  const pose=FZ_POSEN[Math.floor(Math.random()*FZ_POSEN.length)]; $("#milu-freeze").classList.add("eis");
+  $("#fz-big").textContent="¡Congelado! ❄"; $("#fz-sub").textContent=pose; sayDe("Congelado! "+pose);
+  if(FZ.runde>=6){ FZ.timer=setTimeout(fzEnde,3500); return; }
+  FZ.timer=setTimeout(()=>{ if(!FZ||!FZ.run)return; $("#fz-big").textContent="¡Sigue!"; fzTanz(); },3500+Math.random()*1500); }
+function fzEnde(){ FZ.run=false; $("#milu-freeze").classList.remove("eis"); mem.freeze=(mem.freeze||0)+1; save();
+  $("#fz-big").textContent="¡Fiesta! 🎉"; $("#fz-sub").textContent="6 Mal eingefroren. Du bist eine echte Statue!"; $("#fz-go").textContent="▶ Nochmal"; sayDe("Fiesta! Super getanzt."); konfetti(); stickerPruefen(); }
+function fzAus(){ if(FZ){FZ.run=false;clearTimeout(FZ.timer);} if(P.mode==="freeze"){stop();P.mode="step";} $("#fz-go").textContent="▶ Los"; $("#milu-freeze").classList.remove("eis"); }
+$("#fz-go").onclick=()=>{ if(FZ&&FZ.run){ fzAus(); $("#fz-big").textContent="Pause"; $("#fz-sub").textContent="«Los» für eine neue Runde."; return; }
+  audio(); FZ={run:true,runde:0,frozen:false}; fzZeigen(); $("#fz-go").textContent="■ Stopp"; fzTanz(); };
+$("[data-go=freeze]").addEventListener("click",()=>{ fzAus(); FZ=null; fzZeigen(); $("#fz-big").textContent="¿Listo?"; $("#fz-sub").textContent="Platz frei machen, dann «Los»."; });
+$("#back").addEventListener("click",()=>fzAus());
+
 /* ---------- Start ---------- */
+renderTipp(); renderSticker(); mem.sticker=mem.sticker||stickerHat();
 renderHome();
 if("speechSynthesis" in window) speechSynthesis.onvoiceschanged=()=>{voices=speechSynthesis.getVoices()};
 document.addEventListener("visibilitychange",()=>{ if(document.hidden){ if(W&&W.run){W.run=false;$("#ws-play").textContent="▶ Weiter";} stop();camStop();} });
@@ -900,7 +1087,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 <script>
 (function(){
   var ruhig=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var SAETZE=["¡Hola! Tanzt du mit mir?", "Eins, zwei, drei … und Pause. Genau so!", "Lächeln gehört zum Schritt dazu.", "Die Musik trägt dich, du musst nur zuhören."],si=0;
+  var SAETZE=["¡Hola! Tanzt du mit mir?", "Eins, zwei, drei … und Pause. Genau so!", "Lächeln gehört zum Schritt dazu.", "Die Musik trägt dich, du musst nur zuhören.", "In Havanna tanzen alle auf der Strasse. Du auch?", "¡Vamos! Spielen wir Stopptanz?", "Meine Oma sagt: Wer tanzt, ist nie allein."],si=0;
   var farben=['#F2C14E','#E5484D','#2EC4B6','#ffffff'];
   // Farbschleier + aufsteigende Funken (wie Fias Nest)
   var au=document.createElement('div');au.className='film-aurora';au.setAttribute('aria-hidden','true');au.innerHTML='<i></i><i></i><i></i>';document.body.prepend(au);
@@ -938,6 +1125,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 })();
 </script>
 <script src="../apps/sprechen/sprechen.js" data-figur="carmencita" data-name="Milulu" data-bild="figur.jpg" data-audio="audio/carmencita/" data-unten="18" data-saetze='{"gruss": ["¡Hola! Ich bin Milulu. Tanzt du mit mir?"], "lob": ["¡Muy bien! Deine Füsse tanzen schon ganz von allein."], "mut": ["Langsam ist auch schön. Hör auf die Musik, eins, zwei, drei, Pause."], "frage": ["Tipp auf «Weiter üben», dann zeige ich dir den nächsten Schritt."]}' defer></script>
+<script src="feedback.js" data-app="Milulu" defer></script>
 <script src="../nova/seelen.js" defer></script>
 <script src="../nova/nova.js" data-nova-bild="figur.jpg" data-nova-app="Milulu" data-nova-figur="carmencita" defer></script>
 </body>
