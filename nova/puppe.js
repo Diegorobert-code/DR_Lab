@@ -7,8 +7,8 @@
 //   <script src="../nova/puppe.js"></script><script>var otti = Puppe.erstelle('#otti', { figur: 'otti', bild: 'otti-3d.jpg' });</script>
 //
 // Zwei Modi:
-//  (a) Ebenen-Modus: liegt <app>/puppe/puppe.json mit Teil-Bildern (PNG mit Transparenz) vor, wird die Figur aus Teilen gebaut
-//      (Körper, Kopf, Arme, Augen, Mundformen). Oder direkt: { teile: { koerper, kopf, armL, armR, augenHalb, augenZu, muender: {X,A,E,O,U,M,F,L} } }.
+//  (a) Ebenen-Modus: mit { ordner: 'puppe/' } lädt die Puppe <app>/puppe/puppe.json mit Teil-Bildern (PNG mit Transparenz)
+//      und baut die Figur aus Teilen (Körper, Kopf, Arme, Augen, Mundformen). Ohne «ordner» wird nichts nachgeladen (kein 404). Oder direkt: { teile: { koerper, kopf, armL, armR, augenHalb, augenZu, muender: {X,A,E,O,U,M,F,L} } }.
 //  (b) Ein-Bild-Modus (Ersatz): das vorhandene Figurenbild wird per WebGL organisch verformt (Atmen, Kopf neigen, Blick,
 //      Lider, Kiefer/Mundform) und bekommt einen winkenden Arm im Figurenstil.
 //
@@ -39,6 +39,30 @@
       innen: [0.30, 0.07, 0.07],
       arm: { seite: 'rechts', fell: '#9a6230', fellHell: '#d29a58', haut: '#f0c39a', x: 0.81, y: 0.99, groesse: 0.40 },
       glow: '#f2c14e'
+    },
+    // Nova: nova/nova-3d.jpg (1024 x 1024)
+    nova: {
+      name: 'Nova',
+      augen: [[0.399, 0.556, 0.116, 0.097], [0.699, 0.463, 0.080, 0.091]],
+      mund: { l: [0.512, 0.671], r: [0.693, 0.615], oben: 0.010, unten: 0.084, kinn: 0.07, offen: true },
+      kopf: [0.52, 0.48, 0.46],
+      hals: [0.55, 0.86],
+      innen: [0.22, 0.03, 0.07],
+      arm: { seite: 'links', glatt: true, ballen: false, fell: '#c3cce0', fellHell: '#f7f4ee', haut: '#eef1f8', dunkel: '#4f6188', linie: '#4f6188', x: 0.24, y: 1.0, groesse: 0.38 },
+      glow: '#8fb8ff'
+    },
+    // Fia (Phönix-Küken): fia-kosmos/posen/wacht.jpg (512 x 512) – Augen im Bild geschlossen, Schnabel als Mund
+    fia: {
+      name: 'Fia',
+      aus: [0.56, 0.60, 1.5], // Ausschnitt: Mitte x, y, Zoom (Fia ist im Bild klein)
+      augenZu: true,
+      augen: [[0.600, 0.562, 0.050, 0.052]],
+      mund: { l: [0.455, 0.650], r: [0.528, 0.656], oben: 0, unten: 0, kinn: 0.04, max: 0.04 },
+      kopf: [0.57, 0.57, 0.2],
+      hals: [0.56, 0.74],
+      innen: [0.2, 0.03, 0.02],
+      arm: { typ: 'fluegel', seite: 'rechts', fell: '#d9481f', fellHell: '#ff9d4d', haut: '#ffc173', dunkel: '#8a2410', x: 0.82, y: 0.80, groesse: 0.44 },
+      glow: '#ff9a4a'
     }
   };
 
@@ -147,7 +171,7 @@
     'varying vec2 v;uniform sampler2D B;uniform float px;',
     'uniform vec3 uKopf;uniform vec2 uHals;uniform float uNeig;uniform vec2 uKopfV;uniform float uAtem;',
     'uniform vec4 uAL;uniform vec4 uAR;uniform vec2 uLid;uniform vec2 uBlick;uniform float uFroh;',
-    'uniform vec4 uME;uniform vec3 uMF;uniform vec4 uMund;uniform float uPresse;uniform vec3 uInnen;',
+    'uniform vec3 uAus;uniform float uMax;uniform vec4 uME;uniform vec3 uMF;uniform vec4 uMund;uniform float uPresse;uniform vec3 uInnen;',
     'uniform float uZeit;uniform float uWelle;uniform float uGlanz;uniform vec3 uGlow;',
     'vec2 rot(vec2 p,float a){float c=cos(a),s=sin(a);return vec2(c*p.x-s*p.y,s*p.x+c*p.y);}',
     // Auge: Blick verschiebt die Iris, Lid gleitet von oben (Haut von oberhalb des Auges), Wimpernlinie an der Lidkante
@@ -167,7 +191,7 @@
     ' wim=max(wim,max(w,drin*step(0.01,uFroh)*(1.0-smoothstep(0.0,0.14,abs(e.y-u)))*0.6*(1.0-lid)));',
     '}',
     'void main(){',
-    ' vec2 p=v;',
+    ' vec2 p=uAus.xy+(v-0.5)/uAus.z;',
     // Atem: Brust weitet sich unten, Kopf fährt mit
     ' float wb=smoothstep(0.58,1.0,p.y);p.x=0.5+(p.x-0.5)/(1.0+uAtem*0.022*wb);',
     // Kopf: dreht um den Hals, weicher Übergang zum Rest
@@ -182,11 +206,12 @@
     ' p.y+=uMund.w*0.016*pow(abs(tc-0.5)*2.0,1.6)*wm;',
     ' float s=sin(3.14159*tc);float yo=mix(L.y,R.y,tc)+uMF.x*s;',
     ' float H=max(uMF.y-uMF.x,0.0)*pow(s,0.75);',
-    ' float auf=uMund.x;float Hn=auf<0.0?H*(1.0+auf):H+auf*0.075*pow(s,0.85);',
+    ' float auf=uMund.x;float Hn=auf<0.0?H*(1.0+auf):H+auf*uMax*pow(s,0.85);',
     ' float D=Hn-H;float y=p.y-yo;float tief=0.0;',
     ' if(y>0.0&&s>0.0){',
     '  if(y<Hn){float o=H*0.28;',
-    '   if(Hn<=o||H<0.0005){p.y=yo+y*(H/max(Hn,1e-4));}',
+    '   if(H<0.0005){p.y=yo;tief=1.0-0.5*smoothstep(Hn*0.5,Hn,y);}',
+    '   else if(Hn<=o){p.y=yo+y*(H/max(Hn,1e-4));}',
     '   else if(y<o){p.y=yo+y;}',
     '   else{p.y=yo+o+(y-o)*(H-o)/(Hn-o);tief=clamp((Hn-H)/Hn,0.0,1.0)*smoothstep(o,Hn,y)*(1.0-smoothstep(Hn*0.7,Hn,y));}',
     '  }else{float f=1.0-smoothstep(0.0,uMF.z,y-Hn);p.y-=D*f;}',
@@ -231,14 +256,15 @@
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     var u = {};
-    ['px', 'uKopf', 'uHals', 'uNeig', 'uKopfV', 'uAtem', 'uAL', 'uAR', 'uLid', 'uBlick', 'uFroh', 'uME', 'uMF', 'uMund', 'uPresse', 'uInnen', 'uZeit', 'uWelle', 'uGlanz', 'uGlow']
+    ['px', 'uKopf', 'uHals', 'uNeig', 'uKopfV', 'uAtem', 'uAL', 'uAR', 'uLid', 'uBlick', 'uFroh', 'uME', 'uMF', 'uAus', 'uMax', 'uMund', 'uPresse', 'uInnen', 'uZeit', 'uWelle', 'uGlanz', 'uGlow']
       .forEach(function (n) { u[n] = gl.getUniformLocation(pr, n); });
     this.gl = gl; this.u = u; this.canvas = canvas;
   }
   GLBild.prototype.zeichne = function (w) {
     var gl = this.gl, u = this.u, c = this.canvas;
     gl.viewport(0, 0, c.width, c.height);
-    gl.uniform1f(u.px, 1 / c.width);
+    gl.uniform1f(u.px, 1 / (c.width * w.aus[2]));
+    gl.uniform3fv(u.uAus, w.aus); gl.uniform1f(u.uMax, w.mund.max || 0.075);
     gl.uniform3fv(u.uKopf, w.kopf); gl.uniform2fv(u.uHals, w.hals); gl.uniform1f(u.uNeig, w.neig); gl.uniform2f(u.uKopfV, w.kx, w.ky);
     gl.uniform1f(u.uAtem, w.atem);
     gl.uniform4fv(u.uAL, w.augen[0]); gl.uniform4fv(u.uAR, w.augen[1] || [9, 9, 0.01, 0.01]);
@@ -256,17 +282,20 @@
   // ---------- winkender Arm im Figurenstil (SVG, einmal gerastert, danach nur transform → 60 fps) ----------
   function armBilder(a) {
     var id = 'p' + Math.random().toString(36).slice(2, 7);
+    if (a.typ === 'fluegel') return fluegelBilder(a, id);
+    var dunkel = a.dunkel || '#4a2a12', linie = a.linie || '#8a5434';
     // Fell: Kanten werden mit Rauschen zu Büscheln verschoben
     var fell = '<filter id="' + id + 'f" x="-25%" y="-15%" width="150%" height="130%"><feTurbulence type="fractalNoise" baseFrequency="0.06 0.5" numOctaves="2" seed="7"/>' +
       '<feDisplacementMap in="SourceGraphic" scale="16" xChannelSelector="R" yChannelSelector="G"/></filter>' +
       '<filter id="' + id + 'w" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="2.2"/></filter>';
     // Licht von links oben, goldenes Mondlicht als Randlicht rechts
-    var verlauf = '<linearGradient id="' + id + 'g" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#4a2a12"/><stop offset=".22" stop-color="' + a.fell + '"/>' +
-      '<stop offset=".48" stop-color="' + a.fellHell + '"/><stop offset=".78" stop-color="' + a.fell + '"/><stop offset=".93" stop-color="#6a3c1a"/><stop offset="1" stop-color="#ffd27a"/></linearGradient>' +
+    var verlauf = '<linearGradient id="' + id + 'g" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="' + dunkel + '"/><stop offset=".22" stop-color="' + a.fell + '"/>' +
+      '<stop offset=".48" stop-color="' + a.fellHell + '"/><stop offset=".78" stop-color="' + a.fell + '"/><stop offset=".93" stop-color="' + dunkel + '"/><stop offset="1" stop-color="#ffd27a"/></linearGradient>' +
       '<radialGradient id="' + id + 'h" cx=".38" cy=".34" r=".75"><stop offset="0" stop-color="#ffe9d2"/><stop offset=".5" stop-color="' + a.haut + '"/><stop offset="1" stop-color="#b47650"/></radialGradient>' +
       '<radialGradient id="' + id + 'b" cx=".5" cy=".4" r=".6"><stop offset="0" stop-color="#f3a8a0"/><stop offset="1" stop-color="#cf7f78"/></radialGradient>';
     function haare(x0, x1, y0, y1, n, seed) {
       var s = '', r = seed;
+      if (a.glatt) return '';
       function z() { r = (r * 9301 + 49297) % 233280; return r / 233280; }
       for (var i = 0; i < n; i++) {
         var x = x0 + z() * (x1 - x0), y = y0 + z() * (y1 - y0), l = 12 + z() * 16, k = (z() - 0.5) * 10;
@@ -277,22 +306,41 @@
     }
     // Oberarm 160 x 260: Schulter unten, Ellbogen oben bei (80, 60)
     var ober = '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="260" viewBox="0 0 160 260"><defs>' + fell + verlauf + '</defs>' +
-      '<g filter="url(#' + id + 'f)"><path d="M8 262 C2 190 14 110 26 66 C36 18 124 18 134 66 C146 110 158 190 152 262 Z" fill="url(#' + id + 'g)"/>' + haare(24, 136, 50, 250, 40, 11) + '</g>' +
+      '<g' + (a.glatt ? '' : ' filter="url(#' + id + 'f)"') + '><path d="M8 262 C2 190 14 110 26 66 C36 18 124 18 134 66 C146 110 158 190 152 262 Z" fill="url(#' + id + 'g)"/>' + haare(24, 136, 50, 250, 40, 11) + '</g>' +
       '<ellipse cx="62" cy="120" rx="26" ry="70" fill="#fff" opacity=".12" filter="url(#' + id + 'w)"/></svg>';
     // Unterarm mit Pfote 200 x 340: Ellbogen unten bei (100, 290)
     var pfote = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="340" viewBox="0 0 200 340"><defs>' + fell + verlauf + '</defs>' +
-      '<g filter="url(#' + id + 'f)"><path d="M46 292 C40 240 44 190 52 150 C60 120 140 120 148 150 C156 190 160 240 154 292 A54 50 0 0 1 46 292 Z" fill="url(#' + id + 'g)"/>' + haare(56, 146, 150, 320, 34, 5) + '</g>' +
-      '<g fill="url(#' + id + 'h)" stroke="#8a5434" stroke-opacity=".3" stroke-width="2">' +
+      '<g' + (a.glatt ? '' : ' filter="url(#' + id + 'f)"') + '><path d="M46 292 C40 240 44 190 52 150 C60 120 140 120 148 150 C156 190 160 240 154 292 A54 50 0 0 1 46 292 Z" fill="url(#' + id + 'g)"/>' + haare(56, 146, 150, 320, 34, 5) + '</g>' +
+      '<g fill="url(#' + id + 'h)" stroke="' + linie + '" stroke-opacity=".3" stroke-width="2">' +
       '<ellipse cx="42" cy="70" rx="20" ry="31" transform="rotate(-30 42 70)"/><ellipse cx="76" cy="40" rx="20" ry="33" transform="rotate(-10 76 40)"/>' +
       '<ellipse cx="115" cy="38" rx="20" ry="33" transform="rotate(9 115 38)"/><ellipse cx="150" cy="62" rx="19" ry="30" transform="rotate(30 150 62)"/>' +
       '<ellipse cx="166" cy="122" rx="18" ry="26" transform="rotate(60 166 122)"/>' +
       '<ellipse cx="100" cy="112" rx="70" ry="64"/></g>' +
-      '<g fill="url(#' + id + 'b)" opacity=".85"><ellipse cx="100" cy="122" rx="30" ry="23"/><ellipse cx="45" cy="62" rx="8" ry="10" transform="rotate(-30 45 62)"/><ellipse cx="77" cy="31" rx="8" ry="10"/>' +
-      '<ellipse cx="114" cy="29" rx="8" ry="10"/><ellipse cx="148" cy="54" rx="8" ry="10" transform="rotate(30 148 54)"/></g>' +
+      (a.ballen === false ? '' : '<g fill="url(#' + id + 'b)" opacity=".85"><ellipse cx="100" cy="122" rx="30" ry="23"/><ellipse cx="45" cy="62" rx="8" ry="10" transform="rotate(-30 45 62)"/><ellipse cx="77" cy="31" rx="8" ry="10"/>' +
+      '<ellipse cx="114" cy="29" rx="8" ry="10"/><ellipse cx="148" cy="54" rx="8" ry="10" transform="rotate(30 148 54)"/></g>') +
       '<ellipse cx="78" cy="88" rx="30" ry="20" fill="#fff" opacity=".28" filter="url(#' + id + 'w)"/>' +
       '<path d="M160 86 C176 110 176 150 152 170" stroke="#ffd27a" stroke-width="6" stroke-linecap="round" fill="none" opacity=".6" filter="url(#' + id + 'w)"/></svg>';
     function url(s) { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(s); }
     return { ober: url(ober), unter: url(pfote) };
+  }
+
+  // Flügel (z.B. Fia): Federfächer, Drehpunkt am Ansatz unten (100, 290) – «winken» = flattern
+  function fluegelBilder(a, id) {
+    var f = '<defs><linearGradient id="' + id + 'q" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="' + (a.dunkel || '#8a2410') + '"/><stop offset=".45" stop-color="' + a.fell + '"/>' +
+      '<stop offset=".85" stop-color="' + a.fellHell + '"/><stop offset="1" stop-color="' + a.haut + '"/></linearGradient>' +
+      '<filter id="' + id + 'w"><feGaussianBlur stdDeviation="3"/></filter></defs>';
+    var federn = '';
+    for (var i = 0; i < 7; i++) {
+      var w = -48 + i * 15, l = 150 + (i < 4 ? i * 18 : (6 - i) * 14 + 40);
+      federn += '<ellipse cx="100" cy="' + (290 - l / 2) + '" rx="' + (17 - Math.abs(i - 3)) + '" ry="' + (l / 2) + '" transform="rotate(' + w + ' 100 290)" fill="url(#' + id + 'q)" stroke="' + (a.dunkel || '#8a2410') + '" stroke-opacity=".35" stroke-width="2"/>';
+    }
+    var deck = '';
+    for (i = 0; i < 5; i++) deck += '<ellipse cx="100" cy="230" rx="20" ry="58" transform="rotate(' + (-34 + i * 17) + ' 100 290)" fill="' + a.fell + '" stroke="' + (a.dunkel || '#8a2410') + '" stroke-opacity=".3" stroke-width="2"/>';
+    var fl = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="340" viewBox="0 0 200 340">' + f + '<ellipse cx="100" cy="150" rx="80" ry="120" fill="' + a.fellHell + '" opacity=".35" filter="url(#' + id + 'w)"/>' + federn + deck +
+      '<ellipse cx="100" cy="285" rx="34" ry="30" fill="' + a.fell + '"/><ellipse cx="88" cy="270" rx="14" ry="10" fill="#fff" opacity=".25" filter="url(#' + id + 'w)"/></svg>';
+    var leer = '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="260" viewBox="0 0 160 260"></svg>';
+    function url(s) { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(s); }
+    return { ober: url(leer), unter: url(fl) };
   }
 
   // ---------- Puppe ----------
@@ -301,7 +349,7 @@
     var vorlage = FIGUREN[opt.figur] || {};
     this.f = {};
     for (var k in vorlage) this.f[k] = vorlage[k];
-    ['augen', 'mund', 'kopf', 'hals', 'innen', 'arm', 'glow', 'name'].forEach(function (n) { if (opt[n]) this.f[n] = opt[n]; }, this);
+    ['augen', 'mund', 'kopf', 'hals', 'innen', 'arm', 'glow', 'name', 'aus', 'augenZu'].forEach(function (n) { if (opt[n]) this.f[n] = opt[n]; }, this);
     if (opt.arm && vorlage.arm) { var a = {}; for (k in vorlage.arm) a[k] = vorlage.arm[k]; for (k in opt.arm) a[k] = opt.arm[k]; this.f.arm = a; }
     this.f.augen = this.f.augen || [[0.38, 0.45, 0.07, 0.07], [0.62, 0.45, 0.07, 0.07]];
     this.f.mund = this.f.mund || { l: [0.42, 0.68], r: [0.58, 0.68], oben: 0.006, unten: 0.012, kinn: 0.07 };
@@ -400,8 +448,8 @@
     function ebenen(cfg, basis) { return self._baueEbenen(cfg, basis).then(function () { self.modus = 'ebenen'; }); }
     function einBild() { return self._baueEinBild().then(function () { self.modus = self.gl ? 'ein-bild' : 'ein-bild-einfach'; }); }
     if (o.teile) return ebenen({ teile: o.teile, gelenke: o.gelenke, groesse: o.groesse }, o.ordner || '').catch(einBild);
-    if (o.ordner === false || !window.fetch) return einBild();
-    var ordner = (o.ordner || 'puppe/').replace(/\/?$/, '/');
+    if (!o.ordner || !window.fetch) return einBild();
+    var ordner = String(o.ordner).replace(/\/?$/, '/');
     return fetch(ordner + 'puppe.json', { cache: 'no-cache' }).then(function (r) {
       if (!r.ok) throw new Error('keine puppe.json');
       return r.json();
@@ -828,10 +876,12 @@
     var w = {
       kopf: this.f.kopf, hals: this.f.hals, neig: P.neig.x, kx: P.kx.x, ky: P.ky.x - atem * 0.0025,
       atem: atem, augen: this.f.augen, lidL: lid, lidR: Math.max(P.lid.x, b.start >= 0 ? klemme(lidB * 1.1 - 0.05, 0, 1) : 0),
-      bx: P.bx.x, by: P.by.x, froh: klemme(P.froh.x, 0, 1), mund: this.f.mund,
+      bx: P.bx.x, by: P.by.x, froh: klemme(P.froh.x, 0, 1), mund: this.f.mund, aus: this.f.aus || [0.5, 0.5, 1],
       auf: klemme(P.auf.x, -1, 1.2), breit: klemme(P.breit.x, 0, 1.2), rund: klemme(P.rund.x, 0, 1.3), laecheln: klemme(P.laecheln.x, -0.5, 1.3), presse: klemme(P.presse.x, 0, 1),
       innen: this.f.innen, zeit: t, welle: ruhe ? 0 : 1, glanz: P.glanz.x, glow: this._glowRGB || (this._glowRGB = hexRGB(this.f.glow))
     };
+    // Bild mit geschlossenen Augen (z.B. Fia): keine Lider, kein Blick
+    if (this.f.augenZu) { w.lidL = w.lidR = 0; w.froh = 0; w.bx = w.by = 0; }
     if (this.gl) this.gl.zeichne(w);
     else if (this.ebenen) this._zeichneEbenen(w, P);
     else if (this.koerper.firstChild) this.koerper.firstChild.style.transform = 'rotate(' + (w.neig * 20).toFixed(2) + 'deg)';

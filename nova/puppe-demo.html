@@ -56,15 +56,19 @@
     <button class="k" id="text"><span>💬</span>Nur Text</button>
   </div>
 
-  <h2>Bild</h2>
-  <div class="knoepfe drei">
-    <button class="k an" data-bild="../otti/otti-3d.jpg"><span>🦔</span>Otti 3D</button>
-    <button class="k" data-bild="../mondschein/figur-gross.jpg"><span>🌙</span>Mondschein</button>
+  <h2>Figur</h2>
+  <div class="knoepfe">
+    <button class="k" data-figur="otti" data-bild="../otti/otti-3d.jpg"><span>🦔</span>Otti</button>
+    <button class="k" data-figur="otti" data-bild="../mondschein/figur-gross.jpg"><span>🌙</span>Otti Mond</button>
+    <button class="k" data-figur="nova" data-bild="nova-3d.jpg"><span>🤖</span>Nova</button>
+    <button class="k" data-figur="fia" data-bild="figuren/fia-wacht.jpg"><span>🔥</span>Fia</button>
+  </div>
+  <div class="knoepfe drei" style="margin-top:8px">
     <button class="k" id="neig"><span>📱</span>Neigung</button>
   </div>
 
   <p class="info" id="info">Modus: <b id="modus">…</b><br>
-    Sobald Tinko die Teil-Bilder liefert (<code>otti/puppe/puppe.json</code>), schaltet die Puppe von selbst in den Ebenen-Modus.</p>
+    Sobald Tinko die Teil-Bilder liefert, schaltet die App mit <code>ordner:'puppe/'</code> in den Ebenen-Modus (Figur aus Teilen).</p>
 </div>
 
 <script src="puppe.js"></script>
@@ -72,8 +76,10 @@
 (function () {
   var Z = [['ruhig', '😌', 'Ruhig'], ['hoert', '👂', 'Hört zu'], ['redet', '🗣️', 'Redet'], ['freut', '🥳', 'Freut sich'], ['winkt', '👋', 'Winkt'], ['denkt', '💭', 'Denkt'], ['schlaeft', '😴', 'Schläft']];
   var q = new URLSearchParams(location.search);
-  var bild = q.get('bild') || '../otti/otti-3d.jpg';
-  var opt = { figur: 'otti', bild: bild, ordner: q.get('ebenen') || false, pauseNach: 25 };
+  var STANDARD = { otti: '../otti/otti-3d.jpg', nova: 'nova-3d.jpg', fia: 'figuren/fia-wacht.jpg' };
+  var figur = STANDARD[q.get('figur')] ? q.get('figur') : 'otti';
+  var bild = q.get('bild') || STANDARD[figur];
+  var opt = { figur: figur, bild: bild, ordner: q.get('ebenen') || false, pauseNach: 25 };
   var otti = window.otti = Puppe.erstelle('#otti', opt);
   var blase = document.getElementById('blase');
 
@@ -96,16 +102,20 @@
   binde(otti);
 
   document.querySelectorAll('[data-r]').forEach(function (b) { b.onclick = function () { otti.reagiere(b.dataset.r); }; });
+  var NAMEN = { otti: 'Otti', nova: 'Nova', fia: 'Fia' };
+  function figurKnoepfe() { document.querySelectorAll('[data-bild]').forEach(function (x) { x.classList.toggle('an', x.dataset.bild === opt.bild); }); }
+  function titel() { document.querySelector('h1').textContent = NAMEN[opt.figur] + ' lebt'; document.getElementById('otti').setAttribute('aria-label', NAMEN[opt.figur]); }
+  figurKnoepfe(); titel();
   document.querySelectorAll('[data-bild]').forEach(function (b) {
     b.onclick = function () {
-      document.querySelectorAll('[data-bild]').forEach(function (x) { x.classList.toggle('an', x === b); });
-      otti.zerstoere(); opt.bild = b.dataset.bild; otti = window.otti = Puppe.erstelle('#otti', opt); binde(otti);
+      opt.figur = b.dataset.figur; opt.bild = b.dataset.bild; figurKnoepfe(); titel();
+      otti.zerstoere(); otti = window.otti = Puppe.erstelle('#otti', opt); binde(otti);
     };
   });
   document.getElementById('neig').onclick = function () { otti.erlaubeNeigung(); };
 
   // ---- Test-Stimme: kleiner Formant-Synthesizer (Web Audio, offline gerendert, als WAV in ein <audio>) ----
-  var SATZ = 'Hoi! Ich bi de Otti. Schön, dass du da bisch.';
+  var SATZ = 'Hoi! Schön, dass du da bisch.';
   var FORMANT = { a: [800, 1250], e: [480, 1900], i: [320, 2300], o: [500, 900], u: [340, 760], 'ä': [650, 1700], 'ö': [450, 1500], 'ü': [300, 1700] };
   function stimme(al) {
     var C = window.OfflineAudioContext || window.webkitOfflineAudioContext, sr = 22050;
