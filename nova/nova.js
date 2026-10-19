@@ -367,11 +367,13 @@
       else fertig(window.prompt('Verbindungscode einsetzen:'));
     });
 
+    $('#nova-key').addEventListener('focus', function () { if (/^•+$/.test(this.value)) this.value = ''; });
     $('.nova-save').addEventListener('click', function () {
-      var a = $('#nova-addr').value.trim(), k = $('#nova-key').value.trim();
+      // Platzhalter-Punkte entfernen: wer ins gefüllte Feld einfügt, hängt sonst den Code an «••••••••» an.
+      var a = $('#nova-addr').value.trim(), k = $('#nova-key').value.replace(/•/g, '').replace(/\s+/g, '');
       if (a && !/^https:\/\//.test(a)) a = 'https://' + a;
       put(K.addr, a);
-      if (k && k !== '••••••••') put(K.key, k);
+      if (k) put(K.key, k);
       stimme.pauseBis = 0;
       state();
       say('nova', ready() ? 'Danke, jetzt bin ich wach.' : 'Es fehlt noch Adresse oder Passwort.');
@@ -402,7 +404,8 @@
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + get(K.key, ''), 'X-Nova-App': APP },
         body: JSON.stringify({ model: 'sense-engine', messages: messages })
       }).then(function (r) {
-        if (r.status === 401 || r.status === 403) throw new Error('Das Passwort stimmt nicht.');
+        if (r.status === 401) throw new Error('Das Passwort stimmt nicht.');
+        if (r.status === 403) throw new Error('Sense Engine lässt diese Seite nicht zu (Fehler 403).');
         if (!r.ok) throw new Error(NAME + ' erreicht Sense Engine gerade nicht (Fehler ' + r.status + ').');
         return r.json();
       }).then(function (j) {
