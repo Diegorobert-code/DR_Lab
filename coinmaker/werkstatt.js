@@ -112,12 +112,21 @@
     if (r && REQ[p]) { r.textContent = REQ[p]; r.classList.remove('zeig'); void r.offsetWidth; r.classList.add('zeig'); }
     clearTimeout(poseTimer);
     if (ms !== 0) poseTimer = setTimeout(function () { f.setAttribute('data-pose', 'ruhig'); }, ms || 2200);
+    // Tinko-Posenbild, falls coinmaker/posen/<pose>.jpg liegt (sonst CSS-Pose)
+    if (window.FigurPosen && p !== 'ruhig') FigurPosen.zeige(f.querySelector('img'), p, ms === 0 ? 2600 : (ms || 2200), PERSATZ[p]);
   }
+  var PERSATZ = { winken: ['freude'], nicken: ['freude'], hebel: ['lupe'], erzaehlen: ['winken'], kuchen: ['freude'], waage: ['lupe'], tresor: ['ernst'] };
   function sag(text, klein, vorlesen) {
     var b = $('say'); if (!b) return;
     b.firstChild.textContent = text;
     var s = b.querySelector('small'); if (s) s.textContent = klein || '';
-    if (vorlesen && window.NovaStimme && NovaStimme.aktiv && NovaStimme.aktiv()) { try { NovaStimme.sprich(text); } catch (e) {} }
+    if (!vorlesen || !hol('coinmaker.ton', true)) return;
+    if (window.NovaStimme && NovaStimme.aktiv && NovaStimme.aktiv()) { try { NovaStimme.sprich(text); } catch (e) {} return; }
+    try { // ohne Server: Gerätestimme, ruhig und tief
+      if (!('speechSynthesis' in window)) return; speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text); u.lang = 'de-CH'; u.rate = .95; u.pitch = .8;
+      var v = speechSynthesis.getVoices().filter(function (x) { return /^de/i.test(x.lang); })[0]; if (v) u.voice = v; speechSynthesis.speak(u);
+    } catch (e) {}
   }
 
   /* ---------- Lernzahlen (nur Gerät) ---------- */
@@ -397,6 +406,77 @@
     setTimeout(function () { pose('winken', 1800); }, 600);
   }
 
+  /* ---------- Runde 2: So geht's, Präsentation, Ton ---------- */
+  var SCHRITTE = [
+    ['💡', 'Idee rein', 'Du legst eine Idee, Daten oder eine Rückmeldung in meinen Automaten. Nur was du geben willst.'],
+    ['🔍', 'Ich prüfe', 'Ich ziehe den Hebel und schaue mit der Lupe: neu, klar, brauchbar? Der Wechselkurs ändert sich jeden Tag, mit Grund.'],
+    ['🪙', 'Coins raus', 'Du bekommst Coins. Coins sind Punkte ohne Geldwert: nie in Franken wechselbar, nicht kaufbar, nur bei DR Lab einlösbar.']
+  ];
+  function soGehts() {
+    if (hol('coinmaker.sogehts', false)) return;
+    var w = document.querySelector('.werk-knoepfe'); if (!w) return;
+    var k = document.createElement('section'); k.className = 'card sogehts'; k.id = 'sogehts';
+    var h = document.createElement('div'); h.className = 'result-head'; h.innerHTML = '<h2>So geht die Werkstatt</h2><span class="tag">1 · 2 · 3</span>'; k.appendChild(h);
+    SCHRITTE.forEach(function (x) { var d = document.createElement('div'); d.className = 'sg-zeile'; var e = document.createElement('span'); e.className = 'sg-em'; e.textContent = x[0]; var t = document.createElement('div'); var b = document.createElement('b'); b.textContent = x[1]; var sp = document.createElement('span'); sp.textContent = x[2]; t.appendChild(b); t.appendChild(sp); d.appendChild(e); d.appendChild(t); k.appendChild(d); });
+    var ok = document.createElement('button'); ok.className = 'wk'; ok.type = 'button'; ok.textContent = 'Verstanden, los geht\u2019s';
+    ok.addEventListener('click', function () { leg('coinmaker.sogehts', true); k.remove(); pose('nicken'); sag('Gut. Dann leg deine erste Idee in den Automaten.', 'Unten bei «Idee rein».', true); });
+    k.appendChild(ok);
+    w.parentNode.insertBefore(k, w.nextSibling.nextSibling || null);
+  }
+  var FOLIEN = [
+    ['🤝', 'Zahlen mit Ideen', 'Kleinunternehmen bekommen von DR Lab ihr Konzept und den Aufbau für Social Media. Statt mit Geld zahlen sie mit Ideen, die sie im Gespräch einbringen.'],
+    ['⚖️', 'Die Ideen-Waage 5 · 2 · 0', '5 = die Idee bringt DR Lab weiter. 2 = sie macht die App besser und ist gut. 0 = Standard oder doppelt. Strenger wird es mit der Zeit, je mehr Ideen es gibt.'],
+    ['🎯', 'Ziel: Ideenwert 200', 'Etwa 6 gute Gespräche, dann ist der Ideenwert erreicht. Das ist eine Schätzung, keine Garantie. Es wird nichts ausbezahlt.'],
+    ['🥧', 'Wenn die App läuft', 'Entwurf: 80 % vom Netto-Umsatz bleiben beim Kleinunternehmen, 20 % gehen an DR Lab, weil DR Lab auch Werbung und Pflege macht. Gilt erst mit Vertrag.'],
+    ['🔒', 'Deine Daten', 'Du gibst nur, was du geben willst, mit Einwilligung. Ideen bleiben bei DR Lab und werden nicht verkauft. Die Daten sollen verschlüsselt gespeichert werden.'],
+    ['🪙', 'Coins', 'Coins sind Punkte ohne Geldwert. Sie zeigen, wie viel deine Ideen bewegt haben. Man kann sie nicht kaufen und nicht in Franken wechseln.']
+  ];
+  var fi = 0;
+  function praesentation() {
+    var o = document.createElement('div'); o.className = 'praes'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-label', 'Präsentation Zahlen mit Ideen');
+    o.innerHTML = '<div class="praes-box"><img src="figur-klein.jpg" alt="" width="84" height="84"><small></small><div class="praes-em"></div><h3></h3><p></p><div class="praes-nav"><button type="button" class="wk hell" data-p="-1">‹</button><button type="button" class="wk" data-p="1">Weiter ›</button></div><div class="praes-nav"><button type="button" class="wk hell" data-p="teilen">Teilen</button><button type="button" class="wk hell" data-p="zu">Schliessen</button></div></div>';
+    function zeig() { var f = FOLIEN[fi]; o.querySelector('small').textContent = (fi + 1) + ' / ' + FOLIEN.length; o.querySelector('.praes-em').textContent = f[0]; o.querySelector('h3').textContent = f[1]; o.querySelector('p').textContent = f[2];
+      o.querySelector('[data-p="-1"]').disabled = fi === 0; o.querySelector('[data-p="1"]').textContent = fi === FOLIEN.length - 1 ? 'Fertig ✓' : 'Weiter ›';
+      pose(['winken', 'waage', 'lupe', 'kuchen', 'tresor', 'freude'][fi]); sag(f[1] + '. ' + f[2], '', true); }
+    o.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-p]'); if (!b) { if (e.target === o) zu(); return; }
+      var a = b.getAttribute('data-p');
+      if (a === 'zu') return zu();
+      if (a === 'teilen') { var url = location.href.split('#')[0] + '#praesentation'; var txt = 'Zahlen mit Ideen – der Coin Maker erklärt es: ' + url;
+        if (navigator.share) navigator.share({ title: 'The Coin Maker', text: txt }).catch(function () {}); else location.href = 'https://wa.me/?text=' + encodeURIComponent(txt); return; }
+      if (a === '1' && fi === FOLIEN.length - 1) { zaehl('praesentation'); return zu(); }
+      fi = Math.max(0, Math.min(FOLIEN.length - 1, fi + (+a))); zeig();
+    });
+    function zu() { o.remove(); try { speechSynthesis.cancel(); } catch (e) {} if (window.NovaStimme) try { NovaStimme.stopp(); } catch (e) {} }
+    fi = 0; document.body.appendChild(o); zeig();
+  }
+  function runde2() {
+    var w = document.querySelector('.werk-knoepfe');
+    if (w) {
+      var pb = document.createElement('button'); pb.className = 'wk'; pb.id = 'praesBtn'; pb.type = 'button'; pb.textContent = '🤝 Präsentation für Kleinunternehmen'; pb.addEventListener('click', praesentation); w.appendChild(pb);
+      var tb = document.createElement('button'); tb.className = 'wk hell'; tb.id = 'tonBtn'; tb.type = 'button';
+      var tz = function () { tb.textContent = hol('coinmaker.ton', true) ? '🔊 Stimme an' : '🔈 Stimme aus'; };
+      tb.addEventListener('click', function () { leg('coinmaker.ton', !hol('coinmaker.ton', true)); tz(); if (!hol('coinmaker.ton', true)) { try { speechSynthesis.cancel(); } catch (e) {} if (window.NovaStimme) try { NovaStimme.stopp(); } catch (e) {} } });
+      tz(); w.appendChild(tb);
+    }
+    soGehts();
+    if (location.hash === '#praesentation') setTimeout(praesentation, 400);
+    addEventListener('offline', function () { pose('ernst'); sag('Kein Internet. Meine Werkstatt läuft trotzdem.', 'Die zweite Meinung vom Server geht erst wieder mit Internet.'); });
+    if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(function () {});
+  }
+  var r2css = document.createElement('style');
+  r2css.textContent = [
+    '.sogehts{border:2px dashed var(--gold,#f2c14e)}.sg-zeile{display:flex;gap:12px;align-items:flex-start;margin:10px 0}.sg-em{font-size:1.8rem;line-height:1}.sg-zeile b{display:block}.sg-zeile span{font-size:.92rem;opacity:.9}',
+    '.praes{position:fixed;inset:0;z-index:9000;background:rgba(8,6,22,.82);display:flex;align-items:center;justify-content:center;padding:16px}',
+    '.praes-box{width:100%;max-width:420px;background:linear-gradient(170deg,#2a1f4e,#16112a);border:2px solid #c9973a;border-radius:24px;padding:20px 18px;text-align:center;color:#fff4dc;box-shadow:0 20px 60px rgba(0,0,0,.6)}',
+    '.praes-box img{width:84px;height:84px;border-radius:50%;border:3px solid #f2c14e;object-fit:cover}.praes-box small{display:block;opacity:.7;margin:4px 0}',
+    '.praes-em{font-size:3rem;animation:praesAuf .5s ease-out}.praes-box h3{margin:4px 0 8px;color:#f2c14e}.praes-box p{line-height:1.5;margin:0 0 14px;min-height:6em}',
+    '.praes-nav{display:flex;gap:8px;margin-top:8px}.praes-nav .wk{flex:1}.praes-nav .wk:disabled{opacity:.4}',
+    '@keyframes praesAuf{from{transform:scale(.5) rotate(-20deg);opacity:0}to{transform:none;opacity:1}}'
+  ].join('\n');
+  document.head.appendChild(r2css);
+
   window.CMPlus = { pose: pose, sag: sag, bewertet: bewertet, hebelStart: hebelStart, eingeloest: eingeloest };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+  function los() { start(); runde2(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', los); else los();
 })();
