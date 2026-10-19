@@ -65,7 +65,35 @@
   .halten::before { content:''; position:absolute; inset:0; width:calc(var(--p, 0) * 100%); background:#ffffff66; }
   .halten span { position:relative; }
   .nein { width:100%; margin-top:8px; background:none; border:0; color:var(--leise); font:14px system-ui, sans-serif; text-decoration:underline; cursor:pointer; }
-  @media (prefers-reduced-motion: reduce) { .atmen { animation:none; } }
+  /* Runde 2: Posen, Fragespiel, Eltern, Einführung */
+  .buehne .pose { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .35s; pointer-events:none; }
+  .buehne .pose.an { opacity:1; }
+  .buehne.winkt canvas { animation:winken .5s ease-in-out 4 alternate; }
+  @keyframes winken { from { transform:scale(1.07) rotate(-3deg); } to { transform:scale(1.07) rotate(3deg); } }
+  .buehne.schlaeft canvas { filter:brightness(.62) saturate(.75); }
+  .buehne .zz { position:absolute; right:16%; top:14%; font:800 26px system-ui, sans-serif; color:#cfe0ff; opacity:0; pointer-events:none; }
+  .buehne.schlaeft .zz { animation:zz 2.6s ease-in-out infinite; }
+  @keyframes zz { 0% { opacity:0; transform:translate(0, 8px); } 40% { opacity:1; } 100% { opacity:0; transform:translate(12px, -22px); } }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; align-self:stretch; }
+  .chips button { border:1px solid #f5c54288; background:#ffffff14; color:var(--text); border-radius:999px; padding:10px 14px; font:600 15px system-ui, sans-serif; cursor:pointer; }
+  .chips button:active { transform:scale(.96); }
+  .unten { display:flex; gap:10px; align-items:center; margin-top:12px; flex:none; }
+  .klein { border:1px solid #f5c54255; background:#ffffff14; color:var(--text); border-radius:999px; padding:9px 14px; font:600 14px system-ui, sans-serif; cursor:pointer; }
+  .elternknopf { position:relative; overflow:hidden; margin-top:10px; border:1px solid #ffffff22; background:#ffffff0d; color:var(--leise); border-radius:999px; padding:8px 14px; font:13px system-ui, sans-serif; cursor:pointer; flex:none; }
+  .elternknopf::before { content:''; position:absolute; inset:0; width:calc(var(--p, 0) * 100%); background:#f5c54255; }
+  .elternknopf span { position:relative; }
+  .ebereich .karte { max-height:88vh; overflow:auto; width:100%; }
+  .ebereich h3 { margin:14px 0 6px; font-size:16px; color:var(--gold); }
+  .ebereich .zeile { display:flex; gap:8px; flex-wrap:wrap; }
+  .ebereich .zeile button { flex:1; min-width:70px; border:1px solid #f5c54266; background:#ffffff10; color:var(--text); border-radius:12px; padding:10px; font:600 14px system-ui, sans-serif; cursor:pointer; }
+  .ebereich .zeile button.sel { background:var(--gold); color:#2a1d00; }
+  .ebereich .merkt { width:100%; max-height:none; }
+  .tour .karte { text-align:center; }
+  .tour .karte img { width:130px; height:130px; border-radius:50%; object-fit:cover; box-shadow:0 0 0 3px var(--gold); animation:atmen 3.6s ease-in-out infinite; }
+  .tour .punkte { display:flex; gap:6px; justify-content:center; margin:12px 0; }
+  .tour .punkte i { width:8px; height:8px; border-radius:50%; background:#ffffff40; } .tour .punkte i.an { background:var(--gold); }
+  @media (max-height:700px) { .buehne { width:min(70vw, 300px); } .knopf { width:74px; height:74px; font-size:28px; } }
+  @media (prefers-reduced-motion: reduce) { .atmen, .buehne.winkt canvas, .buehne.schlaeft .zz, .tour .karte img { animation:none; } }
 </style>
 </head>
 <body>
@@ -76,20 +104,57 @@
 
 <div class="buehne atmen" id="buehne" role="img" aria-label="Otti der Igel">
   <canvas id="figur"></canvas>
+  <img class="pose" id="pose" alt="">
   <div class="glanz"></div>
+  <div class="zz" aria-hidden="true">z z</div>
 </div>
 
 <div class="text" id="text" aria-live="polite"></div>
 
-<button class="knopf" id="knopf" type="button" aria-label="Gespräch starten">🎙</button>
+<div class="unten">
+  <button class="klein" id="spielKnopf" type="button">🎲 Fragespiel</button>
+  <button class="knopf" id="knopf" type="button" aria-label="Gespräch starten">🎙</button>
+  <button class="klein" id="winkKnopf" type="button">👋 Winken</button>
+</div>
 <div class="hinweis" id="hinweis"></div>
 <div class="wege">
   <a href="../mondschein/">📖 Geschichten</a>
   <a href="../mondschein/#gutenacht">🌙 Gute Nacht</a>
 </div>
-<button class="vergessen" id="merktKnopf" type="button" hidden>Was Otti sich merkt</button>
-<div class="merkt" id="merkt" hidden></div>
-<button class="vergessen" id="vergessen" type="button" hidden>Otti vergisst alles</button>
+<button class="elternknopf" id="elternHalten" type="button" aria-label="Für Eltern – 3 Sekunden gedrückt halten"><span>🔒 Für Eltern (3 Sek. halten)</span></button>
+
+<div class="eltern ebereich" id="ebereich" hidden role="dialog" aria-label="Für Eltern">
+  <div class="karte">
+    <h2>Für Eltern</h2>
+    <p class="leise" style="color:var(--leise);font-size:14px">Alles hier bleibt auf diesem Handy.</p>
+    <h3>Was Otti sich merkt</h3>
+    <div class="merkt" id="merkt"></div>
+    <button class="nein" id="vergessen" type="button" style="text-align:left">🧽 Otti vergisst alles</button>
+    <h3>Länge eines Live-Gesprächs</h3>
+    <div class="zeile" id="dauerWahl"></div>
+    <p style="color:var(--leise);font-size:13px;margin-top:6px">Danach sagt Otti freundlich Tschüss und legt auf.</p>
+    <h3>Live-Gespräch (Internet)</h3>
+    <p style="font-size:14px" id="okInfo"></p>
+    <button class="nein" id="okWeg" type="button" style="text-align:left">Einverständnis zurücknehmen</button>
+    <h3>💬 Mit DR Lab reden</h3>
+    <p style="color:var(--leise);font-size:13px">Was gefällt, was fehlt? Bleibt auf dem Handy, bis du es weitergibst.</p>
+    <div data-feedback-slot></div>
+    <h3>🎬 Einführung</h3>
+    <button class="nein" id="tourNochmal" type="button" style="text-align:left">Einführung nochmals zeigen</button>
+    <button class="halten" id="ebZu" type="button" style="margin-top:16px"><span>Zurück zu Otti</span></button>
+  </div>
+</div>
+
+<div class="eltern tour" id="tour" hidden role="dialog" aria-label="Willkommen">
+  <div class="karte">
+    <img src="otti-3d.jpg" alt="Otti">
+    <h2 id="tourH" style="margin-top:12px"></h2>
+    <p id="tourT"></p>
+    <div class="punkte" id="tourP" aria-hidden="true"></div>
+    <button class="halten" id="tourWeiter" type="button"><span id="tourWeiterT">Weiter</span></button>
+    <button class="nein" id="tourSkip" type="button">Überspringen</button>
+  </div>
+</div>
 
 <div class="eltern" id="eltern" hidden role="dialog" aria-label="Für Eltern">
   <div class="karte">
@@ -103,6 +168,8 @@
 
 <script src="elevenlabs-client-1.26.0.js"></script>
 <script src="../nova/mund.js"></script>
+<script src="../nova/nova.js" data-nova-app="Mondschein" data-nova-kind="1" data-nova-knopf="0"></script>
+<script src="feedback.js" data-app="Otti" defer></script>
 <script>
 (function () {
   // Live-Gespräch mit Otti: ElevenLabs Agent (hören, denken mit Claude, sprechen mit Ottis Stimme).
@@ -151,16 +218,17 @@
     return g.length ? g.map(function (x) { return 'Am ' + x.d + ':\n' + x.t; }).join('\n\n') : 'Noch nichts. Ihr redet zum ersten Mal.';
   }
   var vergessen = $('vergessen');
-  function vergessenZeigen() { vergessen.hidden = !gedaechtnis().length; $('merktKnopf').hidden = vergessen.hidden; }
+  // «Was Otti sich merkt»: im Elternbereich, alles nur auf diesem Handy.
+  function vergessenZeigen() {
+    var m = $('merkt'); if (!m) return;
+    var t = erinnerung(), f = fsMerk();
+    m.textContent = (f.length ? 'Aus dem Fragespiel: ' + f.join(', ') + '\n\n' : '') + t;
+    vergessen.hidden = !gedaechtnis().length && !f.length;
+  }
   vergessen.addEventListener('click', function () {
-    try { localStorage.removeItem(GED); } catch (e) {}
-    vergessenZeigen(); $('merkt').hidden = true; status.textContent = 'Erledigt. Otti fängt neu an.';
+    try { localStorage.removeItem(GED); localStorage.removeItem(FS); } catch (e) {}
+    vergessenZeigen(); status.textContent = 'Erledigt. Otti fängt neu an.';
   });
-  // «Was Otti sich merkt»: Eltern sehen die Notizen, alles nur auf diesem Handy.
-  $('merktKnopf').addEventListener('click', function () {
-    var m = $('merkt'); m.hidden = !m.hidden; if (!m.hidden) m.textContent = erinnerung();
-  });
-  vergessenZeigen();
 
   function zeile(wer, t) {
     jetztGesagt.push((wer === 'du' ? 'Gegenüber: ' : 'Otti: ') + t);
@@ -172,7 +240,7 @@
   // Mund und Kopf folgen der Stimme; beim Zuhören neigt Otti den Kopf.
   var neigung = 0;
   function takt() {
-    var ziel = 0, hoer = 0;
+    var ziel = (!conv && sprechMund) ? 0.2 + Math.abs(Math.sin(performance.now() / 110)) * 0.6 : 0, hoer = 0;
     if (conv) {
       var v = 0, iv = 0;
       try { v = conv.getOutputVolume() || 0; } catch (e) {}
@@ -214,7 +282,7 @@
         agentId: AGENT,
         connectionType: 'websocket',
         dynamicVariables: { letztes_mal: erinnerung() },
-        onConnect: function () { status.textContent = 'Otti hört zu.'; hopsen(); },
+        onConnect: function () { status.textContent = 'Otti hört zu.'; hopsen(); pose('winkt', 2000); },
         onDisconnect: function () { ende('Bis bald! Tipp auf den Knopf, dann bin ich wieder da.'); },
         onError: function (m) { hinweis.textContent = 'Fehler: ' + (m || 'unbekannt'); },
         onMessage: function (m) { if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message); },
@@ -226,16 +294,25 @@
         }
       });
       conv = c; startet = false; knopfZeigen();
-      buehne.classList.add('hoert');
+      buehne.classList.add('hoert'); pose('', 0); schlafen(false);
+      clearTimeout(limitT);
+      limitT = setTimeout(function () {
+        if (!conv) return;
+        var cc = conv; zeile('otti', 'Ich werde langsam müde. Danke fürs Reden! Bis bald.');
+        ende('Otti macht eine Pause. Bis bald!'); cc.endSession().catch(function () {});
+        schlafen(true);
+      }, dauer() * 60000);
     } catch (e) {
       startet = false; knopfZeigen();
-      status.textContent = 'Otti schläft gerade.';
-      hinweis.textContent = 'Keine Verbindung. Internet prüfen und nochmal tippen, oder unten eine Geschichte hören.';
+      status.textContent = 'Otti ist gerade nicht erreichbar.';
+      hinweis.textContent = 'Kein Problem: Wir spielen das Fragespiel, das geht ohne Internet.';
+      setTimeout(spielStart, 900);
     }
   }
 
   function ende(t) {
     if (conv) merken();
+    clearTimeout(limitT);
     conv = null; startet = false;
     buehne.classList.remove('hoert', 'spricht');
     knopfZeigen();
@@ -259,12 +336,154 @@
   $('elternNein').addEventListener('click', function () { location.href = '../mondschein/'; });
 
   knopf.addEventListener('click', function () {
+    spielStopp();
     if (conv) { var c = conv; ende('Bis bald!'); c.endSession().catch(function () {}); }
+    else if (!navigator.onLine) { status.textContent = 'Ohne Internet hört Otti nicht live zu.'; hinweis.textContent = 'Wir spielen stattdessen das Fragespiel.'; spielStart(); }
     else if (!elternOk()) eltern.hidden = false;
     else starten();
   });
   // Auf Otti tippen: er hüpft vor Freude.
-  buehne.addEventListener('click', hopsen);
+  buehne.addEventListener('click', function () { schlafen(false); hopsen(); pose('lacht', 1600); });
+
+  /* ---------- Posen: Tinkos Bilder in posen/<pose>.jpg (Liste posen/index.json), sonst CSS ---------- */
+  var POSEN = {}, poseT = 0;
+  fetch('posen/index.json').then(function (r) { return r.ok ? r.json() : []; }).then(function (l) {
+    (Array.isArray(l) ? l : []).forEach(function (p) {
+      p = String(p).replace(/[^a-z0-9-]/g, ''); if (!p) return;
+      var im = new Image(); im.onload = function () { POSEN[p] = im.src; }; im.src = 'posen/' + p + '.jpg';
+    });
+  }).catch(function () {});
+  function pose(p, ms) {
+    var el = $('pose'); clearTimeout(poseT);
+    if (p && POSEN[p]) { el.src = POSEN[p]; el.classList.add('an'); }
+    else { el.classList.remove('an'); if (p === 'winkt') { buehne.classList.remove('winkt'); void buehne.offsetWidth; buehne.classList.add('winkt'); } }
+    if (ms) poseT = setTimeout(function () { el.classList.remove('an'); buehne.classList.remove('winkt'); }, ms);
+  }
+  function schlafen(an) { buehne.classList.toggle('schlaeft', !!an); if (an && POSEN.schlaeft) pose('schlaeft'); else if (!an && $('pose').src.indexOf('schlaeft') > -1) pose(''); }
+  $('winkKnopf').addEventListener('click', function () {
+    schlafen(false); pose('winkt', 2200); funken(6);
+    sag(['Hallo! Ich winke dir zu!', 'Huhu! Schön, dass du da bist!', 'Winke, winke!'][Math.floor(Math.random() * 3)]);
+  });
+
+  /* ---------- Otti spricht ohne Live-Gespräch: Figurenstimme über nova.js, sonst Gerätestimme ---------- */
+  function sag(t, fertig) {
+    zeile('otti', t);
+    buehne.classList.add('spricht');
+    var zu = false, sicher = 0;
+    var aus = function () { if (zu) return; zu = true; clearTimeout(sicher); buehne.classList.remove('spricht'); sprechMund = false; if (fertig) fertig(); };
+    sprechMund = true;
+    // Falls das Gerät nie «fertig» meldet: nach der Lesezeit trotzdem weiter.
+    sicher = setTimeout(aus, 2500 + t.length * 85);
+    if (window.NovaStimme) window.NovaStimme.sprich(t, { onEnd: aus }).then(aus, aus);
+    else aus();
+  }
+  // Mund bewegt sich auch ohne Live-Gespräch, solange Otti spricht (siehe takt).
+  var sprechMund = false;
+
+  /* ---------- Fragespiel: geht ohne Internet, keine Stimme verlässt das Handy ---------- */
+  var FS = 'otti_fragespiel';
+  function fsMerk() { try { return JSON.parse(localStorage.getItem(FS)) || []; } catch (e) { return []; } }
+  function fsSetze(t) { var f = fsMerk().filter(function (x) { return x !== t; }); f.push(t); try { localStorage.setItem(FS, JSON.stringify(f.slice(-12))); } catch (e) {} vergessenZeigen(); }
+  var FRAGEN = [
+    { f: 'Was magst du lieber: Walderdbeeren oder Glace?', a: [['Walderdbeeren', 'Mmh, Walderdbeeren! Die mag ich auch am allerliebsten.'], ['Glace', 'Glace! Brrr, kalt an der Nase, aber so fein.'], ['Beides', 'Beides? Du bist ja ein Schleckmaul, so wie ich!']] },
+    { f: 'Welches Tier wärst du gerne?', a: [['Ein Igel', 'Ein Igel wie ich! Dann rollen wir uns zusammen ein.'], ['Ein Vogel', 'Ein Vogel! Dann fliegst du über den Mondschein-Wald.'], ['Ein Löwe', 'Ein Löwe! Roaar! Aber ein lieber Löwe, oder?'], ['Ein Fisch', 'Ein Fisch! Blubb, blubb, im Meer ist es schön.']] },
+    { f: 'Was machen wir heute Abend?', a: [['Geschichte', 'Eine Geschichte! Tipp unten auf «Geschichten», ich erzähle gern.'], ['Zähne putzen', 'Zähne putzen mit dem Zahnböcklein! Das machen wir unter «Gute Nacht».'], ['Kuscheln', 'Kuscheln ist das Schönste. Ich kuschle mit meinem Moos-Kissen.']] },
+    { f: 'Welche Farbe hat der Mond heute?', a: [['Gelb', 'Gelb wie Honig! Der Mond lächelt bestimmt.'], ['Weiss', 'Weiss wie Schnee. Ganz hell und still.'], ['Ich sehe ihn nicht', 'Dann versteckt er sich hinter einer Wolke. Er ist trotzdem da.']] },
+    { f: 'Was war heute schön?', a: [['Spielen', 'Spielen ist toll! Mit wem hast du gespielt?'], ['Essen', 'Mmh, Essen! Was gab es Feines?'], ['Draussen sein', 'Draussen ist es wunderbar. Ich schnuppere gern im Laub.'], ['Weiss nicht', 'Das ist okay. Manchmal merkt man das Schöne erst morgen.']] },
+    { f: 'Wollen wir zusammen atmen? Ganz tief ein … und aus.', a: [['Ja', 'Ein … und aus. Schön. Mein Bauch ist jetzt ganz weich.'], ['Lieber nicht', 'Auch gut. Du entscheidest.']] },
+    { f: 'Wer ist dein bester Freund im Mondschein-Wald?', a: [['Otti', 'Ich? Oh, da werden meine Stacheln ganz rot!'], ['Tropfi', 'Tropfi leuchtet so schön. Sie mag dich bestimmt auch.'], ['Nova', 'Nova, der kleine Roboter! Er erklärt so gut.'], ['Das Zahnböcklein', 'Mäh! Das Zahnböcklein freut sich bestimmt.']] },
+    { f: 'Kannst du wie ein Igel schnüffeln?', a: [['Schnüff schnüff', 'Hihi! Genau so! Du bist ein echter Igel.'], ['Nein', 'Probier mal: Nase kraus und schnüff, schnüff!']] }
+  ];
+  var spiel = { an: false, i: 0, box: null };
+  function spielStopp() { spiel.an = false; $('spielKnopf').textContent = '🎲 Fragespiel'; if (spiel.box) { spiel.box.remove(); spiel.box = null; } }
+  function spielFrage() {
+    if (!spiel.an) return;
+    var q = FRAGEN[spiel.i++ % FRAGEN.length];
+    sag(q.f, function () {
+      if (!spiel.an) return;
+      if (spiel.box) spiel.box.remove();
+      var box = document.createElement('div'); box.className = 'chips';
+      q.a.concat([['Tschüss', '']]).forEach(function (x) {
+        var b = document.createElement('button'); b.type = 'button'; b.textContent = x[0];
+        b.addEventListener('click', function () {
+          box.remove(); spiel.box = null; zeile('du', x[0]);
+          if (!x[1]) { spielStopp(); sag('Tschüss! Das war lustig. Bis bald!'); pose('winkt', 2200); return; }
+          if (q.a.length > 2 && x[0] !== 'Weiss nicht') fsSetze(x[0]);
+          funken(8); pose('lacht', 1800);
+          sag(x[1], function () { setTimeout(spielFrage, 600); });
+        });
+        box.appendChild(b);
+      });
+      spiel.box = box; text.appendChild(box); text.scrollTop = text.scrollHeight;
+    });
+  }
+  function spielStart() {
+    if (conv) return;
+    spielStopp(); spiel.an = true; $('spielKnopf').textContent = '⏹ Spiel aus'; schlafen(false); pose('winkt', 2000);
+    status.textContent = 'Fragespiel: tipp auf eine Antwort.';
+    spiel.i = Math.floor(Math.random() * FRAGEN.length);
+    sag('Juhui, ein Fragespiel! Ich frage, du tippst.', spielFrage);
+  }
+  $('spielKnopf').addEventListener('click', function () { if (spiel.an) { spielStopp(); status.textContent = 'Fragespiel beendet.'; } else spielStart(); });
+
+  /* ---------- Elternbereich: 3 Sekunden halten ---------- */
+  var DAUER = 'otti_dauer';
+  function dauer() { var d = 10; try { d = parseInt(localStorage.getItem(DAUER), 10) || 10; } catch (e) {} return d; }
+  var limitT = 0;
+  function ebZeigen() {
+    vergessenZeigen();
+    $('dauerWahl').innerHTML = '';
+    [5, 10, 15].forEach(function (m) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = m + ' Min.'; b.className = dauer() === m ? 'sel' : '';
+      b.addEventListener('click', function () { try { localStorage.setItem(DAUER, String(m)); } catch (e) {} ebZeigen(); });
+      $('dauerWahl').appendChild(b);
+    });
+    $('okInfo').textContent = elternOk() ? 'Du hast dem Live-Gespräch zugestimmt. Die Stimme geht dabei an ElevenLabs (USA).' : 'Noch nicht zugestimmt. Otti fragt dich vor dem ersten Live-Gespräch.';
+    $('okWeg').hidden = !elternOk();
+    $('ebereich').hidden = false;
+  }
+  $('okWeg').addEventListener('click', function () { try { localStorage.removeItem(OK); } catch (e) {} ebZeigen(); });
+  $('ebZu').addEventListener('click', function () { $('ebereich').hidden = true; });
+  (function () {
+    var b = $('elternHalten'), t0 = 0, raf = 0;
+    function tick() { var p = Math.min(1, (performance.now() - t0) / 3000); b.style.setProperty('--p', p.toFixed(3)); if (p >= 1) { t0 = 0; b.style.setProperty('--p', 0); ebZeigen(); return; } raf = requestAnimationFrame(tick); }
+    function stop() { if (!t0) return; var kurz = performance.now() - t0 < 2900; t0 = 0; cancelAnimationFrame(raf); b.style.setProperty('--p', 0); if (kurz) hinweis.textContent = 'Für Eltern: 3 Sekunden gedrückt halten.'; }
+    b.addEventListener('pointerdown', function (e) { try { b.setPointerCapture(e.pointerId); } catch (x) {} t0 = performance.now(); raf = requestAnimationFrame(tick); });
+    b.addEventListener('pointerup', stop); b.addEventListener('pointercancel', stop);
+    b.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  })();
+  document.addEventListener('drlab-feedback-open', function () { spielStopp(); if (window.NovaStimme) window.NovaStimme.stopp(); });
+
+  /* ---------- Einführung beim ersten Start ---------- */
+  var TOUR = [
+    ['Hallo, ich bin Otti!', 'Ich bin ein kleiner Igel aus dem Mondschein-Wald. Tipp auf mich, dann hüpfe ich.'],
+    ['Mit mir reden', 'Der goldene Knopf startet ein Gespräch. Ich höre zu und antworte. Dafür braucht es Internet und einmal das Ja von Mama oder Papa.'],
+    ['Ohne Internet', 'Mit «Fragespiel» frage ich dich etwas und du tippst die Antwort. Das geht immer.'],
+    ['Für Eltern', 'Unten 3 Sekunden halten: dort steht, was Otti sich merkt, wie lang ein Gespräch dauert, und der Draht zu DR Lab.']
+  ];
+  var tourI = 0;
+  function tourZeigen() {
+    $('tourH').textContent = TOUR[tourI][0]; $('tourT').textContent = TOUR[tourI][1];
+    $('tourP').innerHTML = TOUR.map(function (_, i) { return '<i class="' + (i === tourI ? 'an' : '') + '"></i>'; }).join('');
+    $('tourWeiterT').textContent = tourI === TOUR.length - 1 ? 'Los geht\'s' : 'Weiter';
+  }
+  function tourStart() { tourI = 0; $('ebereich').hidden = true; $('tour').hidden = false; tourZeigen(); }
+  function tourEnde() { $('tour').hidden = true; try { localStorage.setItem('otti_tour', '1'); } catch (e) {} pose('winkt', 2200); }
+  $('tourWeiter').addEventListener('click', function () { if (tourI < TOUR.length - 1) { tourI++; tourZeigen(); } else tourEnde(); });
+  $('tourSkip').addEventListener('click', tourEnde);
+  $('tourNochmal').addEventListener('click', tourStart);
+  var gesehen = false; try { gesehen = localStorage.getItem('otti_tour') === '1'; } catch (e) {}
+  if (!gesehen) setTimeout(tourStart, 600); else setTimeout(function () { pose('winkt', 2200); }, 700);
+
+  // Leerer Verlauf: Otti grüsst schon mal (nur angezeigt, nicht gemerkt).
+  (function () {
+    var d = document.createElement('div'); d.className = 'z otti';
+    var h = new Date().getHours();
+    d.textContent = (h < 11 ? 'Guten Morgen!' : h < 18 ? 'Hallo!' : 'Guten Abend!') + ' Willst du mit mir reden oder ein Fragespiel spielen?';
+    text.appendChild(d);
+  })();
+  addEventListener('offline', function () { hinweis.textContent = 'Kein Internet: Das Fragespiel geht trotzdem.'; });
+  addEventListener('online', function () { hinweis.textContent = ''; });
 
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
 })();

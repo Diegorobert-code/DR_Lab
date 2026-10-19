@@ -1,6 +1,6 @@
 // Mondschein – Offline-Cache (nur eigene Dateien, keine Daten)
-const CACHE = 'ms-v41';
-const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './nova.jpg', './otti-hallo.jpg', './otti-lacht.jpg', './otti-ruhig.jpg', './otti-winkt.jpg', './otti-winkt-fig.jpg', './otti-winkt.mp4', './otti-winkt-fig.mp4', './otti-anruf.jpg', './otti-spricht.mp4', './otti-anruf-winkt.mp4', './szene-hallo.jpg', './szene-lacht.jpg', './szene-ruhig.jpg', './hase.jpg', './fuchs.jpg', './figur.jpg', './zahnboecklein.jpg', './fompa-affe.jpg', './kiki-koala.jpg', './kino/index.json'];
+const CACHE = 'ms-v42';
+const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './nova.jpg', './otti-hallo.jpg', './otti-lacht.jpg', './otti-ruhig.jpg', './otti-winkt.jpg', './otti-winkt-fig.jpg', './otti-winkt.mp4', './otti-winkt-fig.mp4', './otti-anruf.jpg', './otti-spricht.mp4', './otti-anruf-winkt.mp4', './szene-hallo.jpg', './szene-lacht.jpg', './szene-ruhig.jpg', './hase.jpg', './fuchs.jpg', './figur.jpg', './zahnboecklein.jpg', './fompa-affe.jpg', './kiki-koala.jpg', './kino/index.json', './posen/index.json', './feedback.js', '../nova/nova.js', '../nova/seelen.js', '../nova/intro.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
 });
