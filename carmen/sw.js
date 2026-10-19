@@ -1,5 +1,5 @@
 // Milulu – Offline-Cache (nur eigene Dateien, keine Daten). Die Band entsteht im Handy, darum geht Tanzen auch offline.
-const CACHE = 'milulu-v1';
+const CACHE = 'milulu-v2';
 const FILES = ['./', './index.html', './posen.js', './feedback.js', './figur.jpg', './figur-gross.jpg', './icon-180.png', './icon-192.png', './icon.svg', './manifest.webmanifest', '../nova/nova.js', '../nova/seelen.js', '../apps/sprechen/sprechen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(FILES.map(f => c.add(f).catch(() => {})))).then(() => self.skipWaiting()));
