@@ -58,7 +58,9 @@ const HELP = [
   {n:'Elternnotruf', t:'0848 35 45 55', d:'Rund um die Uhr, für Eltern unter Druck'},
   {n:'Sanitätsnotruf', t:'144', d:'Bei Lebensgefahr, Verletzung, akuter Krise'},
   {n:'Tox Info Suisse', t:'145', d:'Wenn etwas verschluckt oder getrunken wurde'},
-  {n:'Dargebotene Hand (für dich)', t:'143', d:'Wenn du selbst jemanden zum Reden brauchst'}
+  {n:'Dargebotene Hand (für dich)', t:'143', d:'Wenn du selbst jemanden zum Reden brauchst'},
+  {n:'Polizei', t:'117', d:'Bei Gewalt oder wenn jemand in Gefahr ist'},
+  {n:'Opferhilfe Schweiz', t:'142', d:'Nach Gewalt, rund um die Uhr, gratis und vertraulich, auch für Kinder und Eltern'}
 ];
 /* «Was ist heute los?» – Inhalte nach Forschung (zweistein/mama-aff-forschung.md) */
 const SITUATIONS = [
@@ -249,9 +251,52 @@ const ARZT_FRAGEN = [
  'Wer kann uns noch helfen (Schule, Beratung, Therapie)?'
 ];
 
+/* Wissen kurz erklärt (Forschung zweistein/mama-aff-forschung.md). Stärken zuerst, keine Diagnose, Weg zu Fachpersonen. */
+const WISSEN = [
+ {k:'adhs', e:'🎢', l:'Aufmerksamkeit und Unruhe', ganz:'Manche Kinder haben einen Kopf wie ein Radio mit vielen Sendern gleichzeitig. Aufmerksamkeit, Pausen und Bremsen reifen bei ihnen später. Das hat nichts mit Faulheit oder schlechter Erziehung zu tun. Man nennt das manchmal ADHS, abklären können das nur Fachpersonen.',
+  staerke:['Viel Energie und Begeisterung','Ideen, die anderen nicht einfallen','Mut, Neues auszuprobieren','Ganz tief drin sein, wenn etwas wirklich interessiert'],
+  alltag:['Kurze Aufgaben, dann bewegen (Fokus-Timer im Schulhaus)','Abläufe ankündigen und gleich halten','Gelungenes sofort benennen, Fehler ruhig erklären','Eine Sache nach der anderen, Tisch frei räumen'],
+  wann:'Wenn es zuhause, in der Schule und mit Freunden über Monate schwierig ist und das Kind darunter leidet: Kinderärztin, Schulpsychologischer Dienst oder kinder- und jugendpsychiatrischer Dienst. Ob Medikamente passen, entscheidet ihr zusammen mit der Ärztin. Mama Affe rät weder zu noch ab.', sit:'konzentration'},
+ {k:'lesen', e:'📖', l:'Lesen und Schreiben fällt schwer', ganz:'Lesen heisst: Buchstaben in Laute übersetzen und schnell zusammenhängen. Bei manchen Kindern braucht dieser Weg viel länger, auch wenn sie klug sind und wunderbar erzählen.',
+  staerke:['Erzählen und Fantasie','Bilder, Räume, Bauen','Zusammenhänge sehen'],
+  alltag:['Jeden Tag kurz statt einmal lang (Lese-Zimmer: Buchstabe und Laut)','Vorlesen und abwechselnd lesen','Hörbücher zählen auch','Nicht alles rot anstreichen, das Gelungene zeigen'],
+  wann:'Wenn das Lesen nach dem ersten Schuljahr kaum vorwärtskommt oder das Kind die Schule meidet: mit der Lehrperson reden, Schulpsychologischer Dienst, Logopädie (über die Schule).', room:'lesen'},
+ {k:'rechnen', e:'🔢', l:'Rechnen fällt schwer', ganz:'Zahlen sind für das Gehirn zuerst Mengen: drei Bananen, fünf Finger. Manche Kinder brauchen länger, bis Menge, Zahl und Zeichen zusammenpassen.',
+  staerke:['Geduld mit Dingen, die man anfassen kann','Sprache und Erzählen','Kreative Lösungswege'],
+  alltag:['Mit Dingen rechnen: Löffel, Steine, Treppenstufen','Punkte statt nur Zahlen (Rechen-Zimmer)','Kleine Schritte, jede Stufe darf wiederholt werden','Im Alltag zählen: einkaufen, backen, Tisch decken'],
+  wann:'Wenn Mengen und Zahlen bis 10 auch nach dem ersten Schuljahr unsicher bleiben: Lehrperson, Schulpsychologischer Dienst.', room:'rechnen'},
+ {k:'zwang', e:'🌀', l:'Gedanken, die immer wiederkommen', ganz:'Fast alle Kinder haben Rituale und Sorgen. Bei manchen werden daraus Gedanken, die immer wiederkommen und Angst machen, oder Handlungen, die immer gleich sein müssen (waschen, kontrollieren, zählen). Oft weiss das Kind selbst, dass es «komisch» ist, und schämt sich. Es ist nicht verrückt und nicht schuld.',
+  staerke:['Sorgfalt und Genauigkeit','Grosses Verantwortungsgefühl','Feine Wahrnehmung'],
+  alltag:['Ruhig zuhören, nicht auslachen, nicht schimpfen','Nicht selbst beim Ritual mitmachen müssen, aber freundlich bleiben','Beobachten: wie oft, wie lange, was half (Notiz «Angst / Ritual»)','Zusammen lachen, spielen, sich bewegen'],
+  wann:'Wenn Gedanken oder Rituale mehr als eine Stunde am Tag brauchen, das Kind stark leidet oder der Alltag stockt: Kinderärztin oder kinder- und jugendpsychiatrischer Dienst. Es gibt gute Hilfe, und früh ist sie leichter.', sit:'angst', proto:'angst'},
+ {k:'gross', e:'🦄', l:'Schnell, gelangweilt, «zu viel»', ganz:'Manche Kinder denken schnell und in grossen Bildern. Läuft der Unterricht in kleinen Schritten, schalten sie ab oder stören. Sie brauchen zuerst das grosse Ganze, dann kommen die Details von selbst. Das ist eine andere Form von Intelligenz.',
+  staerke:['Grosse Zusammenhänge sehen','Viele Fragen','Eigene Wege finden'],
+  alltag:['Zuerst die Landkarte: worum geht es, wozu braucht man das','Eigene Fragen erlauben (Staun-Zimmer)','Schwierige Aufgaben als Abenteuer anbieten','Mit der Lehrperson über passende Zusatzaufgaben reden'],
+  wann:'Wenn das Kind lange unglücklich ist, nicht mehr zur Schule will oder sich zurückzieht: Lehrperson, Schulpsychologischer Dienst.', sit:'anders'},
+ {k:'jugend', e:'💛', l:'Was Jugendlichen oft fehlt', ganz:'In der Jugend baut das Gehirn um. Gefühle sind schneller als die Bremse. Jugendliche brauchen mehr Schlaf, als sie bekommen, Bewegung, Zugehörigkeit und Erwachsene, die da bleiben, auch wenn die Tür zu ist.',
+  staerke:['Mut und Gerechtigkeitssinn','Eigene Ideen','Tiefe Freundschaften'],
+  alltag:['Genug Schlaf, Handy über Nacht nicht im Zimmer','Bewegung und draussen sein','Zuhören, ohne gleich Ratschläge zu geben','Etwas Sinnvolles tun dürfen: Verantwortung, Hobby, kleiner Job','Sagen: «Hilfe holen ist stark.»'],
+  wann:'Wenn Rückzug lange dauert, Schlaf und Essen sich stark ändern oder es Gedanken an Selbstverletzung gibt: sofort 147 oder Kinderärztin, bei Gefahr 144.', sit:'teen'}
+];
+const SIT_KW = {
+ wut:['wut','tobt','ausraster','haut ','schlägt um sich','explodiert','zornig'],
+ schlaf:['schlaf','schläft','aufwach','ins bett','einschlaf','nachts'],
+ baby:['baby','säugling','schreibaby','koliken','weint die ganze','weint viel','stillen'],
+ grenzen:['nein sagt','hört nicht','grenze','trotz','regeln','gehorcht'],
+ geschwister:['geschwister','bruder','schwester','eifersüchtig'],
+ hausaufgaben:['hausaufgabe','aufgaben','prüfung','test ','noten','üben'],
+ bildschirm:['handy','bildschirm','tablet','gamen','game','youtube','tiktok','fernseh'],
+ konzentration:['konzentr','unruhig','zappel','adhs','vergisst','träumt','ablenk','chaos'],
+ anders:['lernt anders','langweil','faul','dumm','doof','hasst die schule','will nicht in die schule','versteht nicht'],
+ angst:['angst','grübel','sorge','ritual','zwang','kontrolliert','wäscht','immer wieder','gedanken'],
+ koerpergrenzen:['körper gehört','berühr','anfassen','küssen','nackt'],
+ trennung:['trennung','scheidung','zwei wohnungen','getrennt','wochenende beim'],
+ teen:['verliebt','zieht sich zurück','rückzug','pubertät','teenager','zimmer zu','redet nicht mehr']
+};
+const KRISE_RE = /(suizid|selbstmord|umbringen|sterben will|will sterben|nicht mehr leben|ritzt|ritzen|verletzt sich|schlägt mich|schlägt mein kind|schlägt uns|gewalt|missbrauch|missbraucht|vergewaltig|geschüttelt|schütteln|bewusstlos|vergiftet|verschluckt|atmet nicht|blutet)/;
 const PARENT_TABS = [
  {k:'heute', e:'🧭', l:'Heute'}, {k:'alter', e:'🌱', l:'Alter'}, {k:'fuerdich', e:'🧡', l:'Für dich'},
- {k:'momente', e:'✨', l:'Momente'}, {k:'schlaf', e:'🌙', l:'Schlaf'}, {k:'hilfe', e:'🆘', l:'Hilfe'}
+ {k:'wissen', e:'📖', l:'Wissen'}, {k:'momente', e:'✨', l:'Momente'}, {k:'schlaf', e:'🌙', l:'Schlaf'}, {k:'hilfe', e:'🆘', l:'Hilfe'}
 ];
 const KID_TABS = [
  {k:'schule', e:'🏫', l:'Schule'}, {k:'koerper', e:'🦶', l:'Körper'}, {k:'staerken', e:'💪', l:'Stärken'}, {k:'tier', e:'🐻', l:'Tier'}, {k:'abend', e:'🌙', l:'Abend'}
@@ -308,14 +353,19 @@ function mount(root, opts){
   function stopSay(){ try{ if(window.NovaStimme) NovaStimme.stopp(); }catch(e){} try{ speechSynthesis.cancel(); }catch(e){} }
 
   /* ---------- Trickfilm-Bühne ---------- */
+  /* Posen-Bilder: liegen sie in mama-affe/posen/<pose>.jpg und stehen in posen/posen.json, nimmt die Bühne sie automatisch. */
+  const POSEN_BILD = {};
+  try{ fetch(BASE+'posen/posen.json', {cache:'no-cache'}).then(r=>r.ok?r.json():null).then(j=>{ ((j&&j.posen)||[]).forEach(n=>{ if(!PROPS[n]) return; const im=new Image(); im.onload=()=>{ POSEN_BILD[n]=im.src; const a=$('[data-ma-actor]'); if(a && a.classList.contains(n)){ const i=a.querySelector('.body img'); if(i) i.src=im.src; } }; im.src=BASE+'posen/'+n+'.jpg'; }); }).catch(()=>{}); }catch(e){}
+  const bildFuer = p => POSEN_BILD[p] || FIG;
   function stage(pose, text, sz){
-    return `<div class="stage"><div class="actor ${pose}" style="--sz:${sz||170}px" data-ma-actor><div class="glow"></div><div class="shadow"></div><div class="body"><img src="${FIG}" alt="Mama Affe"></div><span class="prop" data-ma-prop>${PROPS[pose]||''}</span></div>
+    return `<div class="stage"><div class="actor ${pose}" style="--sz:${sz||170}px" data-ma-actor><div class="glow"></div><div class="shadow"></div><div class="body"><img src="${bildFuer(pose)}" alt="Mama Affe"></div><span class="prop" data-ma-prop>${PROPS[pose]||''}</span></div>
       ${text?`<div class="bubble" data-type="${esc(text)}">${reduced?esc(text):''}</div>`:''}</div>`;
   }
   function pose(p, ms){
     const a = $('[data-ma-actor]'); if(!a) return;
     const old = a.className; a.className = 'actor ' + p; const pr = a.querySelector('[data-ma-prop]'); if(pr) pr.textContent = PROPS[p]||'';
-    if(ms){ setTimeout(()=>{ if(a.isConnected){ a.className = old; if(pr) pr.textContent = PROPS[old.replace('actor','').trim()]||''; } }, ms); }
+    const im = a.querySelector('.body img'); const oldSrc = im ? im.getAttribute('src') : ''; if(im) im.setAttribute('src', bildFuer(p));
+    if(ms){ setTimeout(()=>{ if(a.isConnected){ a.className = old; if(pr) pr.textContent = PROPS[old.replace('actor','').trim()]||''; if(im) im.setAttribute('src', oldSrc); } }, ms); }
   }
   function typeBubbles(){
     if(reduced) return;
@@ -384,11 +434,69 @@ function mount(root, opts){
     return topBar('Was ist heute los?') + `<div class="scene">
      <div class="map"><div class="k">Das grosse Ganze</div>Erst hinschauen, dann handeln. Drei Fragen helfen immer:
      <div class="steps"><span>1. Was ist gerade?</span><span>2. Was braucht es gerade?</span><span>3. Was brauchst du?</span></div></div>
+     <div class="card"><h3>💬 Erzähl Mama Affe, was los ist</h3>
+      <textarea id="ma-erz" rows="3" maxlength="600" placeholder="z. B. «Mein Sohn tobt jeden Abend beim Zähneputzen»"></textarea>
+      <div class="row" style="margin-top:8px"><button class="btn" data-act="erzaehl">🧭 Weiter</button></div>
+      <div data-ma-erzout></div>
+      <p class="small muted">Dein Text wird nicht gespeichert.</p></div>
      ${ageChips()}
      ${top.length?`<p class="small muted">Oft bei euch: ${top.map(s=>`<button class="chip" data-go="heute:${s.id}">${s.e} ${esc(s.l)}</button>`).join(' ')}</p>`:''}
      <div class="grid">${SITUATIONS.map(s=>`<button class="tile" data-go="heute:${s.id}"><span class="e">${s.e}</span><span class="l">${s.l}</span></button>`).join('')}</div>
      <div class="card soft"><h3>Und du?</h3><p class="muted">Eltern brauchen auch Pausen. Eine Minute atmen hilft, bevor du antwortest.</p>
-     <button class="btn alt" data-sos="1">🌬️ 1 Minute für mich</button> <button class="btn alt" data-go="fuerdich">🧡 Für dich</button></div>${FOOT}</div>`;
+     <button class="btn alt" data-sos="1">🌬️ 1 Minute für mich</button> <button class="btn alt" data-go="fuerdich">🧡 Für dich</button></div>
+     <button class="btn alt block" data-go="wissen">📖 Wissen kurz erklärt: Aufmerksamkeit, Lesen, Rechnen, Grübeln, Jugend</button>${FOOT}</div>`;
+  }
+  /* Erzählen: ohne Server passende Situation finden, mit Server zusätzlich persönliche Antwort. Text bleibt nur im Arbeitsspeicher. */
+  let erzText = '';
+  function serverDaten(){ let addr='', key=''; try{ addr=JSON.parse(localStorage.getItem('drlab-hermes-adresse')||'""')||''; key=JSON.parse(localStorage.getItem('drlab-hermes-passwort')||'""')||''; }catch(e){} return {addr:String(addr).trim().replace(/\/+$/,''), key}; }
+  function serverBereit(){ const d=serverDaten(); return /^https:\/\//.test(d.addr) && !!d.key && navigator.onLine!==false; }
+  function erzaehl(){
+    const ta = $('#ma-erz'), out = $('[data-ma-erzout]'); if(!ta || !out) return;
+    const text = ta.value.trim(); if(!text){ toast('Schreib zuerst kurz, was los ist.'); ta.focus(); return; }
+    erzText = text; const t = ' '+text.toLowerCase()+' ';
+    if(KRISE_RE.test(t)){ ta.value=''; erzText=''; go('hilfe'); toast('Das klingt ernst. Hier ist sofort Hilfe.'); later(()=>say('Das klingt ernst. Du musst das nicht allein tragen. Ruf jetzt an.'), 300); return; }
+    const sc = Object.keys(SIT_KW).map(id=>({id, n:SIT_KW[id].filter(w=>t.indexOf(w)>-1).length})).filter(x=>x.n>0).sort((a,b)=>b.n-a.n).slice(0,2);
+    const hits = sc.map(x=>SITUATIONS.find(s=>s.id===x.id)).filter(Boolean);
+    pose('denkt', 1600);
+    out.innerHTML = (hits.length ? `<p style="margin:10px 0 6px">Danke, dass du es mir erzählst. Ich glaube, das passt:</p>${hits.map(s=>`<button class="btn alt block" data-go="heute:${s.id}">${s.e} ${esc(s.l)}</button>`).join('')}`
+      : `<p style="margin:10px 0 6px">Danke. Ich habe es noch nicht ganz verstanden. Wähl unten eine Situation, oder schau zuerst die drei Fragen an.</p>`)
+      + (serverBereit() ? `<button class="btn block" data-act="kiFrag">🦧 Mama Affe persönlich fragen</button><p class="small muted">Dein Text geht dafür einmal an den DR Lab Server (Sense Engine), ohne Namen.</p><div data-ma-kiout></div>` : '');
+    say(hits.length ? 'Danke, dass du es mir erzählst. Schau, das könnte passen.' : 'Danke. Wähl eine Situation, dann schauen wir zusammen.');
+  }
+  async function kiFrag(btn){
+    const out = $('[data-ma-kiout]'); if(!out || !erzText) return;
+    btn.disabled = true; out.innerHTML = '<p class="small muted">Mama Affe denkt nach …</p>'; pose('denkt');
+    const d = serverDaten(); const alter = (AGES.find(a=>a.k===state.age)||{}).l||'';
+    try{
+      const r = await fetch(d.addr+'/v1/chat/completions', {method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+d.key,'X-Nova-App':'Mama Affe'},
+        body: JSON.stringify({model:'sense-engine', messages:[{role:'system', content: SEELE + ' Antworte in höchstens 6 kurzen Sätzen: zuerst das grosse Ganze, dann ein Satz zum Ausprobieren, dann wann Fachpersonen helfen. Alter des Kindes: '+alter+'.'},{role:'user', content: erzText.slice(0,1500)}]})});
+      if(!r.ok) throw new Error(r.status);
+      const j = await r.json(); const a = String((j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||'').trim();
+      if(!a) throw new Error('leer');
+      out.innerHTML = `<div class="card gold"><p style="white-space:pre-wrap;margin:0">${esc(a)}</p><button class="chip" data-say="${esc(a)}">🔊 Vorlesen</button></div>`;
+      btn.remove(); pose('zeigt', 1500); learnUp(l=>{ l.ki = (l.ki||0)+1; });
+    }catch(e){
+      out.innerHTML = '<p class="small muted">Mama Affe erreicht ihren Server gerade nicht. Die Situationen oben helfen trotzdem. Versuch es später nochmals.</p>'; btn.disabled = false;
+    }
+  }
+  /* Wissen kurz erklärt */
+  function vWissen(k){
+    const w = WISSEN.find(x=>x.k===k);
+    if(!w) return topBar('Wissen kurz erklärt') + `<div class="scene">
+      ${stage('denkt', 'Erst das grosse Ganze. Dann sehen wir die Stärken. Dann den nächsten Schritt.', 110)}
+      <div class="map"><div class="k">Wichtig</div>Das hier ist Wissen, keine Abklärung. Mama Affe stellt keine Diagnose. Sie hilft dir, genau hinzuschauen und gut vorbereitet mit Fachpersonen zu reden.</div>
+      <div class="grid">${WISSEN.map(x=>`<button class="tile" data-go="wissen:${x.k}"><span class="e">${x.e}</span><span class="l">${esc(x.l)}</span></button>`).join('')}</div>${FOOT}</div>`;
+    learnUp(l=>{ l.wissen = l.wissen||{}; l.wissen[k] = (l.wissen[k]||0)+1; });
+    later(()=>say(w.ganz), 400);
+    return topBar(w.l) + `<div class="scene">
+      <div class="map"><div class="k">${w.e} Das grosse Ganze</div>${esc(w.ganz)}</div>
+      <div class="card gold"><h3>💪 Stärken, die oft dazugehören</h3><ul>${w.staerke.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+      <div class="card"><h3>🌱 Was im Alltag hilft</h3><ul>${w.alltag.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+      <div class="card"><h3>🧭 Wann Fachpersonen helfen</h3><p>${esc(w.wann)}</p>
+       <div class="row"><button class="btn alt" data-go="hilfe">Hilfe-Nummern</button><button class="btn alt" data-go="notiz${w.proto?':'+w.proto:''}">📝 Beobachtung notieren</button></div></div>
+      ${w.sit?`<button class="btn block" data-go="heute:${w.sit}">💬 Sätze zum Ausprobieren</button>`:''}
+      ${w.room?`<button class="btn block" data-mode="kind" data-to="${w.room}">🏫 Zusammen üben im Schulhaus</button>`:''}
+      <button class="btn alt block" data-go="wissen">← Andere Themen</button>${FOOT}</div>`;
   }
   function vSituation(id){
     const s = SITUATIONS.find(x=>x.id===id); if(!s) return vHeute();
@@ -525,6 +633,7 @@ function mount(root, opts){
     const moods = (l.moods||[]).slice(-7).map(m=>({rakete:'🚀',velo:'🚲',schnecke:'🐌'})[m]||'').join(' ');
     const sit = Object.entries(l.sit||{}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>{ const s=SITUATIONS.find(y=>y.id===x[0]); return s? s.e+' '+s.l : ''; }).filter(Boolean).join(', ');
     const share = store.get('shareOk', false);
+    const wis = Object.entries(l.wissen||{}).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>{ const w=WISSEN.find(y=>y.k===x[0]); return w? w.e+' '+w.l : ''; }).filter(Boolean).join(', ');
     return `<div class="card"><h3>🧠 Was Mama Affe sich merkt</h3>
       <ul class="clean small">
        <li>Lesen: ${l.lesenOk} von ${l.lesenAll} Lauten richtig</li>
@@ -533,6 +642,8 @@ function mount(root, opts){
        ${fav?`<li>Lieblingszimmer: ${esc(roomL[fav[0]]||fav[0])}</li>`:''}
        ${moods?`<li>Tagesform zuletzt: ${moods}</li>`:''}
        ${sit?`<li>Eure häufigsten Themen: ${esc(sit)}</li>`:''}
+       ${wis?`<li>Oft nachgelesen: ${esc(wis)}</li>`:''}
+       ${l.ki?`<li>Mama Affe persönlich gefragt: ${l.ki}</li>`:''}
       </ul>
       <p class="small muted">Nur Zahlen, nur auf diesem Gerät. Notizen, Momente und Namen bleiben immer hier. Mama Affe nutzt die Zahlen, um Aufgaben ans Kind anzupassen.</p>
       <label class="cb"><input type="checkbox" data-act="shareOk" ${share?'checked':''}> <span>Ich bin einverstanden, dass Mama Affe diese Lern-Zahlen (ohne Texte, ohne Namen, ohne Stimme oder Bild) an DR Lab weitergibt, damit die App besser wird.</span></label>
@@ -862,7 +973,7 @@ function mount(root, opts){
       const [v, arg] = view.split(':');
       const map = {heute: arg? ()=>vSituation(arg) : vHeute, alter:vAlter, fuerdich:vFuerDich, momente:vMomente, notiz:()=>vNotiz(arg), schlaf:vSchlaf, hilfe:vHilfe,
         schule:vSchule, ankommen:vAnkommen, lesen:vLesen, rechnen:vRechnen, staunen:vStaunen, koerper:vKoerper, uebung:()=>vUebung(arg),
-        staerken:vStaerken, tier:vTier, abend:vAbend, plan:vPlan, fokus:vFokus, erklaer:vErklaer, spiegel:vSpiegel};
+        staerken:vStaerken, tier:vTier, abend:vAbend, plan:vPlan, fokus:vFokus, erklaer:vErklaer, spiegel:vSpiegel, wissen:()=>vWissen(arg)};
       h = (map[v] || (mode==='eltern'?vHeute:vSchule))();
     }
     app.innerHTML = h; tabs(); typeBubbles();
@@ -872,6 +983,23 @@ function mount(root, opts){
     view = to || (m==='eltern' ? 'heute' : 'schule');
     stopSay(); clearTimers(); render(); toTop();
   }
+
+  /* ---------- Erster Start: kurze Einführung (3 Bilder) ---------- */
+  const OB = [
+   {p:'winkt', t:'Ich bin Mama Affe', x:'Ein Orang-Utan. Mit meinen langen Armen halte ich euch, und meine Füsse greifen wie Hände. Ich begleite euch beim Grosswerden, von 1 bis 16.'},
+   {p:'zeigt', t:'Für Eltern und für Kinder', x:'Eltern finden «Was ist heute los?», Wissen und Hilfe. Kinder lernen in meinem Schulhaus, mit Affenfüssen, Superkräften und Tier des Tages. Zurück zu den Eltern: Haus-Knopf lange drücken.'},
+   {p:'atmet', t:'Ich bin keine Ärztin', x:'Ich erkläre, ermutige und zeige den Weg zu Fachpersonen. Alles bleibt auf diesem Gerät. Wenn es eilt: Hilfe ist immer einen Tipp entfernt.'}
+  ];
+  let obI = 0, obEl = null;
+  function obZeigen(){
+    if(!obEl){ obEl = document.createElement('div'); obEl.className = 'pause ma-ob'; obEl.setAttribute('role','dialog'); obEl.setAttribute('aria-label','Einführung'); root.appendChild(obEl); }
+    const o = OB[obI];
+    obEl.innerHTML = `<div class="card gold" style="text-align:center;max-width:420px">${stage(o.p,'',130)}<h2 style="margin:14px 0 6px">${esc(o.t)}</h2><p>${esc(o.x)}</p>
+      <div class="dots">${OB.map((_,i)=>`<i class="${i===obI?'on':''}"></i>`).join('')}</div>
+      <button class="btn block" data-act="obWeiter">${obI===OB.length-1?'Los geht es':'Weiter'}</button><button class="btn alt block" data-act="obZu">Überspringen</button></div>`;
+  }
+  function obWeiter(){ if(obI < OB.length-1){ obI++; obZeigen(); } else obZu(); }
+  function obZu(){ store.set('obDone', true); if(obEl){ obEl.remove(); obEl = null; } }
 
   /* ---------- Ereignisse (nur innerhalb des Bereichs) ---------- */
   root.addEventListener('click', e=>{
@@ -926,6 +1054,10 @@ function mount(root, opts){
       case 'savePlan': store.set('plan', {date:$('#ma-pdate').value, topics:$('#ma-ptop').value}); render(); break;
       case 'shareOk': store.set('shareOk', !!t.checked); render(); break;
       case 'shareNow': shareNow(); break;
+      case 'erzaehl': erzaehl(); break;
+      case 'kiFrag': kiFrag(t); break;
+      case 'obWeiter': obWeiter(); break;
+      case 'obZu': obZu(); break;
       case 'forget': if(window.confirm('Alle Lern-Zahlen, den Affenfüsse-Kalender und die Superkräfte löschen? Notizen und Momente bleiben.')){ ['learn','af','span','staerken','shareOk'].forEach(store.del); rechnen.lvl=null; toast('🧽 Vergessen'); render(); } break;
     }
   });
@@ -937,6 +1069,7 @@ function mount(root, opts){
   const holdEnd = ()=>{ clearTimeout(holdT); const bar=root.querySelector('[data-hold] .bar'); if(bar){ bar.style.transition='none'; bar.style.width='0'; } };
   ['pointerup','pointercancel'].forEach(ev=>root.addEventListener(ev, holdEnd)); root.addEventListener('pointerleave', holdEnd, true);
   document.addEventListener('drlab-feedback-open', stopSay);
+  if(!eingebettet && !store.get('obDone', false)) setTimeout(obZeigen, 50);
 
   render();
   const api = { go, setMode, stop(){ stopSay(); clearTimers(); } };

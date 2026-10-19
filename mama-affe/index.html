@@ -25,5 +25,9 @@
 <script src="bereich.js" defer></script>
 <script src="../nova/nova.js" data-nova-app="Mama Affe" data-nova-bild="figur.jpg" data-nova-unten="90" defer></script>
 <script src="feedback.js" data-app="Mama Affe" defer></script>
+<script>
+/* Offline: Mama Affe geht auch ohne Netz (Netz zuerst, Kopie als Ersatz). Nicht im iPhone-Bundle. */
+if('serviceWorker' in navigator && location.protocol==='https:' && !window.Capacitor){ addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); }); }
+</script>
 </body>
 </html>
