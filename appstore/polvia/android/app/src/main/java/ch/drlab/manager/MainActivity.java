@@ -1,4 +1,4 @@
-package ch.drlab.aurakompass;
+package ch.drlab.manager;
 
 import com.getcapacitor.BridgeActivity;
 

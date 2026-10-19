@@ -1,9 +1,9 @@
-# Aura Kompass – Play Console «App-Inhalte» (alle Antworten)
+# Polvia – Play Console «App-Inhalte» (alle Antworten)
 
 Unter «Richtlinien → App-Inhalte» der Reihe nach ausfüllen. Gilt für Version 1.0 ohne Server (alles auf dem Handy).
 
 ## Datenschutzerklärung
-URL: https://diegorobert-code.github.io/DR_Lab/datenschutz/aurakompass.html (nach «Datenschutz Go»)
+URL: https://diegorobert-code.github.io/DR_Lab/datenschutz/polvia.html (nach «Datenschutz Go»)
 
 ## Anzeigen
 Enthält die App Werbung? → **Nein**

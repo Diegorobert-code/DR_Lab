@@ -1,13 +1,13 @@
-# Aura Kompass – Google Play Texte (Deutsch)
+# Polvia – Google Play Texte (Deutsch)
 
 Alles zum Kopieren. In der Play Console unter «Store-Präsenz → Haupt-Store-Eintrag» einfügen.
-Arbeitsname, bis Diego den Namen wählt (Kandidaten: Aura, Kompass, Lumina). Vor dem Einreichen mit der fertigen App abgleichen.
+Arbeitsname, bis Diego den Namen wählt (Namensprüfung 19.10.: Lumina, Aura, Kompass haben Konflikte; Alternativen Lumivo, Leuvio; Anwaltsprüfung offen). Vor dem Einreichen mit der fertigen App abgleichen.
 
 **App-Name** (max. 30)
 ```
-Aura Kompass
+Polvia
 ```
-Falls vergeben: `Aura Kompass – Assistenz`
+Falls vergeben: `Polvia – Assistenz`
 
 **Kurzbeschreibung** (max. 80)
 ```
@@ -16,7 +16,7 @@ Deine ruhige Assistenz für Projekte, Termine und Ideen. Alles bleibt bei dir.
 
 **Vollständige Beschreibung** (max. 4000)
 ```
-Aura Kompass ist die persönliche Assistenz für Menschen, die viele Projekte, Firmen und Rollen gleichzeitig führen. Privat und geschäftlich, an einem ruhigen Ort.
+Polvia ist die persönliche Assistenz für Menschen, die viele Projekte, Firmen und Rollen gleichzeitig führen. Privat und geschäftlich, an einem ruhigen Ort.
 
 DEIN MORGEN IN EINER MINUTE
 Das Morgenbriefing zeigt, was heute zählt: die drei wichtigsten Aufgaben, die nächsten Termine und was gestern liegen geblieben ist.
@@ -40,7 +40,7 @@ Was du einträgst, bleibt auf deinem Handy. Kein Konto, keine Werbung, keine Aus
 **Tags (bis 5):** Produktivität, Planer, Aufgabenverwaltung, Notizen, Kalender
 **E-Mail-Adresse (Pflicht, öffentlich):** [fehlt, Diego]
 **Website (freiwillig):** https://drlabsolutions.com (erst wenn online)
-**Datenschutzerklärung (Pflicht):** https://diegorobert-code.github.io/DR_Lab/datenschutz/aurakompass.html (geht erst nach «Datenschutz Go» online)
+**Datenschutzerklärung (Pflicht):** https://diegorobert-code.github.io/DR_Lab/datenschutz/polvia.html (geht erst nach «Datenschutz Go» online)
 
 **Grafiken**
 - App-Symbol 512 × 512: `play-icon-512.png`

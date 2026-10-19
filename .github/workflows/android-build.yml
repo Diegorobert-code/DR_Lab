@@ -7,9 +7,9 @@ name: Android-Apps bauen
 on:
   push:
     branches: [main]
-    paths: ['appstore/aurakompass/**', 'aurakompass/**', 'appstore/shared/**', 'appstore/web-bauen.mjs', '.github/workflows/android-build.yml']
+    paths: ['appstore/polvia/**', 'polvia/**', 'appstore/shared/**', 'appstore/web-bauen.mjs', '.github/workflows/android-build.yml']
   pull_request:
-    paths: ['appstore/aurakompass/**', 'aurakompass/**', 'appstore/shared/**', 'appstore/web-bauen.mjs', '.github/workflows/android-build.yml']
+    paths: ['appstore/polvia/**', 'polvia/**', 'appstore/shared/**', 'appstore/web-bauen.mjs', '.github/workflows/android-build.yml']
   workflow_dispatch:
 
 concurrency:
@@ -24,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        app: [aurakompass]
+        app: [polvia]
     steps:
       - uses: actions/checkout@v4
 
@@ -45,7 +45,7 @@ jobs:
             node ../web-bauen.mjs ${{ matrix.app }}
           else
             echo "::warning::Ordner ${{ matrix.app }}/ fehlt noch im Repo, gebaut wird die Platzhalter-Seite"
-            mkdir -p www && echo '<!doctype html><meta charset="utf-8"><title>Aura Kompass</title><body style="background:#0b1430">' > www/index.html
+            mkdir -p www && echo '<!doctype html><meta charset="utf-8"><title>Polvia</title><body style="background:#0b1430">' > www/index.html
           fi
           npx cap sync android
 
