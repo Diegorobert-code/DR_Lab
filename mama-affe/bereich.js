@@ -376,7 +376,9 @@ function mount(root, opts){
       timers.push(t);
     });
   }
+  function haptic(p){ try{ if(navigator.vibrate && !reduced) navigator.vibrate(p); }catch(e){} }
   function celebrate(){
+    haptic([20,40,20]);
     if(reduced) return;
     const c = document.createElement('div'); c.className='confetti';
     c.innerHTML = Array.from({length:18},()=>`<i style="left:${Math.random()*100}%;animation-delay:${(Math.random()*.6).toFixed(2)}s">${['⭐','🍌','✨','🌟','🦶'][Math.floor(Math.random()*5)]}</i>`).join('');
@@ -408,25 +410,27 @@ function mount(root, opts){
   let timers = [];
   function clearTimers(){ timers.forEach(t=>{clearInterval(t);clearTimeout(t);}); timers=[]; }
   function later(fn, ms){ const t = setTimeout(fn, ms); timers.push(t); return t; }
-  const ageChips = () => `<div class="row" style="margin:8px 0">${AGES.map(a=>`<button class="chip ${state.age===a.k?'sel':''}" data-age="${a.k}">${a.l}</button>`).join('')}</div>`;
+  const ageChips = () => `<div class="row ma-alter" style="margin:8px 0">${AGES.map(a=>`<button class="chip ${state.age===a.k?'sel':''}" data-age="${a.k}">${a.l}</button>`).join('')}</div>`;
 
   /* ---------- Bildschirme Eltern ---------- */
   function vHome(){
     const hour = new Date().getHours();
     const hi = hour<11 ? 'Guten Morgen!' : hour<18 ? 'Hallo!' : 'Guten Abend!';
     const satz = SAETZE[new Date().getDate() % SAETZE.length];
-    later(()=>say(hi+' Ich bin Mama Affe, ein Orang-Utan. Ich begleite euch beim Grosswerden.'), 500);
-    return `<div class="scene">${stage('winkt', hi+' Ich bin Mama Affe, ein Orang-Utan. Mit meinen langen Armen halte ich euch, und meine Füsse greifen wie Hände. Ich begleite euch beim Grosswerden.')}
-     <div style="text-align:center"><span class="compass">🧭 Mein Kompass zeigt den nächsten Schritt</span></div>
-     <h2>Wie alt ist dein Kind?</h2>${ageChips()}
-     <div class="grid" style="margin-top:12px">
-      <button class="tile" data-mode="eltern"><span class="e">🧭</span><span class="l">Für Eltern</span><span class="small muted">Was ist heute los?</span></button>
-      <button class="tile" data-mode="kind"><span class="e">🏫</span><span class="l">Für Kinder</span><span class="small muted">Das Schulhaus</span></button>
+    // Runde 3: kurz, ein klarer erster Schritt. Ton erst nach Tipp auf Mama Affe (kein Ton beim Öffnen).
+    return `<div class="scene ma-start">${stage('winkt', hi+' Ich bin Mama Affe. Für wen ist es heute?')}
+     <div style="text-align:center"><button class="compass" data-act="obStart">🧭 So begleite ich euch</button></div>
+     <div class="grid ma-wahl">
+      <button class="tile gross" data-mode="eltern"><span class="e">🧭</span><span class="l">Für Eltern</span><span class="small muted">Was ist heute los?</span></button>
+      <button class="tile gross" data-mode="kind"><span class="e">🏫</span><span class="l">Für Kinder</span><span class="small muted">Das Schulhaus</span></button>
      </div>
+     <h2 class="ma-h-alter">Wie alt ist dein Kind?</h2>${ageChips()}
      ${state.age==='1-3'?`<p class="small muted">Mit 1–3 Jahren ist Mama Affe vor allem für dich da. Fürs Kind: Füsse, Spiel und Stimme, kaum Bildschirm.</p>`:''}
+     <div class="ma-hilfe">
+      <button class="btn red block" data-sos="1">💛 Ich kann nicht mehr</button>
+      <button class="btn alt block" data-mode="eltern" data-to="hilfe">🆘 Hilfe sofort · 147 · 144 · Elternnotruf</button>
+     </div>
      <div class="card soft"><div class="k small muted">Satz des Tages</div><p style="font-weight:700">«${esc(satz)}»</p><button class="chip" data-say="${esc(satz)}">🔊 Vorlesen</button></div>
-     <button class="btn red block" data-sos="1">💛 Ich kann nicht mehr</button>
-     <button class="btn alt block" data-mode="eltern" data-to="hilfe">🆘 Hilfe sofort (147 · 144 · Elternnotruf)</button>
      ${FOOT}</div>`;
   }
   function vHeute(){
@@ -986,8 +990,8 @@ function mount(root, opts){
 
   /* ---------- Erster Start: kurze Einführung (3 Bilder) ---------- */
   const OB = [
-   {p:'winkt', t:'Ich bin Mama Affe', x:'Ein Orang-Utan. Mit meinen langen Armen halte ich euch, und meine Füsse greifen wie Hände. Ich begleite euch beim Grosswerden, von 1 bis 16.'},
-   {p:'zeigt', t:'Für Eltern und für Kinder', x:'Eltern finden «Was ist heute los?», Wissen und Hilfe. Kinder lernen in meinem Schulhaus, mit Affenfüssen, Superkräften und Tier des Tages. Zurück zu den Eltern: Haus-Knopf lange drücken.'},
+   {p:'winkt', t:'Ich bin Mama Affe', x:'Ein Orang-Utan mit langen Armen und Füssen, die greifen wie Hände. Ich begleite euch beim Grosswerden, von 1 bis 16.'},
+   {p:'zeigt', t:'Für Eltern und für Kinder', x:'Eltern finden Rat und Hilfe. Kinder lernen in meinem Schulhaus. Zurück zu den Eltern: Haus-Knopf lange drücken.'},
    {p:'atmet', t:'Ich bin keine Ärztin', x:'Ich erkläre, ermutige und zeige den Weg zu Fachpersonen. Alles bleibt auf diesem Gerät. Wenn es eilt: Hilfe ist immer einen Tipp entfernt.'}
   ];
   let obI = 0, obEl = null;
@@ -1003,6 +1007,12 @@ function mount(root, opts){
 
   /* ---------- Ereignisse (nur innerhalb des Bereichs) ---------- */
   root.addEventListener('click', e=>{
+    const akt = e.target.closest('[data-ma-actor]');
+    if(akt && root.contains(akt)){
+      akt.classList.remove('ma-hops'); void akt.offsetWidth; akt.classList.add('ma-hops');
+      const b = akt.parentNode && akt.parentNode.querySelector('.bubble'); const txt = b ? b.textContent.trim() : '';
+      if(txt) say(txt); haptic(10); return;
+    }
     if(e.target.closest('[data-hold]')){ toast('Für Eltern: Haus lange drücken'); return; }
     const t = e.target.closest('button, .check, .tile, input[type=checkbox]'); if(!t || !root.contains(t)) return;
     const d = t.dataset;
@@ -1058,6 +1068,7 @@ function mount(root, opts){
       case 'kiFrag': kiFrag(t); break;
       case 'obWeiter': obWeiter(); break;
       case 'obZu': obZu(); break;
+      case 'obStart': obI = 0; obZeigen(); break;
       case 'forget': if(window.confirm('Alle Lern-Zahlen, den Affenfüsse-Kalender und die Superkräfte löschen? Notizen und Momente bleiben.')){ ['learn','af','span','staerken','shareOk'].forEach(store.del); rechnen.lvl=null; toast('🧽 Vergessen'); render(); } break;
     }
   });
@@ -1069,7 +1080,7 @@ function mount(root, opts){
   const holdEnd = ()=>{ clearTimeout(holdT); const bar=root.querySelector('[data-hold] .bar'); if(bar){ bar.style.transition='none'; bar.style.width='0'; } };
   ['pointerup','pointercancel'].forEach(ev=>root.addEventListener(ev, holdEnd)); root.addEventListener('pointerleave', holdEnd, true);
   document.addEventListener('drlab-feedback-open', stopSay);
-  if(!eingebettet && !store.get('obDone', false)) setTimeout(obZeigen, 50);
+  // Runde 3: Kein Erklär-Overlay beim ersten Öffnen. Die Startseite erklärt sich selbst, «So begleite ich euch» zeigt die Einführung.
 
   render();
   const api = { go, setMode, stop(){ stopSay(); clearTimers(); } };

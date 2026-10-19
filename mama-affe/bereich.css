@@ -157,3 +157,33 @@
 .ma .ma-ob .dots i{width:10px;height:10px;background:rgba(245,214,138,.25)}
 .ma .ma-ob .dots i.on{background:var(--gold)}
 .ma .ma-ob h2{font-size:1.35rem}
+
+/* ===== Runde 3: erster Eindruck (HIG/Material: 8-px-Raster, 44-px-Ziele, mind. 16 px, Safe Areas) ===== */
+/* Untere Leiste klebt wieder unten: overflow-x:hidden machte .ma zum Scroll-Behälter, darum blieb sie am Seitenende. */
+@supports (overflow:clip){.ma{overflow-x:clip}}
+.ma .wrap{padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right)) 120px max(16px,env(safe-area-inset-left))}
+.ma .small{font-size:.94rem}
+.ma .chip{min-height:44px;font-size:1rem;padding:8px 16px}
+.ma .compass{min-height:44px;font:inherit;font-size:.94rem;background:transparent;cursor:pointer;padding:6px 16px}
+.ma .compass:active,.ma .chip:active,.ma .btn:active,.ma .iconbtn:active{transform:scale(.96)}
+.ma .btn{transition:transform .15s,filter .2s}
+.ma .btn.red{background:#d64545}
+.ma .foot{font-size:.9rem}
+.ma nav.tabs button{font-size:.78rem;min-height:52px}
+.ma :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.ma .ma-start .stage{padding-top:8px}
+.ma .ma-start .bubble{font-size:1.15rem;text-wrap:balance}
+.ma .ma-wahl{margin:16px 0 0;gap:12px}
+.ma .tile.gross{min-height:136px;border-width:2px;border-color:rgba(232,190,92,.55);background:linear-gradient(160deg,var(--card2),var(--card));box-shadow:0 12px 28px -14px rgba(232,190,92,.6);animation:ma-in .5s .25s ease-out both}
+.ma .tile.gross + .tile.gross{animation-delay:.38s}
+.ma .tile.gross .e{font-size:2.6rem}
+.ma .tile.gross .l{font-size:1.15rem}
+.ma .ma-h-alter{font-size:1.05rem;color:var(--muted);margin:24px 0 8px;font-weight:600}
+.ma .ma-hilfe{display:grid;gap:8px;margin:24px 0 8px}
+.ma .ma-hilfe .btn{width:100%;min-height:52px}
+.ma .actor{cursor:pointer}
+.ma .actor.ma-hops{animation:ma-hops .6s cubic-bezier(.3,1.6,.5,1)}
+@keyframes ma-hops{30%{transform:translateY(-14px) scale(1.04)}60%{transform:translateY(0) scale(.98)}}
+@media (prefers-reduced-motion:reduce){.ma .tile.gross,.ma .actor.ma-hops{animation:none}}
+.ma .ma-alter{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ma .ma-alter .chip{padding:8px 4px;white-space:nowrap;font-size:.94rem}
