@@ -39,7 +39,14 @@
     '.mp2-will>div{max-width:420px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px 18px;text-align:center}',
     '.mp2-will img{width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid #F2C14E}',
     '.mp2-will h2{margin:10px 0 6px;font-size:22px}',
-    '.mp2-will ul{text-align:left;padding-left:18px;margin:10px 0;font-size:15px}'
+    '.mp2-will ul{text-align:left;padding-left:18px;margin:10px 0;font-size:15px}',
+    '.mp2-will{opacity:0;transition:opacity .26s ease}.mp2-will.da{opacity:1}',
+    '.mp2-will>div{transform:translateY(16px) scale(.97);transition:transform .4s cubic-bezier(.22,.8,.26,1);background:linear-gradient(160deg,rgba(28,46,96,.95),rgba(10,22,48,.97));border-color:rgba(245,196,81,.35);padding:24px 16px 16px}',
+    '.mp2-will.da>div{transform:none}',
+    '.mp2-will img{animation:mpHops .8s cubic-bezier(.3,1.6,.5,1) .25s both}',
+    '.mp2-will p{margin:0 0 8px;font-size:17px;color:var(--ink)}.mp2-will .mp2-klein{font-size:14px;color:var(--muted);margin-bottom:16px}',
+    '.mp2-will .btn{min-height:52px;font-size:17px}',
+    '@media (prefers-reduced-motion:reduce){.mp2-will,.mp2-will>div{transition:none}.mp2-will img{animation:none}}'
   ].join('\n');
   document.head.appendChild(css);
 
@@ -164,9 +171,16 @@
   function willkommen() {
     if (R.willkommen) return;
     var w = document.createElement('div'); w.className = 'mp2-will'; w.setAttribute('role', 'dialog'); w.setAttribute('aria-modal', 'true');
-    w.innerHTML = '<div><img src="figur-gross.jpg" alt="Mr. Ping"><h2>Guten Tag, ich bin Mr. Ping</h2><p>Ich halte Wache über deine Marken und rechne ruhig mit.</p><ul><li>Marke eintragen, ich melde mich, wenn sie erreicht ist.</li><li>Vor jedem Kauf: Gebühren, Break-even, Chance zu Risiko.</li><li>Regeln: mindestens CHF 50 pro Titel, Grenze vor dem Kauf, Pause ab −25 %.</li><li>Kaufen tust nur du. Ich bin keine Anlageberatung.</li></ul><div class="mp-reihe"><button class="btn pri" type="button" id="mp2WillOk">Los geht\'s</button></div></div>';
+    w.innerHTML = '<div><img src="figur-gross.jpg" alt="Mr. Ping"><h2>Guten Tag, ich bin Mr. Ping</h2><p>Dein Spieltopf: CHF 200, vier Titel. Trag sie ein, und ich fiebere mit dir mit.</p><p class="mp2-klein">Spielgeld, kein Rat. Kaufen tust nur du.</p><div class="mp-reihe"><button class="btn pri" type="button" id="mp2WillOk">Topf einrichten</button></div></div>';
     document.body.appendChild(w);
-    $('mp2WillOk').onclick = function () { R.willkommen = true; r2Save(); w.remove(); M.pose('jubel', 'Schön, dass Sie da sind. Ich halte Wache.'); };
+    requestAnimationFrame(function () { w.classList.add('da'); });
+    $('mp2WillOk').onclick = function () {
+      R.willkommen = true; r2Save(); w.classList.remove('da'); setTimeout(function () { w.remove(); }, 260);
+      try { if (navigator.vibrate) navigator.vibrate(15); } catch (e) {}
+      var S = window.__spieltopf;
+      if (S && S.topf().length < 4) { M.pose('jubel', 'Los geht’s! Erst das Kürzel, dann Betrag und Kaufkurs.'); setTimeout(function () { S.oeffnen(-1); }, 300); }
+      else M.pose('jubel', 'Schön, dass du da bist. Ich halte Wache.');
+    };
   }
 
   /* ---------- Offline ---------- */
