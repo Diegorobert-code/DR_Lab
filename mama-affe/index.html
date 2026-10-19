@@ -653,7 +653,7 @@ function vAbend(){
   return topBar('Abendritual') + `
    <div class="map"><div class="k">🗺️ Der Abend als Landkarte</div>Jeden Abend der gleiche Weg ins Bett. Tipp auf jede Karte, wenn du sie geschafft hast.</div>
    ${RITUAL.map((r,i)=>`<div class="check ${done.s.includes(i)?'done':''}" data-rit="${i}"><span class="e">${r.e}</span><b style="flex:1">${r.l}</b><span>${done.s.includes(i)?'✅':'⬜'}</span></div>`).join('')}
-   ${all?`<div class="card gold" style="text-align:center"><p style="font-weight:700">Alles geschafft! Gute Nacht. Jetzt erzählt Otti eine Geschichte.</p>
+   ${all?`<div class="card gold" style="text-align:center">${fig('calm',110)}<p style="font-weight:700">Alles geschafft! Gute Nacht. Jetzt erzählt Otti eine Geschichte.</p>
    <a class="btn block" href="https://diegorobert-code.github.io/DR_Lab/mondschein/" target="_blank" rel="noopener">🦔 Zu Otti (Mondschein)</a></div>`:''}
    <button class="btn alt block" data-go="uebung:baer">🐻 Bär schläft ein (Körper beruhigen)</button>
    <button class="chip" data-act="ritReset">Neu anfangen</button>`;
@@ -709,7 +709,7 @@ function vSpiegel(){
 function movePause(next){
   const b = BODY[Math.floor(Math.random()*BODY.length)];
   const el = document.createElement('div'); el.className='pause';
-  el.innerHTML = `<div class="card gold" style="text-align:center"><p class="muted">Bewegungspause</p><div style="font-size:4rem">${b.e}</div><h2>${esc(b.l)}</h2><p>${esc(b.d)}</p>
+  el.innerHTML = `<div class="card gold" style="text-align:center">${fig('cheer',110)}<p class="muted">Bewegungspause, mach mit!</p><div style="font-size:3.4rem">${b.e}</div><h2>${esc(b.l)}</h2><p>${esc(b.d)}</p>
    <div class="timer" id="mp-t">20</div><button class="btn block" id="mp-ok">Weiter</button></div>`;
   document.body.appendChild(el); say('Bewegungspause! '+b.d);
   let left = 20; const t = setInterval(()=>{ left--; const tt=el.querySelector('#mp-t'); if(tt) tt.textContent=left; if(left<=0){ clearInterval(t); } },1000);
@@ -717,7 +717,7 @@ function movePause(next){
 }
 function sos(){
   const el = document.createElement('div'); el.className='pause';
-  el.innerHTML = `<div class="card gold" style="text-align:center">
+  el.innerHTML = `<div class="card gold" style="text-align:center">${fig('calm',90)}
    <p style="font-weight:700">Du machst das gut. Es ist zu viel gerade. Das ist menschlich.</p>
    <p><b>Ist ein Baby da? Leg es sicher auf den Rücken ins Bettchen und geh kurz raus. Nie schütteln.</b></p>
    <div class="breath" id="sos-b"></div><p id="sos-l" style="font-weight:700">Einatmen …</p><div class="timer" id="sos-t">60</div>
