@@ -1,6 +1,7 @@
 // HumanSpark – Offline-Cache (nur eigene Dateien, keine Daten). Version hochzählen bei jeder Änderung.
-const CACHE = 'humanspark-v2';
+const CACHE = 'humanspark-v3';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-180.png', './icon-192.png', './feedback.js', './figur.jpg', './figur-gross.jpg',
+  './posen/misst.jpg', './posen/uebung.jpg', './posen/spiegelt.jpg', './posen/freut.jpg',
   '../nova/figuren/sparky.jpg', '../nova/nova.js', '../nova/seelen.js', '../nova/intro.js', '../apps/sprechen/sprechen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(FILES.map(f => c.add(f).catch(() => {})))).then(() => self.skipWaiting()));
