@@ -250,7 +250,7 @@ footer b{color:var(--ink2);font-weight:600}
     <img src="ping-3d.jpg" alt="Mr. Ping mit seiner goldenen Glocke">
     <button class="ping-glocke" id="pingGlocke" type="button" aria-label="Glocke läuten">🔔</button>
     <div class="unten"><b>Mr. Ping</b><span>Dein Begleiter für den Übungstopf. Keine Anlageberatung.</span>
-      <a class="ping-reden" href="../nova/reden.html?f=mr.%20ping">📞 Mit Mr. Ping reden</a></div>
+      <div style="display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap"><a class="ping-reden" href="../nova/reden.html?f=mr.%20ping">📞 Mit Mr. Ping reden</a><span data-feedback-slot></span></div></div>
   </section>
 
   <section class="topf" id="topf" aria-label="Mein Übungstopf">
@@ -353,7 +353,7 @@ footer b{color:var(--ink2);font-weight:600}
   <h3 id="sTitle">Titel hinzufügen</h3>
   <div class="two">
     <div class="f"><label for="fSym">Kürzel</label><input id="fSym" autocomplete="off" autocapitalize="characters" placeholder="z. B. ZEC" maxlength="10"></div>
-    <div class="f"><label for="fCur">Währung</label><select id="fCur"><option>USD</option><option>CHF</option></select></div>
+    <div class="f"><label for="fCur">Währung</label><select id="fCur"><option>USD</option><option>CHF</option><option>Punkte</option></select></div>
   </div>
   <div class="f"><label for="fName">Name</label><input id="fName" autocomplete="off" placeholder="z. B. Zcash" maxlength="40"></div>
   <div class="f"><label for="fKind">Kursquelle</label>
@@ -389,8 +389,10 @@ function uid(){ return Date.now().toString(36) + Math.random().toString(36).slic
 var items = load(K.items, null);
 if (!Array.isArray(items)) {
   items = ['ZEC','BTC','ETH','SOL'].map(function(s){ return { id:uid(), sym:s, name:NAMES[s], kind:'crypto', cg:CG[s], cur:'USD', over:null, under:null, auto:5, aO:true, aU:true }; });
-  items.push({ id:uid(), sym:'SMI', name:'Swiss Market Index', kind:'manual', cur:'CHF', over:null, under:null, aO:true, aU:true, man:null });
+  items.push({ id:uid(), sym:'SMI', name:'Swiss Market Index', kind:'manual', cur:'Punkte', over:null, under:null, aO:true, aU:true, man:null });
 }
+// Ein Index hat Punkte, keine Franken (Diegos Testbericht 16.10.)
+items.forEach(function(i){ if (i.sym === 'SMI' && i.cur === 'CHF') i.cur = 'Punkte'; });
 var log = load(K.log, []);
 var set = load(K.set, {}); if (typeof set !== 'object' || !set) set = {};
 if (set.sound == null) set.sound = true;
@@ -402,7 +404,7 @@ function num(v){
   var a = Math.abs(v), d = a >= 1000 ? 0 : a >= 1 ? 2 : 4;
   return new Intl.NumberFormat('de-CH', { minimumFractionDigits:d, maximumFractionDigits:d }).format(v);
 }
-function money(v, cur){ return v == null ? '—' : num(v) + ' ' + cur; }
+function money(v, cur){ return v == null ? '—' : num(v) + ' ' + (cur || ''); }
 function hhmm(t){ var d = new Date(t); return ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2); }
 function dayLabel(t){ var d = new Date(t), n = new Date(); if (d.toDateString() === n.toDateString()) return 'heute ' + hhmm(t); var y = new Date(n); y.setDate(n.getDate()-1); if (d.toDateString() === y.toDateString()) return 'gestern ' + hhmm(t); return d.getDate() + '.' + (d.getMonth()+1) + '. ' + hhmm(t); }
 function parseNum(s){ if (s == null) return null; s = String(s).trim().replace(/['’\s]/g,'').replace(',', '.'); if (!s) return null; var v = parseFloat(s); return isFinite(v) && v > 0 ? v : NaN; }
@@ -478,8 +480,9 @@ function check(it){
 var pulses = {};
 function fire(it, p, dir, mark){
   var quiet = snoozed();
-  var e = { id:uid(), t:Date.now(), sym:it.sym, name:it.name, p:p, dir:dir, mark:mark, cur:it.cur, demo:!!demo, quiet:quiet };
+  var e = { id:uid(), t:Date.now(), sym:it.sym, name:it.name, p:p, dir:dir, mark:mark, cur:it.cur, demo:!!demo, quiet:quiet, regel:regelVon(it, dir, mark) };
   log.unshift(e); if (log.length > 200) log.length = 200;
+  try { document.dispatchEvent(new CustomEvent('tp-ping', { detail:e })); } catch(x){}
   if (quiet) return;
   pulses[it.id] = Date.now() + 8000;
   showCard(it, e);
@@ -487,9 +490,15 @@ function fire(it, p, dir, mark){
   if (set.sound) blip();
   notify(it, e);
 }
+// Welche von Diegos Regeln steckt hinter der Marke? (Leitlinie Risiko, 14.10.2026)
+function regelVon(it, dir, mark){
+  if (dir === 'unter' && it.kauf && it.stop && Math.abs(mark - round2(it.kauf * (1 - it.stop / 100))) < mark * 0.002) return 'Regel 3: deine Verlustgrenze −' + String(it.stop).replace('.', ',') + ' %';
+  if (dir === 'über' && it.kauf && mark >= it.kauf * 1.3) return 'Regel 5: ab +30 % die Hälfte als Gewinn markieren';
+  return '';
+}
 var cardTimer;
 function showCard(it, e){
-  $('pingdetail').textContent = it.sym + ' ' + e.dir + ' ' + money(e.mark, e.cur) + ' · jetzt ' + money(e.p, e.cur);
+  $('pingdetail').textContent = it.sym + ' ' + e.dir + ' ' + money(e.mark, e.cur) + ' · jetzt ' + money(e.p, e.cur) + (e.regel ? ' · ' + e.regel : '');
   $('pinghead').textContent = 'TradePing · jetzt' + (e.demo ? ' · Demo' : '');
   var c = $('pingcard'); c.classList.add('show'); c.parentNode.parentNode.classList.add('carded');
   clearTimeout(cardTimer); cardTimer = setTimeout(hideCard, 7000);
@@ -738,7 +747,7 @@ function renderLog(){
   $('log').innerHTML = log.map(function(e){
     return '<li class="' + (e.quiet ? 'quiet' : '') + '" data-id="' + e.id + '"><i></i><div class="t"><b>' + esc(e.sym) + '</b> ' + e.dir + ' ' + num(e.mark) + ' ' + esc(e.cur) +
       (e.demo ? '<span class="tag">Demo</span>' : '') + (e.quiet ? '<span class="tag">Ruhe</span>' : '') + (e.wache ? '<span class="tag">Wache</span>' : '') +
-      '<small>' + dayLabel(e.t) + ' · Kurs ' + money(e.p, e.cur) + '</small></div>' +
+      '<small>' + dayLabel(e.t) + ' · Kurs ' + money(e.p, e.cur) + (e.regel ? ' · ' + esc(e.regel) : '') + '</small></div>' +
       '<button class="ibtn" type="button" data-act="dellog" aria-label="Eintrag löschen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></li>';
   }).join('');
 }
@@ -834,7 +843,8 @@ $('fKind').addEventListener('change', kindUi);
 $('fSym').addEventListener('input', function(){
   var s = this.value.trim().toUpperCase();
   if (CG[s]) { $('fKind').value = 'crypto'; $('fCg').value = CG[s]; kindUi(); if (!$('fName').value) $('fName').value = NAMES[s]; }
-  else if (NAMES[s]) { $('fKind').value = 'manual'; kindUi(); if (!$('fName').value) $('fName').value = NAMES[s]; if (s === 'SMI' || /^(NESN|NOVN|ROG|UBSG)$/.test(s)) $('fCur').value = 'CHF'; }
+  else if (NAMES[s]) { $('fKind').value = 'manual'; kindUi(); if (!$('fName').value) $('fName').value = NAMES[s]; if (s === 'SMI') $('fCur').value = 'Punkte'; else if (/^(NESN|NOVN|ROG|UBSG)$/.test(s)) $('fCur').value = 'CHF'; }
+  if (CG[s] && !$('fStop').value) $('fStop').placeholder = 'Krypto: 20'; else if (!$('fStop').value) $('fStop').placeholder = 'z. B. 15';
 });
 $('fCancel').addEventListener('click', closeSheet);
 $('scrim').addEventListener('click', closeSheet);
@@ -853,8 +863,13 @@ $('sheet').addEventListener('submit', function(ev){
   else if (stop != null && stop >= 100) err = 'Die Verlustgrenze muss unter 100 % liegen.';
   if (!err && under == null && kauf != null && stop != null) under = round2(kauf * (1 - stop / 100));
   if (!err && over != null && under != null && under >= over) err = '«Unter» muss kleiner sein als «über».';
+  if (!err && (window.TP_RUESTUNG || []).indexOf(sym) >= 0) err = 'Deine Leitlinie: keine Rüstungstitel. Mr. Ping begleitet das nicht.';
   if (err) { $('fErr').textContent = err; return; }
   var it = editing;
+  // Regel 3: Die Verlustgrenze wird nie nach unten verschoben.
+  if (it && !demo && ((it.stop != null && stop != null && stop > it.stop) || (it.under != null && under != null && under < it.under && it.kauf))) {
+    if (!confirm('Deine Regel: Die Verlustgrenze wird nie nach unten geschoben. Trotzdem ändern?')) return;
+  }
   var fresh = !it;
   if (fresh) { it = { id:uid(), aO:true, aU:true }; items.push(it); }
   var cgChanged = it.cg !== cg;
@@ -958,6 +973,8 @@ if (wacheAktiv()) wachePush(false);
 window.__tp = { items:function(){ return items; }, log:function(){ return log; }, wache:function(){ return { adresse:WACHE, push:wache.push, geraet:set.geraet || null }; } };
 })();
 </script>
+<script src="mrping.js" defer></script>
+<script src="feedback.js" data-app="TradePing" defer></script>
 <script src="../nova/seelen.js" defer></script>
 <script src="../nova/nova.js" data-nova-app="TradePing" data-nova-bild="figur.jpg" defer></script>
 <!-- Figuren-Film (Trickfilm-Look): Farben, Funken, Atmen, Tipp-Reaktion, Szenenwechsel. Nur Optik. -->
