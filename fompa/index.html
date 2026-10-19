@@ -557,7 +557,8 @@ details.card > summary{font-weight:600}
     <p class="hint" style="margin-top:6px">Fompa merkt sich, wohin ein Zettel gehört, und schlägt es beim nächsten Mal vor. Dazu zählt er, wie du Zettel ablegst. Alles nur auf diesem Handy.</p>
     <div id="lernZahlen" class="liste"></div>
     <ul id="memory" class="hint"></ul>
-    <label class="check" style="margin:8px 0"><input type="checkbox" id="lernOk"> <span>Lern-Zahlen an meinen DR-Lab-Server weitergeben (nur Zählungen, keine Beträge, keine Namen, nie Bild oder Stimme). Geht nur, wenn die Verbindung eingerichtet ist.</span></label>
+    <label class="check" style="margin:8px 0"><input type="checkbox" id="lernOk"> <span>Lern-Zahlen an meinen DR-Lab-Server weitergeben (nur Zählungen, keine Beträge, keine Namen, nie Bild oder Stimme). Ohne Server-Verbindung teilst du sie als Text.</span></label>
+    <button class="btn small hidden" id="lernTeilen" style="margin-bottom:8px">Lern-Zahlen als Text teilen</button>
     <button class="btn small del" id="forget">Vergessen</button>
   </details>
 
@@ -1195,6 +1196,18 @@ function renderLern(){
     lern.geklaert ? `<div class="kat"><span>Unklare Zettel geklärt</span><span>${lern.geklaert}</span></div>` : ''
   ].join('');
   $('#lernOk').checked = !!lern.einwilligung;
+  $('#lernTeilen').classList.toggle('hidden', !lern.einwilligung);
+}
+// Ohne Server: Lern-Zahlen als Text über das Teilen-Menü oder kopieren. Nur Zählungen, nur mit Häkchen.
+function lernText(){
+  const zahlen = Object.entries(lern).filter(([k,v]) => typeof v === 'number').map(([k,v]) => `${k}: ${v}`);
+  return `Fompa · Lern-Zahlen (nur Zählungen, keine Beträge, keine Namen, nie Bild oder Stimme)\n${zahlen.join('\n') || 'noch keine Zählungen'}\nStand: ${datumCH(ymd(new Date()))}`;
+}
+async function lernTeilen(){
+  if (!lern.einwilligung){ toast('Erst das Häkchen setzen'); return; }
+  const t = lernText();
+  if (navigator.share){ try { await navigator.share({title:'Fompa · Lern-Zahlen', text:t}); } catch {} return; }
+  try { await navigator.clipboard.writeText(t); toast('Lern-Zahlen kopiert'); pose('freut', '✓'); } catch { toast('Teilen geht auf diesem Gerät nicht'); }
 }
 async function lernWeitergeben(){
   // Höchstens einmal am Tag, nur mit Häkchen und Server-Verbindung, nur Zählungen
@@ -1775,7 +1788,7 @@ async function einstSpeichern(){ await kvSet('einst', einst); renderAll(); }
   $('#catSave').onclick = async () => { const t = $('#catText').value; if (!parseCats(t).length) return; await kvSet('cats-'+year, t); await kvSet('cats-last', t); await loadYear(); toast('Nummern gespeichert'); };
   $('#catReset').onclick = () => { $('#catText').value = DEFAULT_CATS; toast('Vorschlag geladen, noch speichern'); };
   $('#forget').onclick = async () => { if (!confirm('Alles vergessen, was Fompa gelernt hat?')) return; memory = {}; const e = lern.einwilligung; lern = {einwilligung: e}; await kvSet('memory', memory); await kvSet('lern', lern); renderAll(); toast('Vergessen'); };
-  $('#lernOk').onchange = async e => { lern.einwilligung = e.target.checked; await kvSet('lern', lern); if (e.target.checked) lernWeitergeben(); toast(e.target.checked ? (serverBereit() ? 'Danke. Nur Zählungen, einmal am Tag.' : 'Gemerkt. Weitergabe startet, sobald der Server verbunden ist.') : 'Keine Weitergabe'); };
+  $('#lernOk').onchange = async e => { lern.einwilligung = e.target.checked; await kvSet('lern', lern); $('#lernTeilen').classList.toggle('hidden', !e.target.checked); if (e.target.checked) lernWeitergeben(); toast(e.target.checked ? (serverBereit() ? 'Danke. Nur Zählungen, einmal am Tag.' : 'Gemerkt. Ohne Server kannst du die Zahlen als Text teilen.') : 'Keine Weitergabe'); };
   $('#wipe').onclick = async () => {
     if (!confirm(`Alle ${zettel.length} Zettel von ${year} auf diesem Handy löschen?`)) return;
     await tx('belege','readwrite', s => zettel.forEach(b => s.delete(b.id))); await loadYear(); toast('Gelöscht');
@@ -1794,6 +1807,7 @@ async function einstSpeichern(){ await kvSet('einst', einst); renderAll(); }
   if (/eingang/.test(location.hash)){ history.replaceState(null, '', location.pathname); eingangAusTranskript(); }
   addEventListener('hashchange', () => { if (/eingang/.test(location.hash)){ history.replaceState(null, '', location.pathname); eingangAusTranskript(); } });
   $('#vorlesen').onclick = () => vorlesen(bubbleText());
+  $('#lernTeilen').onclick = lernTeilen;
   $('#mSave').onclick = async () => { einst.mAbsender = $('#mAbsender').value.trim(); einst.mZiel = $('#mZiel').value.trim(); einst.mFrist = $('#mFrist').value.trim(); einst.mBetreib = $('#mBetreib').value.trim(); await einstSpeichern(); toast('Gespeichert'); pose('freut', '✓'); };
   const uvSetzen = async d => { einst.unverrechnet = Math.max(0, Math.round(num(einst.unverrechnet)) + d); await einstSpeichern(); pose(d > 0 ? 'denkt' : 'freut', d > 0 ? '+' : '✓', 1000); };
   $('#uvPlus').onclick = () => uvSetzen(1); $('#uvMinus').onclick = () => uvSetzen(-1);
