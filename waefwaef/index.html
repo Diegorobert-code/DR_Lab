@@ -117,6 +117,86 @@ nav a.on{color:var(--gold);background:rgba(242,193,78,.1)}
 /* Herzchen beim Abhaken */
 .heart{position:fixed;z-index:3;pointer-events:none;font-size:1.4rem;animation:float 1.2s ease-out forwards}
 @keyframes float{0%{transform:translate(0,0) scale(.6)}25%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.3) rotate(25deg);opacity:0}}
+/* --- Trickfilm-Ausbau 19.10. --- */
+.kopf{display:flex;justify-content:space-between;align-items:center}
+.kopf .fb-btn{min-height:40px;min-width:40px}
+.hero{position:relative;padding-top:6px}
+.wiese,.wiese-start{position:absolute;left:-16px;right:-16px;bottom:58px;height:70px;z-index:-1;pointer-events:none;
+  background:radial-gradient(120% 100% at 50% 100%,#3c8a5a 0%,#2c6e4a 45%,transparent 70%)}
+.wiese-start{bottom:auto;top:250px;height:120px;opacity:.7}
+.wiese .bl,.wiese-start .bl{position:absolute;bottom:18px;width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px #FF8FB1}
+.wiese .bl:nth-child(1){left:12%}.wiese .bl:nth-child(2){left:28%;bottom:30px;box-shadow:0 0 0 3px #F2C14E}.wiese .bl:nth-child(3){right:16%;box-shadow:0 0 0 3px #3FD0C9}.wiese .bl:nth-child(4){right:30%;bottom:34px}
+.wiese-start .bl:nth-child(1){left:14%}.wiese-start .bl:nth-child(2){right:18%;box-shadow:0 0 0 3px #F2C14E}.wiese-start .bl:nth-child(3){left:40%;bottom:40px;box-shadow:0 0 0 3px #3FD0C9}
+.wiese-start .ball{position:absolute;right:22%;bottom:34px;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff36b,#c9d82a);animation:rollen 6s ease-in-out infinite}
+@keyframes rollen{50%{transform:translateX(-60px) rotate(-300deg)}}
+.schmetterling{position:absolute;top:-80px;left:10%;font-style:normal;font-size:20px;animation:flattern 9s ease-in-out infinite}
+@keyframes flattern{25%{transform:translate(90px,-20px) rotate(10deg)}50%{transform:translate(220px,10px)}75%{transform:translate(120px,30px) rotate(-10deg)}}
+.pupwrap{position:relative}
+.pup-req{position:absolute;right:-20px;top:-10px;font-size:40px;opacity:0;pointer-events:none}
+.pup-req.zeig{animation:reqAuf 1.6s ease-out}
+@keyframes reqAuf{0%{opacity:0;transform:translateY(16px) scale(.4)}25%{opacity:1;transform:translateY(-6px) scale(1.15) rotate(10deg)}75%{opacity:1}100%{opacity:0;transform:translateY(-34px)}}
+.schwanz{position:absolute;right:-6px;bottom:30px;width:26px;height:26px;border-radius:50% 50% 50% 0;background:#fffaf0;transform-origin:0 100%;animation:wedeln .5s ease-in-out infinite alternate;z-index:-1;box-shadow:inset -3px -3px 0 rgba(0,0,0,.06)}
+@keyframes wedeln{from{transform:rotate(-25deg)}to{transform:rotate(25deg)}}
+#pup.laufen{animation:laufen .45s ease-in-out infinite alternate}
+@keyframes laufen{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-8px) rotate(2deg)}}
+#pup.schlaf{filter:brightness(.85) saturate(.8)}
+.view{display:flex;flex-direction:column;gap:14px}
+.box{padding:16px;border-radius:24px;border:1px solid var(--line);background:var(--card);box-shadow:0 8px 24px rgba(0,0,0,.22)}
+.box h3{margin:0 0 6px;font-family:var(--display);font-weight:500;color:var(--gold)}
+.box.warn{border-color:rgba(255,143,177,.5);background:linear-gradient(150deg,rgba(255,143,177,.16),rgba(16,26,62,.85))}
+.box textarea,.box input,.dlg input,.betr select{width:100%;font:inherit;font-size:16px;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--cream)}
+.box textarea{min-height:90px}
+.mini{font-size:.88rem;color:var(--muted);margin:2px 0}
+.center{text-align:center}
+.reihe{display:flex;gap:8px;flex-wrap:wrap}
+.reihe>*{flex:1 1 auto}
+.klein{padding:6px 10px;font-size:.85rem}
+.voll{width:100%;margin:4px 0;text-align:left}
+.logbuch{font-size:.88rem;color:var(--muted)}.logbuch h3{font-size:.95rem;color:var(--gold);margin:0 0 2px;font-family:var(--display);font-weight:500}
+.famzeile{display:flex;gap:8px;align-items:center;margin-bottom:8px}.famzeile input{flex:1}
+.check{display:flex;gap:8px;align-items:flex-start;margin-top:8px}.check input{width:20px;height:20px;flex:none;margin-top:2px}
+.seg{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px}
+.seg button,.chips button{background:rgba(255,255,255,.08);color:var(--cream);box-shadow:none;border:1px solid var(--line);padding:8px 12px;font-size:.9rem}
+.seg button.on,.chips button.on{background:linear-gradient(180deg,#F8D886,var(--gold));color:var(--night)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.walk{text-align:center}
+.pfoten-spur{position:relative;height:28px;overflow:hidden}
+.pfoten-spur i{position:absolute;top:4px;font-style:normal;animation:spur 3s ease-out forwards;opacity:.8}
+@keyframes spur{to{opacity:0;transform:translateY(-10px)}}
+.tagbars{display:flex;gap:6px;align-items:flex-end;height:80px;margin:8px 0}
+.tagbar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px}
+.tagbar i{display:block;width:100%;min-height:4px;border-radius:8px;background:linear-gradient(180deg,#3FD0C9,#3D6FD8)}
+.tagbar span{font-size:.7rem;color:var(--muted)}
+.decke{font-size:2rem;text-align:center}
+.betr{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.betr label{display:flex;flex-direction:column;font-size:.8rem;color:var(--muted)}
+.kapitel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kap{display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 8px;border-radius:22px;background:var(--card);color:var(--cream);border:1px solid var(--line);box-shadow:0 8px 20px rgba(0,0,0,.2);text-align:center;font-weight:600;font-size:.92rem}
+.kap .ke{font-size:1.9rem}.kap small{color:var(--gold);font-weight:500}
+.kap.gelesen{border-color:rgba(242,193,78,.55)}
+.welt button{font-size:.85rem}
+.uebung{background:rgba(242,193,78,.12);border-radius:14px;padding:10px 12px}
+.spiel{text-align:center}
+.szene p{margin:8px 0;font-size:1.05rem}
+.sz-bild{position:relative;width:150px;height:150px;margin:0 auto}
+.sz-bild img{width:100%;height:100%;border-radius:30%;object-fit:cover;border:3px solid var(--gold)}
+.sz-bild span{position:absolute;right:-12px;bottom:-6px;font-size:3rem;filter:drop-shadow(0 4px 6px rgba(0,0,0,.4))}
+.ampel{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.ampel button{box-shadow:none;color:var(--night);font-size:1rem}
+.ampel .g{background:#8FE3B4}.ampel .y{background:#FFD27A}.ampel .r{background:#FF9AA8}
+.antwort{font-weight:600;min-height:1.4em}.antwort.gut{color:#8FE3B4}.antwort.nein{color:#FFD27A}
+.regeln{margin:0;padding:16px 16px 16px 36px;border-radius:24px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.regeln b{color:var(--gold)}
+.liste{margin:0;padding-left:18px}
+.card.faellig{border-color:rgba(255,143,177,.7)}.card.faellig p{color:#FFB3C6}
+a.knopf{display:inline-flex;justify-content:center;align-items:center;font-weight:600;color:var(--night);background:linear-gradient(180deg,#F8D886,var(--gold));border-radius:99px;padding:11px 18px;text-decoration:none;margin-top:8px}
+a.knopf.rot{background:#FF9AA8}
+.box label.mini{display:block;margin:8px 0 0}
+.dialog{position:fixed;inset:0;z-index:10;background:rgba(5,8,25,.6);display:flex;align-items:flex-end;justify-content:center}
+.dlg{width:100%;max-width:480px;background:#16214f;border-radius:26px 26px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px;max-height:85vh;overflow:auto;box-shadow:0 -10px 40px rgba(0,0,0,.5)}
+.dlg h3{margin:0;font-family:var(--display);color:var(--gold);font-weight:500}
+nav a{padding:4px 2px;font-size:.66rem}
+@media print{body.druck-regeln *{visibility:hidden}body.druck-regeln .regeln,body.druck-regeln .regeln *{visibility:visible}body.druck-regeln .regeln{position:absolute;left:0;top:0;background:#fff;color:#000;font-size:20px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -124,91 +204,276 @@ nav a.on{color:var(--gold);background:rgba(242,193,78,.1)}
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
 <section id="start">
   <span class="tag">Entwurf</span>
-  <div class="ring"><img class="cover" src="icon-512.png" alt="Wäf Wäf, ein kleiner weisser Maltipoo, schaut fröhlich in die Kamera"></div>
+  <div class="wiese-start" aria-hidden="true"><i class="bl"></i><i class="bl"></i><i class="bl"></i><i class="ball"></i></div>
+  <div class="ring"><img class="cover" src="figur.jpg" alt="Wäf Wäf, ein kleiner weisser Maltipoo, schaut fröhlich in die Kamera"></div>
   <div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
   <h1>Wäf Wäf</h1>
   <p class="lead">Wäf! Ich bin Avas kleiner Hund. Zusammen schaffen wir das, Pfote für Pfote.</p>
   <button class="big" id="go">Komm, wir schauen unseren Tag an</button>
-  <p class="small">Spazieren, Hund verstehen und die Kinder-Ecke folgen.</p>
+  <p class="small">Unser Tag · Spazieren · Allein bleiben · Hund verstehen · Kinder-Ecke · Pflege</p>
 </section>
 
 <main hidden>
-  <button class="ghost back" id="back">‹ Wäf Wäf</button>
+  <div class="kopf"><button class="ghost back" id="back">‹ Wäf Wäf</button><span data-feedback-slot></span></div>
 
   <div class="hero">
-    <div class="pupwrap"><img id="pup" src="icon-512.png" alt="Wäf Wäf, antippen zum Streicheln" role="button" tabindex="0"></div>
+    <div class="wiese" aria-hidden="true"><i class="bl"></i><i class="bl"></i><i class="bl"></i><i class="bl"></i><i class="schmetterling">🦋</i></div>
+    <div class="pupwrap"><img id="pup" src="figur.jpg" alt="Wäf Wäf, antippen zum Streicheln" role="button" tabindex="0"><span class="pup-req" id="pupReq" aria-hidden="true"></span><i class="schwanz" aria-hidden="true"></i></div>
     <p class="bubble" id="say" aria-live="polite"></p>
   </div>
 
-  <h2 class="sec">Mein Tag mit euch</h2>
-  <div class="cards" id="cards"></div>
+  <!-- UNSER TAG -->
+  <section class="view" id="v-tag">
+    <h2 class="sec">Mein Tag mit euch</h2>
+    <div class="cards" id="cards"></div>
+    <div class="reihe"><button class="ghost" id="addTask">+ Aufgabe</button><button class="ghost" id="tauschen">🔁 Kannst du heute für mich?</button></div>
+    <div class="logbuch" id="logbuch"></div>
+    <h2 class="sec">Unsere Familie</h2>
+    <div class="box" id="famBox"></div>
+    <div class="box">
+      <h3>Familie einladen</h3>
+      <p class="mini">Schickt euch den Plan als Link (z. B. per WhatsApp). Wer ihn öffnet, hat dieselben Aufgaben und Namen. Ohne Server, nichts wird gespeichert ausser auf euren Handys.</p>
+      <div class="reihe"><button id="teilenLink">Plan als Link teilen</button></div>
+      <input id="linkFeld" readonly hidden>
+    </div>
+    <h2 class="sec">Was Wäf Wäf sich merkt</h2>
+    <div class="box" id="merkt"></div>
+  </section>
 
-  <h2 class="sec">Ich lerne, allein zu bleiben</h2>
-  <div class="alone" id="alone">
-    <h3 id="aTitle"></h3>
-    <div class="steps" id="steps" aria-hidden="true"></div>
-    <p id="aText"></p>
-    <div id="aBody"></div>
-  </div>
+  <!-- SPAZIEREN -->
+  <section class="view" id="v-spazieren" hidden>
+    <h2 class="sec">Raus mit mir!</h2>
+    <div class="box walk">
+      <div class="seg" id="walkArt"><button data-a="runde" class="on">🐾 Runde</button><button data-a="schnueffel">👃 Schnüffelrunde</button><button data-a="spiel">🎾 Spielen</button></div>
+      <div class="seg" id="walkWer"></div>
+      <div class="timer" id="walkTm">0:00</div>
+      <div class="pfoten-spur" id="spur" aria-hidden="true"></div>
+      <button class="big" id="walkGo">Los geht's</button>
+      <div id="walkEnde" hidden>
+        <p class="mini">Was war los?</p>
+        <div class="chips" id="walkNotes"><button data-n="pipi">💧 Pipi</button><button data-n="gagi">💩 Gagi</button><button data-n="hund">🐕 Hundebegegnung</button><button data-n="schnell">⚡ aufgeregt</button><button data-n="ruhig">😌 ganz ruhig</button></div>
+        <button id="walkSave">Eintragen</button>
+      </div>
+    </div>
+    <div class="box" id="woche"></div>
+    <div class="box"><h3>Suchspiel der Woche</h3><p class="mini" id="suchspiel"></p><button class="ghost" id="suchspielPlan">In unseren Tag legen</button></div>
+    <p class="tip">Schnüffeln ist für Hunde wie Zeitunglesen und tut ihnen gut (Studie mit 20 Hunden, Duranton &amp; Horowitz 2019). In der Schweiz: Hunde täglich ausführen, wenn möglich auch ohne Leine (TSchV Art. 71).</p>
+  </section>
 
-  <p class="tip">Entwurf, nur zum Anschauen. Wäf Wäf ersetzt keine Tierärztin und keinen Tierarzt. Wenn dein Hund beim Alleinsein in Panik gerät oder sich verletzt, hol dir Hilfe von einer Fachperson.</p>
+  <!-- ALLEIN -->
+  <section class="view" id="v-allein" hidden>
+    <h2 class="sec">Ich lerne, allein zu bleiben</h2>
+    <div class="alone" id="alone">
+      <h3 id="aTitle"></h3>
+      <div class="steps" id="steps" aria-hidden="true"></div>
+      <p id="aText"></p>
+      <div id="aBody"></div>
+    </div>
+    <div class="box"><h3>Wie es mir ging</h3><div id="aVerlauf" class="mini"></div></div>
+    <div class="box"><h3>Wer ist bei mir? (Betreuungsplan)</h3>
+      <p class="mini">Solange ich noch nicht lange allein bleiben kann, schaut ihr, dass jemand da ist.</p>
+      <div id="betreuung"></div>
+    </div>
+    <div class="box warn"><h3>Wann eine Fachperson hilft</h3><p class="mini">Wenn ich in Panik gerate, mich verletze, stark zerstöre oder es nach einigen Wochen nicht besser wird: Tierärztin, Tierarzt oder Verhaltensfachperson fragen. Nie «durchheulen lassen».</p></div>
+  </section>
+
+  <!-- VERSTEHEN -->
+  <section class="view" id="v-verstehen" hidden>
+    <h2 class="sec">Hund verstehen</h2>
+    <p class="mini center">Jedes Kapitel dauert etwa eine Minute und endet mit einer Übung für heute.</p>
+    <div class="kapitel" id="kapitel"></div>
+    <h2 class="sec">Welt-Entdecker-Liste</h2>
+    <p class="mini">Neues kurz, freiwillig und mit Belohnung zeigen. Ich darf immer ausweichen.</p>
+    <div class="chips welt" id="welt"></div>
+  </section>
+
+  <!-- KINDER -->
+  <section class="view" id="v-kinder" hidden>
+    <h2 class="sec">Wie spricht Wäf Wäf?</h2>
+    <div class="box spiel">
+      <p class="mini center">Darf ich Wäf Wäf jetzt streicheln?</p>
+      <div class="szene" id="szene"></div>
+      <div class="ampel"><button data-r="g" class="g">🟢 Ja, sanft</button><button data-r="y" class="y">🟡 Lieber Ruhe</button><button data-r="r" class="r">🔴 Erwachsene holen</button></div>
+      <p class="antwort" id="antwort"></p>
+      <button class="ghost" id="naechste" hidden>Nächstes Bild ›</button>
+      <p class="mini center" id="punkte"></p>
+    </div>
+    <h2 class="sec">Unsere 5 Familienregeln</h2>
+    <ol class="regeln">
+      <li><b>Fressen und Schlafen:</b> Dann lassen wir Wäf Wäf in Ruhe.</li>
+      <li><b>Der Hund kommt zu mir,</b> nicht ich zum Hund.</li>
+      <li><b>Sanft streicheln,</b> an der Brust oder Seite, nicht auf dem Kopf.</li>
+      <li><b>Nicht umarmen.</b> Hunde mögen das meistens nicht.</li>
+      <li><b>Kleine Kinder</b> sind nie allein mit dem Hund.</li>
+    </ol>
+    <div class="reihe"><button class="ghost" id="drucken">🖨 Als Poster drucken</button></div>
+    <div class="box"><h3>So hebst du mich richtig hoch</h3><p class="mini">Ich bin klein und zerbrechlich. Am besten hebt mich eine erwachsene Person hoch: eine Hand unter die Brust, die andere unter den Po, nah am Körper halten. Nie an den Beinen oder am Bauch hochziehen. Kinder setzen sich hin, dann komme ich auf den Schoss.</p></div>
+  </section>
+
+  <!-- PFLEGE -->
+  <section class="view" id="v-pflege" hidden>
+    <h2 class="sec">Pflege-Kalender</h2>
+    <p class="mini">Nur zum Organisieren. Wäf Wäf ersetzt keine Tierärztin und keinen Tierarzt.</p>
+    <div class="cards" id="pflege"></div>
+    <h2 class="sec">Wichtige Nummern</h2>
+    <div class="box" id="nummern"></div>
+    <h2 class="sec">Fragen für den Tierarzt</h2>
+    <div class="box"><textarea id="fragen" placeholder="Was wir beim nächsten Termin fragen wollen …"></textarea><p class="mini">Bleibt nur auf diesem Handy.</p></div>
+    <h2 class="sec">Schweiz</h2>
+    <div class="box"><ul class="mini liste">
+      <li>Mikrochip und Eintrag in der Datenbank AMICUS (Pflicht).</li>
+      <li>Hundesteuer bei der Wohngemeinde, Rechnung meist im Frühling.</li>
+      <li>Kurspflicht und Leinenpflicht regelt jeder Kanton selbst (z. B. Basel-Stadt Kurs für Ersthalter, Brut- und Setzzeit im Wald oft Leinenpflicht).</li>
+      <li>Haftpflichtversicherung prüfen.</li>
+    </ul></div>
+    <div class="box warn"><h3>Sofort zum Tierarzt</h3><p class="mini">Vergiftungsverdacht, Atemnot, starke Schmerzen, Zusammenbruch, aufgeblähter Bauch, starke Blutung. Auch eine plötzliche Verhaltensänderung kann Schmerz bedeuten.</p></div>
+  </section>
+
+  <p class="tip">Entwurf. Wäf Wäf arbeitet nur mit Belohnung, ohne Strafe. Wäf Wäf ersetzt keine Tierärztin und keinen Tierarzt. Alles bleibt auf diesem Handy.</p>
 </main>
 
 <nav hidden id="nav" aria-label="Bereiche">
-  <a href="#" class="on"><span>🏡</span>Unser Tag</a>
-  <a href="#"><span>🐾</span>Spazieren</a>
-  <a href="#"><span>🌙</span>Allein</a>
-  <a href="#"><span>💛</span>Verstehen</a>
-  <a href="#"><span>🧒</span>Kinder</a>
+  <a href="#" data-v="tag" class="on"><span>🏡</span>Tag</a>
+  <a href="#" data-v="spazieren"><span>🐾</span>Raus</a>
+  <a href="#" data-v="allein"><span>🌙</span>Allein</a>
+  <a href="#" data-v="verstehen"><span>💛</span>Verstehen</a>
+  <a href="#" data-v="kinder"><span>🧒</span>Kinder</a>
+  <a href="#" data-v="pflege"><span>🩺</span>Pflege</a>
 </nav>
+
+<div class="dialog" id="dialog" hidden><div class="dlg"><h3 id="dlgT"></h3><div id="dlgB"></div><div class="reihe"><button class="ghost" id="dlgZu">Schliessen</button><button id="dlgOk" hidden>OK</button></div></div></div>
 
 <script>
 const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const store={get(k,d){try{const v=localStorage.getItem('waef_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('waef_'+k,JSON.stringify(v))}catch(e){}}};
-const fam={A:{n:'Ava',c:'#F6A5C0'},P:{n:'Papa',c:'#9FD3F5'},M:{n:'Mama',c:'#C3B4F7'}};
-const order=['A','P','M',null];
+const heute=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const uhr=t=>{const d=new Date(t);return d.getHours()+':'+String(d.getMinutes()).padStart(2,'0')};
+const FARBEN=['#F6A5C0','#9FD3F5','#C3B4F7','#FFD27A','#8FE3B4'];
+let fam=store.get('fam',{A:{n:'Ava',c:'#F6A5C0'},P:{n:'Papa',c:'#9FD3F5'},M:{n:'Mama',c:'#C3B4F7'}});
+const order=()=>Object.keys(fam).concat([null]);
 let popId=null;
-let tasks=store.get('tasks2',[
-  {id:'morgen',k:'#FFB347',emo:'🌅',t:'Morgenrunde',p:'Pipi, Gagi und ganz viel Schnuppern',who:'A',done:true},
-  {id:'zmorge',k:'#7FD1A3',emo:'🥣',t:'Mein Frühstück',p:'Eine Handvoll, langsam aus der Schnüffelmatte',who:'P',done:true},
-  {id:'schnuff',k:'#3FD0C9',emo:'👃',t:'Schnüffelrunde',p:'Nase statt Kilometer. Schnüffeln ist meine Zeitung.',who:'M',done:false},
-  {id:'abend',k:'#B79CFF',emo:'🌙',t:'Abendrunde',p:'Wer kommt mit mir? Tipp auf den Kreis.',who:null,done:false}
-]);
-const reactDone={
-  morgen:'Juhu, draussen war es so spannend!',zmorge:'Mmmh, fein! Danke!',
-  schnuff:'Ich habe 37 Gerüche gefunden. Ich bin jetzt ganz zufrieden.',abend:'Gute Nacht, Laternen! Jetzt kuschle ich mich ein.'};
-const say=(t,mood)=>{$('say').innerHTML='<b>Wäf!</b> '+t;const p=$('pup');p.classList.remove('hop','sad','wiggle');void p.offsetWidth;if(mood)p.classList.add(mood);};
-function greet(){
-  const open=tasks.filter(x=>!x.done);const free=tasks.find(x=>!x.who&&!x.done);
-  if(!open.length)return say('Alles erledigt heute. Ihr seid die beste Familie der Welt.','hop');
-  const doneBy=tasks.filter(x=>x.done&&x.who).map(x=>fam[x.who].n);
-  let s=doneBy.length?doneBy[0]+' war heute schon für mich da. ':'Guten Morgen! ';
-  s+=free?'Wer geht am Abend mit mir raus?':'Als Nächstes: '+open[0].t+'.';
-  say(s);
-}
+const START=[
+  {id:'morgen',k:'#FFB347',emo:'🌅',t:'Morgenrunde',p:'Pipi, Gagi und ganz viel Schnuppern',who:'A'},
+  {id:'zmorge',k:'#7FD1A3',emo:'🥣',t:'Mein Frühstück',p:'Eine Handvoll, langsam aus der Schnüffelmatte',who:'P'},
+  {id:'schnuff',k:'#3FD0C9',emo:'👃',t:'Schnüffelrunde',p:'Nase statt Kilometer. Schnüffeln ist meine Zeitung.',who:'M'},
+  {id:'abend',k:'#B79CFF',emo:'🌙',t:'Abendrunde',p:'Wer kommt mit mir? Tipp auf den Kreis.',who:null}];
+let tasks=store.get('tasks3',null)||store.get('tasks2',START).map(x=>Object.assign({},x,{done:false}));
+let tag=store.get('tag',heute());
+// Neuer Tag: alles wieder offen, Einmal-Aufgaben fallen weg
+if(tag!==heute()){tasks=tasks.filter(x=>!x.einmal).map(x=>Object.assign(x,{done:false,wann:null,von:null}));tag=heute();store.set('tag',tag);}
+let log=store.get('log',[]); // {t, was, wer}
+let mem=Object.assign({walks:0,schnueffel:0,minuten:0,abgehakt:{},allein:[],kinder:{r:0,f:0},tage:[],kapitel:{}},store.get('mem',{}));
+if(!mem.tage.includes(heute())){mem.tage.push(heute());mem.tage=mem.tage.slice(-120);}
+const saveMem=()=>store.set('mem',mem);
+const reactDone={morgen:'Juhu, draussen war es so spannend!',zmorge:'Mmmh, fein! Danke!',schnuff:'Ich habe 37 Gerüche gefunden. Ich bin jetzt ganz zufrieden.',abend:'Gute Nacht, Laternen! Jetzt kuschle ich mich ein.'};
+const REQ={hop:'🦴',sad:'💧',wiggle:'💛',schnueffel:'👃',ball:'🎾',schlaf:'💤',lern:'🎓',pfote:'🐾'};
+const say=(t,mood,req)=>{$('say').innerHTML='<b>Wäf!</b> '+esc(t);const p=$('pup');p.classList.remove('hop','sad','wiggle','schnupper');void p.offsetWidth;if(mood)p.classList.add(mood);
+  const r=$('pupReq'),z=req||REQ[mood];if(z&&!reduce){r.textContent=z;r.classList.remove('zeig');void r.offsetWidth;r.classList.add('zeig');}
+  if(window.NovaStimme&&NovaStimme.aktiv()&&tonAn)try{NovaStimme.sprich(t)}catch(e){}};
+let tonAn=false;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function heart(el,n=8){if(reduce)return;const r=el.getBoundingClientRect();
   for(let i=0;i<n;i++){const h=document.createElement('span');h.className='heart';h.textContent=['💛','🐾','💙','💖','⭐','🦴'][i%6];
     const dx=(Math.random()-.5)*140,dy=-40-Math.random()*90;h.style.setProperty('--dx',dx+'px');h.style.setProperty('--dy',dy+'px');
     h.style.left=(r.left+r.width/2-10)+'px';h.style.top=(r.top)+'px';h.style.animationDelay=(i*25)+'ms';document.body.appendChild(h);setTimeout(()=>h.remove(),1400);}}
+
+/* ---------- Unser Tag ---------- */
+function greet(){
+  const open=tasks.filter(x=>!x.done);const free=tasks.find(x=>!x.who&&!x.done);const h=new Date().getHours();
+  if(!open.length)return say('Alles erledigt heute. Ihr seid die beste Familie der Welt.','hop');
+  const doneBy=tasks.filter(x=>x.done&&x.von).map(x=>(fam[x.von]||{}).n).filter(Boolean);
+  let s=doneBy.length?doneBy[0]+' war heute schon für mich da. ':(h<11?'Guten Morgen! ':h<18?'Hallo! ':'Guten Abend! ');
+  const walked=log.some(l=>l.d===heute()&&l.art);
+  if(!walked&&h>=17)s+='Heute war ich noch gar nicht draussen. Gehen wir zusammen? ';
+  s+=free?'Wer geht mit mir raus? Tipp auf den Kreis.':'Als Nächstes: '+open[0].t+'.';
+  say(s);
+}
 function render(){
-  $('cards').innerHTML=tasks.map((x,i)=>`
+  $('cards').innerHTML=tasks.map((x,i)=>{const f=fam[x.who];return `
     <div class="card${x.done?' done':''}${x.id===popId?' pop':''}" style="--k:${x.k}">
       <div class="emo" aria-hidden="true">${x.emo}</div>
-      <div class="t"><h3>${x.t}</h3><p>${x.p}</p></div>
-      <button class="who${x.who?'':' free'}" data-who="${i}" style="${x.who?'background:'+fam[x.who].c:''}" aria-label="${x.who?fam[x.who].n+' macht das, antippen zum Wechseln':'Noch frei, antippen zum Übernehmen'}">${x.who||'+'}</button>
+      <div class="t"><h3>${esc(x.t)}</h3><p>${x.done&&x.wann?esc((fam[x.von]||{n:'Jemand'}).n+' um '+uhr(x.wann)):esc(x.p)}</p></div>
+      <button class="who${f?'':' free'}" data-who="${i}" style="${f?'background:'+f.c:''}" aria-label="${f?esc(f.n)+' macht das, antippen zum Wechseln':'Noch frei, antippen zum Übernehmen'}">${f?esc(f.n.charAt(0)):'+'}</button>
       <button class="paw" data-done="${i}" aria-label="${x.done?'Erledigt, antippen zum Rückgängig machen':'Abhaken'}">${x.done?'🐾':''}</button>
-    </div>`).join('');
-  store.set('tasks2',tasks);
+    </div>`}).join('');
+  store.set('tasks3',tasks);
+  const l=log.filter(x=>x.d===heute()).slice(-4).reverse();
+  $('logbuch').innerHTML=l.length?'<h3>Heute</h3>'+l.map(x=>`<div>${esc(uhr(x.t))} · ${esc(x.text)}</div>`).join(''):'';
 }
 $('cards').onclick=e=>{
   const w=e.target.closest('[data-who]'),d=e.target.closest('[data-done]');
-  if(w){const x=tasks[+w.dataset.who];x.who=order[(order.indexOf(x.who)+1)%order.length];render();
+  if(w){const x=tasks[+w.dataset.who],o=order();x.who=o[(o.indexOf(x.who)+1)%o.length];render();
     if(x.who)say(fam[x.who].n+' kommt mit? Hurra, ich hole schon die Leine!','hop');else say('Oh, jetzt ist das wieder frei. Wer hat Zeit für mich?','sad');}
-  if(d){const x=tasks[+d.dataset.done];x.done=!x.done;popId=x.done?x.id:null;if(x.done)heart(d);render();popId=null;
-    if(x.done)say(reactDone[x.id]||'Danke!','hop');else say('Ups, doch noch nicht? Kein Problem.');}
+  if(d){const x=tasks[+d.dataset.done];x.done=!x.done;popId=x.done?x.id:null;
+    if(x.done){x.wann=Date.now();x.von=x.who||Object.keys(fam)[0];heart(d);mem.abgehakt[x.von]=(mem.abgehakt[x.von]||0)+1;saveMem();
+      log.push({d:heute(),t:Date.now(),text:(fam[x.von]||{n:'Jemand'}).n+': '+x.t+' ✓'});store.set('log',log.slice(-300));}
+    else{x.wann=null;x.von=null;}
+    render();popId=null;
+    if(x.done)say(reactDone[x.id]||'Danke! Das war lieb von dir.','hop');else say('Ups, doch noch nicht? Kein Problem.');
+    merktRender();}
 };
-/* Alleinsein */
+$('addTask').onclick=()=>dialog('Neue Aufgabe','<input id="ntT" placeholder="z. B. Bürsten, Wassernapf, Spielzeit"><label class="mini"><input type="checkbox" id="ntE"> nur heute</label>',()=>{
+  const t=$('ntT').value.trim(); if(!t)return; tasks.push({id:'x'+Date.now(),k:FARBEN[tasks.length%FARBEN.length],emo:'⭐',t,p:'Danke, dass du an mich denkst.',who:null,einmal:$('ntE').checked});render();say('Oh, '+t+'! Darauf freue ich mich.','hop');});
+$('tauschen').onclick=()=>{
+  const mine=tasks.filter(x=>x.who&&!x.done); if(!mine.length)return say('Heute ist nichts zu tauschen. Alles frei oder erledigt.');
+  dialog('Wer braucht Hilfe?',mine.map((x,i)=>`<button class="ghost voll" data-sw="${tasks.indexOf(x)}">${esc(fam[x.who].n)}: ${esc(x.t)}</button>`).join(''),null,b=>{
+    const x=tasks[+b.dataset.sw]; const alt=fam[x.who].n; x.who=null; render(); dialogZu();
+    const text=alt+' fragt: Kannst du heute für mich «'+x.t+'» übernehmen? Wäf Wäf freut sich!';
+    say(alt+' braucht Hilfe. Wer übernimmt '+x.t+'?','sad');
+    if(navigator.share)navigator.share({text}).catch(()=>{}); });
+};
+function famRender(){
+  $('famBox').innerHTML=Object.keys(fam).map(k=>`<div class="famzeile"><span class="who" style="background:${fam[k].c}">${esc(fam[k].n.charAt(0))}</span><input data-fam="${k}" value="${esc(fam[k].n)}" aria-label="Name"><button class="ghost klein" data-famweg="${k}" aria-label="Entfernen">✕</button></div>`).join('')+'<button class="ghost" id="famAdd">+ Person</button>';
+  $('famBox').querySelectorAll('[data-fam]').forEach(i=>i.onchange=()=>{fam[i.dataset.fam].n=i.value.trim()||'?';store.set('fam',fam);render();});
+  $('famBox').querySelectorAll('[data-famweg]').forEach(b=>b.onclick=()=>{if(Object.keys(fam).length<2)return;delete fam[b.dataset.famweg];tasks.forEach(t=>{if(t.who===b.dataset.famweg)t.who=null});store.set('fam',fam);famRender();render();});
+  $('famAdd').onclick=()=>{const k='F'+Date.now().toString(36);fam[k]={n:'Neu',c:FARBEN[Object.keys(fam).length%FARBEN.length]};store.set('fam',fam);famRender();};
+}
+/* Plan per Link teilen */
+const b64=t=>btoa(unescape(encodeURIComponent(t))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const unb64=t=>decodeURIComponent(escape(atob(t.replace(/-/g,'+').replace(/_/g,'/'))));
+$('teilenLink').onclick=()=>{const d={v:1,fam,tasks:tasks.map(x=>({id:x.id,k:x.k,emo:x.emo,t:x.t,p:x.p,who:x.who,einmal:!!x.einmal}))};
+  const url=location.origin+location.pathname+'#plan='+b64(JSON.stringify(d));$('linkFeld').hidden=false;$('linkFeld').value=url;
+  if(navigator.share)navigator.share({title:'Wäf Wäf',text:'Unser Plan für Wäf Wäf',url}).catch(()=>{});else{try{navigator.clipboard.writeText(url)}catch(e){}$('linkFeld').select();}
+  say('Jetzt weiss die ganze Familie Bescheid!','hop');};
+function planAusLink(){const m=location.hash.match(/^#plan=([A-Za-z0-9_-]+)$/);if(!m)return;let d;try{d=JSON.parse(unb64(m[1]))}catch(e){return}
+  history.replaceState(null,'',location.pathname);if(!d||d.v!==1)return;
+  dialog('Plan übernehmen?','<p class="mini">Jemand aus der Familie hat dir den Wäf-Wäf-Plan geschickt. Übernehmen? Deine bisherigen Aufgaben werden ersetzt.</p>',()=>{
+    fam=d.fam||fam;tasks=(d.tasks||[]).map(x=>Object.assign(x,{done:false}));store.set('fam',fam);render();famRender();say('Hallo! Jetzt gehöre ich auch zu deinem Handy.','hop');});}
+
+/* ---------- Spazieren ---------- */
+let walk=null,walkArt='runde',walkWer=null,walkTimer=null,walkNotes=new Set();
+const ARTEN={runde:['🐾','Runde'],schnueffel:['👃','Schnüffelrunde'],spiel:['🎾','Spielen']};
+function walkWerRender(){walkWer=walkWer||Object.keys(fam)[0];$('walkWer').innerHTML=Object.keys(fam).map(k=>`<button data-w="${k}" class="${k===walkWer?'on':''}">${esc(fam[k].n)}</button>`).join('');
+  $('walkWer').querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{walkWer=b.dataset.w;walkWerRender();});}
+$('walkArt').querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{walkArt=b.dataset.a;$('walkArt').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+  say(walkArt==='schnueffel'?'Schnüffelrunde! Lass mich alles riechen, das ist meine Zeitung.':walkArt==='spiel'?'Ball? Ball! BALL!':'Raus, raus, raus!','hop',walkArt==='schnueffel'?'👃':walkArt==='spiel'?'🎾':'🐾');});
+$('walkGo').onclick=()=>{
+  if(walk){clearInterval(walkTimer);walk.min=Math.max(1,Math.round((Date.now()-walk.t)/60000));$('walkGo').hidden=true;$('walkEnde').hidden=false;$('pup').classList.remove('laufen');say('Wir sind zurück! Was war los?','wiggle');return;}
+  walk={t:Date.now(),art:walkArt,wer:walkWer};walkNotes=new Set();$('walkGo').textContent='Wir sind zurück';$('spur').innerHTML='';if(!reduce)$('pup').classList.add('laufen');
+  say(walkArt==='schnueffel'?'Ich schnuppere jetzt ganz langsam. Du darfst warten.':'Los! Ich laufe voraus.','hop');
+  walkTimer=setInterval(()=>{const s=Math.floor((Date.now()-walk.t)/1000);$('walkTm').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+    if(s%5===0&&!reduce){const p=document.createElement('i');p.textContent='🐾';p.style.left=(8+Math.random()*80)+'%';$('spur').appendChild(p);if($('spur').children.length>14)$('spur').firstChild.remove();}},1000);};
+$('walkNotes').querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{const n=b.dataset.n;walkNotes.has(n)?walkNotes.delete(n):walkNotes.add(n);b.classList.toggle('on');});
+$('walkSave').onclick=()=>{
+  const w=walk,art=ARTEN[w.art],n=(fam[w.wer]||{n:'Jemand'}).n;
+  log.push({d:heute(),t:w.t,art:w.art,min:w.min,wer:w.wer,notes:[...walkNotes],text:n+': '+art[1]+', '+w.min+' Min.'+(walkNotes.size?' ('+[...walkNotes].map(x=>({pipi:'Pipi',gagi:'Gagi',hund:'Hund getroffen',schnell:'aufgeregt',ruhig:'ruhig'})[x]).join(', ')+')':'')});
+  store.set('log',log.slice(-300));mem.walks++;mem.minuten+=w.min;mem.abgehakt[w.wer]=(mem.abgehakt[w.wer]||0)+1;if(w.art==='schnueffel')mem.schnueffel++;saveMem();
+  const t=tasks.find(x=>!x.done&&/runde/i.test(x.t)&&(w.art!=='schnueffel'||/schn/i.test(x.t)))||tasks.find(x=>!x.done&&/runde/i.test(x.t));
+  if(t){t.done=true;t.wann=w.t;t.von=w.wer;}
+  walk=null;$('walkEnde').hidden=true;$('walkGo').hidden=false;$('walkGo').textContent="Los geht's";$('walkTm').textContent='0:00';$('walkNotes').querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+  heart($('walkSave'),10);say(w.art==='schnueffel'?'So viele Gerüche! Jetzt bin ich ganz zufrieden und müde.':'Danke, '+n+'! Das war schön.','hop');render();wocheRender();merktRender();};
+function wocheRender(){
+  const seit=Date.now()-7*864e5,w=log.filter(x=>x.art&&x.t>seit);const s=w.filter(x=>x.art==='schnueffel').length;
+  const tage=['So','Mo','Di','Mi','Do','Fr','Sa'];const bars=[];for(let i=6;i>=0;i--){const d=new Date(Date.now()-i*864e5);const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const n=log.filter(x=>x.art&&x.d===k).length;bars.push(`<div class="tagbar"><i style="height:${Math.min(100,n*30)}%"></i><span>${tage[d.getDay()]}</span></div>`);}
+  $('woche').innerHTML=`<h3>Meine Woche</h3><p class="mini">${w.length?`Ich war diese Woche ${w.length} Mal draussen${s?', davon '+s+' Schnüffelrunden':''}. Danke!`:'Diese Woche noch nichts eingetragen.'}</p><div class="tagbars">${bars.join('')}</div>`+
+    w.slice(-5).reverse().map(x=>`<div class="mini">${esc(new Date(x.t).toLocaleDateString('de-CH',{weekday:'short'}))} ${esc(uhr(x.t))} · ${esc(x.text)}</div>`).join('');}
+const SUCH=['Leckerli im Gras verstecken und «Such!» sagen.','Leckerli in ein Handtuch rollen, Wäf Wäf wickelt es aus.','Drei Becher, unter einem ein Leckerli. Nase entscheidet.','Leckerli auf der Schnüffelmatte verteilen statt im Napf.','Spur legen: kleine Leckerli auf einer Linie im Garten.'];
+$('suchspiel').textContent=SUCH[Math.floor(Date.now()/(7*864e5))%SUCH.length];
+$('suchspielPlan').onclick=()=>{tasks.push({id:'s'+Date.now(),k:'#3FD0C9',emo:'🔎',t:'Suchspiel',p:$('suchspiel').textContent,who:null,einmal:true});render();say('Suchspiel! Meine Nase ist bereit.','hop','👃');};
+
+/* ---------- Alleinsein ---------- */
 const levels=[
   ['Schlüssel nehmen, nicht gehen','Nimm Schlüssel und Jacke, setz dich wieder hin. Ich lerne: Das heisst nicht immer Tschüss.',0],
   ['Zur Tür und zurück','Geh zur Tür, Hand an die Klinke, komm zurück. Ganz ruhig, ohne grosses Hallo.',0],
@@ -226,32 +491,138 @@ function alone(){
   $('aText').textContent=txt;
   $('aBody').innerHTML='<button id="aGo">Üben wir zusammen</button>';
   $('aGo').onclick=()=>sec?run(sec):ask();
-  store.set('lvl',lvl);
+  store.set('lvl',lvl); verlaufRender();
 }
 function run(sec){
   let s=sec;const fmt=n=>Math.floor(n/60)+':'+String(n%60).padStart(2,'0');
-  $('aBody').innerHTML=`<div class="timer" id="tm">${fmt(s)}</div><button class="ghost" id="aStop">Ich bin schon zurück</button>`;
-  say('Ich warte hier auf meiner Decke. Ich bin ganz tapfer.');
+  $('aBody').innerHTML=`<div class="decke" aria-hidden="true">🛏️</div><div class="timer" id="tm">${fmt(s)}</div><button class="ghost" id="aStop">Ich bin schon zurück</button>`;
+  say('Ich warte hier auf meiner Decke. Ich bin ganz tapfer.','schlaf','💤');
   timer=setInterval(()=>{s--;$('tm').textContent=fmt(Math.max(s,0));if(s<=0){clearInterval(timer);ask();}},1000);
   $('aStop').onclick=()=>{clearInterval(timer);ask();};
 }
 function ask(){
-  $('aBody').innerHTML='<p style="margin:0 0 8px">Wie ging es mir?</p><div class="choices"><button data-r="2">Ganz ruhig</button><button data-r="1" class="ghost">Etwas unruhig</button><button data-r="0" class="ghost">Gestresst</button></div>';
+  $('aBody').innerHTML='<p style="margin:0 0 8px">Wie ging es mir?</p><div class="choices"><button data-r="2">Ganz ruhig</button><button data-r="1" class="ghost">Etwas unruhig</button><button data-r="0" class="ghost">Gestresst</button></div><label class="mini">Nach wie vielen Sekunden kam das erste Unruhezeichen? (freiwillig) <input id="aSek" inputmode="numeric" placeholder="z. B. 40"></label>';
   $('aBody').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{
-    const r=+b.dataset.r;
+    const r=+b.dataset.r;mem.allein.push({t:Date.now(),lvl,r,sek:+$('aSek').value||null});mem.allein=mem.allein.slice(-60);saveMem();
     if(r===2){if(lvl<levels.length-1)lvl++;heart(b,10);say('Ich war ganz ruhig! Nächstes Mal schaffen wir eine Pfote mehr.','hop');}
     else if(r===1){say('Ich war ein bisschen aufgeregt. Wir üben diese Pfote einfach nochmal.');}
     else{if(lvl>0)lvl--;say('Das war noch zu viel für mich. Wir gehen einen Schritt zurück, das ist ganz normal.','sad');}
-    alone();});
+    const gestresst=mem.allein.filter(x=>x.r===0&&x.t>Date.now()-21*864e5).length;
+    if(gestresst>=4)setTimeout(()=>say('Ich war in den letzten Wochen oft gestresst. Fragt doch eine Fachperson, die kennt gute Wege für mich.','sad'),2600);
+    alone();merktRender();});
 }
-$('go').onclick=()=>{$('start').hidden=true;document.querySelector('main').hidden=false;$('nav').hidden=false;scrollTo(0,0);render();alone();greet();};
+function verlaufRender(){const v=mem.allein.slice(-6).reverse();$('aVerlauf').innerHTML=v.length?v.map(x=>`<div>${esc(new Date(x.t).toLocaleDateString('de-CH'))} · Pfote ${x.lvl+1} · ${['😟 gestresst','😐 etwas unruhig','😌 ganz ruhig'][x.r]}${x.sek?' · Unruhe nach '+x.sek+' s':''}</div>`).join(''):'Noch keine Übung eingetragen.';}
+const WT=['Mo','Di','Mi','Do','Fr','Sa','So'];
+let betr=store.get('betreuung',{});
+function betreuungRender(){
+  $('betreuung').innerHTML='<div class="betr">'+WT.map(d=>`<label><span>${d}</span><select data-b="${d}"><option value="">–</option>${Object.keys(fam).map(k=>`<option value="${k}"${betr[d]===k?' selected':''}>${esc(fam[k].n)}</option>`).join('')}<option value="hort"${betr[d]==='hort'?' selected':''}>Hundesitter</option></select></label>`).join('')+'</div>';
+  $('betreuung').querySelectorAll('[data-b]').forEach(s=>s.onchange=()=>{betr[s.dataset.b]=s.value;store.set('betreuung',betr);say('Danke! Dann bin ich nicht zu lange allein.','wiggle');});
+}
+
+/* ---------- Verstehen ---------- */
+const KAP=[
+  ['🪜','Die Stress-Leiter','Zuerst zeige ich feine Zeichen: gähnen, Lippen lecken, wegschauen, Kopf abwenden, das Weisse im Auge. Hilft das nicht, erstarre ich, ducke mich, knurre. Bitte bestraft nie mein Knurren: Es ist meine Sprache für «Stopp».','Heute beobachten: Wann gähne oder lecke ich mir die Lippen?'],
+  ['😴','Ich brauche viel Schlaf','Erwachsene Hunde schlafen etwa 10 Stunden am Tag, Welpen noch viel mehr. Ruhe gehört zum Lernen dazu.','Heute einen ruhigen Platz für mich einrichten, wo mich niemand stört.'],
+  ['👃','Schnüffeln ist meine Zeitung','Schnüffeln tut mir gut. In einer kleinen Studie wurden Hunde nach zwei Wochen Nasenarbeit zuversichtlicher.','Heute eine Schnüffelrunde: langsam gehen und mich riechen lassen.'],
+  ['🎁','Belohnung statt Strafe','Ich lerne am besten mit Belohnung, kleinen Schritten und einer Umgebung, in der Fehler gar nicht erst passieren. Strafe macht mir Stress.','Heute dreimal etwas Gutes belohnen, das ich von allein mache.'],
+  ['🌍','Die Welt entdecken','Als Welpe lerne ich besonders leicht (etwa bis zur 12. bis 14. Woche). Aber auch später geht es: kurz, freiwillig, mit Leckerli.','Heute eine neue Sache aus der Welt-Entdecker-Liste.'],
+  ['🦷','Kauen beruhigt','Kauen hilft mir, ruhig zu werden, zum Beispiel wenn ich allein bin.','Heute einen Kauartikel geben, wenn ich unruhig bin.'],
+  ['📣','Rückruf üben','Komm ich auf Rufen, gibt es etwas richtig Feines. Nie rufen, um dann etwas Blödes zu machen (z. B. Baden).','Heute fünfmal in der Wohnung rufen und gross belohnen.'],
+  ['🐩','Ich bin ein Maltipoo','Ich bin menschenbezogen und sensibel, darum fällt mir Alleinsein schwer. Mein Fell verfilzt schnell: oft bürsten, etwa alle 4 bis 6 Wochen zum Fellschnitt. Zähne putzen ist wichtig.','Heute Ohren und Brust bürsten.'],
+  ['🩺','Wann zur Fachperson?','Plötzlich anderes Verhalten kann Schmerz sein: dann zum Tierarzt. Bei Beissen, starker Angst oder Trennungsstress ohne Fortschritt hilft eine Verhaltensfachperson.','Heute Tierarzt und Notfall-Nummer im Bereich Pflege eintragen.']];
+function kapitelRender(){
+  $('kapitel').innerHTML=KAP.map((k,i)=>`<button class="kap${mem.kapitel[i]?' gelesen':''}" data-k="${i}"><span class="ke">${k[0]}</span><b>${esc(k[1])}</b>${mem.kapitel[i]?'<small>✓ gelesen</small>':''}</button>`).join('');
+  $('kapitel').querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const i=+b.dataset.k,k=KAP[i];
+    dialog(k[0]+' '+k[1],`<p>${esc(k[2])}</p><p class="uebung"><b>Übung für heute:</b> ${esc(k[3])}</p>`,()=>{tasks.push({id:'k'+Date.now(),k:'#FFD27A',emo:k[0],t:k[1],p:k[3],who:null,einmal:true});render();say('Super, das üben wir heute!','hop','🎓');},null,'In unseren Tag legen');
+    mem.kapitel[i]=1;saveMem();kapitelRender();say(k[2].split('. ')[0]+'.','wiggle','🎓');});
+}
+const WELT=['Neue Menschen','Kinder','Velo','Tram','Kinderwagen','Regenschirm','Staubsauger','Treppe','Glatter Boden','Gitterrost','Autofahrt','Tierarzt nur zum Leckerli','Andere Hunde','Katze','Lift','Hut und Brille'];
+let welt=store.get('welt',{});
+function weltRender(){$('welt').innerHTML=WELT.map(w=>`<button class="${welt[w]?'on':''}" data-w="${esc(w)}">${welt[w]?'✓ ':''}${esc(w)}</button>`).join('');
+  $('welt').querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{const w=b.dataset.w;welt[w]=!welt[w];store.set('welt',welt);weltRender();if(welt[w]){heart(b,5);say(w+'? Kenne ich jetzt! Das war gar nicht so schlimm.','hop');}});}
+
+/* ---------- Kinder ---------- */
+const SZ=[
+  ['🍽️','Wäf Wäf frisst gerade aus seinem Napf.','y','Beim Fressen lassen wir ihn in Ruhe. Danach darfst du wieder.'],
+  ['💤','Wäf Wäf schläft in seinem Körbchen.','y','Schlafende Hunde nicht wecken. Schlaf ist für ihn sehr wichtig.'],
+  ['🐶','Wäf Wäf kommt zu dir, wedelt locker und stupst dich an.','g','Ja! Er kommt zu dir. Sanft an der Brust oder Seite streicheln.'],
+  ['🥱','Wäf Wäf gähnt, leckt sich die Lippen und schaut weg.','y','Das sind kleine Zeichen für «Mir ist es zu viel». Lass ihm Ruhe.'],
+  ['😠','Wäf Wäf knurrt und zeigt die Zähne.','r','Stopp! Langsam weggehen und eine erwachsene Person holen.'],
+  ['🦴','Wäf Wäf kaut an seinem Knochen.','y','Sein Knochen gehört ihm. Nicht wegnehmen, nicht streicheln.'],
+  ['🎾','Wäf Wäf bringt dir den Ball und wartet.','g','Ja! Er will spielen. Ball sanft werfen, nicht ziehen.'],
+  ['🫣','Wäf Wäf versteckt sich unter dem Tisch und zittert.','r','Er hat Angst. Nicht hinterherkriechen. Erwachsene holen.'],
+  ['🤗','Du willst Wäf Wäf ganz fest umarmen.','y','Die meisten Hunde mögen Umarmen nicht. Lieber neben ihm sitzen.'],
+  ['😌','Wäf Wäf liegt bei dir auf dem Sofa und schmiegt sich an.','g','Ja, er sucht deine Nähe. Ganz sanft streicheln.']];
+let szi=Math.floor(Math.random()*SZ.length);
+function szene(){const s=SZ[szi%SZ.length];$('szene').innerHTML=`<div class="sz-bild"><img src="figur-klein.jpg" alt=""><span>${s[0]}</span></div><p>${esc(s[1])}</p>`;$('antwort').textContent='';$('naechste').hidden=true;
+  $('punkte').textContent=mem.kinder.r?mem.kinder.r+' richtig gewusst':'';}
+document.querySelectorAll('.ampel [data-r]').forEach(b=>b.onclick=()=>{const s=SZ[szi%SZ.length],ok=b.dataset.r===s[2];
+  $('antwort').textContent=(ok?'Richtig! ':'Fast! ')+s[3];$('antwort').className='antwort '+(ok?'gut':'nein');
+  if(ok){mem.kinder.r++;heart(b,6);say('Du verstehst mich! Wäf!','hop');}else{mem.kinder.f++;say('Schau nochmal genau hin. Ich zeige es dir.','wiggle');}
+  saveMem();$('naechste').hidden=false;});
+$('naechste').onclick=()=>{szi++;szene();};
+$('drucken').onclick=()=>{document.body.classList.add('druck-regeln');window.print();setTimeout(()=>document.body.classList.remove('druck-regeln'),500);};
+
+/* ---------- Pflege ---------- */
+const PF=[['impfung','💉','Impfung',365],['wurm','🪱','Entwurmung',90],['zecke','🕷️','Floh- und Zeckenschutz',30],['krallen','✂️','Krallen schneiden',30],['zaehne','🪥','Zähne putzen',2],['fell','💇','Fellschnitt',35],['buersten','🪮','Bürsten',2],['steuer','🧾','Hundesteuer',365]];
+let pf=store.get('pflege',{});
+function pflegeRender(){
+  $('pflege').innerHTML=PF.map(([k,e,t,tage])=>{const l=pf[k];let p='Noch nie eingetragen';let cls='';
+    if(l){const rest=Math.round((new Date(l).getTime()+tage*864e5-Date.now())/864e5);p=rest<0?'Fällig seit '+(-rest)+' Tagen':rest===0?'Heute fällig':'Wieder in '+rest+' Tagen';cls=rest<=0?' faellig':'';}
+    return `<div class="card${cls}" style="--k:#8FB4FF"><div class="emo">${e}</div><div class="t"><h3>${esc(t)}</h3><p>${esc(p)}${l?' · zuletzt '+esc(new Date(l).toLocaleDateString('de-CH')):''}</p></div><button class="paw" data-pf="${k}" aria-label="Heute erledigt">✓</button></div>`;}).join('');
+  $('pflege').querySelectorAll('[data-pf]').forEach(b=>b.onclick=()=>{pf[b.dataset.pf]=heute();store.set('pflege',pf);heart(b,6);pflegeRender();say('Danke, dass du so gut für mich sorgst!','wiggle');});
+}
+let nr=store.get('nummern',{tierarzt:'',notfall:''});
+function nummernRender(){$('nummern').innerHTML=`<label class="mini">Unsere Tierärztin / unser Tierarzt<input id="nrT" inputmode="tel" value="${esc(nr.tierarzt)}" placeholder="+41 …"></label><label class="mini">Tierklinik mit 24-h-Notfall<input id="nrN" inputmode="tel" value="${esc(nr.notfall)}" placeholder="+41 …"></label><div class="reihe"><a class="knopf" id="callT">📞 Tierarzt</a><a class="knopf rot" id="callN">🚨 Notfall</a></div>`;
+  const set=()=>{nr={tierarzt:$('nrT').value.trim(),notfall:$('nrN').value.trim()};store.set('nummern',nr);$('callT').href=nr.tierarzt?'tel:'+nr.tierarzt.replace(/[^\d+]/g,''):'#';$('callN').href=nr.notfall?'tel:'+nr.notfall.replace(/[^\d+]/g,''):'#';};
+  $('nrT').onchange=set;$('nrN').onchange=set;set();}
+$('fragen').value=store.get('fragen','');$('fragen').oninput=()=>store.set('fragen',$('fragen').value);
+
+/* ---------- Was Wäf Wäf sich merkt ---------- */
+function merktRender(){
+  const top=Object.keys(mem.abgehakt).sort((a,b)=>mem.abgehakt[b]-mem.abgehakt[a]).filter(k=>fam[k]);
+  const ruhig=mem.allein.filter(x=>x.r===2).length;
+  $('merkt').innerHTML=`<div class="mini">🐾 ${mem.walks} Mal draussen eingetragen (${mem.minuten} Min.), davon ${mem.schnueffel} Schnüffelrunden</div>
+  <div class="mini">🌙 Alleinsein: ${mem.allein.length} Übungen, ${ruhig} davon ganz ruhig · jetzt Pfote ${lvl+1} von 8</div>
+  <div class="mini">💛 Am meisten für mich da: ${top.length?esc(top.slice(0,3).map(k=>fam[k].n+' ('+mem.abgehakt[k]+')').join(', ')):'noch offen'}</div>
+  <div class="mini">🧒 Kinder-Ecke: ${mem.kinder.r} richtig gewusst · 📖 ${Object.keys(mem.kapitel).length} von ${KAP.length} Kapiteln gelesen</div>
+  <p class="mini" style="opacity:.8;margin-top:8px">Wäf Wäf lernt mit: Wenn es beim Alleinsein oft stressig war, schlägt er kleinere Schritte und eine Fachperson vor; abends erinnert er, wenn heute noch niemand draussen war. Nur Zahlen, nur auf diesem Handy.</p>
+  <label class="mini check"><input type="checkbox" id="teilenOk"${store.get('teilen',false)?' checked':''}> Ich bin einverstanden, dass DR Lab diese Zahlen (ohne Namen, ohne Bilder, ohne Stimme) über den eigenen Server lesen darf, um Wäf Wäf zu verbessern.</label>`;
+  $('teilenOk').onchange=e=>{store.set('teilen',e.target.checked);if(e.target.checked)teilen();};
+}
+function teilen(){if(!store.get('teilen',false))return;let a='',k='';try{a=String(JSON.parse(localStorage.getItem('drlab-hermes-adresse'))||'').replace(/\/+$/,'');k=JSON.parse(localStorage.getItem('drlab-hermes-passwort'))}catch(e){}
+  if(!/^https:\/\//.test(a)||!k||store.get('geteilt','')===heute())return;
+  const z={walks:mem.walks,minuten:mem.minuten,schnueffel:mem.schnueffel,allein:mem.allein.map(x=>({lvl:x.lvl,r:x.r,sek:x.sek})),kinder:mem.kinder,kapitel:Object.keys(mem.kapitel).length,tage:mem.tage.length};
+  fetch(a+'/erfahrung',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({app:'Wäf Wäf',art:'lernzahlen',frage:JSON.stringify(z),antwort:''})}).then(r=>{if(r.ok)store.set('geteilt',heute())}).catch(()=>{});}
+
+/* ---------- Dialog ---------- */
+let dlgOk=null,dlgKlick=null;
+function dialog(t,html,ok,klick,okText){$('dlgT').textContent=t;$('dlgB').innerHTML=html;dlgOk=ok;dlgKlick=klick;$('dlgOk').hidden=!ok;$('dlgOk').textContent=okText||'OK';$('dialog').hidden=false;const i=$('dlgB').querySelector('input');if(i)setTimeout(()=>i.focus(),50);}
+function dialogZu(){$('dialog').hidden=true;}
+$('dlgZu').onclick=dialogZu;$('dlgOk').onclick=()=>{const f=dlgOk;dialogZu();if(f)f();};
+$('dlgB').onclick=e=>{const b=e.target.closest('button');if(b&&dlgKlick)dlgKlick(b);};
+$('dialog').onclick=e=>{if(e.target.id==='dialog')dialogZu();};
+
+/* ---------- Navigation ---------- */
+const SAG={tag:null,spazieren:'Gehen wir raus? Ich hole schon die Leine!',allein:'Allein bleiben üben wir ganz langsam. Pfote für Pfote.',verstehen:'Willst du wissen, wie ich denke? Ich erzähle es dir.',kinder:'Hallo! Weisst du, wie ich rede? Mit meinem ganzen Körper!',pflege:'Bürsten, Krallen, Zähne. Ich mag es, wenn ihr gut für mich sorgt.'};
+function zeige(v){document.querySelectorAll('.view').forEach(s=>s.hidden=s.id!=='v-'+v);document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===v));
+  scrollTo(0,0);if(v==='tag'){render();greet();merktRender();}if(v==='spazieren'){walkWerRender();wocheRender();}if(v==='allein'){alone();betreuungRender();}
+  if(v==='verstehen'){kapitelRender();weltRender();}if(v==='kinder')szene();if(v==='pflege'){pflegeRender();nummernRender();}
+  if(SAG[v])say(SAG[v],'wiggle');store.set('view',v);}
+document.querySelectorAll('nav a').forEach(a=>a.onclick=e=>{e.preventDefault();zeige(a.dataset.v);});
+$('go').onclick=()=>{tonAn=true;$('start').hidden=true;document.querySelector('main').hidden=false;$('nav').hidden=false;famRender();zeige('tag');};
 if(location.hash==='#tag')$('go').onclick();
 $('back').onclick=()=>{clearInterval(timer);document.querySelector('main').hidden=true;$('nav').hidden=true;$('start').hidden=false;scrollTo(0,0);};
-const pets=['Hihi, das kitzelt!','Noch einmal hinter dem Ohr, bitte!','Ich hab dich lieb!','Wäf wäf wäf!','Spielen wir nachher Ball?'];let pi=0;
-function pet(){const p=$('pup');say(pets[pi++%pets.length]);p.classList.remove('hop','sad');void p.offsetWidth;p.classList.add('wiggle');heart(p,5);setTimeout(()=>p.classList.remove('wiggle'),650);}
-$('pup').addEventListener('animationend',e=>{if(e.animationName!=='breathe')$('pup').classList.remove('hop','sad','wiggle');});
+const pets=['Hihi, das kitzelt!','Noch einmal hinter dem Ohr, bitte!','Ich hab dich lieb!','Wäf wäf wäf!','Spielen wir nachher Ball?','Mein Halsband hat weisse Pünktchen. Schön, oder?','Weisst du was? Ich bin gleich wieder ruhig.'];let pi=0;
+function pet(){const p=$('pup');say(pets[pi++%pets.length],'wiggle');heart(p,5);}
+$('pup').addEventListener('animationend',e=>{if(e.animationName!=='breathe'&&e.animationName!=='laufen')$('pup').classList.remove('hop','sad','wiggle','schnupper');});
 $('pup').onclick=pet;$('pup').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pet();}};
-document.querySelectorAll('nav a').forEach(a=>a.onclick=e=>{e.preventDefault();if(!a.classList.contains('on'))say('Das baue ich noch. Bald zeige ich dir mehr!');});
+planAusLink();saveMem();teilen();
 </script>
+<script src="../nova/seelen.js" defer></script>
+<script src="seele.js" defer></script>
+<script src="feedback.js" data-app="Wäf Wäf" defer></script>
+<script src="../nova/nova.js" data-nova-app="Wäf Wäf" data-nova-bild="figur-klein.jpg" data-nova-unten="96" defer></script>
 </body>
+
 </html>
