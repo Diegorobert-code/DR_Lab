@@ -169,6 +169,12 @@ footer b{color:var(--ink2);font-weight:600}
 .f input,.f select{width:100%;min-height:48px;border-radius:12px;border:1px solid var(--line2);background:#081329;padding:10px 12px;color:var(--ink);font-size:16px}
 .f small{color:var(--muted);font-size:12.5px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.topfbar{height:8px;border-radius:999px;background:var(--line2);margin-top:12px;overflow:hidden}
+.topfbar i{display:block;height:100%;width:0;background:var(--gold);border-radius:999px;transition:width .3s}
+.topfbar i.over{background:#ff7a6b}
+.chip.risk{border-style:solid;color:var(--ink2)}
+.chip.risk.over{border-color:#ff7a6b;color:#ffb3aa}
+@media (prefers-reduced-motion:reduce){.topfbar i{transition:none}}
 .sheet .btns{display:flex;gap:10px;margin-top:6px}
 .sheet .btns .btn{flex:1}
 .err-msg{color:var(--red);font-size:13px;min-height:18px;margin:0 0 6px}
@@ -306,6 +312,19 @@ footer b{color:var(--ink2);font-weight:600}
     </div>
   </section>
 
+  <section aria-labelledby="hTopf">
+    <div class="ruhe">
+      <div class="row"><h2 id="hTopf" style="margin:0;font-size:17px">Spieltopf</h2><p id="topfTxt">Noch kein Einsatz eingetragen.</p></div>
+      <div class="two" style="margin-top:10px">
+        <div class="f" style="margin:0"><label for="tTopf">Topf (CHF)</label><input id="tTopf" inputmode="decimal" autocomplete="off" placeholder="z. B. 200"></div>
+        <div class="f" style="margin:0"><label for="tMax">Höchstens pro Titel (%)</label><input id="tMax" inputmode="decimal" autocomplete="off" placeholder="5"></div>
+      </div>
+      <div class="topfbar" aria-hidden="true"><i id="topfFill"></i></div>
+      <p class="note" id="topfWarn" style="margin:8px 0 0"></p>
+      <p class="note" style="margin:8px 0 0">Deine Regeln: feste Grenzen vor dem Kauf, Pause ab −25 % im Topf. TradePing rechnet nur nach, du entscheidest.</p>
+    </div>
+  </section>
+
   <section aria-labelledby="hList">
     <div class="sh"><h2 id="hList">Watchlist</h2><small id="cnt"></small></div>
     <ul class="list" id="list"></ul>
@@ -343,6 +362,11 @@ footer b{color:var(--ink2);font-weight:600}
     <div class="f"><label for="fOver">Ping wenn über</label><input id="fOver" inputmode="decimal" autocomplete="off" placeholder="—"></div>
     <div class="f"><label for="fUnder">Ping wenn unter</label><input id="fUnder" inputmode="decimal" autocomplete="off" placeholder="—"></div>
   </div>
+  <div class="two">
+    <div class="f"><label for="fEin">Einsatz (CHF)</label><input id="fEin" inputmode="decimal" autocomplete="off" placeholder="z. B. 50"></div>
+    <div class="f"><label for="fStop">Verlustgrenze (%)</label><input id="fStop" inputmode="decimal" autocomplete="off" placeholder="z. B. 15"></div>
+  </div>
+  <div class="f"><label for="fKauf">Kaufkurs (freiwillig)</label><input id="fKauf" inputmode="decimal" autocomplete="off" placeholder="—"><small id="fRisk">Mit Kaufkurs und Verlustgrenze setzt TradePing «Ping wenn unter» selbst.</small></div>
   <p class="err-msg" id="fErr"></p>
   <div class="btns"><button class="btn ghost" type="button" id="fCancel">Abbrechen</button><button class="btn pri" type="submit" id="fSave">Speichern</button></div>
 </form>
@@ -526,6 +550,44 @@ function renderRadar(){
   if (!items.length) html = '<div class="empty-radar">Noch nichts auf dem Radar. Füge unten einen Titel hinzu.</div>';
   box.innerHTML = html; $('links').innerHTML = links;
 }
+/* ---------- Spieltopf: Einsatz, Verlustgrenze, Topf ---------- */
+function topfMax(){ return set.topfMax > 0 ? set.topfMax : 5; }
+function risiko(it){
+  if (!(it.ein > 0)) return null;
+  var verlust = it.stop > 0 ? round2(it.ein * it.stop / 100) : null;
+  return { verlust: verlust, zuviel: set.topf > 0 && it.ein > set.topf * topfMax() / 100 };
+}
+function renderTopf(){
+  var ein = 0, verl = 0, zuviel = [];
+  items.forEach(function(it){ var r = risiko(it); if (!r) return; ein += it.ein; if (r.verlust != null) verl += r.verlust; if (r.zuviel) zuviel.push(it.sym); });
+  var topf = set.topf > 0 ? set.topf : null;
+  if ($('tTopf') !== document.activeElement) $('tTopf').value = topf ? String(topf) : '';
+  if ($('tMax') !== document.activeElement) $('tMax').value = set.topfMax > 0 ? String(set.topfMax) : '';
+  var t = ein ? 'Eingesetzt CHF ' + num(round2(ein)) + (topf ? ' von ' + num(topf) : '') + (verl ? ' · möglicher Verlust bis zu den Grenzen CHF ' + num(round2(verl)) : '') : 'Noch kein Einsatz eingetragen.';
+  $('topfTxt').textContent = t;
+  var f = $('topfFill'), q = topf ? Math.min(1, ein / topf) : 0;
+  f.style.width = (q * 100).toFixed(1) + '%'; f.classList.toggle('over', topf != null && ein > topf);
+  var w = [];
+  if (topf && ein > topf) w.push('Mehr eingesetzt als im Topf.');
+  if (zuviel.length) w.push(zuviel.join(', ') + ': mehr als ' + String(topfMax()).replace('.', ',') + ' % vom Topf.');
+  if (topf) w.push('Pause-Grenze −25 %: CHF ' + num(round2(topf * 0.25)) + '.');
+  $('topfWarn').textContent = w.join(' ');
+}
+function topfInput(){
+  var v = parseNum($('tTopf').value), m = parseNum($('tMax').value);
+  set.topf = v > 0 ? v : null; set.topfMax = m > 0 && m <= 100 ? m : null;
+  persist(); renderTopf(); renderList();
+}
+$('tTopf').addEventListener('change', topfInput);
+$('tMax').addEventListener('change', topfInput);
+function riskHint(){
+  var e = parseNum($('fEin').value), st = parseNum($('fStop').value), k = parseNum($('fKauf').value);
+  var t = 'Mit Kaufkurs und Verlustgrenze setzt TradePing «Ping wenn unter» selbst.';
+  if (e > 0 && st > 0) t = 'Möglicher Verlust bis zur Grenze: CHF ' + num(round2(e * st / 100)) + '.' + (k > 0 ? ' Ping unter ' + num(round2(k * (1 - st / 100))) + '.' : '');
+  $('fRisk').textContent = t;
+}
+['fEin','fStop','fKauf'].forEach(function(id){ $(id).addEventListener('input', riskHint); });
+
 function renderList(){
   $('cnt').textContent = items.length ? items.length + (items.length === 1 ? ' Titel' : ' Titel') : '';
   var h = '';
@@ -541,7 +603,9 @@ function renderList(){
     var chips = '';
     if (m.over != null) chips += '<span class="chip' + (oh ? ' hit' : '') + '">über ' + num(m.over) + '</span>';
     if (m.under != null) chips += '<span class="chip' + (uh ? ' hit' : '') + '">unter ' + num(m.under) + '</span>';
+    var rk = risiko(it);
     if (!chips) chips = '<span class="chip none">' + (it.auto ? 'Marke ±' + it.auto + ' % folgt mit erstem Kurs' : 'Keine Marke gesetzt') + '</span>';
+    if (rk) chips += '<span class="chip risk' + (rk.zuviel ? ' over' : '') + '">CHF ' + num(it.ein) + (rk.verlust != null ? ' · max. −' + num(rk.verlust) : '') + '</span>';
     var dist = r ? (r.hit ? '<span class="dist" style="color:var(--gold)">Marke erreicht</span>' : '<span class="dist">' + (r.d*100).toFixed(1) + ' % bis Marke</span>') : '';
     h += '<li class="item' + (it.kind === 'manual' ? ' manual' : '') + (r && r.hit ? ' hit' : '') + '" data-id="' + it.id + '">' +
       '<div class="top"><div class="sym">' + esc(it.sym) + '</div><div class="nm"><b>' + esc(it.name || it.sym) + '</b><small>' + esc(sub) + '</small></div>' +
@@ -581,7 +645,7 @@ function renderBar(){
   else if (Notification.permission === 'denied') { l.textContent = 'Mitteilungen blockiert'; n.classList.remove('on'); }
   else { l.textContent = 'Mitteilungen erlauben'; n.classList.remove('on'); }
 }
-function render(){ renderPlat(); renderStand(); renderRadar(); renderList(); renderLog(); renderRuhe(); renderBar(); }
+function render(){ renderPlat(); renderTopf(); renderStand(); renderRadar(); renderList(); renderLog(); renderRuhe(); renderBar(); }
 
 var toastT;
 function toast(msg){ var t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(function(){ t.classList.remove('show'); }, 3200); }
@@ -641,6 +705,10 @@ function openSheet(it, focusMan){
   $('fMan').value = it && it.man != null ? String(it.man) : '';
   $('fOver').value = it && it.over != null ? String(it.over) : '';
   $('fUnder').value = it && it.under != null ? String(it.under) : '';
+  $('fEin').value = it && it.ein != null ? String(it.ein) : '';
+  $('fStop').value = it && it.stop != null ? String(it.stop) : '';
+  $('fKauf').value = it && it.kauf != null ? String(it.kauf) : '';
+  riskHint();
   $('fErr').textContent = '';
   kindUi();
   $('scrim').classList.add('show'); $('sheet').classList.add('show');
@@ -662,11 +730,15 @@ $('sheet').addEventListener('submit', function(ev){
   var name = $('fName').value.trim() || NAMES[sym] || sym;
   var kind = $('fKind').value, cg = $('fCg').value.trim().toLowerCase();
   var man = parseNum($('fMan').value), over = parseNum($('fOver').value), under = parseNum($('fUnder').value);
+  var ein = parseNum($('fEin').value), stop = parseNum($('fStop').value), kauf = parseNum($('fKauf').value);
   var err = '';
   if (!sym) err = 'Bitte ein Kürzel eingeben.';
   else if (kind === 'crypto' && !/^[a-z0-9\-]+$/.test(cg)) err = 'Bitte die CoinGecko-ID eingeben (z. B. zcash).';
   else if (isNaN(over) || isNaN(under) || (kind === 'manual' && isNaN(man))) err = 'Bitte nur Zahlen grösser als 0 eingeben.';
-  else if (over != null && under != null && under >= over) err = '«Unter» muss kleiner sein als «über».';
+  else if (isNaN(ein) || isNaN(stop) || isNaN(kauf)) err = 'Einsatz, Verlustgrenze und Kaufkurs: nur Zahlen grösser als 0.';
+  else if (stop != null && stop >= 100) err = 'Die Verlustgrenze muss unter 100 % liegen.';
+  if (!err && under == null && kauf != null && stop != null) under = round2(kauf * (1 - stop / 100));
+  if (!err && over != null && under != null && under >= over) err = '«Unter» muss kleiner sein als «über».';
   if (err) { $('fErr').textContent = err; return; }
   var it = editing;
   var fresh = !it;
@@ -675,6 +747,7 @@ $('sheet').addEventListener('submit', function(ev){
   if (it.over !== over) it.aO = true;
   if (it.under !== under) it.aU = true;
   it.sym = sym; it.name = name; it.kind = kind; it.cur = $('fCur').value; it.over = over; it.under = under; it.auto = 0; it.autoSet = false;
+  it.ein = ein; it.stop = stop; it.kauf = kauf;
   if (kind === 'crypto') { it.cg = cg; if (cgChanged) it.last = null; }
   else { if (man !== it.man) it.manAt = man != null ? Date.now() : null; it.man = man; }
   closeSheet();
