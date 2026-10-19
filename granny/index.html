@@ -83,10 +83,25 @@
 <main>
   <div class="zeit"><div class="tag" id="tag"></div><div class="uhr" id="uhr"></div></div>
 
-  <div class="granny">
-    <img src="figur.jpg" alt="Granny" class="figur-logo" data-sag="blase">
-    <div class="blase" id="blase"></div>
+  <div class="buehne" id="buehne" data-zeit="tag" aria-hidden="false">
+    <div class="himmel" aria-hidden="true"><i class="sonne"></i><i class="mond"></i><div class="sternchen"></div><i class="wolke w1"></i><i class="wolke w2"></i></div>
+    <svg class="dorf" viewBox="0 0 400 90" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <path class="huegel" d="M0 60 Q80 30 170 52 T400 44 V90 H0Z"/>
+      <g class="haus"><rect x="18" y="46" width="46" height="34" rx="3"/><path d="M14 48 L41 30 L68 48Z"/><rect class="fenster" x="30" y="56" width="9" height="10" rx="2"/><rect class="fenster" x="45" y="56" width="9" height="10" rx="2"/></g>
+      <g class="haus"><rect x="74" y="54" width="38" height="28" rx="3"/><rect class="fenster" x="86" y="62" width="10" height="10" rx="2"/></g>
+      <g class="haus"><rect x="300" y="44" width="40" height="38" rx="3"/><path d="M296 46 L320 28 L344 46Z"/><rect class="fenster" x="312" y="54" width="9" height="11" rx="2"/></g>
+      <g class="haus"><rect x="346" y="54" width="44" height="28" rx="3"/><rect class="fenster" x="358" y="62" width="9" height="9" rx="2"/><rect class="fenster" x="372" y="62" width="9" height="9" rx="2"/></g>
+      <g class="kirche"><rect x="262" y="30" width="16" height="52" rx="2"/><path d="M258 32 L270 14 L282 32Z"/><rect class="fenster" x="266" y="40" width="8" height="10" rx="4"/></g>
+      <path class="boden" d="M0 80 H400 V90 H0Z"/>
+    </svg>
+    <div class="granny-fig" id="gfig">
+      <img src="figur-gross.jpg" alt="Granny" class="figur-logo" data-sag="blase" width="520" height="520">
+      <span class="requisit" id="requisit" aria-hidden="true"></span>
+    </div>
+    <div class="zzz" aria-hidden="true">z<span>z</span><span>z</span></div>
   </div>
+  <div class="blase" id="blase" aria-live="polite"></div>
+  <button class="nachricht" id="nachricht" hidden></button>
 
   <button class="reden" id="reden" aria-label="Reden">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V22h2v-3.08A7 7 0 0 0 19 12z"/></svg>
@@ -99,6 +114,10 @@
   <button class="klemmt" id="klemmt"></button>
 
   <div class="heute" id="heute"></div>
+
+  <div class="merk" id="merk" hidden></div>
+
+  <div class="album" id="album" hidden></div>
 
   <button class="angeh" id="angeh"></button>
 </main>
@@ -135,8 +154,32 @@
     <label>Was Granny heute zeigt und vorliest (eine Zeile pro Punkt)</label>
     <textarea id="e_heute" placeholder="10 Uhr: Diego ruft an&#10;Mittag: Essen kommt"></textarea>
 
-    <h2>Später: Server</h2>
-    <p>Wenn der Server läuft, kann Granny frei antworten. Leer lassen = Granny antwortet einfach selbst, ohne Internet.</p>
+    <p class="klein">Uhrzeit vorne schreiben («10:00 Diego ruft an» oder «15 Uhr Tablette»), dann erinnert Granny genau dann mit einem sanften Gong und liest den Punkt vor (solange Granny offen ist).</p>
+
+    <h2>Die Stimme der Familie</h2>
+    <p>Granny erinnert am liebsten mit einer vertrauten Stimme statt mit einem Piepton. Nehmen Sie hier kurze Nachrichten auf (bis 30 Sekunden). Sie bleiben nur auf diesem Gerät.</p>
+    <div id="e_stimmen"></div>
+
+    <h2>Granny-Station</h2>
+    <div class="kasten">
+      <label class="check"><input type="checkbox" id="o_trinken"> Granny erinnert tagsüber alle 2 Stunden ans Trinken.</label>
+      <label class="check" style="margin-top:10px"><input type="checkbox" id="o_wach"> Bildschirm bleibt an (Granny steht auf dem Tisch, am Ladekabel).</label>
+      <label class="check" style="margin-top:10px"><input type="checkbox" id="o_gross"> Extra grosse Schrift.</label>
+      <label class="check" style="margin-top:10px"><input type="checkbox" id="o_akku"> Akku-Wächter: unter 20 % bittet Granny laut ums Laden (geht auf Android, nicht auf dem iPhone).</label>
+    </div>
+    <p class="klein">Telefon-Betrug: Sagt jemand «Geld», «Bank», «Polizei» oder «Überweisung», warnt Granny sofort: nie Geld, Karten oder Passwörter am Telefon, auflegen und die Familie anrufen.</p>
+
+    <h2>Was Granny sich merkt</h2>
+    <div class="kasten" id="e_lernen"></div>
+    <label class="check" style="margin-top:10px"><input type="checkbox" id="o_teilen"> Ich bin einverstanden, dass DR Lab diese Lern-Zahlen (ohne Namen, ohne Stimme, ohne Bilder) über den eigenen Server lesen darf, um Granny zu verbessern.</label>
+    <div class="reihe"><button class="grau klein" id="e_lernen_weg">Lern-Zahlen löschen</button></div>
+
+    <h2>Rückmeldung an DR Lab</h2>
+    <p>Was fehlt, was stört? Hier reinschreiben oder reinsprechen.</p>
+    <div data-feedback-slot style="margin-top:8px"></div>
+
+    <h2>Server</h2>
+    <p>Ist dieses Gerät über «Handy verbinden» mit dem DR-Lab-Server verbunden, antwortet Granny frei und mit ihrer eigenen Stimme. Ohne Server antwortet sie einfach selbst, ohne Internet. Eine eigene Adresse unten ist nur für Tests nötig.</p>
     <label>Adresse (z. B. https://…/v1/chat/completions)</label>
     <input id="e_server" placeholder="leer lassen">
     <label>Schlüssel</label>
@@ -223,6 +266,7 @@
   // Sprechen: langsam und deutlich
   function sag(text){
     $('blase').textContent=text;
+    if(window.GrannyPlus) GrannyPlus.spricht(text);
     // Grannys eigene Stimme (Sense Engine), nur auf Deutsch; sonst die Gerätestimme.
     if(window.NovaStimme&&NovaStimme.aktiv()&&/^de/i.test(L().voice)){NovaStimme.sprich(text);return;}
     try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=L().voice;u.rate=.85;u.pitch=1.05;
@@ -243,7 +287,7 @@
       const name=document.createElement('div'); name.textContent=p.n||'—';
       b.append(bild,name);
       if(!p.nr){const s=document.createElement('small');s.textContent='☎ ?';b.appendChild(s)}
-      b.onclick=()=>{ if(!p.nr){sag(t.fehlt);return} sag(t.ruft(p.n)); setTimeout(()=>anrufen(p.nr),1200); };
+      b.onclick=()=>{ if(!p.nr){sag(t.fehlt);return} if(window.GrannyPlus)GrannyPlus.zaehl('anruf',p.n,'winken'); sag(t.ruft(p.n)); setTimeout(()=>anrufen(p.nr),1200); };
       box.appendChild(b);
     });
     const zeilen=(S.heute||'').split('\n').map(s=>s.trim()).filter(Boolean);
@@ -251,18 +295,21 @@
     $('heute').appendChild(document.createTextNode(zeilen.length?zeilen.join(' · '):t.nichts));
     uhr();
     $('blase').textContent=t.gruss(new Date().getHours(),S.name);
+    if(window.GrannyPlus) GrannyPlus.gezeichnet();
   }
 
   // Rückfall: fehlt die eigene Nummer, nimm die erste Person mit Nummer
   const erste=()=>S.leute.find(p=>p.nr)||null;
   $('hilfe').onclick=()=>{const t=L(); const e=erste(); const nr=S.hnr||(e&&e.nr); const n=S.hnr?(S.hname||S.leute[0].n):(e&&e.n);
+    if(window.GrannyPlus)GrannyPlus.zaehl('hilfe');
     if(!nr){sag(t.fehltNot);return} sag(t.hilfeSag(n)); setTimeout(()=>anrufen(nr),1500);};
   $('klemmt').onclick=()=>{const t=L(); const e=erste(); const nr=S.pnr||(e&&e.nr); const n=S.pnr?(S.pname||S.leute[0].n):(e?e.n:S.leute[0].n);
-    sag(t.klemmtSag(n)); if(nr) setTimeout(()=>sms(nr,t.klemmtSms(n)),2500);};
+    if(window.GrannyPlus)GrannyPlus.zaehl('klemmt'); sag(t.klemmtSag(n)); if(nr) setTimeout(()=>sms(nr,t.klemmtSms(n)),2500);};
 
   // Antwort: zuerst einfache Regeln, mit Server frei
   async function antworten(text){
     const t=L(), x=text.toLowerCase();
+    if(window.GrannyPlus){ GrannyPlus.zaehl('reden'); if(GrannyPlus.antwort(x,text)) return; }
     const p=S.leute.find(p=>p.n && x.includes(p.n.toLowerCase()));
     if(p && t.w.anruf.test(x)){ if(!p.nr) return sag(t.fehlt); sag(t.ruft(p.n)); return setTimeout(()=>anrufen(p.nr),1500); }
     if(t.w.hilfe.test(x)) return $('hilfe').onclick();
@@ -270,6 +317,14 @@
     if(t.w.brille.test(x)) return sag(t.brille);
     if(t.w.datum.test(x)){const d=new Date();return sag(t.datum(datumText())+' '+String(d.getHours())+':'+String(d.getMinutes()).padStart(2,'0'));}
     if(t.w.heute.test(x)) return sag($('heute').textContent);
+    const nv=window.GrannyPlus&&GrannyPlus.server();
+    if(nv){
+      try{
+        $('blase').textContent='…';
+        const a=await nv(text);
+        if(a) return sag(a);
+      }catch(e){}
+    }
     if(S.server){
       try{
         $('blase').textContent='…';
@@ -314,11 +369,12 @@
     const box=$('e_leute'); box.innerHTML='';
     S.leute.forEach((p,i)=>{
       const k=document.createElement('div'); k.className='kasten';
-      k.innerHTML='<div class="zeile"><input data-i="'+i+'" data-f="n" placeholder="Name"><input data-i="'+i+'" data-f="nr" placeholder="+41 79 …" inputmode="tel"></div><label>Foto</label><input type="file" accept="image/*" data-i="'+i+'" data-f="bild">';
-      k.querySelector('[data-f=n]').value=p.n; k.querySelector('[data-f=nr]').value=p.nr;
+      k.innerHTML='<div class="zeile"><input data-i="'+i+'" data-f="n" placeholder="Name"><input data-i="'+i+'" data-f="nr" placeholder="+41 79 …" inputmode="tel"></div><input data-i="'+i+'" data-f="wer" placeholder="Wer ist das? z. B. dein Sohn, wohnt in Zürich" style="margin-top:8px"><label>Foto</label><input type="file" accept="image/*" data-i="'+i+'" data-f="bild">';
+      k.querySelector('[data-f=n]').value=p.n; k.querySelector('[data-f=nr]').value=p.nr; k.querySelector('[data-f=wer]').value=p.wer||'';
       box.appendChild(k);
     });
     $('einst').classList.add('offen');
+    if(window.GrannyPlus) GrannyPlus.einstOffen();
   }
   function foto(file){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas'),s=240,m=Math.min(im.width,im.height);c.width=c.height=s;c.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,s,s);res(c.toDataURL('image/jpeg',.8))};im.src=r.result};r.readAsDataURL(file)})}
   $('e_zu').onclick=()=>$('einst').classList.remove('offen');
@@ -341,7 +397,7 @@
   const unb64=t=>decodeURIComponent(escape(atob(t.replace(/-/g,'+').replace(/_/g,'/'))));
   $('e_link').onclick=()=>{
     if(!S.ok){alert('Bitte zuerst oben das Einverständnis bestätigen und speichern.');return}
-    const d={v:1,name:S.name,sprache:S.sprache,leute:S.leute.map(p=>({n:p.n,nr:p.nr})),hname:S.hname,hnr:S.hnr,pname:S.pname,pnr:S.pnr,heute:S.heute,server:S.server};
+    const d={v:1,name:S.name,sprache:S.sprache,leute:S.leute.map(p=>({n:p.n,nr:p.nr,wer:p.wer||''})),hname:S.hname,hnr:S.hnr,pname:S.pname,pnr:S.pnr,heute:S.heute,server:S.server};
     const url=location.origin+location.pathname+'#einrichten='+b64(JSON.stringify(d));
     $('e_linktext').value=url; $('e_linkbox').hidden=false;
   };
@@ -364,15 +420,17 @@
     nein.onclick=weg;
     ja.onclick=()=>{
       S.ok=true; ['name','sprache','hname','hnr','pname','pnr','heute','server'].forEach(k=>{if(typeof d[k]==='string')S[k]=d[k]});
-      (d.leute||[]).slice(0,4).forEach((p,i)=>{S.leute[i]=Object.assign(S.leute[i]||{bild:''},{n:String(p.n||''),nr:String(p.nr||'')})});
+      (d.leute||[]).slice(0,4).forEach((p,i)=>{S.leute[i]=Object.assign(S.leute[i]||{bild:''},{n:String(p.n||''),nr:String(p.nr||''),wer:String(p.wer||'')})});
       schreiben(S); weg(); zeichnen();
     };
   }
 
+  window.Granny={get S(){return S}, sag, L, datumText, zeichnen, speichern:()=>schreiben(S), anrufen, oeffnen:()=>oeffnen()};
   zeichnen(); einrichtenAusLink(); setInterval(uhr,20000);
   try{speechSynthesis.getVoices()}catch(e){}
 })();
 </script>
+<script src="granny-plus.js"></script>
 <!-- Figuren-Film (Trickfilm-Look): Farben, Funken, Atmen, Tipp-Reaktion, Szenenwechsel. Nur Optik. -->
 <style id="figurFilmCss">
 .film-aurora{position:fixed;inset:-20%;z-index:-1;pointer-events:none;filter:blur(60px);opacity:.5}
@@ -416,7 +474,8 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 <script>
 (function(){
   var ruhig=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var SAETZE=["Na, mein Schatz, wie geht es dir heute?", "Hast du schon etwas getrunken? Ein Glas Wasser tut gut.", "Ich bin hier. Du kannst mich immer drücken.", "Weisst du, früher haben wir das auch so gemacht."],si=0;
+  var SAETZE_DE=["Na, mein Schatz, wie geht es dir heute?", "Wo hab ich sie wieder hingetan? Ah, auf dem Kopf!", "Hast du schon etwas getrunken? Ein Glas Wasser tut gut.", "Ich bin hier. Du kannst mich immer drücken.", "Weisst du, früher haben wir das auch so gemacht.", "Ich vergesse auch alles. Darum lachen wir zusammen."],SAETZE_ES=["Hola, cariño, ¿cómo estás hoy?", "¿Dónde las he puesto? ¡Ah, en la cabeza!", "¿Ya has bebido algo? Un vaso de agua sienta bien.", "Estoy aquí. Puedes pulsarme siempre.", "Yo también lo olvido todo. Por eso nos reímos juntas."],si=0;
+  var SAETZE={get length(){return 5}};
   var farben=['#F2C14E','#E58FA8','#8FD3A8','#ffffff'];
   // Farbschleier + aufsteigende Funken (wie Fias Nest)
   var au=document.createElement('div');au.className='film-aurora';au.setAttribute('aria-hidden','true');au.innerHTML='<i></i><i></i><i></i>';document.body.prepend(au);
@@ -441,7 +500,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
     var t=e.target;
     var fig=t.closest&&t.closest('#figurStart img,.figur-hero img,.figur-logo,[data-sag]');
     if(fig){fig.classList.remove('film-hops');void fig.offsetWidth;fig.classList.add('film-hops');sterne(e.clientX,e.clientY,8);
-      var sp=fig.dataset.sag?document.getElementById(fig.dataset.sag):(fig.closest('.figur-hero')&&fig.closest('.figur-hero').querySelector('span'));if(sp&&SAETZE.length){sp.textContent=SAETZE[si++%SAETZE.length];sp.classList.remove('film-neu');void sp.offsetWidth;sp.classList.add('film-neu');}return;}
+      var sp=fig.dataset.sag?document.getElementById(fig.dataset.sag):(fig.closest('.figur-hero')&&fig.closest('.figur-hero').querySelector('span'));if(sp&&SAETZE.length){var liste=document.documentElement.lang==='es'?SAETZE_ES:SAETZE_DE;var satz=liste[si++%liste.length];if(window.Granny)Granny.sag(satz);else sp.textContent=satz;if(window.GrannyPlus)GrannyPlus.pose(si%2?'lachen':'suchen');sp.classList.remove('film-neu');void sp.offsetWidth;sp.classList.add('film-neu');}return;}
     var b=t.closest&&t.closest('button,.btn,[role=button]');
     if(b&&b.id!=='figurStartGo')sterne(e.clientX,e.clientY,5);
   },true);
@@ -453,6 +512,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
   }
 })();
 </script>
+<script src="feedback.js" data-app="Granny" defer></script>
 <script src="../nova/seelen.js" defer></script>
 <script src="../nova/nova.js" data-nova-app="Granny" data-nova-knopf="0" defer></script>
 </body>
