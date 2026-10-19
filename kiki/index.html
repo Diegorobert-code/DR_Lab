@@ -180,6 +180,50 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
 .branch{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:340px;height:60px}
 .kiki-tip{display:flex;align-items:center;gap:10px;background:var(--gold-l);border:1px solid rgba(242,193,78,.35);border-radius:18px;padding:8px 12px;margin:8px 0 12px;font-size:16px}
 .kiki-tip .kiki{width:64px;height:64px;flex:none}
+/* Neu 19.10.: Tagesplan, Echo, Rhythmus, Sternenweg, Bühne */
+a.card{color:inherit;text-decoration:none}
+.card.heute{background:linear-gradient(135deg,rgba(143,211,168,.22),rgba(242,193,78,.18) 55%,rgba(229,143,168,.2));border-color:rgba(242,193,78,.5)}
+.plan{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.plan span{font-size:13px;padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.08);color:var(--ink2)}
+.plan span.ok{background:rgba(127,220,164,.22);color:var(--good)}
+.cat-h{font-size:19px;margin:8px 4px 0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+.chips button{min-height:46px;padding:0 14px;border-radius:99px;border:1px solid var(--line);background:var(--card);font-size:16px;cursor:pointer}
+.chips button.on{background:var(--gold);color:#2a1f05;border-color:var(--gold);font-weight:600}
+.inp{width:100%;min-height:52px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font:inherit;font-size:18px;padding:0 14px}
+.beats{display:flex;align-items:flex-end;justify-content:center;gap:8px;min-height:120px;margin:8px 0}
+.beats i{display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:700;font-size:16px;color:#1b1630;height:64px;border-radius:18px;background:rgba(255,255,255,.14);transition:transform .12s,background .15s,box-shadow .15s}
+.beats i.on{background:var(--gold);transform:translateY(-10px) scale(1.08);box-shadow:0 0 24px rgba(242,193,78,.7)}
+.beats i.du{background:var(--good)}
+.beats i.miss{background:var(--coral)}
+.drum{font-size:64px;text-align:center;line-height:1;transition:transform .1s}
+.drum.hit{transform:scale(1.25) rotate(-8deg)}
+.weg{position:relative;padding:6px 0 10px}
+.weg:before{content:"";position:absolute;left:50%;top:10px;bottom:10px;border-left:4px dotted rgba(242,193,78,.45);transform:translateX(-2px)}
+.stn{position:relative;width:calc(50% - 22px);margin:0 0 12px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:10px 12px;display:flex;gap:10px;align-items:center}
+.stn.r{margin-left:auto}
+.stn>span:last-child{min-width:0}.stn b{overflow-wrap:anywhere;hyphens:auto;-webkit-hyphens:auto}
+.stn .em{font-size:30px;flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.08)}
+.stn b{display:block;font-size:16px;line-height:1.2}.stn small{display:block;font-size:13px;color:var(--muted);line-height:1.25}
+.stn.zu{opacity:.5}.stn.zu .em{filter:grayscale(1)}
+.stn.ja{border-color:rgba(242,193,78,.55);background:linear-gradient(135deg,rgba(242,193,78,.16),rgba(143,211,168,.12))}
+.stn.ja .em{background:var(--gold-l);box-shadow:0 0 18px rgba(242,193,78,.45)}
+.stn .hier{position:absolute;top:-14px;width:46px;height:46px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;animation:filmSchweben 3.6s ease-in-out infinite}
+.stn.l .hier{right:-36px}.stn.r .hier{left:-36px}
+.buehne{position:fixed;inset:0;z-index:2147483100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 18px;text-align:center;background:radial-gradient(70% 55% at 50% 38%,rgba(242,193,78,.28),transparent 70%),rgba(6,10,28,.94);overflow:hidden}
+.buehne[hidden]{display:none}
+.buehne .vh{position:absolute;top:0;bottom:0;width:52%;z-index:3;background:repeating-linear-gradient(90deg,#1d2c66 0 18px,#14204d 18px 36px);box-shadow:inset 0 -30px 40px rgba(0,0,0,.35);transition:transform 1.3s var(--ease)}
+.buehne .vh:after{content:"";position:absolute;top:0;bottom:0;width:8px;background:linear-gradient(180deg,#ffe08a,#d9a22e)}
+.buehne .vh.l{left:0}.buehne .vh.l:after{right:0}.buehne .vh.r{right:0}.buehne .vh.r:after{left:0}
+.buehne.auf .vh.l{transform:translateX(-100%)}.buehne.auf .vh.r{transform:translateX(100%)}
+.buehne .spot{position:absolute;top:-10%;left:50%;width:120vw;height:90vh;transform:translateX(-50%);background:conic-gradient(from 165deg at 50% 0,transparent 0,rgba(255,236,190,.18) 15deg,transparent 30deg);pointer-events:none}
+.buehne img{width:min(52vw,210px);height:min(52vw,210px);border-radius:50%;object-fit:cover;border:4px solid var(--gold);box-shadow:0 0 0 8px rgba(242,193,78,.12),0 0 70px rgba(143,211,168,.5);position:relative;z-index:1}
+.buehne.auf img{animation:verbeugen 2.4s .9s ease-in-out 2}
+@keyframes verbeugen{0%,100%{transform:none}25%{transform:translateY(10px) rotate(-6deg) scale(.97)}50%{transform:translateY(-8px) rotate(4deg) scale(1.04)}}
+.buehne h2{position:relative;z-index:1;font-size:30px;margin:18px 0 6px;background:linear-gradient(90deg,#F2C14E,#8FD3A8,#E58FA8,#F2C14E);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:filmGlanz 6s linear infinite}
+.buehne p{position:relative;z-index:1;max-width:380px;font-size:18px;color:var(--ink2)}
+.buehne .badge{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;margin:4px;padding:6px 12px;border-radius:99px;background:var(--gold-l);border:1px solid rgba(242,193,78,.5);color:var(--gold);font-weight:600;font-size:16px}
+.buehne .btn{position:relative;z-index:1;max-width:320px;margin-top:14px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:380px){.ladder{flex-basis:96px;height:300px}.kiki{width:190px;height:190px}h1{font-size:27px}}
 </style>
@@ -268,6 +312,7 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
     <div class="kiki-stage" data-kiki="small"></div>
     <div class="bubble" id="menuBubble">Juhu! Was wollen wir heute singen?</div>
     <div class="grid">
+      <button class="card wide heute" data-go="heute"><span class="ic">🌞</span><span><b>Heute mit Kiki</b><small id="planSub">Aufwärmen, 3 Töne, Lied des Tages</small><span class="plan" id="planDots"></span></span></button>
       <button class="card wide" data-go="warm"><span class="ic">🎈</span><span><b>Aufwärmen</b><small>Atmen, summen, Sirene · zuerst, 2 Minuten</small></span></button>
       <button class="card wide" data-go="room"><span class="ic">🏠</span><span><b>Mein Stimmraum</b><small>Wie tief und wie hoch kann ich singen?</small></span></button>
       <button class="card" data-go="tone"><span class="ic">🎯</span><span><b>Ton treffen</b><small>Kiki singt vor, du singst nach</small></span></button>
@@ -275,6 +320,12 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
       <button class="card" data-go="songs"><span class="ic">🦆</span><span><b>Lieder</b><small>Kinderlieder und bekannte Lieder</small></span></button>
       <button class="card wide" data-go="pitch"><span class="ic">🎹</span><span><b>Ton vorgeben</b><small>Kiki spielt den Ton, so lange ihr wollt</small></span></button>
       <button class="card" data-go="mirror"><span class="ic">🌈</span><span><b>Stimm-Spiegel</b><small>Sieh deine Stimme</small></span></button>
+      <button class="card" data-go="echo"><span class="ic">🦜</span><span><b>Echo-Spiel</b><small>Kiki singt eine kleine Melodie, du singst sie nach</small></span></button>
+      <button class="card" data-go="rhythm"><span class="ic">🥁</span><span><b>Rhythmus</b><small>Kiki trommelt, du klatschst nach</small></span></button>
+      <button class="card" data-go="duo"><span class="ic">👨‍👧</span><span><b>Zu zweit</b><small>Duett: abwechselnd Töne treffen</small></span></button>
+      <button class="card" data-go="make"><span class="ic">✨</span><span><b>Lied erfinden</b><small>Kiki dichtet ein neues Lied für euch</small></span></button>
+      <button class="card wide" data-go="path"><span class="ic">🏅</span><span><b>Kikis Sternenweg</b><small id="pathSub">Abzeichen sammeln, Schritt für Schritt</small></span></button>
+      <a class="card wide" href="../mondschein/"><span class="ic">🦔</span><span><b>Kiki besucht Otti</b><small>Gutenacht-Geschichten in Mondschein</small></span></a>
       <button class="card wide" data-go="settings"><span class="ic">⚙️</span><span><b>Für Eltern</b><small>Stimmlage, wie genau, Kikis Stimme</small></span></button>
     </div>
   </section>
@@ -387,6 +438,37 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
     <p class="mini" style="margin-top:10px">Probier: wie eine Sirene rauf und runter, oder ganz lange einen Ton halten.</p>
   </section>
 
+  <!-- Rhythmus -->
+  <section class="screen" id="s-rhythm">
+    <h2 class="center" id="rhyTitle">Rhythmus</h2>
+    <div class="kiki-tip"><span data-kiki="small"></span><span id="rhyTip">Ich trommle vor. Dann klatschst du genau gleich nach. Ta = lang, ti = kurz.</span></div>
+    <div class="drum" id="drum" aria-hidden="true">🥁</div>
+    <div class="beats" id="beats"></div>
+    <div class="hint" id="rhyHint">Bereit?</div>
+    <div class="row" style="margin-bottom:10px"><button class="btn soft small" id="rhyReplay">🔊 Nochmal hören</button><button class="btn soft small" id="rhySkip">⏭ Anderer Rhythmus</button></div>
+    <button class="btn gold" id="rhyBtn">▶︎ Los geht's</button>
+    <p class="mini" style="margin-top:10px">Laut und deutlich klatschen, Handy ruhig hinlegen. Kiki hört nur, wann geklatscht wird, nichts wird aufgenommen.</p>
+  </section>
+
+  <!-- Lied erfinden -->
+  <section class="screen" id="s-make">
+    <h2 class="center">Kiki erfindet ein Lied</h2>
+    <div class="kiki-tip"><span data-kiki="small"></span><span id="makeTip">Wählt ein Thema. Ich dichte eine Strophe und singe sie auf die Melodie «Morgen kommt der Weihnachtsmann».</span></div>
+    <div class="chips" id="themeChips"></div>
+    <input class="inp" id="themeFree" maxlength="40" autocomplete="off" placeholder="Oder eigenes Thema, z. B. Schnee">
+    <p class="mini" style="text-align:left;margin:6px 2px 12px">Bitte nur ein Thema, keine Namen. Ist Kiki mit der Sense Engine verbunden, dichtet sie ganz neu. Sonst nimmt sie eine Strophe aus ihrem Liederbuch.</p>
+    <button class="btn gold" id="makeBtn">✨ Lied erfinden</button>
+    <div class="panel" id="makeOut" hidden></div>
+  </section>
+
+  <!-- Sternenweg -->
+  <section class="screen" id="s-path">
+    <h2 class="center">Kikis Sternenweg</h2>
+    <div class="bubble" id="pathBubble">Jedes Abzeichen ist ein Stern auf unserem Weg.</div>
+    <div class="weg" id="weg"></div>
+    <p class="mini">Abzeichen und Sterne bleiben nur auf diesem Handy.</p>
+  </section>
+
   <!-- Einstellungen -->
   <section class="screen" id="s-settings">
     <h2>Für Eltern</h2>
@@ -416,12 +498,23 @@ canvas#mirror{width:100%;height:300px;display:block;border-radius:20px;backgroun
       <h2 style="font-size:19px">Name des Kindes (freiwillig)</h2>
       <div class="row"><input id="kidName" maxlength="24" autocomplete="off" placeholder="z. B. Lena" style="flex:2;min-height:52px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font:inherit;font-size:18px;padding:0 14px"><button class="btn soft small" id="kidSave" style="flex:1">Speichern</button></div>
       <p class="mini" style="text-align:left;margin:8px 0 0">Kiki begrüsst dann mit Namen. Der Name bleibt nur auf diesem Handy.</p>
+      <div class="row" style="margin-top:10px"><input id="duoName" maxlength="24" autocomplete="off" placeholder="Papa" style="flex:2;min-height:52px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font:inherit;font-size:18px;padding:0 14px"><button class="btn soft small" id="duoSave" style="flex:1">Speichern</button></div>
+      <p class="mini" style="text-align:left;margin:8px 0 0">Zweite Stimme für «Zu zweit» (z. B. Papa, Mama). Eine Oktave tiefer zählt auch.</p>
     </div>
     <button class="btn soft small" id="resetStars">Sterne zurücksetzen</button>
     <p class="foot">Kiki singt · ein DR Lab Projekt</p>
   </section>
 </div>
 <div class="burst" id="burst"></div>
+<div class="buehne" id="buehne" hidden role="dialog" aria-modal="true" aria-labelledby="bTitle">
+  <div class="spot" aria-hidden="true"></div>
+  <div class="vh l" aria-hidden="true"></div><div class="vh r" aria-hidden="true"></div>
+  <img src="kiki-3d.jpg" alt="Kiki verbeugt sich">
+  <h2 id="bTitle">Bravo!</h2>
+  <p id="bText"></p>
+  <div id="bBadges"></div>
+  <button class="btn gold" id="bOk">Weiter ✨</button>
+</div>
 
 <script>
 (() => {
@@ -663,13 +756,15 @@ function diffCents(m, target){
 
 /* ---------- Navigation ---------- */
 let current = 'home';
-const stopAll = () => { listenCb = null; playToken++; micOff(); if (drone) droneStop(); try{ speechSynthesis.cancel(); }catch(e){} kikiMood(null); trainer.active = false; };
+const stopAll = () => { listenCb = null; rhyStop(); playToken++; micOff(); if (drone) droneStop(); try{ speechSynthesis.cancel(); }catch(e){} kikiMood(null); trainer.active = false; };
 function go(name){
   if (name !== current) stopAll();
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === 's-'+name));
   current = name;
   $('back').hidden = (name === 'home' || name === 'menu');
   scrollTo(0,0);
+  if (bOpen && bOpen.badges && !BADGE_SCREENS.includes(name)){ badgeQ.unshift(...bOpen.badges); $('buehne').hidden = true; const r = bOpen.res; bOpen = null; r(); }
+  if (name === 'menu'){ renderPlan(); setTimeout(flushBadges, 400); }
 }
 document.addEventListener('drlab-feedback-open', stopAll);
 $('back').onclick = () => { if (current === 'train' && trainer.from === 'songs'){ songList(); go('songs'); } else if (current === 'train' && trainer.from === 'scales'){ startScales(); } else go('menu'); };
@@ -684,6 +779,12 @@ document.querySelectorAll('[data-go]').forEach(b => b.onclick = async () => {
   else if (g === 'warm') startWarm();
   else if (g === 'room') startRoom();
   else if (g === 'pitch') startPitch();
+  else if (g === 'heute') planNext();
+  else if (g === 'echo') startEcho();
+  else if (g === 'rhythm') startRhythm();
+  else if (g === 'duo') startTone({duo: true});
+  else if (g === 'make') startMake();
+  else if (g === 'path') startPath();
   else go(g);
 });
 
@@ -758,6 +859,7 @@ function setHint(t, good){ const el = $('hint'); el.textContent = t; el.classLis
 function addStars(n){
   stars += n; store.set('stars', stars); $('starCount').textContent = stars;
   burst(n > 1 ? 18 : 10);
+  checkBadges();
 }
 function burst(n){
   const b = $('burst'), cx = innerWidth/2, cy = innerHeight*.45;
@@ -794,13 +896,23 @@ function setupTrainUI(title, withLyrics){
   $('trainTitle').textContent = title;
   $('lyricsBox').hidden = !withLyrics;
   $('s-train').classList.toggle('songmode', !!withLyrics);
+  $('trainFoot').textContent = FOOT0;
   go('train');
   ladderShow(trainer.target);
 }
-function startTone(){
+const FOOT0 = 'Tipp: Handy auf Armlänge halten. Kein Ton? Seitenschalter am iPhone auf laut stellen.';
+function duoNames(){ return [store.get('name', '') || 'Kind', store.get('duo', '') || 'Papa']; }
+function duoShow(){
+  const d = toneState.duo; if (!d) return;
+  $('trainTitle').textContent = `Zu zweit · ${d.names[d.turn]} ist dran`;
+  $('trainFoot').textContent = `⭐ ${d.names[0]} ${d.score[0]} · ${d.names[1]} ${d.score[1]} · Eine Oktave höher oder tiefer zählt auch.`;
+}
+function startTone(opts){
   trainer.from = 'menu'; trainer.mode = 'tone'; toneState = {last:null, count:0};
+  if (opts && opts.duo) toneState.duo = {names: duoNames(), turn: 0, score: [0, 0]};
   trainer.target = toneTarget();
   setupTrainUI('Ton treffen', false);
+  $('trainFoot').textContent = FOOT0; duoShow();
   setHint('Hör gut zu …'); $('youNote').innerHTML = '';
   $('mainBtn').textContent = '▶︎ Los geht\'s'; $('mainBtn').hidden = false;
   $('mainBtn').onclick = () => toneRound(true);
@@ -811,14 +923,19 @@ async function toneRound(intro){
   $('mainBtn').hidden = true;
   trainer.active = false; listenCb = null;
   ladderShow(trainer.target);
-  if (intro && toneState.count === 0) await say('Hör gut zu. Ich singe dir einen Ton vor. Dann singst du ihn nach!');
+  const duo = toneState.duo;
+  if (duo){ duoShow(); if (intro && toneState.count === 0) await say('Wir singen zu zweit! Ich singe einen Ton vor, dann ist einer von euch dran. Immer abwechselnd.'); await say(`${duo.names[duo.turn]}, jetzt du!`); if (current !== 'train') return; }
+  else if (intro && toneState.count === 0) await say('Hör gut zu. Ich singe dir einen Ton vor. Dann singst du ihn nach!');
   setHint('Kiki singt vor … 🎵'); $('youNote').innerHTML = 'Zielton ' + dotHTML(trainer.target);
   const ok = await play([{m: trainer.target, d: 1}], 1.5);
   if (!ok || current !== 'train') return;
   await listenFor(1, 14, async (secs) => {
     memNote(trainer.target, true, secs);
     toneState.count++; toneState.last = trainer.target;
+    const t = planDay(); t.tones++; saveMem(); planCheck();
+    if (duo){ duo.score[duo.turn]++; mem.duet = (mem.duet || 0) + 1; saveMem(); duo.turn ^= 1; }
     addStars(1); kikiMood('happy'); setHint('★ ' + 'Getroffen!', true);
+    if (duo) duoShow();
     await say(praise());
     await wait(500);
     if (current !== 'train' || trainer.mode !== 'tone') return;
@@ -940,18 +1057,32 @@ const SONGS = [
     [55,'Zum',.75],[55,'Ge',.25],[57,'burts'],[55,'tag'],[60,'viel'],[59,'Glück,',2,1],
     [55,'zum',.75],[55,'Ge',.25],[57,'burts'],[55,'tag'],[62,'viel'],[60,'Glück,',2,1],
     [55,'zum',.75],[55,'Ge',.25],[67,'burts'],[64,'tag,'],[60,'lie'],[59,'bes'],[57,'Kind,',2,1],
-    [65,'zum',.75],[65,'Ge',.25],[64,'burts'],[60,'tag'],[62,'viel'],[60,'Glück!',2]]}
+    [65,'zum',.75],[65,'Ge',.25],[64,'burts'],[60,'tag'],[62,'viel'],[60,'Glück!',2]]},
+  // Selbst geschrieben (Text DR Lab) auf die gemeinfreie Melodie «Ah vous dirai-je, maman» (1761)
+  {id:'mondenschein', cat:'eigen', title:'Kiki singt im Mondenschein', sub:'Kikis eigenes Lied · Melodie «Morgen kommt der Weihnachtsmann»', ic:'🌙', bpm:100,
+    notes: twinkle(['Ki-ki singt im Mon-den-schein,', 'Stern-chen fun-keln hell und klein.', 'Hoch im Eu-ka-lyp-tus-baum', 'träumt sie ei-nen Lie-der-traum.', 'Ki-ki singt im Mon-den-schein,', 'sing mit, du bist nicht al-lein.'])}
 ];
+/* Melodie «Ah vous dirai-je, maman» (gemeinfrei): 6 Zeilen à 7 Silben */
+function sylls(line){ return line.trim().split(/\s+/).flatMap(w => w.split('-').filter(Boolean)); }
+function twinkle(lines){
+  const A = [60,60,67,67,69,69,67], B = [65,65,64,64,62,62,60], C = [67,67,65,65,64,64,62];
+  const mel = [A, B, C, C, A, B], out = [];
+  lines.forEach((ln, li) => sylls(ln).forEach((s, k) => out.push([mel[li][k], s, k === 6 ? 2 : 1, k === 6 && li < 5 ? 1 : 0])));
+  return out;
+}
+function verseOk(lines){ return lines && lines.length === 6 && lines.every(l => sylls(l).length === 7); }
+function mySongs(){ return (mem.mySongs || []).map((x, i) => ({id: 'my' + x.t, cat: 'eigen', title: x.title, sub: 'Von Kiki erfunden · ' + x.theme, ic: '✨', bpm: 100, notes: twinkle(x.lines)})); }
 function songSeq(song){
   const shift = baseC() - 60;
   return song.notes.map(([m,t,d,br]) => ({m: m+shift, t, d: d || 1, br: !!br}));
 }
 function songList(){
   const box = $('songlist'); box.innerHTML = '';
-  const fav = favSong();
-  [['kind','Kinderlieder'],['gross','Bekannte Lieder']].forEach(([cat, label]) => {
-    const h = document.createElement('h2'); h.textContent = label; h.style.cssText = 'font-size:19px;margin:8px 4px 0'; box.appendChild(h);
-    SONGS.filter(s => (s.cat || 'kind') === cat).forEach(s => {
+  const fav = favSong(), mine = mySongs();
+  [['kind','Kinderlieder'],['eigen','Kikis eigene Lieder'],['gross','Bekannte Lieder']].forEach(([cat, label]) => {
+    const h = document.createElement('h2'); h.textContent = label; h.className = 'cat-h'; box.appendChild(h);
+    if (cat === 'eigen'){ const mk = document.createElement('button'); mk.className = 'card wide heute'; mk.innerHTML = '<span class="ic">✨</span><span><b>Kiki erfindet ein Lied</b><small>Thema wählen, Kiki dichtet und singt vor</small></span>'; mk.onclick = startMake; box.appendChild(mk); }
+    SONGS.concat(mine).filter(s => (s.cat || 'kind') === cat).forEach(s => {
       const el = document.createElement('button'); el.className = 'card wide';
       const v = mem.songs[s.id], done = v && v.d ? ` · ${v.d}× geschafft` : '';
       el.innerHTML = `<span class="ic">${s.ic}</span><span><b>${s.title}${fav === s ? ' ⭐' : ''}</b><small>${fav === s ? 'Dein Lieblingslied' : (s.sub || s.notes.length + ' Töne · Kiki hilft bei jedem Ton')}${done}</small></span>`;
@@ -1032,11 +1163,14 @@ async function seqStep(first){
   });
 }
 async function seqDone(){
-  if (seq.song) memSong(seq.song.id, 'd');
+  if (seq.echo) return echoDone();
+  if (seq.song){ memSong(seq.song.id, 'd'); planDay().song = 1; saveMem(); }
   markSyl(seq.items.length); setHint('Geschafft! ★★★', true);
-  kikiMood('happy'); addStars(3);
   if (seq.lesson){ mem.scales = mem.scales || {}; mem.scales[seq.lesson] = (mem.scales[seq.lesson] || 0) + 1; saveMem(); }
+  kikiMood('happy'); addStars(3); planCheck();
   await say(seq.song ? 'Bravo! Du hast das ganze Lied gesungen!' : 'Super! Tonleiter geschafft!');
+  if (current !== 'train') return;
+  if (seq.song) await buehne({title: 'Bravo! 👏', text: `Du hast «${seq.song.title}» ganz gesungen. Kiki verbeugt sich mit dir.`, applause: true});
   if (current !== 'train') return;
   seq.i = 0;
   $('mainBtn').hidden = false; $('mainBtn').textContent = '🔁 Nochmal';
@@ -1115,7 +1249,7 @@ async function warmStep(i){
   }
   // fertig
   $('warmTitle').textContent = 'Aufgewärmt!';
-  mem.warm = (mem.warm || 0) + 1; memDay(); saveMem();
+  mem.warm = (mem.warm || 0) + 1; planDay().warm = 1; memDay(); saveMem(); planCheck();
   addStars(2); kikiMood('happy'); warmHint('Deine Stimme ist bereit ★★', true);
   b.className = 'balloon big';
   await say('Super aufgewärmt! Jetzt kann es losgehen.');
@@ -1278,6 +1412,341 @@ async function startMirror(){
   };
 }
 
+/* ---------- Server (Sense Engine), nur wenn verbunden. Schlüssel liegt nie in der App, nur das Passwort des Geräts. ---------- */
+function srv(){
+  try{
+    const a = JSON.parse(localStorage.getItem('drlab-hermes-adresse') || 'null'), k = JSON.parse(localStorage.getItem('drlab-hermes-passwort') || 'null');
+    return a && k && /^https:\/\//.test(a) ? {a: String(a).replace(/\/+$/, ''), k: String(k)} : null;
+  }catch(e){ return null; }
+}
+async function srvPost(path, body, ms){
+  const s = srv(); if (!s) return null;
+  const ctl = 'AbortController' in window ? new AbortController() : null, tm = setTimeout(() => ctl && ctl.abort(), ms || 15000);
+  try{
+    const r = await fetch(s.a + path, {method: 'POST', signal: ctl ? ctl.signal : undefined, headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + s.k, 'X-Nova-App': 'Kiki'}, body: JSON.stringify(body)});
+    if (!r.ok) return null;
+    const ct = r.headers.get('content-type') || '';
+    return ct.includes('json') ? await r.json() : {};
+  }catch(e){ return null; } finally{ clearTimeout(tm); }
+}
+
+/* ---------- Heute mit Kiki (Tagesplan) ---------- */
+function planDay(){ const d = new Date().toISOString().slice(0,10); if (!mem.today || mem.today.d !== d) mem.today = {d, warm: 0, tones: 0, song: 0, done: 0}; return mem.today; }
+function daySong(){ const pool = SONGS.filter(s => s.cat !== 'gross'); return pool[Math.floor(Date.now()/864e5) % pool.length]; }
+function renderPlan(){
+  const t = planDay(), box = $('planDots'); if (!box) return;
+  const st = [['🎈 Aufwärmen', t.warm], [`🎯 3 Töne (${Math.min(3, t.tones)}/3)`, t.tones >= 3], ['🎵 ' + daySong().title, t.song]];
+  box.innerHTML = st.map(([l, ok]) => `<span class="${ok ? 'ok' : ''}">${ok ? '✓ ' : ''}${l}</span>`).join('');
+  $('planSub').textContent = t.done ? 'Heute alles geschafft! Morgen gibt es ein neues Lied.' : 'Kikis Plan für heute, ca. 10 Minuten';
+  const n = badgeList().filter(b => mem.badges && mem.badges[b.id]).length;
+  $('pathSub').textContent = `${n} von ${BADGES.length} Abzeichen gesammelt`;
+}
+function planCheck(){
+  const t = planDay();
+  if (!t.done && t.warm && t.tones >= 3 && t.song){ t.done = 1; mem.planDays = (mem.planDays || 0) + 1; saveMem(); addStars(3); }
+}
+async function planNext(){
+  const t = planDay();
+  if (!t.warm) return startWarm();
+  if (t.tones < 3) return startTone();
+  if (!t.song){ const s = daySong(); return startSeq(s.title, songSeq(s), s); }
+  kikiMood('happy'); $('menuBubble').textContent = 'Heute hast du alles geschafft! Du darfst einfach frei singen.'; await say('Heute hast du alles geschafft! Du darfst einfach frei singen.');
+}
+
+/* ---------- Abzeichen (Sternenweg) ---------- */
+const songsDone = () => Object.values(mem.songs).filter(v => v.d).length;
+const BADGES = [
+  {id:'ton1',  em:'🎯', t:'Erster Ton',       s:'Den ersten Ton getroffen',         ok: () => mem.hits >= 1},
+  {id:'warm',  em:'🎈', t:'Aufgewärmt',       s:'Einmal ganz aufgewärmt',            ok: () => mem.warm >= 1},
+  {id:'raum',  em:'🏠', t:'Mein Stimmraum',   s:'Stimmraum gemessen',                ok: () => !!mem.room},
+  {id:'ton10', em:'🔟', t:'Zehn Töne',        s:'10 Töne getroffen',                 ok: () => mem.hits >= 10},
+  {id:'leiter',em:'🪜', t:'Tonleiter',        s:'Eine Tonleiter ganz gesungen',      ok: () => mem.scales && Object.keys(mem.scales).length > 0},
+  {id:'lied1', em:'🦆', t:'Erstes Lied',      s:'Ein ganzes Lied gesungen',          ok: () => songsDone() >= 1},
+  {id:'echo',  em:'🦜', t:'Echo-Kind',        s:'3 Melodien nachgesungen',           ok: () => (mem.echoN || 0) >= 3},
+  {id:'takt',  em:'🥁', t:'Klatsch-Profi',    s:'3 Rhythmen nachgeklatscht',         ok: () => (mem.rhyN || 0) >= 3},
+  {id:'duo',   em:'👨‍👧', t:'Duett',            s:'Zu zweit gesungen',                 ok: () => (mem.duet || 0) >= 2},
+  {id:'dicht', em:'✨', t:'Liederfinder',     s:'Mit Kiki ein Lied erfunden',        ok: () => (mem.made || 0) >= 1},
+  {id:'heute', em:'🌞', t:'Tagesziel',        s:'«Heute mit Kiki» ganz geschafft',   ok: () => (mem.planDays || 0) >= 1},
+  {id:'lied3', em:'🎶', t:'Liedersammler',    s:'3 verschiedene Lieder geschafft',   ok: () => songsDone() >= 3},
+  {id:'tage7', em:'📅', t:'Sieben Tage',      s:'An 7 Tagen gesungen',               ok: () => mem.days.length >= 7},
+  {id:'wachs', em:'🌱', t:'Stimme wächst',    s:'Stimmraum ist gewachsen',           ok: () => { const r = mem.rooms || []; return r.length > 1 && (r[r.length-1].hi - r[r.length-1].lo) > (r[0].hi - r[0].lo); }},
+  {id:'st50',  em:'⭐', t:'50 Sterne',        s:'50 Sterne gesammelt',               ok: () => stars >= 50},
+  {id:'st100', em:'🌟', t:'Sternen-Koala',    s:'100 Sterne gesammelt',              ok: () => stars >= 100}
+];
+const badgeList = () => BADGES;
+let badgeQ = [], bOpen = null;
+const BADGE_SCREENS = ['menu','path','songs','scales'];
+function checkBadges(){
+  mem.badges = mem.badges || {};
+  BADGES.forEach(b => { if (!mem.badges[b.id] && b.ok()){ mem.badges[b.id] = new Date().toISOString().slice(0,10); badgeQ.push(b); } });
+  saveMem();
+}
+function flushBadges(){
+  checkBadges();
+  if (!badgeQ.length || !$('buehne').hidden || !BADGE_SCREENS.includes(current)) return;
+  const list = badgeQ.splice(0);
+  buehne({title: list.length > 1 ? 'Neue Abzeichen!' : 'Neues Abzeichen!', text: 'Kiki klebt einen neuen Stern auf euren Weg.', badges: list});
+}
+
+/* ---------- Bühne: Vorhang auf, Kiki verbeugt sich ---------- */
+let noiseBuf = null;
+function applaus(){
+  if (!ac) return;
+  if (!noiseBuf){ noiseBuf = ac.createBuffer(1, ac.sampleRate*.05, ac.sampleRate); const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random()*2 - 1)*Math.pow(1 - i/d.length, 3); }
+  const t0 = ac.currentTime + .05;
+  for (let i = 0; i < 70; i++){
+    const t = t0 + Math.pow(Math.random(), 1.4)*2.2, s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+    s.buffer = noiseBuf; f.type = 'bandpass'; f.frequency.value = 900 + Math.random()*1800; f.Q.value = 1.2; g.gain.value = .25 + Math.random()*.35*(1 - (t - t0)/2.4);
+    s.connect(f); f.connect(g); g.connect(master); s.start(t);
+  }
+}
+function fanfare(){ if (!ac) return; const t = ac.currentTime + .05; [0, 4, 7, 12].forEach((st, i) => tone(baseC() + 7 + st, i === 3 ? .7 : .22, t + i*.16)); }
+function buehne(o){
+  return new Promise(res => {
+    const el = $('buehne');
+    $('bTitle').textContent = o.title || 'Bravo!'; $('bText').textContent = o.text || '';
+    $('bBadges').innerHTML = (o.badges || []).map(b => `<span class="badge">${b.em} ${b.t}</span>`).join('');
+    el.classList.remove('auf'); el.hidden = false; void el.offsetWidth;
+    setTimeout(() => el.classList.add('auf'), 60);
+    micOff(); setSession('playback');
+    if (ac){ if (o.applause) applaus(); else fanfare(); }
+    burst(16); kikiMood('happy');
+    const close = () => { el.hidden = true; el.classList.remove('auf'); kikiMood(null); $('bOk').onclick = null; bOpen = null; res(); setTimeout(flushBadges, 300); };
+    bOpen = {badges: o.badges, res};
+    $('bOk').onclick = close;
+  });
+}
+
+/* ---------- Echo-Spiel: kleine Melodien nachsingen ---------- */
+let echo = {lvl: 0};
+function echoMotif(){
+  const base = baseC(), lvl = echo.lvl, rm = useRoom();
+  let pool = [0, 2, 4, 7, 9, 12];   // Fünfton-Leiter, leicht zu singen
+  if (rm){ const inR = pool.filter(r => base + r >= rm.lo && base + r <= rm.hi); if (inR.length >= 4) pool = inR; }
+  if (lvl === 0) return [{m: base + 7, t: 'Ku'}, {m: base + 4, t: 'ckuck'}];   // wie der Kuckuck
+  const len = Math.min(6, 2 + Math.floor((lvl + 1)/2));
+  let k = Math.floor(Math.random()*pool.length); const out = [];
+  for (let i = 0; i < len; i++){
+    out.push({m: base + pool[k], t: ['la','li','lo','lu'][i % 4]});
+    k = Math.max(0, Math.min(pool.length - 1, k + [-2,-1,1,2,1,-1][Math.floor(Math.random()*6)]));
+  }
+  return out;
+}
+function startEcho(){
+  echo = {lvl: Math.min(8, Math.floor((mem.echoN || 0)/2))};
+  trainer.from = 'menu'; trainer.mode = 'echo';
+  echoNew(true);
+}
+function echoNew(first){
+  const items = echoMotif().map(n => ({m: n.m, t: n.t, d: 1}));
+  seq = {title: 'Echo-Spiel', items, song: null, i: 0, echo: true};
+  trainer.target = items[0].m;
+  setupTrainUI('Echo-Spiel · Stufe ' + (echo.lvl + 1), true);
+  renderLyrics();
+  setHint(first ? 'Kiki singt vor, du bist das Echo!' : 'Neue Melodie!'); $('youNote').innerHTML = '';
+  $('mainBtn').hidden = false; $('mainBtn').textContent = '▶︎ Los geht\'s';
+  $('mainBtn').onclick = () => echoRound(first);
+  $('replayBtn').textContent = '🔊 Melodie nochmal'; $('replayBtn').onclick = () => echoRound(false);
+  $('skipBtn').onclick = () => echoNew(false);
+  if (!first) echoRound(false);
+}
+async function echoRound(intro){
+  $('mainBtn').hidden = true; listenCb = null; trainer.active = false;
+  seq.i = 0; markSyl(0);
+  if (intro) await say('Ich singe eine kleine Melodie. Hör gut zu, und dann singst du sie nach, wie ein Echo im Wald!');
+  if (current !== 'train' || !seq.echo) return;
+  setHint('Kiki singt vor … 🎵');
+  const tok = playToken + 1, beat = .62;
+  seq.items.forEach((n, i) => setTimeout(() => { if (playToken === tok && current === 'train') markSyl(i); }, i*beat*1000 + 60));
+  const ok = await play(seq.items.map(n => ({m: n.m, d: 1})), beat);
+  if (!ok || current !== 'train') return;
+  markSyl(0); echoListen();
+}
+function echoListen(){
+  const n = seq.items[seq.i];
+  trainer.target = n.m; ladderShow(n.m); markSyl(seq.i);
+  $('youNote').innerHTML = 'Ton ' + (seq.i + 1) + ' von ' + seq.items.length;
+  listenFor(.3, 9, (secs) => {
+    memNote(n.m, true, secs); burst(4); seq.i++;
+    if (seq.i >= seq.items.length) return echoDone();
+    if (current === 'train') echoListen();
+  }, async () => {
+    setHint('Hör nochmal zu 👂'); await say('Hör nochmal gut zu.');
+    if (current === 'train' && seq.echo) echoRound(false);
+  });
+}
+async function echoDone(){
+  markSyl(seq.items.length); setHint('Super Echo! ★★', true);
+  mem.echoN = (mem.echoN || 0) + 1; echo.lvl = Math.min(8, echo.lvl + 1); saveMem();
+  kikiMood('happy'); addStars(2);
+  await say(['Wow, ein perfektes Echo!', 'Genau so! Du bist ein Echo-Profi.', 'Toll nachgesungen! Die nächste wird ein bisschen länger.'][Math.floor(Math.random()*3)]);
+  if (current !== 'train' || !seq.echo) return;
+  $('mainBtn').hidden = false; $('mainBtn').textContent = '🦜 Nächste Melodie'; $('mainBtn').onclick = () => echoNew(false);
+}
+
+/* ---------- Rhythmus: Kiki trommelt, das Kind klatscht nach ---------- */
+const RHY = [[1,1,1],[1,1,1,1],[1,1,2,1],[.5,.5,1,1],[1,.5,.5,1],[.5,.5,.5,.5,1],[1,.5,.5,1,.5,.5,1],[2,1,1,.5,.5,1]];
+let rhy = {lvl: 0, pat: RHY[0], raf: 0, tok: 0};
+function rhyStop(){ if (rhy.raf){ cancelAnimationFrame(rhy.raf); rhy.raf = 0; } }
+function rhyHint(t, good){ const el = $('rhyHint'); el.textContent = t; el.classList.toggle('good', !!good); }
+function rhyDraw(){
+  $('beats').innerHTML = rhy.pat.map(d => `<i style="width:${d >= 2 ? 84 : d >= 1 ? 52 : 34}px">${d >= 2 ? 'Taa' : d >= 1 ? 'Ta' : 'ti'}</i>`).join('');
+}
+function startRhythm(){
+  go('rhythm');
+  rhy.lvl = Math.min(RHY.length - 1, Math.floor((mem.rhyN || 0)/2)); rhy.pat = RHY[rhy.lvl];
+  $('rhyTitle').textContent = 'Rhythmus · Stufe ' + (rhy.lvl + 1);
+  rhyDraw(); rhyHint('Bereit?');
+  $('rhyBtn').hidden = false; $('rhyBtn').textContent = '▶︎ Los geht\'s'; $('rhyBtn').onclick = () => rhyRound(true);
+  $('rhyReplay').onclick = () => rhyRound(false);
+  $('rhySkip').onclick = () => { rhy.pat = RHY[Math.floor(Math.random()*Math.min(RHY.length, rhy.lvl + 3))]; rhyDraw(); rhyRound(false); };
+}
+function klick(t, accent){
+  const o = ac.createOscillator(), g = ac.createGain(), f = accent ? 1250 : 950;
+  o.type = 'triangle'; o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(f*.55, t + .08);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(accent ? .9 : .7, t + .004); g.gain.exponentialRampToValueAtTime(.001, t + .12);
+  o.connect(g); g.connect(master); o.start(t); o.stop(t + .14);
+}
+const rhyAlive = tok => current === 'rhythm' && tok === rhy.tok;
+async function rhyRound(intro){
+  rhyStop(); listenCb = null; micOff(); playToken++;
+  const tok = ++rhy.tok; $('rhyBtn').hidden = true;
+  const dots = [...$('beats').children]; dots.forEach(d => d.className = '');
+  if (intro) await say('Ich trommle vor. Hör gut zu, dann klatschst du genau gleich nach!');
+  if (!rhyAlive(tok)) return;
+  setSession('playback'); await initAudio();
+  rhyHint('Kiki trommelt … 🥁'); kikiMood('dance');
+  const beat = 60/96, t0 = ac.currentTime + .15; let acc = 0;
+  rhy.pat.forEach((d, i) => {
+    klick(t0 + acc*beat, i === 0);
+    setTimeout(() => { if (!rhyAlive(tok)) return; dots.forEach((x, k) => x.classList.toggle('on', k === i)); $('drum').classList.add('hit'); setTimeout(() => $('drum').classList.remove('hit'), 110); }, (t0 - ac.currentTime + acc*beat)*1000);
+    acc += d;
+  });
+  await wait((t0 - ac.currentTime + acc*beat)*1000 + 250);
+  if (!rhyAlive(tok)) return;
+  kikiMood('listen'); dots.forEach(x => x.className = '');
+  rhyHint('Jetzt du! Klatsch nach 👏');
+  if (!await micOn()) return;
+  const expect = []; acc = 0; rhy.pat.forEach(d => { expect.push(acc*beat); acc += d; });
+  const claps = [], start = performance.now(); let above = false, floor = .01, thr = .08;
+  const step = () => {
+    if (!rhyAlive(tok)){ rhy.raf = 0; return; }
+    analyser.getFloatTimeDomainData(buf);
+    let s = 0, pk = 0; for (let i = 0; i < buf.length; i++){ s += buf[i]*buf[i]; const a = Math.abs(buf[i]); if (a > pk) pk = a; }
+    const r = Math.sqrt(s/buf.length), now = performance.now();
+    if (now - start < 300){ floor = Math.max(floor, r); thr = Math.max(.06, floor*5); }
+    else if (!above && pk > thr*2.2 && r > thr && (!claps.length || now - claps[claps.length-1] > 120)){
+      above = true; claps.push(now);
+      const k = claps.length - 1; if (dots[k]) dots[k].classList.add('du');
+      $('drum').classList.add('hit'); setTimeout(() => $('drum').classList.remove('hit'), 100);
+    } else if (r < thr*.55) above = false;
+    const dur = expect[expect.length - 1]*1000;
+    const end = (claps.length && now - claps[0] > dur*1.7 + 900) || claps.length >= rhy.pat.length + 2;
+    if (end){ rhy.raf = 0; micOff(); return rhyEval(tok, claps, expect); }
+    if (!claps.length && now - start > 9000){ rhy.raf = 0; micOff(); rhyHint('Ich habe nichts gehört. Fester klatschen!'); $('rhyBtn').hidden = false; $('rhyBtn').textContent = '🔁 Nochmal'; $('rhyBtn').onclick = () => rhyRound(false); return; }
+    rhy.raf = requestAnimationFrame(step);
+  };
+  rhy.raf = requestAnimationFrame(step);
+}
+async function rhyEval(tok, claps, expect){
+  const n = expect.length, dots = [...$('beats').children];
+  let ok = claps.length === n, err = 0;
+  if (ok && n > 1){
+    const ci = [], ei = [];
+    for (let i = 1; i < n; i++){ ci.push(claps[i] - claps[i-1]); ei.push((expect[i] - expect[i-1])*1000); }
+    const sc = ci.reduce((a,b) => a+b, 0)/ei.reduce((a,b) => a+b, 0);
+    ci.forEach((c, i) => { err = Math.max(err, Math.abs(c - sc*ei[i])/(sc*ei[i])); });
+    ok = err <= (S.tol >= 60 ? .42 : S.tol >= 35 ? .32 : .24) && sc > .5 && sc < 2;
+  }
+  if (ok){
+    mem.rhyN = (mem.rhyN || 0) + 1; memDay(); saveMem();
+    dots.forEach(d => { d.className = 'du'; });
+    rhyHint('Genau im Takt! ★★', true); kikiMood('happy'); addStars(2);
+    await say(['Super geklatscht!', 'Genau im Takt, bravo!', 'Wow, du bist ein Rhythmus-Profi!'][Math.floor(Math.random()*3)]);
+    if (!rhyAlive(tok)) return;
+    if ((mem.rhyN % 2) === 0 && rhy.lvl < RHY.length - 1){ rhy.lvl++; rhy.pat = RHY[rhy.lvl]; $('rhyTitle').textContent = 'Rhythmus · Stufe ' + (rhy.lvl + 1); }
+    rhyDraw(); $('rhyBtn').hidden = false; $('rhyBtn').textContent = '🥁 Nächster Rhythmus'; $('rhyBtn').onclick = () => rhyRound(false);
+  } else {
+    dots.forEach((d, k) => { if (k >= claps.length) d.className = 'miss'; });
+    const msg = claps.length !== n ? `Du hast ${claps.length}× geklatscht, ich habe ${n}× getrommelt. Nochmal?` : 'Fast! Hör nochmal genau auf lang und kurz.';
+    rhyHint(msg); kikiMood(null);
+    await say(claps.length !== n ? 'Fast! Zähl mit mir mit.' : 'Fast! Hör nochmal auf lang und kurz.');
+    if (!rhyAlive(tok)) return;
+    $('rhyBtn').hidden = false; $('rhyBtn').textContent = '🔁 Nochmal'; $('rhyBtn').onclick = () => rhyRound(false);
+  }
+}
+
+/* ---------- Kiki erfindet ein Lied (mit Sense Engine neu, sonst aus Kikis Liederbuch) ---------- */
+const THEMES = [['Mond','🌙'],['Regen','🌧️'],['Freundschaft','🤝'],['Zähneputzen','🪥'],['Tiere im Wald','🦊'],['Geburtstag','🎂']];
+const LIEDERBUCH = {
+  'Mond': ['Klei-ner Mond am Him-mel-zelt,', 'leuch-te hell auf uns-re Welt.', 'Ki-ki singt dir lei-se zu,', 'schlaf jetzt ein und träum in Ruh.'],
+  'Regen': ['Trop-fen tan-zen auf dem Dach,', 'plit-sche, plat-sche, al-le wach!', 'Ki-ki hüpft mit gel-bem Hut,', 'Re-gen tut der Er-de gut.'],
+  'Freundschaft': ['Du und ich, wir hal-ten Hand,', 'lau-fen durch das Lie-der-land.', 'Ist mal ei-ner trau-rig, dann', 'singt der an-dre mit ihm an.'],
+  'Zähneputzen': ['Bürs-te, Bürs-te, hin und her,', 'Zäh-ne put-zen ist nicht schwer.', 'O-ben, un-ten, rund-her-um,', 'Ki-ki singt da-zu: bum bum!'],
+  'Tiere im Wald': ['Fuchs und Ha-se, Reh und Bär', 'kom-men aus dem Wald da-her.', 'Al-le sin-gen mit im Chor,', 'Ki-ki singt es ih-nen vor.'],
+  'Geburtstag': ['Heu-te ist dein gros-ser Tag,', 'Ki-ki singt, weil sie dich mag.', 'Ker-zen leuch-ten, eins, zwei, drei,', 'al-le Freun-de sind da-bei.']
+};
+const VERS_SYS = 'Du bist Kiki, ein fröhlicher singender Koala, und dichtest kurze Kinderlied-Strophen auf Deutsch (Schweiz, schreibe ss statt ß). ' +
+  'Antworte NUR mit genau 4 Zeilen, ohne Titel, ohne Nummern, ohne Anführungszeichen. Jede Zeile hat genau 7 Silben. Trenne die Silben mit Bindestrich, Wörter mit Leerzeichen ' +
+  '(Beispiel: «Ki-ki singt im Mon-den-schein,»). Reim: Zeile 1 auf 2, Zeile 3 auf 4. Fröhlich, warm, für Kinder ab 4, nichts Gruseliges, keine Namen, keine Marken.';
+let makeTheme = 'Mond';
+function startMake(){
+  go('make');
+  const box = $('themeChips'); box.innerHTML = '';
+  THEMES.forEach(([t, e]) => { const b = document.createElement('button'); b.textContent = e + ' ' + t; b.classList.toggle('on', makeTheme === t); b.onclick = () => { makeTheme = t; $('themeFree').value = ''; startMake(); }; box.appendChild(b); });
+  $('makeTip').textContent = srv() ? 'Ich bin mit der Sense Engine verbunden und dichte ganz neu. Wählt ein Thema!' : 'Wählt ein Thema. Ich singe eine Strophe aus meinem Liederbuch, auf die Melodie «Morgen kommt der Weihnachtsmann».';
+  $('makeBtn').disabled = false; $('makeBtn').textContent = '✨ Lied erfinden';
+  $('makeBtn').onclick = makeSong;
+}
+function parseVerse(txt){
+  const ls = String(txt || '').split(/\n/).map(l => l.replace(/^\s*(\d+[.)]|[-•*])\s*/, '').replace(/[«»"„“*_]/g, '').trim()).filter(Boolean);
+  if (ls.length < 4) return null;
+  const four = ls.slice(0, 4), six = [four[0], four[1], four[2], four[3], four[0], four[1]];
+  return verseOk(six) ? six : null;
+}
+async function makeSong(){
+  const free = $('themeFree').value.trim().replace(/[<>]/g, '').slice(0, 40);
+  const theme = free || makeTheme;
+  $('makeBtn').disabled = true; $('makeBtn').textContent = 'Kiki dichtet … ✍️'; kikiMood('sing');
+  let lines = null, neu = false;
+  if (srv()){
+    for (let k = 0; k < 2 && !lines; k++){
+      const j = await srvPost('/v1/chat/completions', {model: 'sense-engine', messages: [{role: 'system', content: VERS_SYS}, {role: 'user', content: 'Thema: ' + theme}]}, 20000);
+      const c = j && j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
+      lines = parseVerse(c); neu = !!lines;
+    }
+  }
+  if (!lines){ const b = LIEDERBUCH[theme] || LIEDERBUCH[THEMES[Math.floor(Math.random()*THEMES.length)][0]]; lines = [b[0], b[1], b[2], b[3], b[0], b[1]]; }
+  kikiMood(null);
+  const title = lines[0].replace(/-/g, '').replace(/[,.!?;:]+$/, '');
+  mem.made = (mem.made || 0) + 1;
+  if (neu){ mem.mySongs = (mem.mySongs || []).concat([{t: Date.now(), title, theme, lines}]).slice(-6); }
+  memDay(); saveMem(); addStars(1);
+  const song = {id: neu ? 'my' + mem.mySongs[mem.mySongs.length - 1].t : 'buch-' + theme, cat: 'eigen', title, sub: theme, ic: '✨', bpm: 100, notes: twinkle(lines)};
+  const out = $('makeOut'); out.hidden = false;
+  out.innerHTML = `<b>«${title}»</b><br><span class="muted" style="font-size:15px">${neu ? 'Ganz neu gedichtet · gespeichert unter «Kikis eigene Lieder»' : 'Aus Kikis Liederbuch'}</span><p style="margin:8px 0 10px;white-space:pre-line">${lines.slice(0, 4).map(l => l.replace(/-/g, '')).join('\n')}</p>`;
+  const b = document.createElement('button'); b.className = 'btn gold'; b.textContent = '🎤 Zusammen singen';
+  b.onclick = () => { startSeq(title, songSeq(song), song); playWhole(); }; out.appendChild(b);
+  $('makeBtn').disabled = false; $('makeBtn').textContent = '✨ Noch ein Lied';
+  await say(neu ? 'Ich habe ein neues Lied gedichtet! Hör mal.' : 'Hier ist ein Lied aus meinem Liederbuch.');
+}
+
+/* ---------- Kikis Sternenweg ---------- */
+function startPath(){
+  checkBadges(); go('path');
+  const got = mem.badges || {}, w = $('weg'); w.innerHTML = '';
+  let last = -1; BADGES.forEach((b, i) => { if (got[b.id]) last = i; });
+  BADGES.forEach((b, i) => {
+    const d = document.createElement('div'), ja = !!got[b.id];
+    d.className = 'stn ' + (i % 2 ? 'r' : 'l') + (ja ? ' ja' : ' zu');
+    d.innerHTML = `<span class="em">${b.em}</span><span><b>${b.t}</b><small>${ja ? '✓ ' + got[b.id] : b.s}</small></span>` + (i === last ? '<img class="hier" src="figur.jpg" alt="Kiki ist hier">' : '');
+    w.appendChild(d);
+  });
+  const n = Object.keys(got).length;
+  $('pathBubble').textContent = n ? `Schon ${n} von ${BADGES.length} Abzeichen! ${n < BADGES.length ? 'Der nächste Stern: ' + (BADGES.find(b => !got[b.id]) || {}).s + '.' : 'Alle gesammelt, du bist ein Sternen-Koala!'}` : 'Jedes Abzeichen ist ein Stern auf unserem Weg. Fang einfach an zu singen!';
+  setTimeout(flushBadges, 400);
+}
+
 /* ---------- Einstellungen ---------- */
 document.querySelectorAll('.seg').forEach(seg => {
   const k = seg.dataset.set;
@@ -1293,7 +1762,7 @@ function memSummary(){
 }
 function renderMem(){
   const x = memSummary(), el = $('memList');
-  if (!mem.hits && !x.songs.length && !mem.warm && !mem.room){ el.textContent = 'Noch nichts. Nach dem ersten Singen steht hier, was Kiki gelernt hat.'; return; }
+  if (!mem.hits && !x.songs.length && !mem.warm && !mem.room && !mem.rhyN && !mem.made){ el.textContent = 'Noch nichts. Nach dem ersten Singen steht hier, was Kiki gelernt hat.'; return; }
   el.innerHTML = [
     `<b>Übungstage:</b> ${x.days}`,
     mem.warm ? `<b>Aufgewärmt:</b> ${mem.warm}×` : '',
@@ -1302,14 +1771,22 @@ function renderMem(){
     mem.room ? `<b>Stimmraum:</b> ${nm(mem.room.lo)} bis ${nm(mem.room.hi)}, Wohlfühlton ${nm(mem.room.comfy)} (${mem.room.date})` : '',
     x.range ? `<b>Gehört beim Singen:</b> ${x.range}` : '',
     x.notes.length ? `<b>Töne getroffen:</b> ${x.notes.join(' · ')}` : '',
-    x.songs.length ? `<b>Lieder:</b> ${x.songs.join(' · ')}` : ''
+    x.songs.length ? `<b>Lieder:</b> ${x.songs.join(' · ')}` : '',
+    mem.echoN ? `<b>Echo-Spiel:</b> ${mem.echoN} Melodien nachgesungen` : '',
+    mem.rhyN ? `<b>Rhythmus:</b> ${mem.rhyN} Rhythmen nachgeklatscht` : '',
+    mem.duet ? `<b>Zu zweit:</b> ${mem.duet} Töne im Duett` : '',
+    mem.made ? `<b>Lieder erfunden:</b> ${mem.made}` : '',
+    mem.planDays ? `<b>Tagesziel geschafft:</b> ${mem.planDays}×` : '',
+    mem.badges && Object.keys(mem.badges).length ? `<b>Abzeichen:</b> ${BADGES.filter(b => mem.badges[b.id]).map(b => b.em + ' ' + b.t).join(' · ')}` : ''
   ].filter(Boolean).join('<br>');
 }
-$('memClear').onclick = () => { if (!confirm('Soll Kiki alles vergessen?')) return; Object.assign(mem, {notes:{}, songs:{}, lo:null, hi:null, days:[], hits:0}); saveMem(); renderMem(); };
+$('memClear').onclick = () => { if (!confirm('Soll Kiki alles vergessen?')) return; Object.keys(mem).forEach(k => delete mem[k]); Object.assign(mem, {notes:{}, songs:{}, lo:null, hi:null, days:[], hits:0}); saveMem(); renderMem(); songList(); };
 $('memShare').onclick = async () => {
   if (!$('shareOk').checked){ $('shareMsg').textContent = 'Bitte zuerst das Häkchen setzen.'; return; }
   const x = memSummary();
-  const text = ['KIKI SINGT – Lern-Erfahrung (für Sense Engine)', `Datum: ${new Date().toISOString().slice(0,10)}`, `Übungstage: ${x.days}`, `Einstellung: Lage ${S.octave === 4 ? 'hoch' : 'tief'}, Genauigkeit ±${S.tol} Cent`, x.best ? `Sicher: ${x.best}` : '', x.pr ? `Noch üben: ${x.pr}` : '', x.fav ? `Lieblingslied: ${x.fav.title}` : '', mem.room ? `Stimmraum: ${nm(mem.room.lo)} bis ${nm(mem.room.hi)}, Wohlfühlton ${nm(mem.room.comfy)}` : '', x.range ? `Gehört beim Singen: ${x.range}` : '', x.notes.length ? 'Töne: ' + x.notes.join('; ') : '', x.songs.length ? 'Lieder: ' + x.songs.join('; ') : '', 'Einwilligung: ja · ohne Namen · ohne Stimme', '', 'Sense Engine (JSON):', JSON.stringify(Object.keys(mem.notes).map(k => ({app:'Kiki', art: noteRate(k) < .6 ? 'schwierig' : 'fortschritt', zeit: new Date().toISOString().slice(0,16), daten:{uebung:'ton-treffen', ton:k, versuche: mem.notes[k].t, getroffen: mem.notes[k].h, sterne: stars}, einwilligung:true})))].filter(Boolean).join('\n');
+  const text = ['KIKI SINGT – Lern-Erfahrung (für Sense Engine)', `Datum: ${new Date().toISOString().slice(0,10)}`, `Übungstage: ${x.days}`, `Einstellung: Lage ${S.octave === 4 ? 'hoch' : 'tief'}, Genauigkeit ±${S.tol} Cent`, x.best ? `Sicher: ${x.best}` : '', x.pr ? `Noch üben: ${x.pr}` : '', x.fav ? `Lieblingslied: ${x.fav.title}` : '', mem.room ? `Stimmraum: ${nm(mem.room.lo)} bis ${nm(mem.room.hi)}, Wohlfühlton ${nm(mem.room.comfy)}` : '', x.range ? `Gehört beim Singen: ${x.range}` : '', x.notes.length ? 'Töne: ' + x.notes.join('; ') : '', x.songs.length ? 'Lieder: ' + x.songs.join('; ') : '', mem.echoN ? `Echo-Spiel: ${mem.echoN}` : '', mem.rhyN ? `Rhythmus: ${mem.rhyN}` : '', mem.duet ? `Duett-Töne: ${mem.duet}` : '', mem.made ? `Lieder erfunden: ${mem.made}` : '', mem.badges ? 'Abzeichen: ' + Object.keys(mem.badges).join(', ') : '', 'Einwilligung: ja · ohne Namen · ohne Stimme', '', 'Sense Engine (JSON):', JSON.stringify(Object.keys(mem.notes).map(k => ({app:'Kiki', art: noteRate(k) < .6 ? 'schwierig' : 'fortschritt', zeit: new Date().toISOString().slice(0,16), daten:{uebung:'ton-treffen', ton:k, versuche: mem.notes[k].t, getroffen: mem.notes[k].h, sterne: stars}, einwilligung:true})))].filter(Boolean).join('\n');
+  // Mit Sense Engine verbunden: direkt dorthin (nur Text, ohne Namen, ohne Stimme). Sonst teilen oder kopieren.
+  if (srv()){ $('shareMsg').textContent = 'Schicke an die Sense Engine …'; const r = await srvPost('/erfahrung', {app: 'Kiki', art: 'lernen', frage: text, antwort: ''}, 12000); if (r){ $('shareMsg').textContent = 'An die Sense Engine geschickt. Danke!'; return; } }
   try{ if (navigator.share){ await navigator.share({title: 'Kiki – Lern-Erfahrung', text}); $('shareMsg').textContent = 'Geteilt. Danke!'; return; } }catch(e){ if (e && e.name === 'AbortError') return; }
   try{ await navigator.clipboard.writeText(text); $('shareMsg').textContent = 'Kopiert. Du kannst es jetzt an DR Lab schicken.'; }catch(e){ $('shareMsg').textContent = text; }
 };
@@ -1317,6 +1794,8 @@ $('kidName').value = store.get('name', '');
 $('kidSave').onclick = () => { const n = $('kidName').value.trim().slice(0, 24); store.set('name', n); $('kidSave').textContent = 'Gespeichert ✓'; setTimeout(() => $('kidSave').textContent = 'Speichern', 1500); homeGreet(); };
 function homeGreet(){ const n = store.get('name', ''); $('homeBubble').textContent = n ? `Hallo ${n}! Ich bin Kiki, der singende Koala. Wollen wir zusammen singen?` : 'Hallo, ich bin Kiki! Ich singe soo gern. Wollen wir zusammen singen?'; }
 homeGreet();
+$('duoName').value = store.get('duo', '');
+$('duoSave').onclick = () => { store.set('duo', $('duoName').value.trim().slice(0, 24)); $('duoSave').textContent = 'Gespeichert ✓'; setTimeout(() => $('duoSave').textContent = 'Speichern', 1500); };
 $('resetStars').onclick = () => { stars = 0; store.set('stars', 0); $('starCount').textContent = 0; };
 
 /* Offline */
