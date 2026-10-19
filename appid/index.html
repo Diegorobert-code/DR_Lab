@@ -277,7 +277,9 @@ body{background:radial-gradient(1.5px 1.5px at 12% 8%,rgba(255,233,168,.7),trans
     </div>
     <div class="examples" id="examples"></div>
 
+    <div id="floSchnell"></div>
     <div class="card tip" id="tipcard"></div>
+    <div id="floHeute"></div>
 
     <div class="card">
       <h3>Dein Tag</h3>
@@ -301,6 +303,7 @@ body{background:radial-gradient(1.5px 1.5px at 12% 8%,rgba(255,233,168,.7),trans
   <section class="view" id="v-entdecken">
     <h1 class="hello">Für dich</h1>
     <p class="sub">Rezepte, Trends und Wissen, passend zu deinem Ziel.</p>
+    <div id="floEntdecken"></div>
     <div class="filters" id="filters"></div>
     <div id="feed"></div>
     <p class="small" style="margin:18px 4px 0">Trends prüft Food and Flow an seriösen Quellen und zeigt, wie gut sie belegt sind. Keine Heilversprechen.</p>
@@ -310,6 +313,7 @@ body{background:radial-gradient(1.5px 1.5px at 12% 8%,rgba(255,233,168,.7),trans
   <section class="view" id="v-verlauf">
     <h1 class="hello">Dein Verlauf</h1>
     <p class="sub">Was Food and Flow über deine Gewohnheiten gelernt hat.</p>
+    <div id="floWoche"></div>
     <div class="card">
       <h3>Protein, letzte 7 Tage</h3>
       <div class="week" id="week"></div>
@@ -356,6 +360,7 @@ body{background:radial-gradient(1.5px 1.5px at 12% 8%,rgba(255,233,168,.7),trans
       <div class="pills" id="allpills"></div>
       <p class="small" style="margin:10px 0 0">«Für dich» zeigt nur Rezepte ohne diese Zutaten.</p>
     </div>
+    <div id="floMerkt"></div>
     <div class="card">
       <h3>Ausprobieren</h3>
       <p class="small" style="margin:0">Lädt drei Beispielwochen, damit du siehst, wie Food and Flow mit der Zeit lernt.</p>
@@ -513,17 +518,23 @@ const DB = [
  ["birnbrot","Birnbrot",["birnbrot","früchtebrot","fruechtebrot","bananenbrot"],60,"Scheibe",[280,5,5,52,5,50,1.5,40,1,0,0]],
  ["oel","Öl",["öl","oel","olivenöl","rapsöl","sauce","sosse","dressing","mayonnaise","mayo"],15,"Portion",[700,.3,75,3,0,5,.1,1,0,0,0]],
 ];
+/* Von Flo gelernt (nur auf diesem Gerät): eigene Lebensmittel und «ähnlich wie»-Wörter */
+const EIGEN_KEY="foodflow-eigene";
+let EIGEN={foods:[],alias:{}};
+try{const r=localStorage.getItem(EIGEN_KEY);if(r){const o=JSON.parse(r);EIGEN.foods=o.foods||[];EIGEN.alias=o.alias||{}}}catch(e){}
+EIGEN.foods.forEach(e=>{if(Array.isArray(e)&&e[0]&&!DB.some(x=>x[0]===e[0]))DB.push(e)});
 const MCOL = ["kcal","p","f","c","fib","ca","fe","mg","vc","vd","b12"];
 const REF  = {ca:1000,fe:13,mg:350,vc:110,vd:20,b12:4}; // grobe Tagesreferenz Erwachsene
 const MICRO_NM = {ca:"Calcium",fe:"Eisen",mg:"Magnesium",vc:"Vitamin C",vd:"Vitamin D",b12:"Vitamin B12"};
-const MEALS = {fr:"Frühstück",mi:"Mittag",zw:"Zwischendurch",ab:"Abend",act:"Bewegung"};
+const MEALS = {fr:"Zmorge",mi:"Zmittag",zw:"Zvieri",ab:"Znacht",act:"Bewegung"};
 const MEAL_ORDER = ["fr","mi","zw","ab"];
 
 /* Synonym-Index, längste zuerst */
 const SYN = [];
 DB.forEach(e=>e[2].forEach(s=>SYN.push([norm(s),e])));
-SYN.sort((a,b)=>b[0].length-a[0].length);
 const BYID = Object.fromEntries(DB.map(e=>[e[0],e]));
+Object.entries(EIGEN.alias).forEach(([w,id])=>{if(BYID[id])SYN.push([norm(w),BYID[id]])});
+SYN.sort((a,b)=>b[0].length-a[0].length);
 
 function norm(s){return s.toLowerCase().replace(/ß/g,"ss").replace(/[“”«»"!?]/g," ").replace(/\s+/g," ").trim()}
 
@@ -625,6 +636,9 @@ function parseChunk(ch,meal,items){
   found.forEach(fd=>{
     const before=(" "+ch+" ").slice(prev,fd.st).trim().split(/\s+/).filter(Boolean);
     prev=fd.en;
+    // Verneinung: «kein Brot», «ohne Butter», «keine Pasta» -> nicht erfassen
+    const last=before.slice(-3);
+    if(last.some(w=>/^(kein|keine|keinen|keiner|keinem|ohne|nicht|nichts)$/.test(w))&&!last.some(w=>/^(aber|sondern|nur)$/.test(w)))return;
     let qty=null, grams=null, unit=null, size=1, spoon=0;
     before.forEach((w,k)=>{
       const n=parseFloat(w.replace(",","."));
@@ -782,9 +796,11 @@ function renderPending(){
   $("#parsed").innerHTML=pending.map(it=>{
     const sel=`<select class="mealsel" data-meal="${it.id}">${MEAL_ORDER.map(m=>`<option value="${m}" ${m===it.meal?"selected":""}>${MEALS[m]}</option>`).join("")}</select>`;
     if(it.act) return `<div class="item"><div class="nm"><b>${actName(it)}</b><span class="small">${actLabel(it)} · Bewegung</span></div><div class="qty"><button data-q="-${it.id}">−</button><div class="kc" style="min-width:58px;text-align:center">≈ −${fmt(actKcal(it))}</div><button data-q="+${it.id}">+</button></div><button class="x" data-rm="${it.id}">✕</button></div>`;
-    if(it.unk) return `<div class="item"><div class="nm"><b class="unk">«${esc(it.unk)}»</b><span class="small">Kenne ich noch nicht, wird ohne Werte gespeichert.</span>${sel}</div><button class="x" data-rm="${it.id}">✕</button></div>`;
+    if(it.unk) return `<div class="item"><div class="nm"><b class="unk">«${esc(it.unk)}»</b><span class="small">Kenne ich noch nicht. Bring es mir bei, dann merke ich es mir:</span><select class="mealsel" data-like="${it.id}"><option value="">Ähnlich wie …</option>${DB.slice().sort((a,b)=>a[1].localeCompare(b[1],"de")).map(x=>`<option value="${x[0]}">${x[1]}</option>`).join("")}</select>${window.FLO_SERVER&&window.FLO_SERVER()?` <button class="mealsel" data-frag="${it.id}" style="cursor:pointer">✨ Flo-Server fragen</button>`:""}${sel}</div><button class="x" data-rm="${it.id}">✕</button></div>`;
     const e=BYID[it.food],n=nutr(it);
-    return `<div class="item"><div class="nm"><b>${e[1]}</b><span class="small">${qtyLabel(it)}</span>${sel}</div><div class="qty"><button data-q="-${it.id}">−</button><div class="kc" style="min-width:58px;text-align:center">${it.est?"≈ ":""}${fmt(n.kcal)}</div><button data-q="+${it.id}">+</button></div><button class="x" data-rm="${it.id}">✕</button></div>`;
+    // Nachfragen statt raten: bei Tellern und Portionen fragt Flo nach der Grösse
+    const frag=it.est&&/^(Teller|Portion|Schale|Pizza)$/.test(e[4])&&e[3]>=150?`<div class="sizeq"><span>Wie gross war ${/Teller|Schale/.test(e[4])?"der Teller":"die Portion"}?</span>${[[.7,"klein"],[1,"normal"],[1.4,"gross"]].map(([f,l])=>`<button data-size="${it.id}:${f}" class="${Math.abs((it.size||1)-f)<.01?"on":""}">${l}</button>`).join("")}</div>`:"";
+    return `<div class="item"><div class="nm"><b>${e[1]}</b><span class="small">${qtyLabel(it)}</span>${frag}${sel}</div><div class="qty"><button data-q="-${it.id}">−</button><div class="kc" style="min-width:58px;text-align:center">${it.est?"≈ ":""}${fmt(n.kcal)}</div><button data-q="+${it.id}">+</button></div><button class="x" data-rm="${it.id}">✕</button></div>`;
   }).join("")+`<p class="small" style="margin:10px 0 0">≈ = Menge geschätzt. Mit − / + anpassen.</p>`;
   $("#parsed").querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{pending=pending.filter(i=>i.id!==b.dataset.rm);pending.length?renderPending():closeSheet()});
   $("#parsed").querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{const up=b.dataset.q[0]==="+";const it=pending.find(i=>i.id===b.dataset.q.slice(1));
@@ -792,6 +808,12 @@ function renderPending(){
     const e=BYID[it.food];
     if(it.est){it.qty=Math.max(.5,it.qty+(up?.5:-.5));it.g=Math.round(it.qty*e[3]*it.size)}else{it.g=Math.max(5,Math.round(it.g*(up?1.25:.8)))}renderPending()});
   $("#parsed").querySelectorAll("[data-meal]").forEach(s=>s.onchange=()=>{pending.find(i=>i.id===s.dataset.meal).meal=s.value});
+  $("#parsed").querySelectorAll("[data-size]").forEach(b=>b.onclick=()=>{const [id,f]=b.dataset.size.split(":");const it=pending.find(i=>i.id===id);it.size=+f;it.g=Math.round(it.qty*BYID[it.food][3]*it.size);renderPending()});
+  // «Ähnlich wie»: Flo lernt ein neues Wort und merkt es sich für das nächste Mal
+  $("#parsed").querySelectorAll("[data-like]").forEach(s=>s.onchange=()=>{if(!s.value)return;const it=pending.find(i=>i.id===s.dataset.like);const e=BYID[s.value];const w=norm(it.unk);
+    EIGEN.alias[w]=e[0];try{localStorage.setItem(EIGEN_KEY,JSON.stringify(EIGEN))}catch(x){}SYN.push([w,e]);SYN.sort((a,b)=>b[0].length-a[0].length);
+    Object.assign(it,{food:e[0],qty:1,size:1,g:e[3],est:true,word:w});delete it.unk;renderPending();toast(`Gemerkt: «${it.word}» ist wie ${e[1]}`)});
+  $("#parsed").querySelectorAll("[data-frag]").forEach(b=>b.onclick=()=>{if(window.FLO_FRAG)window.FLO_FRAG(pending.find(i=>i.id===b.dataset.frag),b)});
 }
 function closeSheet(){$("#sheet").classList.remove("on");$("#sheet2").classList.remove("on");$("#sheetbg").classList.remove("on")}
 function openS2(html){$("#s2").innerHTML=html;$("#sheet2").scrollTop=0;$("#sheet2").classList.add("on");$("#sheetbg").classList.add("on")}
@@ -912,7 +934,7 @@ function pic(it){ // ruhige Teller-Illustration aus der Farbpalette des Beitrags
   const dots=Array.from({length:7},()=>`<circle cx="${r(400)}" cy="${r(190)}" r="${2+r(4)}" fill="${b}" opacity=".5"/>`).join("");
   return it.type==="Rezept"
    ?`<svg viewBox="0 0 400 190" preserveAspectRatio="xMidYMid slice"><rect width="400" height="190" fill="${bg}"/>${dots}<ellipse cx="204" cy="104" rx="96" ry="78" fill="rgba(0,0,0,.06)"/><circle cx="200" cy="95" r="84" fill="#fffdf9"/><circle cx="200" cy="95" r="66" fill="none" stroke="#efe9df" stroke-width="2"/>${blobs}</svg>`
-   :`<svg viewBox="0 0 400 190" preserveAspectRatio="xMidYMid slice"><rect width="400" height="190" fill="${bg}"/><circle cx="330" cy="40" r="90" fill="${b}" opacity=".55"/><circle cx="70" cy="170" r="70" fill="${c}" opacity=".45"/><text x="28" y="120" font-family="Fraunces,Georgia,serif" font-size="50" font-weight="600" fill="${a}">${it.type==="Trend"?"Trend":it.type==="Supplement"?"Supplement":"Wissen"}</text></svg>`;
+   :`<svg viewBox="0 0 400 190" preserveAspectRatio="xMidYMid slice"><rect width="400" height="190" fill="${bg}"/><circle cx="330" cy="40" r="90" fill="${b}" opacity=".55"/><circle cx="70" cy="170" r="70" fill="${c}" opacity=".45"/><text x="28" y="120" font-family="Fraunces,Georgia,serif" font-size="50" font-weight="600" fill="${a}">${it.type==="Trend"?"Trend":it.type==="Supplement"?"Supplement":it.type==="Inspiration"?"Idee":"Wissen"}</text></svg>`;
 }
 function recipeNutr(it){const items=parse(it.ing).filter(x=>x.food);return sum(items)}
 function feedScore(it){
@@ -929,7 +951,7 @@ function feedScore(it){
 }
 function renderFeed(){
   const P=S.profile;
-  const F=[["fuer","Für dich"],["Rezept","Rezepte"],["Trend","Trends"],["Nährstoff","Nährstoffe"],["Supplement","Supplements"],["saved","Gespeichert"]];
+  const F=[["fuer","Für dich"],["Rezept","Rezepte"],["Trend","Trends"],["Nährstoff","Nährstoffe"],["Supplement","Supplements"],["Inspiration","Ideen"],["saved","Gespeichert"]];
   $("#filters").innerHTML=F.map(([k,n])=>`<button class="pill ${k===feedFilter?"on":""}" data-f="${k}">${n}${k==="saved"&&P.saved.length?" ("+P.saved.length+")":""}</button>`).join("");
   $("#filters").querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{feedFilter=b.dataset.f;renderFeed()});
   let list=FEED.filter(it=>!it.all.some(x=>P.allergies.includes(x)));
@@ -948,7 +970,7 @@ function post(it){
   const on=S.profile.saved.includes(it.id); const n=it.type==="Rezept"?recipeNutr(it):null;
   return `<article class="post"><div class="pic">${pic(it)}<span class="kind">${it.type}</span>${it.type==="Rezept"?`<button class="savebtn" data-save="${it.id}" aria-label="Speichern">${BM(on)}</button>`:""}</div>
   <div class="body">${feedFilter==="fuer"&&it.why?`<div class="why">${it.why}</div>`:""}<h3>${it.t}</h3><p>${it.d}</p>
-  <div class="meta">${it.type==="Rezept"?`<span>${it.min} Min.</span><span>≈ ${fmt(n.kcal)} kcal</span><span>${fmt(n.p)} g Protein</span>`:`<span class="ev ${EV[it.ev][0]}">${EV[it.ev][1]}</span>`}</div>
+  <div class="meta">${it.type==="Rezept"?`<span>${it.min} Min.</span><span>≈ ${fmt(n.kcal)} kcal</span><span>${fmt(n.p)} g Protein</span>`:it.ev?`<span class="ev ${EV[it.ev][0]}">${EV[it.ev][1]}</span>`:`<span>Inspiration von Flo</span>`}</div>
   ${it.src?`<div class="src">Quelle: ${it.src}</div>`:""}
   ${it.type==="Rezept"?`<button class="more" data-open="${it.id}">Rezept ansehen →</button>`:""}</div></article>`;
 }
@@ -970,6 +992,7 @@ let tt;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on
 
 render();
 </script>
+<script src="flo.js"></script>
 <!-- Figuren-Film (Trickfilm-Look): Farben, Funken, Atmen, Tipp-Reaktion, Szenenwechsel. Nur Optik. -->
 <style id="figurFilmCss">
 .film-aurora{position:fixed;inset:-20%;z-index:-1;pointer-events:none;filter:blur(60px);opacity:.5}
