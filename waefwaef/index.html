@@ -40,7 +40,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
 #start,main{position:relative;z-index:1;max-width:440px;margin:0 auto}
 /* Startbild */
 #start{padding-block:max(28px,env(safe-area-inset-top,0px)) 40px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px}
-.tag{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);border-radius:99px;padding:3px 10px}
+.tag{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);border-radius:99px;padding:3px 10px}
 .ring{padding:7px;border-radius:32%;background:conic-gradient(from var(--a,0deg),#F2C14E,#FF8FB1,#3D6FD8,#3FD0C9,#F2C14E);animation:spin 8s linear infinite}
 @property --a{syntax:"<angle>";inherits:false;initial-value:0deg}
 @keyframes spin{to{--a:360deg}}
@@ -50,7 +50,20 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
 h1{font-family:var(--display);font-weight:600;color:var(--gold);margin:0;line-height:1}
 #start h1{font-size:3rem;margin-top:4px}
 #start .lead{margin:0;font-size:1.15rem;max-width:30ch}
-#start .small{margin:0;color:var(--muted);font-size:.85rem}
+#start .small{margin:0;color:var(--muted);font-size:1rem}
+/* Runde 3: Feinschliff */
+.wuff{display:inline-block;color:var(--gold);font-family:var(--display);animation:glWuff 1.4s .6s cubic-bezier(.3,1.6,.5,1) 2}
+@keyframes glWuff{0%,100%{transform:none}30%{transform:translateY(-6px) rotate(-6deg) scale(1.15)}60%{transform:rotate(4deg)}}
+.fortschritt{display:flex;align-items:center;gap:12px;font-size:16px;color:var(--muted);margin:-4px 0 4px}
+.fb-leiste{flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}
+.fb-leiste i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#FF8FB1);transform-origin:left;transform:scaleX(0);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.view{animation:glSzene .35s cubic-bezier(.2,.8,.2,1) both}
+@keyframes glSzene{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.dialog:not([hidden]) .dlg{animation:glHoch .32s cubic-bezier(.2,.8,.2,1) both}
+@keyframes glHoch{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+body:has(#start:not([hidden])) .nova-btn,body:has(#dialog:not([hidden])) .nova-btn{opacity:0;pointer-events:none}
+.nova-btn{transition:opacity .3s}
+@media (prefers-reduced-motion:reduce){.wuff,.view,.dialog:not([hidden]) .dlg{animation:none}.fb-leiste i{transition:none}}
 .dots{display:flex;gap:6px;justify-content:center}
 @keyframes bob{50%{transform:translateY(-4px)}}
 .dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}.dots i:nth-child(4){animation-delay:.45s}.dots i:nth-child(5){animation-delay:.6s}
@@ -63,8 +76,8 @@ button:focus-visible{outline:2px solid var(--snow);outline-offset:3px}
 button.ghost{background:transparent;color:var(--gold);border:1px solid var(--line);box-shadow:none}
 .big{font-size:1.1rem;padding:14px 28px}
 /* Tag */
-main{padding-block:max(18px,env(safe-area-inset-top,0px)) 120px;display:flex;flex-direction:column;gap:18px}
-.back{align-self:flex-start;padding:6px 14px;font-size:.85rem}
+main{padding-block:max(18px,env(safe-area-inset-top,0px)) 184px;display:flex;flex-direction:column;gap:18px}
+.back{align-self:flex-start;padding:0 16px;min-height:44px;font-size:1rem}
 .pupwrap{position:relative}
 .pupwrap::after{content:"";position:absolute;inset:-10px;border-radius:34%;z-index:-1;background:conic-gradient(from var(--a,0deg),#F2C14E,#FF8FB1,#3D6FD8,#3FD0C9,#F2C14E);filter:blur(14px);opacity:.55;animation:spin 8s linear infinite}
 .hero{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
@@ -90,8 +103,8 @@ main{padding-block:max(18px,env(safe-area-inset-top,0px)) 120px;display:flex;fle
 @keyframes pop{40%{transform:scale(1.04)}}
 .card .t{flex:1;min-width:0}
 .card h3{margin:0;font-size:1.05rem;font-weight:600}
-.card p{margin:1px 0 0;color:var(--muted);font-size:.88rem}
-.who{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:var(--night);flex:none;border:0;padding:0;box-shadow:none;font-size:.95rem}
+.card p{margin:2px 0 0;color:var(--muted);font-size:1rem;line-height:1.4}
+.who{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:var(--night);flex:none;border:0;padding:0;box-shadow:none;font-size:.95rem}
 .who.free{background:rgba(255,255,255,.12);color:var(--gold);border:1px dashed var(--gold)}
 .paw{width:44px;height:44px;border-radius:50%;flex:none;padding:0;background:transparent;border:2px solid var(--gold);box-shadow:none;font-size:1.25rem;color:var(--gold);display:grid;place-items:center}
 .card.done{opacity:.6}
@@ -108,10 +121,10 @@ main{padding-block:max(18px,env(safe-area-inset-top,0px)) 120px;display:flex;fle
 .timer{font-family:var(--display);font-size:2.4rem;color:var(--gold);text-align:center;margin:8px 0}
 .choices{display:flex;flex-wrap:wrap;gap:8px}
 .choices button{flex:1 1 30%;padding:10px 8px;font-size:.9rem}
-.tip{font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;margin:4px 0 0}
+.tip{font-size:1rem;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;margin:4px 0 0}
 /* Leiste */
 nav{position:fixed;z-index:2;left:50%;transform:translateX(-50%);bottom:max(12px,env(safe-area-inset-bottom,0px));width:min(440px,calc(100% - 24px));
-  display:flex;justify-content:space-around;background:rgba(14,24,56,.92);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:28px;padding:8px 4px}
+  display:grid;grid-template-columns:repeat(6,1fr);background:rgba(14,24,56,.92);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:28px;padding:8px 4px}
 nav a{color:var(--muted);text-decoration:none;font-size:.7rem;display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 6px;border-radius:16px}
 nav a span{font-size:1.35rem}
 nav a.on{color:var(--gold);background:rgba(242,193,78,.1)}
@@ -147,15 +160,15 @@ nav a.on{color:var(--gold);background:rgba(242,193,78,.1)}
 .box.warn{border-color:rgba(255,143,177,.5);background:linear-gradient(150deg,rgba(255,143,177,.16),rgba(16,26,62,.85))}
 .box textarea,.box input,.dlg input,.betr select{width:100%;font:inherit;font-size:16px;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--cream)}
 .box textarea{min-height:90px}
-.mini{font-size:.88rem;color:var(--muted);margin:2px 0}
+.mini{font-size:1rem;color:var(--muted);margin:2px 0}
 .center{text-align:center}
 .reihe{display:flex;gap:8px;flex-wrap:wrap}
 .reihe>*{flex:1 1 auto}
-.klein{padding:6px 10px;font-size:.85rem}
+.klein{padding:0 14px;min-height:44px;min-width:44px;font-size:1rem}
 .voll{width:100%;margin:4px 0;text-align:left}
 .logbuch{font-size:.88rem;color:var(--muted)}.logbuch h3{font-size:.95rem;color:var(--gold);margin:0 0 2px;font-family:var(--display);font-weight:500}
 .famzeile{display:flex;gap:8px;align-items:center;margin-bottom:8px}.famzeile input{flex:1}
-.check{display:flex;gap:8px;align-items:flex-start;margin-top:8px}.check input{width:20px;height:20px;flex:none;margin-top:2px}
+.check{display:flex;gap:8px;align-items:flex-start;margin-top:8px}.check input{width:24px;height:24px;flex:none;margin-top:2px}
 .seg{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px}
 .seg button,.chips button{background:rgba(255,255,255,.08);color:var(--cream);box-shadow:none;border:1px solid var(--line);padding:8px 12px;font-size:.9rem}
 .seg button.on,.chips button.on{background:linear-gradient(180deg,#F8D886,var(--gold));color:var(--night)}
@@ -196,7 +209,7 @@ a.knopf.rot{background:#FF9AA8}
 .dialog{position:fixed;inset:0;z-index:10;background:rgba(5,8,25,.6);display:flex;align-items:flex-end;justify-content:center}
 .dlg{width:100%;max-width:480px;background:#16214f;border-radius:26px 26px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px;max-height:85vh;overflow:auto;box-shadow:0 -10px 40px rgba(0,0,0,.5)}
 .dlg h3{margin:0;font-family:var(--display);color:var(--gold);font-weight:500}
-nav a{padding:4px 2px;font-size:.66rem}
+nav a{padding:6px 0;min-height:52px;justify-content:center;font-size:13px;line-height:1.1;font-weight:600}
 @media print{body.druck-regeln *{visibility:hidden}body.druck-regeln .regeln,body.druck-regeln .regeln *{visibility:visible}body.druck-regeln .regeln{position:absolute;left:0;top:0;background:#fff;color:#000;font-size:20px}}
 .g-bild{font-size:72px;text-align:center;line-height:1.2;padding:10px 0;animation:gHops .6s ease-out}
 .g-text{font-size:1.1rem;line-height:1.5;margin:4px 0 10px}
@@ -214,9 +227,8 @@ nav a{padding:4px 2px;font-size:.66rem}
   <div class="ring"><img class="cover" src="figur.jpg" alt="Wäf Wäf, ein kleiner weisser Maltipoo, schaut fröhlich in die Kamera"></div>
   <div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
   <h1>Wäf Wäf</h1>
-  <p class="lead">Wäf! Ich bin Avas kleiner Hund. Zusammen schaffen wir das, Pfote für Pfote.</p>
-  <button class="big" id="go">Komm, wir schauen unseren Tag an</button>
-  <p class="small">Unser Tag · Spazieren · Allein bleiben · Hund verstehen · Kinder-Ecke · Pflege</p>
+  <p class="lead"><b class="wuff" aria-hidden="true">Wäf!</b> Schön, bist du da. Zusammen schaffen wir das, Pfote für Pfote.</p>
+  <button class="big" id="go">Komm, schauen wir den Tag an 🐾</button>
 </section>
 
 <main hidden>
@@ -231,6 +243,7 @@ nav a{padding:4px 2px;font-size:.66rem}
   <!-- UNSER TAG -->
   <section class="view" id="v-tag">
     <h2 class="sec">Mein Tag mit euch</h2>
+    <div class="fortschritt" id="tagFort" aria-live="polite"><div class="fb-leiste"><i id="tagFortBalken"></i></div><span id="tagFortText"></span></div>
     <div class="cards" id="cards"></div>
     <div class="reihe"><button class="ghost" id="addTask">+ Aufgabe</button><button class="ghost" id="tauschen">🔁 Kannst du heute für mich?</button></div>
     <div class="logbuch" id="logbuch"></div>
@@ -411,6 +424,9 @@ function render(){
       <button class="paw" data-done="${i}" aria-label="${x.done?'Erledigt, antippen zum Rückgängig machen':'Abhaken'}">${x.done?'🐾':''}</button>
     </div>`}).join('');
   store.set('tasks3',tasks);
+  const fertig=tasks.filter(x=>x.done).length, alle=tasks.length||1;
+  $('tagFortBalken').style.transform='scaleX('+(fertig/alle)+')';
+  $('tagFortText').textContent=fertig===tasks.length&&tasks.length?'Alles erledigt 🎉':fertig+' von '+tasks.length+' erledigt';
   const l=log.filter(x=>x.d===heute()).slice(-4).reverse();
   $('logbuch').innerHTML=l.length?'<h3>Heute</h3>'+l.map(x=>`<div>${esc(uhr(x.t))} · ${esc(x.text)}</div>`).join(''):'';
 }
@@ -419,7 +435,8 @@ $('cards').onclick=e=>{
   if(w){const x=tasks[+w.dataset.who],o=order();x.who=o[(o.indexOf(x.who)+1)%o.length];render();
     if(x.who)say(fam[x.who].n+' kommt mit? Hurra, ich hole schon die Leine!','hop');else say('Oh, jetzt ist das wieder frei. Wer hat Zeit für mich?','sad');}
   if(d){const x=tasks[+d.dataset.done];x.done=!x.done;popId=x.done?x.id:null;
-    if(x.done){x.wann=Date.now();x.von=x.who||Object.keys(fam)[0];heart(d);mem.abgehakt[x.von]=(mem.abgehakt[x.von]||0)+1;saveMem();
+    if(x.done){x.wann=Date.now();x.von=x.who||Object.keys(fam)[0];heart(d);try{navigator.vibrate&&navigator.vibrate(15)}catch(e){}
+      if(tasks.every(t=>t.done)){setTimeout(()=>{heart($('pup'),18);try{navigator.vibrate&&navigator.vibrate([20,80,20,80,40])}catch(e){}},250);}mem.abgehakt[x.von]=(mem.abgehakt[x.von]||0)+1;saveMem();
       log.push({d:heute(),t:Date.now(),text:(fam[x.von]||{n:'Jemand'}).n+': '+x.t+' ✓'});store.set('log',log.slice(-300));}
     else{x.wann=null;x.von=null;}
     render();popId=null;
@@ -656,11 +673,11 @@ function willkommen(){
   if(store.get('onboard',false))return;
   const n=Object.keys(fam);
   dialog('Wäf! Wer gehört zu meiner Familie?','<p class="mini">Tragt eure Namen ein. Dann weiss ich, wer mit mir rausgeht. Alles bleibt nur auf diesem Handy. Ihr könnt es später unter «Unsere Familie» ändern.</p>'+
-    [0,1,2,3].map(i=>'<input class="obName" placeholder="Name '+(i+1)+'" value="'+esc(n[i]?fam[n[i]].n:'')+'">').join(''),()=>{
+    [0,1,2,3].map(i=>'<input class="obName" autocomplete="off" aria-label="Name '+(i+1)+'" placeholder="'+(['z. B. Ava','z. B. Papa','z. B. Mama','Name 4'][i])+'" value="'+(store.get('famEigen',false)&&n[i]?esc(fam[n[i]].n):'')+'">').join(''),()=>{
       const namen=[...document.querySelectorAll('.obName')].map(x=>x.value.trim()).filter(Boolean);
       if(namen.length){const neu={};namen.forEach((x,i)=>{const k=n[i]||('F'+Date.now()+i);neu[k]={n:x,c:(fam[k]&&fam[k].c)||FARBEN[i%FARBEN.length]};});fam=neu;store.set('fam',fam);
         tasks.forEach(t=>{if(t.who&&!fam[t.who])t.who=null;});}
-      store.set('onboard',true);famRender();render();say('Hallo '+namen.join(', ')+'! Ich freue mich so auf euch.','hop');},null,'Los geht’s');
+      store.set('onboard',true);if(namen.length)store.set('famEigen',true);famRender();render();say(namen.length?'Hallo '+namen.join(', ')+'! Ich freue mich so auf euch.':'Wäf! Ich freue mich so auf euch.','hop');heart($('pup'),14);try{navigator.vibrate&&navigator.vibrate([12,60,12])}catch(e){}},null,'Los geht’s');
   $('dlgZu').onclick=()=>{store.set('onboard',true);dialogZu();$('dlgZu').onclick=dialogZu;};
 }
 const goAlt=$('go').onclick; $('go').onclick=()=>{goAlt();willkommen();};
