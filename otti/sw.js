@@ -1,5 +1,5 @@
 // Otti – Offline-Cache (nur eigene Dateien, keine Gespräche)
-const CACHE = 'otti-v9';
+const CACHE = 'otti-v10';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './otti-3d.jpg', '../nova/puppe.js', '../nova/puppe.css', './elevenlabs-client-1.26.0.js', './feedback.js', './posen/index.json', '../nova/nova.js', '../nova/intro.js', '../nova/seelen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
