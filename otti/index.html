@@ -12,6 +12,7 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preload" as="image" href="otti-3d.jpg">
+<link rel="stylesheet" href="../nova/puppe.css">
 <style>
   /* Raster 8 px. Schrift: 28 Titel · 20 Überschrift · 17 Text · 16 Neben. Animiert wird nur transform und opacity. */
   :root { --nacht:#0b1a3a; --nacht2:#16306b; --gold:#f5c542; --gold2:#e0a91f; --text:#f4f1e8; --leise:#c3cce6;
@@ -38,43 +39,16 @@
   @keyframes plopp { 40% { transform:scale(1.3); } }
   .status { min-height:24px; color:var(--leise); font-size:16px; margin:0 0 8px; text-align:center; flex:none; }
 
-  /* Bühne: Nachthimmel hinter Otti, damit er sich verstecken kann */
-  .buehne { position:relative; width:min(84vw, 400px, 42vh); aspect-ratio:1/1; border-radius:32px; overflow:hidden; flex:none; cursor:pointer;
-    background:radial-gradient(18% 18% at 80% 18%, #fff3b0 0 55%, #f5c54255 60%, transparent 75%), radial-gradient(120% 100% at 50% 0%, #22408f, #0d1c45 70%);
+  /* Bühne: Nachthimmel hinter Otti, darin die Puppe (nova/puppe.js) */
+  .buehne { position:relative; width:min(76vw, 360px, 37vh); aspect-ratio:4/5; border-radius:32px; overflow:hidden; flex:none; cursor:pointer;
+    background:radial-gradient(16% 13% at 82% 14%, #fff3b0 0 55%, #f5c54255 60%, transparent 75%), radial-gradient(90% 60% at 50% 25%, #1b2c66 0%, #0f1b44 55%, #070d24 100%);
     box-shadow:0 16px 48px #0008, 0 0 0 3px #f5c54233; transition:box-shadow .3s; }
-  body.imspiel .buehne { width:min(64vw, 300px, 33vh); }
+  body.imspiel .buehne { width:min(56vw, 260px, 27vh); }
   .buehne.hoert { box-shadow:0 16px 48px #0008, 0 0 0 4px #7fd4ff, 0 0 40px #7fd4ff66; }
   .buehne.spricht { box-shadow:0 16px 48px #0008, 0 0 0 4px var(--gold), 0 0 44px #f5c54277; }
-  .fw, .atmer, .gesicht { position:absolute; inset:0; }
-  .fw { transform-origin:50% 100%; will-change:transform; }
-  .atmer { transform-origin:50% 100%; animation:atmen 3.8s ease-in-out infinite; }
-  @keyframes atmen { 50% { transform:scale(1.015, 1.025); } }
-  .gesicht { transform:scale(1.07); transform-origin:50% 85%; }
-  .gesicht canvas, .gesicht .vorbild, .gesicht .pose { position:absolute; inset:0; width:100%; height:100%; display:block; object-fit:cover; }
-  .gesicht .vorbild { transition:opacity .3s; }
-  .buehne.bereit .vorbild { opacity:0; }
-  .gesicht .pose { opacity:0; transition:opacity .35s; pointer-events:none; }
-  /* Augenlider: blinzeln, beim Schlafen zu */
-  .lid { position:absolute; border-radius:50% 50% 46% 46% / 60% 60% 40% 40%; transform:scaleY(0); transform-origin:50% 0;
-    background:radial-gradient(ellipse at 50% 25%, #e9b98b, #d09766 75%, #b9814f); box-shadow:inset 0 3px 6px #ffffff22, 0 1px 2px #0003; pointer-events:none; }
-  .lid::after { content:''; position:absolute; left:14%; right:14%; top:30%; height:38%; border-bottom:3px solid #3b2212; border-radius:0 0 50% 50%; opacity:.85; }
-  .lid.l { left:31.4%; top:59.4%; width:15%; height:12.8%; }
-  .lid.r { left:61%; top:54.6%; width:11.6%; height:11.8%; }
-  .blinzeln .lid { animation:blink .2s ease-in-out; }
-  @keyframes blink { 50% { transform:scaleY(1); } }
-  .buehne.schlaeft .lid { transform:scaleY(1); transition:transform .6s; }
-  .buehne.schlaeft .gesicht canvas { filter:brightness(.62) saturate(.75); }
-  .buehne .zz { position:absolute; right:16%; top:14%; font:800 26px system-ui, sans-serif; color:#cfe0ff; opacity:0; pointer-events:none; }
-  .buehne.schlaeft .zz { animation:zz 2.6s ease-in-out infinite; }
-  @keyframes zz { 0% { opacity:0; transform:translate(0, 8px); } 40% { opacity:1; } 100% { opacity:0; transform:translate(12px, -22px); } }
-  /* Winke-Ärmchen (bis Tinko die echte Winken-Pose liefert) */
-  .arm { position:absolute; right:6%; bottom:-4%; width:27%; height:auto; transform-origin:50% 92%; transform:translateY(80%) rotate(25deg); opacity:0; pointer-events:none; }
-  .arm.winkt { animation:armWinken 2.3s var(--ease) both; }
-  @keyframes armWinken {
-    0% { transform:translateY(80%) rotate(25deg); opacity:0; } 14% { transform:translateY(0) rotate(-6deg); opacity:1; }
-    26% { transform:translateY(0) rotate(22deg); } 38% { transform:translateY(0) rotate(-14deg); } 50% { transform:translateY(0) rotate(22deg); }
-    62% { transform:translateY(0) rotate(-14deg); } 74% { transform:translateY(0) rotate(18deg); } 86% { transform:translateY(0) rotate(0); opacity:1; }
-    100% { transform:translateY(80%) rotate(25deg); opacity:0; } }
+  .fw { position:absolute; inset:0; transform-origin:50% 100%; will-change:transform; }
+  .buehne .puppe-buehne { position:absolute; inset:0; width:100%; height:100%; max-width:none; aspect-ratio:auto; margin:0; border-radius:0; background:transparent; box-shadow:none; }
+  .fw .pose { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .35s; pointer-events:none; }
   /* Bewegungen pro Situation (Squash & Stretch) */
   .fw.hops { animation:hops .7s var(--ease); }
   @keyframes hops { 12% { transform:scale(1.08, .9); } 38% { transform:translateY(-14%) scale(.94, 1.08); } 55% { transform:translateY(-16%); }
@@ -87,8 +61,6 @@
   @keyframes nein { 20% { transform:rotate(-4deg); } 40% { transform:rotate(4deg); } 60% { transform:rotate(-3deg); } 80% { transform:rotate(2deg); } }
   .fw.neugierig { animation:neugierig 2s var(--ease); }
   @keyframes neugierig { 25%, 70% { transform:rotate(-7deg) translateX(-3%); } }
-  .fw.lehnen { animation:lehnen 2.3s var(--ease); }
-  @keyframes lehnen { 15%, 85% { transform:rotate(-3deg); } }
   .fw.abtauchen { animation:abtauchen .75s var(--ease) forwards; }
   @keyframes abtauchen { 20% { transform:scale(1.06, .9); } 100% { transform:translateY(108%) scale(.9, 1.05); } }
   .fw.weg { transform:translateY(108%); }
@@ -109,11 +81,6 @@
   @keyframes stampfen { 40% { transform:translateY(-5%) rotate(-2deg); } 70% { transform:scale(1.07, .9); } }
   .fw.wind { animation:wind .5s ease-in-out 2; }
   @keyframes wind { 30% { transform:skewX(-4deg) translateX(-3%); } 70% { transform:skewX(3deg) translateX(2%); } }
-  .glanz { position:absolute; inset:0; pointer-events:none; background:
-    radial-gradient(3px 3px at 24% 5%, #fff 50%, transparent 51%), radial-gradient(3px 3px at 36% 13%, #fff 50%, transparent 51%),
-    radial-gradient(2.5px 2.5px at 94% 2.5%, #fff 50%, transparent 51%), radial-gradient(2.5px 2.5px at 1% 35%, #fff 50%, transparent 51%);
-    animation:funkeln 2.6s ease-in-out infinite; }
-  @keyframes funkeln { 50% { opacity:.15; } }
   .funke { position:absolute; width:10px; height:10px; border-radius:50%; background:radial-gradient(#fff, #f5c542 60%, transparent 70%);
     pointer-events:none; animation:funke 1s ease-out forwards; }
   @keyframes funke { to { transform:translate(var(--dx), var(--dy)) scale(.2); opacity:0; } }
@@ -311,29 +278,9 @@
 
 <div class="buehne" id="buehne" role="button" tabindex="0" aria-label="Otti der Igel. Tipp ihn an.">
   <div class="fw" id="fw">
-    <div class="atmer">
-      <div class="gesicht" id="gesicht">
-        <img class="vorbild" src="otti-3d.jpg" alt="" decoding="async">
-        <canvas id="figur"></canvas>
-        <img class="pose" id="pose" alt="">
-        <i class="lid l"></i><i class="lid r"></i>
-      </div>
-    </div>
-    <svg class="arm" id="arm" viewBox="0 0 100 170" aria-hidden="true">
-      <defs>
-        <linearGradient id="fell" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#6e4325"/><stop offset="1" stop-color="#a8703f"/></linearGradient>
-        <radialGradient id="pfote" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#f6d2aa"/><stop offset="1" stop-color="#dba679"/></radialGradient>
-      </defs>
-      <path d="M22 170 C18 130 18 96 26 70 C32 50 68 50 74 70 C82 96 82 130 78 170 Z" fill="url(#fell)"/>
-      <path d="M24 150 l-9 -8 l10 -2 M22 118 l-9 -7 l10 -2 M26 90 l-8 -8 l10 0 M76 150 l9 -8 l-10 -2 M78 118 l9 -7 l-10 -2 M74 90 l8 -8 l-10 0" fill="#5a3519" stroke="#5a3519" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M40 140 q4 -14 0 -26 M58 124 q4 -14 0 -26 M48 104 q4 -12 0 -22" stroke="#4e2e18" stroke-width="3" fill="none" stroke-linecap="round" opacity=".45"/>
-      <ellipse cx="50" cy="50" rx="27" ry="24" fill="url(#pfote)" stroke="#a8713f" stroke-width="2.5"/>
-      <g fill="url(#pfote)" stroke="#a8713f" stroke-width="2.5"><circle cx="28" cy="32" r="8.5"/><circle cx="42" cy="22" r="8.5"/><circle cx="58" cy="22" r="8.5"/><circle cx="72" cy="32" r="8.5"/></g>
-      <ellipse cx="50" cy="55" rx="13" ry="10" fill="#d48f7a" opacity=".75"/>
-    </svg>
+    <div id="puppe"></div>
+    <img class="pose" id="pose" alt="">
   </div>
-  <div class="glanz"></div>
-  <div class="zz" aria-hidden="true">z z</div>
   <div class="tipp" id="tipp" hidden><i aria-hidden="true">👆</i> Tipp mich an!</div>
 </div>
 
@@ -428,7 +375,7 @@
 </div>
 
 <script src="elevenlabs-client-1.26.0.js" defer></script>
-<script src="../nova/mund.js"></script>
+<script src="../nova/puppe.js"></script>
 <script src="../nova/seelen.js"></script>
 <script>
   // Otti spricht mit der Persönlichkeit der Mondschein-Welt (gleiche Kinder-Regeln).
@@ -443,9 +390,9 @@
   var AGENT = 'agent_4801m55hqwdpeq0ry4awvx45rz5t';
   var $ = function (id) { return document.getElementById(id); };
   var ruhig = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var buehne = $('buehne'), figur = $('figur'), fw = $('fw'), gesicht = $('gesicht');
+  var buehne = $('buehne'), fw = $('fw');
   var knopf = $('knopf'), status = $('status'), text = $('text'), hinweis = $('hinweis');
-  var conv = null, startet = false, mund = null, offen = 0, spitze = 0.15;
+  var conv = null, startet = false;
   function lies(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } }
   function schreib(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   function los(k) { try { localStorage.removeItem(k); } catch (e) {} }
@@ -453,23 +400,34 @@
   function zufall(a) { return a[Math.floor(Math.random() * a.length)]; }
   function mischen(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
 
-  // Ottis Gesicht: der Mund bewegt sich im Takt (nova/mund.js). Bis dahin steht das Bild schon da.
-  var bild = new Image();
-  bild.onload = function () {
-    try {
-      mund = NovaMund(figur, bild, { linie: [[446, 786], [470, 797], [510, 805], [600, 805], [645, 797], [678, 776]], lippe: 858, kinn: 945, max: 30 });
-    } catch (e) { figur.width = bild.naturalWidth; figur.height = bild.naturalHeight; figur.getContext('2d').drawImage(bild, 0, 0); }
-    buehne.classList.add('bereit');
-  };
-  bild.src = 'otti-3d.jpg';
+  /* ================= Die Puppe (nova/puppe.js): Otti atmet, blinzelt, schaut, winkt, redet ================= */
+  var puppe = null, zustandT = 0;
+  try { puppe = Puppe.erstelle($('puppe'), { figur: 'otti', bild: 'otti-3d.jpg', neigenKnopf: false }); } catch (e) {}
+  function pz(z) { if (puppe) puppe.zustand(z); }
+  function pr(r) { if (puppe) puppe.reagiere(r); }
+  function grund() { return conv ? (conv.__spricht ? 'redet' : 'hoert') : buehne.classList.contains('schlaeft') ? 'schlaeft' : 'ruhig'; }
+  function kurzZustand(z, ms) {
+    clearTimeout(zustandT); pz(z);
+    zustandT = setTimeout(function () { if (puppe && puppe.zustand() === z) pz(grund()); }, ms);
+  }
 
   /* ================= Bewegungen: jede Situation hat ihre eigene ================= */
-  var BEWEGUNGEN = ['hops', 'hops3', 'freuen', 'nein', 'neugierig', 'lehnen', 'abtauchen', 'auftauchen', 'gucken', 'igelball', 'strecken', 'drehen', 'tanzen', 'stampfen', 'wind'];
+  // Gesicht und Arm macht die Puppe; grosse Körperbewegungen (abtauchen, Igelball, drehen …) macht die Bühne.
+  var PUPPE_BEW = { hops: ['tipp'], freuen: ['richtig'], nein: ['falsch'], hops3: ['freut', 1900], tanzen: ['freut', 1800], neugierig: ['denkt', 1800] };
+  var BEWEGUNGEN = ['abtauchen', 'auftauchen', 'gucken', 'igelball', 'strecken', 'drehen', 'stampfen', 'wind'];
   var bewT = 0, versteckt = false;
   function bewegung(name, danach) {
     clearTimeout(bewT);
+    var m = PUPPE_BEW[name];
+    if (m) {
+      if (versteckt) { fw.classList.remove('weg'); versteckt = false; }
+      if (m.length === 1) pr(m[0]); else kurzZustand(m[0], m[1]);
+      if (danach) bewT = setTimeout(danach, m[1] || 900);
+      return;
+    }
     BEWEGUNGEN.forEach(function (b) { fw.classList.remove(b); });
     if (name !== 'abtauchen' && name !== 'gucken') { fw.classList.remove('weg'); versteckt = false; }
+    if (name === 'auftauchen') setTimeout(function () { pr('richtig'); }, 420);
     if (ruhig) { if (name === 'abtauchen') { fw.classList.add('weg'); versteckt = true; } if (danach) setTimeout(danach, 50); return; }
     void fw.offsetWidth; fw.classList.add(name);
     fw.addEventListener('animationend', function fertig(e) {
@@ -481,29 +439,17 @@
     });
   }
   function winken() {
-    var arm = $('arm');
     if (versteckt) return;
-    arm.classList.remove('winkt'); void arm.getBoundingClientRect(); arm.classList.add('winkt');
-    bewegung('lehnen'); funken(6);
+    if (POSEN.winkt) pose('winkt', 2300);
+    kurzZustand('winkt', 2600);
   }
-  $('arm').addEventListener('animationend', function () { this.classList.remove('winkt'); });
-  // Blinzeln, ab und zu neugierig den Kopf neigen: Otti lebt, auch wenn niemand tippt.
-  (function blinzeln() {
-    setTimeout(function () {
-      if (!buehne.classList.contains('schlaeft') && !document.hidden) {
-        buehne.classList.remove('blinzeln'); void buehne.offsetWidth; buehne.classList.add('blinzeln');
-        if (Math.random() < .2) setTimeout(function () { buehne.classList.remove('blinzeln'); void buehne.offsetWidth; buehne.classList.add('blinzeln'); }, 260);
-      }
-      blinzeln();
-    }, 2200 + Math.random() * 3800);
-  })();
   var stillSeit = Date.now();
   document.addEventListener('pointerdown', function () { stillSeit = Date.now(); }, true);
   setInterval(function () {
-    if (ruhig || conv || versteckt || spielAktiv || sprechMund || document.hidden) return;
+    if (conv || versteckt || spielAktiv || sprechMund || document.hidden) return;
     var still = Date.now() - stillSeit;
     if (still > 90000) { if (!buehne.classList.contains('schlaeft')) { schlafen(true); statusSetzen('Otti ist eingeschlafen. Tipp ihn sanft an.'); } return; }
-    if (still > 8000 && Math.random() < .35) bewegung(zufall(['neugierig', 'neugierig', 'strecken']));
+    if (!ruhig && still > 8000 && Math.random() < .35) bewegung(zufall(['neugierig', 'neugierig', 'strecken']));
   }, 6000);
 
   /* ================= Funken, Klänge, Vibration ================= */
@@ -558,9 +504,10 @@
   function summ(m) { try { if (navigator.vibrate) navigator.vibrate(m); } catch (e) {} }
 
   /* ================= Ottis Stimme =================
-     Mit Nova-Server: Ottis echte Stimme (vorgeneriert, /v1/stimme). Sonst nie die Handystimme (klingt roboterhaft):
-     dann zeigt Otti seine Sätze in der Sprechblase und brabbelt leise dazu. */
-  var sprechMund = false, sprechTok = 0;
+     Mit Nova-Server: Ottis echte Stimme (/v1/stimme, einmal geladen, dann im Handy gespeichert). Die Puppe bewegt
+     den Mund dazu (puppe.sage, Lippen-Sync aus dem Ton). Nie die Handystimme: ohne Server redet Otti kurz
+     zur Sprechblase (puppe.sprich) und brabbelt leise. */
+  var sprechMund = false, sprechTok = 0, aktivAudio = null, stimmePauseBis = 0;
   function brabbeln(t, fertig) {
     var lang = Math.min(2.2, .35 + t.length * .028), tonleiter = [523, 587, 659, 784, 880], a = audio();
     if (a) for (var s = 0; s < lang; s += .085 + Math.random() * .03) {
@@ -572,18 +519,48 @@
     // Danach Zeit zum Mitlesen (für Eltern, die vorlesen).
     setTimeout(fertig, Math.max(lang * 1000, 900 + t.length * 40));
   }
-  function sprechen(t, fertig) {
-    var tok = ++sprechTok, zu = false;
-    var aus = function () { if (zu || tok !== sprechTok) return; zu = true; sprechMund = false; buehne.classList.remove('spricht'); if (fertig) fertig(); };
-    buehne.classList.add('spricht');
-    var NS = window.NovaStimme;
-    if (NS && NS.aktiv && NS.aktiv()) {
-      sprechMund = true;
-      NS.sprich(t, { geraet: false, onEnd: aus }).then(function (ok) { if (!ok && tok === sprechTok) brabbeln(t, aus); }, function () { brabbeln(t, aus); });
-      setTimeout(aus, 4000 + t.length * 90);
-    } else brabbeln(t, aus);
+  function stimmeSchluessel(t) { var h = 0x811c9dc5; for (var i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return 'https://stimme.otti/otti/' + h.toString(16) + '-' + t.length; }
+  function serverStimme(t) {
+    var a = novaWert('drlab-hermes-adresse').replace(/\/+$/, ''), k = novaWert('drlab-hermes-passwort');
+    if (!/^https:\/\//.test(a) || !k || Date.now() < stimmePauseBis) return Promise.resolve(null);
+    var key = stimmeSchluessel(t);
+    var cache = window.caches ? caches.open('otti-stimme').then(function (c) { return c.match(key); }).then(function (r) { return r ? r.blob() : null; }, function () { return null; }) : Promise.resolve(null);
+    return cache.then(function (b) {
+      if (b) return b;
+      if (!navigator.onLine) return null;
+      return fetch(a + '/v1/stimme', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + k, 'X-Nova-App': 'Otti' }, body: JSON.stringify({ figur: 'otti', text: t }) })
+        .then(function (r) { if (r.status === 204) { stimmePauseBis = Date.now() + 600000; return null; } return r.ok ? r.blob() : null; })
+        .then(function (b) {
+          if (!b || b.size < 200) return null;
+          if (window.caches) caches.open('otti-stimme').then(function (c) { return c.put(key, new Response(b, { headers: { 'Content-Type': 'audio/mpeg' } })); }).catch(function () {});
+          return b;
+        }).catch(function () { return null; });
+    });
   }
-  function stimmeStopp() { sprechTok++; sprechMund = false; buehne.classList.remove('spricht'); if (window.NovaStimme) window.NovaStimme.stopp(); }
+  function sprechen(t, fertig) {
+    var tok = ++sprechTok, zu = false, weg = false, spielt = false;
+    var aus = function () { if (zu || tok !== sprechTok) return; zu = true; sprechMund = false; buehne.classList.remove('spricht'); if (fertig) fertig(); };
+    function ohneTon() { if (weg || zu || tok !== sprechTok) return; weg = true; if (puppe) puppe.sprich(t); brabbeln(t, aus); }
+    buehne.classList.add('spricht'); sprechMund = true;
+    var warte = setTimeout(ohneTon, 1500); // Server zu langsam: lieber gleich die Sprechblase
+    serverStimme(t).then(function (b) {
+      clearTimeout(warte);
+      if (tok !== sprechTok || weg) return;
+      if (!b) { ohneTon(); return; }
+      var a = new Audio(URL.createObjectURL(b)); aktivAudio = a;
+      a.onplaying = function () { spielt = true; };
+      a.onended = function () { URL.revokeObjectURL(a.src); aus(); };
+      a.onerror = function () { ohneTon(); };
+      if (puppe) puppe.sage(a); else a.play().catch(ohneTon);
+      setTimeout(function () { if (!spielt && !zu) { try { a.pause(); } catch (e) {} ohneTon(); } }, 1200);
+      setTimeout(aus, 4000 + t.length * 90);
+    });
+  }
+  function stimmeStopp() {
+    sprechTok++; sprechMund = false; buehne.classList.remove('spricht');
+    if (aktivAudio) { try { aktivAudio.pause(); } catch (e) {} aktivAudio = null; }
+    if (window.NovaStimme) window.NovaStimme.stopp();
+  }
 
   /* ================= Sprechblase im Spiel, Verlauf beim Reden ================= */
   var blaseT = 0;
@@ -713,27 +690,6 @@
     while (text.children.length > 30) text.removeChild(text.firstChild);
   }
 
-  // Mund und Kopf folgen der Stimme; beim Zuhören neigt Otti den Kopf.
-  var neigung = 0;
-  function takt() {
-    var ziel = (!conv && sprechMund) ? 0.2 + Math.abs(Math.sin(performance.now() / 110)) * 0.6 : 0, hoer = 0;
-    if (conv) {
-      var v = 0, iv = 0;
-      try { v = conv.getOutputVolume() || 0; } catch (e) {}
-      try { iv = conv.getInputVolume() || 0; } catch (e) {}
-      spitze = Math.max(spitze * 0.997, v, 0.08);
-      if (conv.__spricht) ziel = Math.min(1, Math.max(-0.25, (v / spitze) * 1.25 - 0.12));
-      else hoer = Math.min(1, iv * 4);
-    }
-    offen += (ziel - offen) * (ziel > offen ? 0.55 : 0.3);
-    if (mund) mund.setze(offen);
-    neigung += ((conv && !conv.__spricht ? 2 + hoer * 1.5 : 0) - neigung) * 0.08;
-    var hoch = (conv && conv.__spricht) || sprechMund ? Math.max(0, offen) * 4 : 0;
-    gesicht.style.transform = 'scale(1.07) rotate(' + neigung.toFixed(2) + 'deg) translateY(' + (-hoch).toFixed(1) + 'px)';
-    requestAnimationFrame(takt);
-  }
-  requestAnimationFrame(takt);
-
   /* ================= Live-Gespräch ================= */
   function knopfZeigen() {
     var an = !!conv || startet;
@@ -760,19 +716,20 @@
         agentId: AGENT,
         connectionType: 'websocket',
         dynamicVariables: { letztes_mal: erinnerung() },
-        onConnect: function () { statusSetzen('Otti hört zu.'); bewegung('hops'); winken(); klang('tipp'); },
+        onConnect: function () { statusSetzen('Otti hört zu.'); winken(); klang('tipp'); },
         onDisconnect: function () { ende('Bis bald! Tipp auf «Reden», dann bin ich wieder da.'); },
         onError: function () { hinweis.textContent = 'Die Verbindung wackelt. Tipp nochmal auf «Reden».'; },
-        onMessage: function (m) { if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message); },
+        onMessage: function (m) { if (!m || !m.message) return; zeile(m.source === 'user' ? 'du' : 'otti', m.message); if (m.source !== 'user' && puppe) puppe.sprich(m.message); },
         onModeChange: function (m) {
           var sp = m && m.mode === 'speaking';
           if (conv) conv.__spricht = sp;
           buehne.classList.toggle('spricht', sp); buehne.classList.toggle('hoert', !sp);
+          if (puppe) { if (!sp) puppe.timeline = null; pz(sp ? 'redet' : 'hoert'); }
           statusSetzen(sp ? 'Otti spricht …' : 'Otti hört zu.');
         }
       });
       conv = c; startet = false; knopfZeigen(); zahl('gespraeche');
-      buehne.classList.add('hoert'); pose('', 0); schlafen(false);
+      buehne.classList.add('hoert'); pose('', 0); schlafen(false); pz('hoert');
       clearTimeout(limitT);
       limitT = setTimeout(function () {
         if (!conv) return;
@@ -792,6 +749,7 @@
     clearTimeout(limitT);
     conv = null; startet = false;
     buehne.classList.remove('hoert', 'spricht');
+    if (puppe) { puppe.timeline = null; pz(buehne.classList.contains('schlaeft') ? 'schlaeft' : 'ruhig'); }
     knopfZeigen();
     if (t) statusSetzen(t);
   }
@@ -873,10 +831,10 @@
     if (p && POSEN[p]) { el.src = POSEN[p]; el.style.opacity = 1; } else el.style.opacity = 0;
     if (ms) poseT = setTimeout(function () { el.style.opacity = 0; }, ms);
   }
-  function schlafen(an) { buehne.classList.toggle('schlaeft', !!an); if (an && POSEN.schlaeft) pose('schlaeft'); else if (!an && $('pose').src.indexOf('schlaeft') > -1) pose(''); }
+  function schlafen(an) { var war = buehne.classList.contains('schlaeft'); buehne.classList.toggle('schlaeft', !!an); if (an) pz('schlaeft'); else if (war) pz('ruhig'); if (an && POSEN.schlaeft) pose('schlaeft'); else if (!an && $('pose').src.indexOf('schlaeft') > -1) pose(''); }
   $('winkKnopf').addEventListener('click', function () {
     tippWeg(); schlafen(false); stillSeit = Date.now();
-    if (POSEN.winkt) pose('winkt', 2300); else winken();
+    winken();
     klang('tipp'); zahl('winken');
     if (!spielAktiv) sagKurz(zufall(['Hallo! Ich winke dir zu!', 'Huhu! Schön, dass du da bist!', 'Winke, winke!']));
   });
