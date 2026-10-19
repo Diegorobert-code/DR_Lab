@@ -121,8 +121,8 @@ header.top .pills{display:flex;gap:8px;flex:none}
 header.top .pill{padding:0 14px}
 @media (max-width:400px){ .brand span{display:none} }
 .card{background:var(--card);border:1px solid rgba(233,221,208,.6);border-radius:var(--r);padding:20px;margin:12px 0;box-shadow:var(--sh)}
-.card.step{background:linear-gradient(160deg,#fff 0%,var(--accent-xl) 100%);border-color:var(--accent-l)}
-.card.soft{background:rgba(255,252,248,.6);box-shadow:none}
+.card.step{background:linear-gradient(160deg,#25336f 0%,#1a2758 100%);border-color:#f2c14e!important}
+.card.soft{background:rgba(20,30,70,.55);box-shadow:none}
 .quote{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.4;color:var(--ink2);padding:4px 0 4px 16px;border-left:2px solid var(--accent);margin:8px 0 6px;word-wrap:break-word}
 .opts{display:flex;flex-direction:column;gap:10px;margin-top:14px}
 .opt{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-height:58px;border:1px solid var(--line);background:var(--card);border-radius:18px;font-size:17px;font-weight:500;color:var(--ink);text-align:left;padding:13px 18px;cursor:pointer;box-shadow:var(--sh-s);transition:transform .2s var(--ease),border-color .2s}
@@ -253,6 +253,14 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;op
 .jk-buehne img.jk-pose-hops{animation:jkPoseHops .7s cubic-bezier(.3,1.6,.5,1)!important}
 .jk-buehne img.jk-pose-hoert{animation:jkPoseHoert 2.4s ease-in-out infinite!important}
 .jk-buehne img.jk-pose-fliegt{animation:jkPoseFliegt 1.6s ease-in-out!important}
+.jk-buehne img.jk-pose-winkt{animation:jkPoseWinkt 1.2s ease-in-out!important}
+.jk-buehne img.jk-pose-denkt{animation:jkPoseDenkt 2.8s ease-in-out infinite!important}
+.jk-buehne img.jk-pose-zeigt{animation:jkPoseZeigt 1.1s ease-out!important}
+@keyframes jkPoseWinkt{20%,60%{transform:rotate(-3deg)}40%,80%{transform:rotate(3deg)}}
+@keyframes jkPoseDenkt{50%{transform:translateX(-6px) rotate(-1.5deg) scale(1.01)}}
+@keyframes jkPoseZeigt{40%{transform:translateX(10px) rotate(2deg)}}
+.jk-ki{margin-top:14px}
+.jk-ki .jk-ki-text{white-space:pre-wrap;margin:8px 0 0}
 @keyframes jkPoseHops{30%{transform:translateY(-16px) scale(1.03) rotate(-2deg)}60%{transform:translateY(0) scale(.99) rotate(1deg)}}
 @keyframes jkPoseHoert{50%{transform:rotate(-2.5deg) scale(1.02);transform-origin:40% 80%}}
 @keyframes jkPoseFliegt{0%{transform:none}40%{transform:translateY(-26px) scale(1.04)}100%{transform:none}}
@@ -312,6 +320,11 @@ body.im-schutz .wrap{padding-top:calc(74px + var(--sat))}
 .jk-cover.on{display:flex}
 .jk-cover img{width:84px;height:84px;border-radius:50%;object-fit:cover}
 .jk-cover button{min-height:52px;padding:0 28px;border-radius:16px;border:0;background:#b5822f;color:#fff;font:600 17px var(--sans);margin-top:10px}
+.sz-sprache{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.sz-sprache button{min-height:40px;padding:0 12px;border-radius:99px;border:1.5px solid rgba(242,193,78,.35);background:transparent;color:var(--ink);font:600 14px var(--sans);cursor:pointer}
+.sz-sprache button.an{background:rgba(242,193,78,.18);border-color:#f2c14e;color:#f2c14e}
+.jk-tuer-sprachen{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 14px;font-size:13px;color:var(--muted)}
+.jk-tuer-sprachen button{min-height:36px;padding:0 12px;border-radius:99px;border:1px solid rgba(242,193,78,.4);background:transparent;color:var(--ink2);font:600 13px var(--sans);cursor:pointer}
 .sz-akut{background:var(--red-l);border:1.5px solid #ff8f80;border-radius:16px;padding:12px 16px;font-size:17px;margin:0 0 14px;color:#ffd9d3}
 .sz-akut a{color:#fff;font-weight:700;text-decoration:underline}
 .sz-kopf{display:flex;gap:12px;align-items:center;margin-bottom:12px}
@@ -438,6 +451,7 @@ body.im-schutz .wrap{padding-top:calc(74px + var(--sat))}
       <svg class="jk-tuer-bild" viewBox="0 0 120 150" aria-hidden="true"><path d="M30 140V48a30 30 0 0 1 60 0v92z" fill="#1b2a63" stroke="#f2c14e" stroke-width="4"/><path d="M38 140V52a22 22 0 0 1 44 0v88z" fill="#f6d98a"/><circle cx="74" cy="98" r="4" fill="#a8792a"/></svg>
       <span><b>Fühlst du dich zuhause nicht sicher?</b><small>Hilfe ohne Konto, gratis, vertraulich. Nichts wird gespeichert.</small></span>
     </button>
+    <div class="jk-tuer-sprachen" aria-label="Hilfe in anderen Sprachen"><button type="button" data-schutz="sofort" data-schutz-lang="fr" lang="fr">Aide · Français</button><button type="button" data-schutz="sofort" data-schutz-lang="it" lang="it">Aiuto · Italiano</button><button type="button" data-schutz="sofort" data-schutz-lang="en" lang="en">Help · English</button></div>
 
     <div id="recallBox"></div>
 
@@ -475,7 +489,7 @@ body.im-schutz .wrap{padding-top:calc(74px + var(--sat))}
     </button>
     <button class="notecta" id="btnIdeas" style="margin-top:12px">
       <span class="ic" style="background:var(--accent-l);color:var(--accent-d)"><svg class="i"><use href="#i-bulb"/></svg></span>
-      <span><b>Kauf mit deinen Ideen</b><small>Bald kannst du auch mit deinen Ideen bezahlen.</small></span>
+      <span><b>Kauf mit deinen Ideen</b><small>Jede Idee zahlt zwei goldene Stiche in deine Schuhe ein.</small></span>
     </button>
     <p class="privacy"><svg class="i"><use href="#i-lock"/></svg>Deine Daten bleiben auf deinem Handy.</p>
   </section>
@@ -619,22 +633,29 @@ body.im-schutz .wrap{padding-top:calc(74px + var(--sat))}
     <label class="check"><input type="checkbox" id="stVoice"> Vorlesen</label>
   </section>
 
-  <!-- IDEEN -->
+  <!-- IDEEN: Kauf mit deinen Ideen (jede Idee = 2 Stiche in deinen Schuh) -->
   <section id="vIdeas" class="hide">
     <div class="backrow"><button class="pill" data-home><svg class="i"><use href="#i-back"/></svg>Zurück</button></div>
     <span class="eyebrow">Kauf mit deinen Ideen</span>
-    <h1>Bald kannst du auch <em>mit deinen Ideen bezahlen.</em></h1>
-    <p class="lead">Hast du eine Idee, wie Jackie's Advice dir besser helfen könnte? Ein Thema, das fehlt, ein Satz, der dir gutgetan hätte? Solche Ideen sollen später etwas wert sein.</p>
-    <div class="card">
-      <h3>So ist es gedacht</h3>
+    <h1>Deine Ideen sind <em>bei uns etwas wert.</em></h1>
+    <p class="lead">Ein Thema, das fehlt? Ein Satz, der dir gutgetan hätte? Jede Idee zahlt zwei goldene Stiche in deine Schuhe nach Mass ein.</p>
+    <div class="card jk-ideenkasse">
+      <div class="jk-merkt-kopf"><img src="schuhmacher.jpg" alt=""><h3>Die Ideenkasse vom Schuhmacher</h3></div>
+      <p class="muted small" id="ideaKasse" style="margin:6px 0 0">Noch keine Idee eingezahlt.</p>
+    </div>
+    <label for="ideaTxt" class="fieldlabel">Deine Idee</label>
+    <textarea id="ideaTxt" maxlength="400" placeholder="z. B. «Ein Thema für Grosseltern» oder «Jackie soll mich am Sonntagabend an die Wochenplanung erinnern»"></textarea>
+    <div class="counter" id="ideaCounter">0 / 400</div>
+    <button class="btn" id="btnIdeaSave" style="margin-top:8px"><svg class="i"><use href="#i-bulb"/></svg>Idee einzahlen</button>
+    <div id="ideaList" style="margin-top:20px"></div>
+    <div class="card" style="margin-top:18px">
+      <h3>So funktioniert es</h3>
       <ul class="alts">
-        <li>Ideen teilen ist freiwillig. Du musst nichts geben.</li>
-        <li>Nichts wird automatisch freigeschaltet oder verrechnet.</li>
-        <li>Zurzeit ist das erst eine Vorschau – es gibt noch nichts zu kaufen.</li>
+        <li>Deine Ideen bleiben auf diesem Handy. Nichts wird automatisch verschickt.</li>
+        <li>Willst du, dass DR Lab eine Idee liest? Tipp bei der Idee auf «An DR Lab schicken». Nur dann geht genau dieser Text weg, ohne Namen.</li>
+        <li>Gute Ideen baut DR Lab in Jackie ein. Bezahlt wird mit goldenen Stichen, nicht mit Geld.</li>
       </ul>
     </div>
-    <div class="info"><svg class="i"><use href="#i-info"/></svg><span>Bis es so weit ist, kannst du deine Idee als «Notiz an mich» festhalten. Sie bleibt nur auf deinem Handy.</span></div>
-    <button class="btn soft" id="btnIdeaNote"><svg class="i"><use href="#i-pen"/></svg>Idee als Notiz festhalten</button>
   </section>
 
   <footer>
@@ -980,7 +1001,7 @@ function renderGreeting(){
     ? 'Der Tag war lang. Erzähl mir, was dich noch beschäftigt – dann darf es ruhen.'
     : 'Erzähl mir, was dich gerade beschäftigt. Ich höre zu – ohne zu urteilen.';
 }
-function renderHome(){ renderGreeting(); renderRecall(); updateNoteCount(); renderSchuhe(); renderBlase(); markTiles(); }
+function renderHome(){ renderGreeting(); renderRecall(); updateNoteCount(); renderSchuhe(); renderBlase(); markTiles(); setTimeout(()=>{ const vh=$('vHome'); if(vh && !vh.classList.contains('hide') && !document.querySelector('#jkBild[class*="jk-pose-"]')) pose('winkt'); }, 400); }
 
 /* ---------- Ablauf ---------- */
 let flow = null;
@@ -991,7 +1012,7 @@ function startFromText(){
   /* Gewalt zuhause: sofort in den Schutzraum, nichts speichern, Text aus dem Feld nehmen */
   const suizid = /(ich (will|möchte|werde) mich (umbringen|töten)|suizid|selbstmord|will sterben|nicht mehr leben|mir das leben nehmen)/.test(text.toLowerCase());
   if(!suizid && window.JackieSchutz && JackieSchutz.gefahr(text)){
-    $('txt').value=''; flow=null; JackieSchutz.open('sofort'); return;
+    const sp=JackieSchutz.gefahrSprache(text); $('txt').value=''; flow=null; JackieSchutz.open('sofort', sp||'de'); return;
   }
   const a = analyse(text);
   flow = {text, topic:a.topic, sos:a.sos, sitScores:a.sitScores, sitId:null, modId:null};
@@ -1144,13 +1165,39 @@ function renderAnswer(e){
       '<button class="btn" id="btnCopy" style="margin-top:12px">'+icon('copy')+'Text kopieren</button></div>';
   }
   html+=moreBlock(more);
+  if(e.text && !e.sos && serverBereit()) html+='<div class="card jk-ki" id="kiBox"><span class="eyebrow">Jackie persönlich</span><p class="ink2" style="margin:4px 0 10px">Willst du, dass Jackie genauer auf deine Worte eingeht? Dann geht dein Text einmal an den DR Lab Server (Sense Engine), ohne Namen.</p><button class="btn soft" id="btnKi">'+icon('chat')+'Jackie persönlich fragen</button><div id="kiOut"></div></div>';
   $('ansBody').innerHTML=html;
   bindMore(sit.letter ? 'andere Wege und Briefentwurf' : 'andere Wege');
+  if($('btnKi')) $('btnKi').addEventListener('click', ()=>kiFragen(e.text, sit));
   if(sit.letter) $('btnCopy').addEventListener('click', copyLetter);
   speakText = thanksLine()+' '+sit.intro+' '+(mod?mod.tip+' ':'')+'Dein nächster Schritt: '+sit.step.t+'. '+sit.step.x;
   rememberText = sit.step.t+' ('+sit.title+')';
   $('btnRemember').classList.remove('hide');
   show('vAnswer');
+}
+/* ---------- Jackie persönlich (Sense Engine, nur auf Knopfdruck, nie im Hilfebereich) ---------- */
+function serverDaten(){ let addr='', key=''; try{ addr=JSON.parse(localStorage.getItem('drlab-hermes-adresse')||'""')||''; key=JSON.parse(localStorage.getItem('drlab-hermes-passwort')||'""')||''; }catch(e){} return {addr:String(addr).trim().replace(/\/+$/,''), key}; }
+function serverBereit(){ const d=serverDaten(); return /^https:\/\//.test(d.addr) && !!d.key && navigator.onLine!==false; }
+async function kiFragen(text, sit){
+  const out=$('kiOut'), b=$('btnKi'); if(!out||!b) return;
+  b.disabled=true; out.innerHTML='<p class="muted small jk-ki-text">Jackie denkt nach …</p>';
+  const d=serverDaten();
+  const sys="Du bist Jackie aus der App «Jackie's Advice»: eine warme, ruhige Begleiterin für Mütter und Eltern in der Schweiz. Antworte auf Deutsch (Schweiz, kein ß), in höchstens 5 kurzen Sätzen, einfach und ohne Fachwörter. Nenne einen konkreten nächsten Schritt. Keine Diagnose, keine Rechtsberatung, keine grossen Versprechen. Bei Gewalt oder Gefahr: 117 Polizei, 142 Opferhilfe, 144 Sanität, 143 Dargebotene Hand. Das Thema laut App: "+sit.title+".";
+  try{
+    const ctl=('AbortController' in window)?new AbortController():null; const to=setTimeout(()=>{ if(ctl) ctl.abort(); }, 25000);
+    const r=await fetch(d.addr+'/v1/chat/completions',{method:'POST',signal:ctl?ctl.signal:undefined,headers:{'Content-Type':'application/json','Authorization':'Bearer '+d.key,'X-Nova-App':'Jackie'},body:JSON.stringify({model:'sense-engine',messages:[{role:'system',content:sys},{role:'user',content:String(text).slice(0,1500)}]})});
+    clearTimeout(to);
+    if(!r.ok) throw new Error('status '+r.status);
+    const j=await r.json();
+    const a=String((j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||'').trim();
+    if(!a) throw new Error('leer');
+    out.innerHTML='<p class="ink2 jk-ki-text">'+linkTel(esc(a))+'</p><button class="btn soft" id="btnKiVor" style="margin-top:10px">'+icon('speak')+'<span>Vorlesen</span></button>';
+    $('btnKiVor').addEventListener('click', ()=>{ stopSpeak(); say(a); });
+    b.remove(); lernen('ki','gefragt'); stich('Gespräch');
+  }catch(err){
+    out.innerHTML='<p class="muted small jk-ki-text">Jackie erreicht ihren Server gerade nicht. Deine Tipps oben gelten trotzdem. Versuch es später nochmals.</p>';
+    b.disabled=false;
+  }
 }
 function renderPauseAnswer(){
   const isSos=!!(flow&&flow.sos);
@@ -1270,8 +1317,48 @@ document.addEventListener('click', ev=>{
 });
 $('btnSos').addEventListener('click', ()=>openSos(null));
 $('footSos').addEventListener('click', ev=>{ ev.preventDefault(); openSos(null); });
-$('btnIdeas').addEventListener('click', ()=>show('vIdeas'));
-$('btnIdeaNote').addEventListener('click', ()=>{ openNotes(); $('noteTxt').value='Idee für Jackie\'s Advice: '; updateCounter(); $('noteTxt').focus(); });
+$('btnIdeas').addEventListener('click', ()=>{ renderIdeen(); show('vIdeas'); });
+/* ---------- Ideenkasse: Ideen bleiben auf dem Handy, Versand nur pro Idee auf Knopfdruck ---------- */
+function getIdeen(){ const i=store.get('ideen',[]); return Array.isArray(i)?i:[]; }
+function renderIdeen(){
+  const l=getIdeen(); const box=$('ideaList');
+  const gesendet=l.filter(x=>x.gesendet).length;
+  $('ideaKasse').textContent = l.length ? l.length+(l.length===1?' Idee':' Ideen')+' eingezahlt = '+(l.length*2)+' goldene Stiche'+(gesendet?' · '+gesendet+' an DR Lab geschickt':'')+'.' : 'Noch keine Idee eingezahlt. Die erste bringt dir zwei Stiche.';
+  if(!l.length){ box.innerHTML='<div class="jk-leer"><img src="figur.jpg" alt=""><p class="muted" style="margin:0">Hier sammeln sich deine Ideen. Jackie freut sich auf die erste.</p></div>'; return; }
+  box.innerHTML='<div class="section-title"><h2>Deine Ideen</h2></div>'+l.map(x=>'<div class="card jk-idee" data-id="'+x.id+'"><p class="ink2" style="margin:0 0 8px">'+esc(x.text)+'</p><p class="muted small" style="margin:0 0 10px">'+esc(relDay(x.id))+(x.gesendet?' · an DR Lab geschickt ✓':'')+'</p><div class="row"><button class="btn soft" data-idee="senden"'+(x.gesendet?' disabled':'')+'>'+(x.gesendet?'Geschickt':'An DR Lab schicken')+'</button><button class="btn danger" data-idee="weg" style="flex:0 0 auto;width:auto;padding:0 18px" aria-label="Idee löschen">Löschen</button></div></div>').join('');
+}
+async function ideeSenden(idee){
+  const text="Idee für Jackie's Advice: "+idee.text;
+  let addr='', key='';
+  try{ addr=JSON.parse(localStorage.getItem('drlab-hermes-adresse')||'""')||''; key=JSON.parse(localStorage.getItem('drlab-hermes-passwort')||'""')||''; }catch(e){}
+  if(/^https:\/\//.test(addr) && key){
+    try{
+      const r=await fetch(addr.replace(/\/$/,'')+'/erfahrung',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key,'X-Nova-App':'Jackie'},body:JSON.stringify({app:'Jackie', art:'idee', frage:idee.text, antwort:''})});
+      if(r.ok) return 'server';
+    }catch(e){}
+  }
+  try{ if(navigator.share){ await navigator.share({title:"Idee für Jackie's Advice", text}); return 'geteilt'; } }catch(e){ if(e && e.name==='AbortError') return ''; }
+  try{ await navigator.clipboard.writeText(text); return 'kopiert'; }catch(e){ return ''; }
+}
+$('ideaList').addEventListener('click', async ev=>{
+  const b=ev.target.closest('button[data-idee]'); if(!b) return;
+  const id=Number(b.closest('.jk-idee').dataset.id); const l=getIdeen(); const x=l.find(y=>y.id===id); if(!x) return;
+  if(b.dataset.idee==='weg'){ store.set('ideen', l.filter(y=>y.id!==id)); renderIdeen(); toast('Idee gelöscht. Die Stiche bleiben dir.'); return; }
+  b.disabled=true;
+  const wie=await ideeSenden(x);
+  if(wie){ x.gesendet=true; store.set('ideen', l); renderIdeen(); toast(wie==='server'?'Angekommen. Danke für deine Idee!':wie==='geteilt'?'Geteilt. Danke!':'Kopiert. Du kannst sie jetzt an DR Lab schicken.'); }
+  else { b.disabled=false; toast('Das ging gerade nicht. Deine Idee bleibt gespeichert.'); }
+});
+$('ideaTxt').addEventListener('input', ()=>{ $('ideaCounter').textContent=$('ideaTxt').value.length+' / 400'; });
+$('btnIdeaSave').addEventListener('click', ()=>{
+  const t=$('ideaTxt').value.trim();
+  if(!t){ toast('Schreib zuerst deine Idee hinein.'); $('ideaTxt').focus(); return; }
+  if(window.JackieSchutz && JackieSchutz.gefahr(t)){ const sp=JackieSchutz.gefahrSprache(t); $('ideaTxt').value=''; JackieSchutz.open('sofort', sp||'de'); return; }
+  const l=getIdeen(); l.unshift({id:Date.now(), text:t.slice(0,400), gesendet:false}); store.set('ideen', l.slice(0,100));
+  $('ideaTxt').value=''; $('ideaCounter').textContent='0 / 400';
+  stich('Idee'); stich('Idee'); renderIdeen(); lernen('idee','eingezahlt');
+  toast('Eingezahlt! Zwei goldene Stiche für deine Schuhe.');
+});
 function resetHome(){ flow=null; renderHome(); show('vHome'); }
 
 /* ---------- Notiz an mich ---------- */
@@ -1440,7 +1527,7 @@ $('btnSaveName').addEventListener('click', ()=>{
 const OB=[
   {i:'chat', t:'Einfach reden wie mit einer Freundin', x:'Kein Fachwort nötig. Erzähl so, wie es dir gerade kommt – gesprochen oder getippt.'},
   {i:'ask',  t:'Ich frage nach, wenn ich etwas nicht verstehe', x:'Höchstens eine kurze Frage zum Antippen – dann bekommst du einen klaren nächsten Schritt.'},
-  {i:'heart',t:'Du entscheidest, was du davon nimmst', x:'Du kennst deine Familie am besten. Ich bin nur Begleiterin. Deine Daten bleiben auf deinem Handy. Und wenn es zuhause nicht sicher ist: Die goldene Tür auf der Startseite führt zu Hilfe, ohne Konto.'}
+  {i:'heart',t:'Du entscheidest, was du davon nimmst', x:'Du kennst deine Familie am besten. Ich bin nur Begleiterin. Deine Daten bleiben auf deinem Handy. Und wenn es zuhause nicht sicher ist: Die goldene Tür auf der Startseite führt zu Hilfe, ohne Konto, auch auf Französisch, Italienisch und Englisch.'}
 ];
 let obI=0, obFirst=true;
 function obRender(){
@@ -1471,11 +1558,20 @@ $('btnGuide').addEventListener('click', ()=>obOpen(false));
 function zeigt(satz){ return '<div class="jk-zeigt fade"><img src="figur.jpg" alt=""><span>'+esc(satz)+'</span></div>'; }
 
 /* ---------- Posen auf der Bühne ---------- */
+/* Echte Posen-Bilder (Tinko) werden automatisch genutzt, sobald sie in posen/posen.json stehen. Sonst bewegt sich das eine Bild. */
+const POSEN_BILD={}; const GRUNDBILD='jackie-3d.jpg'; const POSEN=['hops','hoert','fliegt','winkt','denkt','zeigt'];
+fetch('posen/posen.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(j=>{
+  ((j&&j.posen)||[]).forEach(n=>{ if(POSEN.indexOf(n)<0) return; const im=new Image(); im.onload=()=>{ POSEN_BILD[n]='posen/'+n+'.jpg'; }; im.src='posen/'+n+'.jpg'; });
+}).catch(()=>{});
+let poseTimer=null;
 function pose(name){
   const img=$('jkBild'); if(!img) return;
-  img.classList.remove('jk-pose-hops','jk-pose-hoert','jk-pose-fliegt'); void img.offsetWidth;
+  clearTimeout(poseTimer);
+  POSEN.forEach(n=>img.classList.remove('jk-pose-'+n)); void img.offsetWidth;
+  const ziel=(name && POSEN_BILD[name]) || GRUNDBILD;
+  if(img.getAttribute('src')!==ziel) img.setAttribute('src', ziel);
   if(name) img.classList.add('jk-pose-'+name);
-  if(name && name!=='hoert') setTimeout(()=>img.classList.remove('jk-pose-'+name), 1700);
+  if(name && name!=='hoert' && name!=='denkt') poseTimer=setTimeout(()=>pose(''), 1700);
 }
 
 /* ---------- Was Jackie sich merkt (nur Zahlen, nur auf diesem Handy) ---------- */
@@ -1507,6 +1603,8 @@ function renderMem(){
   if(tz) rows.push(['Du kommst meistens', TZ_NAME[tz]||tz]);
   if(l.pause_fertig) rows.push(['Pausen ganz gemacht', String(l.pause_fertig)]);
   rows.push(['Stiche in deinen Schuhen', String(store.get('stiche',0))]);
+  if(l.idee && l.idee.eingezahlt) rows.push(['Ideen eingezahlt', String(l.idee.eingezahlt)]);
+  if(l.ki && l.ki.gefragt) rows.push(['Jackie persönlich gefragt', String(l.ki.gefragt)]);
   if((l.tage||[]).length) rows.push(['Tage mit Jackie', String(l.tage.length)]);
   box.innerHTML = th.length||l.pause_fertig ? '<ul>'+rows.map(r=>'<li><span>'+esc(r[0])+'</span><b>'+esc(r[1])+'</b></li>').join('')+'</ul>'
     : '<div class="jk-leer"><img src="figur.jpg" alt=""><p class="muted" style="margin:0">Noch nichts. Nach deinem ersten Gespräch steht hier, was Jackie gelernt hat.</p></div>';
@@ -1590,9 +1688,9 @@ $('stageMic').addEventListener('click', ()=>{
 new MutationObserver(()=>{ const on=$('btnMic').classList.contains('listening'); $('stageMic').classList.toggle('listening', on); if(!on) pose(''); }).observe($('btnMic'),{attributes:true, attributeFilter:['class']});
 
 /* ---------- Schutzraum öffnen ---------- */
-function openSchutz(tab){ stopRec(); if(window.JackieSchutz) JackieSchutz.open(tab||'sofort'); else openSos(null); }
-$('btnSchutz').addEventListener('click', ()=>openSchutz('sofort'));
-document.addEventListener('click', ev=>{ const b=ev.target.closest && ev.target.closest('[data-schutz]'); if(b) openSchutz(b.dataset.schutz); });
+function openSchutz(tab, sprache){ stopRec(); if(window.JackieSchutz) JackieSchutz.open(tab||'sofort', sprache); else openSos(null); }
+$('btnSchutz').addEventListener('click', ()=>openSchutz('sofort','de'));
+document.addEventListener('click', ev=>{ const b=ev.target.closest && ev.target.closest('[data-schutz]'); if(b) openSchutz(b.dataset.schutz, b.dataset.schutzLang||'de'); });
 
 /* ---------- Die Geschichte vom Schuhmacher (kleiner Trickfilm) ---------- */
 const STORY=[

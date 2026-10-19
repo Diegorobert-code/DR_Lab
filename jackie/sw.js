@@ -1,7 +1,7 @@
 /* Jackie's Advice: offline-Kopie, damit Hilfebereich, Notrufe und Rezeptseite auch ohne Netz gehen.
    Netz zuerst (immer die neuste Fassung), die Kopie nur als Ersatz. Speichert keine Eingaben. */
-const CACHE = 'jackie-v1';
-const DATEIEN = ['./', 'index.html', 'schutz.js', 'rezept.html', 'feedback.js', 'figur.jpg', 'jackie-3d.jpg', 'schuhmacher.jpg', 'icon.svg', 'icon-180.png', 'icon-192.png', 'manifest.webmanifest'];
+const CACHE = 'jackie-v2';
+const DATEIEN = ['./', 'index.html', 'schutz.js', 'rezept.html', 'feedback.js', 'figur.jpg', 'jackie-3d.jpg', 'schuhmacher.jpg', 'icon.svg', 'icon-180.png', 'icon-192.png', 'manifest.webmanifest', 'posen/posen.json'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(DATEIEN.map(f => c.add(f).catch(() => null)))).then(() => self.skipWaiting()));
 });
