@@ -23,8 +23,27 @@
     if (r && REQ[pose]) { r.textContent = REQ[pose]; r.classList.remove('zeig'); void r.offsetWidth; r.classList.add('zeig'); }
     clearTimeout(poseT);
     if (ms !== 0) poseT = setTimeout(function () { f.setAttribute('data-pose', 'ruhig'); }, ms || 2600);
+    // Tinko-Posenbild, falls hasi/posen/<pose>.jpg liegt: Bild statt gezeichnetem Hasi
+    var bild = $('hasiBild');
+    if (window.FigurPosen && bild && pose !== 'ruhig') FigurPosen.pruef(pose).then(function (src) {
+      if (!src) return; bild.src = src; bild.hidden = false; f.classList.add('mit-bild');
+      clearTimeout(bild._t); bild._t = setTimeout(function () { bild.hidden = true; f.classList.remove('mit-bild'); }, ms === 0 ? 4000 : (ms || 2600));
+    });
   }
-  function glocke() { var g = $('glocke'); if (!g) return; g.classList.remove('bimm'); void g.offsetWidth; g.classList.add('bimm'); }
+  /* Klänge statt Worte (Hasi spricht nie): Türglocke und Kassen-Pling, abschaltbar */
+  var AC = null;
+  function klang(art) {
+    if (!hol('hasi.ton', true)) return;
+    try {
+      AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state !== 'running') AC.resume();
+      var tone = art === 'pling' ? [1318.5, 1760] : [1046.5, 1318.5, 1046.5];
+      tone.forEach(function (fq, i) { var o = AC.createOscillator(), g = AC.createGain(), t0 = AC.currentTime + i * .12;
+        o.type = 'sine'; o.frequency.value = fq; g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(.18, t0 + .01); g.gain.exponentialRampToValueAtTime(.001, t0 + .9);
+        o.connect(g); g.connect(AC.destination); o.start(t0); o.stop(t0 + 1); });
+    } catch (e) {}
+  }
+  var beruehrt = false; document.addEventListener('pointerdown', function () { beruehrt = true; }, { once: true, capture: true });
+  function glocke() { var g = $('glocke'); if (!g) return; g.classList.remove('bimm'); void g.offsetWidth; g.classList.add('bimm'); if (beruehrt) klang('glocke'); }
 
   /* ---------- Lernzahlen ---------- */
   var LK = 'hasi.lernen';
@@ -61,6 +80,9 @@
     { id: 'mondschein', r: 'lab', e: '🌙', g: 'Hasi gähnt, legt die Pfoten unter die Wange und lächelt.', s: 'Gute Nacht', n: 'Mondschein', k: '#9fb4ff', t: 'Otti, Kiki und Nova erzählen Gutenachtgeschichten.', w: 'Familien mit Kindern von 3 bis 9', p: 'Familien-Abo CHF 5 pro Monat', l: BASE + 'mondschein/', pose: 'gaehnen' },
     { id: 'tradeping', r: 'lab', e: '🛎️', g: 'Hasi schüttelt den Kopf beim Geldsack, dann zeigt er auf eine kleine Glocke.', s: 'Nur Ping', n: 'TradePing', k: '#8fe3a8', t: 'Ein Ping, nur wenn es zählt. Radar für deine Titel. Keine Anlageberatung.', w: 'Privatleute mit eigenem Depot', p: 'Pro CHF 6 pro Monat', l: BASE + 'tradeping/' },
     { id: 'humanspark', r: 'lab', e: '🤝', g: 'Hasi winkt dich an den Tresen und zeigt auf einen Stuhl.', s: 'Erst reden', n: 'HumanSpark', k: '#ff9f7a', t: 'Finger drauf, messen, reinreden. Für ruhigere Teams.', w: 'Firmen-Teams', p: 'Auf Anfrage', l: BASE + 'humanspark/', pose: 'winken' },
+    { id: 'milulu', r: 'lab', e: '💃', g: 'Hasi tanzt drei kleine Schritte und tippt auf die 1.', s: '1-2-3', n: 'Milulu', k: '#ff8a7a', t: 'Salsa, Merengue, Bachata und Cumbia lernen, mit Band im Handy und Tipp-Feedback.', w: 'Alle, die tanzen lernen wollen, auch Kinder', p: 'Gratis ausprobieren', l: BASE + 'carmen/', pose: 'huepfen' },
+    { id: 'granny', r: 'lab', e: '🌹', g: 'Hasi sucht seine Brille, findet sie auf dem Kopf und lacht lautlos.', s: 'Für Oma', n: 'Granny', k: '#f2b8c0', t: 'Der einfachste Bildschirm für ältere Menschen: ein Knopf zum Reden, Fotos zum Anrufen, die Familie richtet ein.', w: 'Familien mit älteren Eltern', p: 'Gratis ausprobieren, Einrichten auf Anfrage', l: BASE + 'granny/', pose: 'nicken' },
+    { id: 'waefwaef', r: 'lab', e: '🐶', g: 'Hasi macht mit den Pfoten Hundeohren und wedelt mit dem Stummelschwanz.', s: 'Wäf!', n: 'Wäf Wäf', k: '#9fd3f5', t: 'Die Familien-App für einen kleinen Hund: wer geht raus, allein bleiben üben, Hund verstehen.', w: 'Familien mit Hund', p: 'Gratis ausprobieren', l: BASE + 'waefwaef/', pose: 'huepfen' },
     { id: 'builder', r: 'garten', e: '🥕', g: 'Hasi zieht ein goldenes Rüebli aus dem Code-Garten.', s: 'Frisch!', n: 'Lab Builder', k: '#c9a2ff', t: 'Deine eigene kleine App. Du bringst die Idee, wir bauen.', w: 'Kleinunternehmen', p: 'Auf Anfrage, auch mit Ideen statt Geld', l: BASE + 'apps/', pose: 'huepfen' },
     { id: 'wb-liste', r: 'garten', e: '✅', g: 'Hasi hakt mit der Pfote drei Kästchen in der Luft ab.', s: 'Werkbank', n: 'Checkliste (Werkbank)', k: '#e8b94a', t: 'Deine eigene Checkliste mit Name und Farbe. Gleich unten auf der Werkbank bauen und mitnehmen.', w: 'Läden, Praxen, Vereine', p: 'Gratis selbst bauen', vorlage: 'liste' },
     { id: 'wb-rechner', r: 'garten', e: '🧮', g: 'Hasi zählt an den Pfoten und nickt.', s: 'Werkbank', n: 'Preisrechner (Werkbank)', k: '#8fe3a8', t: 'Menge mal Preis, mit deinem Namen und deiner Farbe.', w: 'Kleine Läden, Märkte', p: 'Gratis selbst bauen', vorlage: 'rechner' },
@@ -113,6 +135,9 @@
     ['liste', 'Ich brauche eine Checkliste', ['wb-liste'], /liste|check|abhak|aufgab|kasse|putz|ablauf/i],
     ['preise', 'Ich will Preise rechnen', ['wb-rechner'], /preis|rechn|kost|offert|menge/i],
     ['quiz', 'Ich will etwas abfragen', ['wb-quiz'], /quiz|frage|lern|test|prüf/i],
+    ['tanzen', 'Ich will tanzen lernen', ['milulu'], /tanz|salsa|bachata|merengue|cumbia|musik/i],
+    ['eltern', 'Meine Eltern werden vergesslich', ['granny', 'erinnerung'], /eltern|mutter|vater|oma|opa|alt|vergesslich|demenz/i],
+    ['hund', 'Wir haben einen Hund', ['waefwaef'], /hund|welpe|gassi|spazier/i],
     ['app', 'Ich brauche eine eigene App', ['builder'], /app|eigene|programm|idee/i]
   ];
   var PROB_NAME = {}; PROB.forEach(function (p) { PROB_NAME[p[0]] = p[1]; });
@@ -326,6 +351,12 @@
       });
       pc.appendChild(b);
     });
+    var KUNDEN = [['🥐 Ich bin Bäckerin', ['wb-rechner', 'wb-liste', 'erinnerung'], 'Hasi zeigt auf die Waage für Mehl und dann auf eine Liste.'], ['🍎 Ich bin Lehrer', ['wb-quiz', 'transkript', 'zeichentafel'], 'Hasi hält eine kleine Tafel hoch und malt ein Fragezeichen.'], ['🧸 Ich bin ein Kind', ['mondschein', 'milulu'], 'Hasi hüpft einmal und legt dann die Pfoten unter die Wange.']];
+    var kz = document.createElement('div'); kz.className = 'chips kunden'; kz.id = 'kunden';
+    var kl = document.createElement('p'); kl.className = 'sub'; kl.textContent = 'Oder sag Hasi, wer du bist:';
+    KUNDEN.forEach(function (k) { var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = k[0];
+      b.addEventListener('click', function () { zaehl('probleme'); glocke(); hasi('verbeugen', 'Hallo!', k[2], 2200); setTimeout(function () { treffer(k[1]); }, ruhig ? 0 : 700); }); kz.appendChild(b); });
+    pc.parentNode.insertBefore(kl, pc.nextSibling); pc.parentNode.insertBefore(kz, kl.nextSibling);
     $('suchen').addEventListener('click', suchen);
     $('eigenes').addEventListener('keydown', function (e) { if (e.key === 'Enter') suchen(); });
     document.querySelectorAll('.reiter button').forEach(function (b) { b.addEventListener('click', function () { regal(b.getAttribute('data-r')); hasi('schild', b.textContent.split('-')[0].split(' ')[0], 'Hasi zeigt mit dem goldenen Schlüssel auf das ' + b.textContent + '.', 1800); }); });
@@ -348,8 +379,43 @@
     $('merkTeilen').addEventListener('change', function () { leg('hasi.teilen', $('merkTeilen').checked); if ($('merkTeilen').checked) teilen(); });
     $('merkWeg').addEventListener('click', function () { try { localStorage.removeItem(LK); } catch (e) {} L = leer(); merk(); hasi('nicken', 'Leer', 'Hasi reisst die Seite aus dem Notizbuch und lächelt.'); });
     var t = heute(); if (L.tage.indexOf(t) < 0) { L.tage.push(t); leg(LK, L); }
-    merk(); teilen();
+    merk(); teilen(); runde2();
     setTimeout(function () { glocke(); hasi('verbeugen', 'Willkommen', 'Die Türglocke bimmelt. Hasi verbeugt sich und zeigt mit der Pfote auf den Laden.', 2400); }, 500);
   }
+  /* ---------- Runde 2: erster Besuch als Pantomime, Ton, offline ---------- */
+  var SCHILDER = [
+    ['🙋', 'Zeig dein Problem', 'Hasi zeigt auf dich, dann auf sein Ohr: Er hört zu, aber er spricht nie.'],
+    ['🧊', 'Hasi holt das Werkzeug', 'Er öffnet mit dem goldenen Schlüssel das Regal und legt einen leuchtenden Würfel auf den Tresen.'],
+    ['🎁', 'Ausprobieren und mitnehmen', 'Viele Werkzeuge kannst du gratis ausprobieren. Auf der Werkbank baust du dein eigenes und nimmst es als Datei mit.']
+  ];
+  function ersterBesuch() {
+    if (hol('hasi.besucht', false)) return;
+    var o = document.createElement('div'); o.className = 'pant'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-label', 'So geht Hasis Laden');
+    var i = 0;
+    function zeig() { var x = SCHILDER[i];
+      o.innerHTML = '<div class="pant-box"><small>' + (i + 1) + ' / 3</small><div class="pant-em">' + x[0] + '</div><div class="pant-schild">' + esc(x[1]) + '</div><p>' + esc(x[2]) + '</p><button type="button" class="btn an" id="pantWeiter">' + (i < 2 ? 'Weiter' : 'In den Laden') + '</button><button type="button" class="pant-skip" id="pantSkip">Überspringen</button></div>';
+      hasi(['winken', 'schild', 'daumen'][i], x[1], x[2], 0);
+      o.querySelector('#pantWeiter').addEventListener('click', function () { i++; if (i < SCHILDER.length) zeig(); else fertig(); });
+      o.querySelector('#pantSkip').addEventListener('click', fertig); }
+    function fertig() { leg('hasi.besucht', true); o.remove(); glocke(); hasi('verbeugen', 'Willkommen', 'Hasi verbeugt sich und hält die Ladentür auf.', 2400); }
+    zeig(); document.body.appendChild(o);
+  }
+  function runde2() {
+    var k = document.querySelector('.knoepfe');
+    if (k) { var tb = document.createElement('button'); tb.type = 'button'; tb.className = 'btn zwei'; tb.id = 'tonBtn';
+      var tz = function () { tb.textContent = hol('hasi.ton', true) ? '🔔 Klänge an' : '🔕 Klänge aus'; };
+      tb.addEventListener('click', function () { leg('hasi.ton', !hol('hasi.ton', true)); tz(); if (hol('hasi.ton', true)) { beruehrt = true; klang('pling'); } hasi('nicken', hol('hasi.ton', true) ? '🔔' : '🔕', 'Hasi hält sich die Ohren zu, dann lässt er sie wieder los.', 1600); });
+      tz(); k.appendChild(tb); }
+    ersterBesuch();
+    addEventListener('offline', function () { hasi('schild', 'Offline', 'Hasi dreht das Schild an der Tür um: Der Laden bleibt offen, nur der Server schläft.', 3000); });
+    if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(function () {});
+  }
+  var r2 = document.createElement('style');
+  r2.textContent = '.pant{position:fixed;inset:0;z-index:9000;background:rgba(6,8,24,.8);display:flex;align-items:center;justify-content:center;padding:16px}' +
+    '.pant-box{width:100%;max-width:400px;background:linear-gradient(170deg,#3b2a1c,#1b1530);border:3px solid #e8b94a;border-radius:24px;padding:20px 18px;text-align:center;color:#fff6e4}' +
+    '.pant-box small{opacity:.7}.pant-em{font-size:3rem;margin:6px 0}.pant-schild{display:inline-block;background:#7a5232;border:3px solid #e8b94a;border-radius:8px;padding:8px 14px;font:800 1.1rem Fraunces,Georgia,serif;color:#f6d98c;transform:rotate(-2deg)}' +
+    '.pant-box p{font-style:italic;line-height:1.5;margin:12px 0 14px}.pant-box .btn{width:100%}.pant-skip{background:none;border:0;color:#d8cbb4;font:inherit;min-height:44px;margin-top:6px;cursor:pointer}' +
+    '.hasi-fig.mit-bild svg{opacity:0}#hasiBild{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.kunden{margin-top:6px}';
+  document.head.appendChild(r2);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
