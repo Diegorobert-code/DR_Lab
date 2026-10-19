@@ -2,13 +2,18 @@
    Liegt im App-Ordner ein Bild posen/<pose>.jpg (z. B. von Tinko), zeigt die Figur bei dieser Pose
    genau dieses Bild. Fehlt es, bleibt das eine Figurenbild mit seiner CSS-Animation.
    Es wird erst nachgeschaut, wenn eine Pose zum ersten Mal vorkommt, und pro Seitenaufruf nur einmal.
+   Nur Posen aus POSEN_DA (unten) werden angefragt.
    Nutzung: FigurPosen.zeige(imgElement, 'lachen', 2500, ['freut'])  (letztes = Ersatz-Posen) */
 (function () {
   'use strict';
   if (window.FigurPosen) return;
+  // Nur Posen aus dieser Liste werden angefragt (so gibt es keine 404 für fehlende Bilder).
+  // Liegt ein Bild posen/<pose>.jpg im Ordner, hier den Namen eintragen, z. B. ['lachen', 'winken'].
+  // Eine App kann die Liste auch vorher mit window.POSEN_DA setzen. Leer = gar nichts wird angefragt.
+  var POSEN_DA = Array.isArray(window.POSEN_DA) ? window.POSEN_DA : [];
   var stand = {};
   function pruef(p) {
-    if (!p) return Promise.resolve(null);
+    if (!p || POSEN_DA.indexOf(p) < 0) return Promise.resolve(null);
     if (stand[p]) return stand[p];
     stand[p] = new Promise(function (res) {
       var im = new Image();
