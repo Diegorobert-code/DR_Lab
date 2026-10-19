@@ -297,14 +297,42 @@ header .hs-kopf-rechts{margin-left:auto;display:flex;align-items:center;gap:8px}
 @media (max-width:360px){.zgrid{grid-template-columns:repeat(3,1fr)}}
 </style>
 
+<style id="r3Css">
+/* Runde 3: erster Eindruck (8-px-Raster, transform/opacity, reduzierte Bewegung) */
+.hsbuehne .fig.r3-hops img{animation:r3Hops .9s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes r3Hops{0%{transform:translateY(24px) scale(.82);opacity:.4}45%{transform:translateY(-14px) scale(1.06) rotate(-4deg);opacity:1}70%{transform:translateY(0) scale(.97) rotate(3deg)}100%{transform:none}}
+.hsbuehne .r3-row{display:grid;grid-template-columns:1fr auto;gap:8px}
+.hsbuehne .r3-row .btn{min-height:52px;font-size:16px;font-weight:700;white-space:nowrap;padding:0 16px}
+.hsbuehne .r3-start{box-shadow:0 8px 24px rgba(224,123,46,.45);animation:r3Glanz 2.8s ease-in-out 1.6s 2}
+@keyframes r3Glanz{50%{transform:scale(1.03);box-shadow:0 10px 30px rgba(242,193,78,.55)}}
+.r3-funken{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;min-height:44px;margin:8px auto 0;padding:0 16px;border-radius:999px;border:1px solid rgba(242,193,78,.4);background:rgba(242,193,78,.12);color:#ffe6a8;font:500 15px/1 var(--font, inherit);cursor:pointer}
+.r3-funken b{font-weight:800;color:#F2C14E;font-variant-numeric:tabular-nums}
+.r3-funken .r3-trenn{opacity:.5}
+.r3-funken .r3-stern{display:inline-block;animation:r3Funkel 2.4s ease-in-out infinite}
+.r3-funken.r3-pop{animation:r3Pop .6s cubic-bezier(.3,1.6,.5,1)}
+@keyframes r3Funkel{50%{transform:scale(1.25) rotate(15deg)}}
+@keyframes r3Pop{40%{transform:scale(1.12)}100%{transform:none}}
+.r3-safe{position:relative;z-index:1;margin:8px 0 0;font-size:13px;color:#cfd5ea;opacity:.85}
+.r3-toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 16px);z-index:2147483200;transform:translate(-50%,-16px);opacity:0;padding:12px 16px;border-radius:999px;background:#fff6e4;color:#2a1a05;font-weight:700;font-size:15px;box-shadow:0 10px 30px rgba(0,0,0,.35);pointer-events:none;transition:transform .35s cubic-bezier(.22,.8,.26,1),opacity .35s;white-space:nowrap;max-width:calc(100vw - 32px);overflow:hidden;text-overflow:ellipsis}
+.r3-toast.da{transform:translate(-50%,0);opacity:1}
+.tabs.r3-tabs{display:flex;gap:4px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch;-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}
+.tabs.r3-tabs.r3-ende{-webkit-mask-image:none;mask-image:none}
+.tabs.r3-tabs::-webkit-scrollbar{display:none}
+.tabs.r3-tabs .tab{flex:none;min-height:44px;padding:0 16px;font-size:15px;scroll-snap-align:center}
+.r3-intro{margin-bottom:16px}
+.panel select{background:#101c46;color:#f3ecdf;border:1px solid #2a3a70}
+.panel.r3-rein{animation:r3Rein .35s cubic-bezier(.22,.8,.26,1) both}
+@keyframes r3Rein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.hsbuehne .fig.r3-hops img,.r3-start,.r3-funken .r3-stern,.r3-funken.r3-pop,.panel.r3-rein{animation:none!important}.r3-toast{transition:none}}
+</style>
 </head>
 <body>
-<script src="../nova/intro.js" data-art="funken" data-bild="../nova/figuren/sparky.jpg" data-text="Sparky ist da"></script>
+<script src="../nova/intro.js" data-art="funken" data-bild="figur-gross.jpg" data-text="Hoi! Sparky ist wach."></script>
 
 <div class="wrap">
   <header>
     <img class="figur-logo" src="figur.jpg" alt="">
-    <div><h1>HumanSpark</h1><p>Körper und Kosmos · DR Lab</p></div>
+    <div><h1>HumanSpark</h1><p>Körper und Kosmos</p></div>
     <div class="hs-kopf-rechts"><span data-feedback-slot></span><button class="medaillon" id="medal" type="button" aria-label="Sparkys Herz-Medaillon"></button></div>
   </header>
 
@@ -2740,9 +2768,9 @@ $('kOeffMess').addEventListener('click', function(){ showTab('messen'); });
 
 /* ---------- Onboarding beim ersten Start ---------- */
 var ONB = [
-  ['Hey, ich bin Sparky.', 'Ein Fuchs mit einem Herz-Medaillon. Ich helfe dir, deinen Körper zu spüren, und ich höre zu.', 'freut'],
-  ['Messen, üben, spüren.', 'Unter «Messen» siehst du deinem Herz beim Beruhigen zu. Unter «Übungen» und «Kosmos» zeige ich dir kleine Übungen. Unter «Herz» frage ich: Was wünschst du dir wirklich?', 'uebung'],
-  ['Alles bleibt bei dir.', 'Deine Daten bleiben auf deinem Handy. HumanSpark ist kein medizinisches Gerät, stellt keine Diagnosen und ersetzt keine Behandlung. Im Notfall: 144.', 'spiegelt']
+  ['Hoi, ich bin Sparky.', 'Ein Fuchs mit einem Herz-Medaillon. Ich helfe dir, deinen Körper zu spüren, und ich höre zu.', 'freut'],
+  ['Jeden Tag ein Funke.', 'Eine Minute atmen, messen oder spüren. Jedes Mal leuchtet ein Funke auf.', 'uebung'],
+  ['Alles bleibt bei dir.', 'Deine Daten bleiben auf deinem Handy. Kein medizinisches Gerät, keine Diagnose, kein Ersatz für eine Behandlung. Im Notfall: 144.', 'spiegelt']
 ];
 var onbI = 0;
 function onbZeige(){
@@ -2751,7 +2779,7 @@ function onbZeige(){
   $('onbPunkte').querySelectorAll('i').forEach(function(p, j){ p.classList.toggle('an', j <= onbI); });
   $('onbWeiter').textContent = onbI === ONB.length - 1 ? 'Los geht’s' : 'Weiter';
 }
-function onbZu(){ $('onb').classList.add('hidden'); try { localStorage.setItem('hs_onb', '1'); } catch(e){} hsSag('Schön, dass du da bist. Tipp auf «Sparky sagt Hallo», dann rede ich mit dir.'); }
+function onbZu(){ $('onb').classList.add('hidden'); try { localStorage.setItem('hs_onb', '1'); } catch(e){} hsSag('Schön, bist du da. Tipp auf «1 Minute mit Sparky», dann leuchtet dein erster Funke.'); hsPose('freut', 3500); }
 $('onbWeiter').addEventListener('click', function(){ if (onbI < ONB.length - 1){ onbI++; onbZeige(); } else onbZu(); });
 $('onbSkip').addEventListener('click', onbZu);
 $('onbNochmal').addEventListener('click', function(){ onbI = 0; onbZeige(); $('onb').classList.remove('hidden'); });
@@ -2763,6 +2791,149 @@ startMeasure = function(d){ hsPose('misst'); hsSag('Ganz still. Ich zähle mit d
 var _showResult = showResult;
 showResult = function(e, b){ var r = _showResult(e, b); hsPose('freut', 4000); if (e && e.stage) hsSag('Stufe ' + e.stage + ': ' + STAGES[e.stage - 1].name + '. Das ist kein Urteil, nur ein Bild. Magst du eine Übung machen?'); return r; };
 
+/* ---------- Runde 3 (19.10.2026): Wow beim ersten Öffnen ---------- */
+(function () {
+  var ruhig = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var KEY = 'hs_funken';
+  function load() { try { var v = JSON.parse(localStorage.getItem(KEY) || 'null'); return v && typeof v === 'object' ? v : null; } catch (e) { return null; } }
+  var F = load() || { n: 0, tage: [] };
+  if (!Array.isArray(F.tage)) F.tage = [];
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(F)); } catch (e) {} }
+  function tag(d) { d = d || new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function serie() {
+    var set = {}, n = 0, d = new Date(); F.tage.forEach(function (t) { set[t] = 1; });
+    if (!set[tag(d)]) d.setDate(d.getDate() - 1); // heute noch offen: gestern zählt weiter
+    while (set[tag(d)]) { n++; d.setDate(d.getDate() - 1); }
+    return n;
+  }
+  function brr(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
+  function sag(t, pose, ms) { try { hsPose(pose || 'freut', ms || 3500); hsSag(t); } catch (e) {} }
+
+  /* ---------- Funken-Leiste in der Bühne ---------- */
+  var leiste = document.createElement('button');
+  leiste.type = 'button'; leiste.className = 'r3-funken'; leiste.id = 'r3Funken';
+  function leisteZeichnen(neu) {
+    var s = serie();
+    leiste.innerHTML = '<span class="r3-stern" aria-hidden="true">✨</span><b>' + F.n + '</b> ' + (F.n === 1 ? 'Funke' : 'Funken') +
+      (s > 1 ? '<span class="r3-trenn" aria-hidden="true">·</span>' + s + ' Tage in Folge' : F.n ? '' : '<span class="r3-trenn" aria-hidden="true">·</span>dein erster wartet');
+    leiste.setAttribute('aria-label', F.n + ' Funken' + (s > 1 ? ', ' + s + ' Tage in Folge' : '') + '. Verlauf öffnen');
+    if (neu) { leiste.classList.remove('r3-pop'); void leiste.offsetWidth; leiste.classList.add('r3-pop'); }
+  }
+  leiste.addEventListener('click', function () { showTab('verlauf'); });
+
+  function sterne(el, n) {
+    if (ruhig || !el) return;
+    var r = el.getBoundingClientRect(), farben = ['#F2C14E', '#E07B2E', '#ffffff', '#ffb3c1'];
+    for (var i = 0; i < n; i++) {
+      var st = document.createElement('i'); st.className = 'film-stern';
+      var w = Math.random() * Math.PI * 2, d = 40 + Math.random() * 60;
+      st.style.left = (r.left + r.width / 2) + 'px'; st.style.top = (r.top + r.height / 2) + 'px';
+      st.style.setProperty('--x', Math.cos(w) * d + 'px'); st.style.setProperty('--y', Math.sin(w) * d + 'px'); st.style.setProperty('--c', farben[i % 4]);
+      document.body.appendChild(st); setTimeout(st.remove.bind(st), 800);
+    }
+  }
+  var letzterFunke = 0;
+  function funke(grund) {
+    var jetzt = Date.now(); if (jetzt - letzterFunke < 4000) return; // eine Übung mit Eintrag zählt einmal
+    letzterFunke = jetzt;
+    var erster = F.n === 0, heute = tag(), neuerTag = F.tage.indexOf(heute) < 0;
+    F.n++; if (neuerTag) { F.tage.push(heute); if (F.tage.length > 400) F.tage.shift(); }
+    save(); leisteZeichnen(true);
+    var s = serie();
+    sterne(leiste, 14); brr([15, 40, 15]);
+    try { hsMedaillon('#F2C14E', 2200); } catch (e) {}
+    var t = erster ? 'Dein erster Funke! Schön, dass du dir die Minute geschenkt hast.'
+      : neuerTag && s > 1 ? s + ' Tage in Folge. Dein Funke leuchtet.'
+      : ['Noch ein Funke. Spür kurz nach, wie es jetzt ist.', 'Ein Funke mehr. Das zählt.', 'Schön. Dein Körper hat es gemerkt.'][F.n % 3];
+    toast('✨ ' + (grund || 'Funke') + ' · ' + F.n + ' ' + (F.n === 1 ? 'Funke' : 'Funken'));
+    sag(t, 'freut', 4500);
+  }
+  function toast(t) {
+    var el = $('r3Toast');
+    if (!el) { el = document.createElement('div'); el.id = 'r3Toast'; el.className = 'r3-toast'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+    el.textContent = t; el.classList.remove('da'); void el.offsetWidth; el.classList.add('da');
+    clearTimeout(el._t); el._t = setTimeout(function () { el.classList.remove('da'); }, 2600);
+  }
+
+  /* ---------- Bühne: lebendiger Gruss und ein klarer erster Schritt ---------- */
+  function gruss() {
+    var h = new Date().getHours();
+    var hallo = h < 5 ? 'Noch wach?' : h < 11 ? 'Guete Morge!' : h < 17 ? 'Hoi!' : h < 22 ? 'Guete Abig!' : 'Schön, bist du da.';
+    var s = serie();
+    if (!F.n) return hallo + ' Eine Minute atmen mit mir? Dann leuchtet dein erster Funke.';
+    if (s > 1) return hallo + ' ' + s + ' Tage in Folge. Holen wir uns den nächsten Funken?';
+    return hallo + ' Schön, bist du wieder da. Eine Minute für dich?';
+  }
+  function buehne() {
+    var b = $('hsBuehne'); if (!b) return;
+    b.classList.add('r3-wach');
+    var row = b.querySelector('.row');
+    // Hauptknopf: 1 Minute mit Sparky (Atmen 4-6). «Hallo» sagt Sparky jetzt, wenn man ihn antippt.
+    var alt = $('hsbHallo');
+    if (alt) {
+      var neu = alt.cloneNode(false); neu.id = 'hsbHallo'; neu.className = 'btn primary r3-start';
+      neu.innerHTML = '<span aria-hidden="true">✨</span> 1 Minute mit Sparky';
+      alt.parentNode.replaceChild(neu, alt);
+      neu.addEventListener('click', function () {
+        brr(10);
+        showTab('uebungen');
+        setTimeout(function () { try { uStart(['atem46']); } catch (e) {} }, 120);
+      });
+    }
+    var reden = $('hsbReden'); if (reden) reden.innerHTML = '<span aria-hidden="true">💬</span> Reden';
+    if (row) row.classList.add('r3-row');
+    row && row.parentNode.insertBefore(leiste, row.nextSibling);
+    var safe = document.createElement('p'); safe.className = 'r3-safe';
+    safe.textContent = 'Nur auf deinem Handy. Kein medizinisches Gerät, keine Diagnose.';
+    leiste.parentNode.insertBefore(safe, leiste.nextSibling);
+    var img = $('hsbImg');
+    if (img) img.addEventListener('click', function () {
+      try { speak($('hsbBlase').textContent); } catch (e) {}
+      brr(8); sterne(img, 6);
+    });
+    leisteZeichnen(false);
+    // Auftritt: Sparky hüpft herein und sagt Hallo (nach dem Intro).
+    var verz = sessionStorage.getItem('r3Gesehen') ? 200 : 1200;
+    try { sessionStorage.setItem('r3Gesehen', '1'); } catch (e) {}
+    setTimeout(function () {
+      var fig = $('hsbFig'); if (fig && !ruhig) { fig.classList.remove('r3-hops'); void fig.offsetWidth; fig.classList.add('r3-hops'); }
+      if (!document.querySelector('#onb:not(.hidden)')) sag(gruss(), 'freut', 3500);
+    }, verz);
+  }
+
+  /* ---------- Belohnung: Übung fertig oder Eintrag gespeichert ---------- */
+  function haken() {
+    var fertig = $('uFertig');
+    if (fertig && 'MutationObserver' in window) {
+      new MutationObserver(function () { if (fertig.classList.contains('hidden')) return; var ub = $('uBuehne'), bi = ub && ub.querySelector('img'); if (bi) { bi.src = poseBild('freut') || SPARKY_BILD; sterne(bi, 10); } funke('Übung geschafft'); }).observe(fertig, { attributes: true, attributeFilter: ['class'] });
+    }
+    var origAdd = addEntry;
+    addEntry = function (e) { var r = origAdd.apply(this, arguments); try { funke(e && e.type === 'measure' ? 'Messung gespeichert' : 'Eintrag gespeichert'); } catch (x) {} return r; };
+  }
+
+  /* ---------- Aufräumen: Vision-Text in «Ideen», Reiter in einer Zeile ---------- */
+  function aufraeumen() {
+    var intro = document.querySelector('.intro'), ideen = $('p-ideen');
+    if (intro && ideen) { intro.classList.add('r3-intro'); ideen.insertBefore(intro, ideen.firstChild); }
+    var tabs = document.querySelector('.tabs');
+    if (tabs) {
+      tabs.classList.add('r3-tabs');
+      var mitte = function () { var a = tabs.querySelector('[aria-selected="true"]'); if (a && tabs.scrollWidth > tabs.clientWidth) tabs.scrollTo({ left: a.offsetLeft - (tabs.clientWidth - a.offsetWidth) / 2, behavior: ruhig ? 'auto' : 'smooth' }); };
+      tabs.addEventListener('click', function (e) { if (e.target.closest('.tab')) { brr(6); setTimeout(mitte, 30); } });
+      var kante = function () { tabs.classList.toggle('r3-ende', tabs.scrollLeft + tabs.clientWidth >= tabs.scrollWidth - 4); };
+      tabs.addEventListener('scroll', kante, { passive: true }); kante();
+    }
+    // Tabs wechseln: weicher Szenenwechsel
+    if (!ruhig) {
+      var origTab = showTab;
+      showTab = function (n) { origTab.apply(this, arguments); var p = $('p-' + n); if (p) { p.classList.remove('r3-rein'); void p.offsetWidth; p.classList.add('r3-rein'); } };
+    }
+  }
+
+  function start() { aufraeumen(); buehne(); haken(); }
+  start();
+  window.__hsFunken = { funke: funke, stand: function () { return { n: F.n, serie: serie() }; } };
+})();
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>

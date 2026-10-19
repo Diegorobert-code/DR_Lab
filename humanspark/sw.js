@@ -1,5 +1,5 @@
 // HumanSpark – Offline-Cache (nur eigene Dateien, keine Daten). Version hochzählen bei jeder Änderung.
-const CACHE = 'humanspark-v3';
+const CACHE = 'humanspark-v4';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-180.png', './icon-192.png', './feedback.js', './figur.jpg', './figur-gross.jpg',
   './posen/misst.jpg', './posen/uebung.jpg', './posen/spiegelt.jpg', './posen/freut.jpg',
   '../nova/figuren/sparky.jpg', '../nova/nova.js', '../nova/seelen.js', '../nova/intro.js', '../apps/sprechen/sprechen.js'];
