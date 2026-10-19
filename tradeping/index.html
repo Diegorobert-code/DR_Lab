@@ -155,6 +155,7 @@ section{margin-top:26px}
 .trade{min-height:36px;padding:0 10px;border-radius:10px;border:1px solid var(--line2);background:none;color:var(--teal);font-size:13px;font-weight:700}
 .info{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;font-size:14px;color:var(--ink2)}
 .info p{margin:0 0 8px}.info p:last-child{margin:0}
+.info .wbtn{min-height:44px;margin-top:6px;font-size:14px}
 footer{margin-top:26px;text-align:center;font-size:13px;color:var(--muted)}
 footer b{color:var(--ink2);font-weight:600}
 
@@ -340,7 +341,7 @@ footer b{color:var(--ink2);font-weight:600}
   <section>
     <div class="info">
       <p><b>Kurse:</b> Krypto live von CoinGecko, alle 60 Sekunden, solange TradePing offen ist. Für Aktien, Indizes und Gold gibt es keine verlässliche freie Quelle – dort trägst du den Kurs von Hand ein. TradePing erfindet keine Kurse.</p>
-      <p><b>Mitteilungen:</b> Auf dem iPhone kommen sie nur, wenn TradePing auf dem Home-Bildschirm liegt und offen ist. Pings im Hintergrund kommen später über Hermes.</p>
+      <p id="infoMit"><b>Mitteilungen:</b> Auf dem iPhone kommen sie nur, wenn TradePing auf dem Home-Bildschirm liegt und offen ist. Pings im Hintergrund kommen später über Hermes.</p>
     </div>
   </section>
 
@@ -393,7 +394,7 @@ if (!Array.isArray(items)) {
 var log = load(K.log, []);
 var set = load(K.set, {}); if (typeof set !== 'object' || !set) set = {};
 if (set.sound == null) set.sound = true;
-function persist(){ save(K.items, items); save(K.log, log); save(K.set, set); }
+function persist(){ save(K.items, items); save(K.log, log); save(K.set, set); wacheSync(false); }
 
 /* ---------- Format ---------- */
 function num(v){
@@ -522,6 +523,118 @@ function notify(it, e){
   } catch(x){}
 }
 
+/* ---------- Wache: Pings auch bei geschlossener App ---------- */
+// Adresse der TradePing-Wache (server/tradeping-wache.py), z. B. 'https://sense-….sslip.io/tradeping'.
+// Leer = aus: TradePing verhält sich genau wie bisher (Pings nur bei offener App).
+// Gilt für die Web-Version. Die iPhone-App nimmt nur «wache» aus appstore/apps.json (setzt window.TP_WACHE).
+var WACHE_ADRESSE = '';
+var WACHE = String(typeof window.TP_WACHE === 'string' ? window.TP_WACHE : WACHE_ADRESSE).replace(/\/+$/, '');
+if (!/^https:\/\/[^\s]+$/.test(WACHE) && !/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/[^\s]*)?$/.test(WACHE)) WACHE = '';
+var wache = { push:false, timer:null, letzt:'' };
+function wacheAktiv(){ return !!WACHE && !set.wacheAus; }
+function geraetId(){
+  if (!/^[a-f0-9]{32}$/.test(set.geraet || '')) {
+    var a = new Uint8Array(16); crypto.getRandomValues(a);
+    set.geraet = Array.prototype.map.call(a, function(b){ return ('0' + b.toString(16)).slice(-2); }).join('');
+    save(K.set, set);
+  }
+  return set.geraet;
+}
+function wacheRuf(pfad, body, ms){
+  var ctl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  var to = setTimeout(function(){ if (ctl) ctl.abort(); }, ms || 10000);
+  var o = { cache:'no-store' };
+  if (ctl) o.signal = ctl.signal;
+  if (body) { o.method = 'POST'; o.headers = { 'Content-Type':'application/json' }; o.body = JSON.stringify(body); }
+  return fetch(WACHE + pfad, o).then(function(r){ clearTimeout(to); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }, function(e){ clearTimeout(to); throw e; });
+}
+// Nur Krypto mit Marke geht an die Wache (Aktien, Indizes, Gold haben keinen Live-Kurs).
+function wacheMarken(){
+  return items.filter(function(i){ return i.kind === 'crypto' && i.cg && (i.over != null || i.under != null); }).slice(0, 50).map(function(i){
+    return { id:i.id, sym:i.sym, cg:i.cg, cur:i.cur, ueber:i.over, unter:i.under, scharf_ueber:i.aO !== false, scharf_unter:i.aU !== false };
+  });
+}
+// Daten gehen erst an die Wache, wenn Mitteilungen erlaubt sind und die Push-Adresse angemeldet ist.
+function wacheSync(sofort){
+  if (!wacheAktiv() || !set.wacheOk) return;
+  clearTimeout(wache.timer);
+  wache.timer = setTimeout(function(){
+    var body = { geraet:geraetId(), ruhe_bis:snoozed() ? set.snooze : 0, marken:wacheMarken() };
+    var sig = JSON.stringify([body.ruhe_bis, body.marken.map(function(m){ return [m.id, m.sym, m.cg, m.cur, m.ueber, m.unter]; })]);
+    if (!sofort && sig === wache.letzt) return;
+    wache.letzt = sig;
+    wacheRuf('/v1/marken', body).catch(function(){ wache.letzt = ''; });
+  }, sofort ? 0 : 1500);
+}
+function b64u(s){
+  s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '=';
+  var r = atob(s), a = new Uint8Array(r.length); for (var i = 0; i < r.length; i++) a[i] = r.charCodeAt(i); return a;
+}
+function wacheVerbunden(){ var neu = !set.wacheOk; wache.push = true; set.wacheOk = true; save(K.set, set); renderWache(); wacheSync(true); if (neu) wacheAbholen(); }
+function wachePush(laut){
+  if (!wacheAktiv()) return;
+  if (window.DRPush) { // iPhone-App: Apple Push
+    window.DRPush(function(token){
+      wacheRuf('/v1/geraet', { geraet:geraetId(), art:'apns', token:token }).then(wacheVerbunden).catch(function(){ if (laut) toast('Die Wache ist gerade nicht erreichbar. Pings kommen, solange TradePing offen ist.'); });
+    });
+    return;
+  }
+  if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window) || Notification.permission !== 'granted') return;
+  wacheRuf('/v1/info').then(function(info){
+    if (!info || !info.vapid) return;
+    return navigator.serviceWorker.ready.then(function(reg){
+      return reg.pushManager.getSubscription().then(function(s){ return s || reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey:b64u(info.vapid) }); });
+    }).then(function(sub){
+      return wacheRuf('/v1/geraet', { geraet:geraetId(), art:'webpush', abo:sub.toJSON() });
+    }).then(wacheVerbunden);
+  }).catch(function(){ if (laut) toast('Die Wache ist gerade nicht erreichbar. Pings kommen, solange TradePing offen ist.'); });
+}
+// Pings, die die Wache geschickt hat, während TradePing zu war: in den Verlauf, und die Marke gilt als erreicht.
+function wacheAbholen(){
+  if (!wacheAktiv() || !set.wacheOk) return Promise.resolve();
+  return wacheRuf('/v1/pings?geraet=' + geraetId() + '&seit=' + (set.wacheSeit || 0), null, 4000).then(function(j){
+    var neu = 0;
+    (j && j.pings || []).forEach(function(p){
+      set.wacheSeit = Math.max(set.wacheSeit || 0, p.zeit);
+      var dir = p.richtung === 'ueber' ? 'über' : 'unter';
+      var it = items.find(function(x){ return x.id === p.item; });
+      if (it && p.richtung === 'ueber' && it.over === p.marke) it.aO = false;
+      if (it && p.richtung === 'unter' && it.under === p.marke) it.aU = false;
+      var schon = log.some(function(e){ return e.sym === p.sym && e.dir === dir && e.mark === p.marke && !e.demo && Math.abs(e.t - p.zeit) < 5 * 60e3; });
+      if (schon) return;
+      log.push({ id:uid(), t:p.zeit, sym:p.sym, name:it ? it.name : p.sym, p:p.kurs, dir:dir, mark:p.marke, cur:p.cur, demo:false, quiet:!!p.still, wache:true });
+      neu++;
+    });
+    if (neu) { log.sort(function(a, b){ return b.t - a.t; }); if (log.length > 200) log.length = 200; }
+    save(K.items, items); save(K.log, log); save(K.set, set);
+    if (neu) renderLog();
+  }).catch(function(){});
+}
+function renderWache(){
+  if (!WACHE) return; // ohne Wache bleibt der Text wie bisher
+  var p = $('infoWache'), m = $('infoMit');
+  if (!p) { p = document.createElement('p'); p.id = 'infoWache'; m.parentNode.appendChild(p); p.addEventListener('click', wacheKnopf); }
+  if (set.wacheAus) {
+    m.innerHTML = '<b>Mitteilungen:</b> Pings kommen nur, solange TradePing offen ist. Die Wache ist ausgeschaltet.';
+    p.innerHTML = '<button class="btn ghost wbtn" type="button" id="bWache">Wache wieder einschalten</button>';
+  } else {
+    m.innerHTML = '<b>Mitteilungen:</b> Krypto-Pings kommen auch, wenn TradePing zu ist. Die TradePing-Wache prüft deine Krypto-Marken jede Minute. Sie kennt nur eine zufällige Geräte-Nummer, die Adresse für Mitteilungen und diese Marken – kein Konto, kein Name. Aktien, Indizes und Gold (Kurs von Hand) pingen nur bei offener App.' +
+      (window.DRPush ? '' : ' Auf dem iPhone: TradePing zum Home-Bildschirm hinzufügen (ab iOS 16.4) und dort Mitteilungen erlauben.');
+    p.innerHTML = (wache.push ? 'Wache verbunden.' : 'Wache noch nicht verbunden – erlaube oben die Mitteilungen.') +
+      (set.wacheOk ? '<br><button class="btn ghost wbtn" type="button" id="bWache">Wache aus und Daten dort löschen</button>' : '');
+  }
+}
+function wacheKnopf(ev){
+  if (!ev.target.closest('#bWache')) return;
+  if (set.wacheAus) { set.wacheAus = false; save(K.set, set); renderWache(); wachePush(true); return; }
+  if (!confirm('Wache ausschalten und alle Daten dort löschen? Pings kommen dann nur noch bei offener App.')) return;
+  wacheRuf('/v1/loeschen', { geraet:geraetId() }).then(function(){
+    set.wacheAus = true; set.wacheOk = false; set.wacheSeit = 0; wache.push = false; wache.letzt = ''; delete set.geraet; save(K.set, set);
+    if (navigator.serviceWorker && window.PushManager) navigator.serviceWorker.getRegistration().then(function(r){ return r && r.pushManager.getSubscription(); }).then(function(s){ if (s) s.unsubscribe(); }).catch(function(){});
+    renderWache(); toast('Daten bei der Wache gelöscht.');
+  }).catch(function(){ toast('Die Wache ist gerade nicht erreichbar. Bitte später nochmals.'); });
+}
+
 /* ---------- Render ---------- */
 var GA = 2.399963; // goldener Winkel
 function rel(it){
@@ -624,7 +737,7 @@ function renderLog(){
   $('bClear').hidden = false;
   $('log').innerHTML = log.map(function(e){
     return '<li class="' + (e.quiet ? 'quiet' : '') + '" data-id="' + e.id + '"><i></i><div class="t"><b>' + esc(e.sym) + '</b> ' + e.dir + ' ' + num(e.mark) + ' ' + esc(e.cur) +
-      (e.demo ? '<span class="tag">Demo</span>' : '') + (e.quiet ? '<span class="tag">Ruhe</span>' : '') +
+      (e.demo ? '<span class="tag">Demo</span>' : '') + (e.quiet ? '<span class="tag">Ruhe</span>' : '') + (e.wache ? '<span class="tag">Wache</span>' : '') +
       '<small>' + dayLabel(e.t) + ' · Kurs ' + money(e.p, e.cur) + '</small></div>' +
       '<button class="ibtn" type="button" data-act="dellog" aria-label="Eintrag löschen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></li>';
   }).join('');
@@ -816,11 +929,11 @@ $('bSound').addEventListener('click', function(){ set.sound = !set.sound; persis
 $('bRefresh').addEventListener('click', function(){ $('stand').innerHTML = '<b>Kurse laden …</b>'; refresh(); });
 $('bNotif').addEventListener('click', function(){
   if (!('Notification' in window)) { toast('Mitteilungen gehen hier nicht. Auf dem iPhone: TradePing zum Home-Bildschirm hinzufügen und von dort öffnen.'); return; }
-  if (Notification.permission === 'granted') { toast('Mitteilungen sind an – solange TradePing offen ist.'); return; }
+  if (Notification.permission === 'granted') { if (wacheAktiv()) { wachePush(true); toast(wache.push ? 'Mitteilungen sind an – Krypto-Pings kommen auch, wenn TradePing zu ist.' : 'Mitteilungen sind an. Die Wache wird verbunden …'); } else toast('Mitteilungen sind an – solange TradePing offen ist.'); return; }
   if (Notification.permission === 'denied') { toast('Mitteilungen sind blockiert. Du kannst sie in den Einstellungen wieder erlauben.'); return; }
   try {
     var r = Notification.requestPermission(function(){ renderBar(); });
-    if (r && r.then) r.then(function(){ renderBar(); if (Notification.permission === 'granted') toast('Mitteilungen an. Ping kommt, solange TradePing offen ist.'); });
+    if (r && r.then) r.then(function(){ renderBar(); if (Notification.permission === 'granted') { if (wacheAktiv()) { wachePush(true); toast('Mitteilungen an. Krypto-Pings kommen auch, wenn TradePing zu ist.'); } else toast('Mitteilungen an. Ping kommt, solange TradePing offen ist.'); } });
   } catch(e){ toast('Mitteilungen konnten nicht aktiviert werden.'); }
 });
 document.querySelectorAll('[data-ruhe]').forEach(function(b){
@@ -837,11 +950,12 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeS
 
 var timer = null;
 function startTimer(){ if (!timer) timer = setInterval(function(){ if (!document.hidden) refresh(); renderRuhe(); }, 60000); }
-document.addEventListener('visibilitychange', function(){ if (!document.hidden) { refresh(); renderRuhe(); } });
+document.addEventListener('visibilitychange', function(){ if (!document.hidden) { wacheAbholen().then(refresh); renderRuhe(); } });
 
-render(); refresh(); startTimer();
+render(); renderWache(); wacheAbholen().then(refresh); startTimer();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
-window.__tp = { items:function(){ return items; }, log:function(){ return log; } };
+if (wacheAktiv()) wachePush(false);
+window.__tp = { items:function(){ return items; }, log:function(){ return log; }, wache:function(){ return { adresse:WACHE, push:wache.push, geraet:set.geraet || null }; } };
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>

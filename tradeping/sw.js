@@ -1,5 +1,5 @@
 // TradePing – Offline-Cache (nur eigene Dateien, keine Kursdaten)
-const CACHE = 'tp-v5';
+const CACHE = 'tp-v6';
 const SERVER = 'https://sense-179-237-127-58.sslip.io/kursping';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './figur.jpg', './ping-3d.jpg'];
 self.addEventListener('install', e => {
@@ -19,14 +19,24 @@ self.addEventListener('fetch', e => {
     }).catch(() => caches.match(e.request).then(r => r || caches.match('./index.html')))
   );
 });
-self.addEventListener('notificationclick', e => {
-  e.notification.close();
-  e.waitUntil(self.clients.matchAll({ type: 'window' }).then(cs => cs.length ? cs[0].focus() : self.clients.openWindow('./')));
-});
-// Kurs-Ping: der Server schickt einen leeren Push, den Text holen wir hier ab.
+// Ein Push-Empfang für beide Wege:
+// - TradePing-Wache (server/tradeping-wache.py) schickt den Text gleich mit (JSON mit title).
+// - Kurs-Ping (tools/server/kursping.py) schickt einen leeren Push, den Text holen wir bei /meldung ab.
 self.addEventListener('push', e => {
+  let d = null;
+  try { d = e.data ? e.data.json() : null; } catch (x) { d = e.data && e.data.text() ? { body: e.data.text() } : null; }
+  if (d && (d.title || d.body)) {
+    e.waitUntil(self.registration.showNotification(d.title || 'Deine Marke ist erreicht.', {
+      body: d.body || '', tag: d.tag || 'tp-wache', icon: 'icon-192.png', badge: 'icon-192.png', data: d.tp || null
+    }));
+    return;
+  }
   e.waitUntil(self.registration.pushManager.getSubscription()
     .then(sub => fetch(SERVER + '/meldung?ep=' + encodeURIComponent(sub ? sub.endpoint : ''), { cache: 'no-store' }))
     .then(r => r.json()).catch(() => ({ titel: 'Mr. Ping', text: 'Schau kurz in die App.' }))
     .then(m => self.registration.showNotification(m.titel || 'Mr. Ping', { body: m.text || '', icon: 'icon-192.png', badge: 'icon-192.png', tag: 'kursping-' + Date.now() })));
+});
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type: 'window' }).then(cs => cs.length ? cs[0].focus() : self.clients.openWindow('./')));
 });
