@@ -1685,6 +1685,21 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 @keyframes filmStern{0%{opacity:1;transform:translate(0,0) scale(.4) rotate(0)}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(1.1) rotate(160deg)}}
 @media (prefers-reduced-motion:reduce){#figurStart *,#figurStart,.figur-hero,.figur-hero img,.figur-logo,.film-auf,.film-funke,#figurStart h1{animation:none!important}.film-funke{opacity:.6}.film-aurora i{animation:none!important}}
 </style>
+<style id="hsFeinschliff">
+/* HumanSpark: ruhige Bedienung. Ein Gesprächsknopf statt drei, Inhalt nie verdeckt. */
+.sp-knopf,.sp-blase,.nova-pille{display:none!important}
+body{padding-bottom:calc(env(safe-area-inset-bottom) + 96px)!important}
+.intro{background:rgba(22,35,79,.82)!important;border:1px solid rgba(242,193,78,.28);color:var(--ink)!important}
+.intro .vision{background:rgba(242,193,78,.14)!important;color:#F2C14E}
+.intro .safe{color:var(--muted);opacity:1}
+</style>
+<script>
+// Tab antippen: Inhalt sofort zeigen, nicht oben bei Sparky stehen bleiben
+document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click', function(){
+  var nav = document.querySelector('.tabs'), y = nav.getBoundingClientRect().top + scrollY - 8;
+  if (scrollY < y) scrollTo({top:y, behavior:'smooth'});
+}); });
+</script>
 <script>
 (function(){
   var ruhig=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
