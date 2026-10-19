@@ -248,6 +248,40 @@ body[data-stage="glut"] .zeitlicht{opacity:0}
 .wecker.hell p{color:var(--night)}
 body.dimmed .nova-btn,body.dimmed .fb-btn.float{display:none!important}
 .tel.small{padding:6px 12px;font-size:.88rem}
+/* ===== Fias Nest Runde 2: Bühne mit Posen, Einführung, Fia hört zu ===== */
+/* Posen: mit echtem Bild aus posen/<pose>.jpg nur sanft, sonst bewegt die CSS-Animation das eine Bild */
+.cover{cursor:pointer}
+.p-freut{animation:freut .9s ease-in-out 3!important}
+@keyframes freut{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-14px) rotate(-4deg)}60%{transform:translateY(0) rotate(3deg)}}
+.p-fliegt{animation:fliegt 2.6s ease-in-out infinite!important}
+@keyframes fliegt{0%,100%{transform:translate(0,0) rotate(-3deg)}25%{transform:translate(8px,-12px) rotate(4deg)}50%{transform:translate(0,-18px) rotate(-2deg)}75%{transform:translate(-8px,-8px) rotate(3deg)}}
+.p-atmet{animation:atmet 6s ease-in-out infinite!important}
+@keyframes atmet{50%{transform:scale(1.07)}}
+.p-hoert{animation:hoert 3.2s ease-in-out infinite alternate!important}
+@keyframes hoert{from{transform:rotate(-5deg) translateY(0)}to{transform:rotate(4deg) translateY(-4px)}}
+.echt{filter:none!important}
+.say.neu{animation:sagNeu .5s ease both}
+@keyframes sagNeu{from{opacity:.001;transform:translateY(6px)}}
+.scene.bildbg{background:var(--szbild) center/cover no-repeat}
+.scene.bildbg svg{opacity:0}
+/* Einführung beim ersten Start */
+.onb{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:max(20px,env(safe-area-inset-top,0px)) 16px max(20px,env(safe-area-inset-bottom,0px));background:rgba(3,5,15,.94);overflow-y:auto}
+.onb[hidden]{display:none}
+.onb-box{width:100%;max-width:400px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;align-items:stretch;text-align:center;padding:20px 18px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(160deg,rgba(27,44,107,.9),rgba(14,24,56,.95))}
+.onb-box>img{width:120px;height:120px;margin:0 auto;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 30px rgba(255,138,61,.45)}
+.onb-box h2{font-family:var(--display);font-weight:400;font-size:1.6rem;color:var(--gold)}
+.onb-box p{color:var(--cream);margin:0}
+.onb-box .muted{color:var(--muted)}
+.onb-box .row{justify-content:center}
+.onb-box label{text-align:left}
+.onb-punkte{display:flex;justify-content:center;gap:8px}
+.onb-punkte span{width:8px;height:8px;border-radius:50%;background:#26304f}
+.onb-punkte span.on{background:var(--gold)}
+.onb .skip{background:none;box-shadow:none;color:var(--muted);text-decoration:underline;font-weight:500;padding:4px}
+.onb .figs{grid-template-columns:repeat(4,1fr)}
+/* Fia hört zu */
+#zuhoeren .fia{width:150px;height:150px}
+.zquelle{font-size:.82rem}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -260,9 +294,9 @@ body.dimmed .nova-btn,body.dimmed .fb-btn.float{display:none!important}
 <section class="screen" id="home">
   <span class="tag" data-web-only>Entwurf</span>
   <div class="hero">
-    <img class="cover" id="cover" src="icon-512.png" alt="Fia, das Phönix-Küken, schläft im Nest unter Sternen">
+    <img class="cover" id="cover" src="cover.jpg" data-basis="cover.jpg" role="button" tabindex="0" alt="Fia, das Phönix-Küken, im Nest unter Sternen. Antippen, dann sagt Fia etwas.">
     <h1>Fias Nest</h1>
-    <p class="say" id="hello"></p>
+    <p class="say" id="hello" aria-live="polite"></p>
   </div>
   <div class="card" style="padding:10px">
     <div class="scene" id="homeScene" role="img" aria-label="Das Städtchen im KI-Verse bei Nacht, am Berg Fias Nest"></div>
@@ -299,6 +333,7 @@ body.dimmed .nova-btn,body.dimmed .fb-btn.float{display:none!important}
     <button class="tile" data-go="pause"><span class="ic">🍃</span><b>Pausen-Begleiter</b><small>Wenn du etwas weglässt</small></button>
     <button class="tile" data-go="gemeinsam"><span class="ic">🫶</span><b>Gemeinsam</b><small>Zu zweit oder als Familie</small></button>
     <button class="tile" data-go="nest"><span class="ic">🪶</span><b>Dein Nest</b><small>Zeiten, Begleiter, Wecker</small></button>
+    <button class="tile wide" data-go="zuhoeren"><span class="ic">👂</span><span><b>Fia hört zu</b><br><small>Erzähl, was dich beschäftigt. Fia antwortet sanft, nichts wird gespeichert.</small></span></button>
   </div>
   <a href="funkenmarkt.html" class="tel" style="text-align:center" data-web-only>✨ Funkenmarkt: Halt schenken und finden (Entwurf)</a>
   <div class="links"><button data-go="hilfe">Hilfe und Wegweiser</button><button data-go="ueber">Über Fias Nest</button><span data-feedback-slot></span></div>
@@ -400,7 +435,7 @@ body.dimmed .nova-btn,body.dimmed .fb-btn.float{display:none!important}
 <section class="screen" id="ausgluehen" hidden>
   <button class="ghost back" data-go="home">‹ Fias Nest</button>
   <header><h1>Ausglühen mit Fia</h1><p>Drei kleine Schritte. Du musst heute nichts mehr lösen.</p></header>
-  <div class="nest" aria-hidden="true"><div class="glow" id="aGlow"></div><img class="fia" id="aFia" src="icon-512.png" alt=""><img class="begleiter" id="aBegl" alt="" hidden></div>
+  <div class="nest" aria-hidden="true"><div class="glow" id="aGlow"></div><img class="fia" id="aFia" src="cover.jpg" data-basis="cover.jpg" data-pose="atmet" alt=""><img class="begleiter" id="aBegl" alt="" hidden></div>
   <p class="say" id="aSay">Schön, dass du da bist. Wir glühen jetzt langsam aus.</p>
   <ol>
     <li class="step active" id="a1"><span class="dot"></span><div class="text"><h2>Licht runter</h2><p>Deckenlicht aus, eine kleine warme Lampe an. Zimmer lüften, kühl ist gut.</p><button id="ab1">Erledigt</button></div></li>
@@ -524,8 +559,8 @@ body.dimmed .nova-btn,body.dimmed .fb-btn.float{display:none!important}
   </div>
   <div class="card">
     <h2>Deine Daten</h2>
-    <p class="muted">Alles, was du eingibst, bleibt nur auf diesem Gerät. Kein Konto, keine Werbung, nichts wird verschickt.</p>
-    <div class="row"><button class="ghost" data-export>Meine Daten sichern</button><button class="ghost" id="wipe">Alles löschen</button></div>
+    <p class="muted">Alles, was du eingibst, bleibt nur auf diesem Gerät. Kein Konto, keine Werbung. Nur wenn du im Nest das Häkchen setzt, gehen Lern-Zahlen (ohne Namen, ohne Texte, nie Stimme oder Bilder) an Sense Engine.</p>
+    <div class="row"><button class="ghost" data-export>Meine Daten sichern</button><button class="ghost" id="wipe">Alles löschen</button><button class="ghost" id="onbNochmals">Einführung zeigen</button></div>
   </div>
   <p class="note">Fias Nest · DR Lab, Zürich</p>
 </section>
@@ -651,7 +686,9 @@ body.dimmed .nova-btn,body.dimmed .fb-btn.float{display:none!important}
     <p class="muted">Fia merkt sich, welche Wege du am liebsten magst, und schlägt sie öfter vor. Nur Zahlen, nur auf diesem Gerät. Nie deine Texte, nie deine Stimme.</p>
     <ul class="list" id="merkt"></ul>
     <label class="switch" style="font-size:.9rem">Ich bin einverstanden, dass diese Zahlen (ohne Namen, ohne Texte) an Sense Engine gehen dürfen<input type="checkbox" id="lernOk"></label>
+    <label class="switch" style="font-size:.9rem">Einmal pro Woche von selbst weitergeben (nur mit verbundenem Server)<input type="checkbox" id="lernAuto"></label>
     <div class="row"><button class="ghost" id="lernTeilen" disabled>Zahlen weitergeben</button><button class="ghost" id="lernVergessen">Vergessen</button></div>
+    <p class="muted" id="lernStand" style="font-size:.82rem"></p>
   </div>
   <div class="card">
     <h2>Deine Daten</h2>
@@ -665,6 +702,52 @@ body.dimmed .nova-btn,body.dimmed .fb-btn.float{display:none!important}
   </div>
 </section>
 
+<!-- FIA HÖRT ZU -->
+<section class="screen" id="zuhoeren" hidden>
+  <button class="ghost back" data-go="home">‹ Fias Nest</button>
+  <header><h1>Fia hört zu</h1><p>Erzähl, was dich gerade beschäftigt. Fia antwortet kurz und sanft. Gespeichert wird nichts.</p></header>
+  <div class="nest" aria-hidden="true"><div class="glow"></div><img class="fia p-hoert" id="zFia" src="cover.jpg" data-basis="cover.jpg" data-pose="hoert" alt=""></div>
+  <div class="card">
+    <label>Was ist gerade da?<textarea id="zText" maxlength="1200" placeholder="z. B. Ich kann nicht abschalten, morgen ist viel los."></textarea></label>
+    <div class="row"><button id="zGo">Fia erzählen</button><button class="mic" id="zMic" data-ziel="zText" hidden>🎙 Einsprechen</button></div>
+    <p class="muted zquelle" id="zHinweis"></p>
+  </div>
+  <div class="card" id="zAntwortCard" hidden>
+    <p class="say" id="zAntwort" style="text-align:left;font-size:1.1rem"></p>
+    <p class="muted zquelle" id="zQuelle"></p>
+    <div class="row"><button class="ghost" id="zVor">Vorlesen</button><button class="ghost" id="zNest">Ins Sorgen-Nest legen</button><button class="ghost" data-go="bett">Zur Ruhe kommen</button></div>
+  </div>
+  <div class="card">
+    <p class="muted">Fia ist eine Begleiterin, keine Fachperson, und stellt keine Diagnose. Wenn es dir gerade sehr schwer geht, ruf an. Rund um die Uhr, in der Schweiz:</p>
+    <div class="row"><a class="tel small" href="tel:143">143 Die Dargebotene Hand</a><a class="tel small" href="tel:147">147 Pro Juventute</a><a class="tel small" href="tel:144">144 Notruf</a></div>
+  </div>
+</section>
+
+<!-- Einführung beim ersten Start -->
+<div class="onb" id="onb" hidden role="dialog" aria-modal="true" aria-labelledby="onbTitel">
+  <div class="onb-box">
+    <img id="onbFia" class="p-freut" src="figuren/fia.jpg" data-basis="figuren/fia.jpg" data-pose="freut" alt="Fia, das Phönix-Küken">
+    <div data-onb="0">
+      <h2 id="onbTitel">Hallo, ich bin Fia</h2>
+      <p>Ich bin ein kleines Phönix-Küken. Am Abend glühe ich langsam aus, am Morgen stehe ich neu auf. Komm, wir machen das zusammen.</p>
+    </div>
+    <div data-onb="1" hidden>
+      <h2>Dein Tag, dein Anker</h2>
+      <p class="muted">Wann stehst du meistens auf? Danach richtet sich dein ganzer Tag mit Fia.</p>
+      <div class="row"><label>Aufstehen<input type="time" id="onbAuf" value="06:30"></label><label>Schlafen gehen<input type="time" id="onbBett" value="22:30"></label></div>
+      <p class="muted">Wer sitzt mit dir im Nest?</p>
+      <div class="figs" id="onbFigs"></div>
+    </div>
+    <div data-onb="2" hidden>
+      <h2>Gut zu wissen</h2>
+      <p>Alles, was du eingibst, bleibt auf diesem Gerät. Kein Konto, keine Werbung.</p>
+      <p class="muted">Fias Nest ist ein Begleiter zum Ruhigwerden, kein Medizinprodukt, und ersetzt keine Fachperson. Wenn es dir sehr schwer geht: 143 Die Dargebotene Hand, im Notfall 144.</p>
+    </div>
+    <div class="onb-punkte" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
+    <div class="row"><button class="ghost" id="onbZurueck" hidden>Zurück</button><button id="onbWeiter">Weiter</button></div>
+    <button class="skip" id="onbSkip">Überspringen</button>
+  </div>
+</div>
 <!-- Trickfilm-Intro -->
 <div class="film" id="film" hidden>
   <div class="cam" id="filmCam"><div class="scene" id="filmScene"></div></div>
@@ -679,7 +762,7 @@ body.dimmed .nova-btn,body.dimmed .fb-btn.float{display:none!important}
 </div>
 <!-- Sanfter Wecker -->
 <div class="wecker" id="wecker" hidden>
-  <img src="figuren/fia.jpg" alt="" id="weckerFia">
+  <img src="figuren/fia.jpg" data-basis="figuren/fia.jpg" data-pose="wach" alt="" id="weckerFia">
   <p id="weckerSay">Gute Nacht. Fia weckt dich sanft zu deiner Aufstehzeit.</p>
   <div class="row" style="justify-content:center"><button id="weckerWach">Wecker aus</button><button id="weckerSnooze" hidden>Noch 5 Minuten liegen</button></div>
 </div>
@@ -711,7 +794,7 @@ function flash(t){const f=$('flash');f.textContent=t;f.hidden=false;clearTimeout
 
 /* Navigation */
 function stage(n){document.body.dataset.stage=n}
-const STAGE={home:0,morgen:0,tag:0,sorgen:1,ausgluehen:1,bett:3,glut:'glut',hilfe:0,ueber:0,ritual:0,woche:0,besonders:0,pause:0,gemeinsam:0,nest:0};
+const STAGE={zuhoeren:1,home:0,morgen:0,tag:0,sorgen:1,ausgluehen:1,bett:3,glut:'glut',hilfe:0,ueber:0,ritual:0,woche:0,besonders:0,pause:0,gemeinsam:0,nest:0};
 let AKTUELL=null;
 function go(id){
   const wechsel=AKTUELL&&AKTUELL!==id&&!reduce;AKTUELL=id;
@@ -941,13 +1024,13 @@ function szene(st,film){const morgen=st===0&&new Date().getHours()<11;let r=7;co
   <circle class="lantern" cx="141" cy="80" r="5" fill="#FFD27A"/><circle class="lantern" cx="141" cy="80" r="13" fill="#FF8A3D" opacity=".25"/>
   <polygon points="236,150 244,122 252,150" fill="#0a2a24"/><polygon points="250,150 259,116 268,150" fill="#0c3029"/><polygon points="114,150 121,128 128,150" fill="#0a2a24"/>
   <text x="96" y="94" font-size="7" fill="#AEB8DA" opacity=".8" font-family="Georgia">z z</text>
-  </svg><img class="sun" src="figuren/sunny.jpg" alt=""><img class="nestfia" src="figuren/fia.jpg" alt="">${film?'':`<span class="cap">${st>=2?'Das Städtchen schläft ein. Brix hält Nachtwache.':morgen?'Über dem Meer wird es hell.':'Nova schläft schon. Sunny fliegt über die Dächer.'}</span>`}`}
+  </svg><img class="sun" src="figuren/sunny.jpg" alt=""><img class="nestfia" data-pose="schlaeft" data-basis="figuren/fia.jpg" src="${poseBild('schlaeft')||'figuren/fia.jpg'}" alt="">${film?'':`<span class="cap">${st>=2?'Das Städtchen schläft ein. Brix hält Nachtwache.':morgen?'Über dem Meer wird es hell.':'Nova schläft schon. Sunny fliegt über die Dächer.'}</span>`}`}
 
 /* Tagesband: Fia fliegt mit der Uhrzeit, das nächste Ritual leuchtet. Nachts keine Uhr. */
 function renderBand(){const{A,B,N,nacht}=tagLage();const L=planListe().filter(x=>!x.nb);const pos=m=>Math.max(2,Math.min(98,(m-A)/(B-A)*100));
   const next=nacht?null:L.find(x=>x.m>N);
   $('band').innerHTML='<div class="bar"></div>'+L.map(x=>`<button class="mk ${x===next?'next':(!nacht&&x.m<=N)||nacht?'past':''}" style="left:${pos(x.m)}%" data-go="${x.go}" aria-label="${x.t}">${x.ic}</button>`).join('')+
-    `<img class="fly" src="figuren/fia.jpg" alt="" style="left:${nacht?98:pos(N)}%">`;
+    `<img class="fly" data-pose="fliegt" data-basis="figuren/fia.jpg" src="${poseBild('fliegt')||'figuren/fia.jpg'}" alt="" style="left:${nacht?98:pos(N)}%">`;
   $('bandSay').textContent=nacht?'Nacht. Fia schläft, die Zeit darf ruhen.':next?'Als Nächstes: '+next.t+' um '+hhmm(next.m)+'.':'Bald geht es ins Nest.'}
 
 /* Start: Szene, Tagesband, Fia glüht mit, Sonntags-Rückblick, eigenes Ritual */
@@ -1021,6 +1104,7 @@ const GESCHICHTEN=[
 const TAGE=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
 const heuteGeschichte=()=>(new Date().getDay()+6)%7;
 const NAMEN={atmen:'Atmen mit Fia',trommel:'Herzschlag-Trommel',koerper:'Körperreise',traum:'Fias Traumreise',tiefenruhe:'10 Min. Tiefenruhe',bilder:'Bilderreise',klang:'Leise Klänge',mini:'Mini-Ritual',zusammen:'Zusammen ausglühen'};
+NAMEN.zuhoeren='Fia hört zu';NAMEN.fiahallo='Mit Fia plaudern';
 GESCHICHTEN.forEach((g,i)=>NAMEN['story'+i]='Geschichte: '+g.t);
 NEU.bett=()=>{const box=$('geschichten');box.innerHTML='';const h=heuteGeschichte();
   GESCHICHTEN.forEach((g,i)=>{const b=document.createElement('button');b.className='story'+(i===h?' heute':'');
@@ -1134,7 +1218,7 @@ document.querySelectorAll('[data-mt]').forEach(c=>{c.checked=!!S.mt[c.dataset.mt
   c.onchange=async()=>{const k=c.dataset.mt;if(c.checked&&KANN_MT&&Notification.permission!=='granted'){let p='denied';try{p=await Notification.requestPermission()}catch(e){}
       if(p!=='granted'){c.checked=false;flash('Erinnerungen sind auf diesem Gerät nicht erlaubt.');return}}
     S.mt[k]=c.checked;save();if(c.checked)flash('Fia erinnert dich sanft.')}});
-if(!KANN_MT)$('mitteilungText').textContent=NATIV?'Erinnerungen kommen mit einem der nächsten Updates.':'Dieser Browser erlaubt hier keine Erinnerungen. Auf dem iPhone geht es, wenn du Fias Nest zum Home-Bildschirm hinzufügst (Teilen, «Zum Home-Bildschirm»).';
+if(!KANN_MT)$('mitteilungText').textContent=NATIV?'In der iPhone-App schickt Fias Nest selbst keine Mitteilungen. Stell dir die Zeiten unten in der Uhr-App oder in «Erinnerungen» ein, Fia rechnet sie dir aus.':'Dieser Browser erlaubt hier keine Erinnerungen. Auf dem iPhone geht es, wenn du Fias Nest zum Home-Bildschirm hinzufügst (Teilen, «Zum Home-Bildschirm»).';
 
 /* Dein Nest: Begleiter, Lernen, Export */
 NEU.nest=()=>{renderTag();const f=$('figs');f.innerHTML='';
@@ -1234,9 +1318,123 @@ NEU.gemeinsam=()=>{const box=$('leute');box.innerHTML='';const heuteL=tag().leut
     c.onpointerdown=()=>{t=setTimeout(()=>c.oncontextmenu(new Event('x')),800)};c.onpointerup=c.onpointerleave=()=>clearTimeout(t);box.appendChild(c)})};
 $('personAdd').onclick=()=>{const n=$('person').value.trim().slice(0,20);if(!n||S.leute.includes(n)||S.leute.length>=6)return;S.leute.push(n);save();$('person').value='';NEU.gemeinsam()};
 
+/* ===== Fias Nest Runde 2: Posen, Bühne, Einführung, Fia hört zu, Sense Engine, offline ===== */
+
+/* Posen: liegt posen/<pose>.jpg im Ordner, nimmt Fias Nest das Bild, sonst bewegt CSS das eine Fia-Bild.
+   Fehlende Bilder merkt sich das Gerät 12 Stunden, damit nicht bei jedem Start nachgefragt wird. */
+var POSEN=['wach','muede','schlaeft','fliegt','atmet','freut','hoert','staedtchen-nacht'],POSE_BILD={},POSE_KL=['p-wach','p-muede','p-schlaeft','p-fliegt','p-atmet','p-freut','p-hoert'];
+function poseBild(p){return(typeof POSE_BILD!=='undefined'&&POSE_BILD&&POSE_BILD[p])||null}
+function posenAnwenden(){
+  document.querySelectorAll('img[data-pose]').forEach(i=>{const b=poseBild(i.dataset.pose)||i.dataset.basis;if(b&&i.getAttribute('src')!==b)i.src=b;i.classList.toggle('echt',!!poseBild(i.dataset.pose))});
+  const bg=poseBild('staedtchen-nacht');document.querySelectorAll('.scene').forEach(sc=>{sc.classList.toggle('bildbg',!!bg);if(bg)sc.style.setProperty('--szbild','url("'+bg+'")')})}
+(function(){let nein={};try{nein=JSON.parse(localStorage.getItem('fiasnest.posenFehlen'))||{}}catch(e){}
+  const merk=n=>{try{localStorage.setItem('fiasnest.posenFehlen',JSON.stringify(n))}catch(e){}};
+  POSEN.forEach(p=>{if(nein[p]&&Date.now()-nein[p]<12*3600e3)return;const i=new Image();
+    i.onload=()=>{if(i.naturalWidth>10){POSE_BILD[p]='posen/'+p+'.jpg';delete nein[p];merk(nein);posenAnwenden()}};
+    i.onerror=()=>{nein[p]=Date.now();merk(nein)};i.src='posen/'+p+'.jpg'})})();
+/* Eine Pose für ein Bild setzen; nach ms wieder zurück zur Grundpose */
+const POSE_T=new WeakMap();
+function setPose(el,p,ms,zurueck){if(!el)return;POSE_KL.forEach(k=>el.classList.remove(k));el.classList.add('p-'+p);el.dataset.pose=p;
+  const b=poseBild(p)||el.dataset.basis;if(b&&el.getAttribute('src')!==b)el.src=b;el.classList.toggle('echt',!!poseBild(p));
+  clearTimeout(POSE_T.get(el));if(ms)POSE_T.set(el,setTimeout(()=>setPose(el,zurueck||'wach'),ms))}
+function grundPose(){const st=zeitStage();return st===3?'schlaeft':st>=1?'muede':'wach'}
+
+/* Bühne auf der Startseite: Fia antippen, sie bewegt sich und spricht (Figurenstimme über nova.js, sonst Gerätestimme) */
+const HALLO={wach:['Guten Morgen. Streck mit mir die Flügel, ganz weit.','Komm mit ans Licht. Zehn Minuten reichen.','Heute stehst du auf wie ein Phönix.'],
+  muede:['Der Abend beginnt. Wir glühen langsam aus.','Mach ein Licht kleiner. Ich warte hier.','Was dich beschäftigt, darf ins Sorgen-Nest.'],
+  schlaeft:['Psst. Die Nacht ist lang genug.','Du musst jetzt nichts lösen. Atme lang aus.','Ich bin da. Ganz leise.']};
+let halloI=0;
+function sag(t){const h=$('hello');h.textContent=t;h.classList.remove('neu');void h.offsetWidth;h.classList.add('neu')}
+function fiaHallo(){const g=grundPose(),L=HALLO[g],t=L[halloI++%L.length];setPose($('cover'),g==='schlaeft'?'atmet':'freut',3200,g);sag(t);sprich(t);lernen('weg','fiahallo')}
+$('cover').addEventListener('click',fiaHallo);
+$('cover').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fiaHallo()}});
+const _home=NEU.home;NEU.home=()=>{_home();const c=$('cover');c.dataset.basis='cover.jpg';setPose(c,grundPose());posenAnwenden()};
+const _ausg=NEU.ausgluehen;NEU.ausgluehen=()=>{_ausg();setPose($('aFia'),'atmet')};
+const _film=film;film=function(f){const p=_film(f);posenAnwenden();return p};
+const _filmEnde=filmEnde;filmEnde=function(){_filmEnde();if(AKTUELL==='home'){setPose($('cover'),'freut',2600,grundPose());sag(hello())}};
+$('filmSkip').onclick=()=>filmEnde();
+
+/* Sense Engine: nur wenn im Nova-Fenster ein eigener Server verbunden ist. Schlüssel kommen nie in den Code. */
+function fnServer(){let a='',k='';try{a=JSON.parse(localStorage.getItem('drlab-hermes-adresse')||'""');k=JSON.parse(localStorage.getItem('drlab-hermes-passwort')||'""')}catch(e){return null}
+  a=String(a||'').trim().replace(/\/+$/,'');return/^https:\/\//.test(a)&&k?{a,k}:null}
+function fnFetch(pfad,body,ms){const sv=fnServer();if(!sv)return Promise.reject(new Error('offline'));
+  const ctl=window.AbortController?new AbortController():null,to=setTimeout(()=>ctl&&ctl.abort(),ms||15000);
+  const h={'Content-Type':'application/json','Authorization':'Bearer '+sv.k};if(pfad.indexOf('/v1/')===0)h['X-Nova-App']='Fias Nest';
+  return fetch(sv.a+pfad,{method:'POST',headers:h,body:JSON.stringify(body),signal:ctl?ctl.signal:undefined})
+    .then(r=>{clearTimeout(to);if(!r.ok)throw new Error('Fehler '+r.status);return pfad==='/erfahrung'?r.text():r.json()},e=>{clearTimeout(to);throw e})}
+
+/* Fia hört zu: mit Server antwortet Fia mit eigenen Worten, sonst sanft direkt auf dem Handy. Nichts wird gespeichert. */
+const KRISE=/(nicht mehr leben|umbringen|suizid|selbstmord|mich töten|sterben will|will sterben|keinen sinn mehr|ritzen|mir etwas antun)/i;
+const KRISE_TEXT='Danke, dass du mir das sagst. Das klingt sehr schwer, und damit sollst du nicht allein sein. Bitte ruf jetzt die Dargebotene Hand an, Telefon 143, rund um die Uhr. Wenn du in Gefahr bist, ruf 144.';
+function fiaLokal(t){const x=t.toLowerCase();let a;
+  if(/(gedanken|grübel|kreisen|abschalten|kopf|nicht schlafen|einschlafen)/.test(x))a='Ich höre: Dein Kopf ist noch voll. Das ist am Abend ganz normal. Magst du die Gedanken ins Sorgen-Nest legen? Dort warten sie bis morgen.';
+  else if(/(morgen|termin|prüfung|arbeit|chef|präsentation|gespräch|schule|stress)/.test(x))a='Da steht etwas Grosses vor dir. Du musst es heute nicht mehr lösen. Ein kleiner nächster Schritt reicht, den Rest hält Fia bis morgen.';
+  else if(/(müde|erschöpft|kaputt|kraft|ausgelaugt|zu viel)/.test(x))a='Du hast heute genug gemacht. Darf es jetzt ein bisschen leichter werden? Ein langes Ausatmen ist ein guter Anfang.';
+  else if(/(angst|sorge|unruhig|nervös|herz|panik|zittern)/.test(x))a='Das klingt unruhig. Du bist gerade sicher. Atme mit mir: zweimal ein durch die Nase, lang durch den Mund aus.';
+  else if(/(traurig|allein|einsam|weinen|vermiss)/.test(x))a='Das tut weh. Es darf da sein, auch heute Abend. Ich sitze neben dir im Nest.';
+  else if(/(wütend|ärger|wut|genervt|streit)/.test(x))a='Da ist viel Feuer in dir. Das darf sein. Lass es langsam zu Glut werden, du musst heute nichts mehr entscheiden.';
+  else if(/(gut|schön|dankbar|froh|freu)/.test(x))a='Wie schön. Nimm das mit ins Nest. Magst du es bei den drei guten Dingen festhalten?';
+  else a='Ich höre dich. Das darf alles da sein. Was wäre jetzt ein kleines bisschen leichter?';
+  return a}
+function fiaChat(t){const seele=(window.NOVA_SEELEN||{})['Fias Nest']||'';
+  const sys=(seele+' Du bist Fia, ein kleines Phönix-Küken. Antworte in höchstens drei kurzen, warmen Sätzen. Spiegle, was du hörst, ohne Bewertung, ohne Diagnose, ohne medizinischen Rat, ohne Heilversprechen. Schlage höchstens einen kleinen Schritt aus Fias Nest vor (Sorgen-Nest, Ausatmen, Licht runter). Schweizer Schreibweise, kein ß.').trim();
+  return fnFetch('/v1/chat/completions',{model:'sense-engine',messages:[{role:'system',content:sys},{role:'user',content:t}]},20000)
+    .then(j=>{const a=j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;if(!a)throw new Error('leer');return String(a).trim()})}
+let Z_LETZT='',Z_TEXT='';
+function zZeige(a,quelle,pose){Z_LETZT=a;$('zAntwortCard').hidden=false;$('zAntwort').textContent=a;$('zQuelle').textContent=quelle;setPose($('zFia'),pose||'freut',3000,'hoert');sprich(a);$('zGo').disabled=false}
+$('zGo').onclick=()=>{const t=$('zText').value.trim();if(!t){$('zText').focus();flash('Schreib Fia ein paar Worte.');return}
+  Z_TEXT=t;lernen('weg','zuhoeren');$('zGo').disabled=true;
+  if(KRISE.test(t)){zZeige(KRISE_TEXT,'Fia nimmt das ernst. Hilfe ist nur einen Anruf entfernt.','atmet');return}
+  if(!fnServer()){zZeige(fiaLokal(t),'Fia antwortet direkt auf dem Handy.');return}
+  $('zAntwortCard').hidden=false;$('zAntwort').textContent='Fia hört zu …';$('zQuelle').textContent='';setPose($('zFia'),'hoert');
+  fiaChat(t).then(a=>zZeige(a,'Fia antwortet über deinen verbundenen Server. Gespeichert wird nichts.'),
+    ()=>zZeige(fiaLokal(t),'Der Server ist gerade nicht erreichbar. Fia antwortet direkt auf dem Handy.'))};
+$('zVor').onclick=()=>{if(Z_LETZT){const war=S.stimme;S.stimme=true;sprich(Z_LETZT);S.stimme=war}};
+$('zNest').onclick=()=>{if(!Z_TEXT){flash('Erzähl Fia zuerst etwas.');return}$('sorge').value=Z_TEXT.slice(0,300);go('sorgen');setTimeout(()=>$('schritt').focus(),300);flash('Steht schon im Sorgen-Nest. Tipp auf «Ins Nest legen».')};
+NEU.zuhoeren=()=>{setPose($('zFia'),'hoert');$('zHinweis').textContent=fnServer()?'Fia antwortet mit eigenen Worten über deinen Server (Sense Engine). Gespeichert wird nichts.':
+  'Fia antwortet direkt auf dem Handy, ganz ohne Internet. Gespeichert wird nichts.'};
+
+/* Lern-Zahlen: bleiben auf dem Gerät. Nur mit Häkchen an Sense Engine (/erfahrung), sonst zum Kopieren. Nie Texte, Stimme oder Bilder. */
+S.lernAuto=!!S.lernAuto;
+function lernPaket(){return{app:'Fias Nest',art:'lernen',frage:'Lern-Zahlen '+heute()+' (Einwilligung ja, ohne Namen, ohne Texte, ohne Stimme)',antwort:JSON.stringify({zahlen:S.lern,begleiter:S.begleiter})}}
+function lernSenden(still){if(!S.lernOk)return Promise.resolve(false);
+  return fnFetch('/erfahrung',lernPaket()).then(()=>{S.lernGeteilt=heute();save();if(!still)flash('An Sense Engine gegeben. Danke.');if(AKTUELL==='nest')NEU.nest();return true},
+    e=>{if(!still)flash('Sense Engine ist gerade nicht erreichbar. Versuch es später nochmals.');return false})}
+$('lernTeilen').onclick=async()=>{if(fnServer()){lernSenden(false);return}
+  const txt='FIAS NEST – Lern-Zahlen (für Sense Engine)\nDatum: '+heute()+'\nEinwilligung: ja · ohne Namen · ohne Texte · ohne Stimme\n'+JSON.stringify({app:'Fias Nest',zahlen:S.lern,begleiter:S.begleiter});
+  try{await navigator.clipboard.writeText(txt);flash('Kopiert. Du kannst es Nova oder Claude geben.')}catch(e){prompt('Zum Kopieren:',txt)}};
+$('lernAuto').onchange=()=>{S.lernAuto=$('lernAuto').checked;save();if(S.lernAuto&&!fnServer())flash('Geht los, sobald ein Server verbunden ist.')};
+const _lernOk=$('lernOk').onchange;$('lernOk').onchange=()=>{_lernOk();$('lernAuto').disabled=!S.lernOk;if(!S.lernOk){S.lernAuto=false;$('lernAuto').checked=false;save()}};
+const _nest=NEU.nest;NEU.nest=()=>{_nest();$('lernAuto').checked=S.lernAuto;$('lernAuto').disabled=!S.lernOk;
+  $('lernStand').textContent=(fnServer()?'Server verbunden: «Zahlen weitergeben» schickt sie direkt an Sense Engine.':'Kein Server verbunden: «Zahlen weitergeben» kopiert sie zum Weitergeben.')+(S.lernGeteilt?' Zuletzt weitergegeben: '+new Date(S.lernGeteilt).toLocaleDateString('de-CH')+'.':'');
+  if(NATIV){document.querySelectorAll('#mitteilungCard .switch').forEach(l=>l.hidden=true);
+    $('mitteilungText').textContent='In der iPhone-App schickt Fias Nest selbst keine Mitteilungen. Stell dir diese Zeiten in der Uhr-App oder in «Erinnerungen» ein: Aufstehen '+hhmm(MT.morgen.m())+' · Ausglühen '+hhmm(MT.ausgluehen.m())+' · Ab ins Nest '+hhmm(MT.bett.m())+'.'}};
+if(S.lernOk&&S.lernAuto&&fnServer()&&(!S.lernGeteilt||tageSeit(S.lernGeteilt)>=7))setTimeout(()=>lernSenden(true),4000);
+
+/* Einführung beim ersten Start: Fia stellt sich vor, Aufstehzeit und Begleiter, Daten und Sicherheit */
+let ONB=0;
+function onbSchritt(n){ONB=n;document.querySelectorAll('[data-onb]').forEach(d=>d.hidden=+d.dataset.onb!==n);
+  document.querySelectorAll('.onb-punkte span').forEach((s,i)=>s.classList.toggle('on',i===n));
+  $('onbZurueck').hidden=n===0;$('onbWeiter').textContent=n===2?'Los geht’s':'Weiter';
+  setPose($('onbFia'),['freut','wach','atmet'][n]);
+  if(n===1){$('onbAuf').value=S.zeiten.auf;$('onbBett').value=S.zeiten.bett;const f=$('onbFigs');f.innerHTML='';
+    Object.entries(FIGS).forEach(([k,v])=>{const b=document.createElement('button');b.className=S.begleiter===k?'sel':'';b.innerHTML=`<img src="${v.b}" alt=""><span>${v.n}</span>`;
+      b.onclick=()=>{S.begleiter=k;save();f.querySelectorAll('button').forEach(x=>x.classList.toggle('sel',x===b))};f.appendChild(b)})}}
+function onbZeigen(){$('onb').hidden=false;onbSchritt(0);setTimeout(()=>$('onbWeiter').focus(),100)}
+function onbFertig(){$('onb').hidden=true;S.onb=heute();save();if(AKTUELL==='home'){NEU.home();sag('Schön, dass du da bist. Tipp mich an, wenn du magst.')}film()}
+$('onbAuf').onchange=()=>{const v=$('onbAuf').value;if(!v)return;const d=mm(v)-mm(S.zeiten.auf);S.zeiten={auf:v,bett:hhmm(mm(S.zeiten.bett)+d)};$('onbBett').value=S.zeiten.bett;save()};
+$('onbBett').onchange=()=>{const v=$('onbBett').value;if(v){S.zeiten.bett=v;save()}};
+$('onbWeiter').onclick=()=>{if(ONB<2)onbSchritt(ONB+1);else onbFertig()};
+$('onbZurueck').onclick=()=>onbSchritt(Math.max(0,ONB-1));
+$('onbSkip').onclick=onbFertig;
+$('onbNochmals').onclick=()=>{go('home');onbZeigen()};
+
+/* Offline: Service Worker nur im Web über https, nicht in der iPhone-App */
+if('serviceWorker' in navigator&&location.protocol==='https:'&&!NATIV)navigator.serviceWorker.register('sw.js').catch(()=>{});
+
 const vonHash=()=>go((location.hash||'').slice(1) in STAGE?location.hash.slice(1):'home');
 addEventListener('hashchange',vonHash);vonHash();
-if(AKTUELL==='home')film();
+if(!S.onb)onbZeigen();else if(AKTUELL==='home')film();
 </script>
 <script src="../nova/seelen.js" defer></script>
 <script src="../nova/nova.js" data-nova-bild="figuren/fia.jpg" data-nova-app="Fias Nest" defer></script>
