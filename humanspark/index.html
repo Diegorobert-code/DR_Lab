@@ -244,7 +244,59 @@ header .hs-kopf-rechts{margin-left:auto;display:flex;align-items:center;gap:8px}
 .chip[aria-pressed="true"] small{color:#4a3510}
 @media (prefers-reduced-motion:reduce){.medaillon.leuchtet,.stufenbild .nebel i,.stufenbild img,.spbuehne img{animation:none!important}}
 @media (max-width:360px){.uebliste{grid-template-columns:1fr}.tab{font-size:12px}}
+/* ---- Human Sparks Runde 2: Bühne, Onboarding, Kosmos ---- */
+.hsbuehne{position:relative;margin:4px 0 14px;border-radius:26px;overflow:hidden;border:1px solid rgba(242,193,78,.45);box-shadow:0 18px 50px -12px rgba(0,0,0,.5),0 0 40px rgba(242,193,78,.16);background:radial-gradient(90% 70% at 50% 35%,#2a3f86 0%,#13204a 60%,#0b1636 100%);padding:16px 14px 14px;text-align:center}
+.hsbuehne .himmel,.hsbuehne .boden{pointer-events:none}.hsbuehne>.fig,.hsbuehne>.name,.hsbuehne>.slogan,.hsbuehne>.blase,.hsbuehne>.row{position:relative;z-index:1}
+.hsbuehne .himmel i{position:absolute;width:3px;height:3px;border-radius:50%;background:#ffe9a8;opacity:.7;animation:hsbBlink 3s ease-in-out infinite}
+.hsbuehne .boden{position:absolute;left:-10%;right:-10%;bottom:-60px;height:120px;border-radius:50%;background:radial-gradient(ellipse at 50% 0,rgba(242,193,78,.22),transparent 70%)}
+.hsbuehne .fig{position:relative;display:inline-block;width:168px;height:168px}
+.hsbuehne .fig img{width:168px;height:168px;border-radius:50%;object-fit:cover;border:4px solid #F2C14E;box-shadow:0 0 34px rgba(242,193,78,.4);transform-origin:50% 90%;cursor:pointer;animation:poseAtmen 5s ease-in-out infinite}
+.hsbuehne .fig.pose-misst img{animation:poseAtmen 2.4s ease-in-out infinite;box-shadow:0 0 34px rgba(255,143,160,.6)}
+.hsbuehne .fig.pose-uebung img{animation:poseSinken 6s ease-in-out infinite}
+.hsbuehne .fig.pose-spiegelt img{animation:hsbNeigen 4s ease-in-out infinite}
+.hsbuehne .fig.pose-freut img{animation:poseWippen 1.2s ease-in-out 3}
+.hsbuehne .fig.echt img{animation:poseAtmen 6s ease-in-out infinite}
+.hsbuehne .blase{position:relative;margin:12px auto 10px;max-width:330px;background:#fff6e4;color:#2a1a05;border-radius:18px;padding:10px 14px;font-size:16px;line-height:1.35;box-shadow:0 6px 18px rgba(0,0,0,.3);animation:filmAuf .5s ease-out both}
+.hsbuehne .blase::before{content:"";position:absolute;top:-8px;left:50%;margin-left:-8px;border:8px solid transparent;border-top:0;border-bottom-color:#fff6e4}
+.hsbuehne .name{font:700 22px/1.1 Georgia,serif;color:#F2C14E;margin-top:6px}
+.hsbuehne .slogan{font-size:14px;color:#f3ece4;opacity:.9}
+.hsbuehne .row .btn{min-height:46px;font-size:15px}
+@keyframes hsbBlink{50%{opacity:.15}}
+@keyframes hsbNeigen{25%{transform:rotate(-5deg)}75%{transform:rotate(3deg) translateY(-2px)}}
+.mini-sparky{display:flex;align-items:center;gap:10px;margin:6px 0 8px}
+.mini-sparky img{width:52px;height:52px;border-radius:50%;object-fit:cover;border:3px solid #F2C14E;animation:poseAtmen 2.4s ease-in-out infinite}
+.mini-sparky span{font-size:14px;color:var(--muted)}
+.onb{position:fixed;inset:0;z-index:70;background:rgba(6,10,28,.82);display:flex;align-items:center;justify-content:center;padding:20px}
+.onb>div{background:linear-gradient(160deg,#22356f,#131f48);border:1px solid rgba(242,193,78,.45);border-radius:24px;padding:22px 18px 16px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.onb img{width:120px;height:120px;border-radius:50%;object-fit:cover;border:4px solid #F2C14E;animation:poseAtmen 4s ease-in-out infinite}
+.onb h2{font:700 24px/1.2 Georgia,serif;color:#F2C14E;margin:10px 0 6px}
+.onb p{margin:0 0 10px}
+.onb .punkte{margin:10px 0}
+.zgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.zgrid button{border:1px solid rgba(242,193,78,.3);border-radius:14px;background:linear-gradient(160deg,#22356f,#192a5c);color:var(--ink);min-height:64px;padding:4px 2px;cursor:pointer;font:600 12px/1.2 var(--font)}
+.zgrid button b{display:block;font-size:24px;color:#F2C14E;line-height:1.1}
+.zgrid button[aria-pressed="true"]{background:linear-gradient(180deg,#F2C14E,#E07B2E);color:#2a1a05}
+.zgrid button[aria-pressed="true"] b{color:#2a1a05}
+.zkarte{margin-top:12px;border-radius:18px;padding:14px;background:linear-gradient(160deg,#2b2160,#1a2558);border:1px solid rgba(242,193,78,.4);animation:filmAuf .5s ease-out both}
+.zkarte .zk{display:flex;align-items:center;gap:12px}
+.zkarte .zk b{font-size:46px;line-height:1;color:#F2C14E;text-shadow:0 0 18px rgba(242,193,78,.5)}
+.zkarte .zk strong{display:block;font:700 22px/1.15 Georgia,serif;color:#fff3d6}
+.zkarte .zk small{color:var(--muted);font-size:13px}
+.zkarte .tags{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0 6px}
+.zkarte .tags span{font-size:12px;border-radius:99px;padding:3px 9px;background:rgba(242,193,78,.14);border:1px solid rgba(242,193,78,.35)}
+.zkarte h3{margin:10px 0 4px;color:#F2C14E;font-size:18px}
+.zkarte dl{margin:6px 0;display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:15px}
+.zkarte dt{color:var(--muted)}.zkarte dd{margin:0}
+.zkarte ul{margin:6px 0 8px;padding-left:20px}.zkarte li{margin:3px 0}
+.zkarte .satz{font:italic 600 17px/1.35 Georgia,serif;color:#ffc4cf;margin:8px 0}
+.ktab{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+.ktab td{padding:6px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+.ktab td:first-child{color:#F2C14E;font-weight:700;white-space:nowrap}
+.antwort{margin-top:10px}\n.pose-uebung img{animation:poseSinken 6s ease-in-out infinite}.pose-misst img{animation:poseAtmen 2.4s ease-in-out infinite}.pose-spiegelt img{animation:hsbNeigen 4s ease-in-out infinite}.pose-freut img{animation:poseWippen 1.2s ease-in-out 3}
+@media (prefers-reduced-motion:reduce){.hsbuehne .fig img,.hsbuehne .himmel i,.onb img,.mini-sparky img{animation:none!important}}
+@media (max-width:360px){.zgrid{grid-template-columns:repeat(3,1fr)}}
 </style>
+
 </head>
 <body>
 <script src="../nova/intro.js" data-art="funken" data-bild="../nova/figuren/sparky.jpg" data-text="Sparky ist da"></script>
@@ -257,6 +309,15 @@ header .hs-kopf-rechts{margin-left:auto;display:flex;align-items:center;gap:8px}
   </header>
 
   <div id="nbHier"></div>
+  <section class="hsbuehne" id="hsBuehne" aria-label="Sparky">
+    <div class="himmel" aria-hidden="true"><i style="left:8%;top:12%"></i><i style="left:22%;top:30%;animation-delay:.8s"></i><i style="left:78%;top:10%;animation-delay:1.4s"></i><i style="left:90%;top:38%;animation-delay:2s"></i><i style="left:60%;top:20%;animation-delay:.4s"></i><i style="left:35%;top:8%;animation-delay:2.4s"></i></div>
+    <div class="boden" aria-hidden="true"></div>
+    <div class="fig pose-atmen" id="hsbFig"><img id="hsbImg" src="../nova/figuren/sparky.jpg" alt="Sparky, der Fuchs mit dem Herz-Medaillon" width="168" height="168"></div>
+    <div class="name">Ich bin Sparky.</div>
+    <div class="slogan">Sieh deinem Herz beim Beruhigen zu.</div>
+    <div class="blase" id="hsbBlase" aria-live="polite">Hey, schön, dass du da bist. Wollen wir kurz messen oder eine kleine Übung machen?</div>
+    <div class="row"><button class="btn primary" id="hsbHallo" type="button">👋 Sparky sagt Hallo</button><button class="btn ghost" id="hsbReden" type="button">💬 Mit Sparky reden</button></div>
+  </section>
   <div class="intro">
     <span class="vision web-only">Entwicklungsvision von DR Lab</span>
     <p class="web-only">HumanSpark liest deinen Körper und übersetzt ihn in eine kurze Sprache für die KI.</p>
@@ -268,6 +329,7 @@ header .hs-kopf-rechts{margin-left:auto;display:flex;align-items:center;gap:8px}
     <button class="tab" role="tab" data-tab="messen" aria-selected="true">Messen</button>
     <button class="tab" role="tab" data-tab="uebungen" aria-selected="false">Übungen</button>
     <button class="tab" role="tab" data-tab="herz" aria-selected="false">Herz</button>
+    <button class="tab" role="tab" data-tab="kosmos" aria-selected="false">Kosmos</button>
     <button class="tab" role="tab" data-tab="reden" aria-selected="false">Reden</button>
     <button class="tab" role="tab" data-tab="sitzung" aria-selected="false">Sitzung</button>
     <button class="tab" role="tab" data-tab="verlauf" aria-selected="false">Verlauf</button>
@@ -294,7 +356,7 @@ header .hs-kopf-rechts{margin-left:auto;display:flex;align-items:center;gap:8px}
 
     <div class="box hidden" id="measureBox">
       <h2 id="measureTitle">Messung läuft</h2>
-      <p class="muted" style="margin:-4px 0 4px">Sieh deinem Herz beim Beruhigen zu. Einfach still sein, Sparky wartet mit dir.</p>
+      <div class="mini-sparky"><img data-pose="misst" src="../nova/figuren/sparky.jpg" alt=""><span>Sieh deinem Herz beim Beruhigen zu. Einfach still sein, Sparky wartet mit dir.</span></div>
       <div id="camWrap">
         <video id="video" playsinline muted autoplay></video>
         <div id="dot"></div>
@@ -466,6 +528,7 @@ header .hs-kopf-rechts{margin-left:auto;display:flex;align-items:center;gap:8px}
       <button class="btn primary" id="btnSaveTalk">Als Eintrag speichern</button>
       <div class="notice hidden" id="talkSaved"></div>
       <div id="dialektVorschlag" class="hidden" style="margin-top:10px"></div>
+      <div id="redenAntwort" class="antwort hidden"></div>
     </div>
     <div class="box">
       <h2>Meine Wörter (Dialekt)</h2>
@@ -584,12 +647,60 @@ header .hs-kopf-rechts{margin-left:auto;display:flex;align-items:center;gap:8px}
     </div>
   </section>
 
+
+  <!-- KOSMOS: Körper & Kosmos als Wissens-Bereich (Bilder, keine Deutung, kein Heilversprechen) -->
+  <section class="panel" id="p-kosmos">
+    <div class="box">
+      <h2>Körper &amp; Kosmos</h2>
+      <p>Sparky kennt die Bilder aus Diegos Methode: zwölf Zeichen, zwölf Organe aus der chinesischen Tradition, zwölf Themen und zwölf kleine Übungsreihen. Ein Bild zum Spüren, keine Aussage über dich.</p>
+    </div>
+    <div class="box" id="kTag"></div>
+    <div class="box">
+      <h2>Mein Zeichen</h2>
+      <p class="muted">Sag Sparky deinen Geburtstag (nur Tag und Monat). Er zeigt dir dein Sonnenzeichen mit Thema, Fragen und Übungsreihe. Bleibt nur auf diesem Handy.</p>
+      <div class="row"><select id="kgTag" aria-label="Tag"></select><select id="kgMonat" aria-label="Monat"></select></div>
+      <button class="btn primary" id="kgOk" type="button">Mein Zeichen zeigen</button>
+      <div id="kgOut"></div>
+    </div>
+    <div class="box">
+      <h2>Körper fragen</h2>
+      <p class="muted">Wo spürst du gerade etwas? Tipp die Stelle an. Sparky zeigt dir das Thema, das in der Methode dazugehört, und eine Frage.</p>
+      <div class="chips" id="kfZonen"></div>
+      <div id="kfOut"></div>
+    </div>
+    <div class="box">
+      <h2>Die zwölf Zeichen</h2>
+      <p class="muted">Tipp ein Zeichen an: Organ, Planet, Element, Thema, Fragen, Satz und Übungsreihe.</p>
+      <div class="zgrid" id="kZgrid"></div>
+      <div id="kZOut"></div>
+    </div>
+    <div class="box">
+      <h2>So liest du die Bilder</h2>
+      <p><b>Planet</b> = Grundthema · <b>Zeichen</b> = wie es gelebt wird · <b>Haus</b> = Lebensbereich. Das Haus ist die natürliche Entsprechung (Widder = 1. Haus … Fische = 12. Haus), nicht die Stellung im persönlichen Horoskop.</p>
+      <ol style="padding-left:20px;margin:6px 0">
+        <li><b>Nervensystem zuerst.</b> Erst ankommen und ruhig werden, dann ein Thema öffnen.</li>
+        <li><b>Leitfragen sind Einladungen.</b> Du findest deine eigene Antwort. Niemand deutet für dich.</li>
+        <li><b>Körper.</b> Die Zone gibt der Antwort einen Ort.</li>
+        <li><b>Übung.</b> Was du nachher selbst in der Hand hast: eine Reihe von etwa zwei Minuten.</li>
+      </ol>
+      <h3 style="margin:12px 0 2px;color:var(--coral)">Die fünf Elemente als Fragen</h3>
+      <table class="ktab" id="kElemente"></table>
+    </div>
+    <div class="box">
+      <h2>Die Öffnung</h2>
+      <p class="kfrage" style="font-size:20px">«Erst wenn der Mensch offen ist, kann Veränderung entstehen.»</p>
+      <p>Der Atem findet seinen Rhythmus, das Herz wird weit, der Körper wird weich. Dann braucht es nur einfache Worte, zum Beispiel: «Lass es kommen.» «Was braucht es gerade?» «Es darf weit werden.»</p>
+      <div class="row"><button class="btn ghost" id="kOeffVor" type="button">Vorlesen</button><button class="btn coral" id="kOeffMess" type="button">Messen und zusehen</button></div>
+    </div>
+    <p class="muted" style="font-size:13px">Die Bilder stammen aus der Überlieferung (chinesische Tradition, Sternkunde) und aus Diegos Praxis (Rolfing, Kinesiologie). Sie sind ein Gesprächs- und Spürwerkzeug, keine Diagnose und kein Heilversprechen, und ersetzen keine Behandlung. Bei Schmerz oder Schwindel: Übung beenden.</p>
+  </section>
+
   <!-- IDEEN -->
   <section class="panel" id="p-ideen">
     <div class="box">
-      <h2>Kauf mit deinen Ideen</h2>
-      <p>Bald kannst du auch mit deinen Ideen bezahlen.</p>
-      <p class="muted">Hast du eine Idee, die HumanSpark besser macht? Schreib sie auf. Gute Ideen sollen später als Guthaben zählen – zum Beispiel für die App-Version oder für Sitzungen.</p>
+      <h2>Ideen für Sparky</h2>
+      <p>Hast du eine Idee, die HumanSpark besser macht? Sparky sammelt sie für Diego.</p>
+      <p class="muted">Ist Sparky mit dem DR-Lab-Server verbunden, geht deine Idee mit deinem Häkchen direkt zu Diego. Sonst bleibt sie auf diesem Handy, bis du sie sendest oder teilst.</p>
     </div>
     <div class="box">
       <h2>Idee einreichen</h2>
@@ -604,10 +715,21 @@ header .hs-kopf-rechts{margin-left:auto;display:flex;align-items:center;gap:8px}
     <div class="box">
       <h2>Meine Ideen</h2>
       <div id="iList"></div>
+      <div class="row"><button class="btn ghost" id="iSenden" type="button">Offene Ideen senden</button><button class="btn ghost" id="iTeilen" type="button">Teilen</button></div>
+      <div class="notice hidden" id="iSendMsg"></div>
     </div>
   </section>
 
-  <footer>DR Lab · Testphase</footer>
+  <footer>DR Lab · Testphase · <button class="linkbtn" id="onbNochmal" type="button" style="background:none;border:0;color:inherit;text-decoration:underline;font:inherit;cursor:pointer;padding:6px">Einführung zeigen</button></footer>
+  <div class="onb hidden" id="onb" role="dialog" aria-modal="true" aria-labelledby="onbT">
+    <div>
+      <img id="onbImg" src="../nova/figuren/sparky.jpg" alt="">
+      <h2 id="onbT"></h2>
+      <p id="onbP"></p>
+      <div class="punkte" id="onbPunkte"><i></i><i></i><i></i></div>
+      <div class="row"><button class="btn ghost" id="onbSkip" type="button">Überspringen</button><button class="btn primary" id="onbWeiter" type="button">Weiter</button></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -686,13 +808,100 @@ var EX = {
     p:'Drei Funken in einem Vorhaben finden, einen auswählen, ihn an einen Ort und in den Wald mitnehmen und den Körper fragen.'},
   lichtung:{cat:'Nachspüren', t:'Lichtung der fünf Schätze', kind:'steps', dur:120, pose:'leuchten',
     steps:['Stell dir eine Lichtung im Wald vor. Dort liegen fünf Schätze.', 'Herz: ein kleiner Funke, warm und hell.', 'Erde: eine Idee, wie ein Samen im Boden.', 'Holz: deine Träume, wie junge Bäume.', 'Wasser: die Tiefe, ein ruhiger See.', 'Lunge: dein Atem, wie Wind in den Blättern.', 'Welcher Schatz leuchtet heute am meisten? Bleib kurz bei ihm.'],
-    p:'Eine Bilderreise zu fünf Schätzen: Funke, Idee, Träume, Tiefe, Atem.'}
+    p:'Eine Bilderreise zu fünf Schätzen: Funke, Idee, Träume, Tiefe, Atem.'},
+  herzmed:{cat:'Nachspüren', t:'Herz-Meditation', kind:'steps', dur:180, pose:'leuchten',
+    steps:['Setz dich bequem hin. Die Augen dürfen zugehen.', 'Leg eine Hand aufs Herz. Spür die Wärme deiner Hand.', 'Atme ein bisschen länger aus als ein.', 'Stell dir vor, der Atem geht durch dein Herz ein und aus.', 'Denk an einen Menschen, ein Tier oder einen Ort, den du magst.', 'Lass dieses warme Gefühl in der Brust weit werden.', 'Sieh deinem Herz beim Beruhigen zu.', 'Komm langsam zurück. Spür die Füsse. Öffne die Augen.'],
+    p:'Drei Minuten mit der Hand auf dem Herz: länger ausatmen, an etwas Liebes denken, das warme Gefühl weit werden lassen.'}
 };
 // Muster (Wecken, Öffnen, Loslassen, Bewegen, Nachspüren) auch für die bisherigen Übungen
 var MUSTER = ['Wecken', 'Öffnen', 'Loslassen', 'Bewegen', 'Nachspüren'];
 (function(){ var m = {atem46:'Loslassen', atem55:'Nachspüren', fuesse:'Wecken', raum:'Öffnen', kreuz:'Bewegen', kreuzLangsam:'Bewegen', reise:'Nachspüren'};
   var po = {atem46:'atmen', atem55:'atmen', fuesse:'sinken', raum:'staunen', kreuz:'wippen', kreuzLangsam:'wippen', reise:'atmen'};
   Object.keys(EX).forEach(function(k){ EX[k].muster = EX[k].muster || m[k] || EX[k].cat; EX[k].pose = EX[k].pose || po[k] || 'atmen'; }); })();
+
+/* ---------- Körper & Kosmos (Wissens-Bereich; Quelle: Diegos Methoden-Referenz und Handout 12.10.) ----------
+   Session 8/9 nach Volltext: Blase/Fische = 8, Dreifacher Erwärmer/Wassermann = 9. */
+var KELEM = {
+  Holz:{f:'Wie fange ich den Tag an?', b:'Morgenlicht, Beginn, Beweglichkeit'},
+  Feuer:{f:'Wofür schlägt mein Herz, und wie stark?', b:'Herz, Freude, Beziehungen'},
+  Erde:{f:'Was nährt mich, und was wiederhole ich?', b:'Essen, Kraft, Regelmässigkeit'},
+  Metall:{f:'Kann ich gleichmässig atmen und abgeben?', b:'Atem, ruhige Ausdauer, Loslassen am Abend'},
+  Wasser:{f:'Lasse ich die Pause zu?', b:'Schlaf, Erholung, Reserven'}
+};
+var KZ = [
+  {id:'widder', z:'Widder', s:'♈', von:[3,21], d:'21.3. bis 20.4.', ze:'Feuer', pl:'Mars', org:'Gallenblase', te:'Holz', yy:'Yang', ses:5, h:1, laut:'«Xu» (schü)',
+   thema:'Entscheiden und Richtung', koerper:'Hüfte und Bein aussen, Kniekehle', zone:'Bein aussen', res:'Mut, Entschlusskraft', eng:'Zögern, Ärger, Härte gegen sich',
+   fragen:['Wofür entscheide ich mich gerade?', 'Wo halte ich Ärger zurück, statt einen Schritt zu machen?', 'Wie fühlt sich mein Stand auf einem Bein an?'],
+   satz:'Ich weiss, wohin ich gehe.', kern:'Die Seiten werden frei, der Körper findet seine Richtung.',
+   r:['Seiten wecken: Mit flachen Händen die Aussenseite der Beine von der Hüfte bis zum Knöchel abklopfen.', 'Seitbeuge: Einen Arm über den Kopf, zur Seite neigen, bis die Flanke lang wird. Drei Atemzüge pro Seite.', 'Drehen mit Blick: Füsse am Boden, langsam nach hinten drehen und mit den Augen einen Punkt suchen.', 'Schritt in eine Richtung: Einen Punkt im Raum wählen, einen klaren Schritt darauf zu machen, zurück.', 'Stehen und nachspüren: Den Blick weit werden lassen, Füsse spüren, einmal lang ausatmen.']},
+  {id:'stier', z:'Stier', s:'♉', von:[4,21], d:'21.4. bis 20.5.', ze:'Erde', pl:'Venus', org:'Magen', te:'Erde', yy:'Yang', ses:4, h:2, laut:'«Hu» (chu)',
+   thema:'Aufnehmen und genährt sein', koerper:'Hals vorn, Nacken, Schlüsselbein', zone:'Hals und Nacken', res:'Zufriedenheit, Genuss', eng:'Grübeln, nie genug',
+   fragen:['Was nährt mich wirklich?', 'Was kaue ich in Gedanken immer wieder?', 'Was darf ich hinunterlassen?'],
+   satz:'Ich bin versorgt. Es ist genug da.', kern:'Hals und Vorderseite werden lang, das Gewicht sinkt nach unten.',
+   r:['Nacken wecken: Das Ohr langsam zur Schulter sinken lassen, drei Atemzüge, dann die andere Seite.', 'Vorderseite öffnen: Hände ans Kreuzbein, das Brustbein leicht nach vorn und oben heben.', 'Schritt nach hinten: Einen Fuss gross nach hinten stellen, die Leiste vorn wird lang.', 'Kauen ohne Essen: Den Unterkiefer langsam und locker kauen lassen. Die Zunge liegt weich.', 'Stehen und nachspüren: Eine Hand auf den Oberbauch, lang ausatmen, das Gewicht in die Füsse sinken lassen.']},
+  {id:'zwillinge', z:'Zwillinge', s:'♊', von:[5,21], d:'21.5. bis 21.6.', ze:'Luft', pl:'Merkur', org:'Lunge', te:'Metall', yy:'Yin', ses:3, h:3, laut:'«Si» (sss)',
+   thema:'Austausch und Atem', koerper:'Seitlicher Brustkorb, Zwerchfell', zone:'Brustkorb seitlich', res:'Offenheit, Weite', eng:'Unausgesprochene Trauer, Vergleich',
+   fragen:['Was möchte ich aussprechen?', 'Mit wem vergleiche ich mich?', 'Wohin geht mein Atem, wenn ich nichts tue?'],
+   satz:'Ich nehme, was ich brauche, und lasse den Rest gehen.', kern:'Die Rippen bewegen sich frei, die Ausatmung geht zu Ende.',
+   r:['Rippen wecken: Hände seitlich an die unteren Rippen legen und fünf Atemzüge in die Hände atmen.', 'Arme nach vorn schieben: Arme auf Schulterhöhe nach vorn, die Schulterblätter gleiten mit, dann zurück.', 'Arme hängen und pendeln: Die Arme schwer hängen lassen und aus den Schultern pendeln.', 'Daumenlinie ausstreichen: Von der Schulter über die Innenseite des Arms bis zum Daumen streichen.', 'Stehen und nachspüren: Einmal lang auf «sss» ausatmen, die Pause abwarten.']},
+  {id:'krebs', z:'Krebs', s:'♋', von:[6,22], d:'22.6. bis 22.7.', ze:'Wasser', pl:'Mond', org:'Perikard', te:'Feuer', yy:'Yin', ses:2, h:4, laut:'«Xi» (schi)',
+   thema:'Schutz und Nähe', koerper:'Becken, Gesäss, Leiste', zone:'Becken und Leiste', res:'Geborgenheit, Verbundenheit', eng:'Kontrolle, sich verschliessen',
+   fragen:['Wen lasse ich nah an mich heran?', 'Wo fühle ich mich getragen, zu Hause?', 'Was brauche ich, um mich zu öffnen?'],
+   satz:'Ich bin geschützt und darf nah sein.', kern:'Der Brustraum findet Ruhe, das Becken trägt mit.',
+   r:['Handmitte wecken: Mit dem Daumen die Mitte der anderen Handfläche kreisend drücken, dann wechseln.', 'Seitliches Wiegen: Das Gewicht langsam von einem Bein aufs andere wiegen.', 'Knie nach innen und aussen: Mit weichen Knien die Knie leicht nach innen sinken lassen und wieder öffnen.', 'Sich selbst halten: Arme vor der Brust kreuzen, Hände an die Oberarme, sanft runden und aufrichten.', 'Stehen und nachspüren: Eine Hand aufs Brustbein, eine auf den Unterbauch, lang ausatmen.']},
+  {id:'loewe', z:'Löwe', s:'♌', von:[7,23], d:'23.7. bis 23.8.', ze:'Feuer', pl:'Sonne', org:'Herz', te:'Feuer', yy:'Yin', ses:1, h:5, laut:'«He» (hö)',
+   thema:'Freude und Mitte', koerper:'Brust, Achsel, vordere Schulter', zone:'Brust und Schulter vorn', res:'Freude, Selbstwert', eng:'Unruhe, fehlende Freude',
+   fragen:['Wofür schlägt mein Herz?', 'Wann habe ich zuletzt etwas nur aus Freude getan?', 'Darf ich gesehen werden?'],
+   satz:'Ich bin da, und es ist warm in mir.', kern:'Das Brustbein wird weich, die Arme hängen am Herzen.',
+   r:['Brustbein wecken: Eine Hand flach aufs Brustbein und fünf Atemzüge lang spüren, wie es sich hebt und senkt.', 'Arme öffnen und schliessen: Beim Einatmen die Arme seitlich öffnen, beim Ausatmen vor der Brust zusammenführen.', 'Arme pendeln: Den Rumpf leicht drehen und die Arme locker mitschwingen lassen.', 'Schulterblätter gleiten: Ellbogen an der Seite, Unterarme nach aussen und wieder nach innen drehen.', 'Stehen und nachspüren: Beide Hände aufs Brustbein, Füsse spüren, einmal lang ausatmen.']},
+  {id:'jungfrau', z:'Jungfrau', s:'♍', von:[8,24], d:'24.8. bis 23.9.', ze:'Erde', pl:'Merkur', org:'Dünndarm', te:'Feuer', yy:'Yang', ses:3, h:6, laut:'«He» (hö)',
+   thema:'Unterscheiden und ordnen', koerper:'Bauch, Oberschenkel vorn', zone:'Bauch', res:'Klarheit, Unterscheidungskraft', eng:'Überforderung, nicht wissen, was zu einem gehört',
+   fragen:['Was gehört zu mir, was darf weiter?', 'Welche Aufgabe im Alltag ist zu viel?', 'Was hilft mir, Ordnung zu finden?'],
+   satz:'Ich erkenne, was zu mir gehört.', kern:'Der Bauch wird weich, die Beine tragen von vorn.',
+   r:['Bauch wecken: Beide Hände um den Nabel. Die Bauchwand in die Hände kommen und wieder gehen lassen.', 'Becken kippen: Mit weichen Knien das Becken langsam nach vorn und nach hinten kippen, klein und ohne Kraft.', 'Knie heben im Wechsel: Langsam ein Knie heben, absetzen, das andere heben.', 'Rumpf drehen: Hände auf den Bauch, den Rumpf langsam nach links und rechts drehen.', 'Stehen und nachspüren: Hände am Bauch, Füsse spüren, einmal lang ausatmen.']},
+  {id:'waage', z:'Waage', s:'♎', von:[9,24], d:'24.9. bis 23.10.', ze:'Luft', pl:'Venus', org:'Niere', te:'Wasser', yy:'Yin', ses:4, h:7, laut:'«Chui» (tschui)',
+   thema:'Gleichgewicht und Reserven', koerper:'Psoas, Lende', zone:'Lende', res:'Vertrauen, Wille', eng:'Angst, leere Reserven',
+   fragen:['Wo gebe ich mehr, als ich habe?', 'Was gibt mir Halt in Beziehungen?', 'Was füllt meine Reserven wieder auf?'],
+   satz:'Der Boden trägt mich, ich darf loslassen.', kern:'Je mehr die Füsse den Boden finden, desto mehr darf der Körper loslassen.',
+   r:['Die Fusssohle wecken: Das Gewicht langsam durch die Sohle wandern lassen: Ferse, Aussenkante, Ballen, grosse Zehe.', 'Wirbel für Wirbel abrollen: Den Kopf schwer werden lassen und nach vorn sinken, bis die Hände hängen. Nur hängen.', 'Pendeln im Stand: Den ganzen Körper ganz leicht vor und zurück schaukeln, nur Millimeter.', 'Weiche Knie: Die Knie beugen, bis die Füsse anfangen zu tragen, beim Ausatmen sinken.', 'Stehen und nachspüren: Einfach stehen, die Füsse spüren, einmal lang ausatmen.']},
+  {id:'skorpion', z:'Skorpion', s:'♏', von:[10,24], d:'24.10. bis 22.11.', ze:'Wasser', pl:'Pluto', org:'Dickdarm', te:'Metall', yy:'Yang', ses:10, h:8, laut:'«Si» (sss)',
+   thema:'Loslassen und Wandlung', koerper:'Lende, Oberschenkel hinten, Beckenboden', zone:'Beckenboden und Bein hinten', res:'Grosszügigkeit, Neubeginn', eng:'Festhalten, Schuld',
+   fragen:['Was darf zu Ende gehen?', 'Woran halte ich fest, obwohl es nicht mehr nährt?', 'Was kann aus dem Losgelassenen entstehen?'],
+   satz:'Meine Gedanken sind klar, konzentriert und konstruktiv.', kern:'Die Ausatmung geht zu Ende. Ein Gegenpol zum Gedankenkreisen.',
+   r:['Zeigefingerlinie wecken: Die Stelle zwischen Daumen und Zeigefinger kreisend drücken (nicht in der Schwangerschaft).', 'Becken kreisen: Hände an die Hüften, das Becken langsam kreisen, in jede Richtung.', 'Bein seitlich pendeln: Gewicht auf ein Bein, das andere locker seitlich pendeln, bei Bedarf an der Wand halten.', 'Zu Ende ausatmen: Auf «sss» ganz ausatmen und die Pause aushalten, bis die Einatmung von selbst kommt.', 'Stehen und nachspüren: Hände auf den Unterbauch, Füsse spüren, nichts mehr tun.']},
+  {id:'schuetze', z:'Schütze', s:'♐', von:[11,23], d:'23.11. bis 21.12.', ze:'Feuer', pl:'Jupiter', org:'Milz', te:'Erde', yy:'Yin', ses:7, h:9, laut:'«Hu» (chu)',
+   thema:'Vertrauen und Sinn', koerper:'Seitlicher Rumpf, Rücken, Arm bis Daumen', zone:'Rumpf seitlich und Arm', res:'Vertrauen ins Leben, Selbstfürsorge', eng:'Sorge, Selbstzweifel',
+   fragen:['Worauf vertraue ich?', 'Was gibt meinem Leben Sinn?', 'Wie sorge ich für mich selbst?'],
+   satz:'Ich vertraue dem Leben. Ich sorge gut für mich.', kern:'Die Mitte trägt, die Arme hängen am Rücken.',
+   r:['Linke Flanke wecken: Die rechte Hand unter den linken Rippenbogen und fünf Atemzüge dort hinein atmen.', 'Arme lang nach unten: Die Hände nach unten schieben, als würden sie etwas Schweres zum Boden drücken.', 'Seitlich lang werden: Einen Arm nach oben strecken und aus der Flanke herauswachsen, den anderen nach unten.', 'Gehen am Ort: Ruhig am Ort gehen, die Arme schwingen gegengleich mit.', 'Stehen und nachspüren: Beide Hände auf den Bauch, lang ausatmen, die Mitte spüren.']},
+  {id:'steinbock', z:'Steinbock', s:'♑', von:[12,22], d:'22.12. bis 20.1.', ze:'Erde', pl:'Saturn', org:'Leber', te:'Holz', yy:'Yin', ses:6, h:10, laut:'«Xu» (schü)',
+   thema:'Struktur und Plan', koerper:'Oberer Rücken, Schulterblätter', zone:'Oberer Rücken', res:'Tatkraft, Wandlung', eng:'Frust, Feststecken',
+   fragen:['Welches Ziel trägt mich?', 'Wo fühle ich mich eingeengt?', 'Welche Grenze gibt mir Form?'],
+   satz:'Es fliesst. Ich habe Raum.', kern:'Schulterblätter und Rippenbogen bewegen sich, Ein und Aus werden geschmeidig.',
+   r:['Rippenbogen wecken: Die Finger unter den rechten Rippenbogen legen, beim Ausatmen leicht einsinken.', 'Schulterblätter zusammen und auseinander: Beim Einatmen zueinander ziehen, beim Ausatmen den oberen Rücken rund werden lassen.', 'Arme schwingen über Kreuz: Die Arme locker vor dem Körper kreuzen und wieder öffnen.', 'Gewicht verlagern: Füsse weit, das Gewicht langsam auf ein gebeugtes Bein schieben, das andere bleibt lang.', 'Stehen und nachspüren: Die Augen kurz schliessen, öffnen, weit schauen, lang ausatmen.']},
+  {id:'wassermann', z:'Wassermann', s:'♒', von:[1,21], d:'21.1. bis 19.2.', ze:'Luft', pl:'Uranus', org:'Dreifacher Erwärmer', te:'Feuer', yy:'Yang', ses:9, h:11, laut:'«Xi» (schi)',
+   thema:'Verbindung und Regulation', koerper:'Waden, Innenbein, hintere Schulter', zone:'Waden', res:'Leichtigkeit, Zusammenhang', eng:'Überlastung, sich verloren fühlen',
+   fragen:['Wo gehöre ich dazu?', 'Was bringt mich in Alarm, was wieder in Ruhe?', 'Was verbindet meine Lebensbereiche?'],
+   satz:'Alles in mir arbeitet zusammen.', kern:'Oben, Mitte und unten werden zu einer Welle.',
+   r:['Drei Etagen wecken: Die Hände nacheinander auf Brust, Oberbauch und Unterbauch legen und dorthin atmen.', 'Die Atemwelle: Einatmen füllt zuerst den Bauch, dann die Brust. Ausatmen leert zuerst die Brust, dann den Bauch.', 'Waden federn: Im Stand leicht in den Knöcheln federn, die Fersen heben kaum ab.', 'Aussenseite der Arme ausstreichen: Vom Ringfinger über den Handrücken bis hinter das Ohr streichen.', 'Stehen und nachspüren: Den ganzen Rumpf als einen Raum spüren, lang ausatmen.']},
+  {id:'fische', z:'Fische', s:'♓', von:[2,20], d:'20.2. bis 20.3.', ze:'Wasser', pl:'Neptun', org:'Blase', te:'Wasser', yy:'Yang', ses:8, h:12, laut:'«Chui» (tschui)',
+   thema:'Vertrauen ins Grössere', koerper:'Rücken in ganzer Länge, Beinrückseite, Ferse', zone:'Rücken und Ferse', res:'Gelassenheit, Vertrauen', eng:'Furcht, festgehaltener Schreck',
+   fragen:['Was trägt mich, wenn ich nichts tun kann?', 'Wo halte ich einen alten Schreck fest?', 'Wann gönne ich mir Rückzug?'],
+   satz:'Ich lasse das Alte gehen. Ich stehe auf meinen Füssen.', kern:'Die lange Rückseite vom Kopf bis zum kleinen Zeh wird durchlässig.',
+   r:['Aussenkante wecken: Das Gewicht auf die Aussenkanten der Füsse rollen und zurück auf die ganze Sohle.', 'Fersen heben und senken: Auf die Fussballen hochkommen und die Fersen langsam absetzen, dabei ausatmen.', 'Rücken abklopfen: Mit lockeren Fäusten den unteren Rücken und die Rückseite der Beine bis zur Ferse abklopfen.', 'Katze im Stand: Hände auf die Oberschenkel, Knie weich. Ausatmen rund, einatmen lang.', 'Stehen und nachspüren: Den Atem in den Rücken kommen lassen, Füsse spüren, lang ausatmen.']}
+];
+// Jede Reihe als Übung für Sparkys Player (2 Minuten, Muster Wecken bis Nachspüren)
+KZ.forEach(function(z){
+  EX['k_' + z.id] = {cat:'Kosmos', t:z.org + ' (' + z.z + ')', kind:'steps', dur:120, pose:'uebung', kosmos:true, muster:'Körper & Kosmos',
+    steps:z.r.concat([]), p:z.kern + ' Satz zum Schluss: «' + z.satz + '»'};
+  EX['k_' + z.id].steps[4] = z.r[4] + ' Sag innerlich: «' + z.satz + '»';
+});
+function kZeichenVon(tag, monat){
+  // Sonnenzeichen aus Tag und Monat (Grenzen wie in der Datenbank Sternzeichen)
+  var best = null;
+  KZ.forEach(function(z){ var v = z.von; if (monat > v[0] || (monat === v[0] && tag >= v[1])) { if (!best || v[0] > best.von[0] || (v[0] === best.von[0] && v[1] > best.von[1])) best = z; } });
+  return best || KZ[9]; // vor dem 21.1. = Steinbock
+}
 
 /* ---------- Stufen ---------- */
 var STAGES = [
@@ -725,6 +934,8 @@ function showTab(name){
   if (name === 'ideen') renderIdeas();
   if (name === 'uebungen') uRender();
   if (name === 'herz'){ hsRender(); }
+  if (name === 'kosmos') kRender();
+  hsBuehneTab(name);
   window.scrollTo(0,0);
 }
 document.querySelectorAll('.tab').forEach(function(b){ b.addEventListener('click', function(){ showTab(b.dataset.tab); }); });
@@ -1264,6 +1475,7 @@ $('btnSaveTalk').addEventListener('click', function(){
   note.className = 'notice';
   updateCode();
   dialektVorschlag(text);
+  redenAntwort(e);
 });
 
 // Spracherkennung
@@ -1836,11 +2048,12 @@ function renderHistory(){
     }
     var st = e.stage ? STAGES[e.stage-1] : null;
     var head = e.type === 'messung' ? (e.pairOf ? 'Nachmessung' : 'Messung') + (e.source === 'polar' ? ' (Polar)' : '') + (e.exAfter && EX[e.exAfter] ? ' · danach ' + EX[e.exAfter].t : '') :
-      e.type === 'wunsch' ? 'Was wünschst du dir wirklich?' : e.type === 'karte' ? 'Karte: ' + (e.karte || '') : 'Reinreden';
+      e.type === 'wunsch' ? 'Was wünschst du dir wirklich?' : e.type === 'karte' ? 'Karte: ' + (e.karte || '') : e.type === 'kosmos' ? 'Körper & Kosmos: ' + (e.zeichen || '') : 'Reinreden';
     var vals = e.bpm ? 'Puls ' + e.bpm + (e.rmssd != null ? ' · RMSSD ' + e.rmssd + ' ms' : '') : '';
     return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · ' + head + (e.demo ? ' · Demo' : '') + '</span>' +
       (st ? '<span class="pill" style="background:' + st.hex + '">' + e.stage + ' ' + st.name + '</span>' : '') + '</div>' +
       (e.text ? '<div class="txt">' + esc(e.text) + '</div>' : '') +
+      (e.antwort ? '<div class="muted">Sparky: ' + esc(e.antwort) + '</div>' : '') +
       (vals ? '<div class="muted">' + vals + '</div>' : '') +
       (e.code ? '<div class="code" style="margin-top:6px">' + esc(e.code) + '</div><div class="codeinfo">' + esc(codeLesbar(e.code)) + '</div>' : '') + '</div>';
   }).join('');
@@ -1969,8 +2182,9 @@ $('iSubmit').addEventListener('click', function(){
   l.push({id:uid(), t:Date.now(), titel:t || x.slice(0, 60), text:x, einwilligung:true, status:'eingereicht'});
   saveObj(IKEY, l);
   $('iTitle').value = ''; $('iText').value = ''; $('iConsent').checked = false;
-  n.className = 'notice'; n.textContent = 'Danke! Deine Idee ist gespeichert (Status: eingereicht). Sie liegt vorerst auf diesem Handy und geht mit der App-Version an DR Lab – oder du schickst sie per Export.';
-  renderIdeas();
+  n.className = 'notice'; n.textContent = 'Danke! Sparky hat deine Idee gespeichert.';
+  renderIdeas(); hsPose('freut', 2500); hsSag('Danke für deine Idee! Ich gebe sie Diego.');
+  ideenSenden(true);
 });
 
 /* ================= Human Sparks 1.1: neue Bausteine ================= */
@@ -2086,6 +2300,8 @@ function memRender(){
   if (m.tage.length) l.push('Geübt an ' + m.tage.length + ' Tag' + (m.tage.length === 1 ? '' : 'en') + '.');
   if (m.kern) l.push('Kernfrage gemerkt: ' + m.kern + '×');
   if (m.karten) l.push('Karten gezogen: ' + m.karten + '×');
+  if (m.kosmos) l.push('Körper-&-Kosmos-Zeichen angeschaut: ' + m.kosmos + '×');
+  if (m.antwort) l.push('Mit Sparky geredet: ' + m.antwort + '×');
   $('memListe').innerHTML = l.length ? l.join('<br>') : 'Noch nichts. Mach eine Übung, dann merkt sich Sparky, was dir gefällt.';
   var tipp = r || f;
   $('uTipp').textContent = tipp ? 'Sparky schlägt vor: «' + EX[tipp.k].t + '». Die machst du oft.' : 'Sparky schlägt vor: Fang mit «Fersen spüren» an.';
@@ -2096,7 +2312,7 @@ $('memVergessen').addEventListener('click', function(){
 $('memTeilen').addEventListener('click', function(){
   var n = $('memMsg'); n.classList.remove('hidden');
   if (!$('memOk').checked){ n.className = 'notice warn'; n.textContent = 'Bitte zuerst das Häkchen setzen. Ohne Häkchen geht nichts weg.'; return; }
-  var m = memLaden(), zahlen = {app:'HumanSpark', art:'Lern-Zahlen', datum:new Date().toISOString().slice(0, 10), tage:m.tage.length, kern:m.kern || 0, karten:m.karten || 0, uebungen:{}};
+  var m = memLaden(), zahlen = {app:'HumanSpark', art:'Lern-Zahlen', datum:new Date().toISOString().slice(0, 10), tage:m.tage.length, kern:m.kern || 0, karten:m.karten || 0, kosmos:m.kosmos || 0, uebungen:{}};
   Object.keys(m.ex).forEach(function(k){ zahlen.uebungen[k] = {anzahl:m.ex[k].n, stufenDifferenz:m.ex[k].d}; });
   var txt = JSON.stringify(zahlen);
   var ok = function(){ n.className = 'notice'; n.textContent = 'Danke! Die Zahlen sind bereit zum Senden (ohne Namen, ohne Texte, ohne Stimme).'; };
@@ -2112,7 +2328,7 @@ function uDauer(s){ return s < 90 ? s + ' s' : (s / 60).toString().replace('.', 
 function uRender(){
   memRender();
   $('uMusterChips').innerHTML = ['Alle'].concat(MUSTER).map(function(m){ return '<button class="chip" type="button" data-mu="' + m + '" aria-pressed="' + (m === uFilter) + '">' + m + '</button>'; }).join('');
-  var keys = Object.keys(EX).filter(function(k){ return uFilter === 'Alle' || EX[k].muster === uFilter; });
+  var keys = Object.keys(EX).filter(function(k){ return !EX[k].kosmos && (uFilter === 'Alle' || EX[k].muster === uFilter); });
   keys.sort(function(a, b){ return MUSTER.indexOf(EX[a].muster) - MUSTER.indexOf(EX[b].muster); });
   $('uListe').innerHTML = keys.map(function(k){ var x = EX[k]; return '<button class="uebk" type="button" data-u="' + k + '"><small>' + esc(x.muster) + '</small>' + esc(x.t) + '<em>' + uDauer(x.dur) + '</em></button>'; }).join('');
 }
@@ -2307,11 +2523,250 @@ dRender();
 (function(){ var m = load().filter(function(e){ return e.type === 'messung'; }); lastResult = m[m.length - 1] || null; })();
 polarUi();
 sRefreshStart();
+/* ================= Human Sparks Runde 2 ================= */
+
+/* ---------- Posen: echte Bilder aus posen/<pose>.jpg, sonst CSS-Bewegung des einen Bildes ---------- */
+var POSEN = ['misst', 'uebung', 'spiegelt', 'freut'], POSE_BILD = {};
+var POSE_VON = {atmen:'uebung', wippen:'freut', sinken:'uebung', strecken:'uebung', leuchten:'spiegelt', staunen:'freut', misst:'misst', uebung:'uebung', spiegelt:'spiegelt', freut:'freut'};
+var SPARKY_BILD = '../nova/figuren/sparky.jpg';
+function poseBild(p){ return POSE_BILD[POSE_VON[p] || p] || null; }
+function posenAnwenden(){
+  var src = poseBild(hsbPose) || SPARKY_BILD, img = $('hsbImg');
+  if (img && img.getAttribute('src') !== src) img.src = src;
+  $('hsbFig').classList.toggle('echt', !!poseBild(hsbPose));
+  document.querySelectorAll('img[data-pose]').forEach(function(i){ var b = poseBild(i.dataset.pose); if (b && i.getAttribute('src') !== b) i.src = b; });
+  if (uSt){ var x = EX[uSt.queue[uSt.qi]], b2 = x && poseBild(x.pose || 'atmen'); if (b2) $('uBuehne').querySelector('img').src = b2; }
+}
+(function(){
+  var nein = loadObj('hs_posen_fehlen', {}), jetzt = Date.now();
+  POSEN.forEach(function(p){
+    if (nein[p] && jetzt - nein[p] < 12 * 3600 * 1000) return; // fehlte vor kurzem: nicht jedes Mal nachfragen
+    var i = new Image();
+    i.onload = function(){ if (i.naturalWidth > 10){ POSE_BILD[p] = 'posen/' + p + '.jpg'; var n = loadObj('hs_posen_fehlen', {}); delete n[p]; saveObj('hs_posen_fehlen', n); posenAnwenden(); } };
+    i.onerror = function(){ var n = loadObj('hs_posen_fehlen', {}); n[p] = Date.now(); saveObj('hs_posen_fehlen', n); };
+    i.src = 'posen/' + p + '.jpg';
+  });
+})();
+// Übungs-Bühne: echtes Posenbild, falls vorhanden
+var _uLaden = uLaden;
+uLaden = function(){ _uLaden(); var x = EX[uSt.queue[uSt.qi]], b = x && poseBild(x.pose || 'atmen'); $('uBuehne').querySelector('img').src = b || '../nova/figuren/sparky.jpg'; hsPose('uebung'); };
+
+/* ---------- Trickfilm-Bühne oben: Sparky in Posen, Sprechblase, Stimme ---------- */
+var hsbPose = 'atmen', hsbTimer = null;
+function hsPose(p, ms){
+  hsbPose = p;
+  var f = $('hsbFig'); f.className = 'fig pose-' + p;
+  posenAnwenden();
+  clearTimeout(hsbTimer);
+  if (ms) hsbTimer = setTimeout(function(){ hsPose('atmen'); }, ms);
+}
+function hsSag(t, vorlesen){
+  var b = $('hsbBlase'); b.textContent = t; b.style.animation = 'none'; void b.offsetWidth; b.style.animation = '';
+  if (vorlesen) speak(t);
+}
+var HSB_TAB = {
+  messen:['spiegelt', 'Leg deinen Finger auf die Kamera. Ich warte mit dir. Sieh deinem Herz beim Beruhigen zu.'],
+  uebungen:['uebung', 'Komm, wir finden zusammen die Füsse. Such dir eine kleine Übung aus.'],
+  herz:['spiegelt', 'Was wünschst du dir wirklich? Ich höre einfach zu.'],
+  kosmos:['freut', 'Zwölf Zeichen, zwölf Organe, zwölf kleine Reihen. Tipp eines an, ich zeige dir die Übung.'],
+  reden:['spiegelt', 'Erzähl mir, wie es dir geht. Ich mache daraus einen kurzen Eintrag.'],
+  sitzung:['misst', 'Für Therapeutinnen und Therapeuten: Ich halte Marker und Notizen mit Zeit fest.'],
+  verlauf:['freut', 'Hier liegt alles, was du gemacht hast. Nur auf deinem Handy.'],
+  ideen:['freut', 'Hast du eine Idee für mich? Ich sammle sie für Diego.']
+};
+function hsBuehneTab(name){ var x = HSB_TAB[name]; if (!x) return; hsPose(x[0], 4000); hsSag(x[1]); }
+var HSB_HALLO = ['Hey, ich bin Sparky! Ich bin ein Fuchs und kenne den Körper gut. Lust auf eine kleine Übung?',
+  'Schultern runter, Kiefer weich. Einmal lang ausatmen. Ich mache mit.',
+  'Weisst du, was du dir wirklich wünschst? Manchmal liegt es unter dem, was du willst.',
+  'Meine Lieblingsübung: Fersen spüren. Ganz unten ankommen.'];
+var hsbHi = 0;
+$('hsbHallo').addEventListener('click', function(){ var t = HSB_HALLO[hsbHi++ % HSB_HALLO.length]; hsPose('freut', 3500); hsSag(t, true); hsMedaillon('#F2C14E', 1500); });
+$('hsbImg').addEventListener('click', function(){ hsPose('freut', 2500); hsSag(['Hihi, das kitzelt!', 'Atme einmal tief. Ich mache mit.', 'Du bist heute schon da. Das zählt.'][hsbHi++ % 3]); });
+$('hsbReden').addEventListener('click', function(){
+  // Mit Server: Sparkys Gesprächsfenster (Text und Stimme, kein Live-Telefon). Ohne Server: Reiter «Reden».
+  var nb = document.querySelector('.nova-btn');
+  if (nb && hsServer()){ nb.click(); return; }
+  showTab('reden'); setTimeout(function(){ $('talkText').focus(); }, 200);
+  hsSag('Erzähl mir, wie es dir geht. Tipp danach auf «Als Eintrag speichern», dann antworte ich dir.');
+});
+
+/* ---------- Eigener Server (Sense Engine), nur wenn im Nova-Fenster verbunden ---------- */
+function hsServer(){
+  var a = '', k = '';
+  try { a = JSON.parse(localStorage.getItem('drlab-hermes-adresse') || '""'); k = JSON.parse(localStorage.getItem('drlab-hermes-passwort') || '""'); } catch(e){ return null; }
+  a = String(a || '').trim().replace(/\/+$/, '');
+  return /^https:\/\//.test(a) && k ? {a:a, k:k} : null;
+}
+function hsFetch(pfad, body, ms){
+  var sv = hsServer(); if (!sv) return Promise.reject(new Error('offline'));
+  var ctl = window.AbortController ? new AbortController() : null, to = setTimeout(function(){ if (ctl) ctl.abort(); }, ms || 15000);
+  var h = {'Content-Type':'application/json', 'Authorization':'Bearer ' + sv.k};
+  if (pfad.indexOf('/v1/') === 0) h['X-Nova-App'] = 'HumanSpark';
+  return fetch(sv.a + pfad, {method:'POST', headers:h, body:JSON.stringify(body), signal:ctl ? ctl.signal : undefined})
+    .then(function(r){ clearTimeout(to); if (!r.ok) throw new Error('Fehler ' + r.status); return pfad === '/erfahrung' ? r.text() : r.json(); },
+          function(e){ clearTimeout(to); throw e; });
+}
+function hsChat(text){
+  var seele = (window.NOVA_SEELEN || {})['HumanSpark'] || '';
+  var sys = (seele + ' Du bist Sparky, ein ruhiger, sanfter Fuchs. Spiegle in höchstens zwei kurzen, einfachen Sätzen, was du hörst, ohne Bewertung, ohne Rat, ohne Diagnose, ohne Heilversprechen. Schliesse mit einer einfachen offenen Frage, zum Beispiel «Was wünschst du dir wirklich?». Schweizer Schreibweise, kein ß.').trim();
+  return hsFetch('/v1/chat/completions', {model:'sense-engine', messages:[{role:'system', content:sys}, {role:'user', content:text}]}, 20000)
+    .then(function(j){ var a = j && j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content; if (!a) throw new Error('leer'); return String(a).trim(); });
+}
+function hsSpiegelLokal(text, kw){
+  var w = kw && kw.length ? kw.slice(0, 3).join(', ') : '';
+  var t = w ? 'Ich höre: ' + w + '. Das darf alles da sein.' : 'Ich höre dich. Das darf alles da sein.';
+  var gef = (kw || []).filter(function(x){ return /müde|erschöpft|gestresst|angespannt|traurig|wütend|angst|sorge|überfordert|druck|schmerz/.test(x); });
+  t += gef.length ? ' Wo im Körper merkst du das gerade? Und was wünschst du dir wirklich?' : ' Was wünschst du dir wirklich?';
+  return t;
+}
+
+/* ---------- Reden: Sparky antwortet (mit Server eigene Worte, sonst Spiegel auf dem Gerät) ---------- */
+function redenAntwort(e){
+  var box = $('redenAntwort');
+  box.classList.remove('hidden');
+  var sv = hsServer();
+  box.innerHTML = '<div class="mini-sparky"><img data-pose="spiegelt" src="' + (poseBild('spiegelt') || SPARKY_BILD) + '" alt=""><span>Sparky hört zu …</span></div><div class="spiegel" data-k="t">…</div>' +
+    '<div class="row"><button class="btn ghost" type="button" data-k="vor">Vorlesen</button><button class="btn ghost" type="button" data-k="herz">Tiefer fragen</button></div>' +
+    '<p class="muted" style="font-size:13px;margin:6px 0 0">' + (sv ? 'Sparky antwortet über deinen verbundenen DR-Lab-Server. Gespeichert wird nur auf diesem Handy.' : 'Sparky antwortet direkt auf dem Handy. Mit verbundenem Server (💬 unten rechts) antwortet er mit eigenen Worten.') + '</p>';
+  hsPose('spiegelt', 5000);
+  var setze = function(t, quelle){
+    box.querySelector('[data-k="t"]').innerHTML = '<b>Sparky:</b> ' + esc(t);
+    box.querySelector('.mini-sparky span').textContent = quelle;
+    var l = load(); l.forEach(function(x){ if (x.id === e.id) x.antwort = t; }); save(l);
+    memZahl('antwort');
+    hsSag(t); hsMedaillon('#ff8fa0', 2200);
+    if (window.NovaStimme && NovaStimme.aktiv && NovaStimme.aktiv()) speak(t);
+    box.querySelector('[data-k="vor"]').onclick = function(){ speak(t); };
+  };
+  box.querySelector('[data-k="herz"]').onclick = function(){ showTab('herz'); };
+  if (!sv){ setze(hsSpiegelLokal(e.text, e.keywords), 'Sparky spiegelt (auf dem Handy)'); return; }
+  hsChat(e.text).then(function(a){ setze(a, 'Sparky antwortet'); }, function(){ setze(hsSpiegelLokal(e.text, e.keywords), 'Server gerade nicht erreichbar, Sparky spiegelt auf dem Handy'); });
+}
+
+/* ---------- Ideen: senden mit Häkchen über /erfahrung, sonst teilen ---------- */
+function ideenSenden(still){
+  var n = $('iSendMsg'), l = loadObj(IKEY, []), offen = l.filter(function(i){ return i.einwilligung && i.status !== 'an Diego gesendet'; });
+  if (!offen.length){ if (!still){ n.className = 'notice'; n.textContent = 'Alle Ideen sind schon bei Diego. Danke!'; } return; }
+  if (!hsServer()){
+    if (!still){ n.className = 'notice'; n.textContent = 'Sparky ist gerade nicht mit dem Server verbunden. Deine Ideen bleiben sicher auf dem Handy. Tipp auf «Teilen», um sie Diego direkt zu schicken.'; }
+    else { n.className = 'notice'; n.textContent = 'Deine Idee liegt auf dem Handy. Mit «Teilen» schickst du sie Diego, oder sie geht mit, sobald Sparky verbunden ist.'; }
+    n.classList.remove('hidden'); return;
+  }
+  n.className = 'notice'; n.textContent = 'Sparky bringt deine Ideen zu Diego …'; n.classList.remove('hidden');
+  var kette = Promise.resolve(), ok = 0;
+  offen.forEach(function(i){ kette = kette.then(function(){ return hsFetch('/erfahrung', {app:'HumanSpark', art:'idee', frage:(i.titel || '') + (i.text ? ': ' + i.text : ''), antwort:''}).then(function(){ i.status = 'an Diego gesendet'; ok++; }, function(){}); }); });
+  kette.then(function(){ saveObj(IKEY, l); renderIdeas(); n.textContent = ok ? 'Gesendet: ' + ok + ' Idee' + (ok === 1 ? '' : 'n') + '. Danke!' : 'Senden ging gerade nicht. Die Ideen bleiben auf dem Handy, versuch es später nochmals.'; });
+}
+$('iSenden').addEventListener('click', function(){ ideenSenden(false); });
+$('iTeilen').addEventListener('click', function(){
+  var l = loadObj(IKEY, []), n = $('iSendMsg'); n.classList.remove('hidden');
+  if (!l.length){ n.className = 'notice'; n.textContent = 'Noch keine Ideen. Schreib oben deine erste Idee auf.'; return; }
+  var txt = 'Ideen für HumanSpark:\n' + l.map(function(i){ return '- ' + i.titel + (i.text ? ': ' + i.text : ''); }).join('\n');
+  if (navigator.share){ navigator.share({title:'Ideen für HumanSpark', text:txt}).catch(function(){}); return; }
+  if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(function(){ n.className = 'notice'; n.textContent = 'In die Zwischenablage kopiert. Du kannst die Ideen jetzt an Diego schicken.'; }, function(){ n.className = 'notice'; n.textContent = txt; }); return; }
+  n.className = 'notice'; n.textContent = txt;
+});
+
+/* ---------- Körper & Kosmos ---------- */
+var kWahl = null;
+function kKarte(z, wo){
+  return '<div class="zkarte"><div class="zk"><b>' + z.s + '</b><div><strong>' + esc(z.z) + ' · ' + esc(z.org) + '</strong><small>' + esc(z.d) + '</small></div></div>' +
+    '<div class="tags"><span>Planet ' + esc(z.pl) + '</span><span>Element ' + esc(z.te) + '</span><span>' + esc(z.yy) + '</span><span>Rolfing-Sitzung ' + z.ses + '</span><span>' + z.h + '. Haus</span><span>Zeichen: ' + esc(z.ze) + '</span></div>' +
+    '<h3>' + esc(z.thema) + '</h3>' +
+    '<dl><dt>Körper</dt><dd>' + esc(z.koerper) + '</dd><dt>Kraft</dt><dd>' + esc(z.res) + '</dd><dt>Wenn es eng wird</dt><dd>' + esc(z.eng) + '</dd><dt>Laut</dt><dd>' + esc(z.laut) + ' (ein Angebot, kein Muss)</dd></dl>' +
+    '<div class="muted">Fragen als Einladung:</div><ul>' + z.fragen.map(function(f){ return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' +
+    '<div class="satz">«' + esc(z.satz) + '»</div>' +
+    '<p class="muted" style="margin:0 0 6px">' + esc(z.kern) + '</p>' +
+    '<button class="btn coral" type="button" data-kreihe="' + z.id + '">Übungsreihe mit Sparky (2 Min)</button>' +
+    '<div class="row"><button class="btn ghost" type="button" data-kvor="' + z.id + '">Vorlesen</button><button class="btn ghost" type="button" data-kmerk="' + z.id + '" data-kwo="' + (wo || '') + '">Im Verlauf merken</button></div>' +
+    '<div class="notice hidden" data-kmsg></div></div>';
+}
+function kFind(id){ return KZ.filter(function(z){ return z.id === id; })[0]; }
+function kTagZeichen(){ var d = new Date(), n = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5); return KZ[n % 12]; }
+function kRender(){
+  var z = kTagZeichen(), el = KELEM[z.te];
+  $('kTag').innerHTML = '<h2>Zeichen des Tages</h2><p class="muted" style="margin:0">Jeden Tag ein anderes Bild aus dem Kreis. Heute:</p>' + kKarte(z, 'tag') +
+    '<p class="muted" style="margin:8px 0 0">Frage des Elements ' + esc(z.te) + ': <b>' + esc(el.f) + '</b></p>';
+  if (!$('kgTag').options.length){
+    var t = '', m = '', MON = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+    for (var i = 1; i <= 31; i++) t += '<option value="' + i + '">' + i + '.</option>';
+    MON.forEach(function(x, j){ m += '<option value="' + (j + 1) + '">' + x + '</option>'; });
+    $('kgTag').innerHTML = t; $('kgMonat').innerHTML = m;
+    var g = loadObj('hs_geburt', null);
+    if (g){ $('kgTag').value = g.t; $('kgMonat').value = g.m; }
+  }
+  var g2 = loadObj('hs_geburt', null);
+  if (g2 && !$('kgOut').innerHTML) $('kgOut').innerHTML = kKarte(kZeichenVon(g2.t, g2.m), 'mein');
+  if (!$('kfZonen').innerHTML) $('kfZonen').innerHTML = KZ.map(function(x){ return '<button class="chip" type="button" data-kzone="' + x.id + '" aria-pressed="false">' + esc(x.zone) + '</button>'; }).join('');
+  if (!$('kZgrid').innerHTML) $('kZgrid').innerHTML = KZ.map(function(x){ return '<button type="button" data-kz="' + x.id + '" aria-pressed="false"><b>' + x.s + '</b>' + esc(x.z) + '</button>'; }).join('');
+  if (!$('kElemente').innerHTML) $('kElemente').innerHTML = Object.keys(KELEM).map(function(k){ return '<tr><td>' + k + '</td><td>' + esc(KELEM[k].f) + '<br><span class="muted" style="font-size:13px">' + esc(KELEM[k].b) + '</span></td></tr>'; }).join('');
+}
+$('kgOk').addEventListener('click', function(){
+  var t = +$('kgTag').value, m = +$('kgMonat').value;
+  var maxT = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1];
+  if (t > maxT){ $('kgOut').innerHTML = '<div class="notice warn">Den ' + t + '. gibt es in diesem Monat nicht. Wähl bitte nochmals.</div>'; return; }
+  saveObj('hs_geburt', {t:t, m:m});
+  var z = kZeichenVon(t, m);
+  $('kgOut').innerHTML = kKarte(z, 'mein');
+  memZahl('kosmos'); hsPose('freut', 3000); hsSag('Du bist ' + z.z + '. Dein Organ in der Methode: ' + z.org + '. Magst du die Reihe mit mir machen?');
+});
+$('kfZonen').addEventListener('click', function(ev){
+  var b = ev.target.closest('[data-kzone]'); if (!b) return;
+  $('kfZonen').querySelectorAll('[data-kzone]').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+  var z = kFind(b.dataset.kzone);
+  $('kfOut').innerHTML = '<div class="spiegel" style="margin-top:10px"><b>Sparky fragt:</b> ' + esc(z.fragen[0]) + '</div>' + kKarte(z, 'koerper');
+  memZahl('kosmos'); hsPose('spiegelt', 4000); hsSag(z.fragen[0]);
+});
+$('kZgrid').addEventListener('click', function(ev){
+  var b = ev.target.closest('[data-kz]'); if (!b) return;
+  $('kZgrid').querySelectorAll('[data-kz]').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+  var z = kFind(b.dataset.kz);
+  $('kZOut').innerHTML = kKarte(z, 'liste'); memZahl('kosmos');
+  setTimeout(function(){ $('kZOut').scrollIntoView({block:'nearest', behavior:'smooth'}); }, 30);
+});
+$('p-kosmos').addEventListener('click', function(ev){
+  var r = ev.target.closest('[data-kreihe]'), v = ev.target.closest('[data-kvor]'), m = ev.target.closest('[data-kmerk]');
+  if (r){ showTab('uebungen'); uStart(['k_' + r.dataset.kreihe]); return; }
+  if (v){ var z = kFind(v.dataset.kvor); speak(z.z + '. ' + z.org + '. ' + z.thema + '. ' + z.fragen.join(' ') + ' Satz: ' + z.satz); hsPose('spiegelt', 4000); return; }
+  if (m){
+    var z2 = kFind(m.dataset.kmerk);
+    addEntry({id:uid(), t:Date.now(), type:'kosmos', zeichen:z2.z + ' · ' + z2.org, text:z2.thema + ' – ' + z2.fragen[0]});
+    var n = m.closest('.zkarte').querySelector('[data-kmsg]'); n.textContent = 'Gemerkt, nur auf diesem Handy. Du findest es im Verlauf.'; n.classList.remove('hidden');
+    hsMedaillon('#F2C14E', 1500);
+  }
+});
+$('kOeffVor').addEventListener('click', function(){ speak('Erst wenn der Mensch offen ist, kann Veränderung entstehen. Lass es kommen. Was braucht es gerade? Es darf weit werden.'); hsPose('spiegelt', 5000); });
+$('kOeffMess').addEventListener('click', function(){ showTab('messen'); });
+
+/* ---------- Onboarding beim ersten Start ---------- */
+var ONB = [
+  ['Hey, ich bin Sparky.', 'Ein Fuchs mit einem Herz-Medaillon. Ich helfe dir, deinen Körper zu spüren, und ich höre zu.', 'freut'],
+  ['Messen, üben, spüren.', 'Unter «Messen» siehst du deinem Herz beim Beruhigen zu. Unter «Übungen» und «Kosmos» zeige ich dir kleine Übungen. Unter «Herz» frage ich: Was wünschst du dir wirklich?', 'uebung'],
+  ['Alles bleibt bei dir.', 'Deine Daten bleiben auf deinem Handy. HumanSpark ist kein medizinisches Gerät, stellt keine Diagnosen und ersetzt keine Behandlung. Im Notfall: 144.', 'spiegelt']
+];
+var onbI = 0;
+function onbZeige(){
+  var x = ONB[onbI]; $('onbT').textContent = x[0]; $('onbP').textContent = x[1];
+  $('onbImg').src = poseBild(x[2]) || SPARKY_BILD;
+  $('onbPunkte').querySelectorAll('i').forEach(function(p, j){ p.classList.toggle('an', j <= onbI); });
+  $('onbWeiter').textContent = onbI === ONB.length - 1 ? 'Los geht’s' : 'Weiter';
+}
+function onbZu(){ $('onb').classList.add('hidden'); try { localStorage.setItem('hs_onb', '1'); } catch(e){} hsSag('Schön, dass du da bist. Tipp auf «Sparky sagt Hallo», dann rede ich mit dir.'); }
+$('onbWeiter').addEventListener('click', function(){ if (onbI < ONB.length - 1){ onbI++; onbZeige(); } else onbZu(); });
+$('onbSkip').addEventListener('click', onbZu);
+$('onbNochmal').addEventListener('click', function(){ onbI = 0; onbZeige(); $('onb').classList.remove('hidden'); });
+(function(){ var gesehen = false; try { gesehen = localStorage.getItem('hs_onb') === '1'; } catch(e){} if (!gesehen && !FAST){ onbZeige(); setTimeout(function(){ $('onb').classList.remove('hidden'); }, 2600); } })();
+
+/* ---------- Posen an den Messablauf koppeln ---------- */
+var _startMeasure = startMeasure;
+startMeasure = function(d){ hsPose('misst'); hsSag('Ganz still. Ich zähle mit dir. Sieh deinem Herz beim Beruhigen zu.'); return _startMeasure(d); };
+var _showResult = showResult;
+showResult = function(e, b){ var r = _showResult(e, b); hsPose('freut', 4000); if (e && e.stage) hsSag('Stufe ' + e.stage + ': ' + STAGES[e.stage - 1].name + '. Das ist kein Urteil, nur ein Bild. Magst du eine Übung machen?'); return r; };
+
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>
-<script src="../nova/buehne.js" data-figur="sparky" data-name="Sparky" data-bild="../nova/figuren/sparky.jpg" data-satz="Kleine Körperübungen, ruhig und Schritt für Schritt." data-vor="#nbHier" defer></script>
-<script src="../nova/nova.js" data-nova-app="HumanSpark" data-nova-bild="figur.jpg" defer></script>
+<script src="../nova/nova.js" data-nova-app="HumanSpark" data-nova-bild="figur.jpg" data-nova-live="0" defer></script>
 <!-- Figuren-Film (Trickfilm-Look): Farben, Funken, Atmen, Tipp-Reaktion, Szenenwechsel. Nur Optik. -->
 <style id="figurFilmCss">
 .film-aurora{position:fixed;inset:-20%;z-index:-1;pointer-events:none;filter:blur(60px);opacity:.5}
@@ -2384,6 +2839,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 })();
 </script>
 <script src="feedback.js" data-app="HumanSpark" defer></script>
+<script>if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(function(){});</script>
 <script src="../apps/sprechen/sprechen.js" data-figur="sparky" data-name="Sparky" data-bild="figur.jpg" data-audio="audio/sparky/" data-unten="18" data-saetze='{"gruss": ["Hey, ich bin Sparky! Lust auf eine kleine Übung?"], "lob": ["Wow, das hast du super gemacht! Ich wedle vor Freude mit dem Schwanz."], "mut": ["Ganz ruhig. Schultern runter, einmal tief atmen. Ich mache mit."], "frage": ["Tipp oben auf «Übungen», dann zeige ich dir Schritt für Schritt eine kleine Übung. Oder frag dein Herz unter «Herz»."]}' defer></script>
 </body>
 </html>

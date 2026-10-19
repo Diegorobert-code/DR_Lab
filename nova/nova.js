@@ -52,9 +52,10 @@
     'fompa': 'agent_5401m55ssbdheqwtyw4131dqya8w',
     'sunny': 'agent_4201m55ssdr3fksaey0x2yh1vpmh'
   };
-  var AGENT = AGENTEN[FIGUR] || '';
+  // data-nova-live="0": Live-Telefon für diese App aus (z. B. Sparky bis «Sparky live Go»); Text und Stimme bleiben.
+  var AGENT = attr('data-nova-live', '1') === '0' ? '' : (AGENTEN[FIGUR] || '');
   // Figuren mit Gesicht, das mitspricht: Live-Gespräch auf der grossen Bühne (nova/reden.html).
-  var BUEHNE = AGENTEN[FIGUR] && me && me.src ? new URL('reden.html?f=' + encodeURIComponent(FIGUR), me.src).href : '';
+  var BUEHNE = AGENT && me && me.src ? new URL('reden.html?f=' + encodeURIComponent(FIGUR), me.src).href : '';
   var LIVE_LIB = me && me.src ? new URL('elevenlabs-client-1.26.0.js', me.src).href : '../nova/elevenlabs-client-1.26.0.js';
 
   function get(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }
