@@ -22,7 +22,7 @@ Was Apple prüft und was noch fehlt: `appstore/PRUEFUNG-2026-10-19.md`.
 ### A. Zuerst die Apps zusammenführen (GitHub, Reihenfolge wichtig)
 1. Feature-PRs zuerst mergen (jede App-Version): #128 HumanSpark, #119 TradePing, #125 Jackie, #129 Fias Nest, #122 Otti/Mondschein, #121 Kiki, #124 Mama Affe, #123 Fompa, #126 Food and Flow.
 2. Dann PR #115 (Fias Nest App-Store-Paket) mergen.
-3. Dann diesen PR («App Store: alle neun Apps») mergen.
+3. Dann PR #133 («App Store: alle neun Apps») mergen.
 4. Bei einem Konflikt nicht selber lösen, Claude fragen.
 
 ### B. Einmalig vorbereiten
