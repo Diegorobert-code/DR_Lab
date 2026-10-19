@@ -548,6 +548,8 @@ function setProgress(sec){
 }
 function showBox(which){
   ['startBox','measureBox','resultBox'].forEach(function(id){ $(id).classList.toggle('hidden', id !== which); });
+  // Messung und Ergebnis sofort im Blick, ohne selbst zu scrollen
+  if (which !== 'startBox'){ var r = $(which).getBoundingClientRect(); if (r.top < 0 || r.top > innerHeight * 0.6) scrollTo({top:r.top + scrollY - 90, behavior:'smooth'}); }
 }
 
 function polarUi(){
@@ -1692,6 +1694,21 @@ body{padding-bottom:calc(env(safe-area-inset-bottom) + 96px)!important}
 .intro{background:rgba(22,35,79,.82)!important;border:1px solid rgba(242,193,78,.28);color:var(--ink)!important}
 .intro .vision{background:rgba(242,193,78,.14)!important;color:#F2C14E}
 .intro .safe{color:var(--muted);opacity:1}
+/* Dunkles Design durchgehend: keine hellen Kästen mit heller Schrift */
+#wave,.big div,.ex,.minrow button{background:rgba(255,255,255,.05)!important;border-color:var(--line)!important}
+.big div span,.ex p{color:var(--muted)}
+.ex{color:var(--ink)}
+.notice{background:rgba(242,193,78,.10)!important;border-color:rgba(242,193,78,.35)!important;color:var(--ink)}
+.notice.warn{background:rgba(242,92,84,.12)!important;border-color:rgba(242,92,84,.4)!important}
+.chip{background:transparent!important;border-color:var(--line)!important;color:var(--ink)!important}
+.chip[aria-pressed="true"],.chip.on{background:var(--navy)!important;border-color:var(--navy)!important;color:#fff!important}
+textarea,.inp,select{background:#0f1a3d!important;color:var(--ink)!important;border-color:var(--line)!important}
+textarea::placeholder,.inp::placeholder{color:#7f89a8}
+.talk{background:rgba(255,255,255,.08)!important;color:var(--ink)!important}
+.minrow button{color:var(--ink)!important}
+.badge{background:rgba(242,193,78,.16)!important;color:#F2C14E!important}
+.btn.danger{background:rgba(242,92,84,.14)!important;color:#ff9b8f!important}
+.dlg>div{color:var(--ink)}
 </style>
 <script>
 // Tab antippen: Inhalt sofort zeigen, nicht oben bei Sparky stehen bleiben
