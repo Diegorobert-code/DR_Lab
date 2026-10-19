@@ -831,7 +831,7 @@ $("#addact").onclick=()=>{
    $("#stepok").onclick=()=>{const n=parseInt(String($("#steps").value).replace(/\D/g,""));if(!(n>0))return;const t=today().filter(i=>i.act!=="schritte");t.push({id:uid(),meal:"act",act:"schritte",steps:n});S.days[dkey()]=t;save();closeSheet();render();toast("Schritte gespeichert")};
   };draw();
 };
-$("#save").onclick=()=>{const t=today();pending.forEach(i=>t.push(i));save();closeSheet();$("#txt").value="";$("#live").textContent="";const k=fmt(sum(pending).kcal),a=sumAct(pending);toast(`Gespeichert · ca. ${k} kcal`+(a?` · Bewegung −${fmt(a)}`:""));render()};
+$("#save").onclick=()=>{const t=today();pending.forEach(i=>t.push(i));save();closeSheet();$("#txt").value="";$("#live").textContent="";const k=fmt(sum(pending).kcal),a=sumAct(pending);toast(document.body.classList.contains("flo-sanft")?"Gespeichert. Schön, dass du es mir erzählt hast.":`Gespeichert · Richtwert ca. ${k} kcal`+(a?` · Bewegung −${fmt(a)}`:""));render();if(window.floFeier)floFeier(pending.length)};
 $("#cancel").onclick=closeSheet;$("#sheetbg").onclick=closeSheet;
 
 /* ---------- Eingabe ---------- */
@@ -1075,6 +1075,69 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 })();
 </script>
 
+<style>
+/* ---------- Runde 3: erster Eindruck (HIG/Material: Safe Areas, Tap-Feedback, ruhige Bewegung, lesbare Grössen) ---------- */
+.app{padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+.small{font-size:14px}
+.top .tag{font-size:11px}
+.date{font-size:15px}
+.u,.l,.mi,.flo-lbl{font-size:13px!important}
+.est{font-size:14px!important}
+.nutri span{font-size:13px}
+button,.chip,.pill,.flo-chip,[data-sag]{touch-action:manipulation}
+button:not(.mic),.chip,.pill,.flo-chip{transition:transform .14s cubic-bezier(.3,.7,.4,1),background-color .2s,opacity .2s}
+button:not(.mic):active,.chip:active,.pill:active,.flo-chip:active{transform:scale(.96)}
+:focus-visible{outline:3px solid #F2C14E;outline-offset:2px}
+.chip,.flo-chip{min-height:44px}
+/* Mikrofon atmet, solange es wartet */
+.mic:not(.rec)::before{animation:ring 3.2s ease-out infinite;border-color:rgba(242,193,78,.4)}
+.mic:not(.rec)::after{animation:ring 3.2s 1.6s ease-out infinite;border-color:rgba(242,193,78,.28)}
+/* Blätter, Toast und Flo-Frage liegen über den runden Knöpfen */
+.sheetbg{z-index:2147483400}
+.sheet{z-index:2147483450}
+.flofrage{z-index:2147483300}
+.flofrage:not(.on){visibility:hidden;opacity:0;transition:transform .45s cubic-bezier(.22,.8,.26,1),opacity .3s,visibility 0s .45s}
+.flofrage.on{visibility:visible;opacity:1;transition:transform .45s cubic-bezier(.22,.8,.26,1),opacity .2s}
+.toast{z-index:2147483600;min-width:min(320px,88vw);padding:12px 18px;border-radius:18px;font-weight:600;font-size:16px;box-shadow:0 14px 34px -10px rgba(0,0,0,.55);transition:transform .45s cubic-bezier(.2,.9,.3,1.15)}
+/* Feier: Funken und kleine Früchte */
+.r3-funke{position:fixed;z-index:2147483500;pointer-events:none;font-size:18px;line-height:1;will-change:transform,opacity}
+.r3-funke.stern{width:10px;height:10px;background:#F2C14E;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+.figur-hero img.r3-hops{animation:r3hops .7s cubic-bezier(.3,1.6,.5,1)!important}
+@keyframes r3hops{35%{transform:translateY(-12px) scale(1.06,.94) rotate(-4deg)}65%{transform:translateY(0) scale(1.04,.96)}}
+@media (prefers-reduced-motion:reduce){.mic::before,.mic::after{animation:none!important}.figur-hero img.r3-hops{animation:none!important}}
+</style>
+<script>
+/* Runde 3: kleine Feiern beim Erfassen (Funken, Früchte, kurze Vibration). Nichts verlässt das Gerät. */
+(function(){
+  var ruhig=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function summ(m){try{if(navigator.vibrate)navigator.vibrate(m)}catch(e){}}
+  function funken(el,n,fruechte){
+    if(!el||ruhig||!Element.prototype.animate)return;
+    var r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,F=['🍓','🥕','🍏','🫐','🥦','✨'];
+    for(var i=0;i<n;i++){
+      var f=document.createElement('i'),frucht=fruechte&&i%3===0;
+      f.className='r3-funke'+(frucht?'':' stern');if(frucht)f.textContent=F[i%F.length];
+      f.style.left=(x-6)+'px';f.style.top=(y-6)+'px';document.body.appendChild(f);
+      var a=Math.PI*2*i/n+Math.random()*.5,d=55+Math.random()*70;
+      f.animate([{transform:'translate(0,0) scale(.3)',opacity:1},{transform:'translate('+(Math.cos(a)*d)+'px,'+(Math.sin(a)*d+40)+'px) scale('+(.7+Math.random()*.7)+') rotate('+(120+Math.random()*200)+'deg)',opacity:0}],
+        {duration:800+Math.random()*450,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=(function(e){return function(){e.remove()}})(f);
+    }
+  }
+  function hops(){var img=document.querySelector('.figur-hero img');if(!img||ruhig)return;img.classList.remove('r3-hops');void img.offsetWidth;img.classList.add('r3-hops');setTimeout(function(){img.classList.remove('r3-hops')},800)}
+  window.floFeier=function(n){
+    var erstes=false;try{erstes=!localStorage.getItem('flo-r3-erstes');localStorage.setItem('flo-r3-erstes','1')}catch(e){}
+    summ(erstes?[20,50,20,50,30]:[12,40,16]);
+    setTimeout(function(){hops();funken(document.querySelector('.figur-hero img'),erstes?28:14,true)},380);
+  };
+  // Schnell erfassen (Wasser, Bewegung) und Teller: kleine Funken am Knopf
+  document.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('.flo-chip,.habit button,[data-qa]');
+    if(b){summ(10);funken(b,8,false)}
+  });
+  // Erster Besuch nach «Los geht's»: Flo hüpft kurz
+  var go=document.getElementById('figurStartGo');if(go)go.addEventListener('click',function(){setTimeout(hops,900);summ(10)});
+})();
+</script>
 <script src="sprechen.js" data-stil="sprachnachricht" data-figur="flo" data-name="Flo" data-bild="figur.jpg" data-unten="172" data-saetze='{"gruss":["Hallo, ich bin Flo! Erzähl mir, was du heute Feines gegessen hast."],"lob":["Mmh, das klingt richtig gut. Dein Körper sagt danke!"],"mut":["Kein Stress. Ein Glas Wasser und eine kleine Pause, dann schauen wir weiter."],"frage":["Sag mir einfach, was du gegessen hast, ich rechne den Rest. Bei «Für dich» findest du meine Tipps."]}' defer></script>
 <script src="feedback.js" data-app="Food and Flow" defer></script>
 <script src="../nova/seelen.js" defer></script>
