@@ -408,9 +408,9 @@
 
   /* ---------- Runde 2: So geht's, Präsentation, Ton ---------- */
   var SCHRITTE = [
-    ['💡', 'Idee rein', 'Du legst eine Idee, Daten oder eine Rückmeldung in meinen Automaten. Nur was du geben willst.'],
-    ['🔍', 'Ich prüfe', 'Ich ziehe den Hebel und schaue mit der Lupe: neu, klar, brauchbar? Der Wechselkurs ändert sich jeden Tag, mit Grund.'],
-    ['🪙', 'Coins raus', 'Du bekommst Coins. Coins sind Punkte ohne Geldwert: nie in Franken wechselbar, nicht kaufbar, nur bei DR Lab einlösbar.']
+    ['💡', 'Idee rein', 'Leg eine Idee, Daten oder eine Rückmeldung in den Automaten.'],
+    ['🔍', 'Ich prüfe', 'Ich zieh den Hebel und schau mit der Lupe: neu, klar, brauchbar?'],
+    ['🪙', 'Coins raus', 'Coins sind Punkte ohne Geldwert: nie in Franken, nicht kaufbar.']
   ];
   function soGehts() {
     if (hol('coinmaker.sogehts', false)) return;
@@ -418,8 +418,8 @@
     var k = document.createElement('section'); k.className = 'card sogehts'; k.id = 'sogehts';
     var h = document.createElement('div'); h.className = 'result-head'; h.innerHTML = '<h2>So geht die Werkstatt</h2><span class="tag">1 · 2 · 3</span>'; k.appendChild(h);
     SCHRITTE.forEach(function (x) { var d = document.createElement('div'); d.className = 'sg-zeile'; var e = document.createElement('span'); e.className = 'sg-em'; e.textContent = x[0]; var t = document.createElement('div'); var b = document.createElement('b'); b.textContent = x[1]; var sp = document.createElement('span'); sp.textContent = x[2]; t.appendChild(b); t.appendChild(sp); d.appendChild(e); d.appendChild(t); k.appendChild(d); });
-    var ok = document.createElement('button'); ok.className = 'wk'; ok.type = 'button'; ok.textContent = 'Verstanden, los geht\u2019s';
-    ok.addEventListener('click', function () { leg('coinmaker.sogehts', true); k.remove(); pose('nicken'); sag('Gut. Dann leg deine erste Idee in den Automaten.', 'Unten bei «Idee rein».', true); });
+    var ok = document.createElement('button'); ok.className = 'wk'; ok.type = 'button'; ok.textContent = 'Los geht\u2019s: zum Automaten';
+    ok.addEventListener('click', function () { leg('coinmaker.sogehts', true); k.classList.add('weg'); setTimeout(function () { k.remove(); }, 320); var m = document.querySelector('.machine'); if (m) setTimeout(function () { m.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); }, 200); pose('nicken'); sag('Gut. Dann leg deine erste Idee in den Automaten.', 'Unten bei «Idee rein».', true); });
     k.appendChild(ok);
     w.parentNode.insertBefore(k, w.nextSibling.nextSibling || null);
   }
@@ -453,9 +453,9 @@
   function runde2() {
     var w = document.querySelector('.werk-knoepfe');
     if (w) {
-      var pb = document.createElement('button'); pb.className = 'wk'; pb.id = 'praesBtn'; pb.type = 'button'; pb.textContent = '🤝 Präsentation für Kleinunternehmen'; pb.addEventListener('click', praesentation); w.appendChild(pb);
+      var pb = document.createElement('button'); pb.className = 'wk'; pb.id = 'praesBtn'; pb.type = 'button'; pb.textContent = '🤝 Firmen'; pb.setAttribute('aria-label', 'Präsentation für Kleinunternehmen'); pb.addEventListener('click', praesentation); w.appendChild(pb);
       var tb = document.createElement('button'); tb.className = 'wk hell'; tb.id = 'tonBtn'; tb.type = 'button';
-      var tz = function () { tb.textContent = hol('coinmaker.ton', true) ? '🔊 Stimme an' : '🔈 Stimme aus'; };
+      var tz = function () { tb.textContent = hol('coinmaker.ton', true) ? '🔊 Ton an' : '🔈 Ton aus'; };
       tb.addEventListener('click', function () { leg('coinmaker.ton', !hol('coinmaker.ton', true)); tz(); if (!hol('coinmaker.ton', true)) { try { speechSynthesis.cancel(); } catch (e) {} if (window.NovaStimme) try { NovaStimme.stopp(); } catch (e) {} } });
       tz(); w.appendChild(tb);
     }

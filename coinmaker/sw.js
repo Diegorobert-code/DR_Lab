@@ -1,6 +1,6 @@
 // Coin Maker – Offline-Cache (nur eigene Dateien, keine Daten, keine Ideen-Texte)
-const CACHE = 'coinmaker-v1';
-const FILES = ['./', './index.html', './werkstatt.js', './posen.js', './feedback.js', './figur.jpg', './figur-klein.jpg', './icon-180.png', './icon-192.png', './manifest.webmanifest', '../nova/nova.js', '../nova/seelen.js', '../nova/intro.js'];
+const CACHE = 'coinmaker-v2';
+const FILES = ['./', './index.html', './werkstatt.js', './glanz.js', './posen.js', './feedback.js', './figur.jpg', './figur-klein.jpg', './icon-180.png', './icon-192.png', './manifest.webmanifest', '../nova/nova.js', '../nova/seelen.js', '../nova/intro.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(FILES.map(f => c.add(f).catch(() => {})))).then(() => self.skipWaiting()));
 });
