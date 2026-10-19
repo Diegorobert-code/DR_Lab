@@ -1,6 +1,6 @@
 // Transkript – Offline-Cache (nur eigene Dateien, keine Daten)
-const CACHE = 'tr-v6';
-const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
+const CACHE = 'tr-v7';
+const FILES = ['./', './index.html', './manifest.webmanifest', '../fompa/fompa-posen.jpg', '../fompa/feedback.js', '../fompa/icon-180.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
 });

@@ -3,58 +3,87 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Transkript – DR Lab</title>
-<meta name="theme-color" content="#2f4f6f">
+<title>Fompa · Transkript</title>
+<meta name="theme-color" content="#0b1636">
+<meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Transkript">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="../fompa/icon-96.png" type="image/png">
+<link rel="apple-touch-icon" href="../fompa/icon-180.png">
 <style>
-:root{--bg:#f4f1ea;--card:#fff;--ink:#1d1f24;--muted:#646a75;--accent:#2f4f6f;--rec:#d94c16;--line:#e3ddd2;--ok:#3d7a4a;--f:-apple-system,system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root{--bg:#16181c;--card:#20242a;--ink:#eceae6;--muted:#9aa0aa;--accent:#7fa6cc;--rec:#ff7a45;--line:#2f343c;--ok:#7fc28c}}
+:root{--bg:#0b1636;--card:rgba(19,31,72,.88);--card2:rgba(28,44,96,.9);--ink:#f3ece4;--muted:#aeb7d0;--accent:#f2c14e;--rec:#ff6a4a;--line:rgba(242,193,78,.24);--ok:#86d39a;--f:-apple-system,system-ui,sans-serif;--serif:Georgia,'Times New Roman',serif;color-scheme:dark}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink)}
-body{font:400 17px/1.5 var(--f);padding:max(16px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom))}
-.w{max-width:640px;margin:0 auto;display:grid;gap:14px}
-h1{font-size:24px;margin:4px 0 0}
-.sub{color:var(--muted);margin:0;font-size:15px}
-.mic{justify-self:center;width:150px;height:150px;border-radius:50%;border:0;background:var(--accent);color:#fff;font:600 18px/1.2 var(--f);display:grid;place-items:center;gap:4px;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.18);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+html{background:var(--bg)}
+body{margin:0;color:var(--ink);font:400 17px/1.5 var(--f);padding:max(16px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));background:radial-gradient(120% 60% at 50% 0%,#1d3278 0%,var(--bg) 60%) fixed;overflow-x:hidden;min-height:100vh}
+.himmel{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.himmel i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.5;animation:funkeln 4s ease-in-out infinite}
+@keyframes funkeln{50%{opacity:1;transform:scale(1.6)}}
+.w{position:relative;z-index:1;max-width:640px;margin:0 auto;display:grid;gap:14px}
+.kopf{display:flex;gap:14px;align-items:center}
+.kopf > div:not(.fompa){flex:1;min-width:0}
+.fompa{width:72px;height:72px;border-radius:50%;overflow:hidden;flex:none;box-shadow:0 0 0 3px var(--accent),0 8px 22px rgba(0,0,0,.45);animation:atmen 4.5s ease-in-out infinite;transform-origin:50% 95%}
+.fompa img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.3,1.4,.5,1);transform-origin:52% 32%}
+.fompa.hoert{animation:hoeren 1.2s ease-in-out infinite}
+.fompa.hoert img{transform:scale(1.25)}
+.fompa.freut{animation:hops .7s cubic-bezier(.3,1.6,.5,1) 2}
+@keyframes atmen{50%{transform:translateY(-3px) scale(1.015)}}
+@keyframes hoeren{25%{transform:rotate(-8deg)}75%{transform:rotate(4deg)}}
+@keyframes hops{35%{transform:translateY(-16px) scale(1.04,.96)}60%{transform:translateY(0) scale(1.06,.92)}}
+h1{font:700 26px/1.1 var(--serif);margin:0;color:var(--accent)}
+.sub{color:var(--muted);margin:2px 0 0;font-size:14px}
+a{color:var(--accent)}
+.sub a{color:var(--muted)}
+.mic{justify-self:center;width:150px;height:150px;border-radius:50%;border:0;background:linear-gradient(180deg,#f7d47a,#e9b23a);color:#2a1d00;font:700 18px/1.2 var(--f);display:grid;place-items:center;gap:4px;cursor:pointer;box-shadow:0 10px 30px -6px rgba(242,193,78,.55);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .mic svg{width:46px;height:46px}
-.mic.on{background:var(--rec);animation:pulse 1.4s ease-in-out infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(217,76,22,.45)}50%{box-shadow:0 0 0 22px rgba(217,76,22,0)}}
+.mic.on{background:var(--rec);color:#fff;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,106,74,.5)}50%{box-shadow:0 0 0 22px rgba(255,106,74,0)}}
 .state{text-align:center;color:var(--muted);font-size:15px;min-height:22px;margin:0}
-textarea{width:100%;min-height:42vh;resize:vertical;border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);font:400 18px/1.55 var(--f);padding:14px}
+textarea{width:100%;min-height:42vh;resize:vertical;border:1px solid var(--line);border-radius:16px;background:rgba(6,12,34,.7);color:var(--ink);font:400 18px/1.55 var(--f);padding:14px}
+textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:1px}
 .interim{color:var(--muted);font-style:italic;min-height:24px;margin:-6px 4px 0;font-size:16px}
 .row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.btn{min-height:52px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 16px var(--f);cursor:pointer}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{min-height:52px;border-radius:14px;border:1px solid var(--line);background:var(--card2);color:var(--ink);font:600 16px var(--f);cursor:pointer;padding:0 8px}
+.btn:active{transform:scale(.97)}
 .send{display:grid;gap:8px}.send p{margin:0;color:var(--muted);font-size:14px}
-.btn.main{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.main{background:linear-gradient(180deg,#f7d47a,#e9b23a);border-color:#f2c14e;color:#2a1d00}
 .note{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:15px}
 .hidden{display:none}
 .opts{display:flex;gap:16px;flex-wrap:wrap;font-size:15px;color:var(--muted)}
 .opts label{display:flex;align-items:center;gap:6px}
+input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent)}
 details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
 summary{font-weight:600;cursor:pointer}
 .answer{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;white-space:pre-wrap;font-size:16px}
 .answer b{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
 .cfg{display:grid;gap:8px;margin-top:8px}
-.cfg input{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:400 16px var(--f);padding:10px 12px}
-.cfg small{color:var(--muted)}
+.cfg input,.cfg textarea{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;background:rgba(6,12,34,.7);color:var(--ink);font:400 16px var(--f);padding:10px 12px}
+.cfg textarea{min-height:120px;font-size:15px}
+.cfg small,.hint{color:var(--muted);font-size:14px}
+.zahlen{display:grid;gap:0;margin-top:8px}
+.zahlen div{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:6px 0;font-size:15px}
 .hist{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
-.hist li{border-top:1px solid var(--line);padding-top:8px;font-size:15px;cursor:pointer}
+.hist li{border-top:1px solid var(--line);padding-top:8px;font-size:15px;cursor:pointer;overflow-wrap:anywhere}
 .hist .hdel{min-height:44px;margin-top:6px;padding:0 14px;font-size:14px}
 .hist time{display:block;color:var(--muted);font-size:13px}
 .foot{color:var(--muted);font-size:13px;text-align:center}
-.toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ok);color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);background:#1f6b3a;color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;z-index:99}
 .toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
+<div class="himmel" id="himmel" aria-hidden="true"></div>
 <div class="w">
-  <div>
-    <h1>Sense Engine · Transkript</h1>
-    <p class="sub">Tippen, reinreden, fertig. Der Text bleibt auf deinem Handy. <a href="https://diegorobert-code.github.io/Stimmraum/sense/">Zur Sense Engine</a> · <a href="../apps/">Alle Apps</a></p>
+  <div class="kopf">
+    <div class="fompa" id="fompa"><img src="../fompa/fompa-posen.jpg" alt="Fompa hört zu" width="360" height="360"></div>
+    <div>
+      <h1>Fompa · Transkript</h1>
+      <p class="sub">Reinreden, Fompa schreibt mit. Der Text bleibt auf deinem Handy. <a href="../fompa/">Fompa</a> · <a href="https://diegorobert-code.github.io/Stimmraum/sense/">Sense Engine</a> · <a href="../apps/">Alle Apps</a></p>
+    </div>
+    <span data-feedback-slot></span>
   </div>
 
   <button class="mic" id="mic" aria-label="Reinreden starten">
@@ -69,6 +98,10 @@ summary{font-weight:600;cursor:pointer}
     <button class="btn main" id="copy">Kopieren</button>
     <button class="btn" id="share">Teilen</button>
     <button class="btn" id="new">Neu</button>
+  </div>
+  <div class="row2">
+    <button class="btn" id="anFompa">An Fompa (Zettel)</button>
+    <button class="btn" id="brief">Als Brief kopieren</button>
   </div>
 
   <div class="send">
@@ -103,12 +136,27 @@ summary{font-weight:600;cursor:pointer}
     </div>
   </details>
 
+  <details id="woerterBox">
+    <summary>Eigene Wörter</summary>
+    <div class="cfg">
+      <small>Eine Zeile pro Wort: <code>falsch = richtig</code>, z. B. <code>Pompa = Fompa</code>. Fompa korrigiert das beim Mitschreiben. Nur auf diesem Handy.</small>
+      <textarea id="woerter" spellcheck="false" placeholder="Pompa = Fompa&#10;Tinker = Tinko"></textarea>
+      <button class="btn main" id="woerterSave">Speichern</button>
+    </div>
+  </details>
+
+  <details id="lernBox">
+    <summary>Was Fompa sich merkt</summary>
+    <div class="zahlen" id="zahlen"></div>
+    <small class="hint">Nur Zählungen, nur auf diesem Handy. Nie Stimme.</small>
+  </details>
+
   <details id="histBox">
     <summary>Verlauf</summary>
     <ul class="hist" id="hist"></ul>
   </details>
 
-  <p class="foot">DR Lab · Testphase · Spracherkennung des Browsers</p>
+  <p class="foot">DR Lab · Fompa · Spracherkennung des Browsers. «An Fompa» macht aus Sätzen mit Betrag Zettel für die Buchhaltung.</p>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -137,6 +185,17 @@ var FIXES = [
   [/\b(dear lab|air ?lab|ir[- ]lab|gr[- ]lab|dia ?lab|di ar lab|dr läb|d r lab|doktor lab)\b/gi, 'DR Lab'],
   [/\b(v ?com|wipe code|wild ?code|vibe code)\b/gi, 'Vibecode'],
   [/\b(sense engine|sens engine|sense ensch[ie]n)\b/gi, 'Sense Engine'],
+  [/\bpompa\b/gi, 'Fompa'],
+  [/\b(mamaf|mama af)\b/gi, 'Mama Affe'],
+  [/\bsparki\b/gi, 'Sparky'],
+  [/\bmoonshine\b/gi, 'Mondschein'],
+  [/\bk(ü|ue)ppen\b/gi, 'Coin Maker'],
+  [/\btinker\b/gi, 'Tinko'],
+  [/\b(kaiverse|ki[- ]voice|kai[- ]?vers(e|um))\b/gi, 'KI-Verse'],
+  [/\b(lomo|lumu)\b/gi, 'Lumo'],
+  [/\bletty\b/gi, 'Letti'],
+  [/\bbriggs\b/gi, 'Brix'],
+  [/\bfiver\b/gi, 'Fiverr'],
   [/ß/g, 'ss']
 ];
 var PUNCT = [
@@ -144,7 +203,17 @@ var PUNCT = [
   [/\s*\b(ausrufezeichen)\b/gi, '!'], [/\s*\b(doppelpunkt)\b/gi, ':'],
   [/\s*\b(neue zeile|neuer absatz|absatz)\b\s*/gi, '\n']
 ];
+/* Eigene Wörter: «falsch = richtig», nur auf dem Gerät */
+var WKEY = 'drlab-transkript-woerter', eigene = [];
+function escRe(x){ return x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+function ladeWoerter(){
+  var t = get(WKEY, '');
+  $('woerter').value = t;
+  eigene = String(t).split('\n').map(function(l){ var i = l.indexOf('='); return i < 1 ? null : [l.slice(0, i).trim(), l.slice(i + 1).trim()]; })
+    .filter(function(x){ return x && x[0]; }).map(function(x){ return [new RegExp('(^|[^\\wäöüÄÖÜ])' + escRe(x[0]) + '(?=$|[^\\wäöüÄÖÜ])', 'gi'), x[1]]; });
+}
 function clean(s){
+  if ($('fix').checked) eigene.forEach(function(f){ s = s.replace(f[0], function(m, vor){ return vor + f[1]; }); });
   if ($('fix').checked) FIXES.forEach(function(f){ s = s.replace(f[0], f[1]); });
   if ($('punct').checked) PUNCT.forEach(function(f){ s = s.replace(f[0], f[1]); });
   return s;
@@ -160,6 +229,7 @@ function note(t){ var n = $('note'); n.textContent = t || ''; n.classList.toggle
 function state(t){ $('state').textContent = t || ''; }
 function ui(on){
   $('mic').classList.toggle('on', on);
+  if (window.fompa) fompa(on ? 'hoert' : null);
   $('micLabel').textContent = on ? 'Stopp' : 'Reinreden';
   $('mic').setAttribute('aria-label', on ? 'Aufnahme stoppen' : 'Reinreden starten');
   state(on ? 'Ich höre zu …' : (ta.value ? 'Gespeichert auf diesem Handy.' : ''));
@@ -268,6 +338,7 @@ function saveHist(){
   var h = get(HKEY, []);
   if (h.length && h[0].t === t) return;
   h.unshift({ d: Date.now(), t: t });
+  if (window.zaehl){ zaehl('diktate'); zaehl('woerter', t.split(/\s+/).length); }
   put(HKEY, h.slice(0, 50));
 }
 $('new').addEventListener('click', function(){
@@ -345,6 +416,37 @@ function askHermes(t){
 }
 hState();
 
+/* Fompa: hört zu, freut sich */
+window.fompa = function(p){ var f = $('fompa'); f.classList.remove('hoert', 'freut'); void f.offsetWidth; if (p) f.classList.add(p); }
+/* Lern-Zahlen nur auf dem Gerät */
+var LKEY = 'drlab-transkript-lernen', lern = get(LKEY, {});
+var zaehlT = null;
+window.zaehl = function(k, n){ lern[k] = (lern[k] || 0) + (n || 1); clearTimeout(zaehlT); zaehlT = setTimeout(function(){ put(LKEY, lern); renderZahlen(); }, 400); }
+function renderZahlen(){
+  var z = [['Diktate gespeichert', lern.diktate || 0], ['Wörter insgesamt', lern.woerter || 0], ['An Fompa geschickt', lern.fompa || 0], ['Als Brief kopiert', lern.brief || 0]];
+  var el = $('zahlen'); el.textContent = '';
+  z.forEach(function(x){ var d = document.createElement('div'), a = document.createElement('span'), b = document.createElement('span'); a.textContent = x[0]; b.textContent = x[1]; d.appendChild(a); d.appendChild(b); el.appendChild(d); });
+}
+$('woerterSave').addEventListener('click', function(){ put(WKEY, $('woerter').value); ladeWoerter(); toast('Wörter gespeichert'); fompa('freut'); });
+ladeWoerter(); renderZahlen();
+$('anFompa').addEventListener('click', function(){
+  var t = ta.value.trim(); if (!t){ toast('Noch kein Text'); return; }
+  t = clean(t);
+  if (want){ stopAll(''); if (rec) try { rec.stop(); } catch(e){} }
+  saveHist(); renderHist(); zaehl('fompa');
+  try { localStorage.setItem('fompa-eingang', t); } catch(e){}
+  fompa('freut');
+  setTimeout(function(){ location.href = '../fompa/#eingang'; }, 500);
+});
+$('brief').addEventListener('click', function(){
+  var t = ta.value.trim(); if (!t) return;
+  var b = '```\n' + t + '\n```';
+  zaehl('brief'); saveHist(); renderHist();
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(b).then(function(){ toast('Brief kopiert'); fompa('freut'); }, function(){ ta.select(); toast('Text ist markiert'); });
+  else { ta.select(); toast('Text ist markiert'); }
+});
+(function(){ var h = $('himmel'), s = ''; for (var i = 0; i < 40; i++) s += '<i style="left:' + (Math.random()*100).toFixed(1) + '%;top:' + (Math.random()*100).toFixed(1) + '%;animation-delay:' + (Math.random()*4).toFixed(1) + 's"></i>'; h.innerHTML = s; })();
+
 /* Verlauf */
 function fmt(d){ d = new Date(d); return d.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' }); }
 function renderHist(){
@@ -372,5 +474,6 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catc
 </script>
 <script src="../nova/seelen.js" defer></script>
 <script src="../nova/nova.js" data-nova-app="Transkript" data-nova-knopf="0" defer></script>
+<script src="../fompa/feedback.js" data-app="Fompa Transkript" defer></script>
 </body>
 </html>
