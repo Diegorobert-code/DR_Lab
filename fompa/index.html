@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 /* Nachtplatz: Nachtblau + Gold, eine Welt für alle DR-Lab-Figuren */
-:root{--bg:#0b1636;--bg2:#13235a;--card:rgba(19,31,72,.88);--card2:rgba(28,44,96,.9);--ink:#f3ece4;--muted:#aeb7d0;--accent:#f2c14e;--gold:#f2c14e;--goldsoft:rgba(242,193,78,.13);--line:rgba(242,193,78,.24);--ok:#86d39a;--warn:#ffa36e;--blue:#8fb3e8;--f:-apple-system,system-ui,sans-serif;--serif:Georgia,'Times New Roman',serif;color-scheme:dark}
+:root{--bg:#0b1636;--bg2:#13235a;--card:rgba(19,31,72,.88);--card2:rgba(28,44,96,.9);--ink:#f3ece4;--muted:#aeb7d0;--accent:#f2c14e;--gold:#f2c14e;--goldsoft:rgba(242,193,78,.13);--line:rgba(242,193,78,.24);--ok:#86d39a;--warn:#ffa36e;--blue:#8fb3e8;--f:-apple-system,system-ui,sans-serif;--serif:ui-rounded,'SF Pro Rounded',-apple-system,system-ui,sans-serif;color-scheme:dark}
 *{box-sizing:border-box}
 html{background:var(--bg)}
 body{margin:0;color:var(--ink);font:400 17px/1.5 var(--f);padding:max(16px,env(safe-area-inset-top)) 16px max(28px,env(safe-area-inset-bottom));background:radial-gradient(120% 60% at 50% 0%,#1d3278 0%,var(--bg) 60%) fixed;overflow-x:hidden;min-height:100vh}
@@ -77,7 +77,8 @@ textarea{min-height:110px;font-size:15px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px;background:var(--card2);color:var(--ink);cursor:pointer;min-height:38px}
 .chip.gold{background:var(--gold);color:#2a1d00;border-color:var(--gold)}
-.foot{color:var(--muted);font-size:13px;text-align:center;margin-bottom:170px}
+.foot{color:var(--muted);font-size:13px;text-align:center;margin-bottom:8px}
+.fuss-links{margin-bottom:170px}
 .foot a{color:var(--muted)}
 .toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);background:#1f6b3a;color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center;z-index:9999}
 .toast.show{opacity:1}
@@ -164,18 +165,100 @@ details.card > summary{font-weight:600}
 .figur.echt img{transform:none!important}
 #rechnungen .eintrag,#verkauf .eintrag,#proKuerzel .eintrag,#faellig .eintrag{grid-template-columns:1fr}
 #rechnungen .knoepfe,#verkauf .knoepfe,#proKuerzel .knoepfe,#faellig .knoepfe{justify-content:flex-start}
-@media (max-width:340px){.duo{width:190px}.figur,.duo .funken{width:96px;height:96px}.duo svg.glasbild{width:84px;height:100px}}
+
+/* ---------- Runde 3: erster Eindruck (HIG/Material: 8-px-Raster, Safe Areas, Tap-Feedback, ruhige Bewegung) ---------- */
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right));-webkit-tap-highlight-color:transparent}
+.w{gap:16px}
+.card{padding:16px;border-radius:20px}
+h1{font-size:30px;font-weight:800;letter-spacing:-.2px}
+h2{font-size:20px;font-weight:700;letter-spacing:-.1px}
+.sub{font-size:16px;line-height:1.35;margin-top:4px}
+.hint{font-size:16px;line-height:1.45}
+label{font-size:15px;gap:6px}
+.chip{font-size:15px;min-height:44px;padding:8px 14px}
+.btn.small{font-size:15px}
+.beleg small,.eintrag small{font-size:14px}
+.foot{font-size:14px;line-height:1.5}
+button,.chip,.tab,.shot,[role=button],a{touch-action:manipulation}
+.btn,.tab,.chip,.mode button,.vorlesen,.shot{transition:transform .14s cubic-bezier(.3,.7,.4,1),background-color .2s,box-shadow .2s,opacity .2s}
+.btn:active,.tab:active,.chip:active,.mode button:active,.vorlesen:active{transform:scale(.96)}
+.btn.main:active{box-shadow:0 4px 12px -6px rgba(242,193,78,.6)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.himmel .mond{top:auto;bottom:24vh;left:12px;width:40px;height:40px;opacity:.5;background:transparent;box-shadow:inset -12px 6px 0 2px #f2d58a,0 0 40px 6px rgba(242,193,78,.12)}
+/* Bühne: kompakter, Platz reserviert (kein Layout-Sprung), runde Schrift, zwei klare Knöpfe */
+#buehnePlatz{aspect-ratio:1/1;border-radius:26px;border:1px solid var(--line);background:linear-gradient(110deg,rgba(28,44,96,.6) 30%,rgba(242,193,78,.10) 50%,rgba(28,44,96,.6) 70%) 0 0/300% 100%;animation:schimmer 1.6s linear infinite;margin:0}
+@keyframes schimmer{to{background-position:-150% 0}}
+.nb-buehne + #buehnePlatz{display:none}
+.w > .nb-buehne{margin:0!important}
+.nb-unten{padding:110px 16px 16px!important;gap:8px!important}
+.nb-unten b{font:800 28px/1.15 var(--serif)!important;letter-spacing:-.2px}
+.nb-unten span{font-size:16px!important;line-height:1.4!important;max-width:320px!important}
+.held-knoepfe{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.held-knoepfe .btn{min-height:52px;border-radius:999px;padding:0 20px;font-size:17px}
+.nb-buehne .nb-reden{margin-top:0!important;padding:0 20px!important;min-height:52px;background:rgba(11,22,54,.55)!important;color:var(--ink)!important;border:1px solid rgba(242,193,78,.55);box-shadow:none!important;font-size:17px!important;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.nb-buehne .neu-gruss{animation:auftauchen .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes auftauchen{from{opacity:0;transform:translateY(10px)}}
+/* Glas + Fortschritt nebeneinander, Sprechblase mit Zipfel */
+.szene{grid-template-columns:auto 1fr!important;justify-items:start!important;text-align:left!important;gap:16px}
+.duo{width:178px;height:120px}
+.figur,.duo .funken{width:96px;height:96px}
+.duo .zeichen{left:66px}
+.duo svg.glasbild{width:84px;height:100px}
+.glastext{display:grid;gap:4px;min-width:0}
+.glastext .big{font-size:26px}
+.ziel{display:grid;gap:4px;margin-top:4px}
+.ziel .balken{height:10px;margin:2px 0 0}
+.ziel small{color:var(--muted);font-size:14px}
+@media (max-width:370px){.duo{width:150px}.figur,.duo .funken{width:80px;height:80px}.duo svg.glasbild{width:72px;height:88px}.glastext .big{font-size:22px}}
+.sprech.still{display:none}
+.sprech{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start}
+.sprech .bubble{padding:14px 16px;border-radius:20px 20px 20px 6px}
+.sprech .vorlesen{margin:0;width:48px;height:48px;min-height:48px;padding:0;border-radius:50%;font-size:20px;display:grid;place-items:center}
+/* Formular: erst das Nötigste */
+.shot{min-height:144px;gap:8px;border-radius:20px;background:rgba(242,193,78,.05)}
+.shot:active{transform:scale(.98);background:rgba(242,193,78,.1)}
+.shot .kamera{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#f7d47a,#e9b23a);color:#2a1d00;font-size:28px;box-shadow:0 8px 22px -8px rgba(242,193,78,.7)}
+.shot b{color:var(--ink);font-size:17px}
+.shot small{font-size:14px}
+details > summary{min-height:44px;display:flex;align-items:center;gap:8px;list-style:none}
+details > summary::-webkit-details-marker{display:none}
+details.mehr{border-top:1px solid var(--line);padding-top:8px}
+details.mehr > summary{min-height:44px;display:flex;align-items:center;gap:8px;color:var(--muted);font-weight:600;list-style:none}
+details.mehr > summary::-webkit-details-marker{display:none}
+details > summary::before{flex:none;content:'';width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .2s;margin:0 4px}
+details[open] > summary::before{transform:rotate(45deg)}
+details.mehr .form{margin-top:8px}
+/* Toast: gleitet von unten, über den runden Knöpfen */
+.toast{bottom:calc(env(safe-area-inset-bottom) + 160px);background:rgba(16,28,66,.94);color:var(--ink);border:1px solid rgba(242,193,78,.5);box-shadow:0 12px 30px rgba(0,0,0,.4);padding:12px 20px;font-size:16px;transform:translate(-50%,12px);transition:opacity .25s,transform .35s cubic-bezier(.2,.9,.3,1.2);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.toast.show{transform:translate(-50%,0)}
+/* Einführung: über allen Knöpfen, sanft herein */
+.onb{z-index:2147483600;animation:einblenden .3s ease both}
+.onbKarte{animation:hoch .45s cubic-bezier(.2,.9,.3,1.1) both;padding:24px 20px}
+.onbKarte h2{font-size:26px}
+.onbKarte p{font-size:17px;line-height:1.45}
+.onbKarte .wechsel{animation:auftauchen .35s ease both}
+@keyframes einblenden{from{opacity:0}}
+@keyframes hoch{from{opacity:0;transform:translateY(24px) scale(.97)}}
+.onbPunkte i{transition:width .25s,background-color .25s}
+.onbPunkte i.on{width:22px;border-radius:99px}
+.fuss-links{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
+/* Feier: Funken aus der Mitte */
+.feier{position:fixed;z-index:9996;width:10px;height:10px;pointer-events:none;background:var(--gold);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+.tabs .tab{font-size:16px}
+section{animation:auftauchen .3s ease both}
+@media (prefers-reduced-motion:reduce){#buehnePlatz{animation:none}}
 </style>
 </head>
 <body>
 <div class="himmel" id="himmel" aria-hidden="true"><span class="mond"></span></div>
-<script src="../nova/intro.js" data-art="funken" data-bild="../nova/figuren/fompa.jpg" data-text="Fompa sammelt deine Zettel"></script>
+<script src="../nova/intro.js" data-art="funken" data-bild="held.jpg" data-text="Fompa sammelt deine Zettel"></script>
 <div class="w">
   <header>
     <img src="icon-180.png" alt="Fompa, der Löwenaffe mit Brille">
     <div>
       <h1>Fompa</h1>
-      <p class="sub">Buchhaltung, Steuern und Transkript. Alles bleibt auf deinem Handy. <a href="../transkript/">Transkript</a> · <a href="../apps/">Alle Apps</a></p>
+      <p class="sub">Deine Zettel, sicher auf deinem Handy.</p>
     </div>
     <span data-feedback-slot></span>
   </header>
@@ -186,6 +269,7 @@ details.card > summary{font-weight:600}
     <button data-mode="plan">Woche + Ziele</button>
   </div>
 
+  <div id="buehnePlatz" aria-hidden="true"></div>
   <div class="card szene" id="szene">
     <div class="duo">
       <div class="figur" id="figur" role="button" tabindex="0" aria-label="Fompa antippen">
@@ -206,12 +290,15 @@ details.card > summary{font-weight:600}
     </div>
     <div class="glastext">
       <p class="big" id="glasZahl">0 Zettel</p>
-      <p class="hint" id="glasText">Jede Quittung wird ein Stern in Fompas Glas.</p>
+      <p class="hint" id="glasText">Jeder Zettel wird ein Stern.</p>
+      <div class="ziel" id="ziel"><div class="balken"><i id="zielBalken" style="width:0"></i></div><small id="zielText">Erster Stern wartet</small></div>
     </div>
   </div>
 
-  <div class="bubble" id="bubble" aria-live="polite"></div>
-  <button class="vorlesen" id="vorlesen" aria-label="Fompa liest vor">🔊 Fompa liest vor</button>
+  <div class="sprech">
+    <div class="bubble" id="bubble" aria-live="polite"></div>
+    <button class="vorlesen" id="vorlesen" aria-label="Fompa liest vor" title="Fompa liest vor">🔊</button>
+  </div>
 
   <div class="row" id="jahrRow">
     <label>Jahr
@@ -229,8 +316,8 @@ details.card > summary{font-weight:600}
   <!-- Zettel erfassen (Buchhaltung und Steuern) -->
   <section id="neu" class="card form">
     <h2 id="formTitle">Neuer Zettel</h2>
-    <p class="hint" id="sprechHint">Tipp auf das kleine Fompa-Bild rechts unten und sag zum Beispiel: «Kaffee 4.80 mit Twint», «Hotel 120 Euro mit Kreditkarte» oder «Wie viel habe ich diese Woche noch?».</p>
-    <div class="shot" id="shot">📷 Quittung fotografieren<br><small>oder Bild/PDF auswählen (freiwillig)</small></div>
+    <div class="shot" id="shot" role="button" tabindex="0" aria-label="Quittung fotografieren"><span class="kamera" aria-hidden="true">📷</span><b>Quittung fotografieren</b><small>oder Bild/PDF wählen, freiwillig</small></div>
+    <p class="hint" id="sprechHint">Oder sag es mir unten rechts: «Kaffee 4.80 mit Twint».</p>
     <input type="file" id="file" accept="image/*,application/pdf" capture="environment" class="hidden">
     <label><span id="fromLabel">Wofür</span>
       <input id="from" list="fromList" placeholder="z. B. Server, Praxismiete, Krankenkasse" autocomplete="off">
@@ -255,6 +342,7 @@ details.card > summary{font-weight:600}
       </label>
     </div>
     <p class="hint hidden" id="umrechnung"></p>
+    <details class="mehr" id="mehrBox"><summary>Mehr Angaben (freiwillig)</summary><div class="form">
     <div class="row nurBuch">
       <label>Bezahlt mit
         <input id="paid" list="paidList" placeholder="Karte" autocomplete="off">
@@ -269,9 +357,10 @@ details.card > summary{font-weight:600}
     <label id="catRow"><span id="catLabel">Steuer-Ordner</span>
       <select id="cat"></select>
     </label>
-    <label>Notiz (freiwillig)
+    <label>Notiz
       <input id="note" placeholder="z. B. Frage an den Steuerberater">
     </label>
+    </div></details>
     <button class="btn main" id="save">Ins Glas legen</button>
     <button class="btn hidden" id="cancel">Abbrechen</button>
     <button class="btn del hidden" id="delOne">Zettel löschen</button>
@@ -562,7 +651,8 @@ details.card > summary{font-weight:600}
     <button class="btn small del" id="forget">Vergessen</button>
   </details>
 
-  <p class="foot">Fompa ordnet und rechnet, ist aber keine Steuer- oder Finanzberatung. Ob etwas abziehbar ist, entscheidet dein Steuerberater oder das Steueramt. Bei Klientinnen und Klienten nur Kürzel verwenden.<br>Zettel bleiben auf deinem Gerät (kein Konto). Ein Server bekommt nur etwas, wenn du es antippst.<br><a href="#" id="einfuehrung">Einführung nochmals ansehen</a></p>
+  <p class="foot">Fompa ordnet und rechnet, ist aber keine Steuer- oder Finanzberatung. Ob etwas abziehbar ist, entscheidet dein Steuerberater oder das Steueramt. Bei Klientinnen und Klienten nur Kürzel verwenden.<br>Zettel bleiben auf deinem Gerät (kein Konto). Ein Server bekommt nur etwas, wenn du es antippst.</p>
+  <div class="fuss-links"><a class="btn small" href="../transkript/" style="display:inline-flex;align-items:center;text-decoration:none">🎙 Transkript</a><a class="btn small" href="#" id="einfuehrung" style="display:inline-flex;align-items:center;text-decoration:none">Einführung</a><a class="btn small" href="../apps/" style="display:inline-flex;align-items:center;text-decoration:none">Alle Apps</a></div>
 </div>
 <div class="toast" id="toast"></div>
 <div class="onb hidden" id="onb" role="dialog" aria-modal="true" aria-labelledby="onbTitel">
@@ -648,13 +738,13 @@ function katChanged(){
 
 const TIPS = {
   buch: [
-    'Ich bin <b>Fompa</b>. Verlorene Zettel sind mein Lieblingsfund. Fotografier die Quittung oder sag mir einfach, was du bezahlt hast.',
+    'Hoi, ich bin <b>Fompa</b>. Fotografier eine Quittung oder sag mir, was du bezahlt hast.',
     'Jeder Zettel wird ein Stern in meinem Glas. Ein volles Glas heisst: Nichts ist verloren gegangen.',
     'Karte aufgeladen? Wähl «Umbuchung». Das ist kein Verlust, nur ein Konto-Wechsel.',
     'Unter «Monat» siehst du deine Fixkosten als Endzahl pro Monat und pro Jahr.'
   ],
   steuer: [
-    'Ich bin <b>Fompa</b>. Du fotografierst, ich ordne und zähle. Ob etwas abziehbar ist, sagt dein Steuerberater.',
+    'Du fotografierst, ich ordne und zähle. Ob etwas abziehbar ist, sagt dein Steuerberater.',
     'Unleserliche Zahl? Lass den Betrag leer, ich markiere den Zettel als «Betrag fehlt».',
     'Leere Ordner sind kein Fehler. Sie zeigen nur, was noch fehlt.',
     'Unter «Paket» steht der Steuer-Fahrplan: was wann dran ist.'
@@ -836,8 +926,11 @@ function renderGlas(){
   neuId = null;
   $('#glasZahl').textContent = n === 1 ? '1 Zettel' : n + ' Zettel';
   $('#glasText').textContent = n
-    ? `${mitOrdner} davon liegen in einem Steuer-Ordner. Am Jahresende wird daraus die Liste für den Steuerberater.`
-    : 'Jede Quittung wird ein Stern in Fompas Glas. Am Jahresende wird daraus die Liste für den Steuerberater.';
+    ? (mitOrdner ? `${mitOrdner} davon im Steuer-Ordner.` : 'Nichts geht verloren.')
+    : 'Jeder Zettel wird ein Stern.';
+  const zi = zielStufe(n);
+  $('#zielBalken').style.width = Math.round(zi.anteil * 100) + '%';
+  $('#zielText').textContent = n ? `Noch ${zi.naechste - n} bis ${zi.naechste} Sterne` : 'Dein erster Stern wartet';
 }
 function starPath(r){
   let d = ''; for (let i = 0; i < 10; i++){ const a = Math.PI/5*i - Math.PI/2, rr = i % 2 ? r*.45 : r; d += (i ? 'L' : 'M') + (Math.cos(a)*rr).toFixed(2) + ' ' + (Math.sin(a)*rr).toFixed(2); }
@@ -859,6 +952,8 @@ function hinweise(){
 }
 function renderBubble(){
   const h = hinweise();
+  const neuling = !zettel.length && !Object.keys(lern).some(k => k.startsWith('weg-'));
+  document.querySelector('.sprech').classList.toggle('still', neuling && !faellig.length && !rechnungen.length);
   if (h.length && mode === 'plan' || h.length && Math.floor(Date.now()/36e5) % 2 === 0) { $('#bubble').innerHTML = h[0]; return; }
   const t = TIPS[mode]; $('#bubble').innerHTML = t[Math.floor(Date.now()/864e5) % t.length];
 }
@@ -1240,8 +1335,8 @@ async function shrink(file){
   } catch { return file; }
 }
 function showPhoto(blob){
-  if (!blob){ $('#shot').innerHTML = '📷 Quittung fotografieren<br><small>oder Bild/PDF auswählen (freiwillig)</small>'; return; }
-  $('#shot').innerHTML = blob.type.startsWith('image/') ? `<img src="${URL.createObjectURL(blob)}" alt="Quittung">` : '📄 PDF ausgewählt';
+  if (!blob){ $('#shot').innerHTML = '<span class="kamera" aria-hidden="true">📷</span><b>Quittung fotografieren</b><small>oder Bild/PDF wählen, freiwillig</small>'; return; }
+  $('#shot').innerHTML = blob.type.startsWith('image/') ? `<img src="${URL.createObjectURL(blob)}" alt="Quittung"><small>Tippen für ein anderes Foto</small>` : '<span class="kamera" aria-hidden="true">📄</span><b>PDF ausgewählt</b>';
 }
 const kurs = w => w === 'EUR' ? num(einst.eur, .94) || .94 : w === 'USD' ? num(einst.usd, .8) || .8 : 1;
 function umrechnung(){
@@ -1285,7 +1380,13 @@ async function save(){
   toast(old ? 'Geändert' : (z.cat ? 'Im Glas und in Ordner ' + z.cat : 'Im Glas ⭐'));
   if (z.year !== year){ year = z.year; await kvSet('year', year); fillYears(); }
   resetForm(); await loadYear();
-  if (!old){ window.scrollTo({top:0, behavior:'smooth'}); setTimeout(sterneFliegen, 380); setTimeout(() => pose('freut', '★'), 1100); }
+  if (!old){
+    summ([12, 40, 18]);
+    const n = zettel.length, st = STUFEN.includes(n);
+    $('#szene').scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(sterneFliegen, 380);
+    setTimeout(() => { pose('freut', '★'); feier($('#glasbild'), st ? 26 : 12); if (st){ muenzRegen(); summ([20, 60, 20, 60, 40]); toast(n === 1 ? 'Dein erster Stern! Fompa freut sich.' : n + ' Sterne im Glas. Stark!'); } }, 1100);
+    heldGruss();
+  }
 }
 function edit(id){
   const z = zettel.find(x => x.id === id); if (!z) return;
@@ -1296,6 +1397,7 @@ function edit(id){
   umrechnung();
   $('#date').value = z.date||''; $('#note').value = z.note||''; setKat(z.kat||''); $('#paid').value = z.paid||''; $('#fix').value = z.fix||'';
   $('#formTitle').textContent = 'Zettel ändern'; $('#save').textContent = 'Speichern';
+  $('#mehrBox').open = !!(z.paid || z.fix || z.note);
   $('#cancel').classList.remove('hidden'); $('#delOne').classList.remove('hidden');
   tab('neu');
 }
@@ -1379,7 +1481,7 @@ function verstehe(t){
   if (mode !== 'buch') setMode('buch');
   resetForm(); tab('neu'); quelle = 'stimme';
   $('#from').value = p.was; $('#amount').value = p.betrag.toFixed(2); $('#date').value = p.date; $('#waehrung').value = p.waehrung; umrechnung();
-  if (p.paid) $('#paid').value = p.paid;
+  if (p.paid){ $('#paid').value = p.paid; $('#mehrBox').open = true; }
   if (p.kat) setKat(p.kat);
   suggest(); pose('rechnet', null, 1400);
   return `Notiert: ${p.was || 'ohne Namen'}, ${p.waehrung === 'CHF' ? 'CHF' : p.waehrung} ${chf(p.betrag)}${p.paid ? ', ' + p.paid : ''}. Schau kurz drüber und tipp auf «Ins Glas legen», dann kommt der Zettel zu den anderen.`;
@@ -1677,15 +1779,16 @@ function renderHeute(){
 
 /* Einführung beim ersten Start */
 const ONB = [
-  {t:'Hallo, ich bin Fompa', x:'Der Löwenaffe mit Brille. Ich sammle deine Zettel, rechne in Sitzungen und erinnere dich an alles, was fällig ist. Alles bleibt auf deinem Handy.', p:'freut'},
-  {t:'Dein Wochengeld', x:'Wie viel möchtest du pro Woche privat ausgeben, und was kostet eine Sitzung? Du kannst das auch später unter «Woche + Ziele» eintragen.', p:'rechnet', feld:true},
-  {t:'Zettel ins Glas', x:'Tipp unten rechts auf mein kleines Bild und sag zum Beispiel «Kaffee 4.80 mit Twint». Oder fotografiere eine Quittung. Jeder Zettel wird ein Stern in meinem Glas.', p:'staunt'},
-  {t:'Drei Bereiche', x:'Buchhaltung für jeden Tag, Steuern mit Ordnern und Paket für den Steuerberater, Woche + Ziele mit Kapital, Fälligkeiten und offenen Rechnungen. Ich bin keine Steuerberatung, ich ordne nur.', p:'denkt'}
+  {t:'Hoi, ich bin Fompa', x:'Ich sammle deine Zettel und rechne für dich. Alles bleibt auf deinem Handy.', p:'freut'},
+  {t:'Dein Wochengeld', x:'Wie viel möchtest du pro Woche privat ausgeben? Geht auch später.', p:'rechnet', feld:true},
+  {t:'Zettel ins Glas', x:'Foto machen oder mir sagen: «Kaffee 4.80 mit Twint». Jeder Zettel wird ein Stern.', p:'staunt'},
+  {t:'Ich ordne, du entscheidest', x:'Buchhaltung, Steuern, Woche + Ziele. Ob etwas abziehbar ist, sagt dein Steuerberater.', p:'denkt'}
 ];
 let onbI = 0;
 function onbZeigen(i){
   onbI = i; const s = ONB[i];
   $('#onb').classList.remove('hidden'); $('#onbTitel').textContent = s.t; $('#onbText').textContent = s.x;
+  ['#onbTitel','#onbText'].forEach(q => { const e = $(q); e.classList.remove('wechsel'); void e.offsetWidth; e.classList.add('wechsel'); });
   $('#onbFeld').innerHTML = s.feld ? `<div class="form"><div class="row"><label>Wochengeld CHF<input id="oWoche" inputmode="decimal" placeholder="z. B. 300" value="${esc(einst.wochengeld||'')}"></label><label>Preis pro Sitzung<input id="oPreis" inputmode="decimal" placeholder="z. B. 120" value="${esc(einst.preis||'')}"></label></div></div>` : '';
   $('#onbPunkte').innerHTML = ONB.map((_, n) => `<i class="${n === i ? 'on' : ''}"></i>`).join('');
   $('#onbWeiter').textContent = i === ONB.length - 1 ? 'Los geht\'s' : 'Weiter';
@@ -1696,7 +1799,66 @@ async function onbWeiter(ende){
   if ($('#oWoche')){ const w = $('#oWoche').value.trim(), p = $('#oPreis').value.trim(); if (w) einst.wochengeld = w; if (p) einst.preis = p; }
   if (!ende && onbI < ONB.length - 1){ onbZeigen(onbI + 1); return; }
   $('#onb').classList.add('hidden'); await kvSet('onboard', 1); await einstSpeichern(); pose('freut', '♪');
+  summ(15); heldGruss(); setTimeout(() => { const k = document.querySelector('.held-knoepfe .btn.main'); if (k) feier(k, 14); }, 350);
 }
+
+/* ---------- Runde 3: Begrüssung, Fortschritt, kleine Feiern ---------- */
+const STUFEN = [1, 5, 10, 25, 50, 100, 160, 250, 500, 1000];
+function zielStufe(n){
+  const naechste = STUFEN.find(x => x > n) || (Math.ceil((n + 1) / 500) * 500);
+  return {naechste, anteil: Math.min(1, n / naechste)};
+}
+const ruhig = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+function summ(muster){ try { if (navigator.vibrate) navigator.vibrate(muster); } catch {} }
+function feier(el, n = 14){
+  if (!el || ruhig()) return;
+  const r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+  for (let i = 0; i < n; i++){
+    const f = document.createElement('i'); f.className = 'feier'; document.body.appendChild(f);
+    const a = Math.PI * 2 * i / n + Math.random() * .4, d = 50 + Math.random() * 70, g = .6 + Math.random() * .9;
+    f.style.left = (x - 5) + 'px'; f.style.top = (y - 5) + 'px';
+    f.animate([{transform:'translate(0,0) scale(.3) rotate(0)', opacity:1},
+      {transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d + 30}px) scale(${g}) rotate(${180 + Math.random()*180}deg)`, opacity:0}],
+      {duration:700 + Math.random()*400, easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish = () => f.remove();
+  }
+}
+function tagesGruss(){
+  const h = new Date().getHours();
+  return h < 5 ? 'Noch wach?' : h < 11 ? 'Guten Morgen!' : h < 14 ? 'Hoi!' : h < 18 ? 'Schön, dass du da bist.' : h < 23 ? 'Guten Abend!' : 'Noch wach?';
+}
+function heldGruss(){
+  const b = document.querySelector('.nb-buehne'); if (!b || !db) return;
+  const titel = b.querySelector('.nb-unten b'), satz = b.querySelector('.nb-unten span');
+  const n = zettel.length, gesamt = Object.keys(lern).filter(k => k.startsWith('weg-')).reduce((s, k) => s + lern[k], 0);
+  if (titel) titel.textContent = gesamt ? tagesGruss() : 'Hoi, ich bin Fompa.';
+  if (satz){
+    satz.textContent = !gesamt ? 'Leg deinen ersten Zettel ins Glas. Den Rest mache ich.'
+      : n ? `${n} ${n === 1 ? 'Stern' : 'Sterne'} im Glas. Was kommt heute dazu?` : 'Neues Jahr, leeres Glas. Los gehts.';
+    satz.classList.remove('neu-gruss'); void satz.offsetWidth; satz.classList.add('neu-gruss');
+  }
+}
+function heldBauen(){
+  const b = document.querySelector('.nb-buehne'); if (!b || b.dataset.r3) return !!b;
+  b.dataset.r3 = '1';
+  const img = b.querySelector('img'); if (img){ img.decoding = 'async'; img.fetchPriority = 'high'; }
+  const unten = b.querySelector('.nb-unten'), reden = b.querySelector('.nb-reden');
+  const box = document.createElement('div'); box.className = 'held-knoepfe';
+  const los = document.createElement('button'); los.className = 'btn main'; los.type = 'button'; los.textContent = '📷 Zettel ablegen';
+  los.onclick = () => {
+    summ(10);
+    if (mode === 'plan') setMode('buch'); else tab('neu');
+    $('#neu').scrollIntoView({behavior:'smooth', block:'start'});
+    $('#file').click();
+  };
+  box.appendChild(los);
+  if (reden){ reden.textContent = '📞 Reden'; box.appendChild(reden); }
+  unten.appendChild(box);
+  heldGruss();
+  if (img && !ruhig()) setTimeout(() => img.click(), 900);
+  return true;
+}
+(function heldWarten(t = 0){ if (!heldBauen() && t < 600) requestAnimationFrame(() => heldWarten(t + 1)); else if (t >= 600){ const p = $('#buehnePlatz'); if (p) p.remove(); } })();
+$('#shot').onkeydown = e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); $('#file').click(); } };
 
 async function einstSpeichern(){ await kvSet('einst', einst); renderAll(); }
 (async () => {
@@ -1714,7 +1876,7 @@ async function einstSpeichern(){ await kvSet('einst', einst); renderAll(); }
   verkauf = (await kvGet('verkauf')) || [];
   fillYears();
   let m = 'buch'; try { m = localStorage.getItem('fompa-mode') || 'buch'; } catch {}
-  await loadYear(); setMode(m);
+  await loadYear(); setMode(m); heldGruss();
   $('#fDatum').value = ymd(new Date()); $('#rDatum').value = ymd(new Date());
 
   document.querySelectorAll('.mode button').forEach(b => b.onclick = () => setMode(b.dataset.mode));
@@ -1823,7 +1985,7 @@ async function einstSpeichern(){ await kvSet('einst', einst); renderAll(); }
 </script>
 <script src="../apps/sprechen/sprechen.js" data-figur="fompa" data-name="Fompa" data-bild="figur.jpg" data-stimme-handy="mann" data-unten="84" data-saetze='{"gruss":["Hallo, ich bin Fompa. Sag mir, was du bezahlt hast, zum Beispiel: Migros Büromaterial 23.50 mit Karte. Oder frag mich: Wie viel habe ich diese Woche noch?"],"lob":["Wunderbar, wieder ein Zettel gerettet. Mein Glas glitzert schon."],"mut":["Keine Sorge, wir machen das Zettel für Zettel. Nichts geht verloren."],"frage":["Sag mir einfach Wofür, Betrag und womit bezahlt. Ob etwas abziehbar ist, entscheidet dein Steuerberater, ich ordne nur."],"abschied":["Bis bald. Ich passe auf deine Zettel auf."]}' defer></script>
 <script src="../nova/seelen.js" defer></script>
-<script src="../nova/buehne.js" data-figur="fompa" data-name="Fompa" data-bild="../nova/figuren/fompa.jpg" data-satz="Ich sammle deine Zettel, rechne in Sitzungen und erinnere dich an alles, was fällig ist." data-vor="#szene" defer></script>
+<script src="../nova/buehne.js" data-figur="fompa" data-name="Fompa" data-bild="held.jpg" data-satz="Ich sammle deine Zettel, rechne in Sitzungen und erinnere dich an alles, was fällig ist." data-vor="#buehnePlatz" defer></script>
 <script src="../nova/nova.js" data-nova-bild="icon-192.png" data-nova-app="Fompa" defer></script>
 <script src="feedback.js" data-app="Fompa" defer></script>
 </body>

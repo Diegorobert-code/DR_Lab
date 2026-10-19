@@ -13,7 +13,7 @@
 <link rel="icon" href="../fompa/icon-96.png" type="image/png">
 <link rel="apple-touch-icon" href="../fompa/icon-180.png">
 <style>
-:root{--bg:#0b1636;--card:rgba(19,31,72,.88);--card2:rgba(28,44,96,.9);--ink:#f3ece4;--muted:#aeb7d0;--accent:#f2c14e;--rec:#ff6a4a;--line:rgba(242,193,78,.24);--ok:#86d39a;--f:-apple-system,system-ui,sans-serif;--serif:Georgia,'Times New Roman',serif;color-scheme:dark}
+:root{--bg:#0b1636;--card:rgba(19,31,72,.88);--card2:rgba(28,44,96,.9);--ink:#f3ece4;--muted:#aeb7d0;--accent:#f2c14e;--rec:#ff6a4a;--line:rgba(242,193,78,.24);--ok:#86d39a;--f:-apple-system,system-ui,sans-serif;--serif:ui-rounded,'SF Pro Rounded',-apple-system,system-ui,sans-serif;color-scheme:dark}
 *{box-sizing:border-box}
 html{background:var(--bg)}
 body{margin:0;color:var(--ink);font:400 17px/1.5 var(--f);padding:max(16px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));background:radial-gradient(120% 60% at 50% 0%,#1d3278 0%,var(--bg) 60%) fixed;overflow-x:hidden;min-height:100vh}
@@ -47,7 +47,7 @@ textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:1px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .btn{min-height:52px;border-radius:14px;border:1px solid var(--line);background:var(--card2);color:var(--ink);font:600 16px var(--f);cursor:pointer;padding:0 8px}
 .btn:active{transform:scale(.97)}
-.send{display:grid;gap:8px}.send p{margin:0;color:var(--muted);font-size:14px}
+.send{display:grid;gap:8px}.send p{margin:0;color:var(--muted);font-size:15px}
 .btn.main{background:linear-gradient(180deg,#f7d47a,#e9b23a);border-color:#f2c14e;color:#2a1d00}
 .note{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:15px}
 .hidden{display:none}
@@ -74,6 +74,54 @@ summary{font-weight:600;cursor:pointer}
 .answer .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);background:#1f6b3a;color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;z-index:99}
 .toast.show{opacity:1}
+
+/* ---------- Runde 3: erster Eindruck ---------- */
+html{-webkit-text-size-adjust:100%}
+body{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right));-webkit-tap-highlight-color:transparent}
+.w{gap:16px}
+h1{font-size:30px;font-weight:800;letter-spacing:-.2px}
+.dach{display:block;font:700 13px/1 var(--f);letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.sub{font-size:16px;line-height:1.35;margin-top:4px}
+.hint,.cfg small{font-size:15px}
+.foot{font-size:14px;line-height:1.5;margin:0}
+.opts{font-size:16px}
+.opts label{min-height:44px}
+.btn{transition:transform .14s cubic-bezier(.3,.7,.4,1),opacity .25s,background-color .2s;touch-action:manipulation}
+.btn:active{transform:scale(.96)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+details{border-radius:16px;padding:4px 16px}
+details > summary{min-height:48px;display:flex;align-items:center;gap:10px;list-style:none}
+details > summary::-webkit-details-marker{display:none}
+details > summary::before{content:'';flex:none;width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .2s;margin:0 2px}
+details[open] > summary::before{transform:rotate(45deg)}
+details[open]{padding-bottom:16px}
+.willkommen{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center;padding:16px;border-radius:20px 20px 20px 6px;font-size:16px;animation:auftauchen .5s cubic-bezier(.2,.8,.2,1) both}
+.willkommen.hidden{display:none}
+.willkommen .btn{grid-column:1/-1;margin-top:8px}
+.willkommen .winken{font-size:30px;display:inline-block;transform-origin:70% 80%;animation:winken 1.6s ease-in-out .6s 2}
+@keyframes winken{20%,60%{transform:rotate(16deg)}40%,80%{transform:rotate(-8deg)}}
+@keyframes auftauchen{from{opacity:0;transform:translateY(10px)}}
+/* Mikrofon: atmet ruhig, beim Zuhören pulsiert ein Ring (nur transform/opacity) */
+.mic{position:relative;width:160px;height:160px;transition:transform .16s cubic-bezier(.3,.7,.4,1)}
+.mic:active{transform:scale(.95)}
+.mic::before,.mic::after{content:'';position:absolute;inset:0;border-radius:50%;pointer-events:none}
+.mic::before{border:2px solid rgba(242,193,78,.55);animation:ring 2.8s ease-out infinite}
+.mic::after{border:2px solid rgba(242,193,78,.35);animation:ring 2.8s ease-out 1.4s infinite}
+.mic.on{animation:none}
+.mic.on::before,.mic.on::after{border-color:rgba(255,106,74,.7);animation-duration:1.3s}
+.mic.on::after{animation-delay:.65s}
+@keyframes ring{0%{transform:scale(1);opacity:.9}100%{transform:scale(1.45);opacity:0}}
+.state{font-size:16px}
+textarea{min-height:30vh;border-radius:20px}
+.aktionen{display:grid;gap:12px}
+.aktionen.leer{display:none}
+.aktionen.neu{animation:auftauchen .4s cubic-bezier(.2,.8,.2,1) both}
+.leerhinweis{text-align:center;color:var(--muted);font-size:16px;margin:-4px 0 0}
+.fuss-links{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:120px}
+.fuss-links .btn{min-height:44px;display:inline-flex;align-items:center;text-decoration:none;padding:0 14px;font-size:15px}
+.toast{bottom:calc(env(safe-area-inset-bottom) + 96px);background:rgba(16,28,66,.94);color:var(--ink);border:1px solid rgba(242,193,78,.5);box-shadow:0 12px 30px rgba(0,0,0,.4);padding:12px 20px;font-size:16px;transform:translate(-50%,12px);transition:opacity .25s,transform .35s cubic-bezier(.2,.9,.3,1.2);z-index:2147483600;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.toast.show{transform:translate(-50%,0)}
+.feier{position:fixed;z-index:9996;width:10px;height:10px;pointer-events:none;background:var(--accent);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -83,15 +131,15 @@ summary{font-weight:600;cursor:pointer}
   <div class="kopf">
     <div class="fompa" id="fompa"><img src="../fompa/fompa-posen.jpg" alt="Fompa hört zu" width="360" height="360"></div>
     <div>
-      <h1>Fompa · Transkript</h1>
-      <p class="sub">Reinreden, Fompa schreibt mit. Der Text bleibt auf deinem Handy. <a href="../fompa/">Fompa</a> · <a href="https://diegorobert-code.github.io/Stimmraum/sense/">Sense Engine</a> · <a href="../apps/">Alle Apps</a></p>
+      <h1><span class="dach">Fompa</span>Transkript</h1>
+      <p class="sub">Du redest, ich schreibe mit.</p>
     </div>
     <span data-feedback-slot></span>
   </div>
 
   <div class="willkommen hidden" id="willkommen">
-    <b>Hallo, ich bin Fompa.</b> Tipp auf «Reinreden» und sprich einfach. Ich schreibe mit und korrigiere Verhörer wie «Pompa» → «Fompa». «Aufräumen» nimmt Füllwörter raus, «Stichworte» macht eine Liste, «An Fompa» macht aus Beträgen Zettel. Alles bleibt auf deinem Handy.
-    <button class="btn" id="willkommenOk" style="margin-top:8px;width:100%">Verstanden</button>
+    <span class="winken" aria-hidden="true">👋</span><span><b>Hoi, ich bin Fompa.</b> Tipp auf den goldenen Knopf und sprich. Ich schreibe mit und korrigiere Verhörer.</span>
+    <button class="btn main" id="willkommenOk" style="width:100%">Alles klar</button>
   </div>
 
   <button class="mic" id="mic" aria-label="Reinreden starten">
@@ -100,7 +148,8 @@ summary{font-weight:600;cursor:pointer}
   </button>
   <p class="state" id="state"></p>
 
-  <textarea id="text" placeholder="Hier erscheint dein Text. Du kannst ihn auch direkt bearbeiten."></textarea>
+  <textarea id="text" placeholder="Hier erscheint dein Text. Du kannst auch direkt tippen."></textarea>
+  <div class="aktionen leer" id="aktionen">
 
   <div class="row">
     <button class="btn main" id="copy">Kopieren</button>
@@ -127,17 +176,22 @@ summary{font-weight:600;cursor:pointer}
     </div>
   </div>
 
-  <div class="note hidden" id="note"></div>
-
-  <div class="opts">
-    <label><input type="checkbox" id="fix" checked> Verhörer korrigieren</label>
-    <label><input type="checkbox" id="punct" checked> Satzzeichen per Wort</label>
   </div>
+  <p class="leerhinweis" id="leerhinweis">Sobald Text da ist, kannst du ihn kopieren, aufräumen oder an Fompa geben.</p>
+  <div class="note hidden" id="note"></div>
 
   <div class="answer hidden" id="answer"></div>
 
+  <details id="einstBox">
+    <summary>Einstellungen</summary>
+    <div class="opts" style="margin-top:4px">
+      <label><input type="checkbox" id="fix" checked> Verhörer korrigieren</label>
+      <label><input type="checkbox" id="punct" checked> Satzzeichen per Wort («Punkt», «Komma»)</label>
+    </div>
+  </details>
+
   <details id="hermesBox">
-    <summary>Hermes-Verbindung <span id="hermesState"></span></summary>
+    <summary><span>Hermes-Verbindung <span id="hermesState"></span></span></summary>
     <div class="cfg">
       <input id="hAddr" type="url" inputmode="url" autocomplete="off" placeholder="Adresse, z. B. https://hermes-….sslip.io">
       <input id="hKey" type="password" autocomplete="off" placeholder="Passwort">
@@ -162,7 +216,8 @@ summary{font-weight:600;cursor:pointer}
   <details id="lernBox">
     <summary>Was Fompa sich merkt</summary>
     <div class="zahlen" id="zahlen"></div>
-    <small class="hint">Nur Zählungen, nur auf diesem Handy. Nie Stimme.</small>
+    <small class="hint">Nur Zählungen, nur auf diesem Handy. Nie Stimme, nie Text.</small>
+    <label class="hint" style="display:flex;gap:10px;align-items:flex-start;margin-top:10px"><input type="checkbox" id="lernOk" style="flex:none;margin-top:2px"> <span>Zählungen einmal am Tag an meinen DR-Lab-Server geben (nur mit eingerichteter Verbindung).</span></label>
   </details>
 
   <details id="histBox">
@@ -170,7 +225,8 @@ summary{font-weight:600;cursor:pointer}
     <ul class="hist" id="hist"></ul>
   </details>
 
-  <p class="foot">DR Lab · Fompa · Spracherkennung des Browsers. «An Fompa» macht aus Sätzen mit Betrag Zettel für die Buchhaltung.</p>
+  <p class="foot">Spracherkennung deines Browsers. «An Fompa» macht aus Sätzen mit Betrag Zettel für die Buchhaltung.</p>
+  <div class="fuss-links"><a class="btn" href="../fompa/">Fompa</a><a class="btn" href="https://diegorobert-code.github.io/Stimmraum/sense/">Sense Engine</a><a class="btn" href="../apps/">Alle Apps</a></div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -533,11 +589,52 @@ var POSEN = [];
 fetch('../fompa/posen/posen.json', { cache: 'no-cache' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ if (j && j.posen) POSEN = j.posen; }).catch(function(){});
 var alteFompa = window.fompa;
 window.fompa = function(p){ alteFompa(p); var img = $('fompa').querySelector('img'), n = p === 'hoert' ? 'hoert' : p || 'ruhe'; img.src = POSEN.indexOf(n) >= 0 ? '../fompa/posen/' + n + '.jpg' : '../fompa/fompa-posen.jpg'; };
+
+/* Runde 3: Aktionen erst mit Text, kleine Feiern, Lern-Zahlen nur mit Häkchen */
+var ruhig = function(){ return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; };
+function summ(m){ try { if (navigator.vibrate) navigator.vibrate(m); } catch(e){} }
+function feier(el, n){
+  if (!el || ruhig() || !Element.prototype.animate) return; n = n || 14;
+  var r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+  for (var i = 0; i < n; i++){
+    var f = document.createElement('i'); f.className = 'feier'; document.body.appendChild(f);
+    var a = Math.PI * 2 * i / n + Math.random() * .4, d = 50 + Math.random() * 60;
+    f.style.left = (x - 5) + 'px'; f.style.top = (y - 5) + 'px';
+    f.animate([{ transform: 'translate(0,0) scale(.3)', opacity: 1 }, { transform: 'translate(' + Math.cos(a) * d + 'px,' + (Math.sin(a) * d + 24) + 'px) scale(' + (.6 + Math.random() * .8) + ') rotate(240deg)', opacity: 0 }],
+      { duration: 700 + Math.random() * 350, easing: 'cubic-bezier(.2,.7,.3,1)' }).onfinish = (function(e){ return function(){ e.remove(); }; })(f);
+  }
+}
+var warLeer = null;
+function aktionenZeigen(){
+  var leer = !ta.value.trim();
+  if (leer === warLeer) return;
+  var a = $('aktionen');
+  a.classList.toggle('leer', leer); $('leerhinweis').classList.toggle('hidden', !leer);
+  if (!leer && warLeer === true){ a.classList.remove('neu'); void a.offsetWidth; a.classList.add('neu'); }
+  warLeer = leer;
+}
+aktionenZeigen();
+ta.addEventListener('input', aktionenZeigen);
+setInterval(aktionenZeigen, 400); // auch beim Mitschreiben (Wert wird per Skript gesetzt)
+$('mic').addEventListener('click', function(){ summ(12); });
+['copy', 'brief'].forEach(function(id){ $(id).addEventListener('click', function(){ if (ta.value.trim()){ summ([10, 30, 14]); feier($(id), 12); } }); });
+$('willkommenOk').addEventListener('click', function(){ summ(12); feier($('mic'), 16); });
+$('lernOk').checked = !!get(LKEY + '-ok', false);
+$('lernOk').addEventListener('change', function(){ put(LKEY + '-ok', this.checked); toast(this.checked ? (hermesReady() ? 'Danke. Nur Zählungen, einmal am Tag.' : 'Gemerkt. Ohne Verbindung bleibt alles hier.') : 'Keine Weitergabe'); if (this.checked) lernSenden(); });
+function lernSenden(){
+  var heute = new Date().toISOString().slice(0, 10);
+  if (!get(LKEY + '-ok', false) || !hermesReady() || get(LKEY + '-gesendet', '') === heute) return;
+  var zahlen = {}; Object.keys(lern).forEach(function(k){ if (typeof lern[k] === 'number') zahlen[k] = lern[k]; });
+  fetch(hAddr() + '/erfahrung', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + get(HKEYS.key, '') },
+    body: JSON.stringify({ app: 'Transkript', art: 'lernen', frage: JSON.stringify(zahlen), antwort: '' }) })
+    .then(function(r){ if (r.ok) put(LKEY + '-gesendet', heute); }).catch(function(){});
+}
+setTimeout(lernSenden, 4000);
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>
-<script src="../nova/nova.js" data-nova-app="Transkript" data-nova-knopf="0" defer></script>
+<script src="../nova/nova.js" data-nova-app="Transkript" data-nova-bild="../fompa/icon-192.png" defer></script>
 <script src="../fompa/feedback.js" data-app="Fompa Transkript" defer></script>
 </body>
 </html>
