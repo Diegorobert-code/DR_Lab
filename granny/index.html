@@ -60,7 +60,28 @@
   .reihe button{flex:1;min-height:56px;border-radius:14px;font-size:18px;font-weight:700}
   .gold{background:var(--gold);color:#2a1d00}
   .grau{background:#2a3566}
-  .klein{font-size:13px!important}
+  .klein{font-size:16px!important}
+  /* Runde 3: Feinschliff (8-px-Raster, Daumen-Knöpfe, Schrift ab 16 px, Platz für den Nova-Knopf) */
+  body{padding-bottom:calc(96px + env(safe-area-inset-bottom));padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+  .reden{font-size:28px;line-height:1.15;padding:16px 24px;text-wrap:balance}
+  .reden #redenText{flex:0 1 auto}
+  .person.leer{background:transparent;border:3px dashed #33437e}
+  .person.leer .bild{background:#2a3566;color:var(--gold2)}
+  .person small{font-size:17px}
+  button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--gold2);outline-offset:3px}
+  #einst p,#einst label,.check{font-size:16px!important}
+  #einst.offen{animation:glHoch .32s cubic-bezier(.2,.8,.2,1) both}
+  #einst{padding:max(24px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) calc(120px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));overscroll-behavior:contain}
+  @keyframes glHoch{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:none}}
+  .angeh{min-height:48px;font-size:16px;color:#9aa5cf;position:relative;border-radius:999px;overflow:hidden}
+  .angeh::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:left}
+  .angeh.drueckt::after{transition:transform 1.2s linear;transform:scaleX(1)}
+  #figurStart .gl-hallo{margin:0;font:700 1.375rem system-ui,-apple-system,sans-serif;color:#ffe9a8;animation:filmAuf .6s ease-out both}
+  .gl-hand{display:inline-block;transform-origin:70% 80%;animation:glWink 1.6s .5s ease-in-out 2}
+  @keyframes glWink{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(20deg)}40%,80%{transform:rotate(-12deg)}}
+  @media (prefers-reduced-motion:reduce){.gl-hand,#einst.offen{animation:none}.angeh.drueckt::after{transition:none}}
+  body:has(#figurStart:not([hidden])) .nova-btn,body:has(#figurStart:not([hidden])) .nova-pille{opacity:0;pointer-events:none}
+  .nova-btn{transition:opacity .4s}
 
 #figurStart{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:max(28px,env(safe-area-inset-top,0px)) 24px max(28px,env(safe-area-inset-bottom,0px));text-align:center;color:#f6efe0;background:radial-gradient(1.5px 1.5px at 12% 18%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 82% 12%,#ffe9a8,transparent),radial-gradient(1px 1px at 70% 30%,#ffe9a8,transparent),radial-gradient(1px 1px at 22% 72%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 88% 80%,#ffe9a8,transparent),radial-gradient(120% 80% at 50% 0%,#1B2C6B 0%,#0E1838 60%,#060A1C 100%);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
 #figurStart[hidden]{display:none!important}
@@ -81,7 +102,7 @@
 </style>
 </head>
 <body>
-<div id="figurStart" role="dialog" aria-label="Granny"><img src="figur-gross.jpg" alt="Granny"><h1>Granny</h1><p>Ich bin da. Drück den goldenen Knopf und rede mit mir.</p><button type="button" id="figurStartGo">Hallo Granny</button></div>
+<div id="figurStart" role="dialog" aria-label="Granny"><p class="gl-hallo" id="glHallo"><span class="gl-hand" aria-hidden="true">👋</span> <span id="glHalloText">Hallo!</span></p><img src="figur-gross.jpg" alt="Granny" width="520" height="520" fetchpriority="high"><h1>Granny</h1><p>Schön, bist du da. Ich helfe dir, an alles zu denken.</p><button type="button" id="figurStartGo">Hallo Granny</button></div>
 <script>(function(){var s=document.getElementById('figurStart');try{if(sessionStorage.getItem('figurStart'))s.hidden=true;}catch(e){}document.getElementById('figurStartGo').onclick=function(){s.hidden=true;try{sessionStorage.setItem('figurStart','1');}catch(e){}};})();</script>
 <main>
   <div class="zeit"><div class="tag" id="tag"></div><div class="uhr" id="uhr"></div></div>
@@ -106,6 +127,8 @@
   <div class="blase" id="blase" aria-live="polite"></div>
   <button class="nachricht" id="nachricht" hidden></button>
 
+  <div class="start" id="start" hidden></div>
+
   <button class="reden" id="reden" aria-label="Reden">
     <span class="rose" aria-hidden="true">🌹</span>
     <span id="redenText"></span>
@@ -117,8 +140,6 @@
   <button class="klemmt" id="klemmt"></button>
 
   <div class="heute" id="heute"></div>
-
-  <div class="start" id="start" hidden></div>
 
   <button class="erzaehl" id="erzaehl"></button>
 
@@ -300,7 +321,7 @@
       if(p.bild){const im=document.createElement('img');im.src=p.bild;im.alt='';bild.appendChild(im)} else bild.textContent=(p.n||'?').slice(0,1).toUpperCase();
       const name=document.createElement('div'); name.textContent=p.n||'—';
       b.append(bild,name);
-      if(!p.nr){const s=document.createElement('small');s.textContent='☎ ?';b.appendChild(s)}
+      if(!p.nr){const s=document.createElement('small');s.textContent=S.sprache==='es'?'aún vacío':'noch leer';b.appendChild(s);b.classList.add('leer')}
       b.onclick=()=>{ if(!p.nr){sag(t.fehlt);return} if(window.GrannyPlus)GrannyPlus.zaehl('anruf',p.n,'winken'); sag(t.ruft(p.n)); setTimeout(()=>anrufen(p.nr),1200); };
       box.appendChild(b);
     });
@@ -530,6 +551,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 <script src="feedback.js" data-app="Granny" defer></script>
 <script>if('serviceWorker' in navigator && location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(function(){});</script>
 <script src="../nova/seelen.js" defer></script>
-<script src="../nova/nova.js" data-nova-app="Granny" data-nova-knopf="0" defer></script>
+<script src="glanz.js" defer></script>
+<script src="../nova/nova.js" data-nova-app="Granny" data-nova-bild="figur.jpg" defer></script>
 </body>
 </html>

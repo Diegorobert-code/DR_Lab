@@ -43,8 +43,8 @@
         'Ein Witz: Sagt die eine Oma zur anderen: Ich vergesse alles. Sagt die andere: Seit wann? Sagt die erste: Seit wann was?'],
       offline: 'Ich bin gerade ohne Internet. Macht nichts, ich bin trotzdem da. Anrufen geht wie immer.',
       startTitel: 'Willkommen bei Granny',
-      startSchritte: ['Ein Angehöriger tippt unten auf «Für Angehörige» und hält den Finger kurz darauf.', 'Namen, Telefonnummern und Fotos der Familie eintragen, dann «Speichern».', 'Fertig. Ab jetzt reicht der goldene Knopf mit der Rose: drücken und reden.'],
-      startKnopf: 'Jetzt einrichten (für Angehörige)',
+      startSchritte: ['Jemand aus der Familie tippt auf «Einrichten».', 'Namen, Nummern und Fotos eintragen.', 'Fertig. Ab dann reicht der goldene Knopf.'],
+      startKnopf: 'Einrichten (2 Minuten)',
       letti: function (n) { return 'Letti, die Brieftaube, hat dir eine Nachricht von ' + n + ' gebracht. Drück auf den rosa Knopf.'; },
       stimmen: [['morgen', 'Guten Morgen (spielt morgens beim ersten Tippen)'], ['liebe', 'Einfach so (Knopf «Nachricht»)'], ['akku', 'Bitte laden (Akku-Wächter)'], ['nacht', 'Gute Nacht (abends beim ersten Tippen)']],
       aufnehmen: '● Aufnehmen', stopp: '■ Stopp', abspielen: '▶', loeschen: '✕', keineAufnahme: 'noch keine Aufnahme', aufnahmeDa: 'Aufnahme da',
@@ -161,8 +161,8 @@
     '.st-zeile{display:grid;grid-template-columns:1fr auto auto auto;gap:6px;align-items:center;margin-top:10px}',
     '.st-zeile button{min-height:48px;min-width:48px;border-radius:12px;background:#2a3566;font-size:16px;font-weight:700;padding:0 10px}',
     '.st-zeile button.rec{background:#d6413b;color:#fff}',
-    '.st-zeile small{display:block;color:#8e98c4;font-size:13px}',
-    '#e_lernen{font-size:15px;line-height:1.5;color:var(--text)}#e_lernen div{padding:3px 0}',
+    '.st-zeile small{display:block;color:#8e98c4;font-size:16px}',
+    '#e_lernen{font-size:16px;line-height:1.5;color:var(--text)}#e_lernen div{padding:3px 0}',
     '.granny-fig.p-erzaehlen{animation:gpNicken 1.4s ease-in-out 2}',
     '.letti{position:absolute;z-index:4;left:-70px;top:30px;font-size:40px;pointer-events:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}',
     '.letti.fliegt{animation:gpLetti 3.2s ease-in-out forwards}',
@@ -459,7 +459,7 @@
     box.innerHTML = '';
     X.de.lernen(lern()).forEach(function (z) { var d = document.createElement('div'); d.textContent = z; box.appendChild(d); });
     var ml = merkListe(); if (ml.length) { var d = document.createElement('div'); d.textContent = 'Merkliste: ' + ml.map(function (x) { return x.d + ' (' + x.o + ')'; }).join(', '); box.appendChild(d); }
-    var p = document.createElement('div'); p.style.cssText = 'color:#8e98c4;font-size:13px;margin-top:6px';
+    var p = document.createElement('div'); p.style.cssText = 'color:#8e98c4;font-size:16px;margin-top:8px';
     p.textContent = 'Gespeichert werden nur Zahlen und die Merkliste, nur auf diesem Gerät. Keine Stimme, keine Bilder. Granny lernt daraus: Sie erzählt beim Gruss, mit wem gestern geredet wurde, und zeigt Ihnen hier, wo es hakt.';
     box.appendChild(p);
   }
