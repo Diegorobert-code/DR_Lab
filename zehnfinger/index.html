@@ -428,6 +428,8 @@ $('handR').innerHTML = handSVG('R');
 
 /* ---------- Üben ---------- */
 let cur = null; // {i, text, pos, errors, typed, start, errAt:Set}
+let practiceMs = 0; // Übungszeit seit dem Öffnen, für die Pausen-Erinnerung
+const PAUSE_MS = 10*60*1000;
 function start(i){
   cur = {i, text:makeText(i), pos:0, errors:0, typed:0, start:0, errAt:new Set(), wrongShown:false};
   $('home').classList.add('hidden'); $('done').classList.add('hidden'); $('practice').classList.remove('hidden');
@@ -551,6 +553,11 @@ function finish(){
   $('rErr').textContent = cur.errors; $('rSpeed').textContent = cpm; $('rAcc').textContent = acc + ' %';
   $('nextBtn').classList.toggle('hidden', i===TRICKY || i>=LESSONS.length-1);
   $('practice').classList.add('hidden'); $('done').classList.remove('hidden');
+  if(cur.start) practiceMs += Date.now() - cur.start;
+  if(practiceMs >= PAUSE_MS){ // nach 10 Minuten sanft an eine Pause erinnern
+    practiceMs = 0;
+    $('rText').textContent = 'Du übst schon über zehn Minuten, das ist schön. Zeit für eine kleine Pause: Hände ausschütteln, Finger strecken, einmal tief durchatmen.';
+  }
   say(`${$('rTitle').textContent} ${$('rText').textContent}`, true);
   $('trap').blur();
 }
