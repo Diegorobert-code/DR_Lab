@@ -34,6 +34,18 @@
       akku: 'Ich werde müde, mein Akku ist fast leer. Bitte steck mich ans Ladekabel.',
       termin: function (t) { return 'Jetzt ist es Zeit: ' + t; },
       gesternRedet: function (n) { return ' Gestern hast du mit ' + n + ' geredet.'; },
+      erzaehlKnopf: '😄 Granny, erzähl mir was',
+      geschichten: ['Weisst du, was mir heute passiert ist? Ich habe den Käse im Kühlschrank gesucht. Er war im Brotkasten! Und das Brot? Im Kühlschrank. Ha!',
+        'Gestern wollte ich die Katze rufen. Dabei habe ich gar keine Katze. Aber die Nachbarin hat sich gefreut, dass ich so freundlich rufe.',
+        'Ich habe meine Brille eine Stunde lang gesucht. Dann habe ich in den Spiegel geschaut: Da sass sie, in meinen Locken. Sie hat mich ausgelacht!',
+        'Früher habe ich jeden Sonntag einen Kuchen gebacken. Heute vergesse ich manchmal den Zucker. Dann sagen alle: Oh, ein gesunder Kuchen!',
+        'Die Rose an meiner Bluse ist mein Knopf zum Reden. Sie welkt nie, auch wenn ich vergesse, sie zu giessen.',
+        'Ein Witz: Sagt die eine Oma zur anderen: Ich vergesse alles. Sagt die andere: Seit wann? Sagt die erste: Seit wann was?'],
+      offline: 'Ich bin gerade ohne Internet. Macht nichts, ich bin trotzdem da. Anrufen geht wie immer.',
+      startTitel: 'Willkommen bei Granny',
+      startSchritte: ['Ein Angehöriger tippt unten auf «Für Angehörige» und hält den Finger kurz darauf.', 'Namen, Telefonnummern und Fotos der Familie eintragen, dann «Speichern».', 'Fertig. Ab jetzt reicht der goldene Knopf mit der Rose: drücken und reden.'],
+      startKnopf: 'Jetzt einrichten (für Angehörige)',
+      letti: function (n) { return 'Letti, die Brieftaube, hat dir eine Nachricht von ' + n + ' gebracht. Drück auf den rosa Knopf.'; },
       stimmen: [['morgen', 'Guten Morgen (spielt morgens beim ersten Tippen)'], ['liebe', 'Einfach so (Knopf «Nachricht»)'], ['akku', 'Bitte laden (Akku-Wächter)'], ['nacht', 'Gute Nacht (abends beim ersten Tippen)']],
       aufnehmen: '● Aufnehmen', stopp: '■ Stopp', abspielen: '▶', loeschen: '✕', keineAufnahme: 'noch keine Aufnahme', aufnahmeDa: 'Aufnahme da',
       keinMikro: 'Aufnehmen geht hier nicht (Mikrofon nicht erlaubt).',
@@ -44,7 +56,7 @@
         z.push('«Ich brauche Hilfe»: ' + m.hilfe + '× · «Passwort geht nicht»: ' + m.klemmt + '×');
         z.push('Mit Granny geredet: ' + m.reden + '×');
         var f = Object.keys(m.fragen).sort(function (x, y) { return m.fragen[y] - m.fragen[x]; });
-        z.push('Häufigste Frage: ' + (f.length ? ({ merk: 'wo etwas liegt', datum: 'welcher Tag ist', brille: 'die Brille', betrug: 'Geld/Bank am Telefon', wer: 'wer jemand ist', trinken: 'Trinken', nacht: 'Nacht/Schlafen' }[f[0]] || f[0]) + ' (' + m.fragen[f[0]] + '×)' : '–'));
+        z.push('Häufigste Frage: ' + (f.length ? ({ merk: 'wo etwas liegt', datum: 'welcher Tag ist', brille: 'die Brille', betrug: 'Geld/Bank am Telefon', wer: 'wer jemand ist', trinken: 'Trinken', nacht: 'Nacht/Schlafen', erzaehlen: 'eine Geschichte', nachricht: 'Nachricht der Familie' }[f[0]] || f[0]) + ' (' + m.fragen[f[0]] + '×)' : '–'));
         var h = m.stunden.indexOf(Math.max.apply(null, m.stunden)); z.push('Meist aktiv: ' + (Math.max.apply(null, m.stunden) ? h + '–' + (h + 1) + ' Uhr' : '–'));
         if (m.fragen.betrug) z.push('⚠ Granny hat ' + m.fragen.betrug + '× vor Telefon-Betrug gewarnt. Bitte nachfragen.');
         if (m.fragen.nacht > 2) z.push('Nachts oft wach (' + m.fragen.nacht + '×). Vielleicht mit dem Hausarzt besprechen.');
@@ -67,7 +79,16 @@
       nachtWeiter: function (d) { return 'Es plena noche. Mañana es ' + d + '. Vuelve a acostarte tranquila.'; },
       akku: 'Estoy cansada, mi batería está casi vacía. Por favor, ponme a cargar.',
       termin: function (t) { return 'Ya es la hora: ' + t; },
-      gesternRedet: function (n) { return ' Ayer hablaste con ' + n + '.'; }
+      gesternRedet: function (n) { return ' Ayer hablaste con ' + n + '.'; },
+      erzaehlKnopf: '😄 Granny, cuéntame algo',
+      geschichten: ['¿Sabes lo que me ha pasado hoy? Buscaba el queso en la nevera. ¡Estaba en la panera! ¿Y el pan? En la nevera. ¡Ja!',
+        'Ayer quise llamar al gato. Pero si yo no tengo gato. La vecina se alegró de oírme tan amable.',
+        'Busqué mis gafas una hora. Luego me miré al espejo: ahí estaban, en mis rizos. ¡Se reían de mí!',
+        'Antes hacía un pastel cada domingo. Ahora a veces me olvido del azúcar. Y todos dicen: ¡Qué pastel tan sano!',
+        'La rosa de mi blusa es mi botón para hablar. Nunca se marchita, aunque me olvide de regarla.',
+        'Un chiste: Dice una abuela a la otra: Lo olvido todo. ¿Desde cuándo? ¿Desde cuándo qué?'],
+      offline: 'Ahora estoy sin internet. No pasa nada, sigo aquí. Llamar funciona como siempre.',
+      letti: function (n) { return 'Letti, la paloma mensajera, te trae un mensaje de ' + n + '. Pulsa el botón rosa.'; }
     }
   };
   function T() { var t = es() ? X.es : X.de; return new Proxy(t, { get: function (o, k) { return k in o ? o[k] : X.de[k]; } }); }
@@ -142,7 +163,18 @@
     '.st-zeile button.rec{background:#d6413b;color:#fff}',
     '.st-zeile small{display:block;color:#8e98c4;font-size:13px}',
     '#e_lernen{font-size:15px;line-height:1.5;color:var(--text)}#e_lernen div{padding:3px 0}',
-    '@media (prefers-reduced-motion:reduce){.granny-fig,.wolke,.sternchen,.zzz,.requisit{animation:none!important}}',
+    '.granny-fig.p-erzaehlen{animation:gpNicken 1.4s ease-in-out 2}',
+    '.letti{position:absolute;z-index:4;left:-70px;top:30px;font-size:40px;pointer-events:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}',
+    '.letti.fliegt{animation:gpLetti 3.2s ease-in-out forwards}',
+    '@keyframes gpLetti{0%{transform:translate(0,0) rotate(-8deg)}35%{transform:translate(170px,-14px) rotate(6deg)}55%{transform:translate(230px,30px) rotate(0)}75%{transform:translate(260px,20px)}100%{transform:translate(520px,-60px) rotate(-10deg);opacity:0}}',
+    '.start{background:linear-gradient(135deg,#24346f,#1c2a5c);border:2px dashed rgba(242,193,78,.55);border-radius:24px;padding:16px 18px;font-size:19px;line-height:1.45}',
+    '.start h3{margin:0 0 8px;font-size:22px;color:var(--gold2)}.start ol{margin:0 0 12px;padding-left:22px}.start li{margin:4px 0}',
+    '.start button{width:100%;min-height:60px;border-radius:18px;background:var(--gold);color:#2a1d00;font-size:20px;font-weight:800}',
+    '.erzaehl{background:#2a3566;border:3px solid #3c4c8c;border-radius:24px;min-height:84px;font-size:24px;font-weight:700;gap:10px}',
+    '.offline{background:#3a2f5e;border-radius:16px;padding:10px 14px;font-size:18px;text-align:center;color:#ffe9a8}',
+    '.st-zeile{grid-template-columns:1fr auto auto auto auto}',
+    '.pose-bild{object-position:50% 20%}',
+    '@media (prefers-reduced-motion:reduce){.granny-fig,.wolke,.sternchen,.zzz,.requisit,.letti{animation:none!important}.letti{display:none}}',
     '@media (max-width:360px){.buehne{height:220px}.granny-fig{width:150px;height:150px;margin-left:-75px}}'
   ].join('\n');
   document.head.appendChild(css);
@@ -165,7 +197,10 @@
     $('requisit').textContent = REQ[name] || '';
     clearTimeout(poseTimer);
     poseTimer = setTimeout(function () { f.className = 'granny-fig'; }, dauer || (name === 'sprechen' ? 2500 : 1900));
+    // Tinko-Posenbild, falls posen/<pose>.jpg im Ordner liegt (sonst bleibt die CSS-Animation)
+    if (window.FigurPosen && name !== 'sprechen') FigurPosen.zeige(f.querySelector('img'), name, dauer || 2600, POSE_ERSATZ[name]);
   }
+  var POSE_ERSATZ = { winken: ['lachen'], nicken: ['lachen'], herz: ['lachen'], trinken: ['lachen'], gong: ['winken'], merken: ['nicken'], erzaehlen: ['lachen'], schlafen: [] };
 
   /* ---------- Lern-Zahlen (nur auf dem Gerät) ---------- */
   var LK = 'granny.lernen';
@@ -318,14 +353,45 @@
     });
   }
   function familienName() { var p = G.S.leute.find(function (x) { return x.n; }); return p ? p.n : (es() ? 'tu familia' : 'deiner Familie'); }
-  function nachrichtZeigen() {
+  function nachrichtZeigen(neu) {
     var b = $('nachricht'); if (!b) return;
+    if (neu) leg('granny.letti', '');
     stHol('liebe').then(function (x) {
       b.hidden = !x; if (!x) return;
+      if (hol('granny.letti', '') !== heuteKey()) { leg('granny.letti', heuteKey()); lettiFliegt(); }
       b.textContent = T().nachricht(familienName());
       b.onclick = function () { zaehl('nachricht'); $('blase').textContent = T().nachricht(familienName()); abspielen('liebe'); };
     });
   }
+  function lettiFliegt() {
+    var bu = $('buehne'); if (!bu || ruhig) return;
+    var l = document.createElement('span'); l.className = 'letti'; l.textContent = '🕊️✉️'; l.setAttribute('aria-hidden', 'true');
+    bu.appendChild(l); void l.offsetWidth; l.classList.add('fliegt');
+    setTimeout(function () { l.remove(); pose('herz'); var b = $('blase'); if (b && !$('einst').classList.contains('offen')) b.textContent = T().letti(familienName()); }, 3300);
+  }
+  var gi = hol('granny.geschichte', 0);
+  function erzaehlen() {
+    var l = T().geschichten; frage('erzaehlen');
+    var satz = l[gi % l.length]; gi++; leg('granny.geschichte', gi);
+    pose('erzaehlen', 3000); setTimeout(function () { pose('lachen'); }, 3200);
+    G.sag(satz);
+  }
+  function startZeigen() {
+    var box = $('start'); if (!box) return;
+    if (G.S.ok) { box.hidden = true; return; }
+    var t = T(); box.hidden = false; box.innerHTML = '';
+    var h = document.createElement('h3'); h.textContent = '🌹 ' + t.startTitel; box.appendChild(h);
+    var ol = document.createElement('ol'); t.startSchritte.forEach(function (x) { var li = document.createElement('li'); li.textContent = x; ol.appendChild(li); }); box.appendChild(ol);
+    var k = document.createElement('button'); k.textContent = t.startKnopf; k.onclick = function () { G.oeffnen(); }; box.appendChild(k);
+  }
+  function erzaehlKnopf() { var b = $('erzaehl'); if (!b) return; b.textContent = T().erzaehlKnopf; b.onclick = erzaehlen; }
+  function offlineZeigen() {
+    var alt = document.querySelector('.offline'); if (alt) alt.remove();
+    if (navigator.onLine !== false) return;
+    var d = document.createElement('div'); d.className = 'offline'; d.textContent = '📶 ' + T().offline;
+    var bl = $('blase'); if (bl && bl.parentNode) bl.parentNode.insertBefore(d, bl.nextSibling);
+  }
+  addEventListener('online', offlineZeigen); addEventListener('offline', function () { offlineZeigen(); G.sag(T().offline); });
   function stimmenUI() {
     var box = $('e_stimmen'); if (!box) return;
     box.innerHTML = '';
@@ -349,7 +415,7 @@
             clearTimeout(tmo); strom.getTracks().forEach(function (t) { t.stop(); });
             rec.textContent = X.de.aufnehmen; rec.classList.remove('rec');
             var blob = new Blob(teile, { type: mr.mimeType || 'audio/mp4' });
-            if (blob.size > 500) stLeg(s[0], blob).then(function () { stand(); nachrichtZeigen(); });
+            if (blob.size > 500) stLeg(s[0], blob).then(function () { stand(); nachrichtZeigen(true); });
           };
           mr.start(); rec.textContent = X.de.stopp; rec.classList.add('rec');
           tmo = setTimeout(function () { if (mr.state === 'recording') mr.stop(); }, 30000);
@@ -357,7 +423,18 @@
       };
       play.onclick = function () { abspielen(s[0]); };
       weg.onclick = function () { if (confirm('Diese Aufnahme löschen?')) stLeg(s[0], null).then(function () { stand(); nachrichtZeigen(); }); };
-      z.append(l, rec, play, weg); box.appendChild(z);
+      var datei = document.createElement('button'); datei.textContent = '📁'; datei.setAttribute('aria-label', 'Sprachnachricht als Datei wählen');
+      var fi = document.createElement('input'); fi.type = 'file'; fi.accept = 'audio/*,.opus,.ogg,.m4a,.mp3,.aac,.wav'; fi.hidden = true;
+      datei.onclick = function () { fi.click(); };
+      fi.onchange = function () {
+        var f = fi.files && fi.files[0]; if (!f) return;
+        if (f.size > 8 * 1024 * 1024) { sm.textContent = 'Datei zu gross (max. 8 MB).'; return; }
+        var a = new Audio(); var u = URL.createObjectURL(f);
+        a.onloadedmetadata = function () { URL.revokeObjectURL(u); stLeg(s[0], f).then(function () { stand(); nachrichtZeigen(true); }); };
+        a.onerror = function () { URL.revokeObjectURL(u); sm.textContent = 'Dieses Format spielt das Gerät nicht ab. Bitte als m4a oder mp3 sichern.'; };
+        a.src = u;
+      };
+      z.append(l, rec, datei, play, weg, fi); box.appendChild(z);
     });
   }
 
@@ -486,6 +563,7 @@
       var p = S.leute.find(function (q) { return q.n && q.n.toLowerCase() === wer[1]; });
       if (p) { frage('wer'); var l = albumLeute(); var i = l.indexOf(p); if (i >= 0) { ai = i; albumZeigen(); } pose('herz'); G.sag(p.wer ? t.wer(p.n, p.wer) : t.werFehlt(p.n)); return true; }
     }
+    if (/(erz[aä]hl|witz|geschichte|lustig|cu[eé]nta|chiste|historia)/.test(x)) { erzaehlen(); return true; }
     if (r.nachricht.test(x)) { frage('nachricht'); abspielen('liebe').then(function (ok) { if (!ok) G.sag(es() ? 'Todavía no hay ningún mensaje. Tu familia puede grabar uno.' : 'Es gibt noch keine Nachricht. Deine Familie kann eine aufnehmen.'); }); return true; }
     if (r.trinken.test(x) && !/\?/.test(roh)) { frage('trinken'); pose('trinken'); leg('granny.trinken', Date.now()); G.sag(t.getrunken); return true; }
     if (r.nacht.test(x)) {
@@ -509,7 +587,7 @@
 
   /* ---------- Neu zeichnen ---------- */
   function gezeichnet() {
-    buehneZeit(); merkZeigen(); albumZeigen(); nachrichtZeigen(); optSetzen();
+    buehneZeit(); merkZeigen(); albumZeigen(); nachrichtZeigen(); optSetzen(); startZeigen(); erzaehlKnopf(); offlineZeigen();
     // Granny erinnert sich an gestern (aus den Lern-Zahlen)
     var m = lern(), b = $('blase');
     if (m.letzter && b && Date.now() - m.letzter.t > 6 * 3600 * 1000 && Date.now() - m.letzter.t < 48 * 3600 * 1000) b.textContent += T().gesternRedet(m.letzter.n);

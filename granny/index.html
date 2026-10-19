@@ -6,6 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Granny">
 <meta name="theme-color" content="#101a3d">
+<link rel="manifest" href="manifest.webmanifest">
 <title>Granny</title>
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -28,7 +29,9 @@
   .reden:active{transform:translateY(4px);box-shadow:0 4px 0 #8a6212}
   .reden.hoert{background:var(--ok);color:#06210f;box-shadow:0 8px 0 #2f7a50;animation:puls 1.2s infinite}
   @keyframes puls{50%{filter:brightness(1.15)}}
-  .reden svg{width:46px;height:46px}
+  .reden .rose{font-size:48px;line-height:1;filter:drop-shadow(0 3px 4px rgba(0,0,0,.25));animation:roseWipp 3s ease-in-out infinite}
+  @keyframes roseWipp{50%{transform:rotate(-8deg) scale(1.06)}}
+  @media (prefers-reduced-motion:reduce){.reden .rose{animation:none}}
   .leute{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .person{background:var(--card);border-radius:24px;min-height:150px;flex-direction:column;gap:8px;font-size:26px;font-weight:700;border:3px solid transparent}
   .person:active{border-color:var(--gold)}
@@ -104,7 +107,7 @@
   <button class="nachricht" id="nachricht" hidden></button>
 
   <button class="reden" id="reden" aria-label="Reden">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V22h2v-3.08A7 7 0 0 0 19 12z"/></svg>
+    <span class="rose" aria-hidden="true">🌹</span>
     <span id="redenText"></span>
   </button>
 
@@ -114,6 +117,10 @@
   <button class="klemmt" id="klemmt"></button>
 
   <div class="heute" id="heute"></div>
+
+  <div class="start" id="start" hidden></div>
+
+  <button class="erzaehl" id="erzaehl"></button>
 
   <div class="merk" id="merk" hidden></div>
 
@@ -157,7 +164,7 @@
     <p class="klein">Uhrzeit vorne schreiben («10:00 Diego ruft an» oder «15 Uhr Tablette»), dann erinnert Granny genau dann mit einem sanften Gong und liest den Punkt vor (solange Granny offen ist).</p>
 
     <h2>Die Stimme der Familie</h2>
-    <p>Granny erinnert am liebsten mit einer vertrauten Stimme statt mit einem Piepton. Nehmen Sie hier kurze Nachrichten auf (bis 30 Sekunden). Sie bleiben nur auf diesem Gerät.</p>
+    <p>Granny erinnert am liebsten mit einer vertrauten Stimme statt mit einem Piepton. Nehmen Sie hier kurze Nachrichten auf (bis 30 Sekunden) oder wählen Sie eine Sprachnachricht, die Sie per WhatsApp geschickt haben («📁 Datei»: in WhatsApp die Nachricht lange drücken, Teilen, In Dateien sichern). Sie bleiben nur auf diesem Gerät. Neue Nachrichten bringt Letti, die Brieftaube.</p>
     <div id="e_stimmen"></div>
 
     <h2>Granny-Station</h2>
@@ -268,7 +275,14 @@
     $('blase').textContent=text;
     if(window.GrannyPlus) GrannyPlus.spricht(text);
     // Grannys eigene Stimme (Sense Engine), nur auf Deutsch; sonst die Gerätestimme.
-    if(window.NovaStimme&&NovaStimme.aktiv()&&/^de/i.test(L().voice)){NovaStimme.sprich(text);return;}
+    // Spanisch: Figurenstimme vom Server liest mehrsprachig; fehlt sie, spanische Gerätestimme.
+    if(window.NovaStimme&&NovaStimme.aktiv()){
+      if(/^de/i.test(L().voice)){NovaStimme.sprich(text);return;}
+      NovaStimme.sprich(text,{geraet:false}).then(ok=>{if(!ok)geraetSag(text)});return;
+    }
+    geraetSag(text);
+  }
+  function geraetSag(text){
     try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=L().voice;u.rate=.85;u.pitch=1.05;
       const v=speechSynthesis.getVoices().find(v=>v.lang.replace('_','-').startsWith(L().voice.slice(0,2)));if(v)u.voice=v;speechSynthesis.speak(u);}catch(e){}
   }
@@ -430,6 +444,7 @@
   try{speechSynthesis.getVoices()}catch(e){}
 })();
 </script>
+<script src="posen.js"></script>
 <script src="granny-plus.js"></script>
 <!-- Figuren-Film (Trickfilm-Look): Farben, Funken, Atmen, Tipp-Reaktion, Szenenwechsel. Nur Optik. -->
 <style id="figurFilmCss">
@@ -513,6 +528,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 })();
 </script>
 <script src="feedback.js" data-app="Granny" defer></script>
+<script>if('serviceWorker' in navigator && location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(function(){});</script>
 <script src="../nova/seelen.js" defer></script>
 <script src="../nova/nova.js" data-nova-app="Granny" data-nova-knopf="0" defer></script>
 </body>
