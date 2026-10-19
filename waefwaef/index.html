@@ -2,6 +2,7 @@
 <html lang="de-CH">
 <head>
 <meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -197,6 +198,11 @@ a.knopf.rot{background:#FF9AA8}
 .dlg h3{margin:0;font-family:var(--display);color:var(--gold);font-weight:500}
 nav a{padding:4px 2px;font-size:.66rem}
 @media print{body.druck-regeln *{visibility:hidden}body.druck-regeln .regeln,body.druck-regeln .regeln *{visibility:visible}body.druck-regeln .regeln{position:absolute;left:0;top:0;background:#fff;color:#000;font-size:20px}}
+.g-bild{font-size:72px;text-align:center;line-height:1.2;padding:10px 0;animation:gHops .6s ease-out}
+.g-text{font-size:1.1rem;line-height:1.5;margin:4px 0 10px}
+@keyframes gHops{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+.ton{min-width:44px;min-height:44px;font-size:1.2rem;padding:0}
+.obName{width:100%;margin-top:8px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -214,7 +220,7 @@ nav a{padding:4px 2px;font-size:.66rem}
 </section>
 
 <main hidden>
-  <div class="kopf"><button class="ghost back" id="back">‹ Wäf Wäf</button><span data-feedback-slot></span></div>
+  <div class="kopf"><button class="ghost back" id="back">‹ Wäf Wäf</button><span style="display:flex;gap:8px;align-items:center"><button class="ghost ton" id="tonKnopf" aria-label="Wäf Wäf spricht laut">🔊</button><span data-feedback-slot></span></span></div>
 
   <div class="hero">
     <div class="wiese" aria-hidden="true"><i class="bl"></i><i class="bl"></i><i class="bl"></i><i class="bl"></i><i class="schmetterling">🦋</i></div>
@@ -269,6 +275,7 @@ nav a{padding:4px 2px;font-size:.66rem}
       <p id="aText"></p>
       <div id="aBody"></div>
     </div>
+    <div class="box geschichte"><h3>📖 Meine Geschichte: Das erste Mal allein</h3><p class="mini">Eine kleine Bildergeschichte zum Vorlesen, für Kinder und Grosse. Wäf Wäf erzählt sie selbst.</p><div class="reihe"><button id="gStart">Geschichte anschauen</button></div></div>
     <div class="box"><h3>Wie es mir ging</h3><div id="aVerlauf" class="mini"></div></div>
     <div class="box"><h3>Wer ist bei mir? (Betreuungsplan)</h3>
       <p class="mini">Solange ich noch nicht lange allein bleiben kann, schaut ihr, dass jemand da ist.</p>
@@ -370,7 +377,13 @@ const reactDone={morgen:'Juhu, draussen war es so spannend!',zmorge:'Mmmh, fein!
 const REQ={hop:'🦴',sad:'💧',wiggle:'💛',schnueffel:'👃',ball:'🎾',schlaf:'💤',lern:'🎓',pfote:'🐾'};
 const say=(t,mood,req)=>{$('say').innerHTML='<b>Wäf!</b> '+esc(t);const p=$('pup');p.classList.remove('hop','sad','wiggle','schnupper');void p.offsetWidth;if(mood)p.classList.add(mood);
   const r=$('pupReq'),z=req||REQ[mood];if(z&&!reduce){r.textContent=z;r.classList.remove('zeig');void r.offsetWidth;r.classList.add('zeig');}
-  if(window.NovaStimme&&NovaStimme.aktiv()&&tonAn)try{NovaStimme.sprich(t)}catch(e){}};
+  if(window.FigurPosen&&mood) FigurPosen.zeige(p,POSE[mood]||mood,2400,['freut']);
+  sprich(t);};
+const POSE={hop:'freut',sad:'traurig',wiggle:'wedelt',schnupper:'schnueffelt'};
+function sprich(t){ if(!tonAn||!store.get('ton',true))return;
+  if(window.NovaStimme&&NovaStimme.aktiv()){try{NovaStimme.sprich(t)}catch(e){}return;}
+  try{if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='de-CH';u.rate=1.02;u.pitch=1.35;
+    const v=speechSynthesis.getVoices().find(v=>/^de/i.test(v.lang));if(v)u.voice=v;speechSynthesis.speak(u);}catch(e){}}
 let tonAn=false;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function heart(el,n=8){if(reduce)return;const r=el.getBoundingClientRect();
@@ -434,7 +447,7 @@ const b64=t=>btoa(unescape(encodeURIComponent(t))).replace(/\+/g,'-').replace(/\
 const unb64=t=>decodeURIComponent(escape(atob(t.replace(/-/g,'+').replace(/_/g,'/'))));
 $('teilenLink').onclick=()=>{const d={v:1,fam,tasks:tasks.map(x=>({id:x.id,k:x.k,emo:x.emo,t:x.t,p:x.p,who:x.who,einmal:!!x.einmal}))};
   const url=location.origin+location.pathname+'#plan='+b64(JSON.stringify(d));$('linkFeld').hidden=false;$('linkFeld').value=url;
-  if(navigator.share)navigator.share({title:'Wäf Wäf',text:'Unser Plan für Wäf Wäf',url}).catch(()=>{});else{try{navigator.clipboard.writeText(url)}catch(e){}$('linkFeld').select();}
+  if(navigator.share)navigator.share({title:'Wäf Wäf',text:'Unser Plan für Wäf Wäf',url}).catch(()=>{});else{try{navigator.clipboard.writeText(url).then(()=>say('Link kopiert. Jetzt einfach in WhatsApp einfügen.','hop'),()=>say('Kopieren ging nicht. Halte den Finger auf den Link und kopiere ihn von Hand.'))}catch(e){}$('linkFeld').select();}
   say('Jetzt weiss die ganze Familie Bescheid!','hop');};
 function planAusLink(){const m=location.hash.match(/^#plan=([A-Za-z0-9_-]+)$/);if(!m)return;let d;try{d=JSON.parse(unb64(m[1]))}catch(e){return}
   history.replaceState(null,'',location.pathname);if(!d||d.v!==1)return;
@@ -617,8 +630,46 @@ const pets=['Hihi, das kitzelt!','Noch einmal hinter dem Ohr, bitte!','Ich hab d
 function pet(){const p=$('pup');say(pets[pi++%pets.length],'wiggle');heart(p,5);}
 $('pup').addEventListener('animationend',e=>{if(e.animationName!=='breathe'&&e.animationName!=='laufen')$('pup').classList.remove('hop','sad','wiggle','schnupper');});
 $('pup').onclick=pet;$('pup').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pet();}};
+/* ---------- Ton an/aus ---------- */
+function tonZeigen(){const an=store.get('ton',true);$('tonKnopf').textContent=an?'🔊':'🔈';$('tonKnopf').setAttribute('aria-pressed',an?'true':'false');}
+$('tonKnopf').onclick=()=>{const an=!store.get('ton',true);store.set('ton',an);tonZeigen();if(!an){try{speechSynthesis.cancel()}catch(e){}if(window.NovaStimme)try{NovaStimme.stopp()}catch(e){}}else say('Juhu, jetzt höre ich mich wieder!','hop');};
+tonZeigen();
+
+/* ---------- Bildergeschichte «Das erste Mal allein» ---------- */
+const GESCHICHTE=[
+  ['🏠🐶','Heute ist ein besonderer Tag. Ava sagt: Wäf Wäf, ich gehe kurz Brot holen. Ich bin gleich wieder da.'],
+  ['🚪👋','Die Tür geht zu. Oh! Mein Herz klopft ein bisschen. Wo ist Ava?'],
+  ['🧸🦴','Da liegt mein Kauknochen. Und mein Kuscheltier riecht nach Ava. Ich kaue ein bisschen. Kauen macht mich ruhig.'],
+  ['🛏️💤','Mein Körbchen ist weich. Ich lege mich hin. Die Uhr tickt. Tick, tack. Ich werde müde.'],
+  ['🔑🚪','Klick! Der Schlüssel! Ava ist wieder da. Sie sagt ganz ruhig: Hallo, Wäf Wäf. Kein grosses Theater.'],
+  ['💛🐾','Ich habe es geschafft! Morgen bleibe ich ein bisschen länger allein. Pfote für Pfote. Und wenn es zu viel ist, gehen wir einen Schritt zurück.']
+];
+let gi=0;
+function gZeigen(){const g=GESCHICHTE[gi];
+  dialog('Das erste Mal allein ('+(gi+1)+'/'+GESCHICHTE.length+')','<div class="g-bild" aria-hidden="true">'+g[0]+'</div><p class="g-text">'+esc(g[1])+'</p><div class="reihe">'+(gi>0?'<button class="ghost" data-g="-1">‹ Zurück</button>':'')+(gi<GESCHICHTE.length-1?'<button data-g="1">Weiter ›</button>':'<button data-g="0">Fertig 🐾</button>')+'</div>',null,b=>{
+    const d=+b.dataset.g; if(isNaN(d))return; if(d===0){dialogZu();say('Danke, dass du meine Geschichte angeschaut hast!','hop');mem.geschichte=(mem.geschichte||0)+1;saveMem();return;} gi=Math.max(0,Math.min(GESCHICHTE.length-1,gi+d)); gZeigen();});
+  sprich(g[1]);}
+$('gStart').onclick=()=>{gi=0;gZeigen();};
+
+/* ---------- Erster Start: Familie eintragen ---------- */
+function willkommen(){
+  if(store.get('onboard',false))return;
+  const n=Object.keys(fam);
+  dialog('Wäf! Wer gehört zu meiner Familie?','<p class="mini">Tragt eure Namen ein. Dann weiss ich, wer mit mir rausgeht. Alles bleibt nur auf diesem Handy. Ihr könnt es später unter «Unsere Familie» ändern.</p>'+
+    [0,1,2,3].map(i=>'<input class="obName" placeholder="Name '+(i+1)+'" value="'+esc(n[i]?fam[n[i]].n:'')+'">').join(''),()=>{
+      const namen=[...document.querySelectorAll('.obName')].map(x=>x.value.trim()).filter(Boolean);
+      if(namen.length){const neu={};namen.forEach((x,i)=>{const k=n[i]||('F'+Date.now()+i);neu[k]={n:x,c:(fam[k]&&fam[k].c)||FARBEN[i%FARBEN.length]};});fam=neu;store.set('fam',fam);
+        tasks.forEach(t=>{if(t.who&&!fam[t.who])t.who=null;});}
+      store.set('onboard',true);famRender();render();say('Hallo '+namen.join(', ')+'! Ich freue mich so auf euch.','hop');},null,'Los geht’s');
+  $('dlgZu').onclick=()=>{store.set('onboard',true);dialogZu();$('dlgZu').onclick=dialogZu;};
+}
+const goAlt=$('go').onclick; $('go').onclick=()=>{goAlt();willkommen();};
+addEventListener('offline',()=>say('Kein Internet? Macht nichts, ich bin trotzdem da. Alles bleibt auf dem Handy.','wiggle'));
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+
 planAusLink();saveMem();teilen();
 </script>
+<script src="posen.js"></script>
 <script src="../nova/seelen.js" defer></script>
 <script src="seele.js" defer></script>
 <script src="feedback.js" data-app="Wäf Wäf" defer></script>
