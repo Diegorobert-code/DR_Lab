@@ -527,6 +527,17 @@ a.card{color:inherit;text-decoration:none}
   </section>
 </div>
 <div class="burst" id="burst"></div>
+<div class="tour" id="gate" hidden role="dialog" aria-modal="true" aria-labelledby="gateH">
+  <div class="tour-karte">
+    <h2 id="gateH">🔒 Nur für Eltern</h2>
+    <p>Bitte rechnen und die Zahl eintippen:</p>
+    <p id="gateQ" style="font-size:22px;font-weight:700"></p>
+    <input id="gateIn" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="Ergebnis" style="width:100%;min-height:52px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font:inherit;font-size:20px;text-align:center;box-sizing:border-box">
+    <p class="mini" id="gateMsg" style="min-height:20px;margin:6px 0"></p>
+    <button class="btn gold" id="gateOk">OK</button>
+    <button class="btn soft small" id="gateNo">Abbrechen</button>
+  </div>
+</div>
 <div class="tour" id="tour" hidden role="dialog" aria-modal="true" aria-labelledby="tourH">
   <div class="tour-karte">
     <img src="figur-gross.jpg" alt="Kiki">
@@ -1884,10 +1895,22 @@ document.addEventListener('click', e => {
   say(t).then(() => kikiMood(null));
 });
 
-/* ---------- Für Eltern: 3 Sekunden halten (Kinder-App) ---------- */
+/* ---------- Für Eltern: 3 Sekunden halten, dann Rechnung in Worten (wie Mondschein, App-Store-Elternsperre) ---------- */
+const GATE_W = {3:'drei',4:'vier',5:'fünf',6:'sechs',7:'sieben',8:'acht',9:'neun',12:'zwölf',13:'dreizehn',14:'vierzehn',15:'fünfzehn',16:'sechzehn',17:'siebzehn',18:'achtzehn',19:'neunzehn'};
+const gate = {a:0, b:0};
+function gateFrage(){ gate.a = 3 + Math.floor(Math.random()*7); gate.b = 12 + Math.floor(Math.random()*8); $('gateQ').textContent = `${GATE_W[gate.a]} mal ${GATE_W[gate.b]} = ?`; $('gateIn').value = ''; $('gateMsg').textContent = ''; }
+function gateOeffnen(){ stopAll(); gateFrage(); $('gate').hidden = false; setTimeout(() => { try{ $('gateIn').focus(); }catch(e){} }, 120); }
+function gatePruefen(){
+  if (parseInt($('gateIn').value, 10) === gate.a * gate.b){ $('gate').hidden = true; renderMem(); go('settings'); }
+  else { $('gateMsg').textContent = 'Leider nicht richtig. Hier ist eine neue Aufgabe.'; const m = $('gateMsg').textContent; gateFrage(); $('gateMsg').textContent = m; }
+}
+$('gateOk').onclick = gatePruefen;
+$('gateNo').onclick = () => { $('gate').hidden = true; };
+$('gateIn').addEventListener('keydown', e => { if (e.key === 'Enter') gatePruefen(); });
+
 (function(){
   const b = $('elternHalten'); let t0 = 0, raf = 0;
-  const tick = () => { const p = Math.min(1, (performance.now() - t0)/3000); b.style.setProperty('--p', p.toFixed(3)); if (p >= 1){ t0 = 0; b.style.setProperty('--p', 0); renderMem(); go('settings'); return; } raf = requestAnimationFrame(tick); };
+  const tick = () => { const p = Math.min(1, (performance.now() - t0)/3000); b.style.setProperty('--p', p.toFixed(3)); if (p >= 1){ t0 = 0; b.style.setProperty('--p', 0); gateOeffnen(); return; } raf = requestAnimationFrame(tick); };
   const stop = () => { if (!t0) return; const kurz = performance.now() - t0 < 2900; t0 = 0; cancelAnimationFrame(raf); b.style.setProperty('--p', 0); if (kurz){ $('elternSub').textContent = 'Bitte 3 Sekunden gedrückt halten 🔒'; setTimeout(() => $('elternSub').textContent = '3 Sekunden halten · Stimmlage, wie genau, Kikis Stimme', 2200); } };
   b.addEventListener('pointerdown', e => { try{ b.setPointerCapture(e.pointerId); }catch(x){} t0 = performance.now(); raf = requestAnimationFrame(tick); });
   b.addEventListener('pointerup', stop); b.addEventListener('pointercancel', stop);
