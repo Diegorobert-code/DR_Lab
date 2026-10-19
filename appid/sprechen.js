@@ -8,6 +8,7 @@
      data-stimme-handy="mann"   Handystimme männlich wählen (bis MP3 da sind); data-tempo / data-hoehe fein einstellen
      data-handystimme="nein"   ohne Audio-Datei nicht mit der Handystimme vorlesen
      data-saetze='{"gruss":["…"]}' eigene feste Sätze pro Kategorie (Fallback, solange keine Audios da sind)
+     window.SPRECHEN_EIGEN = text => ({text}) | null  eigene Antwort der App zuerst (z. B. Essen erkennen)
      data-stil="sprachnachricht" Antwort als Sprachnachricht (Abspielknopf + Wellen, Text als Untertitel)
    Verlauf bleibt auf dem Gerät. Ohne Endpunkt geht nichts weg. Keine Schlüssel in der App. */
 (() => {
@@ -74,6 +75,9 @@
   async function antwort(text){
     const k = art(text);
     if (k === 'notfall') return {text:'Das klingt sehr ernst, und du bist nicht allein. Bitte ruf jetzt an: Die Dargebotene Hand 143, für Jugendliche 147, Polizei 117, Sanität 144.', notfall:true};
+    if (typeof window.SPRECHEN_EIGEN === 'function'){
+      try{ const e = window.SPRECHEN_EIGEN(text); if (e && e.text) return e; }catch(x){}
+    }
     if (ENDPOINT){
       try{
         const c = new AbortController(); const to = setTimeout(() => c.abort(), 9000);
