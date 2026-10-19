@@ -28,3 +28,6 @@ Geht, sobald die vier Apple-Schlüssel in GitHub eingetragen sind (siehe appstor
 
 ## Was in Version 1.0 drin ist
 Phönix-Morgen, Am Tag (Koffein-Uhr, Mittagsnest), Sorgen-Nest mit Feuer, Ausglühen, Im Bett (Atmen, Herzschlag-Trommel, Körperreise, Traumreise), Glutmodus, Wegweiser 143/147/144. Alles bleibt auf dem iPhone. Funkenmarkt und Nova kommen später mit einem Update.
+
+## Neu im Web-Stand 1.1 (19.10.2026, PR «Fias Nest: alle Ideen»)
+Trickfilm-Intro, Städtchen-Szene, Tagesband mit fliegender Fia, Aufstehzeit als Anker, sanfter Wecker, erster Kaffee, 10 Min. Tiefenruhe, langes Ausglühen 90/60/30, drei gute Dinge, 7 Gute-Nacht-Geschichten, Klänge (Rauschen, Meer, Glut, Regen), Bilderreise, rotes Nachtlicht, besondere Tage + Mini-Ritual, Dein Ritual, Deine Woche (Rückblick, Experiment), Pausen-Begleiter, Gemeinsam, Begleiter wählen, Daten sichern. Im iPhone-Build bleiben Funkenmarkt, Gesprächsfenster, Diktat-Knopf und Web-Erinnerungen ausgeblendet (keine neuen Berechtigungen nötig). Gleicher Ablauf wie oben: `node ../web-bauen.mjs fiasnest && npx cap sync ios`.
