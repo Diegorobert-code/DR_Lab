@@ -53,6 +53,18 @@
   .knopf:focus-visible { outline:3px solid #fff; outline-offset:4px; }
   .hinweis { color:var(--leise); font-size:13px; margin-top:8px; text-align:center; min-height:18px; }
   .vergessen { margin-top:6px; background:none; border:0; color:var(--leise); font:13px system-ui, sans-serif; text-decoration:underline; cursor:pointer; opacity:.8; }
+  .wege { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; justify-content:center; }
+  .wege a { color:var(--text); text-decoration:none; background:#ffffff14; border:1px solid #f5c54255; border-radius:999px; padding:7px 13px; font-size:14px; font-weight:600; }
+  .merkt { width:min(92vw, 460px); background:#ffffff10; border-radius:14px; padding:10px 12px; font-size:13px; color:var(--leise); white-space:pre-wrap; max-height:30vh; overflow:auto; }
+  .eltern { position:fixed; inset:0; z-index:50; background:#050a1ee8; display:flex; align-items:center; justify-content:center; padding:16px; }
+  .eltern[hidden] { display:none; }
+  .eltern .karte { background:#13265a; border:2px solid var(--gold); border-radius:22px; padding:18px; max-width:420px; color:var(--text); }
+  .eltern h2 { margin:0 0 8px; color:var(--gold); font-size:19px; }
+  .eltern p { margin:0 0 10px; font-size:15px; line-height:1.45; }
+  .halten { position:relative; overflow:hidden; width:100%; border:0; border-radius:14px; padding:14px; font:700 16px system-ui, sans-serif; background:var(--gold); color:#2a1d00; cursor:pointer; }
+  .halten::before { content:''; position:absolute; inset:0; width:calc(var(--p, 0) * 100%); background:#ffffff66; }
+  .halten span { position:relative; }
+  .nein { width:100%; margin-top:8px; background:none; border:0; color:var(--leise); font:14px system-ui, sans-serif; text-decoration:underline; cursor:pointer; }
   @media (prefers-reduced-motion: reduce) { .atmen { animation:none; } }
 </style>
 </head>
@@ -71,7 +83,23 @@
 
 <button class="knopf" id="knopf" type="button" aria-label="Gespräch starten">🎙</button>
 <div class="hinweis" id="hinweis"></div>
+<div class="wege">
+  <a href="../mondschein/">📖 Geschichten</a>
+  <a href="../mondschein/#gutenacht">🌙 Gute Nacht</a>
+</div>
+<button class="vergessen" id="merktKnopf" type="button" hidden>Was Otti sich merkt</button>
+<div class="merkt" id="merkt" hidden></div>
 <button class="vergessen" id="vergessen" type="button" hidden>Otti vergisst alles</button>
+
+<div class="eltern" id="eltern" hidden role="dialog" aria-label="Für Eltern">
+  <div class="karte">
+    <h2>Für Eltern, einmal kurz</h2>
+    <p>Im Live-Gespräch hört Otti wirklich zu. Dafür geht die Stimme deines Kindes über das Internet an den Sprachdienst ElevenLabs (USA), der Ottis Antwort macht.</p>
+    <p>Bitte sei dabei und lass dein Kind keinen Nachnamen, keine Adresse und keine Telefonnummer sagen. Auf diesem Handy merkt sich Otti nur kurze Notizen, die du hier jederzeit löschen kannst.</p>
+    <button class="halten" id="elternOk" type="button"><span>Einverstanden: 3 Sekunden halten</span></button>
+    <button class="nein" id="elternNein" type="button">Lieber ohne Internet: zu den Geschichten</button>
+  </div>
+</div>
 
 <script src="elevenlabs-client-1.26.0.js"></script>
 <script src="../nova/mund.js"></script>
@@ -123,10 +151,14 @@
     return g.length ? g.map(function (x) { return 'Am ' + x.d + ':\n' + x.t; }).join('\n\n') : 'Noch nichts. Ihr redet zum ersten Mal.';
   }
   var vergessen = $('vergessen');
-  function vergessenZeigen() { vergessen.hidden = !gedaechtnis().length; }
+  function vergessenZeigen() { vergessen.hidden = !gedaechtnis().length; $('merktKnopf').hidden = vergessen.hidden; }
   vergessen.addEventListener('click', function () {
     try { localStorage.removeItem(GED); } catch (e) {}
-    vergessenZeigen(); status.textContent = 'Erledigt. Otti fängt neu an.';
+    vergessenZeigen(); $('merkt').hidden = true; status.textContent = 'Erledigt. Otti fängt neu an.';
+  });
+  // «Was Otti sich merkt»: Eltern sehen die Notizen, alles nur auf diesem Handy.
+  $('merktKnopf').addEventListener('click', function () {
+    var m = $('merkt'); m.hidden = !m.hidden; if (!m.hidden) m.textContent = erinnerung();
   });
   vergessenZeigen();
 
@@ -198,7 +230,7 @@
     } catch (e) {
       startet = false; knopfZeigen();
       status.textContent = 'Otti schläft gerade.';
-      hinweis.textContent = 'Keine Verbindung. Internet prüfen und nochmal tippen.';
+      hinweis.textContent = 'Keine Verbindung. Internet prüfen und nochmal tippen, oder unten eine Geschichte hören.';
     }
   }
 
@@ -210,8 +242,25 @@
     if (t) status.textContent = t;
   }
 
+  // Kinder-App: vor dem ersten Live-Gespräch sagen die Eltern einmal Ja (3 Sekunden halten).
+  var OK = 'otti_eltern_ok';
+  function elternOk() { try { return localStorage.getItem(OK) === '1'; } catch (e) { return false; } }
+  var eltern = $('eltern'), halt = $('elternOk'), hStart = 0, hRaf = 0;
+  function hTick() {
+    var p = Math.min(1, (performance.now() - hStart) / 3000);
+    halt.style.setProperty('--p', p.toFixed(3));
+    if (p >= 1) { hStart = 0; try { localStorage.setItem(OK, '1'); } catch (e) {} eltern.hidden = true; starten(); return; }
+    hRaf = requestAnimationFrame(hTick);
+  }
+  function hEnde() { if (!hStart) return; hStart = 0; cancelAnimationFrame(hRaf); halt.style.setProperty('--p', 0); }
+  halt.addEventListener('pointerdown', function (e) { try { halt.setPointerCapture(e.pointerId); } catch (x) {} hStart = performance.now(); hRaf = requestAnimationFrame(hTick); });
+  halt.addEventListener('pointerup', hEnde); halt.addEventListener('pointercancel', hEnde);
+  halt.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  $('elternNein').addEventListener('click', function () { location.href = '../mondschein/'; });
+
   knopf.addEventListener('click', function () {
     if (conv) { var c = conv; ende('Bis bald!'); c.endSession().catch(function () {}); }
+    else if (!elternOk()) eltern.hidden = false;
     else starten();
   });
   // Auf Otti tippen: er hüpft vor Freude.
