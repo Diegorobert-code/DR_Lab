@@ -342,15 +342,23 @@
   /* ---------- Start ---------- */
   function start() {
     var pc = $('probleme');
-    PROB.forEach(function (p) {
+    PROB.forEach(function (p, idx) {
       var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = p[1]; b.setAttribute('aria-pressed', 'false');
+      if (idx >= 6) { b.hidden = true; b.classList.add('chip-mehr'); }
       b.addEventListener('click', function () {
+        summ(10);
         pc.querySelectorAll('.chip').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
         zaehl('probleme'); L.lieblingsProblem[p[0]] = (L.lieblingsProblem[p[0]] || 0) + 1; leg(LK, L); merk();
         treffer(p[2]);
       });
       pc.appendChild(b);
     });
+    // Runde 3: erst sechs Probleme, der Rest hinter «Mehr»
+    if (PROB.length > 6) {
+      var mb = document.createElement('button'); mb.type = 'button'; mb.className = 'chip chip-toggle'; mb.textContent = '＋ ' + (PROB.length - 6) + ' weitere'; mb.setAttribute('aria-expanded', 'false');
+      mb.addEventListener('click', function () { pc.querySelectorAll('.chip-mehr').forEach(function (x) { x.hidden = false; x.classList.add('chip-neu'); }); mb.remove(); });
+      pc.appendChild(mb);
+    }
     var KUNDEN = [['🥐 Ich bin Bäckerin', ['wb-rechner', 'wb-liste', 'erinnerung'], 'Hasi zeigt auf die Waage für Mehl und dann auf eine Liste.'], ['🍎 Ich bin Lehrer', ['wb-quiz', 'transkript', 'zeichentafel'], 'Hasi hält eine kleine Tafel hoch und malt ein Fragezeichen.'], ['🧸 Ich bin ein Kind', ['mondschein', 'milulu'], 'Hasi hüpft einmal und legt dann die Pfoten unter die Wange.']];
     var kz = document.createElement('div'); kz.className = 'chips kunden'; kz.id = 'kunden';
     var kl = document.createElement('p'); kl.className = 'sub'; kl.textContent = 'Oder sag Hasi, wer du bist:';
@@ -388,16 +396,28 @@
     ['🧊', 'Hasi holt das Werkzeug', 'Er öffnet mit dem goldenen Schlüssel das Regal und legt einen leuchtenden Würfel auf den Tresen.'],
     ['🎁', 'Ausprobieren und mitnehmen', 'Viele Werkzeuge kannst du gratis ausprobieren. Auf der Werkbank baust du dein eigenes und nimmst es als Datei mit.']
   ];
+  /* Runde 3: kleine Feier (Rüebli und Sterne fliegen), Vibration. Hasi bleibt stumm. */
+  function summ(m) { try { if (navigator.vibrate) navigator.vibrate(m); } catch (e) {} }
+  function feier() {
+    if (ruhig) return;
+    var z = ['🥕', '⭐', '✨', '🥕', '🔑'];
+    for (var i = 0; i < 18; i++) {
+      var f = document.createElement('i'); f.className = 'gl-flug'; f.setAttribute('aria-hidden', 'true'); f.textContent = z[i % z.length];
+      var w = Math.random() * Math.PI * 2, r = 90 + Math.random() * 120;
+      f.style.setProperty('--dx', Math.cos(w) * r + 'px'); f.style.setProperty('--dy', (Math.sin(w) * r - 40) + 'px'); f.style.animationDelay = (i * 25) + 'ms';
+      document.body.appendChild(f); setTimeout(f.remove.bind(f), 1500);
+    }
+  }
   function ersterBesuch() {
     if (hol('hasi.besucht', false)) return;
     var o = document.createElement('div'); o.className = 'pant'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-label', 'So geht Hasis Laden');
     var i = 0;
     function zeig() { var x = SCHILDER[i];
-      o.innerHTML = '<div class="pant-box"><small>' + (i + 1) + ' / 3</small><div class="pant-em">' + x[0] + '</div><div class="pant-schild">' + esc(x[1]) + '</div><p>' + esc(x[2]) + '</p><button type="button" class="btn an" id="pantWeiter">' + (i < 2 ? 'Weiter' : 'In den Laden') + '</button><button type="button" class="pant-skip" id="pantSkip">Überspringen</button></div>';
+      o.innerHTML = '<div class="pant-box"><div class="pant-dots" role="img" aria-label="Schild ' + (i + 1) + ' von 3">' + [0, 1, 2].map(function (k) { return '<i' + (k <= i ? ' class="an"' : '') + '></i>'; }).join('') + '</div><div class="pant-em">' + x[0] + '</div><div class="pant-schild">' + esc(x[1]) + '</div><p>' + esc(x[2]) + '</p><button type="button" class="btn an" id="pantWeiter">' + (i < 2 ? 'Weiter' : 'In den Laden') + '</button><button type="button" class="pant-skip" id="pantSkip">Überspringen</button></div>';
       hasi(['winken', 'schild', 'daumen'][i], x[1], x[2], 0);
       o.querySelector('#pantWeiter').addEventListener('click', function () { i++; if (i < SCHILDER.length) zeig(); else fertig(); });
       o.querySelector('#pantSkip').addEventListener('click', fertig); }
-    function fertig() { leg('hasi.besucht', true); o.remove(); glocke(); hasi('verbeugen', 'Willkommen', 'Hasi verbeugt sich und hält die Ladentür auf.', 2400); }
+    function fertig() { leg('hasi.besucht', true); o.classList.add('zu'); setTimeout(function () { o.remove(); }, 300); glocke(); feier(); summ([12, 60, 12]); hasi('verbeugen', 'Willkommen', 'Hasi verbeugt sich und hält die Ladentür auf.', 2400); }
     zeig(); document.body.appendChild(o);
   }
   function runde2() {
@@ -413,6 +433,14 @@
   var r2 = document.createElement('style');
   r2.textContent = '.pant{position:fixed;inset:0;z-index:9000;background:rgba(6,8,24,.8);display:flex;align-items:center;justify-content:center;padding:16px}' +
     '.pant-box{width:100%;max-width:400px;background:linear-gradient(170deg,#3b2a1c,#1b1530);border:3px solid #e8b94a;border-radius:24px;padding:20px 18px;text-align:center;color:#fff6e4}' +
+    '.pant{animation:glDa .3s ease-out both;transition:opacity .3s}.pant.zu{opacity:0}.pant-box{animation:glHoch .4s cubic-bezier(.2,.8,.2,1) both}' +
+    '@keyframes glDa{from{opacity:0}}@keyframes glHoch{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}' +
+    '.pant-dots{display:flex;gap:8px;justify-content:center}.pant-dots i{width:8px;height:8px;border-radius:4px;background:rgba(255,255,255,.25);transition:width .3s,background .3s}.pant-dots i.an{width:24px;background:#e8b94a}' +
+    '.gl-flug{position:fixed;left:50%;top:40%;z-index:2147483600;font-size:26px;font-style:normal;pointer-events:none;will-change:transform,opacity;animation:glFlug 1.2s cubic-bezier(.2,.7,.3,1) forwards}' +
+    '@keyframes glFlug{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}15%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.1) rotate(200deg)}}' +
+    '.chip-neu{animation:glHoch .35s cubic-bezier(.2,.8,.2,1) both}.chip-toggle{border-style:dashed!important;color:var(--gold2,#f6d98c)!important}' +
+    'body:has(.pant) .nova-btn,body:has(.pant) .nova-pille{opacity:0;pointer-events:none}' +
+    '@media (prefers-reduced-motion:reduce){.pant,.pant-box,.chip-neu{animation:none}}' +
     '.pant-box small{opacity:.7}.pant-em{font-size:3rem;margin:6px 0}.pant-schild{display:inline-block;background:#7a5232;border:3px solid #e8b94a;border-radius:8px;padding:8px 14px;font:800 1.1rem Fraunces,Georgia,serif;color:#f6d98c;transform:rotate(-2deg)}' +
     '.pant-box p{font-style:italic;line-height:1.5;margin:12px 0 14px}.pant-box .btn{width:100%}.pant-skip{background:none;border:0;color:#d8cbb4;font:inherit;min-height:44px;margin-top:6px;cursor:pointer}' +
     '.hasi-fig.mit-bild svg{opacity:0}#hasiBild{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.kunden{margin-top:6px}';
