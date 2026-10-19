@@ -185,10 +185,11 @@
     ' if(c>dk){dk=c;lq=vec2(p.x,A.y-A.w*1.08-(kante-e.y)*A.w*0.42);}',
     ' float w=drin*step(0.02,lid)*(1.0-smoothstep(0.0,0.20,abs(e.y-kante)));',
     // unten das frohe Lid (Lachfalte): hebt sich bei Freude von unten
-    ' float fu=max(uFroh,lid*0.95);float u=1.08-0.6*fu-0.15*fu*(1.0-e.x*e.x);',
+    // Lachaugen: nur die Wange schiebt das untere Lid leicht im Bogen hoch (kein müdes Halb-Lid); beim Schlafen schliesst es ganz
+    ' float fr=uFroh*(1.0-lid);float fu=max(fr*0.3,lid*0.95);float u=1.08-0.6*fu-(0.15*lid+0.35*fr)*(1.0-e.x*e.x);',
     ' float cu=drin*smoothstep(u-aa,u+aa,e.y)*step(0.01,fu);',
     ' if(cu>dk){dk=cu;lq=vec2(p.x,A.y+A.w*1.1+(e.y-u)*A.w*0.4);}',
-    ' wim=max(wim,max(w,drin*step(0.01,uFroh)*(1.0-smoothstep(0.0,0.14,abs(e.y-u)))*0.6*(1.0-lid)));',
+    ' wim=max(wim,w);',
     '}',
     'void main(){',
     ' vec2 p=uAus.xy+(v-0.5)/uAus.z;',
