@@ -102,6 +102,7 @@ function pose(name,ms,prop){
   const img=document.querySelector(".figur-hero img");if(!img)return;
   img.classList.remove("pose-jubel","pose-jog","pose-hoert","pose-ruhig","pose-winkt","pose-denkt","film-hops");
   void img.offsetWidth; if(name)img.classList.add("pose-"+name);
+  if(window.FLO_POSEBILD)window.FLO_POSEBILD(name);
   const p=document.querySelector(".flo-prop");if(p){if(prop){p.textContent=prop;p.classList.add("on")}else p.classList.remove("on")}
   clearTimeout(poseT); if(ms)poseT=setTimeout(()=>pose(grundPose()[0],0,grundPose()[1]),ms);
 }
@@ -425,7 +426,7 @@ function merkt(){
    <label class="flo-check"><input type="checkbox" data-ok="befinden" ${X.ok.befinden?"checked":""}><span>Nach dem Essen kurz fragen: «Wie fühlst du dich?»</span></label>
    <label class="flo-check"><input type="checkbox" data-ok="sanft" ${X.sanft?"checked":""}><span>Sanfte Ansicht: Teller und Wetter statt Kalorien-Zahlen</span></label>
    <label class="flo-check"><input type="checkbox" data-ok="server" ${X.ok.server?"checked":""}><span>Unbekanntes Essen beim Flo-Server nachfragen. Es geht nur das eine Wort weg, z.B. «Bündnerfleisch». <span class="small">${s?"Verbindung da.":"Noch nicht verbunden: über den runden Knopf unten rechts verbinden."}</span></span></label>
-   <label class="flo-check"><input type="checkbox" data-ok="teilen" ${X.ok.teilen?"checked":""}><span>Lern-Zahlen an DR Lab senden, damit Flo besser wird. Nur Zählwerte wie «Mikrofon 12×», nie dein Essen, nie Stimme oder Bild.</span></label>
+   <label class="flo-check"><input type="checkbox" data-ok="teilen" ${X.ok.teilen?"checked":""}><span>Lern-Zahlen an DR Lab senden, damit Flo besser wird. Nur Zählwerte wie «Mikrofon 12×», nie dein Essen, nie Stimme oder Bild. Ohne Server-Verbindung teilst du sie unten als Text.</span></label>
    </div>
    <div class="card"><h3>Sicherung</h3><p class="small" style="margin:0">Deine Daten liegen nur hier. Mit einer Sicherung kannst du sie auf ein neues Handy mitnehmen.</p>
    <button class="btn" id="bkDown">Sicherung herunterladen</button><button class="btn ghost" id="bkUp">Sicherung laden</button><input type="file" id="bkFile" accept="application/json,.json" hidden>
@@ -445,6 +446,7 @@ function merkt(){
 function haken(name,fn){const o=window[name];if(typeof o!=="function")return;window[name]=function(){const r=o.apply(this,arguments);try{fn()}catch(e){console.error("Flo:",e)}return r}}
 haken("render",heute);haken("renderFeed",entdecken);haken("renderVerlauf",woche);haken("renderIch",merkt);
 try{heute()}catch(e){console.error("Flo:",e)}
+window.FLO={pose,sag,floSatz,zaehl,X,sp,heute,entdecken};
 const gp=grundPose();setTimeout(()=>pose(gp[0]||"winkt",gp[0]?0:2400,gp[1]||"👋"),900);
 setTimeout(()=>teilen(false),4000);
 })();
