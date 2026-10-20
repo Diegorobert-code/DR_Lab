@@ -675,7 +675,7 @@ var PROPS = {winkt:'👋', atmet:'🌬️', denkt:'💭', freut:'✨', zeigt:'�
 var POSEN_BILD = {};
 /* Posen: Nur Bilder aus dieser Liste werden geladen, sofort und ohne Anfragen ins Leere (keine 404).
    Neues Fia-Bild: posen/<pose>.jpg ablegen (zeigt wirklich Fia, max. 120 KB), Namen hier und in posen/posen.json eintragen. */
-var POSEN_DA = ['fliegt', 'wacht'];
+var POSEN_DA = ['fliegt', 'wacht', 'atmet', 'freut', 'schlaeft', 'lauscht', 'ruht'];
 POSEN_DA.forEach(function(n){ if (n in PROPS) POSEN_BILD[n] = 'posen/' + n + '.jpg'; });
 function bildFuer(p){ return POSEN_BILD[p] || FIG; }
 var tippTimer = null;
@@ -808,11 +808,11 @@ document.querySelectorAll('.tab').forEach(function(b){ b.addEventListener('click
 /* ================= HEUTE ================= */
 function gruss(){
   var h = new Date().getHours();
-  if (h < 5) return ['wacht', 'Es ist tief in der Nacht. Wenn du wach liegst, schau in Fias Nest. Hier ist es still.'];
-  if (h < 11) return ['winkt', 'Guten Morgen. Ich bin Fia. Wie fängst du den Tag an? Drei Atemzüge, dann schauen wir.'];
+  if (h < 5) return ['schlaeft', 'Es ist tief in der Nacht. Wenn du wach liegst, schau in Fias Nest. Hier ist es still.'];
+  if (h < 11) return ['wacht', 'Guten Morgen. Ich bin Fia. Wie fängst du den Tag an? Drei Atemzüge, dann schauen wir.'];
   if (h < 17) return ['fliegt', 'Hallo, ich bin Fia. Wo spürst du dich gerade? Tipp unten die drei Fragen an.'];
   if (h < 22) return ['atmet', 'Guten Abend. Die Ausatmung darf jetzt länger werden. Was braucht es gerade?'];
-  return ['wacht', 'Es wird Nacht. Eine kleine Reihe, dann ab ins Nest.'];
+  return ['ruht', 'Es wird Nacht. Eine kleine Reihe, dann ab ins Nest.'];
 }
 function heuteBuehne(){ var g = gruss(); zeig($('buehneHeute'), g[0], g[1], 150); }
 var IST = ['unruhig', 'müde', 'angespannt', 'traurig', 'ängstlich', 'wach', 'ruhig', 'weit', 'weiss nicht'];
