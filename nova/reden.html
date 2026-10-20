@@ -157,9 +157,9 @@
   function gedaechtnis() { try { return JSON.parse(localStorage.getItem(GED)) || []; } catch (e) { return []; } }
   function merken() {
     if (jetztGesagt.length < 2) { jetztGesagt = []; return; }
-    var t = jetztGesagt.join('\n'); if (t.length > 900) t = t.slice(-900);
+    var t = jetztGesagt.join('\n'); var max = KEY === 'nova' ? 2500 : 900; if (t.length > max) t = t.slice(-max);
     var g = gedaechtnis(); g.push({ d: new Date().toLocaleDateString('de-CH'), t: t });
-    try { localStorage.setItem(GED, JSON.stringify(g.slice(-4))); } catch (e) {}
+    try { localStorage.setItem(GED, JSON.stringify(g.slice(KEY === 'nova' ? -12 : -4))); } catch (e) {}
     if (lernenAn()) zuNova(t);
     jetztGesagt = []; vergessenZeigen();
   }
