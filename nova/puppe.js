@@ -7,8 +7,8 @@
 //   <script src="../nova/puppe.js"></script><script>var otti = Puppe.erstelle('#otti', { figur: 'otti', bild: 'otti-3d.jpg' });</script>
 //
 // Zwei Modi:
-//  (a) Ebenen-Modus: mit { ordner: 'puppe/' } lädt die Puppe <app>/puppe/puppe.json mit Teil-Bildern (PNG mit Transparenz)
-//      und baut die Figur aus Teilen (Körper, Kopf, Arme, Augen, Mundformen). Ohne «ordner» wird nichts nachgeladen (kein 404). Oder direkt: { teile: { koerper, kopf, armL, armR, augenHalb, augenZu, muender: {X,A,E,O,U,M,F,L} } }.
+//  (a) Ebenen-Modus: mit { ordner: 'puppe/otti/' } lädt die Puppe puppe.json mit Tinkos Teil-Bildern (PNG mit Transparenz,
+//      fertig: nova/puppe/otti|nova|fia/) und baut die Figur aus Teilen (Körper, Kopf, Arme/Flügel, Lider, Ausdrücke, 9 Mundformen). Ohne «ordner» wird nichts nachgeladen (kein 404). Oder direkt: { teile: { koerper, kopf, armL, armR, augenHalb, augenZu, muender: {X,A,E,O,U,M,F,L} } }.
 //  (b) Ein-Bild-Modus (Ersatz): das vorhandene Figurenbild wird per WebGL organisch verformt (Atmen, Kopf neigen, Blick,
 //      Lider, Kiefer/Mundform) und bekommt einen winkenden Arm im Figurenstil.
 //
@@ -490,38 +490,86 @@
     this.arm = { el: arm, ober: ober, unter: unter, spiegel: a.seite === 'links' ? -1 : 1 };
   };
 
-  // Ebenen: alle Teile auf gleich grosser, transparenter Leinwand (z.B. 1024 x 1024) – Gelenke in Pixeln dieser Leinwand
+  // Ebenen: alle Teile auf gleich grosser, transparenter Leinwand (Tinkos Format: 1024 x 1024, Teile an Originalposition).
+  // Gelenke (hals, schulterR, schulterL, optional ellbogenR) in Pixeln dieser Leinwand. Ein Teil darf kleiner gerechnet sein
+  // (z.B. 704 statt 768 px) – jedes Teil wird auf die ganze Figur gestreckt, die Lage bleibt gleich.
+  // Flügel (Fia): teile.fluegelR/fluegelL → beide Flügel vorne, «winken» = flattern. Fehlende Teile (z.B. Schwanz) sind ok.
+  // Optional cfg.winken = { heben: Grad, schwung: Grad, tempo: Hz } überschreibt die Winkbewegung.
+  // Richtung (Grad, 0 = rechts, 90 = unten) von der Schulter zum Schwerpunkt eines Arm-Bilds; null, wenn nicht lesbar
+  var armBilderCache = {};
+  function armRichtung(src, gelenk, gr) {
+    if (!src) return null;
+    if (src in armBilderCache) return armBilderCache[src];
+    var r = null;
+    try {
+      var i = new Image(); i.src = src; // ist schon geladen (vorgeladen) → sofort im Cache
+      var n = 96, c = document.createElement('canvas'); c.width = c.height = n;
+      var g = c.getContext('2d'); g.drawImage(i, 0, 0, n, n);
+      var d = g.getImageData(0, 0, n, n).data, sx = 0, sy = 0, s = 0;
+      for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) { var a = d[(y * n + x) * 4 + 3]; if (a > 128) { sx += x; sy += y; s++; } }
+      if (s > 10) { var f = gr / n; r = Math.atan2(sy / s * f - gelenk[1], sx / s * f - gelenk[0]) * 57.2958; }
+    } catch (e) { r = null; }
+    return (armBilderCache[src] = r);
+  }
+
   Puppe.prototype._baueEbenen = function (cfg, basis) {
     var self = this, T = cfg.teile || {}, G = cfg.gelenke || {}, gr = cfg.groesse || 1024;
     function pfad(n) { return /^(https?:|data:|blob:|\/)/.test(n) ? n : basis + n; }
-    var noetig = [T.koerper, T.kopf].filter(Boolean);
-    if (noetig.length < 2) return Promise.reject(new Error('koerper/kopf fehlt'));
-    return Promise.all(noetig.map(function (n) { return ladeBild(pfad(n)); })).then(function () {
+    if (!T.koerper || !T.kopf) return Promise.reject(new Error('koerper/kopf fehlt'));
+    var fluegel = !!(T.fluegelR || T.fluegelL);
+    var armR = T.fluegelR || T.armR, armL = T.fluegelL || T.armL;
+    // alle Teile vorladen und dekodieren, damit beim ersten Mundwechsel nichts aufblitzt
+    var liste = [T.koerper, T.kopf, armR, armL, T.unterarmR, T.augenHalb, T.augenZu, T.schwanz];
+    var M = T.muender || {}, A = T.ausdruck || {}, v;
+    for (v in M) liste.push(M[v]);
+    for (v in A) liste.push(A[v]);
+    var geladen = {};
+    return Promise.all(liste.filter(Boolean).map(function (n) {
+      return ladeBild(pfad(n)).then(function (i) {
+        geladen[n] = true;
+        return i.decode ? i.decode().catch(function () {}) : null;
+      }, function (e) { if (n === T.koerper || n === T.kopf) throw e; });
+    })).then(function () {
       var k = self.koerper; k.classList.add('pp-ebenen');
       function ursprung(d, g, def) { var p = g || def; d.style.transformOrigin = (p[0] / gr * 100) + '% ' + (p[1] / gr * 100) + '%'; }
       function bild(n, eltern, cls) {
-        if (!n) return null; var i = el('img', 'pp-teil ' + (cls || ''), eltern); i.src = pfad(n); i.alt = '';
-        i.onerror = function () { i.remove(); }; return i;
+        if (!n || !geladen[n]) return null;
+        var i = el('img', 'pp-teil ' + (cls || ''), eltern); i.src = pfad(n); i.alt = ''; i.draggable = false;
+        return i;
       }
       function gelenk(eltern, g, def) { var d = el('div', 'pp-gelenk', eltern); ursprung(d, g, def); return d; }
-      var E = self.ebenen = { gr: gr };
-      E.armHinten = gelenk(k, G.schulterL, [gr * 0.3, gr * 0.62]);
-      bild(T.armL, E.armHinten);
+      var E = self.ebenen = { gr: gr, fluegel: fluegel };
+      // Winken: Arm hebt sich an der Schulter seitlich hoch (neben den Kopf, nie davor), schwingt hin und her und schwingt nach (Feder).
+      // Wie weit, rechnet die Puppe aus der Lage des Arms im Bild: Richtung Schulter → Schwerpunkt des Arms → Ziel «schräg oben aussen».
+      // Flügel flattern kürzer und schneller. cfg.winken = { heben, schwung, tempo, ziel } überschreibt.
+      var wk = cfg.winken || {};
+      var ziel = wk.ziel != null ? wk.ziel : fluegel ? -12 : -22;
+      var d0 = armRichtung(armR && pfad(armR), G.schulterR || [gr * 0.7, gr * 0.62], gr);
+      E.heben = wk.heben != null ? wk.heben : d0 == null ? (fluegel ? -40 : -100) : klemme(ziel - d0, -150, -20);
+      E.schwung = wk.schwung != null ? wk.schwung : fluegel ? 24 : 18;
+      E.tempo = wk.tempo || (fluegel ? 2.4 : 1.6);
+      // Reihenfolge: Schwanz, hinterer Arm, Körper, Kopf (mit Ausdruck, Lidern, Mund), vorderer Arm
+      if (T.schwanz) { E.schwanz = gelenk(k, G.schwanz, [gr * 0.5, gr * 0.8]); bild(T.schwanz, E.schwanz); }
+      E.armL = gelenk(k, G.schulterL, [gr * 0.3, gr * 0.62]);
+      bild(armL, E.armL);
       bild(T.koerper, k);
       E.kopf = gelenk(k, G.hals, [gr * 0.5, gr * 0.6]);
       bild(T.kopf, E.kopf);
-      E.augenHalb = bild(T.augenHalb, E.kopf, 'pp-aus');
-      E.augenZu = bild(T.augenZu, E.kopf, 'pp-aus');
-      E.muender = {};
-      var M = T.muender || {};
-      for (var v in M) { E.muender[v] = bild(M[v], E.kopf, 'pp-mund pp-aus'); }
       E.ausdruck = {};
-      var A = T.ausdruck || {};
-      for (var a in A) E.ausdruck[a] = bild(A[a], E.kopf, 'pp-aus');
+      for (var a in A) E.ausdruck[a] = bild(A[a], E.kopf, 'pp-ausdruck pp-aus');
+      E.augenHalb = bild(T.augenHalb, E.kopf, 'pp-lid');
+      E.augenZu = bild(T.augenZu, E.kopf, 'pp-lid');
+      if (E.augenHalb) E.augenHalb.style.opacity = 0;
+      if (E.augenZu) E.augenZu.style.opacity = 0;
+      E.muender = {};
+      for (v in M) E.muender[v] = bild(M[v], E.kopf, 'pp-mund pp-aus');
+      // Flügel liegen beide vorne (beim Vogel sitzen sie seitlich auf dem Körper)
+      if (fluegel) k.appendChild(E.armL);
       E.arm = gelenk(k, G.schulterR, [gr * 0.7, gr * 0.62]);
-      if (T.unterarmR) { bild(T.armR, E.arm); E.unter = gelenk(E.arm, G.ellbogenR, [gr * 0.8, gr * 0.45]); bild(T.unterarmR, E.unter); }
-      else bild(T.armR, E.arm);
-      self.mundJetzt = null;
+      if (T.unterarmR) { bild(armR, E.arm); E.unter = gelenk(E.arm, G.ellbogenR, [gr * 0.8, gr * 0.45]); bild(T.unterarmR, E.unter); }
+      else bild(armR, E.arm);
+      self.mundJetzt = null; self.mundSeit = 0;
+      self.p.schwing = new Feder(0, 260, 17);
     });
   };
 
@@ -821,12 +869,11 @@
     for (k in add) if (P[k]) P[k].z += add[k];
 
     // Winken: Unterarm schwingt, Feder lässt ihn nachschwingen
-    var welle = 0;
-    if (z === 'winkt') {
-      var ws = t - (this.winkStart || 0), zyk = ws % 3.6;
-      welle = zyk < 2.4 ? Math.sin(zyk * Math.PI * 2 * 1.55) * glatt(0, 0.35, zyk) : 0;
-    }
+    var welle = 0, ws = t - (this.winkStart || 0), zyk = ws % 3.6;
+    if (z === 'winkt') welle = zyk < 2.4 ? Math.sin(zyk * Math.PI * 2 * 1.55) * glatt(0, 0.35, zyk) : 0;
     P.ellb.z = welle * P.arm.x;
+    // Ebenen: Schulter-Schwung als eigene, ruhigere Feder (kein Aufschaukeln), Tempo je Figur (Flügel schneller)
+    if (P.schwing) P.schwing.z = z === 'winkt' && zyk < 2.4 ? Math.sin(zyk * Math.PI * 2 * this.ebenen.tempo) * glatt(0, 0.35, zyk) * P.arm.x : 0;
 
     for (k in P) P[k].schritt(dt);
 
@@ -882,7 +929,7 @@
       innen: this.f.innen, zeit: t, welle: ruhe ? 0 : 1, glanz: P.glanz.x, glow: this._glowRGB || (this._glowRGB = hexRGB(this.f.glow))
     };
     // Bild mit geschlossenen Augen (z.B. Fia): keine Lider, kein Blick
-    if (this.f.augenZu) { w.lidL = w.lidR = 0; w.froh = 0; w.bx = w.by = 0; }
+    if (this.f.augenZu && !this.ebenen) { w.lidL = w.lidR = 0; w.froh = 0; w.bx = w.by = 0; }
     if (this.gl) this.gl.zeichne(w);
     else if (this.ebenen) this._zeichneEbenen(w, P);
     else if (this.koerper.firstChild) this.koerper.firstChild.style.transform = 'rotate(' + (w.neig * 20).toFixed(2) + 'deg)';
@@ -897,31 +944,52 @@
 
   // Ebenen-Modus: dieselben Werte als transform/opacity auf die Teil-Bilder
   Puppe.prototype._zeichneEbenen = function (w, P) {
-    var E = this.ebenen;
+    var E = this.ebenen, t = this.t, z = this._zustand, ruhe = this.ruhe;
     E.kopf.style.transform = 'translate(' + (w.kx * 100).toFixed(2) + '%,' + (w.ky * 100).toFixed(2) + '%) rotate(' + (w.neig * 57.3).toFixed(2) + 'deg)';
-    var ar = P.arm.x;
-    E.arm.style.transform = 'rotate(' + (mix(0, -115, ar) + (E.unter ? 0 : P.ellb.x * 22)).toFixed(2) + 'deg)';
-    if (E.unter) E.unter.style.transform = 'rotate(' + (P.ellb.x * 30).toFixed(2) + 'deg)';
-    E.armHinten.style.transform = 'rotate(' + (rausch(this.t * 0.5, 9) * 3).toFixed(2) + 'deg)';
+    // Arme: im Stand pendeln sie leicht mit dem Atem; beim Winken hebt die Schulter den Arm (Feder mit Überschwingen),
+    // die Welle läuft als Feder hinterher und schwingt nach dem Winken aus
+    var ar = P.arm.x, sw = klemme(P.schwing.x, -1.3, 1.3), pendel = ruhe ? 0 : rausch(t * 0.5, 9), atem = w.atem;
+    var ruheR = (E.fluegel ? -2 : 2) * atem + pendel * 2, ruheL = (E.fluegel ? 2 : -2) * atem - rausch(t * 0.5, 4) * 2;
+    if (E.fluegel) {
+      // Flügel: rechter Flügel flattert, linker flattert kleiner mit (gespiegelt)
+      E.arm.style.transform = 'rotate(' + (ruheR + E.heben * ar + sw * E.schwung).toFixed(2) + 'deg)';
+      E.armL.style.transform = 'rotate(' + (ruheL - (E.heben * ar + sw * E.schwung) * 0.45).toFixed(2) + 'deg)';
+    } else {
+      E.arm.style.transform = 'rotate(' + (ruheR + E.heben * ar + (E.unter ? 0 : sw * E.schwung)).toFixed(2) + 'deg)';
+      if (E.unter) E.unter.style.transform = 'rotate(' + (sw * 30).toFixed(2) + 'deg)';
+      // der andere Arm gleicht beim Winken etwas aus
+      E.armL.style.transform = 'rotate(' + (ruheL + ar * 4 - sw * 1.5).toFixed(2) + 'deg)';
+    }
+    if (E.schwanz) E.schwanz.style.transform = 'rotate(' + (rausch(t * 0.8, 6) * 4 + Math.sin(t * 7) * P.glanz.x * (z === 'freut' ? 6 : 0)).toFixed(2) + 'deg)';
+
+    // Ausdruck (ganze Augenpartie): freut (Lachaugen), staunt (grosse Augen), denkt (Blick nach oben)
+    var A = E.ausdruck, ziel = null;
+    if (A.freut && (z === 'freut' || w.laecheln > 0.8 || w.froh > 0.55)) ziel = 'freut';
+    else if (A.denkt && z === 'denkt') ziel = 'denkt';
+    else if (A.staunt && w.rund > 0.6 && w.auf > 0.15) ziel = 'staunt';
+    if (ziel !== E.ausdruckJetzt) {
+      for (var a in A) if (A[a]) A[a].classList.toggle('pp-aus', a !== ziel);
+      E.ausdruckJetzt = ziel;
+    }
+    // Lider liegen über dem Ausdruck: Blinzeln funktioniert in jeder Stimmung
     var lid = w.lidL;
-    if (E.augenZu) E.augenZu.style.opacity = klemme((lid - 0.55) * 3, 0, 1).toFixed(2);
+    if (E.augenZu) E.augenZu.style.opacity = klemme((lid - 0.55) * 3.4, 0, 1).toFixed(2);
     if (E.augenHalb) E.augenHalb.style.opacity = (E.augenZu ? klemme(1 - Math.abs(lid - 0.5) * 3, 0, 1) : klemme(lid * 2, 0, 1)).toFixed(2);
-    // Mundbild: nächstgelegene Form wählen, Überblendung über CSS (50 ms)
+
+    // Mundbild: nächstgelegene Form wählen und sofort wechseln (kein Überblenden, sonst scheint der gemalte Mund durch);
+    // jede Form bleibt mind. 60 ms stehen, damit nichts flackert
     var best = 'X', bd = 1e9, M = E.muender;
     for (var v in VISEME) {
       if (!M[v]) continue; var q = VISEME[v];
       var d = Math.pow(q[0] - w.auf, 2) + Math.pow(q[1] - w.breit, 2) * 0.6 + Math.pow(q[2] - w.rund, 2) * 0.6 + Math.pow(q[3] - w.presse, 2) * 0.4;
-      if (v === 'X' && w.laecheln > 0.6 && M.laecheln) continue;
       if (d < bd) { bd = d; best = v; }
     }
-    if (w.laecheln > 0.6 && w.auf < 0 && M.laecheln) best = 'laecheln';
-    if (best !== this.mundJetzt) {
-      if (this.mundJetzt && M[this.mundJetzt]) M[this.mundJetzt].classList.add('pp-aus');
+    if (w.laecheln > 0.6 && w.auf < 0.1 && M.laecheln) best = 'laecheln';
+    if (best !== this.mundJetzt && (t - this.mundSeit > 0.06 || !this.mundJetzt)) {
       if (M[best]) M[best].classList.remove('pp-aus');
-      this.mundJetzt = best;
+      if (this.mundJetzt && M[this.mundJetzt]) M[this.mundJetzt].classList.add('pp-aus');
+      this.mundJetzt = best; this.mundSeit = t;
     }
-    var A = E.ausdruck, z = this._zustand;
-    for (var a in A) if (A[a]) A[a].classList.toggle('pp-aus', !((a === 'freut' && (z === 'freut' || w.laecheln > 0.8)) || (a === 'denkt' && z === 'denkt') || (a === 'staunt' && w.rund > 0.7 && w.auf > 0.2)));
   };
 
   Puppe.prototype.zerstoere = function () {
