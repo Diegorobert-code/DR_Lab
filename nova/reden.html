@@ -240,6 +240,8 @@
       .then(function (d) {
         var l = Array.isArray(d) ? d : null;
         if (!l && d && typeof d === 'object') for (var x in d) if (Array.isArray(d[x])) { l = d[x]; break; }
+        // Puls und Stimme (HumanSpark) bleiben auf unserem Server und gehen nie an den Sprach-Agenten.
+        if (l) l = l.filter(function (e) { return !/humanspark/i.test(String(e.app || '')) && String(e.frage || '').indexOf('[stimme-puls]') !== 0; });
         if (!l || !l.length) return;
         serverWelt = l.slice(-8).map(function (e) {
           var t = String(e.frage || e.text || '').slice(-350), an = String(e.antwort || '').slice(0, 200);
