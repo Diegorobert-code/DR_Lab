@@ -980,6 +980,7 @@ function mount(root, opts){
         staerken:vStaerken, tier:vTier, abend:vAbend, plan:vPlan, fokus:vFokus, erklaer:vErklaer, spiegel:vSpiegel, wissen:()=>vWissen(arg)};
       h = (map[v] || (mode==='eltern'?vHeute:vSchule))();
     }
+    root.classList.toggle('ma-kind', mode==='kind'); // Ruhe-Prinzip im Kinderbereich (bereich.css)
     app.innerHTML = h; tabs(); typeBubbles();
   }
   function setMode(m, to){

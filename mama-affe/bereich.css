@@ -187,3 +187,19 @@
 @media (prefers-reduced-motion:reduce){.ma .tile.gross,.ma .actor.ma-hops{animation:none}}
 .ma .ma-alter{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .ma .ma-alter .chip{padding:8px 4px;white-space:nowrap;font-size:.94rem}
+
+/* ---------- Ruhe-Prinzip im Kinderbereich (Diego 20.10.) ----------
+   Ruhige Bilder regen die eigene Fantasie an: Mama Affe steht fast still und atmet nur ganz sanft.
+   Bewegung gibt es als Antwort aufs Tippen (ma-hops) und kurz bei Winken, Jubeln, Zeigen.
+   Atmen, Schlafen und die Bewegungspause zum Mitmachen bleiben, sie führen das Kind. */
+.ma.ma-kind .ma-sky i,.ma.ma-kind .house .win,.ma.ma-kind .actor .glow,.ma.ma-kind .actor .shadow{animation:none}
+.ma.ma-kind .actor .body{animation:ma-ruhe 7s ease-in-out infinite}
+@keyframes ma-ruhe{0%,100%{transform:scale(1)}50%{transform:scale(1.012)}}
+.ma.ma-kind .actor.denkt .body,.ma.ma-kind .actor.denkt .prop,.ma.ma-kind .actor.schlaeft .prop{animation:none}
+.ma.ma-kind .actor.winkt .prop,.ma.ma-kind .actor.zeigt .prop{animation-iteration-count:3}
+.ma.ma-kind .actor.jubelt .body{animation:ma-jump .7s ease-in-out 2}
+.ma.ma-kind .actor.jubelt .prop{animation:ma-spin 1.4s linear 1}
+.ma.ma-kind .actor.schlaeft .body{animation:ma-sleep 5s ease-in-out infinite}
+.ma.ma-kind .actor.atmet .body{animation:ma-breathe 8s ease-in-out infinite}
+.ma.ma-kind .actor.turnt .body{animation:ma-sway 1.6s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.ma.ma-kind .actor .body,.ma.ma-kind .actor .prop{animation:none!important}}
