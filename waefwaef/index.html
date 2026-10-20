@@ -216,6 +216,22 @@ nav a{padding:6px 0;min-height:52px;justify-content:center;font-size:13px;line-h
 @keyframes gHops{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
 .ton{min-width:44px;min-height:44px;font-size:1.2rem;padding:0}
 .obName{width:100%;margin-top:8px}
+/* Ruhe-Prinzip (Diego 20.10.): im Kinderteil steht Wäf Wäf fast still und bewegt sich nur, wenn man ihn antippt. */
+body:has(#v-kinder:not([hidden])) #pup:not(.hop):not(.wiggle):not(.sad):not(.schnupper){animation:breathe 7s ease-in-out infinite}
+body:has(#v-kinder:not([hidden])) .blob,body:has(#v-kinder:not([hidden])) .schwanz,body:has(#v-kinder:not([hidden])) .schmetterling,body:has(#v-kinder:not([hidden])) .pupwrap::after{animation:none}
+body:has(#v-kinder:not([hidden])) .schwanz.wedelt{animation:wedeln .5s ease-in-out 6 alternate}
+.g-bild{animation:gRuhig .6s ease both}
+@keyframes gRuhig{from{opacity:0}to{opacity:1}}
+.g-frage{font-size:1.25rem;font-weight:700;line-height:1.4;margin:4px 0 6px;text-align:center}
+.g-tipp{text-align:center;margin:0 0 10px}
+.gross-hoeren{width:100%;min-height:56px;font-size:1.1rem;background:#0b1130;border:2px solid #8fa3e8;color:#e6eaff}
+#hoerenW{position:fixed;inset:0;z-index:2147483600;background:#02040a;color:#c3cae3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:calc(env(safe-area-inset-top,0px) + 64px) 16px calc(env(safe-area-inset-bottom,0px) + 32px);text-align:center}
+#hoerenW[hidden]{display:none}
+#hoerenW .h-titel{font-size:18px;line-height:1.4;opacity:.62;max-width:30ch;min-height:2.8em;margin:0}
+#hoerenW .h-knopf{width:136px;height:136px;border-radius:50%;border:2px solid #313a63;background:#0a0f22;color:#d6dcf3;font-size:54px;line-height:1;cursor:pointer}
+#hoerenW .h-info{font-size:15px;line-height:1.45;opacity:.5;max-width:32ch;margin:0}
+#hoerenW .h-zu{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);left:16px;min-height:44px;padding:8px 16px;border-radius:999px;border:1px solid #262d52;background:none;color:#8890b5;font:inherit;font-size:15px}
+body.hoermodus .nova-btn,body.hoermodus .nova-pille,body.hoermodus .nova-panel{display:none!important}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -288,7 +304,7 @@ nav a{padding:6px 0;min-height:52px;justify-content:center;font-size:13px;line-h
       <p id="aText"></p>
       <div id="aBody"></div>
     </div>
-    <div class="box geschichte"><h3>📖 Meine Geschichte: Das erste Mal allein</h3><p class="mini">Eine kleine Bildergeschichte zum Vorlesen, für Kinder und Grosse. Wäf Wäf erzählt sie selbst.</p><div class="reihe"><button id="gStart">Geschichte anschauen</button></div></div>
+    <div class="box geschichte"><h3>📖 Meine Geschichte: Das erste Mal allein</h3><p class="mini">Eine kleine Bildergeschichte zum Vorlesen, für Kinder und Grosse. Wäf Wäf erzählt sie selbst.</p><div class="reihe"><button id="gStart">Geschichte anschauen</button></div><button class="gross-hoeren" id="gHoeren" type="button">🎧 Nur hören</button></div>
     <div class="box"><h3>Wie es mir ging</h3><div id="aVerlauf" class="mini"></div></div>
     <div class="box"><h3>Wer ist bei mir? (Betreuungsplan)</h3>
       <p class="mini">Solange ich noch nicht lange allein bleiben kann, schaut ihr, dass jemand da ist.</p>
@@ -327,6 +343,9 @@ nav a{padding:6px 0;min-height:52px;justify-content:center;font-size:13px;line-h
       <li><b>Kleine Kinder</b> sind nie allein mit dem Hund.</li>
     </ol>
     <div class="reihe"><button class="ghost" id="drucken">🖨 Als Poster drucken</button></div>
+    <div class="box geschichte"><h3>📖 Geschichte: Das erste Mal allein</h3><p class="mini">Wäf Wäf erzählt, wie er zum ersten Mal allein zu Hause bleibt. Mit einer Frage zum Nachdenken.</p>
+      <div class="reihe"><button id="gStartK">Geschichte anschauen</button></div>
+      <button class="gross-hoeren" id="gHoerenK" type="button">🎧 Nur hören</button></div>
     <div class="box"><h3>So hebst du mich richtig hoch</h3><p class="mini">Ich bin klein und zerbrechlich. Am besten hebt mich eine erwachsene Person hoch: eine Hand unter die Brust, die andere unter den Po, nah am Körper halten. Nie an den Beinen oder am Bauch hochziehen. Kinder setzen sich hin, dann komme ich auf den Schoss.</p></div>
   </section>
 
@@ -644,7 +663,7 @@ $('go').onclick=()=>{tonAn=true;$('start').hidden=true;document.querySelector('m
 if(location.hash==='#tag')$('go').onclick();
 $('back').onclick=()=>{clearInterval(timer);document.querySelector('main').hidden=true;$('nav').hidden=true;$('start').hidden=false;scrollTo(0,0);};
 const pets=['Hihi, das kitzelt!','Noch einmal hinter dem Ohr, bitte!','Ich hab dich lieb!','Wäf wäf wäf!','Spielen wir nachher Ball?','Mein Halsband hat weisse Pünktchen. Schön, oder?','Weisst du was? Ich bin gleich wieder ruhig.'];let pi=0;
-function pet(){const p=$('pup');say(pets[pi++%pets.length],'wiggle');heart(p,5);}
+function pet(){const p=$('pup');say(pets[pi++%pets.length],'wiggle');heart(p,5);const w=document.querySelector('.schwanz');if(w){w.classList.remove('wedelt');void w.offsetWidth;w.classList.add('wedelt');}}
 $('pup').addEventListener('animationend',e=>{if(e.animationName!=='breathe'&&e.animationName!=='laufen')$('pup').classList.remove('hop','sad','wiggle','schnupper');});
 $('pup').onclick=pet;$('pup').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pet();}};
 /* ---------- Ton an/aus ---------- */
@@ -658,15 +677,43 @@ const GESCHICHTE=[
   ['🚪👋','Die Tür geht zu. Oh! Mein Herz klopft ein bisschen. Wo ist Ava?'],
   ['🧸🦴','Da liegt mein Kauknochen. Und mein Kuscheltier riecht nach Ava. Ich kaue ein bisschen. Kauen macht mich ruhig.'],
   ['🛏️💤','Mein Körbchen ist weich. Ich lege mich hin. Die Uhr tickt. Tick, tack. Ich werde müde.'],
+  ['💭🐶','Was glaubst du, wovon Wäf Wäf träumt, während er wartet?','fq'],
   ['🔑🚪','Klick! Der Schlüssel! Ava ist wieder da. Sie sagt ganz ruhig: Hallo, Wäf Wäf. Kein grosses Theater.'],
   ['💛🐾','Ich habe es geschafft! Morgen bleibe ich ein bisschen länger allein. Pfote für Pfote. Und wenn es zu viel ist, gehen wir einen Schritt zurück.']
 ];
 let gi=0;
 function gZeigen(){const g=GESCHICHTE[gi];
-  dialog('Das erste Mal allein ('+(gi+1)+'/'+GESCHICHTE.length+')','<div class="g-bild" aria-hidden="true">'+g[0]+'</div><p class="g-text">'+esc(g[1])+'</p><div class="reihe">'+(gi>0?'<button class="ghost" data-g="-1">‹ Zurück</button>':'')+(gi<GESCHICHTE.length-1?'<button data-g="1">Weiter ›</button>':'<button data-g="0">Fertig 🐾</button>')+'</div>',null,b=>{
+  // Ruhiges Standbild: es bleibt stehen, bis das Kind weitertippt. Bei der Fantasie-Frage denkt sich das Kind etwas aus.
+  const text=g[2]==='fq'?'<p class="g-frage">'+esc(g[1])+'</p><p class="mini g-tipp">Denk kurz nach. Sag es laut oder erzähl es jemandem aus deiner Familie.</p>':'<p class="g-text">'+esc(g[1])+'</p>';
+  dialog('Das erste Mal allein ('+(gi+1)+'/'+GESCHICHTE.length+')','<div class="g-bild" aria-hidden="true">'+g[0]+'</div>'+text+'<div class="reihe">'+(gi>0?'<button class="ghost" data-g="-1">‹ Zurück</button>':'')+(gi<GESCHICHTE.length-1?'<button data-g="1">Weiter ›</button>':'<button data-g="0">Fertig 🐾</button>')+'</div>',null,b=>{
     const d=+b.dataset.g; if(isNaN(d))return; if(d===0){dialogZu();say('Danke, dass du meine Geschichte angeschaut hast!','hop');mem.geschichte=(mem.geschichte||0)+1;saveMem();return;} gi=Math.max(0,Math.min(GESCHICHTE.length-1,gi+d)); gZeigen();});
   sprich(g[1]);}
 $('gStart').onclick=()=>{gi=0;gZeigen();};
+$('gStartK').onclick=()=>{gi=0;gZeigen();};
+
+/* ---------- Nur hören: die Geschichte wie ein Hörspiel, Bildschirm dunkel ---------- */
+document.body.insertAdjacentHTML('beforeend','<div id="hoerenW" hidden role="dialog" aria-modal="true" aria-label="Nur hören"><button class="h-zu" id="hwZu" type="button">✕ Beenden</button><p class="h-titel" id="hwTitel"></p><button class="h-knopf" id="hwKnopf" type="button" aria-label="Pause">⏸</button><p class="h-info">Leg das Handy weg und hör einfach zu.</p></div>');
+const HW={on:false,pause:true,i:0,t:0,g:0,tok:0};
+function hwStumm(){HW.tok++;clearTimeout(HW.t);clearTimeout(HW.g);try{speechSynthesis.cancel()}catch(e){}try{window.NovaStimme&&NovaStimme.stopp()}catch(e){}}
+function hwSag(t,fertig){const tok=++HW.tok;let zu=false;const ende=()=>{if(zu||tok!==HW.tok)return;zu=true;clearTimeout(HW.g);fertig();};
+  if(window.NovaStimme&&NovaStimme.aktiv()){HW.g=setTimeout(ende,6000+t.length*110);try{Promise.resolve(NovaStimme.sprich(t)).then(()=>setTimeout(ende,300),()=>{});}catch(e){}return;}
+  HW.g=setTimeout(ende,2500+t.length*90); // Sicherheitsnetz, falls das Handy kein «fertig» meldet
+  try{if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='de-CH';u.rate=.95;u.pitch=1.1; // ruhige, warme Erzählstimme
+    const v=speechSynthesis.getVoices().find(v=>/^de/i.test(v.lang));if(v)u.voice=v;u.onend=()=>setTimeout(ende,300);speechSynthesis.speak(u);}catch(e){}}
+function hwKnopf(){const b=$('hwKnopf');b.textContent=HW.pause?'▶':'⏸';b.setAttribute('aria-label',HW.pause?'Weiter hören':'Pause');if('mediaSession' in navigator)try{navigator.mediaSession.playbackState=HW.pause?'paused':'playing'}catch(e){}}
+function hwSeite(){if(!HW.on||HW.pause)return;
+  if(HW.i>=GESCHICHTE.length){hwSag('Ende. Pfote für Pfote.',()=>{HW.pause=true;HW.i=0;hwKnopf();$('hwTitel').textContent='Fertig. Danke fürs Zuhören!';mem.geschichte=(mem.geschichte||0)+1;saveMem();});return;}
+  const g=GESCHICHTE[HW.i];$('hwTitel').textContent='Das erste Mal allein · '+(HW.i+1)+'/'+GESCHICHTE.length;
+  // Fantasie-Frage: nur gesprochen, dann eine Pause zum Nachdenken
+  hwSag(g[1],()=>{HW.t=setTimeout(()=>{HW.i++;hwSeite();},g[2]==='fq'?7000:1300);});}
+function hwPause(p){HW.pause=p;hwKnopf();if(p){hwStumm();return;}hwSeite();}
+function hwAuf(){dialogZu();hwStumm();HW.on=true;HW.i=0;store.set('ton',true);tonAn=true;tonZeigen();$('hoerenW').hidden=false;document.body.classList.add('hoermodus');
+  if('mediaSession' in navigator)try{navigator.mediaSession.metadata=new MediaMetadata({title:'Das erste Mal allein',artist:'Wäf Wäf erzählt',album:'Nur hören',artwork:[{src:new URL('figur-klein.jpg',location.href).href,type:'image/jpeg'}]});
+    navigator.mediaSession.setActionHandler('play',()=>{if(HW.on)hwPause(false)});navigator.mediaSession.setActionHandler('pause',()=>{if(HW.on)hwPause(true)});}catch(e){}
+  hwPause(false);}
+function hwZu(){HW.on=false;HW.pause=true;hwStumm();$('hoerenW').hidden=true;document.body.classList.remove('hoermodus');if('mediaSession' in navigator)try{navigator.mediaSession.metadata=null;navigator.mediaSession.playbackState='none'}catch(e){}}
+$('hwKnopf').onclick=()=>hwPause(!HW.pause);$('hwZu').onclick=hwZu;$('gHoeren').onclick=hwAuf;$('gHoerenK').onclick=hwAuf;
+window.WW_HOEREN={zustand:()=>({on:HW.on,pause:HW.pause,i:HW.i})};
 
 /* ---------- Erster Start: Familie eintragen ---------- */
 function willkommen(){
