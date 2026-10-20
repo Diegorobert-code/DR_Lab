@@ -142,9 +142,14 @@
     <label>Schlüssel</label>
     <input id="e_key" type="password" placeholder="leer lassen">
 
-    <p class="klein" style="margin-top:18px">Granny ist keine Ärztin und stellt keine Diagnose. Fragen zu Gedächtnis und Demenz: Hausarzt oder Alzheimer-Telefon Schweiz 058 058 80 00 (Mo–Fr). Entwurf DR Lab, nicht veröffentlicht.</p>
+    <p class="klein" style="margin-top:18px">Granny ist keine Ärztin und stellt keine Diagnose. Fragen zu Gedächtnis und Demenz: Hausarzt oder Alzheimer-Telefon Schweiz 058 058 80 00 (Mo–Fr). DR Lab.</p>
 
     <div class="reihe"><button class="grau" id="e_zu">Abbrechen</button><button class="gold" id="e_speichern">Speichern</button></div>
+
+    <h2>Aus der Ferne einrichten</h2>
+    <p>Hier alles ausfüllen und speichern, dann den Link per WhatsApp an das Handy Ihres Elternteils schicken. Dort einmal öffnen und «Ja» drücken, fertig. Fotos und Schlüssel reisen nicht mit.</p>
+    <div class="reihe"><button class="gold" id="e_link">Einrichtungs-Link erstellen</button></div>
+    <div id="e_linkbox" class="kasten" hidden><input id="e_linktext" readonly><div class="reihe"><button class="grau" id="e_kopieren">Kopieren</button><button class="grau" id="e_whatsapp">WhatsApp</button></div></div>
     <div class="reihe"><button class="grau klein" id="e_loeschen">Alles auf diesem Gerät löschen</button></div>
   </div>
 </section>
@@ -331,7 +336,40 @@
   };
   $('e_loeschen').onclick=()=>{ if(confirm('Wirklich alles löschen?')){try{localStorage.removeItem(KEY)}catch(e){} location.reload();} };
 
-  zeichnen(); setInterval(uhr,20000);
+  // Einrichtungs-Link: Angehörige richten Granny aus der Ferne ein (ohne Server, Daten nur im Link)
+  const b64=t=>btoa(unescape(encodeURIComponent(t))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  const unb64=t=>decodeURIComponent(escape(atob(t.replace(/-/g,'+').replace(/_/g,'/'))));
+  $('e_link').onclick=()=>{
+    if(!S.ok){alert('Bitte zuerst oben das Einverständnis bestätigen und speichern.');return}
+    const d={v:1,name:S.name,sprache:S.sprache,leute:S.leute.map(p=>({n:p.n,nr:p.nr})),hname:S.hname,hnr:S.hnr,pname:S.pname,pnr:S.pnr,heute:S.heute,server:S.server};
+    const url=location.origin+location.pathname+'#einrichten='+b64(JSON.stringify(d));
+    $('e_linktext').value=url; $('e_linkbox').hidden=false;
+  };
+  $('e_kopieren').onclick=async()=>{try{await navigator.clipboard.writeText($('e_linktext').value)}catch(e){$('e_linktext').select();document.execCommand('copy')}};
+  $('e_whatsapp').onclick=()=>{location.href='https://wa.me/?text='+encodeURIComponent((S.sprache==='es'?'Hola, aquí está Granny para ti: ':'Hier ist Granny für dich: ')+$('e_linktext').value)};
+  function einrichtenAusLink(){
+    const m=location.hash.match(/^#einrichten=([A-Za-z0-9_-]+)$/); if(!m) return;
+    let d; try{d=JSON.parse(unb64(m[1]))}catch(e){return}
+    if(!d||d.v!==1) return;
+    const es=d.sprache==='es';
+    const box=document.createElement('div'); box.id='einrichten';
+    box.style.cssText='position:fixed;inset:0;z-index:100000;background:#101a3d;color:#fffaf0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px;text-align:center;font-size:26px;line-height:1.35';
+    const t=document.createElement('div'); t.textContent=es?'Tu familia ha preparado Granny para ti. ¿La activo?':'Deine Familie hat Granny für dich eingerichtet. Soll ich sie übernehmen?';
+    const ja=document.createElement('button'); ja.textContent=es?'Sí':'Ja';
+    const nein=document.createElement('button'); nein.textContent=es?'No':'Nein';
+    [ja,nein].forEach(b=>b.style.cssText='font:inherit;font-weight:800;border:0;border-radius:24px;min-height:96px;width:min(320px,80vw)');
+    ja.style.background='#f2c14e'; ja.style.color='#2a1d00'; nein.style.background='#2a3566'; nein.style.color='#fffaf0';
+    box.append(t,ja,nein); document.body.appendChild(box);
+    const weg=()=>{box.remove(); history.replaceState(null,'',location.pathname)};
+    nein.onclick=weg;
+    ja.onclick=()=>{
+      S.ok=true; ['name','sprache','hname','hnr','pname','pnr','heute','server'].forEach(k=>{if(typeof d[k]==='string')S[k]=d[k]});
+      (d.leute||[]).slice(0,4).forEach((p,i)=>{S.leute[i]=Object.assign(S.leute[i]||{bild:''},{n:String(p.n||''),nr:String(p.nr||'')})});
+      schreiben(S); weg(); zeichnen();
+    };
+  }
+
+  zeichnen(); einrichtenAusLink(); setInterval(uhr,20000);
   try{speechSynthesis.getVoices()}catch(e){}
 })();
 </script>
