@@ -264,6 +264,7 @@ body.dimmed .nova-btn,body.dimmed .fb-btn.float{display:none!important}
 @keyframes sagNeu{from{opacity:.001;transform:translateY(6px)}}
 .scene.bildbg{background:var(--szbild) center/cover no-repeat}
 .scene.bildbg svg{opacity:0}
+.scene.bildbg .nestfia{display:none}
 /* Einführung beim ersten Start */
 .onb{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:max(20px,env(safe-area-inset-top,0px)) 16px max(20px,env(safe-area-inset-bottom,0px));background:rgba(3,5,15,.94);overflow-y:auto}
 .onb[hidden]{display:none}
@@ -1423,14 +1424,14 @@ $('personAdd').onclick=()=>{const n=$('person').value.trim().slice(0,20);if(!n||
 /* Posen: Nur Bilder, die hier eingetragen sind, werden geladen (keine Anfragen ins Leere, keine 404).
    Neues Fia-Bild: als posen/<pose>.jpg ablegen (max. 120 KB, zeigt wirklich Fia) und den Namen hier eintragen.
    Alle anderen Posen bewegt CSS sanft auf dem vorhandenen Bild. */
-var POSEN_DA=['wach','schlaeft'];
+var POSEN_DA=['wach','schlaeft','atmet','muede','fliegt','freut','hoert','staedtchen-nacht'];
 var POSE_BILD={},POSE_KL=['p-wach','p-muede','p-schlaeft','p-fliegt','p-atmet','p-freut','p-hoert'];
 POSEN_DA.forEach(p=>POSE_BILD[p]='posen/'+p+'.jpg');
 try{localStorage.removeItem('fiasnest.posenFehlen')}catch(e){}
 function poseBild(p){return(typeof POSE_BILD!=='undefined'&&POSE_BILD&&POSE_BILD[p])||null}
 function posenAnwenden(){
   document.querySelectorAll('img[data-pose]').forEach(i=>{const b=poseBild(i.dataset.pose)||i.dataset.basis;if(b&&i.getAttribute('src')!==b)i.src=b;i.classList.toggle('echt',!!poseBild(i.dataset.pose))});
-  const bg=poseBild('staedtchen-nacht');document.querySelectorAll('.scene').forEach(sc=>{sc.classList.toggle('bildbg',!!bg);if(bg)sc.style.setProperty('--szbild','url("'+bg+'")')})}
+  const bg=poseBild('staedtchen-nacht');document.querySelectorAll('.scene').forEach(sc=>{const an=!!bg&&(zeitStage()>=2||sc.id==='filmScene');sc.classList.toggle('bildbg',an);if(an)sc.style.setProperty('--szbild','url("'+bg+'")')})}
 /* Eine Pose für ein Bild setzen; nach ms wieder zurück zur Grundpose */
 const POSE_T=new WeakMap();
 function setPose(el,p,ms,zurueck){if(!el)return;POSE_KL.forEach(k=>el.classList.remove(k));el.classList.add('p-'+p);el.dataset.pose=p;
