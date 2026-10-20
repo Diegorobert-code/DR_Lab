@@ -185,6 +185,7 @@ button.big{font-size:2rem;padding:.6em 1.8em}
   </div>
 </main>
 
+<script src="abo.js"></script>
 <script>
 (function(){
 const $=id=>document.getElementById(id);
@@ -381,7 +382,7 @@ $("again").addEventListener("click",()=>begin());
 $("night").addEventListener("click",()=>{say("nacht",true);show("start")});
 $("pause").addEventListener("click",()=>{paused=!paused;$("pause").textContent=paused?"Weiter":"Pause";if(paused){musicStop();hush();camStop()}else{musicStart();if(MODE==="party")camStart()}});
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&running&&!paused){$("pause").click()}});
-if("serviceWorker" in navigator&&location.protocol==="https:"&&!/claude|claudeusercontent/.test(location.host)){navigator.serviceWorker.register("sw.js").catch(()=>{})}
+if("serviceWorker" in navigator&&!window.Capacitor&&location.protocol==="https:"&&!/claude|claudeusercontent/.test(location.host)){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 // Vorschau: Putz-Szene mit Beispiel-Monstern zeichnen, damit die App nicht leer wirkt
 makeMonsters();
 if(pref("zb-film",true)&&!/#kurz|#ohnefilm/.test(location.hash)){intro=true;$("kinoBack").textContent="Überspringen";kino("film/zahnfee.mp4","Das Zahnböcklein und die Zahnfee","bilder/poster-fee.jpg")}
