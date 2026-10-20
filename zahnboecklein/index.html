@@ -114,6 +114,7 @@ button.big{font-size:2rem;padding:.6em 1.8em}
   </div>
   <div class="stars" id="starCount"></div>
   <button class="ghost hold" id="why" type="button" aria-controls="whyCard">Für Eltern: 3 Sekunden drücken<i id="holdBar"></i></button>
+  <div class="parents" id="gate" hidden><p>Für Eltern: Wie viel ist <b id="gateQ"></b>?</p><div class="row"><input id="gateA" inputmode="numeric" autocomplete="off" style="font-size:1.2rem;width:90px;padding:8px;border-radius:12px;border:0"><button id="gateOk" type="button">OK</button></div></div>
   <section class="parents" id="whyCard" hidden>
     <h2>Dein Mund ist die Eingangstür</h2>
     <p>Alles, was du isst und trinkst, geht durch deinen Mund. Dort wohnen ganz viele Bakterien. Wenn wir putzen, räumen wir auf: Zähne, Zahnfleisch und Zunge. Nicht weil Putzen gefährlich ist, sondern weil wir gut zu unserem Körper sind.</p>
@@ -365,7 +366,9 @@ $("kinoBack").addEventListener("click",()=>{const v=$("vid");v.pause();if(intro)
 $("vid").addEventListener("ended",()=>{if(intro){introEnd();return}const n=getStars()+1;if($("kinoTitle").textContent.startsWith("Putz")){setStars(n);showStars()}});
 /* Eltern-Bereich: 3 Sekunden gedrückt halten */
 let holdT=null,holdS=0;function holdStop(){clearInterval(holdT);holdT=null;$("holdBar").style.width="0"}
-function holdGo(e){e.preventDefault();const w=$("whyCard");if(!w.hidden){w.hidden=true;return}holdS=performance.now();holdT=setInterval(()=>{const p=(performance.now()-holdS)/3000;$("holdBar").style.width=Math.min(100,p*100)+"%";if(p>=1){holdStop();w.hidden=false;w.scrollIntoView({behavior:"smooth"})}},50)}
+function holdGo(e){e.preventDefault();const w=$("whyCard");if(!w.hidden||!$("gate").hidden){w.hidden=true;$("gate").hidden=true;return}holdS=performance.now();holdT=setInterval(()=>{const p=(performance.now()-holdS)/3000;$("holdBar").style.width=Math.min(100,p*100)+"%";if(p>=1){holdStop();gateAsk()}},50)}
+let gateR=0;function gateAsk(){const a=6+Math.floor(Math.random()*4),b=7+Math.floor(Math.random()*5);gateR=a*b;$("gateQ").textContent=a+" × "+b;$("gateA").value="";$("gate").hidden=false;$("gateA").focus()}
+$("gateOk").addEventListener("click",()=>{const w=$("whyCard");$("gate").hidden=true;if(parseInt($("gateA").value,10)===gateR){w.hidden=false;w.scrollIntoView({behavior:"smooth"})}});
 $("why").addEventListener("pointerdown",holdGo);["pointerup","pointerleave","pointercancel"].forEach(ev=>$("why").addEventListener(ev,holdStop));
 /* Tanzbilder vom Zahnböcklein (bilder/tanzXX.jpg), sonst tanzt das Logo */
 const LOGO=$("danceImg").src;function setDance(k){const im=new Image();im.onload=()=>{$("danceImg").src=im.src;$("dancer").classList.remove("goatonly")};im.onerror=()=>{$("danceImg").src=LOGO;$("dancer").classList.add("goatonly")};im.src="bilder/"+k+".jpg"}
