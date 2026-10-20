@@ -514,7 +514,8 @@
 
   /* ================= Die Puppe (nova/puppe.js): Otti atmet, blinzelt, schaut, winkt, redet ================= */
   var puppe = null, zustandT = 0;
-  try { puppe = Puppe.erstelle($('puppe'), { figur: 'otti', bild: 'otti-3d.jpg', neigenKnopf: false }); } catch (e) {}
+  // Ebenen-Modus: Otti aus Tinkos Teilen (Körper, Kopf, Arme, Lider, Ausdrücke, 9 Mundformen); ohne Teile → Ein-Bild-Modus mit otti-3d.jpg
+  try { puppe = Puppe.erstelle($('puppe'), { figur: 'otti', bild: 'otti-3d.jpg', ordner: '../nova/puppe/otti/', neigenKnopf: false }); } catch (e) {}
   function pz(z) { if (puppe) puppe.zustand(z); }
   function pr(r) { if (puppe) puppe.reagiere(r); }
   function grund() { return conv ? (conv.__spricht ? 'redet' : 'hoert') : buehne.classList.contains('schlaeft') ? 'schlaeft' : 'ruhig'; }
