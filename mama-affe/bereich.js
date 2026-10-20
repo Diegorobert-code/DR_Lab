@@ -87,7 +87,7 @@ const SITUATIONS = [
  {id:'grenzen', e:'🚧', l:'Grenzen und Nein',
   behind:'Kinder testen Grenzen, weil sie die Welt verstehen wollen. Klare, wenige Regeln geben Sicherheit.',
   normal:{'1-3':'«Nein» ist eines der ersten wichtigen Wörter. Das Kind entdeckt: Ich bin jemand eigenes.','3-6':'Diskutieren und Verhandeln beginnt. Kurze, gleichbleibende Regeln helfen.','6-12':'Fairness wird wichtig. Regeln gemeinsam festlegen wirkt besser als Befehle.','12-16':'Jugendliche brauchen mehr Mitsprache und trotzdem einen Rahmen.'},
-  try:'Ein Satz, ruhig wiederholen: «Ich verstehe, dass du willst. Und die Antwort ist nein.» Dann zwei gute Möglichkeiten anbieten.',
+  try:'Ein Satz, ruhig wiederholen: «Ich verstehe, dass du willst. Und die Antwort ist nein.» Dann zwei gute Möglichkeiten anbieten. Dazu täglich 5 Minuten «Kind-Zeit»: das Kind bestimmt das Spiel, du machst mit, beschreibst und lobst, ohne Fragen und ohne Anweisungen. So wird das Nein leichter angenommen.',
   body:'Vor dem Nein selbst Füsse spüren, Schultern sinken lassen.', bodyGo:'wurzeln',
   when:'Wenn Konflikte den ganzen Familienalltag bestimmen: Erziehungsberatung (in vielen Gemeinden gratis).'},
  {id:'geschwister', e:'👫', l:'Geschwisterstreit',
@@ -920,7 +920,7 @@ function mount(root, opts){
     const list = BODY.filter(b=>!b.adult && !b.hints);
     const b = list[Math.floor(Math.random()*list.length)];
     const el = document.createElement('div'); el.className='pause';
-    el.innerHTML = `<div class="card gold" style="text-align:center"><p class="muted">Bewegungspause</p><div style="font-size:4rem">${b.e}</div><h2>${esc(b.l)}</h2><p>${esc(b.d)}</p>
+    el.innerHTML = `<div class="card gold" style="text-align:center">${stage('turnt','',100)}<p class="muted">Bewegungspause, mach mit!</p><div style="font-size:3.4rem">${b.e}</div><h2>${esc(b.l)}</h2><p>${esc(b.d)}</p>
      <div class="timer" data-mp-t>20</div><button class="btn block" data-mp-ok>Weiter</button></div>`;
     root.appendChild(el); say('Bewegungspause! '+b.d);
     let left = 20; const t = setInterval(()=>{ left--; const tt=el.querySelector('[data-mp-t]'); if(tt) tt.textContent=Math.max(0,left); if(left<=0){ clearInterval(t); } },1000);
