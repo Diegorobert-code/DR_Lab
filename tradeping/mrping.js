@@ -162,7 +162,7 @@
     var g = $('mpGast');
     if (gast) { g.src = gast.bild; g.alt = gast.name; g.classList.add('da'); } else g.classList.remove('da');
     clearTimeout(poseT);
-    if (name && name !== 'schlaf' && name !== 'warn') poseT = setTimeout(function () { szene.className = 'mp-szene'; g.classList.remove('da'); }, 4200);
+    if (name && name !== 'schlaf' && name !== 'warn') poseT = setTimeout(function () { szene.className = 'mp-szene'; g.classList.remove('da'); if (window.MP_POSEBILD) window.MP_POSEBILD(''); }, 4200);
     if (name === 'jubel' && !ruhig) muenzen();
   }
   function muenzen() {
