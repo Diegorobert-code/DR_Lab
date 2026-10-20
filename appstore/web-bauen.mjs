@@ -80,7 +80,9 @@ const kopf = '<link rel="stylesheet" href="../native/fonts/fonts.css">\n' +
   (fs.existsSync(core) ? '<script src="../native/capacitor.js"></script>\n' : '') +
   '<script src="../native/native.js"></script>\n' +
   `<script>window.DRLAB_STORE=${JSON.stringify(store)}</script>\n<script src="../native/store.js"></script>\n` +
-  (css ? `<style>${css}</style>\n` : '');
+  (css ? `<style>${css}</style>\n` : '') +
+  // TradePing-Wache: die iPhone-App nimmt nur die Adresse aus apps.json (leer = aus), nie die der Web-Version.
+  (typeof app.wache === 'string' ? `<script>window.TP_WACHE=${JSON.stringify(app.wache)}</script>\n` : '');
 
 for (const datei of fs.readdirSync(path.join(www, app.ordner)).filter(f => f.endsWith('.html'))) {
   const voll = path.join(www, app.ordner, datei);
@@ -128,5 +130,6 @@ for (const f of gebaut.filter(f => f.endsWith('.html') && path.dirname(f) === pa
 }
 if (fehlend.length) hinweise.push('Fehlt im Build: ' + [...new Set(fehlend)].join(', '));
 
+if (app.wache) console.log(`Wache an: ${app.wache}\nDatenschutz nicht vergessen: PrivacyInfo.xcprivacy und App Store Connect anpassen (siehe server/TRADEPING-WACHE.md).`);
 console.log(`${app.name}: Web-Teil bereit in ${path.relative(process.cwd(), www) || '.'}` + (kopiert.size ? ` (mit ${[...kopiert].join(', ')})` : ''));
 for (const h of hinweise) console.log('  Prüfung: ' + h);
