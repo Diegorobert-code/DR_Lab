@@ -143,25 +143,16 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
 .figur-hero b{display:block;color:#e8be5c;font-size:18px;line-height:1.25}
 .figur-hero span{display:block;font-size:14px;line-height:1.4;color:#e9e3d6;margin-top:2px}
 .figur-logo{width:40px;height:40px;border-radius:50%;border:2px solid #e8be5c;object-fit:cover}
-#figurStart{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:max(28px,env(safe-area-inset-top,0px)) 24px max(28px,env(safe-area-inset-bottom,0px));text-align:center;color:#f6efe0;background:radial-gradient(1.5px 1.5px at 12% 18%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 82% 12%,#ffe9a8,transparent),radial-gradient(1px 1px at 70% 30%,#ffe9a8,transparent),radial-gradient(1px 1px at 22% 72%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 88% 80%,#ffe9a8,transparent),radial-gradient(120% 80% at 50% 0%,#1B2C6B 0%,#0E1838 60%,#060A1C 100%);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
-#figurStart[hidden]{display:none!important}
-#figurStart img{width:min(64vw,260px);height:min(64vw,260px);border-radius:32px;border:3px solid #F2C14E;object-fit:cover;box-shadow:0 0 0 6px rgba(242,193,78,.08),0 18px 60px rgba(242,193,78,.25);animation:figurAtmen 5s ease-in-out infinite}
 @keyframes figurAtmen{50%{transform:scale(1.02);box-shadow:0 0 0 6px rgba(242,193,78,.14),0 18px 70px rgba(242,193,78,.38)}}
 @media (prefers-reduced-motion:reduce){#figurStart img{animation:none}}
-#figurStart h1{margin:4px 0 0;font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:2.6rem;line-height:1;color:#F2C14E}
-#figurStart p{margin:0;max-width:300px;font-size:1.05rem;line-height:1.45;color:#e9e3d6}
-#figurStart button{margin-top:6px;min-height:52px;padding:0 34px;border:0;border-radius:999px;background:#F2C14E;color:#0E1838;font:700 1.05rem system-ui,-apple-system,sans-serif;box-shadow:0 8px 24px rgba(242,193,78,.3);cursor:pointer}
 /* Figuren-Look */
 :root{--bg:#0E1838;--card:#16234f;--ink:#f3ecdf;--muted:#aab3cf;--line:#2a3a70;--navy:#E07B2E;--navy2:#B85F1E;--coral:#F2C14E;--coral2:#F29A4A;--soft:#1b2a5c;color-scheme:dark}
 html,body{background:radial-gradient(1.5px 1.5px at 12% 8%,rgba(255,233,168,.7),transparent),radial-gradient(1px 1px at 84% 14%,rgba(255,233,168,.6),transparent),radial-gradient(1.5px 1.5px at 66% 40%,rgba(255,233,168,.35),transparent),radial-gradient(1px 1px at 30% 62%,rgba(255,233,168,.4),transparent),radial-gradient(120% 60% at 50% 0%,#1B2C6B 0%,#0E1838 55%,#0a1230 100%) fixed #0E1838}
 h1{color:#F2C14E}
-#figurStart{background:radial-gradient(60% 40% at 50% 38%,rgba(242,154,74,.28),transparent 70%),radial-gradient(1.5px 1.5px at 12% 8%,rgba(255,233,168,.7),transparent),radial-gradient(1px 1px at 84% 14%,rgba(255,233,168,.6),transparent),radial-gradient(1.5px 1.5px at 66% 40%,rgba(255,233,168,.35),transparent),radial-gradient(1px 1px at 30% 62%,rgba(255,233,168,.4),transparent),radial-gradient(120% 80% at 50% 0%,#1B2C6B 0%,#0E1838 60%,#060A1C 100%)}
-#figurStart img{border-color:#F29A4A}
 </style>
 </head>
 <body>
-<div id="figurStart" role="dialog" aria-label="Sparky"><img src="figur-gross.jpg" alt="Sparky"><h1>Sparky</h1><p>Kleine Körperübungen, ruhig und Schritt für Schritt.</p><button type="button" id="figurStartGo">Los geht's</button></div>
-<script>(function(){var s=document.getElementById('figurStart');try{if(sessionStorage.getItem('figurStart'))s.hidden=true;}catch(e){}document.getElementById('figurStartGo').onclick=function(){s.hidden=true;try{sessionStorage.setItem('figurStart','1');}catch(e){}};})();</script>
+<script src="../nova/intro.js" data-art="funken" data-bild="../nova/figuren/sparky.jpg" data-text="Sparky ist da"></script>
 
 <div class="wrap">
   <header>
@@ -169,7 +160,7 @@ h1{color:#F2C14E}
     <div><h1>HumanSpark</h1><p>Körper und Kosmos · DR Lab</p></div>
   </header>
 
-  <div class="figur-hero"><img src="figur.jpg" alt=""><div><b>Hallo, ich bin Sparky.</b><span>Ich begleite dich durch kleine Körperübungen. Ruhig, Schritt für Schritt.</span></div></div>
+  <div id="nbHier"></div>
   <div class="intro">
     <span class="vision web-only">Entwicklungsvision von DR Lab</span>
     <p class="web-only">HumanSpark liest deinen Körper und übersetzt ihn in eine kurze Sprache für die KI.</p>
@@ -1614,6 +1605,7 @@ sRefreshStart();
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>
+<script src="../nova/buehne.js" data-figur="sparky" data-name="Sparky" data-bild="../nova/figuren/sparky.jpg" data-satz="Kleine Körperübungen, ruhig und Schritt für Schritt." data-vor="#nbHier" defer></script>
 <script src="../nova/nova.js" data-nova-app="HumanSpark" data-nova-bild="figur.jpg" defer></script>
 <!-- Figuren-Film (Trickfilm-Look): Farben, Funken, Atmen, Tipp-Reaktion, Szenenwechsel. Nur Optik. -->
 <style id="figurFilmCss">
@@ -1626,15 +1618,6 @@ sRefreshStart();
 @keyframes filmDrift{to{transform:translate(8%,-6%) scale(1.12)}}
 button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.96)}
 :root{--fa1:#E07B2E;--fa2:#F25C54;--fgold:#F2C14E}
-#figurStart{overflow:hidden;isolation:isolate}
-#figurStart::before{content:"";position:absolute;inset:-40px;z-index:-1;background:url(figur-gross.jpg) center/cover;filter:blur(28px) saturate(1.5);opacity:.45;transform:scale(1.15)}
-#figurStart::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 45% at 18% 85%,color-mix(in srgb,var(--fa1) 55%,transparent),transparent),radial-gradient(55% 40% at 85% 20%,color-mix(in srgb,var(--fa2) 50%,transparent),transparent),linear-gradient(180deg,rgba(14,24,56,.35),rgba(6,10,28,.85))}
-#figurStart img{border-color:var(--fgold);box-shadow:0 0 0 6px rgba(242,193,78,.1),0 0 60px color-mix(in srgb,var(--fa1) 60%,transparent),0 18px 60px rgba(0,0,0,.4);animation:filmSchweben 4.6s ease-in-out infinite;cursor:pointer}
-#figurStart h1{background:linear-gradient(90deg,var(--fgold),var(--fa1),var(--fa2),var(--fgold));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:filmGlanz 6s linear infinite}
-#figurStart h1,#figurStart p,#figurStart button{animation-fill-mode:both}
-#figurStart p{animation:filmAuf .8s .25s ease-out both}
-#figurStart button{background:linear-gradient(135deg,var(--fgold),color-mix(in srgb,var(--fgold) 60%,var(--fa1)));box-shadow:0 8px 24px color-mix(in srgb,var(--fa1) 45%,transparent);animation:filmAuf .8s .45s ease-out both,filmPuls 2.6s 1.4s ease-in-out infinite}
-#figurStart.geht{animation:filmIris .7s ease-in forwards}
 .film-funke{position:absolute;width:6px;height:6px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#fff 0,var(--c,#F2C14E) 45%,transparent 70%);opacity:0;animation:filmFunkeln var(--d,5s) var(--v,0s) ease-in-out infinite}
 .figur-hero{background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--fa1) 45%,#1d2c66) 0%,#0f1b3d 60%,color-mix(in srgb,var(--fa2) 35%,#0f1b3d) 100%)!important;isolation:isolate;animation:filmAuf .7s ease-out both}
 .figur-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:url(figur-gross.jpg) right center/60% auto no-repeat;opacity:.18;filter:blur(2px) saturate(1.4);mask-image:linear-gradient(90deg,transparent 20%,#000)}
