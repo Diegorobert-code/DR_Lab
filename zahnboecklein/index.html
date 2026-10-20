@@ -67,7 +67,7 @@ label.toggle input{width:20px;height:20px;accent-color:var(--gold)}
 button.big{font-size:2rem;padding:.6em 1.8em}
 .modes button.big small{font-size:.95rem}
 .move{font-family:var(--display);font-weight:800;font-size:clamp(1.4rem,6vw,2rem);color:var(--pink);line-height:1.1;max-width:20ch;text-wrap:balance}
-.dancer{width:min(70vw,320px);aspect-ratio:3/2;border-radius:22px;overflow:hidden;box-shadow:0 0 0 4px rgba(247,168,196,.45)}
+.dancer{width:min(62vw,280px);aspect-ratio:1;border-radius:22px;overflow:hidden;box-shadow:0 0 0 4px rgba(247,168,196,.45)}
 .dancer img{width:100%;height:100%;object-fit:cover;display:block}
 .dancer.goatonly{aspect-ratio:1;width:min(48vw,220px);border-radius:50%}
 .party #mouth{width:min(70vw,300px)}
@@ -83,6 +83,9 @@ button.big{font-size:2rem;padding:.6em 1.8em}
 .parents textarea{width:100%;box-sizing:border-box;min-height:70px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.2);color:var(--ink);font:inherit;padding:8px}
 .hold{position:relative;overflow:hidden}
 .hold i{position:absolute;left:0;bottom:0;height:4px;width:0;background:var(--mint)}
+.kino{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.kino button{background:var(--pink);box-shadow:0 6px 0 #c9798f,0 10px 24px rgba(0,0,0,.35);font-size:1.15rem;padding:.5em 1.2em}
+#kino video{width:min(96vw,900px);max-width:100%;border-radius:18px;background:#000;box-shadow:0 0 0 4px rgba(242,197,92,.35)}
 @media (prefers-reduced-motion:reduce){.float,.dance{animation:none}}
 </style>
 
@@ -95,6 +98,10 @@ button.big{font-size:2rem;padding:.6em 1.8em}
   <div class="modes">
     <button id="go" class="big" type="button">Los geht's!<small>Zähneputzen · 2 Minuten</small></button>
     <button id="go2" class="alt" type="button">Glitzer-Putzparty<small>5 Minuten · tanzen</small></button>
+  </div>
+  <div class="kino">
+    <button id="film1" type="button">Zahnfee-Film</button>
+    <button id="film2" type="button">Tanzfilm 5 Min</button>
   </div>
   <div class="row">
     <label class="toggle" for="voice"><input id="voice" type="checkbox" checked> Zahnböcklein spricht</label>
@@ -140,6 +147,12 @@ button.big{font-size:2rem;padding:.6em 1.8em}
     <span class="time" id="time">2:00</span>
     <button class="ghost" id="pause" type="button">Pause</button>
   </div>
+</main>
+
+<main id="kino" class="stage" hidden>
+  <h1 id="kinoTitle" style="font-size:2rem">Film</h1>
+  <video id="vid" controls playsinline preload="metadata"></video>
+  <button class="ghost" id="kinoBack" type="button">Zurück</button>
 </main>
 
 <main id="done" class="stage" hidden>
@@ -278,7 +291,7 @@ function showTrip(n){const step=((n-1)%30)+1;$("tripStep").textContent="Etappe "
 /* Ablauf */
 let midDone={},running=false,paused=false,elapsed=0,last=0,lastLine=-1,lastPhase=-1;
 function fmt(s){s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
-function show(id){for(const k of ["start","brush","done"])$(k).hidden=k!==id;window.scrollTo(0,0)}
+function show(id){for(const k of ["start","brush","done","kino"])$(k).hidden=k!==id;window.scrollTo(0,0)}
 function begin(m){if(m)setMode(m);ensureAC();preload(PH.map(p=>p.clip).concat(PH.map(p=>p.mid).filter(Boolean),["fertig","party_fertig"]));midDone={};makeMonsters();elapsed=0;lastLine=-1;lastPhase=-1;paused=false;$("pause").textContent="Pause";show("brush");musicStart();running=true;last=performance.now();try{navigator.wakeLock&&navigator.wakeLock.request("screen").catch(()=>{})}catch(e){}}
 function finish(){running=false;musicStop();fanfare();const n=getStars()+(MODE==="party"?2:1);setStars(n);showStars();$("doneText").textContent=MODE==="party"?"Glitzer-Putzparty geschafft! Zähne, Zahnfleisch und Zunge glänzen. Dafür gibt es zwei Sterne!":(n===1?"Alle Zuckermonster sind weg. Hier ist dein erster Stern!":"Alle Zuckermonster sind weg. Das ist Stern Nummer "+n+".");showTrip(n);show("done");say(MODE==="party"?"party_fertig":"fertig",true);say(TRIPKEY(((n-1)%30)+1))}
 function tick(dt){elapsed+=dt;let ph=0;while(ph<PH.length-1&&elapsed>=STARTS[ph+1])ph++;const P=PH[ph],inPh=elapsed-STARTS[ph],LS=P.dur/P.lines.length,li=Math.min(P.lines.length-1,Math.floor(inPh/LS));
@@ -295,6 +308,12 @@ requestAnimationFrame(loop);
 
 $("go").addEventListener("click",()=>{ensureAC();say("hallo",true);begin("abend");elapsed=-4*K});
 $("go2").addEventListener("click",()=>{ensureAC();say("party",true);begin("party");elapsed=-7*K});
+/* Kino: Zahnfee-Film und Tanzfilm */
+function kino(src,tt,poster){hush();$("kinoTitle").textContent=tt;const v=$("vid");v.poster=poster;v.src=src;show("kino");v.play().catch(()=>{})}
+$("film1").addEventListener("click",()=>kino("film/zahnfee.mp4","Das Zahnböcklein und die Zahnfee","bilder/poster-fee.jpg"));
+$("film2").addEventListener("click",()=>kino("film/tanzfilm.mp4","Putz-Tanz mit dem Zahnböcklein","bilder/poster-tanz.jpg"));
+$("kinoBack").addEventListener("click",()=>{const v=$("vid");v.pause();show("start")});
+$("vid").addEventListener("ended",()=>{const n=getStars()+1;if($("kinoTitle").textContent.startsWith("Putz")){setStars(n);showStars()}});
 /* Eltern-Bereich: 3 Sekunden gedrückt halten */
 let holdT=null,holdS=0;function holdStop(){clearInterval(holdT);holdT=null;$("holdBar").style.width="0"}
 function holdGo(e){e.preventDefault();const w=$("whyCard");if(!w.hidden){w.hidden=true;return}holdS=performance.now();holdT=setInterval(()=>{const p=(performance.now()-holdS)/3000;$("holdBar").style.width=Math.min(100,p*100)+"%";if(p>=1){holdStop();w.hidden=false;w.scrollIntoView({behavior:"smooth"})}},50)}

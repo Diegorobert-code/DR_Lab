@@ -2,7 +2,7 @@
    Beim Erhöhen der App-Version VERSION ändern, dann wird der alte Cache gelöscht.
    Liegt neben index.html (die App-Datei zahnboecklein-app.html beim Veröffentlichen in index.html umbenennen).
    Audiodateien, falls als eigene Dateien ausgeliefert, unten in DATEIEN ergänzen. */
-const VERSION = 'zahnboecklein-v4-1';
+const VERSION = 'zahnboecklein-v4-2';
 const DATEIEN = [
   './',
   './index.html',
@@ -16,6 +16,18 @@ const DATEIEN = [
   './icons/icon-512.png',
   './icons/icon-1024.png',
   './icons/icon-maskable-512.png',
+  './bilder/tanz01.jpg',
+  './bilder/tanz02.jpg',
+  './bilder/tanz03.jpg',
+  './bilder/tanz04.jpg',
+  './bilder/tanz05.jpg',
+  './bilder/tanz06.jpg',
+  './bilder/tanz07.jpg',
+  './bilder/tanz08.jpg',
+  './bilder/tanz09.jpg',
+  './bilder/tanz10.jpg',
+  './bilder/poster-fee.jpg',
+  './bilder/poster-tanz.jpg',
   './audio/a_ol.mp3',
   './audio/a_or.mp3',
   './audio/a_ul.mp3',
