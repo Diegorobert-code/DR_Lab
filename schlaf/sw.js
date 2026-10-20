@@ -1,5 +1,5 @@
 /* Fias Nest offline: zuerst Netz, sonst Kopie aus dem Cache. Nur eigene Dateien, nie Server-Anfragen. */
-const CACHE = 'fiasnest-v5';
+const CACHE = 'fiasnest-v6';
 const KERN = ['./', 'index.html', 'manifest.webmanifest', 'cover.jpg', 'icon-192.png', 'icon-180.png',
   'posen/wach.jpg', 'posen/schlaeft.jpg', 'posen/atmet.jpg', 'posen/muede.jpg', 'posen/fliegt.jpg',
   'posen/freut.jpg', 'posen/hoert.jpg', 'posen/staedtchen-nacht.jpg',
