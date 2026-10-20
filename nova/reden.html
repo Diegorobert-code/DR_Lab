@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
+<link rel="apple-touch-icon" id="symbol" href="icon-nova-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
@@ -114,6 +115,8 @@
   var KEY = (new URLSearchParams(location.search).get('f') || 'otti').toLowerCase();
   var F = FIGUREN[KEY] || FIGUREN.otti, NAME = F.name, AGENT = F.agent, RUHE = F.ruhe || 0;
   document.title = NAME;
+  // Home-Bildschirm-Symbol: das Gesicht der Figur, die gerade spricht.
+  if (KEY !== 'nova' && BILDCHEN[KEY]) document.getElementById('symbol').href = BILDCHEN[KEY];
   var $ = function (id) { return document.getElementById(id); };
   var buehne = $('buehne'), figur = $('figur');
   var knopf = $('knopf'), status = $('status'), text = $('text'), hinweis = $('hinweis');
