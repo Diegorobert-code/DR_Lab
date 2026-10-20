@@ -362,6 +362,17 @@
   }
   /* Nova-Knopf bleibt unten rechts wie in allen Apps; die Telefon-Pille übernimmt hier der goldene «Reden»-Knopf. */
   .nova-pille { display:none !important; }
+  /* Ruhe-Prinzip: Hinweise locken kurz und werden dann still, nichts wackelt endlos */
+  .tipp i { animation-iteration-count:3; }
+  .aktion.lockt .rund { animation-iteration-count:3; }
+  .ansage .e { animation:none; }
+  .finger span { animation-iteration-count:4; }
+  .nochmal { animation:zAuf .35s var(--ease) both, locken 2.4s 1.5s ease-in-out 3; }
+  .fantasie { text-align:center; display:flex; flex-direction:column; align-items:center; gap:8px; animation:zAuf .35s var(--ease) both; }
+  .fantasie .fq-ic { font-size:44px; line-height:1; }
+  .fantasie .leise { color:var(--leise); font-size:16px; margin:0; }
+  .fantasie .fq { font-size:21px; font-weight:800; line-height:1.35; margin:0; max-width:320px; }
+  .wege { gap:16px; padding-right:68px; } .wege a { font-size:15px; }
 </style>
 </head>
 <body>
@@ -407,6 +418,7 @@
 <nav class="wege" aria-label="Mehr von Otti">
   <a href="../mondschein/"><span class="rund" aria-hidden="true">📖</span>Geschichten</a>
   <a href="../mondschein/#gutenacht"><span class="rund" aria-hidden="true">🌙</span>Gute Nacht</a>
+  <a href="../mondschein/#hoeren"><span class="rund" aria-hidden="true">🎧</span>Nur hören</a>
 </nav>
 
 <div class="blatt" id="spielwahl" hidden role="dialog" aria-modal="true" aria-label="Spiel wählen">
@@ -515,7 +527,22 @@
   /* ================= Die Puppe (nova/puppe.js): Otti atmet, blinzelt, schaut, winkt, redet ================= */
   var puppe = null, zustandT = 0;
   // Ebenen-Modus: Otti aus Tinkos Teilen (Körper, Kopf, Arme, Lider, Ausdrücke, 9 Mundformen); ohne Teile → Ein-Bild-Modus mit otti-3d.jpg
-  try { puppe = Puppe.erstelle($('puppe'), { figur: 'otti', bild: 'otti-3d.jpg', ordner: '../nova/puppe/otti/', neigenKnopf: false }); } catch (e) {}
+  try { puppe = Puppe.erstelle($('puppe'), { figur: 'otti', bild: 'otti-3d.jpg', ordner: '../nova/puppe/otti/', neigenKnopf: false, ruhig: true }); } catch (e) {}
+  /* Ruhe-Prinzip (Diego 20.10.): ruhige Bilder regen die Fantasie an. In Ruhe steht Otti fast still: sanft atmen,
+     selten blinzeln, die Augen wandern kaum. Bewegung nur als Antwort aufs Tippen und Sprechen (winken, Mund, freuen).
+     Gesteuert nur von hier aus, nova/puppe.js bleibt unverändert. */
+  if (puppe && puppe._tick && puppe.blinzel && puppe.blick) (function () {
+    var tick0 = puppe._tick, RM = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+    function zw(a, b) { return a + Math.random() * (b - a); }
+    puppe._tick = function (dt) {
+      var b = this.blinzel, bl = this.blick, vorB = b.naechst, vorBl = bl.naechst;
+      // Freuen darf hüpfen und funkeln (Reaktion), sonst Ruhe-Modus der Puppe
+      this.ruhe = RM.matches || this._zustand !== 'freut';
+      tick0.call(this, dt);
+      if (b.naechst !== vorB && b.start < 0) b.naechst = this.t + zw(5, 10);          // selten blinzeln
+      if (bl.naechst !== vorBl) { bl.naechst = this.t + zw(5, 9); bl.x *= .35; bl.y *= .35; } // kaum Umherschauen
+    };
+  })();
   function pz(z) { if (puppe) puppe.zustand(z); }
   function pr(r) { if (puppe) puppe.reagiere(r); }
   function grund() { return conv ? (conv.__spricht ? 'redet' : 'hoert') : buehne.classList.contains('schlaeft') ? 'schlaeft' : 'ruhig'; }
@@ -621,7 +648,7 @@
     var still = Date.now() - stillSeit;
     if (!spielAktiv && still > 90000) { if (!buehne.classList.contains('schlaeft')) { schlafen(true); statusSetzen('Otti ist eingeschlafen. Tipp ihn sanft an.'); } return; }
     if (buehne.classList.contains('schlaeft')) return;
-    if (!ruhig && still > (spielAktiv ? 16000 : 9000) && Date.now() - trickLetzt > 14000 && Math.random() < .6) kleinigkeit();
+    // Ruhe-Prinzip: keine Kunststücke mehr von selbst. Otti macht sie nur, wenn man ihn antippt (siehe ottiTippen).
   }, 3000);
 
   /* ================= Funken, Klänge, Vibration ================= */
@@ -1089,6 +1116,7 @@
       return;
     }
     if (conv || spielAktiv) { bewegung('hops'); klang('hihi'); return; }
+    if (!ruhig && ++tippI % 4 === 0 && Date.now() - trickLetzt > 8000) { kleinigkeit(); return; }
     var x = ohneWdh(TIPP, 'tipp'); bewegung(x[1]); pose('lacht', 1600); kurzZustand('freut', 1300); if (Math.random() < .4) setTimeout(function () { klang('hihi'); }, 250); sagKurz(x[0]);
   }
   buehne.addEventListener('click', ottiTippen);
@@ -1544,7 +1572,7 @@
 
   /* --- 4. Weiter-Geschichte: das Kind entscheidet und hilft mit --- */
   var GESCHICHTEN = [
-    { titel: 'Das kleine Glühwürmchen', szene: '🌲🌙🌲', k: {
+    { titel: 'Das kleine Glühwürmchen', szene: '🌲🌙🌲', fq: 'Was glaubst du, was Lumi ihren Geschwistern als Erstes erzählt?', k: {
       a: { t: 'Heute Abend sehe ich im Wald ein kleines Licht. Es blinkt ganz traurig. Was machen wir?', w: [['🔦 Hingehen', 'b'], ['🦉 Die Eule fragen', 'c']] },
       b: { t: 'Das ist Lumi, das Glühwürmchen! Lumi hat sich verirrt, und ihr Licht wird schwach. Tipp fünfmal auf Lumi, damit sie wieder hell leuchtet!', aktion: { n: 5, e: '✨', l: 'Lumi' }, weiter: 'd', b: 'neugierig' },
       c: { t: 'Die Eule blinzelt: «Das ist Lumi. Sie wohnt beim grossen Pilz.» Welchen Weg nehmen wir?', w: [['🌉 Über die Brücke', 'e'], ['🍂 Durchs Laub', 'f']], b: 'neugierig' },
@@ -1554,7 +1582,7 @@
       g: { t: 'Beim grossen Pilz warten Lumis Geschwister. Alle blinken vor Freude. Gute Nacht, Lumi!', ende: true },
       h: { t: 'Lumi fliegt hoch zu den Sternen und malt ein Herz an den Himmel. Nur für dich. Gute Nacht!', ende: true }
     } },
-    { titel: 'Der Mond hat Schluckauf', szene: '🌙', k: {
+    { titel: 'Der Mond hat Schluckauf', szene: '🌙', fq: 'Stell dir vor, du darfst den Mond besuchen. Was machst du dort zuerst?', k: {
       a: { t: 'Hicks! Hörst du das? Der Mond hat Schluckauf. Er wackelt am Himmel. Was hilft?', w: [['💧 Ein Schluck Wasser', 'b'], ['🫣 Ihn überraschen', 'c'], ['🌬️ Tief atmen', 'd']], b: 'nein' },
       b: { t: 'Wir holen Wasser aus dem Bach. Tipp viermal auf den Eimer, bis er voll ist!', aktion: { n: 4, e: '🪣', l: 'Eimer' }, weiter: 'e', b: 'stampfen' },
       c: { t: 'Wir schleichen ganz leise zum Mond … und dann rufen wir: Kuckuck! Tipp auf Kuckuck, wenn du bereit bist.', aktion: { n: 1, e: '🫣', l: 'Kuckuck' }, weiter: 'f', b: 'igelball' },
@@ -1564,7 +1592,7 @@
       g: { t: 'Der Mond schickt eine Sternschnuppe, nur für dich. Wünsch dir etwas Schönes, ganz leise. Gute Nacht!', ende: true },
       h: { t: 'Der Mond summt ein leises Lied, und die Sterne schaukeln mit. Schlaf gut!', ende: true, lied: true }
     } },
-    { titel: 'Schneckis Geburtstag', szene: '🐌🎂', k: {
+    { titel: 'Schneckis Geburtstag', szene: '🐌🎂', fq: 'Was glaubst du, was sich Schnecki zum Geburtstag wünscht?', k: {
       a: { t: 'Morgen hat Schnecki Geburtstag! Ich backe einen Kuchen. Was kommt hinein?', w: [['🍓 Erdbeeren', 'b'], ['🫐 Heidelbeeren', 'b'], ['🌰 Haselnüsse', 'c']], b: 'hops' },
       b: { t: 'Mmh, Beeren! Jetzt rühren wir den Teig. Tipp sechsmal auf die Schüssel!', aktion: { n: 6, e: '🥣', l: 'Schüssel' }, weiter: 'd', b: 'drehen' },
       c: { t: 'Knack! Die Nüsse sind hart. Tipp viermal, dann sind sie geknackt!', aktion: { n: 4, e: '🌰', l: 'Nuss' }, weiter: 'd', b: 'stampfen' },
@@ -1581,9 +1609,25 @@
       var gi = geschichteI++ % GESCHICHTEN.length, G = GESCHICHTEN[gi], f = $('feldinhalt');
       schreib('otti_geschichte', String(geschichteI));
       stufeZeigen(gi + 1, GESCHICHTEN.length); $('feldzahl').textContent = '📖';
+      var fqGezeigt = false;
       function zeigen(id) {
         if (spielAktiv !== s) return;
         var x = G.k[id];
+        // Fantasie-Frage vor dem Ende: Otti fragt, das Kind denkt sich etwas aus und tippt dann weiter.
+        if (x.ende && G.fq && !fqGezeigt) {
+          fqGezeigt = true; f.innerHTML = '';
+          var fq = el('div', 'fantasie');
+          fq.appendChild(el('div', 'fq-ic', '💭')); fq.firstChild.setAttribute('aria-hidden', 'true');
+          fq.appendChild(el('p', 'fq', G.fq));
+          fq.appendChild(el('p', 'leise', 'Denk kurz nach. Sag es laut oder erzähl es Mama oder Papa.'));
+          f.appendChild(fq); kurzZustand('denkt', 2600);
+          sag(G.fq, function () {
+            if (spielAktiv !== s) return;
+            var wb = el('div', 'wahl'), w = knopfEl('', '💭 Ich hab eine Idee – weiter', function () { klang('tipp'); s.ziel = null; kurzZustand('freut', 1200); zeigen(id); });
+            wb.appendChild(w); fq.appendChild(wb); s.ziel = function () { return w; };
+          });
+          return;
+        }
         f.innerHTML = ''; f.appendChild(el('div', 'szene', G.szene));
         if (x.b) { if (x.b === 'winken') winken(); else bewegung(x.b); }
         sag(x.t, function () {

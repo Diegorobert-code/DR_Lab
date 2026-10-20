@@ -363,6 +363,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
   <button class="letterbtn" id="homeLetter" hidden><span class="env" aria-hidden="true"><svg viewBox="0 0 64 48"><rect x="3" y="5" width="58" height="40" rx="8" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M5 9 L32 29 L59 9" fill="none" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M32 22 C27 18 26 14 29 13 C31 12.5 32 14.5 32 15 C32 14.5 33 12.5 35 13 C38 14 37 18 32 22 Z" fill="#ff7c9c"/></svg></span><span><b id="homeLetterT">Ein Brief für dich</b><small>Otti liest dir eine Gutenachtgeschichte vor</small></span></button>
   <button class="btn wide favbtn" id="homeFav" hidden><span aria-hidden="true">⭐</span><span><b id="homeFavT">Deine Lieblingsgeschichte</b><small>Otti erzählt sie dir gerne nochmal</small></span></button>
   <button class="btn wide gnbtn" id="homeGN"><span class="mo" aria-hidden="true">🌙</span><span>Gute Nacht mit Otti<small>Zähne, Geschichte, Atmen, Nachtlicht</small></span></button>
+  <button class="btn wide gnbtn hoerbtn" id="homeHoeren" type="button"><span class="mo" aria-hidden="true">🎧</span><span>Nur hören<small>Geschichten wie ein Hörspiel, Bildschirm aus</small></span></button>
   <button class="btn wide callbtn" data-go="call"><span class="ph" aria-hidden="true">📞</span><span>Otti anrufen<small>Videoanruf: mit Otti reden</small></span></button>
   <button class="btn wide cambtn" id="homeCam" data-go="cam" hidden>📷 Zeig Otti etwas</button>
   <div class="tiles">
@@ -1303,9 +1304,10 @@ function renderHome(){
   // Tagsüber winkt Otti (Filmclip aus «Otti und Nova»), nachts ruhige Wald-Szene.
   $('#homeSunny').innerHTML = isNight()
     ? `<span class="filmcard"><img id="homeSzene" src="szene-ruhig.jpg" alt="Otti im Mondschein-Wald"><i class="glitzer g1"></i><i class="glitzer g2"></i><i class="glitzer g3"></i></span>`
-    : `<span class="filmcard"><video id="homeWinkt" src="otti-winkt.mp4" poster="otti-winkt.jpg" muted loop playsinline webkit-playsinline preload="auto" aria-label="Otti winkt dir zu"></video><i class="glitzer g1"></i><i class="glitzer g2"></i><i class="glitzer g3"></i></span>`;
+    : `<span class="filmcard"><video id="homeWinkt" src="otti-winkt.mp4" poster="otti-winkt.jpg" muted playsinline webkit-playsinline preload="auto" aria-label="Otti winkt dir zu"></video><i class="glitzer g1"></i><i class="glitzer g2"></i><i class="glitzer g3"></i></span>`;
   const v = $('#homeWinkt');
-  if (v && !matchMedia('(prefers-reduced-motion: reduce)').matches){ v.muted = true; const pl = v.play(); if (pl && pl.catch) pl.catch(() => {}); }
+  // Ruhe-Prinzip (Diego 20.10.): Otti steht still und winkt erst, wenn das Kind ihn antippt.
+  if (v) v.muted = true;
   const L = letterSel();
   $('#homeLetter').hidden = !L;
   if (L) $('#homeLetterT').textContent = 'Ein Brief von ' + L.from;
@@ -3301,6 +3303,178 @@ window.MS_TEXTE = () => {
   // Aus der Otti-App: ../mondschein/#gutenacht startet gleich den Abendablauf.
   if (location.hash === '#gutenacht') setTimeout(ritStarten, 300);
 })();
+/* Ruhe-Prinzip, Fantasie-Fragen und «Nur hören» (Diego 20.10.) */
+(function(){
+  /* ---------- Fantasie-Fragen: 1–2 pro Geschichte, nach Teil Nr. (Zählung in parts) ---------- */
+  const FANTASIE = {
+    mondstrahl: [[0, 'Da blinkt etwas zwischen den Blättern. Was glaubst du, was das sein könnte?'], [5, 'Stell dir vor, du fliegst mit. Was siehst du ganz unten im Wald?']],
+    milo: [[4, 'Was glaubst du, was das fremde Licht in der grossen Stadt ist?']],
+    kiki: [[1, 'Stell dir deinen eigenen Stern vor. Welche Farbe hat er?']],
+    nova: [[5, 'Was glaubst du, wovon ein kleiner Roboter träumt?']],
+    meer: [[4, 'Stell dir vor, du stehst neben Otti im Sand. Was hörst du alles?']],
+    newyork: [[4, 'Was glaubst du, was Otti und Fompa auf der Brücke über dem Meer sehen?'], [13, 'Was glaubst du, was im Lichtpunkt des Mädchens drin ist?']],
+    katzen: [[1, 'Was glaubst du, wer auf diesem blinzelnden Planeten wohnt?'], [9, 'Der Planet blinzelt gleich wieder. Wie sieht er wohl dann aus?']],
+    fompa: [[3, 'Was glaubst du, was in dem verlorenen Traum drin ist?']],
+    zahnfee: [[4, 'Was glaubst du, was die Zahnfee mit all den kleinen Zähnen macht?']]
+  };
+  const SCHLUSS = 'Gute Nacht. Schlaf schön und träum etwas Liebes.';
+  // Feste Sätze: dürfen mit Ottis Server-Stimme gesprochen und aufgenommen werden (nie Worte des Kindes).
+  window.MS_LITERALE = (window.MS_LITERALE || []).concat(
+    Object.values(FANTASIE).flat().map(f => f[1]),
+    STORIES.map(s => s.title + '.'),
+    ['Ende.', SCHLUSS, 'Alle Geschichten sind fertig. Gute Nacht.']
+  );
+
+  buildSeq = function(story){
+    const fq = FANTASIE[story.id] || [], seq = [];
+    story.parts.forEach((p, i) => {
+      seq.push(p);
+      if (p.q && p.after) seq.push({t:p.after, pic:p.pic, afterOf:p});
+      fq.forEach(f => { if (f[0] === i) seq.push({t:f[1], fq:true, pic:p.pic || story.pic, afterOf:p}); });
+    });
+    return seq;
+  };
+  const _renderPart = renderPart;
+  renderPart = function(){
+    _renderPart();
+    const p = R.seq[R.idx];
+    if (p && p.fq){
+      $('#rContent').innerHTML = `<div class="fantasie"><span class="fq-ic" aria-hidden="true">💭</span><p class="fq">${esc(p.t)}</p>
+        <p class="hint">Denk kurz nach. Sag es laut, oder erzähl es Mama oder Papa.</p>
+        <button class="btn primary wide" id="fqWeiter" type="button">💭 Ich hab eine Idee – weiter</button></div>`;
+      R.sents = [p.t];
+    }
+  };
+  const _playCurrent = playCurrent;
+  playCurrent = function(){
+    const p = R.seq[R.idx];
+    if (!R.reading || !p || !p.fq) return _playCurrent();
+    R.started = true; updatePlay();
+    TTS.speak([p.t], { onEnd: () => {} }); // Das Bild bleibt stehen, bis das Kind weitertippt.
+  };
+  $('#rContent').addEventListener('click', e => { if (e.target.closest('#fqWeiter')) nav(1); });
+  // Bewegung nur als Antwort: Tippt das Kind auf eine Figur, hüpft sie kurz.
+  $('#rStage').addEventListener('click', e => {
+    const f = e.target.closest('.fig'); if (!f || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    f.classList.remove('film-hops'); void f.getBoundingClientRect(); f.classList.add('film-hops');
+  });
+
+  /* ---------- Nur hören: Geschichten wie ein Hörspiel, Bildschirm dunkel ---------- */
+  document.body.insertAdjacentHTML('beforeend', `<div id="hoeren" hidden role="dialog" aria-modal="true" aria-label="Nur hören">
+    <button class="h-zu" id="hZu" type="button">✕ Beenden</button>
+    <div class="h-mond" aria-hidden="true"></div>
+    <p class="h-titel" id="hTitel" aria-live="polite"></p>
+    <button class="h-knopf" id="hKnopf" type="button" aria-label="Pause">⏸</button>
+    <p class="h-info" id="hInfo"></p>
+  </div>`);
+  $('#slist').insertAdjacentHTML('beforebegin', '<button class="btn wide gnbtn hoerbtn slist-hoeren" id="listHoeren" type="button"><span class="mo" aria-hidden="true">🎧</span><span>Nur hören<small>Alle Geschichten nacheinander, Bildschirm aus</small></span></button>');
+
+  const H = { on:false, pause:true, si:0, gebaut:-1, st:null, seq:[], pi:-1, sent:0, vars:{}, t:0, gehoert:0, ac:null };
+  const N = STORIES.length;
+  function stimmeDa(){ return STIMME.set.size > 0 || !!(window.NovaStimme && NovaStimme.aktiv && NovaStimme.aktiv()); }
+  function info(){
+    $('#hInfo').textContent = stimmeDa()
+      ? 'Leg das Handy weg, mach es dir gemütlich und hör einfach zu.'
+      : 'Ottis Stimme kommt mit Internet vom DR-Lab-Server. Ohne Internet klingt nur eine leise Spieldose. Dann lies du die Geschichte vor.';
+  }
+  function knopf(){
+    const b = $('#hKnopf'); b.textContent = H.pause ? '▶' : '⏸'; b.setAttribute('aria-label', H.pause ? 'Weiter hören' : 'Pause');
+    if ('mediaSession' in navigator) try { navigator.mediaSession.playbackState = H.pause ? 'paused' : 'playing'; } catch(e){}
+  }
+  // Hält die Ton-Sitzung offen, damit es auch bei gesperrtem Bildschirm weiterläuft (wenn das Handy es erlaubt).
+  function tonWach(an){
+    try {
+      if (an){
+        if (!H.ac){ const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return; H.ac = new AC(); const o = H.ac.createOscillator(), g = H.ac.createGain(); g.gain.value = 0; o.connect(g).connect(H.ac.destination); o.start(); }
+        if (H.ac.state !== 'running') H.ac.resume().catch(() => {});
+      } else if (H.ac && H.ac.state === 'running') H.ac.suspend().catch(() => {});
+    } catch(e){}
+  }
+  function meta(st){
+    if (!('mediaSession' in navigator)) return;
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({ title: st ? st.title : 'Nur hören', artist: 'Otti erzählt', album: 'Mondschein · Nur hören',
+        artwork: [{ src: new URL('figur.jpg', location.href).href, type: 'image/jpeg' }] });
+    } catch(e){}
+  }
+  if ('mediaSession' in navigator) try {
+    navigator.mediaSession.setActionHandler('play', () => { if (H.on) pause(false); });
+    navigator.mediaSession.setActionHandler('pause', () => { if (H.on) pause(true); });
+    navigator.mediaSession.setActionHandler('nexttrack', () => { if (H.on) springe(1); });
+    navigator.mediaSession.setActionHandler('previoustrack', () => { if (H.on) springe(-1); });
+  } catch(e){}
+
+  function sag(list, start, fertig){
+    TTS.speak(list, { start, gap: 320, rateMul: .95, onSentence: i => { H.sent = i; }, onEnd: () => { if (H.on && !H.pause) fertig(); } });
+  }
+  function nach(ms){ H.sent = 0; H.pi++; clearTimeout(H.t); H.t = setTimeout(teil, ms); }
+  function geschichte(){
+    if (!H.on || H.pause) return;
+    const st = STORIES[((H.si % N) + N) % N];
+    H.st = st; H.gebaut = H.si; H.seq = buildSeq(st); H.pi = -1; H.sent = 0; H.vars = {};
+    $('#hTitel').textContent = st.title; meta(st); info();
+    teil();
+  }
+  function teil(){
+    clearTimeout(H.t);
+    if (!H.on || H.pause) return;
+    if (H.pi < 0) return sag([H.st.title + '.'], 0, () => nach(900));
+    if (H.pi >= H.seq.length){
+      return sag(['Ende.'], 0, () => {
+        try { const d = store.get('done', {}); d[H.st.id] = Date.now(); store.set('done', d); memStory(H.st.title); } catch(e){}
+        H.gehoert++; H.si++; try { store.set('hoerI', H.si % N); } catch(e){}
+        if (H.gehoert >= N){ // Einmal alle Geschichten: dann ist Schluss.
+          return H.t = setTimeout(() => sag(['Alle Geschichten sind fertig. Gute Nacht.'], 0, () => { H.pause = true; knopf(); $('#hTitel').textContent = 'Alle Geschichten sind fertig. Gute Nacht.'; tonWach(false); }), 2500);
+        }
+        $('#hTitel').textContent = 'Gleich kommt die nächste Geschichte …';
+        H.t = setTimeout(geschichte, 4500);
+      });
+    }
+    const p = H.seq[H.pi];
+    if (p.q){ // Ohne Bildschirm wählt Otti nach einer kurzen Denkpause selbst.
+      const opts = p.opts.map(o => o.l);
+      return sag([p.q, opts.slice(0, -1).join(', ') + ' oder ' + opts[opts.length - 1] + '?'], H.sent, () => {
+        H.t = setTimeout(() => { if (!H.on || H.pause) return; Object.assign(H.vars, p.opts[Math.floor(Math.random() * p.opts.length)].v); nach(0); }, 4000);
+      });
+    }
+    if (p.fq) return sag([p.t], H.sent, () => nach(7000)); // Fantasie-Frage: nur gesprochen, mit Pause zum Nachdenken.
+    sag(splitSentences(fill(p.t, H.vars)), H.sent, () => nach(1400));
+  }
+  function pause(p){
+    H.pause = p; knopf();
+    if (p){ clearTimeout(H.t); TTS.stop(); tonWach(false); return; }
+    tonWach(true);
+    if (H.gehoert >= N) H.gehoert = 0;
+    if (H.gebaut !== H.si) geschichte(); else teil();
+  }
+  function springe(d){
+    clearTimeout(H.t); TTS.stop(); H.si += d; H.gebaut = -1;
+    if (!H.pause) geschichte(); else { const st = STORIES[((H.si % N) + N) % N]; $('#hTitel').textContent = st.title; meta(st); }
+  }
+  function oeffnen(los){
+    TTS.stop(); R.reading = false;
+    $('#hoeren').hidden = false; document.documentElement.classList.add('hoermodus');
+    H.on = true; H.pause = true; H.gehoert = 0; H.gebaut = -1;
+    try { H.si = +store.get('hoerI', 0) || 0; } catch(e){ H.si = 0; }
+    $('#hTitel').textContent = 'Tippe auf ▶, dann erzählt Otti.'; info(); knopf(); meta(null);
+    if (los) pause(false);
+    setTimeout(() => { try { $('#hKnopf').focus(); } catch(e){} }, 60);
+  }
+  function zu(){
+    H.on = false; H.pause = true; clearTimeout(H.t); TTS.stop(); tonWach(false);
+    $('#hoeren').hidden = true; document.documentElement.classList.remove('hoermodus');
+    if ('mediaSession' in navigator) try { navigator.mediaSession.metadata = null; navigator.mediaSession.playbackState = 'none'; } catch(e){}
+  }
+  $('#hKnopf').addEventListener('click', () => pause(!H.pause));
+  $('#hZu').addEventListener('click', zu);
+  $('#homeHoeren').addEventListener('click', () => oeffnen(true));
+  $('#listHoeren').addEventListener('click', () => oeffnen(true));
+  document.addEventListener('keydown', e => { if (H.on && e.key === 'Escape') zu(); });
+  window.MS_HOEREN = { oeffnen, zu, zustand: () => ({ on:H.on, pause:H.pause, si:H.si, pi:H.pi, titel:H.st && H.st.title }),
+    leser: () => ({ idx:R.idx, reading:R.reading, seq:R.seq.map(p => p.fq ? 'F' : p.q ? 'Q' : 't').join('') }) };
+  // Aus der Otti-App: ../mondschein/#hoeren öffnet gleich den Hörmodus (Start mit einem Tipp, das Handy verlangt das).
+  if (location.hash === '#hoeren') setTimeout(() => { try { $('#figurStart').hidden = true; } catch(e){} oeffnen(false); }, 300);
+})();
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>
@@ -3353,7 +3527,8 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
   var farben=['#F2C14E','#9B8CFF','#7FC8FF','#ffffff'];
   // Farbschleier + aufsteigende Funken (wie Fias Nest)
   var au=document.createElement('div');au.className='film-aurora';au.setAttribute('aria-hidden','true');au.innerHTML='<i></i><i></i><i></i>';document.body.prepend(au);
-  if(!ruhig){var cv=document.createElement('canvas');cv.id='filmFunken';cv.setAttribute('aria-hidden','true');document.body.prepend(cv);var cx=cv.getContext('2d'),W,H,P=[],dp=devicePixelRatio||1;
+  var FUNKEN_AN=false; // Ruhe-Prinzip: keine Endlos-Partikel
+  if(!ruhig&&FUNKEN_AN){var cv=document.createElement('canvas');cv.id='filmFunken';cv.setAttribute('aria-hidden','true');document.body.prepend(cv);var cx=cv.getContext('2d'),W,H,P=[],dp=devicePixelRatio||1;
     function gr(){W=cv.width=innerWidth*dp;H=cv.height=innerHeight*dp}gr();addEventListener('resize',gr);
     function hx(c){c=c.replace('#','');return parseInt(c.substr(0,2),16)+','+parseInt(c.substr(2,2),16)+','+parseInt(c.substr(4,2),16)}
     var tone=[hx('#F2C14E'),hx('#9B8CFF'),hx('#7FC8FF')];
@@ -3466,5 +3641,49 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 @media (prefers-reduced-motion:reduce){.gnbtn.lockt,.sternchip.neu{animation:none}}
 </style>
 
+<!-- Ruhe-Prinzip (Diego 20.10.): ruhige Bilder regen die eigene Fantasie an. Fantasie-Fragen in den Geschichten. «Nur hören» wie ein Hörspiel. -->
+<style id="ruhePrinzip">
+/* Figuren stehen fast still (sanft atmen, selten blinzeln). Bewegung nur als Antwort aufs Tippen. Hintergründe ruhig, keine Endlos-Partikel. */
+.float,.gnbtn .mo,.letterbtn .env,.figur-logo,.figur-hero img,#figurStart img,#figurStart h1,.fig.otti-wippt:not(.asleep),.glitzer,.film-aurora i,
+.fig .flap,.fig .tail,.fig .bob,.fig .heart,.fig .twinkle,.fig .zz,.kul .tw,.kul .tw2,.kul .steig,.kul .steig2,.kul .blink,.kul .schweb{animation:none!important}
+.film-funke{display:none!important}
+#figurStart button{animation:filmAuf .8s .45s ease-out both!important}
+.fig .breathe{animation-duration:7s!important}
+.fig .blink{animation-duration:12s!important}
+.wave,.kwave{animation-iteration-count:4!important}
+.gnbtn.lockt,.callbtn .ph{animation-iteration-count:3!important}
+#nachtlicht .nl-stern{animation-duration:9s!important}
+/* Standbilder: höchstens ein ganz langsamer, sanfter Zoom, dann bleibt das Bild stehen */
+.filmcard img{animation:ruheZoom 40s ease-out both!important}
+.stage.kino>.kul svg,.stage.kino>.kul .kinobild{animation:ruheZoom 45s ease-out both!important}
+@keyframes ruheZoom{from{transform:scale(1)}to{transform:scale(1.05)}}
+/* Szenenwechsel: sanft überblenden statt bewegen */
+#rStage>.fig:not(.asleep){animation:ruheEin .7s ease both}
+#rContent .story-text,#rContent .fantasie{animation:ruheEin .6s ease both}
+@keyframes ruheEin{from{opacity:0}to{opacity:1}}
+/* Fantasie-Frage */
+.fantasie{text-align:center;padding:2px 0 4px}
+.fantasie .fq-ic{display:block;font-size:44px;line-height:1.1}
+.fantasie .fq{font-size:22px;font-weight:800;line-height:1.35;margin:6px 0 8px}
+.fantasie .hint{opacity:.8;margin:0 0 12px;font-size:16px}
+/* Nur hören */
+.hoerbtn{background:linear-gradient(135deg,#18224d,#080d22)!important;border-color:#8fa3e8!important}
+.slist-hoeren{margin:0 0 12px}
+#hoeren{position:fixed;inset:0;z-index:100001;background:#02040a;color:#c3cae3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
+  padding:calc(env(safe-area-inset-top) + 64px) 16px calc(env(safe-area-inset-bottom) + 32px);text-align:center;overflow:hidden}
+#hoeren[hidden]{display:none}
+#hoeren .h-mond{width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 40% 40%,#8c7d4c,#352f1d);opacity:.5}
+#hoeren .h-titel{font-size:18px;line-height:1.4;opacity:.62;max-width:30ch;min-height:2.8em;margin:0}
+#hoeren .h-knopf{width:136px;height:136px;border-radius:50%;border:2px solid #313a63;background:#0a0f22;color:#d6dcf3;font-size:54px;line-height:1;cursor:pointer;touch-action:manipulation}
+#hoeren .h-knopf:active{transform:scale(.97)}
+#hoeren .h-info{font-size:15px;line-height:1.45;opacity:.5;max-width:32ch;margin:0}
+#hoeren .h-zu{position:absolute;top:calc(env(safe-area-inset-top) + 12px);left:16px;min-height:44px;padding:8px 16px;border-radius:999px;border:1px solid #262d52;background:none;color:#8890b5;font:inherit;font-size:15px;cursor:pointer}
+html.hoermodus,html.hoermodus body{overflow:hidden}
+html.hoermodus .nova-btn,html.hoermodus .nova-pille,html.hoermodus .nova-panel,html.hoermodus [class^="fb-"]{display:none!important}
+@media (prefers-reduced-motion:reduce){
+  .filmcard img,.stage.kino>.kul svg,.stage.kino>.kul .kinobild,#rStage>.fig,#rContent .story-text,#rContent .fantasie,.fig .breathe,.fig .blink,.wave,.kwave,#nachtlicht .nl-stern{animation:none!important}
+  #hoeren .h-knopf:active{transform:none}
+}
+</style>
 </body>
 </html>
