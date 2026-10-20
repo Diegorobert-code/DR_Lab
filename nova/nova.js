@@ -38,6 +38,24 @@
   var BILD = attr('data-nova-bild', '') ? new URL(attr('data-nova-bild', ''), location.href).href
     : (me && me.src ? new URL('nova.jpg', me.src).href : '../nova/nova.jpg');
   var K = { addr: 'drlab-hermes-adresse', key: 'drlab-hermes-passwort', ton: 'drlab-stimme-an' };
+  // Live-Gespräch (hören, denken, sprechen gleichzeitig, unterbrechbar) über einen ElevenLabs Agent je Figur.
+  // Die Agents sind nur von diegorobert-code.github.io aus erreichbar und haben ein Tageslimit.
+  var AGENTEN = {
+    'otti': 'agent_4801m55hqwdpeq0ry4awvx45rz5t',
+    'jackie': 'agent_7501m55rzxb0fdv9j4n97jtnbk08',
+    'kiki': 'agent_0401m55r02rvf96a1xrxv1njqbh3',
+    'mr. ping': 'agent_5601m55s9kdcebzrh23262ytezm2',
+    'nova': 'agent_4201m55seyhdexd96tkaxt72hmaq',
+    'sparky': 'agent_7401m55j20jwek69gsh3gkfhaa77',
+    'coin maker': 'agent_2001m55ss61fe5wb1qct4b8bqkz3',
+    'flo': 'agent_0001m55ss8s7eb0vnzr6f1vz1tf0',
+    'fompa': 'agent_5401m55ssbdheqwtyw4131dqya8w',
+    'sunny': 'agent_4201m55ssdr3fksaey0x2yh1vpmh'
+  };
+  var AGENT = AGENTEN[FIGUR] || '';
+  // Figuren mit Gesicht, das mitspricht: Live-Gespräch auf der grossen Bühne (nova/reden.html).
+  var BUEHNE = AGENTEN[FIGUR] && me && me.src ? new URL('reden.html?f=' + encodeURIComponent(FIGUR), me.src).href : '';
+  var LIVE_LIB = me && me.src ? new URL('elevenlabs-client-1.26.0.js', me.src).href : '../nova/elevenlabs-client-1.26.0.js';
 
   function get(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }
   function put(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
@@ -255,6 +273,13 @@
     '.nova-code button{font:inherit;font-size:13px;border:1px solid #c5d0ee;border-radius:9px;padding:6px 10px;background:transparent;color:inherit;cursor:pointer}' +
     '@media (prefers-color-scheme:dark){.nova-panel{background:#101a33;color:#e8edff}.nova-msg.du{background:#24386e}.nova-msg.nova{background:#16244a;border-color:#2b3d70}.nova-row,.nova-opt{background:#16244a;border-color:#2b3d70;color:#aab6da}.nova-row input,.nova-set input{background:#0c1530;color:#e8edff;border-color:#2b3d70}.nova-set{background:#13203f;border-color:#2b3d70}.nova-row button.mic{background:#24386e;color:#cfe0ff}}' +
     '@media (prefers-reduced-motion:no-preference){.nova-btn[data-wach="1"]{animation:novaGlow 2.6s ease-in-out infinite}}' +
+    '.nova-live{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff7d6;border-bottom:1px solid #f0d77a;color:#3a2c00}' +
+    '.nova-live button{font:inherit;font-weight:600;border:0;border-radius:999px;padding:10px 16px;background:#f5c542;color:#2a1d00;cursor:pointer;white-space:nowrap}' +
+    '.nova-live button.an{background:#d6304a;color:#fff}.nova-live span{font-size:13px}' +
+    '.nova-btn.live-hoert{box-shadow:0 0 0 4px #7fd4ff,0 6px 18px rgba(20,40,110,.35)}.nova-btn.live-spricht{box-shadow:0 0 0 4px #f5c542,0 6px 18px rgba(20,40,110,.35)}' +
+    '.nova-pille{position:fixed;right:84px;bottom:calc(' + (UNTEN + 10) + 'px + env(safe-area-inset-bottom,0px));z-index:2147483000;border:0;border-radius:999px;padding:12px 18px;font:600 16px system-ui,-apple-system,sans-serif;background:#f5c542;color:#2a1d00;box-shadow:0 6px 18px rgba(0,0,0,.35);cursor:pointer;white-space:nowrap}' +
+    '.nova-pille.an{background:#d6304a;color:#fff}' +
+    '@media (prefers-color-scheme:dark){.nova-live{background:#2b2410;border-color:#5a4a14;color:#f4e6b0}}' +
     '@keyframes novaGlow{50%{box-shadow:0 0 0 6px rgba(127,178,255,.45),0 6px 18px rgba(20,40,110,.35)}}';
 
   var face = '<img src="' + BILD + '" alt="">';
@@ -274,6 +299,7 @@
     panel.hidden = true;
     panel.innerHTML =
       '<div class="nova-head"><b></b><small class="nova-state"></small><button type="button" class="nova-ton"></button></div>' +
+      '<div class="nova-live" hidden><button type="button" class="nova-live-knopf">📞 Live reden</button><span class="nova-live-text">Reden wie am Telefon</span></div>' +
       '<div class="nova-log" aria-live="polite"></div>' +
       '<form class="nova-row"><input class="nova-in" type="text" id="nova-in" autocomplete="off">' +
       '<button type="button" class="mic" aria-label="Sprechen">🎙</button><button type="submit">Senden</button></form>' +
@@ -326,6 +352,7 @@
         input.focus();
       } else {
         aufhoeren();
+        if (typeof liveEnde === 'function' && (live || liveStartet)) liveEnde();
       }
     });
 
@@ -340,11 +367,13 @@
       else fertig(window.prompt('Verbindungscode einsetzen:'));
     });
 
+    $('#nova-key').addEventListener('focus', function () { if (/^•+$/.test(this.value)) this.value = ''; });
     $('.nova-save').addEventListener('click', function () {
-      var a = $('#nova-addr').value.trim(), k = $('#nova-key').value.trim();
+      // Platzhalter-Punkte entfernen: wer ins gefüllte Feld einfügt, hängt sonst den Code an «••••••••» an.
+      var a = $('#nova-addr').value.trim(), k = $('#nova-key').value.replace(/•/g, '').replace(/\s+/g, '');
       if (a && !/^https:\/\//.test(a)) a = 'https://' + a;
       put(K.addr, a);
-      if (k && k !== '••••••••') put(K.key, k);
+      if (k) put(K.key, k);
       stimme.pauseBis = 0;
       state();
       say('nova', ready() ? 'Danke, jetzt bin ich wach.' : 'Es fehlt noch Adresse oder Passwort.');
@@ -375,7 +404,8 @@
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + get(K.key, ''), 'X-Nova-App': APP },
         body: JSON.stringify({ model: 'sense-engine', messages: messages })
       }).then(function (r) {
-        if (r.status === 401 || r.status === 403) throw new Error('Das Passwort stimmt nicht.');
+        if (r.status === 401) throw new Error('Das Passwort stimmt nicht.');
+        if (r.status === 403) throw new Error('Sense Engine lässt diese Seite nicht zu (Fehler 403).');
         if (!r.ok) throw new Error(NAME + ' erreicht Sense Engine gerade nicht (Fehler ' + r.status + ').');
         return r.json();
       }).then(function (j) {
@@ -449,6 +479,78 @@
       if (gespraech || rec) { aufhoeren(); return; }
       gespraech = true;
       hoeren();
+    });
+
+
+    // ---------- Live-Gespräch ----------
+    var live = null, liveStartet = false, livePuls = 0;
+    var liveBar = $('.nova-live'), liveKnopf = $('.nova-live-knopf'), liveText = $('.nova-live-text');
+    if (AGENT) liveBar.hidden = false;
+    // Gut sichtbar neben dem Figuren-Knopf: ein Tipp startet das Live-Gespräch direkt.
+    var pille = null;
+    if (AGENT) {
+      pille = el('button', { 'class': 'nova-pille', type: 'button' }, '');
+      pille.textContent = '📞 Mit ' + NAME + ' reden';
+      document.body.appendChild(pille);
+      pille.addEventListener('click', function () {
+        if (BUEHNE) { location.href = BUEHNE; return; }
+        if (panel.hidden) btn.click();
+        liveKnopf.click();
+      });
+    }
+    function libLaden() {
+      if (window.ElevenLabsClient) return Promise.resolve();
+      return new Promise(function (ok, nein) {
+        var sc = document.createElement('script'); sc.src = LIVE_LIB; sc.onload = ok; sc.onerror = nein;
+        document.head.appendChild(sc);
+      });
+    }
+    function liveZeigen() {
+      var an = !!live || liveStartet;
+      liveKnopf.classList.toggle('an', an);
+      liveKnopf.textContent = an ? '■ Auflegen' : '📞 Live reden';
+      if (pille) { pille.classList.toggle('an', an); pille.textContent = an ? '■ Auflegen' : '📞 Mit ' + NAME + ' reden'; }
+    }
+    function liveTakt() {
+      if (!live) { btn.style.transform = ''; return; }
+      var v = 0; try { v = live.getOutputVolume() || 0; } catch (e) {}
+      livePuls = livePuls * 0.6 + v * 0.4;
+      btn.style.transform = 'scale(' + (1 + Math.min(livePuls, 1) * 0.18).toFixed(3) + ')';
+      requestAnimationFrame(liveTakt);
+    }
+    function liveEnde(t) {
+      var l = live; live = null; liveStartet = false;
+      btn.classList.remove('live-hoert', 'live-spricht'); btn.style.transform = '';
+      liveZeigen(); if (t) liveText.textContent = t;
+      if (l) l.endSession().catch(function () {});
+    }
+    liveKnopf.addEventListener('click', function () {
+      if (BUEHNE && !live && !liveStartet) { location.href = BUEHNE; return; }
+      if (live || liveStartet) { liveEnde('Aufgelegt.'); return; }
+      aufhoeren();
+      liveStartet = true; liveZeigen(); liveText.textContent = NAME + ' wacht auf …';
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(function () {
+        return libLaden();
+      }, function () { throw new Error('mic'); }).then(function () {
+        return window.ElevenLabsClient.Conversation.startSession({
+          agentId: AGENT, connectionType: 'websocket',
+          onConnect: function () { liveText.textContent = NAME + ' hört zu.'; },
+          onDisconnect: function () { if (live || liveStartet) liveEnde('Bis bald!'); },
+          onError: function (m) { liveText.textContent = 'Fehler: ' + (m || 'unbekannt'); },
+          onMessage: function (m) { if (m && m.message) say(m.source === 'user' ? 'du' : 'nova', m.message); },
+          onModeChange: function (m) {
+            var sp = m && m.mode === 'speaking';
+            btn.classList.toggle('live-spricht', sp); btn.classList.toggle('live-hoert', !sp);
+            liveText.textContent = sp ? NAME + ' spricht …' : NAME + ' hört zu.';
+          }
+        });
+      }).then(function (c) {
+        if (!liveStartet) { c.endSession().catch(function () {}); return; }
+        live = c; liveStartet = false; liveZeigen(); requestAnimationFrame(liveTakt);
+      }).catch(function (e) {
+        liveStartet = false; liveZeigen();
+        liveText.textContent = e && e.message === 'mic' ? 'Bitte das Mikrofon erlauben.' : 'Keine Verbindung. Nochmal tippen.';
+      });
     });
 
     state();
