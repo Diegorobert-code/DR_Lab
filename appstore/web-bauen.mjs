@@ -33,9 +33,7 @@ if (!app.nova) html = html.replace(/<script src="\.\.\/nova\/[^"]+"[^>]*><\/scri
 const kopf = '<link rel="stylesheet" href="../native/fonts/fonts.css">\n' +
   (fs.existsSync(core) ? '<script src="../native/capacitor.js"></script>\n' : '') +
   '<script src="../native/native.js"></script>\n' +
-  (app.css ? `<style>${app.css}</style>\n` : '') +
-  // TradePing-Wache: die iPhone-App nimmt nur die Adresse aus apps.json (leer = aus), nie die der Web-Version.
-  (typeof app.wache === 'string' ? `<script>window.TP_WACHE=${JSON.stringify(app.wache)}</script>\n` : '');
+  (app.css ? `<style>${app.css}</style>\n` : '');
 // Nach <meta charset> einfügen, damit die Zeichenkodierung zuerst kommt (Umlaute).
 if (/<meta charset[^>]*>/i.test(html)) html = html.replace(/<meta charset[^>]*>/i, m => m + '\n' + kopf);
 else html = html.replace(/<head>/i, m => m + '\n' + kopf);
@@ -44,5 +42,4 @@ fs.rmSync(path.join(www, app.ordner, 'sw.js'), { force: true });
 
 fs.writeFileSync(path.join(www, 'index.html'),
   `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>html,body{margin:0;background:${app.hintergrund}}</style><script>location.replace('${app.ordner}/index.html')</script></head><body></body></html>\n`);
-if (app.wache) console.log(`Wache an: ${app.wache}\nDatenschutz nicht vergessen: PrivacyInfo.xcprivacy und App Store Connect anpassen (siehe server/TRADEPING-WACHE.md).`);
 console.log(`${app.name}: Web-Teil bereit in ${path.relative(repo, www)}`);
