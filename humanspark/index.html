@@ -1035,6 +1035,8 @@ function setProgress(sec){
 }
 function showBox(which){
   ['startBox','measureBox','resultBox'].forEach(function(id){ $(id).classList.toggle('hidden', id !== which); });
+  // Messung und Ergebnis sofort im Blick, ohne selbst zu scrollen
+  if (which !== 'startBox'){ var r = $(which).getBoundingClientRect(); if (r.top < 0 || r.top > innerHeight * 0.6) scrollTo({top:r.top + scrollY - 90, behavior:'smooth'}); }
 }
 
 function polarUi(){
@@ -1678,9 +1680,23 @@ $('sMarkers').querySelectorAll('.mbtn').forEach(function(b){
 function sEvent(k, v){
   if (!sess) return;
   var ev = {t:Math.round(sess.clock * 10) / 10, k:k, v:v};
+  if (k === 'diktat'){ var pj = sPulsJetzt(sess); if (pj) ev.bpm = pj; } // Stimme und Puls: Puls der letzten 20 s zum gesagten Satz
   sess.events.push(ev);
   sFeed(); sUpdate();
   return ev;
+}
+function sPulsJetzt(s){
+  if (s.source === 'keine') return null;
+  var t0 = s.clock - 20, res;
+  if (s.source === 'kamera'){
+    var smp = s.camRoll.filter(function(p){ return p[0] >= t0; });
+    if (smp.length < 200) return null;
+    res = analyse(smp.map(function(p){ return [p[0] - smp[0][0], p[1]]; }), 0);
+  } else {
+    while (s.rrRoll.length && s.rrRoll[0][0] < s.clock - 25) s.rrRoll.shift();
+    res = analyseRR(s.rrRoll.filter(function(p){ return p[0] >= t0; }).map(function(p){ return p[1]; }), 8);
+  }
+  return res && res.ok ? res.bpm : null;
 }
 function evLabel(e){
   if (e.k === 'marker') return markerOf(e.v) ? markerOf(e.v).l : e.v;
@@ -1758,7 +1774,7 @@ function sBegin(p){
   sess = {id:uid(), t:Date.now(), kuerzel:p.k, mode:p.mode, demo:p.demo, befVor:p.befVor, methode:p.methode || '', anliegen:p.anliegen || '', studie:!!p.studie,
     source: !measuring ? 'keine' : p.demo ? 'demo' : polar.connected ? 'polar' : 'kamera',
     events:[], windows:[], minutes:{}, speaking:false, winSpeak:false,
-    phase:null, phaseStart:0, clock:0, winStart:0, cam:[], rr:[], lastHr:null, lostSince:null,
+    phase:null, phaseStart:0, clock:0, winStart:0, cam:[], rr:[], camRoll:[], rrRoll:[], lastHr:null, lostSince:null,
     real0:performance.now(), speed: p.demo ? (FAST ? 150 : 20) : 1, timer:null, stream:null, wl:null, uiN:0,
     demoNext:0.4, demoDone:{}};
   $('sLage').value = ''; $('sWo').value = ''; $('sNote').value = '';
@@ -1772,7 +1788,7 @@ function sBegin(p){
   sShow('sRunBox');
   try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function(l){ if (sess) sess.wl = l; else l.release(); }).catch(function(){}); } catch(e){}
   if (sess.source === 'polar'){
-    polar.onData = function(hr, rrs){ if (!sess) return; sess.lastHr = hr; rrs.forEach(function(r){ sess.rr.push([sess.clock, r]); }); };
+    polar.onData = function(hr, rrs){ if (!sess) return; sess.lastHr = hr; rrs.forEach(function(r){ sess.rr.push([sess.clock, r]); sess.rrRoll.push([sess.clock, r]); }); };
   }
   if (sess.source === 'kamera'){
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ sCamFallback('Dieser Browser gibt keinen Kamerazugriff.'); }
@@ -1809,7 +1825,7 @@ function sTick(){
     var v = $('sVideo');
     if (v.readyState >= 2){
       var x = readRed(v);
-      if (x.covered){ s.cam.push([s.clock, x.r]); s.lostSince = null; s.sigTxt = 'Finger erkannt – ruhig liegen lassen'; }
+      if (x.covered){ s.cam.push([s.clock, x.r]); s.camRoll.push([s.clock, x.r]); while (s.camRoll.length && s.camRoll[0][0] < s.clock - 25) s.camRoll.shift(); s.lostSince = null; s.sigTxt = 'Finger erkannt – ruhig liegen lassen'; }
       else { if (s.lostSince == null) s.lostSince = s.clock; s.sigTxt = s.cam.length ? 'Finger ruhig halten – wieder auflegen' : 'Finger auf die Kamera legen'; }
     }
   }
@@ -1845,7 +1861,7 @@ function demoRR(s){
     var hr = 76 - 9 * prog + (s.speaking ? 7 : 0) + (s.phase === 'ruhe2' ? -2 : 0);
     var amp = s.speaking ? 0.015 : 0.035 + 0.03 * prog;
     var rr = 60 / hr * (1 + amp * Math.sin(2 * Math.PI * tt / 5) + (Math.random() - 0.5) * 0.02);
-    s.rr.push([tt, rr]); s.demoNext += rr; s.lastHr = Math.round(60 / rr);
+    s.rr.push([tt, rr]); s.rrRoll.push([tt, rr]); s.demoNext += rr; s.lastHr = Math.round(60 / rr);
   }
 }
 function demoAuto(s){
@@ -1986,6 +2002,7 @@ function renderOutcome(e){
     var nO = e.minutes.filter(function(x){ return x[1] === 'offen'; }).length, nZ = e.minutes.filter(function(x){ return x[1] === 'zu'; }).length;
     h += '<h3 class="sub">Pro Minute offen / zu</h3><div class="strip">' + cells + '</div><div class="muted">' + nO + ' Min offen · ' + nZ + ' Min zu</div>';
   }
+  h += stimmePulsHtml(e);
   h += '<h3 class="sub">Schlusssatz</h3><p>' + (e.schluss ? '«' + esc(e.schluss) + '»' : '<span class="muted">–</span>') + '</p>';
   var tl = e.events.filter(function(x){ return x.k !== 'phase' || x.v !== 'sitzung' || x.t > 0; });
   h += '<h3 class="sub">Zeitleiste</h3><div class="tl">' + (tl.length ? tl.map(function(x){ return '<div><b>' + fmtClock(x.t) + '</b>' + (x.k === 'diktat' ? esc(evLabel(x)) : '<span class="muted">' + esc(evLabel(x)) + '</span>') + '</div>'; }).join('') : '<p class="muted">Keine Einträge.</p>') + '</div>';
@@ -1993,6 +2010,55 @@ function renderOutcome(e){
   $('sOut').innerHTML = h;
   sShow('sOutBox');
 }
+
+// Stimme und Puls: jeder gesagte Satz mit dem Puls in diesem Moment, verglichen mit dem Ruhewert am Anfang
+function stimmePuls(e){
+  var ref = e.start && e.start.bpm;
+  return e.events.filter(function(x){ return x.k === 'diktat'; }).map(function(x){
+    return {t:x.t, text:x.v, bpm:x.bpm == null ? null : x.bpm, diff: x.bpm != null && ref ? x.bpm - ref : null};
+  });
+}
+function stimmePulsHtml(e){
+  if (e.source === 'keine') return '';
+  var l = stimmePuls(e);
+  var h = '<h3 class="sub">Stimme und Puls</h3>';
+  if (!l.length) return h + '<p class="muted">Kein Diktat in dieser Sitzung. Tipp während der Messung auf «🎙 Diktat» und sprich, dann steht hier jeder Satz mit deinem Puls.</p>';
+  h += '<div class="tl">' + l.map(function(x){
+    var d = x.diff == null ? '' : ' <span class="badge">' + (x.diff > 0 ? '+' : '') + x.diff + '</span>';
+    return '<div><b>' + fmtClock(x.t) + '</b>«' + esc(x.text) + '»<br><span class="muted">Puls ' + (x.bpm == null ? '– (Finger ruhig halten)' : x.bpm) + '</span>' + d + '</div>';
+  }).join('') + '</div>';
+  h += '<p class="muted" style="margin-top:6px">Zahl im Kästchen: Unterschied zum Ruhepuls am Anfang' + (e.start && e.start.bpm ? ' (' + e.start.bpm + ')' : '') + '. Beim Sprechen steigt der Puls oft leicht, das ist normal.</p>';
+  var verb = novaBereit();
+  h += '<div class="ex" id="novaBox"><b>An Nova schicken</b><p class="muted" style="margin:4px 0 8px">' + (verb ? 'Geht verschlüsselt an euren DR-Lab-Server (Sense Engine), nur mit Kürzel, ohne Namen. Nicht an Apple oder andere.' : 'Nova ist auf diesem Handy noch nicht verbunden. Öffne einmal die Seite «Handy verbinden», dann geht es hier mit einem Tipp.') + '</p>' +
+    (verb ? '<label class="chk"><input type="checkbox" id="novaOk"> Ich bin einverstanden, dass diese Sätze mit Puls an Nova gehen.</label><button class="btn primary" id="novaSend" disabled>An Nova schicken</button><div class="notice hidden" id="novaMsg"></div>' : '') + '<button class="btn ghost" id="spCopy">Als Text kopieren (für Claude)</button></div>';
+  return h;
+}
+function novaGet(k){ try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch(x){ return null; } }
+function novaBereit(){ var a = String(novaGet('drlab-hermes-adresse') || ''); return /^https:\/\//.test(a) && !!novaGet('drlab-hermes-passwort'); }
+function novaText(e){
+  var l = stimmePuls(e);
+  return 'HumanSpark · Stimme und Puls · Kürzel ' + e.kuerzel + ' · ' + fmtTime(e.t) + ' · ' + Math.round(e.dur / 60) + ' Min · Quelle ' + e.source +
+    '\nRuhepuls Start ' + (e.start.bpm || '–') + ', Ende ' + (e.end.bpm || '–') + ' · Befinden ' + e.befVor + ' → ' + e.befNach +
+    '\n' + l.map(function(x){ return '[' + fmtClock(x.t) + '] «' + x.text + '» Puls ' + (x.bpm == null ? '–' : x.bpm) + (x.diff == null ? '' : ' (' + (x.diff > 0 ? '+' : '') + x.diff + ')'); }).join('\n') +
+    (e.schluss ? '\nSchlusssatz: «' + e.schluss + '»' : '') + '\nSchätzwerte, keine Diagnose.';
+}
+document.addEventListener('click', function(ev){
+  if (!ev.target || ev.target.id !== 'spCopy' || !sLastOut) return;
+  var t = novaText(sLastOut), b = ev.target;
+  var ok = function(){ b.textContent = 'Kopiert ✓ – jetzt im Chat einfügen'; };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function(){ uiAlert(t); });
+  else uiAlert(t);
+});
+document.addEventListener('change', function(ev){ if (ev.target && ev.target.id === 'novaOk') $('novaSend').disabled = !ev.target.checked; });
+document.addEventListener('click', function(ev){
+  if (!ev.target || ev.target.id !== 'novaSend' || !sLastOut) return;
+  var b = ev.target, m = $('novaMsg'); b.disabled = true; b.textContent = 'Wird geschickt …';
+  fetch(String(novaGet('drlab-hermes-adresse')).replace(/\/+$/, '') + '/erfahrung', {method:'POST',
+    headers:{'Content-Type':'application/json', 'Authorization':'Bearer ' + novaGet('drlab-hermes-passwort')},
+    body:JSON.stringify({app:'HumanSpark', art:'nutzung', thema:'stimme-puls', frage:novaText(sLastOut), antwort:''})})
+  .then(function(r){ if (!r.ok) throw new Error(r.status); m.className = 'notice'; m.textContent = 'Angekommen. Nova hat die Sätze mit deinem Puls.'; b.textContent = 'Geschickt ✓'; })
+  .catch(function(x){ m.className = 'notice warn'; m.textContent = 'Ging nicht (' + x.message + '). Server erreichbar? Nochmals versuchen.'; b.disabled = false; b.textContent = 'An Nova schicken'; });
+});
 
 function sessionSvg(e){
   var W = 520, H = 220, L = 40, R = 40, T = 22, B = 26, dur = Math.max(60, e.dur || 60);
@@ -2969,6 +3035,38 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 @keyframes filmStern{0%{opacity:1;transform:translate(0,0) scale(.4) rotate(0)}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(1.1) rotate(160deg)}}
 @media (prefers-reduced-motion:reduce){#figurStart *,#figurStart,.figur-hero,.figur-hero img,.figur-logo,.film-auf,.film-funke,#figurStart h1{animation:none!important}.film-funke{opacity:.6}.film-aurora i{animation:none!important}}
 </style>
+<style id="hsFeinschliff">
+/* HumanSpark: ruhige Bedienung. Ein Gesprächsknopf statt drei, Inhalt nie verdeckt. */
+.sp-knopf,.sp-blase,.nova-pille{display:none!important}
+body{padding-bottom:calc(env(safe-area-inset-bottom) + 96px)!important}
+.intro{background:rgba(22,35,79,.82)!important;border:1px solid rgba(242,193,78,.28);color:var(--ink)!important}
+.intro .vision{background:rgba(242,193,78,.14)!important;color:#F2C14E}
+.intro .safe{color:var(--muted);opacity:1}
+/* Dunkles Design durchgehend: keine hellen Kästen mit heller Schrift */
+#wave,.big div,.ex,.minrow button{background:rgba(255,255,255,.05)!important;border-color:var(--line)!important}
+.big div span,.ex p{color:var(--muted)}
+.ex{color:var(--ink)}
+.notice{background:rgba(242,193,78,.10)!important;border-color:rgba(242,193,78,.35)!important;color:var(--ink)}
+.notice.warn{background:rgba(242,92,84,.12)!important;border-color:rgba(242,92,84,.4)!important}
+.chip{background:transparent!important;border-color:var(--line)!important;color:var(--ink)!important}
+.chip[aria-pressed="true"],.chip.on{background:var(--navy)!important;border-color:var(--navy)!important;color:#fff!important}
+textarea,.inp,select{background:#0f1a3d!important;color:var(--ink)!important;border-color:var(--line)!important}
+textarea::placeholder,.inp::placeholder{color:#7f89a8}
+.talk{background:rgba(255,255,255,.08)!important;color:var(--ink)!important}
+.minrow button{color:var(--ink)!important}
+.badge{background:rgba(242,193,78,.16)!important;color:#F2C14E!important}
+.btn.danger{background:rgba(242,92,84,.14)!important;color:#ff9b8f!important}
+.dlg>div{color:var(--ink)}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:15px;margin:4px 0}
+.chk input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:#F2C14E}
+</style>
+<script>
+// Tab antippen: Inhalt sofort zeigen, nicht oben bei Sparky stehen bleiben
+document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click', function(){
+  var nav = document.querySelector('.tabs'), y = nav.getBoundingClientRect().top + scrollY - 8;
+  if (scrollY < y) scrollTo({top:y, behavior:'smooth'});
+}); });
+</script>
 <script>
 (function(){
   var ruhig=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
