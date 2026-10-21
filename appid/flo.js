@@ -101,7 +101,7 @@ let poseT;
 function pose(name,ms,prop){
   const img=document.querySelector(".figur-hero img");
   if(!img){if(window.FLO_POSEBILD)window.FLO_POSEBILD(name);clearTimeout(poseT);if(ms)poseT=setTimeout(()=>pose(grundPose()[0],0,grundPose()[1]),ms);return}
-  img.classList.remove("pose-jubel","pose-jog","pose-hoert","pose-ruhig","pose-winkt","pose-denkt","film-hops");
+  img.classList.remove("pose-jubel","pose-jog","pose-joggt","pose-hoert","pose-ruhig","pose-winkt","pose-denkt","film-hops");
   void img.offsetWidth; if(name)img.classList.add("pose-"+name);
   if(window.FLO_POSEBILD)window.FLO_POSEBILD(name);
   const p=document.querySelector(".flo-prop");if(p){if(prop){p.textContent=prop;p.classList.add("on")}else p.classList.remove("on")}

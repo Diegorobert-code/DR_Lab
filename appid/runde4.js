@@ -69,7 +69,11 @@
   }
   /* ---------- 1) Zurückwinken ---------- */
   function winke(img) {
-    if (puppeGruss(img, { figur: 'flo', gruss: 'joggen+winken' })) return;
+    // Runde 5: Tinkos «Flo joggt und winkt» (Hand frei) – Bild zeigen, dann schwingt genau diese Hand
+    if (img && window.Puppe && typeof Puppe.winkeZurueck === 'function') {
+      pose('joggt', 3400);
+      if (puppeGruss(img, { figur: 'flo', gruss: 'joggen+winken', bild: 'posen/joggt.jpg', arm: false, augen: [[9, 9, 0.01, 0.01]], mund: { l: [9, 9], r: [9.1, 9], oben: 0, unten: 0, kinn: 0.01 }, kopf: [0.6, 0.27, 0.13], gesicht: [0.6, 0.27, 0.1], winkArm: { x: 0.83, y: 0.42, r: 0.09, dx: 0.79, dy: 0.56, seite: 'rechts' } })) return;
+    }
     pose('winkt', 1800, '👋');
     if (ruhig || !img) return;
     img.classList.remove('r4-wink'); void img.offsetWidth; img.classList.add('r4-wink');
