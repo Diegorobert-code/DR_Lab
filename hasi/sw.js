@@ -1,6 +1,6 @@
 // Hasis Laden – Offline-Cache (nur eigene Dateien, keine Daten, kein Code der Kunden)
-const CACHE = 'hasi-v3';
-const FILES = ['./', './index.html', './hasi.js', './posen.js', './feedback.js', './icon-180.png', './icon-192.png', './manifest.webmanifest', '../nova/nova.js', '../nova/seelen.js'];
+const CACHE = 'hasi-v4';
+const FILES = ['./', './index.html', './hasi.js', './posen.js', './posen/daumen.jpg', './posen/passt.jpg', './posen/huepfen.jpg', './feedback.js', './icon-180.png', './icon-192.png', './manifest.webmanifest', '../nova/nova.js', '../nova/seelen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(FILES.map(f => c.add(f).catch(() => {})))).then(() => self.skipWaiting()));
 });

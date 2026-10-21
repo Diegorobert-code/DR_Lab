@@ -443,7 +443,7 @@
     '@media (prefers-reduced-motion:reduce){.pant,.pant-box,.chip-neu{animation:none}}' +
     '.pant-box small{opacity:.7}.pant-em{font-size:3rem;margin:6px 0}.pant-schild{display:inline-block;background:#7a5232;border:3px solid #e8b94a;border-radius:8px;padding:8px 14px;font:800 1.1rem Fraunces,Georgia,serif;color:#f6d98c;transform:rotate(-2deg)}' +
     '.pant-box p{font-style:italic;line-height:1.5;margin:12px 0 14px}.pant-box .btn{width:100%}.pant-skip{background:none;border:0;color:#d8cbb4;font:inherit;min-height:44px;margin-top:6px;cursor:pointer}' +
-    '.hasi-fig.mit-bild svg{opacity:0}#hasiBild{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.kunden{margin-top:6px}';
+    '.hasi-fig.mit-bild svg{opacity:0}#hasiBild{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:22px;box-shadow:0 0 0 2px rgba(242,193,78,.55),0 10px 26px rgba(0,0,0,.45)}.kunden{margin-top:6px}';
   document.head.appendChild(r2);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
