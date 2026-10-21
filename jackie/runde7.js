@@ -31,7 +31,9 @@ window.R7 = {
     '.r7-gk{min-height:150px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;border-radius:20px;background:linear-gradient(160deg,#22306a,#17255a);border:1px solid rgba(242,193,78,.4);font-size:1.25rem;line-height:1.4;font-family:var(--serif,Georgia,serif)}',
     '.r7-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}.r7-chips button{min-height:44px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:transparent;color:#cfd6ee;font:inherit;cursor:pointer}.r7-chips button[aria-pressed=true]{background:#f2c14e;color:#1a1f3a;border-color:#f2c14e;font-weight:700}',
     '@media print{body.r7-druck>*:not(.r7-druckbar){display:none!important}body.r7-druck .r7-druckbar{display:block!important;position:static!important}body.r7-druck .r7-druckbar .r7-nk{box-shadow:none;border:1px solid #999;margin:0}}',
-    '.r7-druckbar{display:none}'
+    '.r7-druckbar{display:none}',
+    /* Runde 7c: Tinkos neue Jackie-Bilder in den Helfern */
+    '.r7c-fig{display:flex;gap:16px;align-items:center;margin:0 0 16px}.r7c-fig img{flex:none;width:80px;height:80px;border-radius:16px;object-fit:cover;border:1px solid rgba(242,193,78,.45);box-shadow:0 6px 18px -8px rgba(0,0,0,.6)}.r7c-fig p{margin:0!important}'
   ].join('\n'),
   start: function (R) {
     var S = { // vier Helfer
@@ -44,7 +46,7 @@ window.R7 = {
           ['1', 'Ding, das du schmeckst', 'Ein Schluck Wasser oder einfach dein Mund. Atme danach lang aus.']
         ];
         var i = 0;
-        var inh = R.blatt({ titel: 'Ruhig werden: 5-4-3-2-1', html: notruf() + '<p>Wenn alles zu viel ist, holt dich diese Übung ins Jetzt zurück. Nimm dir Zeit, es gibt kein Falsch.</p><div class="r7-punkte" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="r7-schritt" aria-live="polite"><span class="n"></span><span><b></b><small class="r7-klein"></small></span></div><div class="r7-reihe"><button type="button" class="r7-knopf leise" data-a="vor">🔊 Vorlesen</button><button type="button" class="r7-knopf" data-a="weiter">Weiter</button></div>', zu: stumm });
+        var inh = R.blatt({ titel: 'Ruhig werden: 5-4-3-2-1', bild: 'posen/zuhoeren.jpg', html: notruf() + fig('posen/zuhoeren.jpg', 'Wenn alles zu viel ist, holt dich diese Übung ins Jetzt zurück. Nimm dir Zeit, es gibt kein Falsch. Ich bin da.')+'<div class="r7-punkte" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="r7-schritt" aria-live="polite"><span class="n"></span><span><b></b><small class="r7-klein"></small></span></div><div class="r7-reihe"><button type="button" class="r7-knopf leise" data-a="vor">🔊 Vorlesen</button><button type="button" class="r7-knopf" data-a="weiter">Weiter</button></div>', zu: stumm });
         function zeig() {
           var s = schritte[i];
           inh.querySelector('.n').textContent = s[0]; inh.querySelector('.r7-schritt b').textContent = s[1]; inh.querySelector('.r7-schritt small').textContent = s[2];
@@ -56,15 +58,15 @@ window.R7 = {
           var a = e.target.closest('[data-a]'); if (!a) return;
           if (a.dataset.a === 'vor') sprich(schritte[i][0] + ' ' + schritte[i][1] + '. ' + schritte[i][2]);
           else if (i < 4) { i++; zeig(); }
-          else { R.zu(); R.feier('Gut gemacht. Du warst ganz hier.'); }
+          else { R.zu(); mut('Gut gemacht. Du warst ganz hier.'); }
         });
       },
       karte: function () {
-        var html = notruf() + '<p>Für das Portemonnaie oder den Kühlschrank. Neutral, ohne App-Namen. Nichts wird gespeichert.</p>' +
+        var html = notruf() + fig('posen/zeigt.jpg', 'Für das Portemonnaie oder den Kühlschrank. Neutral, ohne App-Namen. Nichts wird gespeichert.') +
           '<div class="r7-nk" id="r7Nk"><h4>Wichtige Nummern</h4><dl><dt>117</dt><dd>Polizei</dd><dt>144</dt><dd>Sanität / Rettung</dd><dt>112</dt><dd>Euro-Notruf</dd><dt>142</dt><dd>Opferhilfe</dd><dt>143</dt><dd>Die Dargebotene Hand</dd><dt>147</dt><dd>Pro Juventute (Kinder, Jugend)</dd></dl><div class="p" id="r7NkP"></div></div>' +
           '<label for="r7NkName">Eine Person, die du anrufen kannst (freiwillig)</label><input id="r7NkName" maxlength="40" autocomplete="off" placeholder="z. B. Sara 079 …">' +
           '<div class="r7-reihe"><button type="button" class="r7-knopf leise" data-a="bild">🖼️ Als Bild</button><button type="button" class="r7-knopf" data-a="druck">🖨️ Drucken</button></div><div id="r7NkBild"></div>';
-        var inh = R.blatt({ titel: 'Notfallkarte fürs Portemonnaie', html: html });
+        var inh = R.blatt({ titel: 'Notfallkarte fürs Portemonnaie', bild: 'posen/zeigt.jpg', html: html });
         var f = inh.querySelector('#r7NkName'), p = inh.querySelector('#r7NkP');
         f.addEventListener('input', function () { p.textContent = f.value ? 'Meine Person: ' + f.value : ''; });
         inh.addEventListener('click', function (e) {
@@ -119,7 +121,7 @@ window.R7 = {
             'DTSTART;VALUE=DATE:' + f(e), 'SUMMARY:Frist läuft am ' + ende.toLocaleDateString('de-CH') + ' ab', 'DESCRIPTION:Brief beantworten oder Beratung holen.', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
           var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })); a.download = 'frist.ics';
           document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
-          R.feier('Erinnerung drei Tage vorher. Du hast es im Griff.');
+          mut('Erinnerung drei Tage vorher. Du hast es im Griff.');
         });
       },
       karten: function () {
@@ -130,19 +132,22 @@ window.R7 = {
         };
         var art = 'familie', i = 0, reihe = [];
         function mischen() { reihe = D[art].slice(); for (var k = reihe.length - 1; k > 0; k--) { var j = Math.floor(Math.random() * (k + 1)); var x = reihe[k]; reihe[k] = reihe[j]; reihe[j] = x; } i = 0; }
-        var inh = R.blatt({ titel: 'Gesprächskarten', html: '<p>Eine Frage auf den Tisch legen und zuhören. Keine richtige oder falsche Antwort.</p><div class="r7-chips" role="group" aria-label="Für wen"><button type="button" data-k="familie" aria-pressed="true">Familie</button><button type="button" data-k="teen" aria-pressed="false">Teenager</button><button type="button" data-k="paar" aria-pressed="false">Zu zweit</button></div><div class="r7-gk" aria-live="polite" id="r7Gk"></div><div class="r7-reihe"><button type="button" class="r7-knopf leise" data-a="vor">🔊 Vorlesen</button><button type="button" class="r7-knopf" data-a="next">Nächste Karte</button></div>', zu: stumm });
+        var inh = R.blatt({ titel: 'Gesprächskarten', bild: 'posen/zuhoeren.jpg', html: fig('posen/zuhoeren.jpg', 'Eine Frage auf den Tisch legen und zuhören. Keine richtige oder falsche Antwort.') + '<div class="r7-chips" role="group" aria-label="Für wen"><button type="button" data-k="familie" aria-pressed="true">Familie</button><button type="button" data-k="teen" aria-pressed="false">Teenager</button><button type="button" data-k="paar" aria-pressed="false">Zu zweit</button></div><div class="r7-gk" aria-live="polite" id="r7Gk"></div><div class="r7-reihe"><button type="button" class="r7-knopf leise" data-a="vor">🔊 Vorlesen</button><button type="button" class="r7-knopf" data-a="next">Nächste Karte</button></div>', zu: stumm });
         function zeig() { inh.querySelector('#r7Gk').textContent = reihe[i]; }
         mischen(); zeig();
         inh.addEventListener('click', function (e) {
           var k = e.target.closest('[data-k]'), a = e.target.closest('[data-a]');
           if (k) { art = k.dataset.k; [].forEach.call(inh.querySelectorAll('[data-k]'), function (b) { b.setAttribute('aria-pressed', b === k); }); mischen(); zeig(); }
           else if (a && a.dataset.a === 'vor') sprich(reihe[i]);
-          else if (a) { i++; if (i >= reihe.length) { mischen(); R.feier('Alle Karten gespielt. Schön, dass ihr redet.'); } zeig(); }
+          else if (a) { i++; if (i >= reihe.length) { mischen(); mut('Alle Karten gespielt. Schön, dass ihr redet.'); } zeig(); }
         });
       }
     };
     function notruf() { return '<div class="r7-notruf" role="note"><span>Akute Gefahr?</span><a href="tel:117">117</a><a href="tel:144">144</a><a href="tel:142">142</a></div>'; }
     function sprich(t) { try { var u = new SpeechSynthesisUtterance(t); u.lang = 'de-CH'; u.rate = 0.92; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {} }
+    function fig(b, text) { return '<div class="r7c-fig"><img src="' + b + '" alt="" width="80" height="80"><p>' + text + '</p></div>'; }
+    // Ermutigung: Jackie «mutig» nur allein in der kleinen Feier-Meldung (grüne Jacke fällt dort nicht auf)
+    function mut(text) { var alt = window.R7.bildFroh; window.R7.bildFroh = 'posen/mutig.jpg'; try { R.feier(text); } finally { window.R7.bildFroh = alt; } }
     function stumm() { try { speechSynthesis.cancel(); } catch (e) {} }
     function feiertag(t) {
       var m = t.getMonth() + 1, dd = t.getDate(), y = t.getFullYear();
