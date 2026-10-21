@@ -604,6 +604,7 @@ function mount(root, opts){
     return topBar('Für dich') + `<div class="scene">
      ${stage('atmet', 'Und du? Was brauchst du gerade? Von der KI in den Körper, und vom Körper zurück.', 120)}
      <button class="btn block" data-sos="1">🌬️ 1 Minute atmen mit Mama Affe</button>
+     ${missionCard()}
      ${afCard()}
      <div class="card"><h3>🌊 Leichte Beine (5 Übungen)</h3><p class="muted small">Wirbelsäule und Beine zusammen. Wand oder Stuhllehne in Reichweite.</p>
       <button class="btn alt block" data-run="beine">▶️ Runde starten</button>
@@ -692,6 +693,8 @@ function mount(root, opts){
       <button class="tile" data-go="koerper"><span class="e">🦶</span><span class="l">Körper-Ecke</span></button>
       <button class="tile" data-go="staerken"><span class="e">💪</span><span class="l">Superkräfte</span></button>
       <button class="tile" data-go="tier"><span class="e">🐻</span><span class="l">Tier des Tages</span></button>
+      <button class="tile" data-go="wuerfel"><span class="e">🎲</span><span class="l">Geschichten-Würfel</span></button>
+      <button class="tile" data-go="wetter"><span class="e">🌦️</span><span class="l">Gefühls-Wetter</span></button>
      </div>
      <p class="small muted">Lesen und Rechnen nach Lehrplan 21: Laute, Zahlen, Einmaleins. Mama Affe passt sich an dich an.</p>${FOOT}</div>`;
   }
@@ -858,6 +861,59 @@ function mount(root, opts){
      ${pick?`<div class="card gold" style="text-align:center"><div style="font-size:3rem">${pick.e}</div><p style="font-weight:700">${esc(pick.m)}</p>
        <button class="btn alt" data-go="uebung:${pick.go}">▶️ Bewegen wie ${esc(pick.n)}</button></div>`:''}</div>`;
   }
+  /* Runde 4: Geschichten-Würfel (Fantasie, ruhig, ohne Bildschirm-Action) */
+  const WUERFEL = [['🐘','ein Elefant'],['🌙','der Mond'],['🔑','ein Schlüssel'],['🚂','ein Zug'],['🍌','eine Banane'],['🏰','ein Schloss'],['🦉','eine Eule'],['🎈','ein Ballon'],['🌊','das Meer'],['🧦','eine Socke'],['🐢','eine Schildkröte'],['⭐','ein Stern'],['🍰','ein Kuchen'],['🌳','ein Baum'],['🚲','ein Velo'],['🐒','ein kleiner Affe'],['☂️','ein Schirm'],['🎺','eine Trompete']];
+  const W_FRAGEN = ['Was passiert zuerst?','Wer hat ein Geheimnis?','Wo spielt deine Geschichte?','Was ist das Lustigste daran?','Wie geht sie aus?'];
+  function wurf(){ const l = WUERFEL.slice().sort(()=>Math.random()-.5).slice(0,3); store.set('wurf', l.map(x=>x[0])); return l; }
+  function vWuerfel(){
+    const ids = store.get('wurf', null); const l = ids ? ids.map(e=>WUERFEL.find(x=>x[0]===e)).filter(Boolean) : [];
+    const q = W_FRAGEN[new Date().getDate() % W_FRAGEN.length];
+    const satz = l.length===3 ? 'Erfinde eine Geschichte. Darin kommen vor: '+l[0][1]+', '+l[1][1]+' und '+l[2][1]+'. '+q : 'Tipp auf «Würfeln». Dann erfindest du eine Geschichte.';
+    return topBar('Geschichten-Würfel') + `<div class="scene">
+     ${stage('denkt', satz, 110)}
+     <div class="grid3 ma-wuerfel">${(l.length===3?l:[['❔',''],['❔',''],['❔','']]).map(x=>`<div class="tile" aria-label="${esc(x[1]||'noch leer')}"><span class="e" style="font-size:2.6rem">${x[0]}</span><span class="small muted">${esc(x[1])}</span></div>`).join('')}</div>
+     <button class="btn block" data-act="wurf">🎲 ${l.length===3?'Nochmal würfeln':'Würfeln'}</button>
+     ${l.length===3?`<button class="btn alt block" data-say="${esc(satz)}">🎧 Nur hören</button>
+     <div class="card soft"><h3>So geht es</h3><p class="small">Erzähl die Geschichte laut, einem Grossen oder deinem Kuscheltier. Es gibt kein Richtig oder Falsch. Du kannst auch die Augen zumachen und sie dir vorstellen.</p></div>
+     <button class="btn alt block" data-act="wurfFertig">⭐ Meine Geschichte ist fertig</button>`:''}
+     ${FOOT}</div>`;
+  }
+  /* Runde 4: Gefühls-Wetter (keine Diagnose, nur ein Bild für innen) */
+  const WETTER = [
+    {k:'sonne', e:'☀️', l:'Sonnig', m:'Schön, dass es in dir hell ist. Schenk heute jemandem ein Lächeln.', u:'Streck die Arme hoch wie Sonnenstrahlen.'},
+    {k:'wolke', e:'⛅', l:'Wolkig', m:'Ein bisschen grau ist auch okay. Wolken ziehen weiter.', u:'Blas drei Mal ganz langsam, als würdest du eine Wolke wegpusten.'},
+    {k:'regen', e:'🌧️', l:'Regnerisch', m:'Manchmal ist man traurig. Das darf sein. Magst du es einem Grossen erzählen?', u:'Leg eine Hand aufs Herz und spür, wie es klopft.'},
+    {k:'gewitter', e:'⛈️', l:'Gewitter', m:'Da ist viel Kraft in dir. Wut ist ein Gefühl, kein Fehler.', u:'Stampf zehn Mal wie ein Orang-Utan, dann ganz langsam ausatmen.'},
+    {k:'nebel', e:'🌫️', l:'Neblig', m:'Wenn alles durcheinander ist, hilft eine kleine Pause.', u:'Schau dich um: Finde drei Dinge, die blau sind.'},
+    {k:'regenbogen', e:'🌈', l:'Regenbogen', m:'Von allem ein bisschen, wie ein Regenbogen. Das ist ganz normal.', u:'Zähl mit den Fingern fünf Farben, die du siehst.'}
+  ];
+  function vWetter(){
+    const today = new Date().toDateString(); const s = store.get('wetter', null); const pick = s && s.d===today ? WETTER.find(w=>w.k===s.k) : null;
+    return topBar('Gefühls-Wetter') + `<div class="scene">
+     ${stage(pick?'atmet':'zeigt', pick? pick.m : 'Wie ist das Wetter in dir drin, gerade jetzt?', 110)}
+     <div class="grid3">${WETTER.map(w=>`<button class="tile ${pick&&pick.k===w.k?'sel':''}" data-wetter="${w.k}"><span class="e">${w.e}</span><span class="l">${w.l}</span></button>`).join('')}</div>
+     ${pick?`<div class="card gold" style="text-align:center"><div style="font-size:3rem">${pick.e}</div><p style="font-weight:700">${esc(pick.u)}</p><button class="btn alt" data-say="${esc(pick.m+' '+pick.u)}">🎧 Nur hören</button></div>
+     <div class="card soft"><p class="small">Was meinst du: Wie sieht das Wetter in dir morgen aus? Du darfst es dir ausdenken.</p></div>`:''}
+     ${FOOT}</div>`;
+  }
+  /* Runde 4: Familien-Mission der Woche (für Eltern) */
+  const MISSIONEN = [
+    {e:'🦶', t:'Barfuss-Abenteuer', x:'Geht 10 Minuten barfuss über Gras, Sand oder einen Teppich. Wer spürt zuerst einen Unterschied?'},
+    {e:'☁️', t:'Wolken-Kino', x:'Legt euch hin und schaut Wolken an. Jede Person erzählt, was sie sieht.'},
+    {e:'🍳', t:'Kind kocht mit', x:'Das Kind wählt ein Gemüse und hilft beim Waschen, Rüsten oder Rühren.'},
+    {e:'📵', t:'Handy-Pause beim Znacht', x:'Alle Handys in eine Schachtel, eine Mahlzeit lang. Wer erzählt das Lustigste vom Tag?'},
+    {e:'🎶', t:'Familien-Konzert', x:'Pfannendeckel, Löffel, Stimme: 3 Minuten Musik machen, so laut oder leise ihr wollt.'},
+    {e:'💌', t:'Kleine Zettel', x:'Versteckt einander einen Zettel mit einem netten Satz: unter dem Kissen, im Schuh, im Thek.'},
+    {e:'🌳', t:'Baum-Freund', x:'Sucht euch einen Baum in der Nähe aus und besucht ihn diese Woche zweimal. Was hat sich verändert?'},
+    {e:'🧺', t:'Picknick drinnen', x:'Decke auf den Boden, einfaches Znüni oder Zvieri, und alle sitzen ganz nah.'}
+  ];
+  function woche(){ const d = new Date(); const j = new Date(d.getFullYear(),0,1); return d.getFullYear()+'-'+Math.ceil(((d-j)/864e5 + j.getDay()+1)/7); }
+  function missionCard(){
+    const w = woche(); const nr = parseInt(w.split('-')[1],10); const m = MISSIONEN[nr % MISSIONEN.length]; const done = store.get('mission', '')===w;
+    const n = store.get('missionen', 0);
+    return `<div class="card gold"><h3>${m.e} Familien-Mission der Woche</h3><p style="font-weight:700">${esc(m.t)}</p><p class="small">${esc(m.x)}</p>
+      ${done?`<p class="small" style="margin-top:8px">✅ Geschafft diese Woche. ${n>1?n+' Missionen zusammen. ':''}Nächsten Montag kommt eine neue.</p>`:`<button class="btn block" data-act="mission">✅ Haben wir gemacht</button>`}</div>`;
+  }
   function vAbend(){
     const today = new Date().toDateString();
     let done = store.get('ritual', {d:today, s:[]}); if(done.d!==today) done = {d:today, s:[]};
@@ -977,7 +1033,7 @@ function mount(root, opts){
       const [v, arg] = view.split(':');
       const map = {heute: arg? ()=>vSituation(arg) : vHeute, alter:vAlter, fuerdich:vFuerDich, momente:vMomente, notiz:()=>vNotiz(arg), schlaf:vSchlaf, hilfe:vHilfe,
         schule:vSchule, ankommen:vAnkommen, lesen:vLesen, rechnen:vRechnen, staunen:vStaunen, koerper:vKoerper, uebung:()=>vUebung(arg),
-        staerken:vStaerken, tier:vTier, abend:vAbend, plan:vPlan, fokus:vFokus, erklaer:vErklaer, spiegel:vSpiegel, wissen:()=>vWissen(arg)};
+        staerken:vStaerken, tier:vTier, wuerfel:vWuerfel, wetter:vWetter, abend:vAbend, plan:vPlan, fokus:vFokus, erklaer:vErklaer, spiegel:vSpiegel, wissen:()=>vWissen(arg)};
       h = (map[v] || (mode==='eltern'?vHeute:vSchule))();
     }
     root.classList.toggle('ma-kind', mode==='kind'); // Ruhe-Prinzip im Kinderbereich (bereich.css)
@@ -1010,7 +1066,7 @@ function mount(root, opts){
   root.addEventListener('click', e=>{
     const akt = e.target.closest('[data-ma-actor]');
     if(akt && root.contains(akt)){
-      akt.classList.remove('ma-hops'); void akt.offsetWidth; akt.classList.add('ma-hops');
+      if(window.Puppe && typeof Puppe.winkeZurueck==='function'){ try{ Puppe.winkeZurueck(akt); }catch(x){} } else { akt.classList.remove('ma-hops'); void akt.offsetWidth; akt.classList.add('ma-hops'); if(!akt.classList.contains('winkt')) pose('winkt', 1600); }
       const b = akt.parentNode && akt.parentNode.querySelector('.bubble'); const txt = b ? b.textContent.trim() : '';
       if(txt) say(txt); haptic(10); return;
     }
@@ -1029,6 +1085,7 @@ function mount(root, opts){
     if(d.mood){ const nm = $('#ma-kname'); if(nm){ state.kidName = nm.value.trim().slice(0,30); store.set('kidName', state.kidName); } state.mood = d.mood;
       learnUp(l=>{ l.moods = (l.moods||[]).concat(d.mood).slice(-30); }); rechnen.lvl=null; render();
       say(d.mood==='schnecke'?'Danke, dass du es sagst. Wir machen es heute kurz.':'Super! Zuerst ankommen, dann wählst du ein Zimmer.'); return; }
+    if(d.wetter){ store.set('wetter', {d:new Date().toDateString(), k:d.wetter}); const w=WETTER.find(x=>x.k===d.wetter); render(); say(w.m+' '+w.u); return; }
     if(d.animal){ store.set('animal', {d:new Date().toDateString(), n:d.animal}); render(); const a=ANIMALS.find(x=>x.n===d.animal); say(a.n+'. '+a.m); return; }
     if(d.rit!==undefined){ const today=new Date().toDateString(); let r=store.get('ritual',{d:today,s:[]}); if(r.d!==today) r={d:today,s:[]}; const i=+d.rit;
       r.s = r.s.includes(i)? r.s.filter(x=>x!==i) : r.s.concat(i); store.set('ritual', r); render(); if(r.s.length===RITUAL.length){ celebrate(); say('Alles geschafft! Gute Nacht.'); } return; }
@@ -1051,6 +1108,9 @@ function mount(root, opts){
       case 'voice': state.voice=!state.voice; store.set('voice', state.voice); if(!state.voice) stopSay(); render(); break;
       case 'home': mode=null; store.set('mode', null); view='home'; stopSay(); clearTimers(); render(); toTop(); break;
       case 'resetMood': state.mood=null; render(); break;
+      case 'wurf': { const l = wurf(); render(); haptic(15); say('Erfinde eine Geschichte. Darin kommen vor: '+l[0][1]+', '+l[1][1]+' und '+l[2][1]+'. '+W_FRAGEN[new Date().getDate() % W_FRAGEN.length]); learnUp(x=>{ x.rooms = x.rooms||{}; x.rooms.staunen = (x.rooms.staunen||0)+1; }); break; }
+      case 'wurfFertig': celebrate(); pose('jubelt', 1500); say('Was für eine Geschichte! Du hast eine tolle Fantasie.'); toast('⭐ Stern für deine Geschichte'); break;
+      case 'mission': store.set('mission', woche()); store.set('missionen', store.get('missionen',0)+1); celebrate(); render(); say('Wunderbar! Gemeinsame Zeit ist das grösste Geschenk.'); break;
       case 'sayWord': if(lese.cur) say(lese.cur.item.w); break;
       case 'rhyme': say(RHYME); break;
       case 'skip': if(bodyRun){ bodyRun.i++; if(bodyRun.i<bodyRun.list.length) go('uebung:'+bodyRun.list[bodyRun.i]); else { bodyRun=null; go(mode==='eltern'?'fuerdich':'koerper'); } } break;
