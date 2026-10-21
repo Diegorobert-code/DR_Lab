@@ -62,9 +62,14 @@
   ].join('');
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
 
+  /* Puppe (nova/puppe.js aus #136): flüssiger Gruss über dem Bild. Fehlt sie, greift die eigene Animation. */
+  function puppeGruss(img, o) {
+    if (!img || !window.Puppe || typeof Puppe.winkeZurueck !== 'function') return false;
+    try { var w = img._puppeWinker || Puppe.winkeZurueck(img, Object.assign({ antippen: false, ton: false, blase: false }, o)); if (!w || !w.winke) return false; w.winke(); return true; } catch (e) { return false; }
+  }
   /* ---------- 1) Zurückwinken ---------- */
   function winke(img) {
-    if (window.Puppe && typeof Puppe.winkeZurueck === 'function') { try { Puppe.winkeZurueck(img); return; } catch (e) {} }
+    if (puppeGruss(img, { figur: 'flo', gruss: 'joggen+winken' })) return;
     pose('winkt', 1800, '👋');
     if (ruhig || !img) return;
     img.classList.remove('r4-wink'); void img.offsetWidth; img.classList.add('r4-wink');

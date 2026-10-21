@@ -1,6 +1,6 @@
 // Food and Flow – Offline-Cache (nur eigene Dateien, keine Essensdaten)
-const CACHE = 'flo-v4';
-const FILES = ['./', './index.html', './flo.js', './flo2.js', './runde4.js', './sprechen.js', './feedback.js', './figur.jpg', './figur-gross.jpg', './icon-180.png', './manifest.webmanifest', './posen/posen.json', '../nova/nova.js', '../nova/seelen.js'];
+const CACHE = 'flo-v5';
+const FILES = ['./', './index.html', './flo.js', './flo2.js', './runde4.js', './sprechen.js', './feedback.js', './figur.jpg', './figur-gross.jpg', './icon-180.png', './manifest.webmanifest', './posen/posen.json', '../nova/nova.js', '../nova/puppe.js', '../nova/puppe.css', '../nova/seelen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
 });
