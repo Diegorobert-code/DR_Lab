@@ -105,7 +105,7 @@
   var Z = [['ruhig', '😌', 'Ruhig'], ['hoert', '👂', 'Hört zu'], ['redet', '🗣️', 'Redet'], ['freut', '🥳', 'Freut sich'], ['winkt', '👋', 'Winkt'], ['denkt', '💭', 'Denkt'], ['schlaeft', '😴', 'Schläft']];
   var q = new URLSearchParams(location.search);
   // alle Figuren mit Posenbild im Repo (Pfade in Puppe.figuren relativ zum Repo-Hauptordner)
-  var F = Puppe.figuren, LISTE = ['otti', 'otti-winkt', 'nova', 'fia', 'flo', 'granny', 'hasi', 'ping', 'waefwaef', 'fompa', 'sunny', 'sparky', 'coinmaker', 'kiki', 'carmen', 'jackie'];
+  var F = Puppe.figuren, LISTE = ['otti', 'otti-winkt', 'otti-ganz', 'nova', 'fia', 'flo', 'granny', 'hasi', 'ping', 'waefwaef', 'fompa', 'sunny', 'sparky', 'coinmaker', 'kiki', 'carmen', 'jackie'];
   var MOND = '../mondschein/figur-gross.jpg';
   var EBENEN = { otti: 1, nova: 1, fia: 1 };
   var figur = F[q.get('figur')] ? q.get('figur') : 'otti';
@@ -142,7 +142,7 @@
   var figBox = document.getElementById('figuren');
   LISTE.forEach(function (n) {
     var b = document.createElement('button'); b.type = 'button'; b.dataset.figur = n;
-    b.innerHTML = '<img alt="" loading="lazy" src="../' + F[n].bild + '"><span>' + (n === 'otti-winkt' ? 'Otti winkt' : F[n].name) + '</span>';
+    b.innerHTML = '<img alt="" loading="lazy" src="../' + F[n].bild + '"><span>' + (n === 'otti-winkt' ? 'Otti winkt' : n === 'otti-ganz' ? 'Otti ganz' : F[n].name) + '</span>';
     b.onclick = function () { opt.figur = n; opt.bild = '../' + F[n].bild; neu(); };
     figBox.appendChild(b);
   });
