@@ -464,6 +464,7 @@ body.im-schutz .jk-sticky-nr{display:none}
 .jk-uw-ic{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:rgba(91,141,239,.25);color:#cfe0ff}
 .jk-uw-pfeil{margin-left:auto;opacity:.6}
 </style>
+<link rel="stylesheet" href="../nova/puppe.css">
 </head>
 <body>
 <!-- Runde 4: kein Kino-Intro mehr. Es lag 3 Sekunden über den Notrufnummern. Jackie grüsst stattdessen auf der Bühne (winkt, klackt mit den Schuhen). -->
@@ -1783,7 +1784,11 @@ function klackTon(){ try{ if(document.body.classList.contains('im-schutz')) retu
 let jkPuppe=null;
 function puppeGruss(){
   if(!(window.Puppe && typeof window.Puppe.winkeZurueck==='function')) return false;
-  try{ jkPuppe=jkPuppe||window.Puppe.winkeZurueck($('jkBild'),{figur:'jackie',gruss:'lachen+winken',antippen:false,blase:false}); if(jkPuppe&&typeof jkPuppe.gruesse==='function'){ jkPuppe.gruesse('lachen+winken'); return true; } }catch(e){}
+  // Runde 5: Tinkos «Jackie winkt» (Hand frei, Zauberschuhe) – Bild zeigen, dann schwingt genau diese Hand
+  if(!POSEN_BILD.winkt) return false;
+  try{ pose('winkt'); clearTimeout(poseTimer); poseTimer=setTimeout(()=>pose(''), 3400);
+    jkPuppe=jkPuppe||window.Puppe.winkeZurueck($('jkBild'),{figur:'jackie',gruss:'lachen+winken',antippen:false,blase:false,bild:'posen/winkt.jpg',arm:false,augen:[[9,9,0.01,0.01]],mund:{l:[9,9],r:[9.1,9],oben:0,unten:0,kinn:0.01},kopf:[0.443,0.31,0.11],gesicht:[0.443,0.31,0.085],winkArm:{x:0.157,y:0.386,r:0.107,dx:0.214,dy:0.543,seite:'links'}});
+    if(jkPuppe&&typeof jkPuppe.gruesse==='function'){ jkPuppe.gruesse('lachen+winken'); return true; } }catch(e){}
   return false;
 }
 function winke(mitTon){
@@ -1859,6 +1864,7 @@ $('neuGuide').addEventListener('click', ()=>obOpen(false));
 $('neuZu').addEventListener('click', ()=>{ store.set('onboarded',true); neuZeigen(); });
 })();
 </script>
+<script src="../nova/puppe.js"></script>
 <script src="../nova/seelen.js" defer></script>
 <script src="../nova/nova.js" data-nova-app="Jackie" data-nova-bild="figur.jpg" defer></script>
 <script src="feedback.js" data-app="Jackie" defer></script>
