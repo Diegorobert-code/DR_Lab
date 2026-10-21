@@ -13,9 +13,10 @@ window.R7 = {
   neuTitel: 'Neu bei Fompa', neuText: 'Vier Helfer für deine Zettel und Wünsche.',
   css: [
     '@media (max-width:359px){.w .row{grid-template-columns:1fr!important}}',
+    '@media (max-width:400px){html.r6-gross header{flex-wrap:wrap}html.r6-gross header > div{flex:1 1 180px}html.r6-gross .mode{grid-template-columns:1fr}html.r6-gross .mode button{white-space:normal}}',
     '.r7-kal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:8px 0 12px}',
     '.r7-kal span{font-size:.75rem;text-align:center;color:#cfd6ee;padding-bottom:2px}',
-    '.r7-kal button{aspect-ratio:1;min-height:40px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#f6efe4;font:inherit;font-size:.8125rem;font-weight:700;cursor:pointer;padding:0}',
+    '.r7-kal button{aspect-ratio:auto;min-height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#f6efe4;font:inherit;font-size:.8125rem;font-weight:700;cursor:pointer;padding:0}',
     '.r7-kal button.heute{outline:2px solid #8fb3e8;outline-offset:1px}',
     '.r7-kal button[aria-pressed=true]{border-color:#f2c14e;box-shadow:0 0 0 2px rgba(242,193,78,.4)}',
     '.r7-kal button.zukunft{opacity:.35}',
@@ -116,7 +117,7 @@ window.R7 = {
       },
       glas: function () {
         var w = R.hol('wuensche', []);
-        var inh = R.blatt({ titel: 'Wunsch-Glas', bild: 'posen/staunt.jpg', html: '<p>Ein Wunsch, ein Glas. Leg hinein, was du zur Seite legst. Fompa rechnet mit, auch in Sitzungen.</p><div class="r7-glaeser" id="r7Gl"></div><h3>Neuer Wunsch</h3><label for="r7GN">Was wünschst du dir?</label><input id="r7GN" maxlength="40" placeholder="z. B. Neues Velo" autocomplete="off"><label for="r7GZ">Ziel in CHF</label><input id="r7GZ" inputmode="decimal" placeholder="600" autocomplete="off"><div class="r7-reihe"><button type="button" class="r7-knopf voll" data-a="neu">+ Glas aufstellen</button></div>' });
+        var inh = R.blatt({ titel: 'Wunsch-Glas', bild: 'posen/staunt.jpg', html: '<p>Ein Wunsch, ein Glas. Leg hinein, was du zur Seite legst. Fompa rechnet mit, auch in Sitzungen.</p><div class="r7-glaeser" id="r7Gl"></div><h3>Neuer Wunsch</h3><label for="r7GN">Was wünschst du dir?</label><input id="r7GN" maxlength="40" placeholder="z. B. Neues Velo" autocomplete="off"><label for="r7GZ">Ziel in CHF</label><input id="r7GZ" inputmode="decimal" placeholder="600" autocomplete="off"><p class="r7-klein" id="r7GH" aria-live="polite"></p><div class="r7-reihe"><button type="button" class="r7-knopf voll" data-a="neu">+ Glas aufstellen</button></div>' });
         function svg(p) {
           var h = Math.round(Math.min(1, p) * 46);
           return '<svg viewBox="0 0 56 68" aria-hidden="true"><rect x="16" y="2" width="24" height="7" rx="2" fill="#f2c14e"/><path d="M10 12h36v46a6 6 0 0 1-6 6H16a6 6 0 0 1-6-6z" fill="rgba(143,179,232,.12)" stroke="#dfe7ff" stroke-opacity=".6" stroke-width="2"/><rect x="12" y="' + (62 - h) + '" width="32" height="' + h + '" rx="4" fill="#f2c14e" opacity=".85"/></svg>';
@@ -136,7 +137,8 @@ window.R7 = {
           var a = e.target.closest('[data-a]'), r = e.target.closest('[data-rein]'), x = e.target.closest('[data-weg]');
           if (a) {
             var n = inh.querySelector('#r7GN').value.trim(), z = zahl(inh.querySelector('#r7GZ').value);
-            if (!n || z <= 0) { inh.querySelector(!n ? '#r7GN' : '#r7GZ').focus(); return; }
+            if (!n || z <= 0) { inh.querySelector('#r7GH').textContent = !n ? 'Wie heisst dein Wunsch? Ein Wort reicht.' : 'Welches Ziel in Franken? Zum Beispiel 600.'; inh.querySelector(!n ? '#r7GN' : '#r7GZ').focus(); return; }
+            inh.querySelector('#r7GH').textContent = '';
             w.push({ name: n.slice(0, 40), ziel: z, drin: 0 }); R.leg('wuensche', w); inh.querySelector('#r7GN').value = ''; inh.querySelector('#r7GZ').value = ''; zeig();
           } else if (r) {
             var i = +r.dataset.rein, b = zahl(inh.querySelector('#r7R' + i).value); if (b <= 0) return;
@@ -439,6 +441,11 @@ window.R7 = {
     rb.addEventListener('click', function () { var an = !hol('ruhig', false); leg('ruhig', an); rb.setAttribute('aria-pressed', an); H.classList.toggle('r7-ruhig', an); });
   }
 
+  d.addEventListener('submit', function (e) {
+    var f = e.target; if (!f || f.id !== 'r6Name') return;
+    var i = f.querySelector('input'); if (!i || i.value.trim()) return;
+    i.setAttribute('aria-invalid', 'true'); i.placeholder = 'Bitte einen Vornamen eintragen'; try { i.focus(); } catch (x) {}
+  }, true);
   window.R7K = { hol: hol, leg: leg, esc: esc, blatt: blatt, zu: zu, feier: feier, leer: leer, summ: summ, phase: phase, stunde: stunde, heute: heute, param: param, ruhig: ruhig };
   function start() {
     try { himmel(); } catch (e) { console.warn('r7 himmel', e); }
