@@ -81,7 +81,7 @@ window.R7 = {
           inh.querySelector('#r7KS').textContent = geld(summe);
           inh.querySelector('#r7KT').textContent = teuer ? +teuer.slice(8) + '. · ' + geld(pro[teuer]) : '–';
           var box = inh.querySelector('#r7KTag');
-          if (!Object.keys(pro).length) box.innerHTML = R.leer(y === jetzt.getFullYear() ? 'Noch keine Zettel in diesem Monat. Leg einen ab, dann leuchtet der Tag.' : 'Fompa zeigt das geladene Jahr. Wähle oben das Jahr, wenn du ältere Monate sehen willst.', 'posen/denkt.jpg');
+          if (!Object.keys(pro).length) box.innerHTML = R.leer(y === jetzt.getFullYear() ? 'Noch keine Zettel in diesem Monat. Leg einen ab, dann leuchtet der Tag.' : 'Fompa zeigt das geladene Jahr. Wähle oben das Jahr, wenn du ältere Monate sehen willst.', 'posen/leer.jpg'); // Runde 7c: Tinkos «leer»
           else if (tagWahl) {
             var l = roh[tagWahl] || [];
             box.innerHTML = '<h3>' + +tagWahl.slice(8) + '. ' + MON[m] + '</h3>' + (l.length ? '<ul class="r7-tagliste">' + l.map(function (z) { return '<li><b>' + R.esc(z.from || z.kat || 'Zettel') + '</b><span>' + geld(z.amount) + '</span></li>'; }).join('') + '</ul>' : '<p>An diesem Tag nichts ausgegeben. 🌿</p>');
@@ -124,7 +124,7 @@ window.R7 = {
         }
         function zeig() {
           var box = inh.querySelector('#r7Gl');
-          if (!w.length) { box.innerHTML = R.leer('Noch kein Glas. Was wäre schön?', 'posen/denkt.jpg'); return; }
+          if (!w.length) { box.innerHTML = R.leer('Noch kein Glas. Fompas Glas ist noch leer. Was wäre schön?', 'posen/leer.jpg'); return; }
           box.innerHTML = w.map(function (x, i) {
             var p = x.ziel ? x.drin / x.ziel : 0;
             return '<div class="r7-karte r7-glas">' + svg(p) + '<div class="t"><b>' + R.esc(x.name) + '</b><span class="r7-klein">' + geld(x.drin) + ' von ' + geld(x.ziel) + ' · ' + Math.round(p * 100) + ' %' + (x.ziel > x.drin && sitz(x.ziel - x.drin) ? ' · noch ' + sitz(x.ziel - x.drin) : '') + '</span>' +
