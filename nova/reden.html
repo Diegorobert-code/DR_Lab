@@ -59,6 +59,7 @@
   .hinweis { color:var(--leise); font-size:13px; margin-top:8px; text-align:center; min-height:18px; }
   .vergessen { margin-top:6px; background:none; border:0; color:var(--leise); font:13px system-ui, sans-serif; text-decoration:underline; cursor:pointer; opacity:.8; }
   @media (prefers-reduced-motion: reduce) { .atmen { animation:none; } }
+.schreiben{display:flex;gap:8px;width:min(92vw,460px);margin-top:10px;flex:none}.schreiben input{flex:1;min-width:0;border:0;border-radius:22px;padding:11px 16px;font:16px system-ui,sans-serif;background:#f4f1e8;color:#22201a}.schreiben button{width:44px;height:44px;border-radius:50%;border:0;background:var(--gold);color:#2a1d00;font-size:20px;cursor:pointer;flex:none}
 .lernen{display:block;margin:10px auto 0;max-width:340px;font-size:13px;line-height:1.35;color:#d9d2c3;text-align:center}.lernen input{width:18px;height:18px;vertical-align:-3px;accent-color:#f2c14e}.lernen small{display:block;color:#a9a294}
 </style>
 </head>
@@ -76,6 +77,7 @@
 
 <div class="text" id="text" aria-live="polite"></div>
 
+<form class="schreiben" id="schreiben" autocomplete="off"><input id="eingabe" type="text" enterkeyhint="send" placeholder="Schreiben …" aria-label="Nachricht schreiben"><button type="submit" aria-label="Senden">➤</button></form>
 <button class="knopf" id="knopf" type="button" aria-label="Gespräch starten">🎙</button>
 <div class="hinweis" id="hinweis"></div>
 <label class="lernen" id="lernenBox"><input type="checkbox" id="lernen"> Nova darf aus diesem Gespräch lernen <small>(nur Diego und Team, auf unserem Server in der Schweiz)</small></label>
@@ -120,7 +122,7 @@
   var $ = function (id) { return document.getElementById(id); };
   var buehne = $('buehne'), figur = $('figur');
   var knopf = $('knopf'), status = $('status'), text = $('text'), hinweis = $('hinweis');
-  var conv = null, startet = false, mund = null, offen = RUHE, spitze = 0.15;
+  var conv = null, startet = false, sitzung = 0, eigene = [], mund = null, offen = RUHE, spitze = 0.15;
   // Alle Figuren in einer App: so teilen sie dasselbe Gedächtnis, und Nova sieht alles.
   Object.keys(BILDCHEN).forEach(function (k) {
     var a = document.createElement('a'); a.href = '?f=' + encodeURIComponent(k); a.setAttribute('aria-label', 'Mit ' + FIGUREN[k].name + ' reden');
@@ -292,16 +294,19 @@
 
   function knopfZeigen() {
     var an = !!conv || startet;
+    if (conv && conv.__text) an = false;
     knopf.classList.toggle('aktiv', an);
     knopf.textContent = an ? '■' : '🎙';
     knopf.setAttribute('aria-label', an ? 'Gespräch beenden' : 'Gespräch starten');
   }
 
-  async function starten() {
+  // Schreiben kostet fast nichts: ohne Mikrofon, ohne Stimme, gleiches Wissen und gleicher Server-Zugang.
+  async function starten(nurText) {
     if (startet || conv) return;
     startet = true; knopfZeigen();
+    var nr = ++sitzung;
     status.textContent = NAME + ' wacht auf …'; hinweis.textContent = '';
-    try {
+    if (!nurText) try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (e) {
       startet = false; knopfZeigen();
@@ -314,11 +319,14 @@
       var c = await ElevenLabsClient.Conversation.startSession({
         agentId: AGENT,
         connectionType: 'websocket',
+        textOnly: !!nurText,
         dynamicVariables: variablen(),
-        onConnect: function () { status.textContent = NAME + ' hört zu.'; hopsen(); },
-        onDisconnect: function () { ende('Bis bald! Tipp auf den Knopf, dann bin ich wieder da.'); },
+        onConnect: function () { status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); hopsen(); },
+        onDisconnect: function () { if (nr === sitzung) ende(nurText ? 'Schreib einfach weiter, ich bin gleich wieder da.' : 'Bis bald! Tipp auf den Knopf, dann bin ich wieder da.'); },
         onError: function (m) { hinweis.textContent = 'Fehler: ' + (m || 'unbekannt'); },
-        onMessage: function (m) { if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message); },
+        onMessage: function (m) {
+          if (m && m.source === 'user' && eigene.indexOf(m.message) >= 0) { eigene.splice(eigene.indexOf(m.message), 1); return; }
+          if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message); },
         onModeChange: function (m) {
           var sp = m && m.mode === 'speaking';
           if (conv) conv.__spricht = sp;
@@ -326,8 +334,9 @@
           status.textContent = NAME + (sp ? ' spricht …' : ' hört zu.');
         }
       });
+      c.__text = !!nurText;
       conv = c; startet = false; knopfZeigen();
-      buehne.classList.add('hoert');
+      if (!nurText) buehne.classList.add('hoert');
     } catch (e) {
       startet = false; knopfZeigen();
       status.textContent = NAME + ' schläft gerade.';
@@ -343,7 +352,20 @@
     if (t) status.textContent = t;
   }
 
+  $('schreiben').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var feld = $('eingabe'), t = feld.value.trim();
+    if (!t) return;
+    feld.value = '';
+    zeile('du', t); eigene.push(t);
+    if (!conv) await starten(true);
+    if (!conv) { hinweis.textContent = 'Nicht gesendet. Internet prüfen und nochmal.'; return; }
+    try { conv.sendUserMessage(t); } catch (err) { hinweis.textContent = 'Nicht gesendet. Nochmal versuchen.'; }
+  });
+
   knopf.addEventListener('click', function () {
+    // Vom Schreiben zur Stimme: Text-Gespräch schliessen, dann mit Mikrofon neu starten.
+    if (conv && conv.__text) { var t = conv; ende(); t.endSession().catch(function () {}); starten(false); return; }
     if (conv) { var c = conv; ende('Bis bald!'); c.endSession().catch(function () {}); }
     else starten();
   });
