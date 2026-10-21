@@ -44,10 +44,15 @@
   ].join('');
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
 
+  /* Puppe (nova/puppe.js aus #136): flüssiger Gruss über dem Bild. Fehlt sie, greift die eigene Animation. */
+  function puppeGruss(img, o) {
+    if (!img || !window.Puppe || typeof Puppe.winkeZurueck !== 'function') return false;
+    try { var w = img._puppeWinker || Puppe.winkeZurueck(img, Object.assign({ antippen: false, ton: false, blase: false }, o)); if (!w || !w.winke) return false; w.winke(); return true; } catch (e) { return false; }
+  }
   /* ---------- 1) Zurückwinken ---------- */
   function winke() {
     var p = g('pup'); if (!p) return;
-    if (window.Puppe && typeof Puppe.winkeZurueck === 'function') { try { Puppe.winkeZurueck(p); return; } catch (e) {} }
+    if (puppeGruss(p, { figur: 'waefwaef', gruss: 'wedeln' })) return;
     if (ruhig) return;
     var w = p.parentElement; var pf = h('<span class="r4-pfote" aria-hidden="true">🐾</span>'); w.appendChild(pf); setTimeout(function () { pf.remove(); }, 1300);
     if (g('v-kinder') && !g('v-kinder').hidden) return; // Kinderteil: Bild bleibt still, nur die Pfote winkt
