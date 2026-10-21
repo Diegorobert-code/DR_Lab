@@ -266,7 +266,7 @@
   .tonknopf { width:44px; height:44px; border-radius:50%; border:1px solid var(--rand); background:var(--flaeche); font-size:20px; cursor:pointer; display:grid; place-items:center; padding:0;
     transition:transform .12s var(--ease); }
   .tonknopf:active { transform:scale(.9); }
-  .feldzu { flex:none; width:44px; height:44px; border-radius:50%; border:1px solid #ffffff33; background:#00000033; font-size:22px; font-weight:800; cursor:pointer; padding:0;
+  .feldzu { flex:none; width:46px; height:46px; border-radius:50%; border:1px solid #ffffff33; background:#00000033; font-size:22px; font-weight:800; cursor:pointer; padding:0;
     display:grid; place-items:center; transition:transform .12s var(--ease); }
   .feldzu:active { transform:scale(.9); }
   .feldrechts { flex:none; display:flex; flex-direction:column; align-items:flex-end; gap:4px; }
@@ -386,7 +386,9 @@
   body.zeit-tag .buehne { background:radial-gradient(18% 14% at 80% 16%, #fffbe6 0 55%, #fff1b055 62%, transparent 76%), radial-gradient(90% 70% at 50% 100%, #bfe6ff 0%, #5d9ad8 50%, #2a5aa6 100%); }
   body.zeit-abend .buehne { background:radial-gradient(16% 13% at 82% 14%, #ffe7a8 0 55%, #f5c54255 60%, transparent 75%), radial-gradient(90% 70% at 50% 100%, #e58fb0 0%, #6a4fa8 45%, #1b2766 100%); }
   .fw { z-index:1; }
-  .mondknopf { position:absolute; right:6%; top:4%; width:24%; aspect-ratio:1; border-radius:50%; border:0; background:transparent; z-index:4; cursor:pointer; padding:0; }
+  .buehne-tipp { position:absolute; inset:0; z-index:0; border:0; padding:0; margin:0; background:transparent; border-radius:inherit; cursor:pointer; }
+  .buehne-tipp:focus-visible { outline:3px solid #fff; outline-offset:-4px; }
+  .mondknopf { position:absolute; right:6%; top:4%; width:24%; min-width:44px; min-height:44px; aspect-ratio:1; border-radius:50%; border:0; background:transparent; z-index:4; cursor:pointer; padding:0; }
   .mondknopf::after { content:''; position:absolute; inset:-30%; border-radius:50%; background:radial-gradient(#fff3b0aa, transparent 65%); opacity:0; transition:opacity .6s; }
   .mondknopf.leuchtet::after { opacity:1; }
   .mondknopf:focus-visible { outline:3px solid #fff; }
@@ -507,7 +509,8 @@
 </header>
 <div class="status" id="status" aria-live="polite">&nbsp;</div>
 
-<div class="buehne" id="buehne" role="button" tabindex="0" aria-label="Otti der Igel. Tipp ihn an.">
+<div class="buehne" id="buehne">
+  <button class="buehne-tipp" type="button" aria-label="Otti der Igel. Tipp ihn an."></button>
   <div class="fw" id="fw">
     <div id="puppe"></div>
     <img class="pose" id="pose" alt="">
@@ -516,12 +519,12 @@
   <div class="tipp" id="tipp" hidden><i aria-hidden="true">👆</i> Tipp mich an!</div>
 </div>
 
-<div class="text" id="text" aria-live="polite"></div>
+<div class="text" id="text" aria-live="polite" tabindex="0"></div>
 <section class="feld" id="feld" aria-live="polite" aria-label="Spiel">
   <div class="feldkopf">
     <button class="feldzu" id="feldZu" type="button" aria-label="Zurück zur Spielauswahl">←</button>
     <div class="blase" id="blase"></div>
-    <div class="feldrechts"><div class="feldzahl" id="feldzahl"></div><div class="stufe" id="stufe" hidden></div></div>
+    <div class="feldrechts"><div class="feldzahl" id="feldzahl"></div><div class="stufe" id="stufe" role="img" hidden></div></div>
   </div>
   <div class="dranband" id="dranBand" hidden aria-live="assertive"></div>
   <div class="zeitbalken" id="zeitbalken" hidden><i id="zeitlauf"></i></div>
@@ -684,6 +687,7 @@
 <script src="../nova/nova.js" data-nova-app="Otti" data-nova-figur="otti" data-nova-kind="1" data-nova-bild="freunde/otti.jpg" data-nova-geraetestimme="0"></script>
 <script src="feedback.js" data-app="Otti" defer></script>
 <script src="runde6.js" defer></script>
+<script src="runde7.js" defer></script>
 <script>
 (function () {
   // Live-Gespräch mit Otti: ElevenLabs Agent. Nur von dieser Adresse aus erreichbar, mit Tageslimit.
@@ -968,7 +972,7 @@
     if (a) plane();
     return { stopp: function () { an = false; clearTimeout(id); } };
   }
-  function summ(m) { try { if (navigator.vibrate) navigator.vibrate(m); } catch (e) {} }
+  function summ(m) { /* Runde 7: Kinder-App, ganz ruhig, keine Vibration */ }
   function tonZeigen() { var b = $('tonKnopf'); if (!b) return; b.textContent = tonAn ? '🔊' : '🔇'; b.setAttribute('aria-label', tonAn ? 'Ton aus' : 'Ton an'); b.setAttribute('aria-pressed', String(tonAn)); }
   $('tonKnopf').addEventListener('click', function () {
     tonAn = !tonAn; schreib('otti_ton', tonAn ? '1' : '0'); tonZeigen();
@@ -1298,7 +1302,7 @@
     var x = ohneWdh(TIPP, 'tipp'); bewegung(x[1]); pose('lacht', 1600); kurzZustand('freut', 1300); if (Math.random() < .4) setTimeout(function () { klang('hihi'); }, 250); sagKurz(x[0]);
   }
   buehne.addEventListener('click', ottiTippen);
-  buehne.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); ottiTippen(); } });
+  // Tastatur: der Knopf .buehne-tipp löst den Klick aus (Runde 7: keine verschachtelten Knöpfe mehr)
   function tippWeg() { $('tipp').hidden = true; }
 
   /* ================= Posen: Tinkos Bilder in posen/<pose>.jpg (Liste posen/index.json) ================= */
@@ -2271,7 +2275,7 @@
           st++; var tr = el('span', 'tropfen', st === 1 ? '🌰' : '💧'); b.appendChild(tr); setTimeout(function () { tr.remove(); }, 750);
           klang('pop', st + 2); summ(8); b.classList.remove('waechst'); void b.offsetWidth; b.classList.add('waechst');
           pf.textContent = ['', '🌱', '🌿', blume][st];
-          if (st === 1) blase(zufall(['Ein Samen! Jetzt giessen.', 'Plopp, ein Samen in die Erde.', 'Gut gesät! Gieß ihn.']).replace('Gieß', 'Giess'));
+          if (st === 1) blase(zufall(['Ein Samen! Jetzt giessen.', 'Plopp, ein Samen in die Erde.', 'Gut gesät! Giess ihn.']));
           if (st === 2) blase(zufall(['Es wächst!', 'Schau, ein Blatt!', 'Noch ein bisschen Wasser …']));
           if (st >= 3) {
             b.disabled = true; b.setAttribute('aria-label', 'Blume ' + blume); fertigN++; blumeDazu(blume); $('feldzahl').textContent = '🌷 ' + fertigN + ' / ' + anz;
