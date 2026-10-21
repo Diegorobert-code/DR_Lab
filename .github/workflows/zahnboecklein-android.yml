@@ -1,0 +1,112 @@
+# Zahnböcklein: Android App Bundle (AAB) bauen.
+# Mit den Secrets ZB_KEYSTORE_BASE64, ZB_KEYSTORE_PASSWORD, ZB_KEY_ALIAS, ZB_KEY_PASSWORD
+# wird das AAB mit dem Upload-Schlüssel signiert (bereit für die Play Console).
+# Ohne Secrets: unsigniertes AAB plus Debug-APK zum Ausprobieren.
+# Hochgeladen wird nichts automatisch; das AAB liegt als Download («Artifacts») beim Lauf.
+name: Zahnböcklein Android
+
+on:
+  push:
+    branches: [claude/zahnboecklein-app]
+    paths:
+      - 'zahnboecklein/**'
+      - 'zahnboecklein-native/**'
+      - '.github/workflows/zahnboecklein-android.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: zahnboecklein-android-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  aab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: zahnboecklein-native
+    env:
+      ZB_VERSION_CODE: ${{ github.run_number }}
+      ZB_VERSION_NAME: '1.0.0'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            zahnboecklein
+            zahnboecklein-native
+            .github
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: zahnboecklein-native/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Pakete installieren
+        run: npm ci
+
+      - name: Web-App kopieren und Android synchronisieren
+        run: npm run sync:android
+
+      - name: Upload-Schlüssel aus Secrets (falls vorhanden)
+        env:
+          ZB_KEYSTORE_BASE64: ${{ secrets.ZB_KEYSTORE_BASE64 }}
+          ZB_KEYSTORE_PASSWORD: ${{ secrets.ZB_KEYSTORE_PASSWORD }}
+          ZB_KEY_ALIAS: ${{ secrets.ZB_KEY_ALIAS }}
+          ZB_KEY_PASSWORD: ${{ secrets.ZB_KEY_PASSWORD }}
+        run: |
+          if [ -n "$ZB_KEYSTORE_BASE64" ] && [ -n "$ZB_KEYSTORE_PASSWORD" ] && [ -n "$ZB_KEY_ALIAS" ] && [ -n "$ZB_KEY_PASSWORD" ]; then
+            DATEI="$RUNNER_TEMP/zb-upload.jks"
+            printf '%s' "$ZB_KEYSTORE_BASE64" | base64 --decode > "$DATEI"
+            echo "ZB_KEYSTORE_FILE=$DATEI" >> "$GITHUB_ENV"
+            echo "ZB_SIGNIERT=ja" >> "$GITHUB_ENV"
+            echo "Upload-Schlüssel gefunden: AAB wird signiert."
+          else
+            echo "ZB_SIGNIERT=nein" >> "$GITHUB_ENV"
+            echo "::notice::Keine Signier-Secrets: unsigniertes AAB und Debug-APK werden gebaut."
+          fi
+
+      - name: AAB bauen (Release)
+        working-directory: zahnboecklein-native/android
+        env:
+          ZB_KEYSTORE_PASSWORD: ${{ secrets.ZB_KEYSTORE_PASSWORD }}
+          ZB_KEY_ALIAS: ${{ secrets.ZB_KEY_ALIAS }}
+          ZB_KEY_PASSWORD: ${{ secrets.ZB_KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon bundleRelease
+          if [ "$ZB_SIGNIERT" != "ja" ]; then ./gradlew --no-daemon assembleDebug; fi
+
+      - name: Dateien bereitlegen
+        run: |
+          mkdir -p ausgabe
+          if [ "$ZB_SIGNIERT" = "ja" ]; then
+            cp android/app/build/outputs/bundle/release/app-release.aab "ausgabe/zahnboecklein-${ZB_VERSION_NAME}-${ZB_VERSION_CODE}.aab"
+          else
+            cp android/app/build/outputs/bundle/release/app-release.aab "ausgabe/zahnboecklein-${ZB_VERSION_NAME}-${ZB_VERSION_CODE}-UNSIGNIERT.aab"
+            cp android/app/build/outputs/apk/debug/app-debug.apk "ausgabe/zahnboecklein-${ZB_VERSION_NAME}-${ZB_VERSION_CODE}-debug.apk"
+          fi
+          rm -f "$RUNNER_TEMP/zb-upload.jks"
+          ls -la ausgabe
+          {
+            echo "### Zahnböcklein Android"
+            echo "- versionCode: ${ZB_VERSION_CODE}, versionName: ${ZB_VERSION_NAME}"
+            echo "- signiert: ${ZB_SIGNIERT}"
+            echo "- Download: unten bei «Artifacts» → zahnboecklein-android"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zahnboecklein-android
+          path: zahnboecklein-native/ausgabe/
+          retention-days: 30
+          if-no-files-found: error
