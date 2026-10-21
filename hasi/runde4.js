@@ -50,8 +50,9 @@
     var zuletzt = 0;
     function winke() {
       var f = $('hasi');
-      if (window.Puppe && typeof Puppe.winkeZurueck === 'function') { try { Puppe.winkeZurueck(f); } catch (e) {} }
-      H.hasi('winken', 'Hallo!', 'Hasi winkt dir mit der Pfote zurück und lächelt.', 2000);
+      H.hasi('huepfen', 'Hallo!', 'Hasi hüpft vor Freude und winkt dir mit der Pfote zurück.', 2000);
+      var bild = $('hasiBild');
+      if (bild && !bild.hidden && window.Puppe && typeof Puppe.winkeZurueck === 'function') { try { var w = bild._puppeWinker || Puppe.winkeZurueck(bild, { figur: 'hasi', gruss: 'huepfen', antippen: false, ton: false, blase: false }); if (w && w.winke) w.winke(); } catch (e) {} }
       if (!ruhig && f) { f.classList.remove('r4-hallo'); void f.offsetWidth; f.classList.add('r4-hallo'); }
       summ(10);
     }
