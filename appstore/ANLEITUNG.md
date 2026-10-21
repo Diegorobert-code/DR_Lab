@@ -52,3 +52,8 @@ Zum Hochladen nach App Store Connect, sobald das Developer-Konto aktiv ist:
 4. Die vier App-Einträge in App Store Connect müssen schon angelegt sein (Schritt 8 oben).
 5. Actions → «iPhone-Apps bauen» → «Run workflow» → «Hochladen» anhaken. Nach ca. 20 Min. liegen die Builds in TestFlight.
 Eingereicht wird dadurch nichts; «Zur Prüfung einreichen» machst du weiterhin selbst.
+
+## Nova (ab 21.10.2026)
+- Ordner appstore/nova, Bundle-ID ch.drlab.nova. Die App lädt Nova live von der Website (`server.url` in capacitor.config.json), darum ist sie nach jeder Änderung beim nächsten Öffnen aktuell, ohne neuen Upload. Ohne Internet zeigt sie www/offline.html.
+- Nur für Diego: über TestFlight verteilen (kein App-Review für interne Tester). Öffentlich im Store erst mit GmbH, Marken, AGB und Datenschutz-Seite.
+- Texte und Screenshots: nova/store/.

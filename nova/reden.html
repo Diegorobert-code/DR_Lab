@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-21-1">
+<meta name="stand" content="2026-10-21-2">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -139,6 +139,8 @@
     $('wahl').appendChild(a);
   });
   $('name').textContent = NAME; $('vname').textContent = NAME;
+  // In der eigenen App (App Store) gibt es nur Nova: kein Zurück zur Übersicht, keine Figurenwahl.
+  if (new URLSearchParams(location.search).get('app')) { $('zurueck').style.display = 'none'; $('wahl').style.display = 'none'; }
   $('zurueck').addEventListener('click', function (e) { e.preventDefault(); if (history.length > 1) history.back(); else location.href = '../apps/'; });
 
   // Ottis Gesicht: Mund bewegt sich im Takt seiner Stimme (nova/mund.js).
