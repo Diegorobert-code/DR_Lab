@@ -38,8 +38,11 @@
             return '<path d="M' + p(r, a0) + ' L' + p(R, a0) + ' A' + R + ' ' + R + ' 0 0 1 ' + p(R, a1) + ' L' + p(r, a1) + ' A' + r + ' ' + r + ' 0 0 0 ' + p(r, a0) + 'Z" fill="' + farbe + '" opacity="' + (i === idx ? 1 : 0.28) + '" stroke="#0b1430" stroke-width="2"/>';
           }).join('');
           var o = O[idx], von = o[0], bis = (o[0] + 2) % 24;
+          /* Tinkos Rad ohne Beschriftung: Stunden im Code drüberlegen (Mitte ca. 53.6 % / 43.6 %, Rand 36.7 %) */
+          var marken = O.map(function (x, i) { var w = (i * 30 - 90) * Math.PI / 180; return '<span class="r7-h' + (i === idx ? ' an' : '') + '" style="left:' + (53.6 + 36.7 * Math.cos(w)).toFixed(1) + '%;top:' + (43.6 + 36.7 * Math.sin(w)).toFixed(1) + '%">' + x[0] + '</span>'; }).join('');
+          var uhrbild = '<figure class="r7-uhrbild"><img alt="Fia steht vor einem grossen goldenen Rad, der Organuhr" loading="lazy" decoding="async" width="768" height="768" src="posen/organuhr.jpg"><span aria-hidden="true">' + marken + '</span><figcaption>Jetzt ' + ('0' + von).slice(-2) + '–' + ('0' + bis).slice(-2) + ' Uhr · ' + o[3] + ' ' + H.esc(o[1]) + '</figcaption></figure>';
           var n = H.karte('organuhr', '🕐 Organuhr',
-            '<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap"><svg viewBox="0 0 180 180" width="140" height="140" aria-hidden="true" style="flex:none">' + seg + '<text x="90" y="86" text-anchor="middle" fill="#ffe08a" font-size="22" font-weight="800">' + ('0' + von).slice(-2) + '–' + ('0' + bis).slice(-2) + '</text><text x="90" y="106" text-anchor="middle" fill="#c9d2ee" font-size="12">Uhr</text></svg>' +
+            uhrbild + '<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap"><svg viewBox="0 0 180 180" width="96" height="96" aria-hidden="true" style="flex:none">' + seg + '<text x="90" y="86" text-anchor="middle" fill="#ffe08a" font-size="22" font-weight="800">' + ('0' + von).slice(-2) + '–' + ('0' + bis).slice(-2) + '</text><text x="90" y="106" text-anchor="middle" fill="#c9d2ee" font-size="12">Uhr</text></svg>' +
             '<div style="flex:1;min-width:160px"><p class="r7-leise" style="margin:0">Gerade ist dran:</p><p class="r7-gross" style="margin:0">' + o[3] + ' ' + H.esc(o[1]) + '</p><p class="r7-leise" style="margin:0">Element ' + H.esc(o[2]) + '</p></div></div>' +
             '<p style="margin-top:16px"><b>Spür-Frage:</b> ' + H.esc(o[4]) + '</p><p><b>Für eine Minute:</b> ' + H.esc(o[5]) + '</p>' +
             '<p class="r7-leise">Die Organuhr stammt aus der chinesischen Tradition. Hier ist sie eine Einladung zum Spüren, keine Medizin und keine Diagnose.</p>' +
@@ -86,13 +89,13 @@
         bau: function (H) {
           var S = [['Ankommen', 'Füsse auf den Boden, Hände auf die Oberschenkel. Spüre, wo du den Stuhl berührst.'], ['Nacken', 'Kopf langsam nach rechts neigen, dann nach links. Die Schulter bleibt schwer.'], ['Schultern', 'Schultern dreimal nach hinten kreisen. Gross und langsam.'], ['Wirbelsäule', 'Hände auf die Knie. Einatmen: Brust nach vorn. Ausatmen: Rücken rund.'], ['Nachspüren', 'Augen zu oder Blick weich. Was ist jetzt anders als vor zwei Minuten?']];
           var n = H.karte('pause', '🪑 Bewegte Pause',
-            '<p>Langes Sitzen macht steif. Fia führt dich durch fünf kleine Schritte, zusammen etwa zwei Minuten.</p>' +
+            '<img class="r7-bild" alt="Fia steht auf einem Stuhl und streckt die Flügel weit aus" loading="lazy" decoding="async" width="768" height="480" src="posen/streckt.jpg" style="object-position:50% 35%"><p>Langes Sitzen macht steif. Fia führt dich durch fünf kleine Schritte, zusammen etwa zwei Minuten.</p>' +
             '<div class="r7-reihe"><button type="button" class="r7-btn voll" data-a="los">▶︎ Pause starten</button></div>' +
             '<h3>Sanft erinnern</h3><p class="r7-leise">Solange Körperkosmos offen ist, tippt Fia dich an. Es wird nichts gesendet.</p>' +
             '<div class="r7-chips" role="group" aria-label="Erinnerung"><button type="button" data-m="0">Aus</button><button type="button" data-m="45">alle 45 Min.</button><button type="button" data-m="60">jede Stunde</button></div>');
           function lauf() {
             var i = -1, t = 0, aus = false;
-            var v = H.voll('<img alt="" src="posen/zeigt.jpg"><p class="r7-ti" style="color:var(--r7-gold2);font-weight:800"></p><p class="r7-tx" aria-live="polite"></p><small class="r7-sx"></small><button type="button" class="r7-btn">Beenden</button>', function () { aus = true; clearTimeout(t); H.still(); });
+            var v = H.voll('<img alt="" src="posen/streckt.jpg"><p class="r7-ti" style="color:var(--r7-gold2);font-weight:800"></p><p class="r7-tx" aria-live="polite"></p><small class="r7-sx"></small><button type="button" class="r7-btn">Beenden</button>', function () { aus = true; clearTimeout(t); H.still(); });
             v.el.querySelector('button').onclick = v.zu;
             (function weiter() {
               if (aus) return; i++;
@@ -206,6 +209,13 @@
     '.r7-feld input,.r7-feld textarea,.r7-feld select{width:100%;box-sizing:border-box;min-height:44px;padding:10px 12px;border-radius:var(--r7-rad-s);border:1px solid rgba(242,193,78,.5);background:rgba(8,14,36,.7);color:var(--r7-text);font:inherit;font-size:16px;font-weight:400}',
     '.r7-feld textarea{min-height:88px;resize:vertical}',
     '.r7-kopf{display:flex;gap:var(--r7-2);align-items:center}',
+    /* Runde 7d: Tinko-Bilder in den Karten */
+    '.r7-bild{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:50% 40%;border-radius:var(--r7-rad-s);margin:var(--r7-1) 0 var(--r7-2);border:1px solid rgba(242,193,78,.35);background:#0e1838}',
+    '.r7-uhrbild{position:relative;width:min(100%,320px);margin:var(--r7-1) auto var(--r7-2);border-radius:var(--r7-rad);overflow:hidden;border:1px solid rgba(242,193,78,.4)}',
+    '.r7-uhrbild img{display:block;width:100%;height:auto;aspect-ratio:1}',
+    '.r7-uhrbild .r7-h{position:absolute;transform:translate(-50%,-50%);min-width:24px;padding:1px 5px;border-radius:999px;background:rgba(11,20,48,.72);color:#ffe9b0;font-size:11px;font-weight:800;line-height:16px;text-align:center;font-variant-numeric:tabular-nums}',
+    '.r7-uhrbild .r7-h.an{background:var(--r7-gold);color:#14204a;font-size:13px;line-height:20px;padding:1px 8px;box-shadow:0 0 0 3px rgba(242,193,78,.35)}',
+    '.r7-uhrbild figcaption{position:absolute;left:8px;right:8px;bottom:8px;padding:6px 10px;border-radius:12px;background:rgba(6,10,28,.78);color:#fff;font-weight:700;font-size:14px;text-align:center}',
     '.r7-kopf img{flex:none;width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--r7-gold);background:#0e1838}',
     '.r7-gross{font-size:22px;line-height:1.4;font-weight:700;color:var(--r7-text);margin:var(--r7-1) 0}',
     '.r7-leer{display:flex;gap:var(--r7-2);align-items:center;padding:var(--r7-2);border-radius:var(--r7-rad);border:1px dashed rgba(242,193,78,.45);background:rgba(242,193,78,.06);color:var(--r7-leise);margin-top:var(--r7-1)}',

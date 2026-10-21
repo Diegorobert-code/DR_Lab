@@ -1,7 +1,7 @@
 /* Fia Körperkosmos: Offline-Kopie. Netz zuerst (immer die neuste Fassung), die Kopie nur als Ersatz ohne Netz.
    Speichert keine Eingaben, nur die Dateien der App. */
-const CACHE = 'fia-kosmos-v10';
-const DATEIEN = ['runde6.js', 'runde7.js', 'saison/halloween.jpg', 'besuch/otti.jpg', 'besuch/flo.jpg', 'besuch/granny.jpg', 'besuch/mama-affe.jpg', 'besuch/waefwaef.jpg', 'besuch/fompa.jpg', 'saison/advent.jpg', './', 'index.html', 'manifest.webmanifest', 'feedback.js', 'figur.jpg', 'figur-gross.jpg', 'icon-180.png', 'icon-192.png', 'posen/posen.json', 'posen/fliegt.jpg', 'posen/wacht.jpg',
+const CACHE = 'fia-kosmos-v11';
+const DATEIEN = ['posen/organuhr.jpg', 'posen/streckt.jpg', 'runde6.js', 'runde7.js', 'saison/halloween.jpg', 'besuch/otti.jpg', 'besuch/flo.jpg', 'besuch/granny.jpg', 'besuch/mama-affe.jpg', 'besuch/waefwaef.jpg', 'besuch/fompa.jpg', 'saison/advent.jpg', './', 'index.html', 'manifest.webmanifest', 'feedback.js', 'figur.jpg', 'figur-gross.jpg', 'icon-180.png', 'icon-192.png', 'posen/posen.json', 'posen/fliegt.jpg', 'posen/wacht.jpg',
   'posen/atmet.jpg', 'posen/freut.jpg', 'posen/schlaeft.jpg', 'posen/lauscht.jpg', 'posen/ruht.jpg', 'posen/winkt.jpg', 'posen/zeigt.jpg',
   '../nova/intro.js', '../nova/puppe.js', '../nova/puppe.css', '../nova/seelen.js', '../nova/nova.js', '../nova/nova.jpg'];
 self.addEventListener('install', e => {
