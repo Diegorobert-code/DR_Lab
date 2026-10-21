@@ -7,9 +7,9 @@ name: iPhone-Apps bauen
 on:
   push:
     branches: [main]
-    paths: ['appstore/**', 'mondschein/**', 'humanspark/**', 'tradeping/**', 'jackie/**', 'schlaf/**', 'kiki/**', 'mama-affe/**', 'fompa/**', 'appid/**', 'nova/**', 'apps/sprechen/**', '.github/workflows/ios-build.yml']
+    paths: ['appstore/**', 'mondschein/**', 'humanspark/**', 'tradeping/**', 'jackie/**', 'schlaf/**', 'kiki/**', 'mama-affe/**', 'fompa/**', 'appid/**', 'otti/**', 'transkript/**', 'granny/**', 'carmen/**', 'waefwaef/**', 'coinmaker/**', 'hasi/**', 'fia-kosmos/**', 'nova/**', 'apps/sprechen/**', '.github/workflows/ios-build.yml']
   pull_request:
-    paths: ['appstore/**', 'mondschein/**', 'humanspark/**', 'tradeping/**', 'jackie/**', 'schlaf/**', 'kiki/**', 'mama-affe/**', 'fompa/**', 'appid/**', 'nova/**', 'apps/sprechen/**', '.github/workflows/ios-build.yml']
+    paths: ['appstore/**', 'mondschein/**', 'humanspark/**', 'tradeping/**', 'jackie/**', 'schlaf/**', 'kiki/**', 'mama-affe/**', 'fompa/**', 'appid/**', 'otti/**', 'transkript/**', 'granny/**', 'carmen/**', 'waefwaef/**', 'coinmaker/**', 'hasi/**', 'fia-kosmos/**', 'nova/**', 'apps/sprechen/**', '.github/workflows/ios-build.yml']
   workflow_dispatch:
     inputs:
       hochladen:
@@ -20,7 +20,7 @@ on:
         description: 'Welche App'
         type: choice
         default: alle
-        options: [alle, mondschein, humanspark, tradeping, jackie, fiasnest, kiki, mamaaffe, fompa, foodandflow]
+        options: [alle, mondschein, humanspark, tradeping, jackie, fiasnest, kiki, mamaaffe, fompa, foodandflow, otti, transkript, granny, carmen, waefwaef, coinmaker, hasi, fiakosmos]
 
 concurrency:
   group: ios-${{ github.ref }}
@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        app: [mondschein, humanspark, tradeping, jackie, fiasnest, kiki, mamaaffe, fompa, foodandflow]
+        app: [mondschein, humanspark, tradeping, jackie, fiasnest, kiki, mamaaffe, fompa, foodandflow, otti, transkript, granny, carmen, waefwaef, coinmaker, hasi, fiakosmos]
     env:
       HOCHLADEN: ${{ github.event_name == 'workflow_dispatch' && inputs.hochladen && (inputs.app == 'alle' || inputs.app == matrix.app) }}
       UEBERSPRINGEN: ${{ github.event_name == 'workflow_dispatch' && inputs.app != 'alle' && inputs.app != matrix.app }}

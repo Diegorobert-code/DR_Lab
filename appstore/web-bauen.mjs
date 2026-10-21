@@ -5,6 +5,8 @@
 //           --ziel <Ordner>    www woanders hinschreiben (z. B. für Screenshots)
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
+import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const hier = path.dirname(fileURLToPath(import.meta.url));
@@ -23,8 +25,24 @@ const www = ziel ? path.resolve(ziel) : path.join(projekt, 'www');
 fs.rmSync(www, { recursive: true, force: true });
 fs.mkdirSync(path.join(www, 'native'), { recursive: true });
 
-const appQuelle = path.join(repo, app.ordner);
-if (!fs.existsSync(path.join(appQuelle, 'index.html'))) { console.error('Nicht gefunden: ' + path.join(appQuelle, 'index.html')); process.exit(1); }
+let appQuelle = path.join(repo, app.ordner);
+// App noch nicht auf main (apps.json «quelleBranch»): Ordner aus dem Feature-Branch holen, nur für diesen Bau.
+if (!fs.existsSync(path.join(appQuelle, 'index.html')) && app.quelleBranch) {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'drlab-quelle-'));
+  try {
+    execSync(`git fetch --depth=1 origin ${app.quelleBranch}`, { cwd: repo, stdio: 'ignore' });
+    execSync(`git archive FETCH_HEAD ${app.ordner} | tar -x -C "${tmp}"`, { cwd: repo, stdio: 'ignore', shell: '/bin/sh' });
+    appQuelle = path.join(tmp, app.ordner);
+    console.log(`Hinweis: ${app.ordner}/ fehlt auf diesem Stand, genommen aus Branch ${app.quelleBranch}`);
+  } catch (e) { /* unten: Platzhalter */ }
+}
+if (!fs.existsSync(path.join(appQuelle, 'index.html'))) {
+  if (!app.quelleBranch) { console.error('Nicht gefunden: ' + path.join(appQuelle, 'index.html')); process.exit(1); }
+  // Branch nicht erreichbar: Platzhalter, damit der App-Bau trotzdem geprüft werden kann. So nie einreichen.
+  console.log(`::warning::${app.ordner}/ fehlt (weder hier noch im Branch ${app.quelleBranch}). Gebaut wird eine Platzhalter-Seite, so nicht einreichen.`);
+  fs.writeFileSync(path.join(www, 'index.html'), `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${app.name}</title></head><body style="margin:0;background:${app.hintergrund}"></body></html>\n`);
+  process.exit(0);
+}
 // Nur die App selbst, ohne Service Worker und ohne das Test-Gesprächsfenster (feedback.js schickt an Diego, gehört zur Testphase).
 const RAUS = new Set(['sw.js', 'feedback.js', 'FIGUR.md']);
 fs.cpSync(appQuelle, path.join(www, app.ordner), { recursive: true, filter: q => !RAUS.has(path.basename(q)) || path.dirname(q) !== appQuelle });
