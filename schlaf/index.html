@@ -232,6 +232,7 @@ body[data-stage="glut"] .zeitlicht{opacity:0}
 .list li small{display:block;color:var(--muted)}
 .story{all:unset;box-sizing:border-box;cursor:pointer;display:block;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(6,10,28,.45)}
 .story.heute{border-color:var(--gold)}
+.geschichtenbild{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:50% 62%;border-radius:14px;margin:2px 0 10px;border:1px solid var(--line)}
 .story b{display:block}.story small{color:var(--muted)}
 .plan{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .plan li{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:.93rem}
@@ -618,6 +619,7 @@ label.nurhoeren input{width:22px;height:22px;margin:0 4px 0 0;accent-color:var(-
   </div>
   <div class="card">
     <h2>📖 Gute-Nacht-Geschichten</h2>
+    <img class="geschichtenbild" src="posen/geschichte.jpg" alt="Otti, Fia, Wäf Wäf und Sunny sitzen am Abend zusammen im Städtchen" width="768" height="768" loading="lazy" decoding="async">
     <p class="muted">Sieben ruhige Geschichten aus Fias Städtchen. Ohne Spannung, mit offenem Ende. Die von heute leuchtet.</p>
     <div class="ways" id="geschichten"></div>
   </div>
@@ -1480,8 +1482,8 @@ $('personAdd').onclick=()=>{const n=$('person').value.trim().slice(0,20);if(!n||
 /* Posen: Nur Bilder, die hier eingetragen sind, werden geladen (keine Anfragen ins Leere, keine 404).
    Neues Fia-Bild: als posen/<pose>.jpg ablegen (max. 120 KB, zeigt wirklich Fia) und den Namen hier eintragen.
    Alle anderen Posen bewegt CSS sanft auf dem vorhandenen Bild. */
-var POSEN_DA=['wach','schlaeft','atmet','muede','fliegt','freut','hoert','staedtchen-nacht'];
-var POSE_BILD={},POSE_KL=['p-wach','p-muede','p-schlaeft','p-fliegt','p-atmet','p-freut','p-hoert'];
+var POSEN_DA=['wach','schlaeft','atmet','muede','fliegt','freut','hoert','staedtchen-nacht','winkt','zeigt','liegt'];
+var POSE_BILD={},POSE_KL=['p-wach','p-muede','p-schlaeft','p-fliegt','p-atmet','p-freut','p-hoert','p-zeigt','p-liegt'];
 POSEN_DA.forEach(p=>POSE_BILD[p]='posen/'+p+'.jpg');
 try{localStorage.removeItem('fiasnest.posenFehlen')}catch(e){}
 function poseBild(p){return(typeof POSE_BILD!=='undefined'&&POSE_BILD&&POSE_BILD[p])||null}
@@ -1576,7 +1578,7 @@ let ONB=0;
 function onbSchritt(n){ONB=n;document.querySelectorAll('[data-onb]').forEach(d=>d.hidden=+d.dataset.onb!==n);
   document.querySelectorAll('.onb-punkte span').forEach((s,i)=>s.classList.toggle('on',i===n));
   $('onbZurueck').hidden=n===0;$('onbWeiter').textContent=n===2?'Los geht’s':'Weiter';
-  setPose($('onbFia'),['freut','wach','atmet'][n]);
+  setPose($('onbFia'),['winkt','zeigt','atmet'][n]);
   if(n===1){$('onbAuf').value=S.zeiten.auf;$('onbBett').value=S.zeiten.bett;const f=$('onbFigs');f.innerHTML='';
     Object.entries(FIGS).forEach(([k,v])=>{const b=document.createElement('button');b.className=S.begleiter===k?'sel':'';b.innerHTML=`<img src="${v.b}" alt=""><span>${v.n}</span>`;
       b.onclick=()=>{S.begleiter=k;save();f.querySelectorAll('button').forEach(x=>x.classList.toggle('sel',x===b))};f.appendChild(b)})}}
@@ -1649,11 +1651,28 @@ if(!S.onb)onbZeigen();else if(AKTUELL==='home')film();
 POSE_KL.push('p-winkt');
 function winke(el){if(!el)return;
   /* Puppe (nova/puppe.js): Fia flattert flüssig zurück. Ohne Puppe: sanfte CSS-Animation wie bisher. */
-  try{if(window.Puppe&&typeof Puppe.winkeZurueck==='function'){const w=Puppe.winkeZurueck(el,{figur:'fia',gruss:'flattern',antippen:false,ton:false,blase:false});if(w&&w.winke){w.winke({gruss:'flattern'});return}}}catch(e){}
+  try{if(window.Puppe&&typeof Puppe.winkeZurueck==='function'){fiaWinktEcht(el);return}}catch(e){}
   setPose(el,'winkt',1350,grundPose());
   if(reduce)return;const box=el.parentNode;if(!box)return;const h=document.createElement('span');h.className='winkhand';h.textContent='👋';h.setAttribute('aria-hidden','true');
   const r=el.getBoundingClientRect(),b=box.getBoundingClientRect();h.style.left=(r.right-b.left-34)+'px';h.style.top=(r.top-b.top+6)+'px';box.appendChild(h);setTimeout(()=>h.remove(),1400)}
 window.winke=winke;
+/* Runde 5: Tinkos Winkebild (posen/winkt.jpg). Der Flügel im Bild schwingt echt, danach zurück zur vorherigen Pose.
+   Augen, Schnabel und Flügel am Bild gemessen (Anteile 0..1). */
+const FIA_WINK={arm:false,augenZu:false,augen:[[0.39,0.428,0.045,0.05],[0.578,0.443,0.055,0.058]],
+  mund:{l:[0.43,0.527],r:[0.515,0.53],oben:0,unten:0,kinn:0.03,max:0.03},kopf:[0.51,0.40,0.22],hals:[0.52,0.62],
+  winkArm:{x:0.29,y:0.55,r:0.16,dx:0.40,dy:0.62,seite:'links',winkel:20}};
+function fiaWinktEcht(el){const WB=poseBild('winkt');
+  if(!WB){const w0=Puppe.winkeZurueck(el,{figur:'fia',gruss:'flattern',antippen:false,ton:false,blase:false});if(w0&&w0.winke)w0.winke({gruss:'flattern'});return}
+  const vorPose=el.dataset.pose||grundPose();
+  const los=()=>{if(el._puppeWinker&&!el._fiaWink)el._puppeWinker.loese();
+    const w=Puppe.winkeZurueck(el,Object.assign({figur:'fia',gruss:'flattern',antippen:false,ton:false,blase:false},FIA_WINK));el._fiaWink=1;
+    if(w&&w.winke)w.winke({gruss:'flattern'});
+    clearTimeout(el._fiaZurueck);if(vorPose!=='winkt')el._fiaZurueck=setTimeout(()=>{if(el.isConnected&&el.getAttribute('src')===WB)setPose(el,vorPose)},2600)};
+  POSE_KL.forEach(k=>el.classList.remove(k));el.classList.add('echt');clearTimeout(POSE_T.get(el));el.dataset.pose='winkt';
+  if(el.getAttribute('src')===WB&&el.complete)los();else{el.addEventListener('load',los,{once:true});el.src=WB}}
+/* Ausglühen, Schritt 3: Fia legt sich ins Nest */
+$('ab3').addEventListener('click',()=>setPose($('aFia'),'liegt'));
+$('aReset').addEventListener('click',()=>setPose($('aFia'),'atmet'));
 /* Nach Fias eigener Reaktion (Satz, Funken) winkt sie zurück */
 $('cover').addEventListener('click',()=>winke($('cover')));
 $('cover').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')winke($('cover'))});

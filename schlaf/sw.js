@@ -1,8 +1,8 @@
 /* Fias Nest offline: zuerst Netz, sonst Kopie aus dem Cache. Nur eigene Dateien, nie Server-Anfragen. */
-const CACHE = 'fiasnest-v8';
+const CACHE = 'fiasnest-v9';
 const KERN = ['./', 'index.html', 'manifest.webmanifest', 'cover.jpg', 'icon-192.png', 'icon-180.png',
   'posen/wach.jpg', 'posen/schlaeft.jpg', 'posen/atmet.jpg', 'posen/muede.jpg', 'posen/fliegt.jpg',
-  'posen/freut.jpg', 'posen/hoert.jpg', 'posen/staedtchen-nacht.jpg',
+  'posen/freut.jpg', 'posen/hoert.jpg', 'posen/staedtchen-nacht.jpg', 'posen/winkt.jpg', 'posen/zeigt.jpg', 'posen/liegt.jpg', 'posen/geschichte.jpg',
   'figuren/fia.jpg', 'figuren/otti.jpg', 'figuren/sunny.jpg', 'figuren/waef.jpg', 'feedback.js',
   '../nova/nova.js', '../nova/seelen.js', '../nova/puppe.js', '../nova/puppe.css'];
 self.addEventListener('install', e => {
