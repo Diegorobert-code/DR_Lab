@@ -311,7 +311,7 @@ h1{color:#F2C14E}
           <div><b id="sRm">–</b><span>RMSSD (letzte stille Minute)</span></div>
         </div>
       </div>
-      <button class="btn mic" id="sDict">🎙 Diktat</button>
+      <button class="btn mic" id="sDict">🎙 Einfach reinreden – nimmt alles auf</button>
       <div class="muted" id="sInterim"></div>
       <div class="notice hidden" id="sDictNote"></div>
       <div class="noteline"><input id="sNote" class="inp" placeholder="Oder Notiz tippen …" autocomplete="off"><button class="btn ghost" id="sNoteAdd" aria-label="Notiz hinzufügen">+</button></div>
@@ -1129,7 +1129,7 @@ $('btnMic').addEventListener('click', function(){
 
 // Allgemeines Diktat (Sitzung, Schlusssatz)
 function Dictation(o){
-  var r = null, on = false, lang = 'de-CH';
+  var r = null, on = false, lang = 'de-CH', gewollt = false;
   function start(){
     if (!SR){ o.err('Spracherkennung ist hier nicht verfügbar. Tipp ins Textfeld und nutz das Mikrofon der Tastatur.'); return; }
     if (recog && listening) recog.stop();
@@ -1142,15 +1142,20 @@ function Dictation(o){
     };
     r.onerror = function(ev){
       if (ev.error === 'language-not-supported' && lang === 'de-CH'){ lang = 'de-DE'; setTimeout(start, 50); return; }
-      if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') o.err('Mikrofon nicht erlaubt. Gib die Freigabe ' + MIC_SETTINGS + ' – oder tipp die Notiz.');
+      if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed'){ gewollt = false; o.err('Mikrofon nicht erlaubt. Gib die Freigabe ' + MIC_SETTINGS + ' – oder tipp die Notiz.'); }
       else if (ev.error !== 'no-speech' && ev.error !== 'aborted') o.err('Spracherkennung unterbrochen (' + ev.error + '). Tipp nochmals auf den Knopf oder tipp die Notiz.');
     };
-    r.onend = function(){ on = false; o.state(false); if (o.interim) o.interim(''); };
+    r.onend = function(){
+      on = false; if (o.interim) o.interim('');
+      // Das iPhone beendet die Erkennung nach Pausen: bei Daueraufnahme still neu starten
+      if (o.weiter && gewollt){ setTimeout(function(){ if (gewollt && !on) start(); }, 250); return; }
+      o.state(false);
+    };
     try { r.start(); on = true; o.state(true); o.err(''); } catch(e){ o.err('Spracherkennung konnte nicht starten. Tipp die Notiz ins Feld.'); }
   }
   return {
-    toggle:function(){ if (on){ try { r.stop(); } catch(e){} } else start(); },
-    stop:function(){ if (on){ try { r.stop(); } catch(e){} } }
+    toggle:function(){ if (on || gewollt){ gewollt = false; o.state(false); try { r.stop(); } catch(e){} } else { gewollt = true; start(); } },
+    stop:function(){ gewollt = false; if (on){ try { r.stop(); } catch(e){} } }
   };
 }
 
@@ -1160,7 +1165,9 @@ var MARKERS = [
   {k:'tuer', l:'Tür geht auf', c:'#c96a4e'},
   {k:'offen', l:'Gewebe offen', c:'#4f8a8b'},
   {k:'regul', l:'Gewebe regulierend', c:'#6f9e86'},
-  {k:'beweg', l:'Gewebe bewegend', c:'#b9a256'}
+  {k:'beweg', l:'Gewebe bewegend', c:'#b9a256'},
+  {k:'faszie', l:'Faszie geöffnet', c:'#7a6aa8'},
+  {k:'beruehr', l:'Berührung', c:'#a8607a'}
 ];
 function markerOf(k){ return MARKERS.filter(function(m){ return m.k === k; })[0]; }
 var sess = null, sMode = 'messung', sPending = null, sLastOut = null;
@@ -1266,7 +1273,7 @@ $('sMarkers').querySelectorAll('.mbtn').forEach(function(b){
 function sEvent(k, v){
   if (!sess) return;
   var ev = {t:Math.round(sess.clock * 10) / 10, k:k, v:v};
-  if (k === 'diktat'){ var pj = sPulsJetzt(sess); if (pj) ev.bpm = pj; } // Stimme und Puls: Puls der letzten 20 s zum gesagten Satz
+  if (k === 'diktat'){ var pj = sPulsJetzt(sess); if (pj){ ev.bpm = pj.bpm; if (pj.rmssd != null) ev.rm = pj.rmssd; } } // Stimme und Puls: Puls der letzten 20 s zum gesagten Satz
   sess.events.push(ev);
   sFeed(); sUpdate();
   return ev;
@@ -1282,11 +1289,11 @@ function sPulsJetzt(s){
     while (s.rrRoll.length && s.rrRoll[0][0] < s.clock - 25) s.rrRoll.shift();
     res = analyseRR(s.rrRoll.filter(function(p){ return p[0] >= t0; }).map(function(p){ return p[1]; }), 8);
   }
-  return res && res.ok ? res.bpm : null;
+  return res && res.ok ? {bpm:res.bpm, rmssd:res.rmssd} : null;
 }
 function evLabel(e){
   if (e.k === 'marker') return markerOf(e.v) ? markerOf(e.v).l : e.v;
-  if (e.k === 'diktat') return '«' + e.v + '»';
+  if (e.k === 'diktat') return '«' + e.v + '»' + (e.bpm ? ' · Puls ' + e.bpm + (e.rm != null ? ' · HRV ' + e.rm + ' ms' : '') : '');
   if (e.k === 'sprechen') return 'Klient spricht';
   if (e.k === 'stille') return 'Stille';
   if (e.k === 'lage') return 'Lage: ' + e.v;
@@ -1303,7 +1310,8 @@ function sFeed(){
 var sDict = Dictation({
   final:function(t){ if (sess) sEvent('diktat', t); },
   interim:function(t){ $('sInterim').textContent = t ? '… ' + t : ''; },
-  state:function(on){ $('sDict').classList.toggle('on', on); $('sDict').textContent = on ? '■ Diktat stoppen' : '🎙 Diktat'; },
+  weiter:true,
+  state:function(on){ $('sDict').classList.toggle('on', on); $('sDict').textContent = on ? '■ Aufnahme stoppen' : '🎙 Einfach reinreden – nimmt alles auf'; },
   err:function(t){ var n = $('sDictNote'); n.textContent = t; n.classList.toggle('hidden', !t); if (t && !SR) $('sNote').focus(); }
 });
 $('sDict').addEventListener('click', function(){ sDict.toggle(); });
@@ -1560,7 +1568,7 @@ function renderOutcome(e){
 function stimmePuls(e){
   var ref = e.start && e.start.bpm;
   return e.events.filter(function(x){ return x.k === 'diktat'; }).map(function(x){
-    return {t:x.t, text:x.v, bpm:x.bpm == null ? null : x.bpm, diff: x.bpm != null && ref ? x.bpm - ref : null};
+    return {t:x.t, text:x.v, bpm:x.bpm == null ? null : x.bpm, rm:x.rm == null ? null : x.rm, diff: x.bpm != null && ref ? x.bpm - ref : null};
   });
 }
 function stimmePulsHtml(e){
@@ -1570,7 +1578,7 @@ function stimmePulsHtml(e){
   if (!l.length) return h + '<p class="muted">Kein Diktat in dieser Sitzung. Tipp während der Messung auf «🎙 Diktat» und sprich, dann steht hier jeder Satz mit deinem Puls.</p>';
   h += '<div class="tl">' + l.map(function(x){
     var d = x.diff == null ? '' : ' <span class="badge">' + (x.diff > 0 ? '+' : '') + x.diff + '</span>';
-    return '<div><b>' + fmtClock(x.t) + '</b>«' + esc(x.text) + '»<br><span class="muted">Puls ' + (x.bpm == null ? '– (Finger ruhig halten)' : x.bpm) + '</span>' + d + '</div>';
+    return '<div><b>' + fmtClock(x.t) + '</b>«' + esc(x.text) + '»<br><span class="muted">Puls ' + (x.bpm == null ? '– (Finger ruhig halten)' : x.bpm) + (x.rm != null ? ' · HRV ' + x.rm + ' ms' : '') + '</span>' + d + '</div>';
   }).join('') + '</div>';
   h += '<p class="muted" style="margin-top:6px">Zahl im Kästchen: Unterschied zum Ruhepuls am Anfang' + (e.start && e.start.bpm ? ' (' + e.start.bpm + ')' : '') + '. Beim Sprechen steigt der Puls oft leicht, das ist normal.</p>';
   var verb = novaBereit();
