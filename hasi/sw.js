@@ -1,6 +1,6 @@
 // Hasis Laden – Offline-Cache (nur eigene Dateien, keine Daten, kein Code der Kunden)
-const CACHE = 'hasi-v8';
-const FILES = ['./runde6.js', './besuch/otti.jpg', './besuch/mrping.jpg', './besuch/waefwaef.jpg', './besuch/granny.jpg', './', './index.html', './hasi.js', './runde4.js', './posen.js', './posen/daumen.jpg', './posen/passt.jpg', './posen/huepfen.jpg', './posen/winken.jpg', './feedback.js', './icon-180.png', './icon-192.png', './manifest.webmanifest', '../nova/nova.js', '../nova/puppe.js', '../nova/puppe.css', '../nova/seelen.js'];
+const CACHE = 'hasi-v9';
+const FILES = ['./runde6.js', './saison/halloween.jpg', './saison/advent.jpg', './besuch/otti.jpg', './besuch/mrping.jpg', './besuch/waefwaef.jpg', './besuch/granny.jpg', './', './index.html', './hasi.js', './runde4.js', './posen.js', './posen/daumen.jpg', './posen/passt.jpg', './posen/huepfen.jpg', './posen/winken.jpg', './feedback.js', './icon-180.png', './icon-192.png', './manifest.webmanifest', '../nova/nova.js', '../nova/puppe.js', '../nova/puppe.css', '../nova/seelen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(FILES.map(f => c.add(f).catch(() => {})))).then(() => self.skipWaiting()));
 });
