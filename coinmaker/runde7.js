@@ -12,6 +12,7 @@ window.R7 = {
   css: [
     '#pull,#wiegen{background:#c4362f!important}',
     '.kv span:nth-child(even){white-space:nowrap}',
+    'html.r6-gross .teil-reihe{grid-template-columns:1fr!important;justify-items:center}html.r6-gross .teil-reihe .kv{width:100%}',
     '@media (max-width:360px){.teil-reihe{grid-template-columns:1fr!important;justify-items:center}.teil-reihe .kv{width:100%}}',
     '.del{min-height:44px;padding:0 12px!important}',
     '.zv-stern,.buy{min-height:44px!important}',
@@ -38,6 +39,7 @@ window.R7 = {
     function st() { try { var s = JSON.parse(localStorage.getItem('coinmaker.v1') || 'null'); return s && Array.isArray(s.items) ? s : { items: [] }; } catch (e) { return { items: [] }; } }
     function echte() { return st().items.filter(function (i) { return !i.ex; }); }
     function woche(day) { var t = new Date((day || R.heute()) + 'T12:00'); t.setDate(t.getDate() - ((t.getDay() + 6) % 7)); return t.toISOString().slice(0, 10); }
+    ['say', 'formula'].forEach(function (id) { var e = document.getElementById(id); if (e && !e.hasAttribute('tabindex')) e.setAttribute('tabindex', '0'); });
     var THEMEN = [
       ['Weniger Papier', 'Wie könnte eine App helfen, dass weniger Zettel herumliegen?'],
       ['Gute Nacht', 'Was hilft Kindern oder Eltern abends beim Runterfahren?'],
@@ -410,6 +412,11 @@ window.R7 = {
     rb.addEventListener('click', function () { var an = !hol('ruhig', false); leg('ruhig', an); rb.setAttribute('aria-pressed', an); H.classList.toggle('r7-ruhig', an); });
   }
 
+  d.addEventListener('submit', function (e) {
+    var f = e.target; if (!f || f.id !== 'r6Name') return;
+    var i = f.querySelector('input'); if (!i || i.value.trim()) return;
+    i.setAttribute('aria-invalid', 'true'); i.placeholder = 'Bitte einen Vornamen eintragen'; try { i.focus(); } catch (x) {}
+  }, true);
   window.R7K = { hol: hol, leg: leg, esc: esc, blatt: blatt, zu: zu, feier: feier, leer: leer, summ: summ, phase: phase, stunde: stunde, heute: heute, param: param, ruhig: ruhig };
   function start() {
     try { himmel(); } catch (e) { console.warn('r7 himmel', e); }
