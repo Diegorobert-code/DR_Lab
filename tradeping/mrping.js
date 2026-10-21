@@ -506,7 +506,7 @@
     var t = ev.target;
     if (t.closest('[data-ruhe]') && t.closest('[data-ruhe]').dataset.ruhe !== 'off') { lern.ruhe++; lernSave(); setTimeout(grundPose, 50); }
     if (t.closest('[data-ruhe="off"]')) setTimeout(grundPose, 50);
-    if (t.closest('.mp-ava')) { var g = grundSatz(); pose(g[0] === 'schlaf' ? 'ping' : 'denk', g[1]); sprich(g[1]); }
+    // .mp-ava: Antippen übernimmt runde4.js (Mr. Ping winkt zurück)
     var b = t.closest('#mpWoche [data-b]'); if (b) { bereich = b.dataset.b; renderVerlauf(); }
     var jb = t.closest('[data-j]');
     if (jb) {

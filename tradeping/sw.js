@@ -1,7 +1,7 @@
 // TradePing – Offline-Cache (nur eigene Dateien, keine Kursdaten)
-const CACHE = 'tp-v12';
+const CACHE = 'tp-v13';
 const SERVER = 'https://sense-179-237-127-58.sslip.io/kursping';
-const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './figur.jpg', './figur-gross.jpg', './ping-3d.jpg', './mrping.js', './mrping2.js', './spieltopf.js', './posen/posen.json', './posen/ping.jpg', './posen/jubel.jpg', './posen/warn.jpg', './posen/schlaf.jpg', './posen/denk.jpg', './feedback.js'];
+const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './figur.jpg', './figur-gross.jpg', './ping-3d.jpg', './mrping.js', './mrping2.js', './spieltopf.js', './runde4.js', './posen/posen.json', './posen/ping.jpg', './posen/jubel.jpg', './posen/warn.jpg', './posen/schlaf.jpg', './posen/denk.jpg', './feedback.js'];
 self.addEventListener('install', e => {
   // Gemeinsame Bausteine (Nova, Intro, Sprechen) tolerant dazu: fehlt einer, startet die App trotzdem offline.
   const EXTRA = ['../nova/intro.js', '../nova/nova.js', '../nova/seelen.js', '../apps/sprechen/sprechen.js'];
