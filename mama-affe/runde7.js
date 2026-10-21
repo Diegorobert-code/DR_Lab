@@ -16,7 +16,7 @@
         id: 'uhr', emo: '⏳', titel: 'Zeit-Scheibe', kurz: 'Kinder sehen, wie viel Zeit bleibt. Hilft bei Übergängen.',
         bau: function (H) {
           var n = H.karte('uhr', '⏳ Zeit-Scheibe',
-            '<p>«Noch fünf Minuten» ist für Kinder schwer vorzustellen. Die goldene Scheibe wird kleiner, bis die Zeit um ist. Danach ein sanfter Ton.</p>' +
+            '<img class="r7-bild" alt="Mama Affe hält eine bunte Zeit-Scheibe" loading="lazy" decoding="async" width="768" height="480" src="posen/zeitscheibe.jpg" style="object-position:50% 40%"><p>«Noch fünf Minuten» ist für Kinder schwer vorzustellen. Die goldene Scheibe wird kleiner, bis die Zeit um ist. Danach ein sanfter Ton.</p>' +
             '<label class="r7-feld">Und danach kommt …<input name="danach" maxlength="40" placeholder="z. B. Zähne putzen" autocomplete="off"></label>' +
             '<div class="r7-chips" role="group" aria-label="Minuten wählen"><button type="button" data-m="2">2 Min.</button><button type="button" data-m="5">5 Min.</button><button type="button" data-m="10">10 Min.</button><button type="button" data-m="15">15 Min.</button></div>');
           var inp = n.querySelector('input'); inp.value = H.hol('danach', '');
@@ -50,7 +50,7 @@
         bau: function (H) {
           var ZIEL = 20, k = H.hol('glas', []);
           var n = H.karte('glas', '🫙 Mut-Glas',
-            '<p>Hat dein Kind heute etwas Mutiges, Liebes oder Geduldiges getan? Leg eine Kugel ins Glas. Wenn es voll ist, feiert ihr zusammen, wie ihr wollt.</p>' +
+            '<img class="r7-bild" alt="Mama Affe hält ein Glas voller bunter Kugeln" loading="lazy" decoding="async" width="768" height="480" src="posen/kugelglas.jpg" style="object-position:50% 45%"><p>Hat dein Kind heute etwas Mutiges, Liebes oder Geduldiges getan? Leg eine Kugel ins Glas. Wenn es voll ist, feiert ihr zusammen, wie ihr wollt.</p>' +
             '<div style="display:flex;gap:16px;align-items:flex-end;margin-top:8px"><svg viewBox="0 0 100 130" width="110" height="143" aria-hidden="true" style="flex:none"><path d="M22 18h56v10c8 6 12 14 12 26v54c0 10-8 18-18 18H28c-10 0-18-8-18-18V54c0-12 4-20 12-26z" fill="rgba(180,210,255,.12)" stroke="rgba(220,235,255,.6)" stroke-width="3"/><rect x="18" y="8" width="64" height="12" rx="4" fill="#b8863b"/><g class="r7-kugeln"></g></svg>' +
             '<div style="flex:1;min-width:0"><p class="r7-gross r7-zahlg" aria-live="polite" style="margin:0"></p><p class="r7-leise r7-letzte" style="margin:0"></p></div></div>' +
             '<label class="r7-feld">Was war schön? (freiwillig)<input name="was" maxlength="60" placeholder="z. B. hat beim Arzt tapfer gewartet" autocomplete="off"></label>' +
@@ -81,7 +81,7 @@
           var Q = ['Was hat dich heute zum Lachen gebracht?', 'Wenn du ein Tier sein könntest, welches wärst du heute?', 'Was war heute schwer, und was hat dir geholfen?', 'Wem möchtest du heute Danke sagen?', 'Was möchtest du morgen unbedingt machen?', 'Welche Superkraft hättest du gern für einen Tag?', 'Was war der schönste Moment heute?', 'Wenn unsere Familie ein Lied wäre, wie würde es klingen?', 'Was hast du heute Neues gelernt?', 'Was macht dich mutig?', 'Wo wärst du jetzt gern, wenn du zaubern könntest?', 'Was magst du an dir besonders?', 'Wer war heute nett zu dir?', 'Was würdest du erfinden, wenn du Erfinderin oder Erfinder wärst?', 'Welches Geräusch hat dir heute gefallen?', 'Was würde Mama Affe dir heute sagen?', 'Was ist dein liebstes Wetter, und warum?', 'Wenn du einen Tag lang Mama oder Papa wärst, was würdest du machen?', 'Worüber hast du heute gestaunt?', 'Was war heute ein kleines Abenteuer?', 'Welche Farbe hatte dein Tag?', 'Was hat sich heute gut in deinem Körper angefühlt?', 'Wen möchtest du bald besuchen?', 'Was ist ein guter Freund oder eine gute Freundin für dich?', 'Was hast du heute für jemanden getan?', 'Wenn du ein Buch schreiben würdest, wie hiesse es?', 'Was ist das Mutigste, das du je gemacht hast?', 'Was möchtest du einmal lernen?', 'Was riecht für dich nach Zuhause?', 'Wovon möchtest du heute Nacht träumen?'];
           var off = H.hol('tischOff', 0);
           var n = H.karte('tisch', '🍽️ Frage am Familientisch',
-            '<div class="r7-kopf"><img alt="" loading="lazy" src="posen/denkt.jpg"><p class="r7-gross r7-q" aria-live="polite" style="margin:0"></p></div>' +
+            '<img class="r7-bild" alt="Mama Affe sitzt am gedeckten Familientisch" loading="lazy" decoding="async" width="768" height="480" src="posen/familientisch.jpg" style="object-position:50% 50%"><p class="r7-gross r7-q" aria-live="polite" style="margin:0"></p>' +
             '<p class="r7-leise">Jede und jeder darf antworten. Auch die Grossen. Weitergeben ist erlaubt.</p>' +
             '<div class="r7-reihe"><button type="button" class="r7-btn voll" data-a="neu">Andere Frage</button>' + (H.kannReden ? '<button type="button" class="r7-btn" data-a="hoer">🎧 Vorlesen</button>' : '') + '</div>');
           function q() { return Q[(H.tagNr + off) % Q.length]; }
@@ -194,6 +194,8 @@
     '.r7-feld input,.r7-feld textarea,.r7-feld select{width:100%;box-sizing:border-box;min-height:44px;padding:10px 12px;border-radius:var(--r7-rad-s);border:1px solid rgba(242,193,78,.5);background:rgba(8,14,36,.7);color:var(--r7-text);font:inherit;font-size:16px;font-weight:400}',
     '.r7-feld textarea{min-height:88px;resize:vertical}',
     '.r7-kopf{display:flex;gap:var(--r7-2);align-items:center}',
+    /* Runde 7d: Tinko-Bilder in den Karten */
+    '.r7-bild{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:50% 40%;border-radius:var(--r7-rad-s);margin:var(--r7-1) 0 var(--r7-2);border:1px solid rgba(242,193,78,.35);background:#0e1838}',
     '.r7-kopf img{flex:none;width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--r7-gold);background:#0e1838}',
     '.r7-gross{font-size:22px;line-height:1.4;font-weight:700;color:var(--r7-text);margin:var(--r7-1) 0}',
     '.r7-leer{display:flex;gap:var(--r7-2);align-items:center;padding:var(--r7-2);border-radius:var(--r7-rad);border:1px dashed rgba(242,193,78,.45);background:rgba(242,193,78,.06);color:var(--r7-leise);margin-top:var(--r7-1)}',
