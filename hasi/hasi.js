@@ -5,7 +5,7 @@
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
   var ruhig = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var BASE = 'https://diegorobert-code.github.io/DR_Lab/';
+  var BASE = '../';
   function hol(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }
   function leg(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   function heute() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
