@@ -31,6 +31,20 @@
   .info { margin-top: 18px; font-size: 13px; color: var(--leise); background: var(--karte); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 12px 14px; }
   .info b { color: var(--gold2); font-weight: 600; }
   code { font-size: 12px; color: var(--gold2); word-break: break-word; }
+  .knoepfe.zwei { grid-template-columns: 1fr 1fr; }
+  button.k.gross { min-height: 64px; font-size: 15px; flex-direction: row; justify-content: center; gap: 8px; }
+  button.k.gross span { font-size: 24px; }
+  button.k.gross b { font-weight: 600; }
+  .arten { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .arten button { appearance: none; border: 1px solid var(--linie); background: transparent; color: var(--leise); border-radius: 999px; padding: 6px 11px; font: 600 12.5px/1 inherit; font-family: inherit; cursor: pointer; }
+  .arten button:active { transform: scale(.95); }
+  .figuren { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .figuren button { appearance: none; border: 1px solid var(--linie); background: var(--karte); color: var(--text); border-radius: 14px; padding: 6px 2px 7px; font: 600 11.5px/1.15 inherit; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; }
+  .figuren img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; display: block; box-shadow: 0 0 0 1px rgba(242,193,78,.35); }
+  .figuren button.an { background: rgba(242,193,78,.18); border-color: var(--gold); box-shadow: 0 0 18px rgba(242,193,78,.25); }
+  .figuren span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .reihe { display: flex; justify-content: space-around; gap: 10px; padding: 46px 4px 8px; }
+  .reihe img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 2px rgba(242,193,78,.5), 0 6px 18px -6px rgba(0,0,0,.6); cursor: pointer; }
 </style>
 </head>
 <body>
@@ -39,6 +53,20 @@
   <p class="unter">Tipp Otti an, neig das Handy – und probier die Knöpfe.</p>
   <div id="otti" aria-label="Otti der Igel"></div>
   <div class="sprechblase" id="blase" aria-live="polite"></div>
+
+  <h2>Grüssen</h2>
+  <div class="knoepfe zwei">
+    <button class="k gross" id="winken"><span>👋</span>Winken</button>
+    <button class="k gross" id="gruss"><span>✨</span><b id="grussName">Auf ihre Art</b></button>
+  </div>
+  <div class="arten" id="arten"></div>
+
+  <h2>Figur</h2>
+  <div class="figuren" id="figuren"></div>
+  <div class="knoepfe drei" style="margin-top:8px">
+    <button class="k" id="ebenen"><span>🧩</span>Ebenen</button>
+    <button class="k" id="neig"><span>📱</span>Neigung</button>
+  </div>
 
   <h2>Zustand</h2>
   <div class="knoepfe" id="zustaende"></div>
@@ -57,16 +85,13 @@
     <button class="k" id="text"><span>💬</span>Nur Text</button>
   </div>
 
-  <h2>Figur</h2>
-  <div class="knoepfe">
-    <button class="k" data-figur="otti" data-bild="../otti/otti-3d.jpg"><span>🦔</span>Otti</button>
-    <button class="k" data-figur="otti" data-bild="../mondschein/figur-gross.jpg"><span>🌙</span>Otti Mond</button>
-    <button class="k" data-figur="nova" data-bild="nova-3d.jpg"><span>🤖</span>Nova</button>
-    <button class="k" data-figur="fia" data-bild="figuren/fia-wacht.jpg"><span>🔥</span>Fia</button>
-  </div>
-  <div class="knoepfe drei" style="margin-top:8px">
-    <button class="k" id="ebenen"><span>🧩</span>Ebenen</button>
-    <button class="k" id="neig"><span>📱</span>Neigung</button>
+  <h2>Zurückwinken in einer App</h2>
+  <p class="unter">So sieht <code>Puppe.winkeZurueck()</code> aus: normale Bilder bleiben ruhig – tippst du eins an, grüsst die Figur zurück.</p>
+  <div class="reihe" id="reihe">
+    <img src="../otti/otti-3d.jpg" alt="Otti" width="72" height="72">
+    <img src="../hasi/icon-512.png" alt="Hasi" width="72" height="72">
+    <img src="../tradeping/ping-3d.jpg" alt="Mr. Ping" width="72" height="72">
+    <img src="../waefwaef/icon-512.png" alt="Wäf Wäf" width="72" height="72">
   </div>
 
   <p class="info" id="info">Modus: <b id="modus">…</b><br>
@@ -79,14 +104,16 @@
 (function () {
   var Z = [['ruhig', '😌', 'Ruhig'], ['hoert', '👂', 'Hört zu'], ['redet', '🗣️', 'Redet'], ['freut', '🥳', 'Freut sich'], ['winkt', '👋', 'Winkt'], ['denkt', '💭', 'Denkt'], ['schlaeft', '😴', 'Schläft']];
   var q = new URLSearchParams(location.search);
-  var STANDARD = { otti: '../otti/otti-3d.jpg', nova: 'nova-3d.jpg', fia: 'figuren/fia-wacht.jpg' };
-  var figur = STANDARD[q.get('figur')] ? q.get('figur') : 'otti';
-  var bild = q.get('bild') || STANDARD[figur];
+  // alle Figuren mit Posenbild im Repo (Pfade in Puppe.figuren relativ zum Repo-Hauptordner)
+  var F = Puppe.figuren, LISTE = ['otti', 'otti-winkt', 'nova', 'fia', 'flo', 'granny', 'hasi', 'ping', 'waefwaef', 'fompa', 'sunny', 'sparky', 'coinmaker', 'kiki', 'carmen', 'jackie'];
+  var MOND = '../mondschein/figur-gross.jpg';
+  var EBENEN = { otti: 1, nova: 1, fia: 1 };
+  var figur = F[q.get('figur')] ? q.get('figur') : 'otti';
+  var bild = q.get('bild') || '../' + F[figur].bild;
   // Ebenen-Modus (Tinkos Teile) ist Standard; ?ebenen=0 zeigt den Ein-Bild-Modus
   var ebenenAn = q.get('ebenen') !== '0';
-  var MOND = '../mondschein/figur-gross.jpg';
-  function ordner() { return ebenenAn && opt.bild !== MOND ? 'puppe/' + opt.figur + '/' : false; }
-  var opt = { figur: figur, bild: bild, pauseNach: 25 };
+  function ordner() { return ebenenAn && EBENEN[opt.figur] && opt.bild !== MOND ? 'puppe/' + opt.figur + '/' : false; }
+  var opt = { figur: figur, bild: bild, pauseNach: 25, antippen: 'gruss' };
   opt.ordner = ordner();
   var otti = window.otti = Puppe.erstelle('#otti', opt);
   var blase = document.getElementById('blase');
@@ -110,20 +137,34 @@
   binde(otti);
 
   document.querySelectorAll('[data-r]').forEach(function (b) { b.onclick = function () { otti.reagiere(b.dataset.r); }; });
-  var NAMEN = { otti: 'Otti', nova: 'Nova', fia: 'Fia' };
+  var ARTEN = { winken: '👋 winken', reden: '💬 reden', flattern: '🪽 flattern', nicken: '🙂 nicken', huepfen: '🐇 hüpfen', glocke: '🔔 Glocke', wedeln: '🐶 wedeln', lachen: '😄 lachen', joggen: '🏃 joggen' };
+  function artName(a) { return a.split('+').map(function (x) { return (ARTEN[x] || x).replace(/^\S+ /, ''); }).join(' + '); }
+  var figBox = document.getElementById('figuren');
+  LISTE.forEach(function (n) {
+    var b = document.createElement('button'); b.type = 'button'; b.dataset.figur = n;
+    b.innerHTML = '<img alt="" loading="lazy" src="../' + F[n].bild + '"><span>' + (n === 'otti-winkt' ? 'Otti winkt' : F[n].name) + '</span>';
+    b.onclick = function () { opt.figur = n; opt.bild = '../' + F[n].bild; neu(); };
+    figBox.appendChild(b);
+  });
+  var artBox = document.getElementById('arten');
+  Object.keys(ARTEN).forEach(function (a) {
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = ARTEN[a];
+    b.onclick = function () { otti.gruesse(a); };
+    artBox.appendChild(b);
+  });
+  document.getElementById('winken').onclick = function () { otti.winke(); };
+  document.getElementById('gruss').onclick = function () { otti.gruesse(); };
   function figurKnoepfe() {
-    document.querySelectorAll('[data-bild]').forEach(function (x) { x.classList.toggle('an', x.dataset.bild === opt.bild); });
-    var e = document.getElementById('ebenen'); e.classList.toggle('an', ebenenAn); e.disabled = opt.bild === MOND;
-    e.lastChild.textContent = ebenenAn ? 'Ebenen' : 'Ein-Bild';
+    figBox.querySelectorAll('button').forEach(function (x) { x.classList.toggle('an', x.dataset.figur === opt.figur); });
+    var e = document.getElementById('ebenen'); e.classList.toggle('an', ebenenAn && !!EBENEN[opt.figur]); e.disabled = !EBENEN[opt.figur];
+    e.lastChild.textContent = ebenenAn && EBENEN[opt.figur] ? 'Ebenen' : 'Ein-Bild';
+    document.getElementById('grussName').textContent = 'Auf ' + (F[opt.figur].name) + 's Art: ' + artName(F[opt.figur].gruss || 'winken');
   }
   function neu() { opt.ordner = ordner(); figurKnoepfe(); titel(); otti.zerstoere(); otti = window.otti = Puppe.erstelle('#otti', opt); binde(otti); }
-  function titel() { document.querySelector('h1').textContent = NAMEN[opt.figur] + ' lebt'; document.querySelector('.unter').textContent = 'Tipp ' + NAMEN[opt.figur] + ' an, neig das Handy – und probier die Knöpfe.'; document.getElementById('otti').setAttribute('aria-label', NAMEN[opt.figur]); }
+  function titel() { var nm = F[opt.figur].name; document.querySelector('h1').textContent = nm + ' lebt'; document.querySelector('.unter').textContent = 'Tipp ' + nm + ' an – und probier «Winken».'; document.getElementById('otti').setAttribute('aria-label', nm); }
   figurKnoepfe(); titel();
-  document.querySelectorAll('[data-bild]').forEach(function (b) {
-    b.onclick = function () {
-      opt.figur = b.dataset.figur; opt.bild = b.dataset.bild; neu();
-    };
-  });
+  // Zurückwinken-Beispiel: jedes Bild grüsst beim Antippen auf seine Art
+  window.winker = Puppe.winkeZurueck('#reihe img');
   document.getElementById('ebenen').onclick = function () { ebenenAn = !ebenenAn; neu(); };
   document.getElementById('neig').onclick = function () { otti.erlaubeNeigung(); };
 

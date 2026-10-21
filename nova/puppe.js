@@ -17,6 +17,19 @@
 // Reden: jedes abgespielte <audio> bewegt automatisch den Mund (Web Audio Analyse);
 //        mit ElevenLabs-Zeitstempeln: otti.sage(audioElement, alignment)   (alignment = { characters, character_start_times_seconds, character_end_times_seconds })
 //        nur Text (ohne Ton): otti.sprich('Hoi zäme!')
+//
+// Grüssen (jede Figur auf ihre Art): otti.winke()  ·  otti.gruesse()  ·  otti.gruesse('winken+reden', { satz: 'Hoi!' })
+//   Arten: winken, reden, flattern, nicken, huepfen, glocke, wedeln, lachen, joggen (mit «+» kombinierbar).
+//   Ohne Art: Vorlage der Figur (Puppe.figuren[name].gruss). System «weniger Bewegung»: sanftes Nicken statt Winken.
+//   Winken im Ein-Bild-Modus: mit winkArm { x, y, r, dx, dy, seite, winkel, heben } (Anteile 0..1 am Bild) schwingt dieser
+//   Bildbereich um den Drehpunkt (dx, dy); das Gesicht bleibt fest. Ohne winkArm erscheint ein gemalter Arm neben dem Gesicht.
+//   Option antippen: 'gruss' → Antippen der Figur grüsst (statt kitzeln).
+//
+// Zurückwinken in jeder App (vorhandenes <img> bleibt, nur beim Gruss lebt es):
+//   <link rel="stylesheet" href="../nova/puppe.css"><script src="../nova/puppe.js"></script>
+//   var w = Puppe.winkeZurueck('img.figur');           // Figur wird am Bildpfad erkannt, sonst { figur: 'otti' }
+//   w.winke();  w.gruesse('reden', { satz: 'Hallo!', audio: 'hallo.mp3' });
+//   Kamera (nur wo die App sie schon nutzt): var stopp = Puppe.kameraWinken(videoEl, function () { w.winke(); });
 (function () {
   'use strict';
   if (window.Puppe) return;
@@ -37,7 +50,7 @@
       kopf: [0.53, 0.56, 0.47], // Mitte x, y, Radius
       hals: [0.53, 0.98],
       innen: [0.30, 0.07, 0.07],
-      arm: { seite: 'rechts', fell: '#9a6230', fellHell: '#d29a58', haut: '#f0c39a', x: 0.81, y: 0.99, groesse: 0.40 },
+      arm: { seite: 'rechts', fell: '#9a6230', fellHell: '#d29a58', haut: '#f0c39a', x: 0.78, y: 0.99, groesse: 0.40 },
       glow: '#f2c14e'
     },
     // Nova: nova/nova-3d.jpg (1024 x 1024)
@@ -62,9 +75,131 @@
       hals: [0.56, 0.74],
       innen: [0.2, 0.03, 0.02],
       arm: { typ: 'fluegel', seite: 'rechts', fell: '#d9481f', fellHell: '#ff9d4d', haut: '#ffc173', dunkel: '#8a2410', x: 0.82, y: 0.80, groesse: 0.44 },
-      glow: '#ff9a4a'
+      glow: '#ff9a4a',
+      gruss: 'flattern'
+    },
+    // ---- weitere Figuren (Ein-Bild-Modus). Gemessen an den Bildern im Repo, Anteile 0..1.
+    // winkArm: Bereich im Bild, der beim Winken mitschwingt (Mitte x, y, Radius r, Drehpunkt dx/dy = Ellbogen/Schulter).
+    // Ohne winkArm bekommt die Figur einen gemalten Arm (arm) neben dem Gesicht.
+    flo: {
+      name: 'Flo', bild: 'nova/figuren/flo.jpg',
+      augen: [[0.42, 0.41, 0.068, 0.062], [0.632, 0.435, 0.063, 0.06]],
+      mund: { l: [0.40, 0.555], r: [0.60, 0.575], oben: 0.012, unten: 0.05, kinn: 0.06, offen: true },
+      kopf: [0.51, 0.42, 0.36], hals: [0.52, 0.74], innen: [0.42, 0.10, 0.12],
+      arm: { seite: 'rechts', glatt: true, ballen: false, fell: '#d8d2c6', fellHell: '#fffaf0', haut: '#f4dcc8', dunkel: '#8a7a5a', linie: '#a08a50', x: 0.80, y: 1.0, groesse: 0.36 },
+      glow: '#f6d98a', gruss: 'joggen+winken'
+    },
+    fompa: {
+      name: 'Fompa', bild: 'nova/figuren/fompa.jpg',
+      augen: [[0.462, 0.315, 0.07, 0.07], [0.632, 0.35, 0.065, 0.07]],
+      mund: { l: [0.44, 0.435], r: [0.585, 0.465], oben: 0.012, unten: 0.035, kinn: 0.05, offen: true },
+      kopf: [0.53, 0.36, 0.3], hals: [0.55, 0.62], innen: [0.35, 0.08, 0.08],
+      winkArm: { x: 0.82, y: 0.64, r: 0.15, dx: 0.70, dy: 0.80, seite: 'rechts' },
+      glow: '#f2c14e', gruss: 'nicken'
+    },
+    granny: {
+      name: 'Granny', bild: 'granny/figur-gross.jpg',
+      augen: [[0.41, 0.425, 0.06, 0.045], [0.652, 0.485, 0.06, 0.045]],
+      mund: { l: [0.37, 0.60], r: [0.57, 0.645], oben: 0.006, unten: 0.014, kinn: 0.06 },
+      kopf: [0.5, 0.48, 0.42], hals: [0.5, 0.96], innen: [0.4, 0.1, 0.1],
+      arm: { seite: 'links', glatt: true, ballen: false, fell: '#e98f8c', fellHell: '#f8c4bb', haut: '#f3c9a6', dunkel: '#a85a5a', linie: '#b07a5a', x: 0.17, y: 1.0, groesse: 0.34 },
+      glow: '#f2c14e', gruss: 'lachen+winken', satz: 'Ach, wie schön, dass du da bist!'
+    },
+    hasi: {
+      name: 'Hasi', bild: 'hasi/icon-512.png',
+      augen: [[0.44, 0.42, 0.05, 0.06], [0.592, 0.378, 0.04, 0.05]],
+      mund: { l: [0.49, 0.52], r: [0.585, 0.508], oben: 0.004, unten: 0.01, kinn: 0.04 },
+      kopf: [0.52, 0.40, 0.22], hals: [0.55, 0.62], innen: [0.35, 0.08, 0.08],
+      winkArm: { x: 0.64, y: 0.60, r: 0.11, dx: 0.70, dy: 0.80, seite: 'rechts' },
+      glow: '#f2c14e', gruss: 'huepfen'
+    },
+    ping: {
+      name: 'Mr. Ping', bild: 'tradeping/ping-3d.jpg',
+      augen: [[0.62, 0.265, 0.045, 0.05], [0.755, 0.28, 0.04, 0.045]],
+      mund: { l: [0.63, 0.365], r: [0.795, 0.37], oben: 0.008, unten: 0.03, kinn: 0.05, offen: true },
+      kopf: [0.69, 0.3, 0.24], hals: [0.66, 0.56], innen: [0.3, 0.06, 0.06],
+      winkArm: { x: 0.91, y: 0.52, r: 0.14, dx: 0.95, dy: 0.80, seite: 'rechts', winkel: 16 }, gesicht: [0.72, 0.33, 0.2],
+      glow: '#f2c14e', gruss: 'glocke', satz: 'Ping! Hallo!'
+    },
+    waefwaef: {
+      name: 'Wäf Wäf', bild: 'waefwaef/icon-512.png',
+      augen: [[0.36, 0.475, 0.045, 0.05], [0.605, 0.38, 0.045, 0.05]],
+      mund: { l: [0.51, 0.62], r: [0.70, 0.575], oben: 0.01, unten: 0.06, kinn: 0.06, offen: true },
+      kopf: [0.55, 0.48, 0.42], hals: [0.55, 0.92], innen: [0.45, 0.1, 0.12],
+      arm: { seite: 'rechts', fell: '#efe2cc', fellHell: '#fffaf0', haut: '#f3d9c3', dunkel: '#b9a27e', linie: '#a08a6a', x: 0.86, y: 1.0, groesse: 0.34 },
+      glow: '#f6d98a', gruss: 'wedeln', satz: 'Wuff!'
+    },
+    sunny: {
+      name: 'Sunny', bild: 'nova/figuren/sunny.jpg',
+      augen: [[0.42, 0.355, 0.065, 0.07], [0.655, 0.42, 0.06, 0.07]],
+      mund: { l: [0.40, 0.50], r: [0.58, 0.525], oben: 0.012, unten: 0.05, kinn: 0.05, offen: true },
+      kopf: [0.52, 0.38, 0.32], hals: [0.5, 0.64], innen: [0.4, 0.08, 0.1],
+      winkArm: { x: 0.90, y: 0.62, r: 0.16, dx: 0.76, dy: 0.62, seite: 'rechts' },
+      glow: '#f2c14e', gruss: 'flattern'
+    },
+    sparky: {
+      name: 'Sparky', bild: 'nova/figuren/sparky.jpg',
+      augen: [[0.42, 0.64, 0.06, 0.06], [0.695, 0.525, 0.065, 0.07]],
+      mund: { l: [0.53, 0.80], r: [0.78, 0.745], oben: 0.006, unten: 0.016, kinn: 0.05 },
+      kopf: [0.6, 0.56, 0.44], hals: [0.6, 0.98], innen: [0.35, 0.08, 0.08],
+      arm: { seite: 'links', fell: '#d9561f', fellHell: '#ff9a52', haut: '#3a2418', dunkel: '#7a2a10', linie: '#2a160c', x: 0.16, y: 1.0, groesse: 0.36, ballen: false },
+      glow: '#ff9a4a', gruss: 'winken+reden', satz: 'Hey, schön dich zu sehen!'
+    },
+    coinmaker: {
+      name: 'Coinmaker', bild: 'nova/figuren/coinmaker.jpg',
+      augen: [[0.53, 0.30, 0.05, 0.055], [0.66, 0.37, 0.045, 0.05]],
+      mund: { l: [0.515, 0.47], r: [0.64, 0.475], oben: 0.01, unten: 0.035, kinn: 0.05, offen: true },
+      kopf: [0.58, 0.36, 0.25], hals: [0.55, 0.66], innen: [0.3, 0.06, 0.06],
+      winkArm: { x: 0.15, y: 0.31, r: 0.25, dx: 0.06, dy: 0.70, seite: 'links', winkel: 10 },
+      glow: '#f2c14e', gruss: 'winken'
+    },
+    kiki: {
+      name: 'Kiki', bild: 'kiki/figur-gross.jpg',
+      augen: [[0.40, 0.43, 0.065, 0.065], [0.69, 0.62, 0.065, 0.07]],
+      mund: { l: [0.36, 0.64], r: [0.52, 0.72], oben: 0.01, unten: 0.06, kinn: 0.05, offen: true },
+      kopf: [0.55, 0.55, 0.45], hals: [0.55, 0.98], innen: [0.45, 0.1, 0.12],
+      glow: '#f2c14e', gruss: 'reden', satz: 'La-la-la – hallo!'
+    },
+    carmen: {
+      name: 'Carmen', bild: 'carmen/figur-gross.jpg',
+      augen: [[0.575, 0.35, 0.05, 0.05], [0.742, 0.47, 0.045, 0.05]],
+      mund: { l: [0.555, 0.51], r: [0.665, 0.55], oben: 0.01, unten: 0.035, kinn: 0.05, offen: true },
+      kopf: [0.65, 0.42, 0.28], hals: [0.62, 0.76], innen: [0.4, 0.08, 0.1],
+      winkArm: { x: 0.10, y: 0.24, r: 0.16, dx: 0.20, dy: 0.56, seite: 'links' },
+      glow: '#f2c14e', gruss: 'winken+reden', satz: '¡Hola!'
+    },
+    jackie: {
+      name: 'Jackie', bild: 'jackie/figur-gross.jpg',
+      augen: [[0.47, 0.47, 0.05, 0.05], [0.665, 0.57, 0.05, 0.055]],
+      mund: { l: [0.43, 0.635], r: [0.565, 0.71], oben: 0.01, unten: 0.035, kinn: 0.05, offen: true },
+      kopf: [0.55, 0.5, 0.35], hals: [0.55, 0.92], innen: [0.4, 0.08, 0.1],
+      winkArm: { x: 0.27, y: 0.63, r: 0.13, dx: 0.22, dy: 0.92, seite: 'links' },
+      glow: '#f2c14e', gruss: 'lachen+winken', satz: 'Hey du!'
+    },
+    'otti-winkt': {
+      name: 'Otti', bild: 'mondschein/otti-winkt-fig.jpg',
+      augen: [[0.465, 0.27, 0.03, 0.03], [0.555, 0.27, 0.03, 0.03]],
+      mund: { l: [0.48, 0.355], r: [0.54, 0.355], oben: 0.003, unten: 0.008, kinn: 0.03 },
+      kopf: [0.51, 0.3, 0.16], hals: [0.51, 0.45], innen: [0.25, 0.08, 0.06],
+      winkArm: { x: 0.79, y: 0.24, r: 0.11, dx: 0.73, dy: 0.42, seite: 'rechts' },
+      glow: '#f2c14e', gruss: 'winken'
     }
   };
+  FIGUREN.otti.gruss = 'winken+reden'; FIGUREN.otti.satz = 'Hoi! Schön, bisch da.'; FIGUREN.otti.bild = 'otti/otti-3d.jpg';
+  FIGUREN.nova.gruss = 'winken+reden'; FIGUREN.nova.satz = 'Hallo, ich bin da!'; FIGUREN.nova.bild = 'nova/nova-3d.jpg';
+  FIGUREN.fia.bild = 'nova/figuren/fia-wacht.jpg';
+  // Figur aus dem Bildpfad erraten (für Puppe.winkeZurueck ohne «figur»)
+  var ERKENNE = [
+    [/otti-winkt-fig/, 'otti-winkt'], [/otti[-\/](3d|icon)|\/otti\//, 'otti'], [/nova(-3d)?\.jpg|nova\/icon/, 'nova'], [/fia/, 'fia'],
+    [/flo\b|flo(-klein)?\.jpg|food-?flow/, 'flo'], [/fompa/, 'fompa'], [/granny/, 'granny'], [/hasi/, 'hasi'],
+    [/ping-3d|tradeping\/(figur|icon)/, 'ping'], [/waefwaef|waef/, 'waefwaef'], [/sunny/, 'sunny'], [/sparky|humanspark/, 'sparky'],
+    [/coinmaker/, 'coinmaker'], [/kiki/, 'kiki'], [/carmen/, 'carmen'], [/jackie/, 'jackie']
+  ];
+  function erkenneFigur(src) {
+    src = String(src || '').toLowerCase();
+    for (var i = 0; i < ERKENNE.length; i++) if (ERKENNE[i][0].test(src)) return ERKENNE[i][1];
+    return null;
+  }
 
   // ---------- kleine Helfer ----------
   function klemme(v, a, b) { return v < a ? a : v > b ? b : v; }
@@ -74,6 +209,14 @@
   // weiches «Rauschen» aus Sinus-Wellen mit krummen Frequenzen: wirkt organisch, nie mechanisch
   function rausch(t, s) { return (Math.sin(t * 0.61 + s) * 0.5 + Math.sin(t * 1.37 + s * 2.1) * 0.3 + Math.sin(t * 2.71 + s * 3.7) * 0.2); }
   function el(tag, cls, eltern) { var e = document.createElement(tag); if (cls) e.className = cls; if (eltern) eltern.appendChild(e); return e; }
+
+  // Winkkurve (u in Sekunden ab dem ersten Schwung, f = Schwünge pro Sekunde): kurzes Ausholen in die Gegenrichtung,
+  // dann 2–3 weiche Schwünge, die am Ende ausklingen. Insgesamt ca. 1,6 s. Stetig und ohne Knick → wirkt nie mechanisch.
+  function winkKurve(u, f) {
+    if (u < 0) return -0.35 * Math.sin(Math.PI * klemme(1 + u / 0.22, 0, 1));
+    var env = glatt(0, 0.16, u) * (1 - glatt(0.95, 1.36, u));
+    return env * Math.sin(u * Math.PI * 2 * f);
+  }
 
   // Feder (gedämpfter Oszillator): weiche Übergänge mit natürlichem Nachschwingen statt CSS-Keyframes
   function Feder(wert, k, d) { this.x = wert; this.v = 0; this.z = wert; this.k = k || 120; this.d = d || 16; }
@@ -173,6 +316,7 @@
     'uniform vec4 uAL;uniform vec4 uAR;uniform vec2 uLid;uniform vec2 uBlick;uniform float uFroh;',
     'uniform vec3 uAus;uniform float uMax;uniform vec4 uME;uniform vec3 uMF;uniform vec4 uMund;uniform float uPresse;uniform vec3 uInnen;',
     'uniform float uZeit;uniform float uWelle;uniform float uGlanz;uniform vec3 uGlow;',
+    'uniform vec4 uWA;uniform vec2 uWP;uniform vec3 uGes;uniform float uRand;',
     'vec2 rot(vec2 p,float a){float c=cos(a),s=sin(a);return vec2(c*p.x-s*p.y,s*p.x+c*p.y);}',
     // Auge: Blick verschiebt die Iris, Lid gleitet von oben (Haut von oberhalb des Auges), Wimpernlinie an der Lidkante
     'void auge(vec4 A,float lid,inout vec2 p,inout float dk,inout vec2 lq,inout float wim){',
@@ -193,6 +337,10 @@
     '}',
     'void main(){',
     ' vec2 p=uAus.xy+(v-0.5)/uAus.z;',
+    // Winken: der Armbereich dreht sich um Ellbogen/Schulter; weicher Rand (keine Risse), das Gesicht bleibt fest
+    ' if(uWA.z>0.0){float wa=1.0-smoothstep(uWA.z*0.45,uWA.z,distance(p,uWA.xy));',
+    '  wa*=smoothstep(uGes.z*0.82,uGes.z*1.18,distance(p,uGes.xy));',
+    '  p=uWP+rot(p-uWP,-uWA.w*wa);}',
     // Atem: Brust weitet sich unten, Kopf fährt mit
     ' float wb=smoothstep(0.58,1.0,p.y);p.x=0.5+(p.x-0.5)/(1.0+uAtem*0.022*wb);',
     // Kopf: dreht um den Hals, weicher Übergang zum Rest
@@ -222,7 +370,7 @@
     // Augen
     ' float dk=0.0,wim=0.0;vec2 lq=p;',
     ' auge(uAL,uLid.x,p,dk,lq,wim);auge(uAR,uLid.y,p,dk,lq,wim);',
-    ' vec3 c=texture2D(B,p).rgb;',
+    ' vec4 tx=texture2D(B,p);vec3 c=tx.rgb;',
     ' if(dk>0.0){vec3 h=texture2D(B,lq).rgb*0.93;c=mix(c,h,dk);}',
     ' c=mix(c,vec3(0.13,0.07,0.04),wim*0.85);',
     ' c=mix(c,uInnen,tief*0.75);',
@@ -230,11 +378,11 @@
     // Licht: leichter Glow und eine weiche Lichtwelle (Hologramm)
     ' float band=fract(uZeit*0.09)*1.8-0.4;',
     ' c+=uGlow*uWelle*0.10*exp(-pow((v.y-band)*9.0,2.0));',
-    ' c*=1.0+0.05*uGlanz;',
+    ' c*=1.0+0.05*(uGlanz-uRand);',
     ' float r=distance(v,vec2(0.5,0.5));',
     ' float m=1.0-smoothstep(0.36,0.5,r);m*=1.0-smoothstep(0.84,1.0,v.y);',
-    ' c+=uGlow*0.22*uGlanz*smoothstep(0.30,0.44,r)*m;',
-    ' gl_FragColor=vec4(c*m,m);',
+    ' c+=uGlow*0.22*uGlanz*smoothstep(0.30,0.44,r)*m*(1.0-uRand);m=mix(m,1.0,uRand);',
+    ' m*=tx.a;gl_FragColor=vec4(c*m,m);',
     '}'
   ].join('\n');
 
@@ -257,7 +405,7 @@
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     var u = {};
-    ['px', 'uKopf', 'uHals', 'uNeig', 'uKopfV', 'uAtem', 'uAL', 'uAR', 'uLid', 'uBlick', 'uFroh', 'uME', 'uMF', 'uAus', 'uMax', 'uMund', 'uPresse', 'uInnen', 'uZeit', 'uWelle', 'uGlanz', 'uGlow']
+    ['px', 'uKopf', 'uHals', 'uNeig', 'uKopfV', 'uAtem', 'uAL', 'uAR', 'uLid', 'uBlick', 'uFroh', 'uME', 'uMF', 'uAus', 'uMax', 'uMund', 'uPresse', 'uInnen', 'uZeit', 'uWelle', 'uGlanz', 'uGlow', 'uWA', 'uWP', 'uGes', 'uRand']
       .forEach(function (n) { u[n] = gl.getUniformLocation(pr, n); });
     this.gl = gl; this.u = u; this.canvas = canvas;
   }
@@ -274,6 +422,7 @@
     gl.uniform3f(u.uMF, w.mund.oben, w.mund.unten, w.mund.kinn);
     gl.uniform4f(u.uMund, w.auf, w.breit, w.rund, w.laecheln); gl.uniform1f(u.uPresse, w.presse);
     gl.uniform3fv(u.uInnen, w.innen); gl.uniform1f(u.uZeit, w.zeit); gl.uniform1f(u.uWelle, w.welle); gl.uniform1f(u.uGlanz, w.glanz); gl.uniform3fv(u.uGlow, w.glow);
+    gl.uniform4fv(u.uWA, w.wa || [0, 0, 0, 0]); gl.uniform2fv(u.uWP, w.wp || [0, 0]); gl.uniform3fv(u.uGes, w.ges || [9, 9, 0.01]); gl.uniform1f(u.uRand, w.rand || 0);
     gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   };
@@ -350,14 +499,33 @@
     var vorlage = FIGUREN[opt.figur] || {};
     this.f = {};
     for (var k in vorlage) this.f[k] = vorlage[k];
-    ['augen', 'mund', 'kopf', 'hals', 'innen', 'arm', 'glow', 'name', 'aus', 'augenZu'].forEach(function (n) { if (opt[n]) this.f[n] = opt[n]; }, this);
+    ['augen', 'mund', 'kopf', 'hals', 'innen', 'arm', 'glow', 'name', 'aus', 'augenZu', 'winkArm', 'gesicht', 'gruss', 'satz'].forEach(function (n) { if (opt[n] != null) this.f[n] = opt[n]; }, this);
     if (opt.arm && vorlage.arm) { var a = {}; for (k in vorlage.arm) a[k] = vorlage.arm[k]; for (k in opt.arm) a[k] = opt.arm[k]; this.f.arm = a; }
-    this.f.augen = this.f.augen || [[0.38, 0.45, 0.07, 0.07], [0.62, 0.45, 0.07, 0.07]];
-    this.f.mund = this.f.mund || { l: [0.42, 0.68], r: [0.58, 0.68], oben: 0.006, unten: 0.012, kinn: 0.07 };
+    // unbekannte Figur ohne Angaben: Augen/Mund nicht verformen (sonst verzieht sich das Bild an falscher Stelle)
+    this.f.augen = this.f.augen || [[9, 9, 0.01, 0.01]];
+    this.f.mund = this.f.mund || { l: [9, 9], r: [9.1, 9], oben: 0, unten: 0, kinn: 0.01 };
     this.f.kopf = this.f.kopf || [0.5, 0.45, 0.4]; this.f.hals = this.f.hals || [0.5, 0.92];
     this.f.innen = this.f.innen || [0.28, 0.06, 0.07]; this.f.glow = this.f.glow || '#f2c14e';
-    this.f.arm = this.f.arm || { seite: 'rechts', fell: '#7a4a24', fellHell: '#b07a42', haut: '#e3ad84', x: 0.84, y: 1.05, groesse: 0.36 };
+    // Arm: entweder ein Bereich im Bild schwingt (winkArm) oder ein gemalter Arm erscheint neben dem Gesicht (automatisch)
+    if (opt.arm === false) this.f.arm = null;
+    else if (!this.f.winkArm && !this.f.arm) {
+      var kx = this.f.kopf[0], links = kx > 0.55;
+      this.f.arm = { seite: links ? 'links' : 'rechts', fell: '#7a4a24', fellHell: '#b07a42', haut: '#e3ad84', x: links ? klemme(kx - this.f.kopf[2] * 0.9, 0.12, 0.4) : klemme(kx + this.f.kopf[2] * 0.9, 0.6, 0.88), y: 1.02, groesse: 0.34 };
+    }
+    // Schutzkreis ums Gesicht: Augen + Mund (+ Rand), dort verformt das Winken nichts
+    if (!this.f.gesicht) {
+      var pkte = this.f.augen.filter(function (q) { return q[0] < 2; }).map(function (q) { return [q[0], q[1], Math.max(q[2], q[3])]; });
+      if (this.f.mund.l[0] < 2) pkte.push([(this.f.mund.l[0] + this.f.mund.r[0]) / 2, (this.f.mund.l[1] + this.f.mund.r[1]) / 2 + this.f.mund.unten * 0.5, (this.f.mund.r[0] - this.f.mund.l[0]) / 2]);
+      if (pkte.length) {
+        var gx = 0, gy = 0; pkte.forEach(function (q) { gx += q[0]; gy += q[1]; }); gx /= pkte.length; gy /= pkte.length;
+        var gr = 0; pkte.forEach(function (q) { gr = Math.max(gr, Math.sqrt((q[0] - gx) * (q[0] - gx) + (q[1] - gy) * (q[1] - gy)) + q[2]); });
+        this.f.gesicht = [gx, gy, gr * 1.05];
+      } else this.f.gesicht = [9, 9, 0.01];
+    }
+    this.inline = opt.buehne === false;
     this.ruhe = RM.matches || opt.ruhig === true;
+    // «weniger Bewegung» im System: Grüsse werden zu einem sanften Nicken. (ruhig:true = ruhige App, Winken als Reaktion bleibt)
+    this.wenig = RM.matches || opt.wenigBewegung === true;
     this.modus = 'laden';
     this._zustand = 'ruhig'; this._vorher = 'ruhig'; this.zustandSeit = 0;
     this.t = 0; this.effekte = []; this.partikel = [];
@@ -365,7 +533,7 @@
     this.p = {
       neig: F(0, 70, 11), kx: F(0, 90, 14), ky: F(0, 90, 14), lean: F(0, 18, 7), leanR: F(0, 22, 8),
       sq: F(0, 260, 11), laecheln: F(0, 60, 12), lid: F(0, 120, 18), froh: F(0, 70, 14),
-      bx: F(0, 420, 34), by: F(0, 420, 34), glanz: F(1, 30, 10), arm: F(0, 55, 11), ellb: F(0, 190, 7),
+      bx: F(0, 420, 34), by: F(0, 420, 34), glanz: F(1, 30, 10), arm: F(0, 70, 13), ellb: F(0, 320, 18), hand: F(0, 150, 9),
       auf: F(-0.5, 900, 48), breit: F(0, 700, 44), rund: F(0, 700, 44), presse: F(0, 600, 40),
       parX: F(0, 40, 12), parY: F(0, 40, 12), atemAmp: F(1, 20, 9), naeher: F(0, 30, 10)
     };
@@ -384,6 +552,7 @@
     var w = this.el, self = this;
     w.classList.add('puppe-buehne');
     if (this.ruhe) w.classList.add('pp-ruhe');
+    if (this.inline) w.classList.add('pp-inline');
     w.innerHTML = '';
     this.staub = el('canvas', 'pp-staub', w);
     this.boden = el('div', 'pp-boden', w);
@@ -403,7 +572,8 @@
     // Antippen: kitzeln, hüpfen, lächeln (und auf dem iPhone beim ersten Tipp Neigung erlauben)
     this.figur.addEventListener('pointerdown', function (e) {
       var r = w.getBoundingClientRect();
-      self.reagiere('tipp', { x: e.clientX - r.left, y: e.clientY - r.top });
+      if (self.opt.antippen === 'gruss') self.gruesse();
+      else if (self.opt.antippen !== false) self.reagiere('tipp', { x: e.clientX - r.left, y: e.clientY - r.top });
       if (!self.neigung && window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') self.erlaubeNeigung();
     });
     w.addEventListener('pointermove', function (e) {
@@ -416,7 +586,7 @@
     w.addEventListener('pointerleave', function () { self.zeiger.aktiv = Math.min(self.zeiger.aktiv, 0.3); });
     ['pointerdown', 'keydown', 'touchstart'].forEach(function (n) { document.addEventListener(n, function () { self.letzteAktivitaet = performance.now(); }, { passive: true }); });
 
-    if (window.DeviceOrientationEvent) {
+    if (window.DeviceOrientationEvent && !this.inline) {
       if (typeof DeviceOrientationEvent.requestPermission === 'function') this.knopf.hidden = this.opt.neigenKnopf === false;
       else this._neigungStarten();
     }
@@ -435,7 +605,7 @@
     var letzte = performance.now();
     function schleife(jetzt) {
       var dt = Math.min(0.05, (jetzt - letzte) / 1000); letzte = jetzt;
-      if (self.sichtbar && !self.weg) self._tick(dt);
+      if (self.sichtbar && !self.weg && !self.pausiert) self._tick(dt);
       if (!self.weg) self.raf = requestAnimationFrame(schleife);
     }
     this.raf = requestAnimationFrame(schleife);
@@ -468,20 +638,22 @@
   Puppe.prototype._baueEinBild = function () {
     var self = this, k = this.koerper;
     return ladeBild(this.opt.bild).then(function (bild) {
-      self.bild = bild;
+      self.bild = bild; self.bildAR = bild.naturalWidth / bild.naturalHeight || 1;
       var cv = el('canvas', 'pp-bild', k);
       try { self.gl = new GLBild(cv, bild); self.cv = cv; }
       catch (e) {
         cv.remove(); self.gl = null;
         var img = el('img', 'pp-bild pp-einfach', k); img.src = bild.src; img.alt = self.f.name || '';
       }
-      self._baueArm();
+      if (self.f.arm) self._baueArm();
       self.groesse();
     });
   };
 
   Puppe.prototype._baueArm = function () {
     var a = this.f.arm, b = armBilder(a);
+    // ohne Bühne (kleines, oft rundes Bild): Arm etwas grösser und weiter innen, damit die Hand sichtbar bleibt
+    if (this.inline) { var ai = {}; for (var k in a) ai[k] = a[k]; ai.x = 0.5 + (a.x - 0.5) * 0.78; ai.groesse = a.groesse * 1.25; a = this.f.arm = ai; }
     var arm = el('div', 'pp-arm', this.koerper);
     arm.style.left = (a.x * 100) + '%'; arm.style.top = (a.y * 100) + '%';
     if (a.seite === 'links') arm.classList.add('pp-links');
@@ -510,6 +682,26 @@
       if (s > 10) { var f = gr / n; r = Math.atan2(sy / s * f - gelenk[1], sx / s * f - gelenk[0]) * 57.2958; }
     } catch (e) { r = null; }
     return (armBilderCache[src] = r);
+  }
+
+  // Hand eines Arm-Bilds finden: Schwerpunkt der Pixel, die am weitesten von der Schulter weg sind; Handgelenk 62 % dazwischen
+  function armHand(src, schulter, gr) {
+    try {
+      var i = new Image(); i.src = src;
+      var n = 128, c = document.createElement('canvas'); c.width = c.height = n;
+      var g = c.getContext('2d'); g.drawImage(i, 0, 0, n, n);
+      var d = g.getImageData(0, 0, n, n).data, f = gr / n, pk = [], max = 0;
+      for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) {
+        if (d[(y * n + x) * 4 + 3] < 128) continue;
+        var px = x * f, py = y * f, dd = Math.sqrt((px - schulter[0]) * (px - schulter[0]) + (py - schulter[1]) * (py - schulter[1]));
+        pk.push([px, py, dd]); if (dd > max) max = dd;
+      }
+      if (pk.length < 20 || max < gr * 0.08) return null;
+      var sx = 0, sy = 0, s = 0;
+      pk.forEach(function (q) { if (q[2] > max * 0.78) { sx += q[0]; sy += q[1]; s++; } });
+      var hand = [sx / s, sy / s], len = Math.sqrt(Math.pow(hand[0] - schulter[0], 2) + Math.pow(hand[1] - schulter[1], 2));
+      return { hand: hand, gelenk: [mix(schulter[0], hand[0], 0.62), mix(schulter[1], hand[1], 0.62)], r: len * 0.42 };
+    } catch (e) { return null; }
   }
 
   Puppe.prototype._baueEbenen = function (cfg, basis) {
@@ -547,7 +739,7 @@
       var d0 = armRichtung(armR && pfad(armR), G.schulterR || [gr * 0.7, gr * 0.62], gr);
       E.heben = wk.heben != null ? wk.heben : d0 == null ? (fluegel ? -40 : -100) : klemme(ziel - d0, -150, -20);
       E.schwung = wk.schwung != null ? wk.schwung : fluegel ? 24 : 18;
-      E.tempo = wk.tempo || (fluegel ? 2.4 : 1.6);
+      E.tempo = wk.tempo || (fluegel ? 2.8 : 1.9);
       // Reihenfolge: Schwanz, hinterer Arm, Körper, Kopf (mit Ausdruck, Lidern, Mund), vorderer Arm
       if (T.schwanz) { E.schwanz = gelenk(k, G.schwanz, [gr * 0.5, gr * 0.8]); bild(T.schwanz, E.schwanz); }
       E.armL = gelenk(k, G.schulterL, [gr * 0.3, gr * 0.62]);
@@ -567,27 +759,51 @@
       if (fluegel) k.appendChild(E.armL);
       E.arm = gelenk(k, G.schulterR, [gr * 0.7, gr * 0.62]);
       if (T.unterarmR) { bild(armR, E.arm); E.unter = gelenk(E.arm, G.ellbogenR, [gr * 0.8, gr * 0.45]); bild(T.unterarmR, E.unter); }
-      else bild(armR, E.arm);
+      else {
+        var basisArm = bild(armR, E.arm);
+        // Handgelenk: dasselbe Arm-Bild noch einmal, nur die Hand (weiche Maske), dreht um das Handgelenk und schwingt nach.
+        // Der Grund-Arm blendet die Hand dort aus, wo die Hand-Ebene voll deckt → nie doppelt, nie durchsichtig.
+        var hd = !fluegel && basisArm && wk.hand !== false ? armHand(pfad(armR), G.schulterR || [gr * 0.7, gr * 0.62], gr) : null;
+        if (hd) {
+          E.handEbene = gelenk(E.arm, hd.gelenk, hd.gelenk);
+          E.handBild = bild(armR, E.handEbene);
+          E.basisArm = basisArm; E.hd = hd;
+        }
+      }
       self.mundJetzt = null; self.mundSeit = 0;
       self.p.schwing = new Feder(0, 260, 17);
+      self.groesse();
     });
   };
 
   Puppe.prototype.groesse = function () {
     var r = this.el.getBoundingClientRect(), W = r.width || 300, H = r.height || 400;
-    var s = Math.min(W * 0.92, H * 0.78);
+    var s = Math.min(W * 0.92, H * 0.78), fw = s, fh = s;
+    if (this.inline) {
+      // wie das Original-<img>: object-fit cover (Standard), contain oder fill
+      var ar = this.bildAR || 1, fit = this.opt.einpassen || 'cover';
+      if (fit === 'fill') { fw = W; fh = H; } else { fw = fit === 'contain' ? Math.min(W, H * ar) : Math.max(W, H * ar); fh = fw / ar; }
+      s = fh;
+    }
     this.box = s; this.W = W; this.H = H;
-    this.figur.style.width = this.figur.style.height = s + 'px';
-    this.figur.style.left = ((W - s) / 2) + 'px';
-    this.figur.style.top = (H * 0.84 - s) + 'px';
+    this.figur.style.width = fw + 'px'; this.figur.style.height = fh + 'px';
+    this.figur.style.left = ((W - fw) / 2) + 'px';
+    this.figur.style.top = (this.inline ? (H - fh) / 2 : H * 0.84 - s) + 'px';
     if (this.arm) {
       var g = this.f.arm.groesse * s, ho = g * 0.62, wo = ho * 160 / 260, hu = g * 0.95, wu = hu * 200 / 340, A = this.arm;
       A.ober.style.cssText += ';width:' + wo + 'px;height:' + ho + 'px;left:' + (-wo / 2) + 'px;top:' + (-ho) + 'px';
       A.unter.style.cssText += ';width:' + wu + 'px;height:' + hu + 'px;left:' + (wo / 2 - wu / 2) + 'px;top:' + (ho * 60 / 260 - hu * 290 / 340) + 'px';
     }
+    if (this.ebenen && this.ebenen.hd) {
+      var E = this.ebenen, hd = E.hd, f = s / E.gr, mx = (hd.hand[0] * f).toFixed(1) + 'px ' + (hd.hand[1] * f).toFixed(1) + 'px', hr = hd.r * f;
+      var mh = 'radial-gradient(circle at ' + mx + ', #000 ' + hr.toFixed(1) + 'px, transparent ' + (hr * 1.2).toFixed(1) + 'px)';
+      var mb = 'radial-gradient(circle at ' + mx + ', transparent ' + (hr * 0.86).toFixed(1) + 'px, #000 ' + hr.toFixed(1) + 'px)';
+      E.handBild.style.webkitMaskImage = E.handBild.style.maskImage = mh;
+      E.basisArm.style.webkitMaskImage = E.basisArm.style.maskImage = mb;
+    }
     this.boden.style.top = (H * 0.84) + 'px';
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    if (this.cv) { var px = Math.round(s * dpr); if (this.cv.width !== px) { this.cv.width = this.cv.height = px; } }
+    if (this.cv) { var pw = Math.round(fw * dpr), ph = Math.round(fh * dpr); if (this.cv.width !== pw || this.cv.height !== ph) { this.cv.width = pw; this.cv.height = ph; } }
     [this.staub, this.funken].forEach(function (c) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); });
     this.dpr = dpr;
   };
@@ -668,11 +884,128 @@
     return this;
   };
 
+  // ---------- Grüssen: jede Figur auf ihre Art ----------
+  // art: 'winken' | 'reden' | 'flattern' | 'nicken' | 'huepfen' | 'glocke' | 'wedeln' | 'lachen' | 'joggen', kombinierbar mit «+» ('winken+reden').
+  // Ohne art: opt.gruss → Vorlage der Figur → 'winken'. Bei «weniger Bewegung» (prefers-reduced-motion): kurzes, sanftes Nicken.
+  // o: { satz, audio (URL oder <audio>), alignment (ElevenLabs), ton: false (keine Glocke), blase: false (keine Sprechblase) }
+  Puppe.prototype.winke = function (o) { return this.gruesse('winken', o); };
+  Puppe.prototype.gruesse = function (art, o) {
+    if (this.weg) return this;
+    if (art && typeof art === 'object') { o = art; art = null; }
+    o = o || {};
+    var self = this, P = this.p;
+    art = art || o.gruss || this.opt.gruss || this.f.gruss || 'winken';
+    var teile = String(art).split('+'), dauer = 1.6, gesehen = {};
+    if (this.wenig) teile = teile.map(function (x) { return x === 'reden' ? x : 'nicken'; });
+    teile = teile.filter(function (x) { if (gesehen[x]) return false; gesehen[x] = 1; return true; });
+    this.letzteAktivitaet = performance.now();
+    var bew = this.wenig ? 0.5 : 1;
+    teile.forEach(function (x) {
+      if (x === 'winken' || x === 'flattern' || x === 'glocke') {
+        // Flattern und Glocke: schneller und kürzer als Winken
+        self._winkTempo = x === 'flattern' ? 3.1 : x === 'glocke' ? 2.9 : null;
+        self._winkAmp = x === 'winken' ? 1 : 0.75;
+        var vor = self._zustand === 'winkt' ? self._vorher : self._zustand;
+        self.zustand('winkt'); self._winkEinmal = true; self.winkStart = self.t;
+        clearTimeout(self._winkZeit);
+        self._winkZeit = setTimeout(function () {
+          self._winkEinmal = false; self._winkTempo = null; self._winkAmp = null;
+          if (self._zustand === 'winkt') self.zustand(vor === 'winkt' || vor === 'schlaeft' || vor === 'redet' ? 'ruhig' : vor);
+        }, 1600);
+        if (x === 'glocke' && o.ton !== false) glockenTon([0.3, 0.66, 1.0]);
+      } else if (x === 'nicken') {
+        // ein- bis zweimal weise nicken, Augen werden dabei etwas kleiner (zufrieden)
+        var n = self.wenig ? 1 : 2;
+        self._effekt(1.3, function (p, k) {
+          var e = Math.sin(Math.PI * k);
+          p.ky += Math.pow(Math.sin(Math.PI * n * k), 2) * 0.016 * bew; p.neig += Math.sin(Math.PI * k) * 0.03 * bew;
+          p.laecheln += 0.7 * e; p.lid += 0.2 * e * (self.f.augenZu ? 0 : 1); p.glanz += 0.4 * e;
+        });
+        dauer = Math.max(dauer, 1.3);
+      } else if (x === 'huepfen') {
+        self._springe(0.05);
+        setTimeout(function () { self._springe(0.035); }, 480);
+        self._effekt(1.4, function (p, k) { var e = Math.sin(Math.PI * k); p.laecheln += e; p.froh += 0.7 * e; p.glanz += 0.8 * e; });
+      } else if (x === 'wedeln') {
+        // Hund: ganzer Körper wackelt fröhlich hin und her, Kopf schräg, Mund offen
+        self._effekt(1.6, function (p, k) {
+          var env = glatt(0, 0.12, k) * (1 - glatt(0.75, 1, k)), w = Math.sin(k * 1.6 * Math.PI * 2 * 3.2);
+          p.leanR += w * 0.035 * env; p.lean += w * 0.008 * env; p.neig -= w * 0.05 * env;
+          p.laecheln += env; p.froh += 0.6 * env; p.auf += 0.5 * env; p.glanz += 0.8 * env;
+        });
+      } else if (x === 'lachen') {
+        self._effekt(1.6, function (p, k) {
+          var env = glatt(0, 0.1, k) * (1 - glatt(0.7, 1, k)), hh = Math.abs(Math.sin(k * 1.6 * Math.PI * 4.2));
+          p.laecheln += 1.1 * env; p.froh += 0.85 * env; p.auf += (0.15 + 0.45 * hh) * env; p.breit += 0.4 * env;
+          p.ky -= hh * 0.004 * env * bew; p.glanz += env;
+        });
+      } else if (x === 'joggen') {
+        // locker auf der Stelle joggen (Flo): federnde Schritte, leichtes Schaukeln
+        self._effekt(1.9, function (p, k) {
+          var env = glatt(0, 0.1, k) * (1 - glatt(0.8, 1, k)), ph = k * 1.9 * Math.PI * 2 * 2.6;
+          p.bob -= Math.abs(Math.sin(ph / 2)) * 0.022 * env; p.leanR += Math.sin(ph / 2) * 0.012 * env; p.laecheln += 0.8 * env;
+        });
+        dauer = Math.max(dauer, 1.9);
+      } else if (x === 'reden') {
+        var satz = o.satz || self.opt.satz || self.f.satz || 'Hallo!';
+        var winkt = teile.indexOf('winken') >= 0 || teile.indexOf('flattern') >= 0 || teile.indexOf('glocke') >= 0;
+        if (o.audio) {
+          var au = typeof o.audio === 'string' ? new Audio(o.audio) : o.audio;
+          self.sage(au, o.alignment);
+        } else if (winkt) {
+          // Mund bewegt sich zum Satz, ohne das Winken zu unterbrechen
+          var al = textZeiten(satz), st = self.t;
+          self.timeline = { uhr: function () { return self.t - st; }, al: al };
+          clearTimeout(self._sprichZeit);
+          self._sprichZeit = setTimeout(function () { if (self.timeline && self.timeline.al === al) self.timeline = null; }, al.dauer * 1000 + 200);
+        } else self.sprich(satz);
+        if (o.blase !== false) self.blase(satz, textZeiten(satz).dauer + 1.4);
+        dauer = Math.max(dauer, textZeiten(satz).dauer + 0.4);
+      }
+    });
+    this._event('puppe-gruss', { art: teile.join('+'), dauer: dauer });
+    this._grussBis = this.t + dauer;
+    return this;
+  };
+
+  // Sprechblase über der Figur (Text, Dauer in Sekunden)
+  Puppe.prototype.blase = function (text, sek) {
+    var host = this.opt.blaseIn || this.el, b = host.querySelector(':scope > .pp-blase');
+    if (!b) { b = el('div', 'pp-blase', host); b.setAttribute('role', 'status'); b.setAttribute('aria-live', 'polite'); }
+    b.textContent = text;
+    b.classList.remove('pp-blase-an', 'pp-blase-unten'); b.style.setProperty('--dx', '0px'); void b.offsetWidth;
+    // im sichtbaren Bereich halten (Figur am Rand), Spitze zeigt weiter auf die Figur
+    var r = b.getBoundingClientRect(), vw = document.documentElement.clientWidth || window.innerWidth, dx = 0;
+    if (r.left < 8) dx = 8 - r.left; else if (r.right > vw - 8) dx = vw - 8 - r.right;
+    b.style.setProperty('--dx', dx.toFixed(1) + 'px');
+    if (r.top < 4 && host !== this.el) b.classList.add('pp-blase-unten');
+    b.classList.add('pp-blase-an');
+    clearTimeout(this._blaseZeit);
+    this._blaseZeit = setTimeout(function () { b.classList.remove('pp-blase-an'); }, (sek || 2.5) * 1000);
+    return this;
+  };
+
+  // kleine Tischglocke (Mr. Ping): Web Audio, ohne Datei
+  function glockenTon(zeiten) {
+    var c = audioKontext(); if (!c) return;
+    entsperren();
+    var t0 = c.currentTime + 0.02;
+    zeiten.forEach(function (z, i) {
+      [[1, 0.11, 1.3], [2.0, 0.045, 0.7], [2.76, 0.03, 0.4], [5.4, 0.012, 0.18]].forEach(function (q) {
+        var os = c.createOscillator(), g = c.createGain(), t = t0 + z;
+        os.type = 'sine'; os.frequency.value = 1240 * q[0] * (i === 1 ? 0.995 : 1);
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(q[1] * (i ? 0.8 : 1), t + 0.006); g.gain.exponentialRampToValueAtTime(0.0001, t + q[2]);
+        os.connect(g); g.connect(c.destination); os.start(t); os.stop(t + q[2] + 0.05);
+      });
+    });
+  }
+
   // ---------- Reden ----------
   Puppe.prototype._audioStart = function (a) {
     if (this.weg) return;
     var self = this;
-    if (this.audio && this.audio.el === a) { this.zustand('redet'); return; }
+    var lassWinken = this._zustand === 'winkt' && this._winkEinmal;
+    if (this.audio && this.audio.el === a) { if (!lassWinken) this.zustand('redet'); return; }
     var q = analyser(a);
     this.audio = { el: a, q: q };
     function ende() {
@@ -683,7 +1016,7 @@
       }
     }
     a.addEventListener('pause', ende); a.addEventListener('ended', ende);
-    this.zustand('redet');
+    if (!lassWinken) this.zustand('redet');
   };
   // Audio mit optionalen ElevenLabs-Zeitstempeln abspielen (alignment oder normalized_alignment)
   Puppe.prototype.sage = function (a, alignment) {
@@ -691,6 +1024,9 @@
     if (alignment) { var al = alignment.normalized_alignment || alignment.alignment || alignment; this.timeline = { audio: a, al: al }; }
     else if (this.timeline && (this.timeline.audio === a || this.timeline.uhr)) this.timeline = null;
     entsperren();
+    var self = this;
+    // auch wenn autoLippen aus ist (z.B. Puppe.winkeZurueck): dieses Audio bewegt den Mund
+    if (a.paused && this.opt.autoLippen === false) a.addEventListener('play', function () { self._audioStart(a); }, { once: true });
     var p = a.paused ? a.play() : null;
     if (!a.paused) this._audioStart(a);
     if (p && p.catch) p.catch(function () {});
@@ -835,7 +1171,8 @@
       if (!ruhe && this.hop.y === 0 && this.hop.v === 0 && seit % 1.4 < dt * 1.5) this._springe(0.045);
       if (!ruhe && Math.random() < dt * 3) this._funkenRegen(1);
     } else if (z === 'winkt') {
-      ziel.arm = 1; ziel.laecheln = 0.85; ziel.froh = 0.3; ziel.neig = 0.07 * this.arm_spiegel() + Math.sin(t * 6.2) * 0.012 * bew; ziel.glanz = 1.35; ziel.auf = -0.1; ziel.bx = 0; ziel.by = 0;
+      // Kopf neigt sich leicht zur winkenden Seite, Blick nach vorn, Lächeln; der Rest bleibt ruhig
+      ziel.arm = 1; ziel.laecheln = 0.85; ziel.froh = 0.3; ziel.neig = 0.05 * this.arm_spiegel(); ziel.glanz = 1.35; ziel.auf = -0.1; ziel.bx = 0; ziel.by = 0;
     } else if (z === 'denkt') {
       ziel.neig = -0.1 + rausch(t * 0.3, 3) * 0.02; ziel.kx = -0.004; ziel.ky = -0.008; ziel.bx = -0.55; ziel.by = -0.7; ziel.laecheln = 0.0;
       ziel.auf = -0.7; ziel.rund = 0.2; ziel.presse = 0.3; atemHz = 0.18; ziel.lid = 0.15;
@@ -860,20 +1197,28 @@
     for (var k in ziel) if (P[k]) P[k].z = ziel[k];
 
     // Effekte (Tippen, richtig, falsch …) addieren sich obendrauf
-    var add = { neig: 0, kx: 0, ky: 0, laecheln: 0, froh: 0, auf: 0, breit: 0, rund: 0, by: 0, glanz: 0 };
+    var add = { neig: 0, kx: 0, ky: 0, laecheln: 0, froh: 0, auf: 0, breit: 0, rund: 0, by: 0, glanz: 0, lid: 0, lean: 0, leanR: 0, bob: 0 };
     for (var i = this.effekte.length - 1; i >= 0; i--) {
       var e = this.effekte[i], kk = (t - e.start) / e.dauer;
       if (kk >= 1) { this.effekte.splice(i, 1); continue; }
       e.fn(add, kk);
     }
     for (k in add) if (P[k]) P[k].z += add[k];
+    this._bob = add.bob;
 
-    // Winken: Unterarm schwingt, Feder lässt ihn nachschwingen
-    var welle = 0, ws = t - (this.winkStart || 0), zyk = ws % 3.6;
-    if (z === 'winkt') welle = zyk < 2.4 ? Math.sin(zyk * Math.PI * 2 * 1.55) * glatt(0, 0.35, zyk) : 0;
-    P.ellb.z = welle * P.arm.x;
-    // Ebenen: Schulter-Schwung als eigene, ruhigere Feder (kein Aufschaukeln), Tempo je Figur (Flügel schneller)
-    if (P.schwing) P.schwing.z = z === 'winkt' && zyk < 2.4 ? Math.sin(zyk * Math.PI * 2 * this.ebenen.tempo) * glatt(0, 0.35, zyk) * P.arm.x : 0;
+    // Winken: Ausholen, 2–3 weiche Schwünge, dann klingt es aus (winkKurve). Federn sorgen für Verzögerung und Nachschwingen:
+    // ellb/schwing = Unterarm bzw. Schulter, hand = Handgelenk (hängt etwas hinterher und schwingt nach).
+    var sw = 0, wt = this._winkTempo || (this.ebenen && this.ebenen.tempo) || 2.1;
+    if (z === 'winkt' && !this.wenig) {
+      var u0 = t - (this.winkStart || 0);
+      sw = winkKurve((this._winkEinmal ? u0 : u0 % 2.4) - 0.22, wt) * (this._winkAmp || 1);
+    }
+    var hebt = klemme(P.arm.x, 0, 1);
+    P.ellb.z = sw * hebt;
+    P.hand.z = P.ellb.x;
+    if (P.schwing) P.schwing.z = sw * hebt;
+    // Körper wippt leicht mit (Gegenbewegung), Kopf bleibt ruhig
+    if (z === 'winkt' && !this.wenig) { P.lean.z -= P.ellb.x * 0.003 * this.arm_spiegel(); P.leanR.z -= P.ellb.x * 0.004 * this.arm_spiegel(); P.ky.z += Math.abs(P.ellb.x) * 0.0015; }
 
     for (k in P) P[k].schritt(dt);
 
@@ -901,9 +1246,9 @@
     atem = (atem * 2 - 1) * P.atemAmp.x * (ruhe ? 0.5 : 1);
 
     // Körper: schweben, verlagern, atmen, springen, Parallax
-    var S = this.box, sq = P.sq.x, schweb = ruhe ? 0 : Math.sin(t * 1.1) * S * 0.008;
-    var px = P.parX.x, py = P.parY.x, nah = P.naeher.x;
-    var tf = 'translate3d(' + (P.lean.x * S + px * S * 0.02).toFixed(2) + 'px,' + (h.y * S * 1.6 + schweb + py * S * 0.012).toFixed(2) + 'px,0) ' +
+    var S = this.box, sq = P.sq.x, schweb = ruhe || this.inline ? 0 : Math.sin(t * 1.1) * S * 0.008;
+    var px = P.parX.x, py = P.parY.x, nah = P.naeher.x, hopF = this.inline ? 0.45 : 1.6;
+    var tf = 'translate3d(' + (P.lean.x * S + px * S * 0.02).toFixed(2) + 'px,' + (h.y * S * hopF + schweb + py * S * 0.012 + (this._bob || 0) * S).toFixed(2) + 'px,0) ' +
       'rotateY(' + (px * 7).toFixed(2) + 'deg) rotateX(' + (-py * 5).toFixed(2) + 'deg) rotate(' + (P.leanR.x * 57.3).toFixed(2) + 'deg) ' +
       'scale(' + (1 + nah * 0.035 - sq * 0.55 + atem * 0.004).toFixed(4) + ',' + (1 + nah * 0.035 + sq + atem * 0.008).toFixed(4) + ')';
     this.figur.style.transform = tf;
@@ -917,8 +1262,17 @@
     if (this.arm) {
       var ar = P.arm.x, sp = this.arm.spiegel;
       this.arm.el.style.opacity = klemme(ar * 2.2, 0, 1).toFixed(3);
-      this.arm.ober.style.transform = 'translateY(' + ((1 - ar) * 70).toFixed(1) + '%) rotate(' + (sp * mix(50, 13, ar)).toFixed(2) + 'deg)';
-      this.arm.unter.style.transform = 'rotate(' + (sp * (mix(45, -6, ar) + P.ellb.x * 26)).toFixed(2) + 'deg)';
+      this.arm.ober.style.transform = 'translateY(' + ((1 - ar) * 70).toFixed(1) + '%) rotate(' + (sp * mix(50, 8, ar)).toFixed(2) + 'deg)';
+      // nach aussen weiter als nach innen: die Pfote deckt nie das Gesicht; das Handgelenk (hand) schwingt nach
+      var el2 = P.ellb.x, hw = P.hand.x - P.ellb.x;
+      this.arm.unter.style.transform = 'rotate(' + (sp * (mix(45, -6, ar) + el2 * (el2 > 0 ? 24 : 13) + hw * 10)).toFixed(2) + 'deg)';
+    }
+
+    // Winke-Hand neben dem Bild (Puppe.winkeZurueck bei Figuren ohne Arm im Bild)
+    if (this.opt.winkHand) {
+      var wh = this.opt.winkHand, hb = klemme(P.arm.x, 0, 1.15);
+      wh.style.opacity = klemme(P.arm.x * 2.5, 0, 1).toFixed(3);
+      wh.style.transform = 'scale(' + (0.35 + 0.65 * hb).toFixed(3) + ') rotate(' + (-10 + P.ellb.x * 26 + (P.hand.x - P.ellb.x) * 12).toFixed(2) + 'deg)';
     }
 
     var w = {
@@ -926,21 +1280,30 @@
       atem: atem, augen: this.f.augen, lidL: lid, lidR: Math.max(P.lid.x, b.start >= 0 ? klemme(lidB * 1.1 - 0.05, 0, 1) : 0),
       bx: P.bx.x, by: P.by.x, froh: klemme(P.froh.x, 0, 1), mund: this.f.mund, aus: this.f.aus || [0.5, 0.5, 1],
       auf: klemme(P.auf.x, -1, 1.2), breit: klemme(P.breit.x, 0, 1.2), rund: klemme(P.rund.x, 0, 1.3), laecheln: klemme(P.laecheln.x, -0.5, 1.3), presse: klemme(P.presse.x, 0, 1),
-      innen: this.f.innen, zeit: t, welle: ruhe ? 0 : 1, glanz: P.glanz.x, glow: this._glowRGB || (this._glowRGB = hexRGB(this.f.glow))
+      innen: this.f.innen, zeit: t, welle: ruhe || this.inline ? 0 : 1, glanz: P.glanz.x, glow: this._glowRGB || (this._glowRGB = hexRGB(this.f.glow)),
+      ges: this.f.gesicht, rand: this.inline ? 1 : 0
     };
+    if (this.inline) w.aus = [0.5, 0.5, 1];
+    // Armbereich im Bild: hebt sich leicht (heben, Grad) und schwingt (winkel, Grad) um den Drehpunkt; Handgelenk schwingt nach
+    var WA = this.f.winkArm;
+    if (WA) {
+      var spw = WA.seite === 'links' ? -1 : 1, rad = Math.PI / 180;
+      var winkel = (WA.heben != null ? WA.heben : 4) * hebt + (WA.winkel || 12) * (P.ellb.x + (P.hand.x - P.ellb.x) * 0.35);
+      w.wa = [WA.x, WA.y, WA.r || 0.14, spw * winkel * rad];
+      w.wp = [WA.dx != null ? WA.dx : WA.x, WA.dy != null ? WA.dy : WA.y + (WA.r || 0.14) * 1.6];
+    }
     // Bild mit geschlossenen Augen (z.B. Fia): keine Lider, kein Blick
     if (this.f.augenZu && !this.ebenen) { w.lidL = w.lidR = 0; w.froh = 0; w.bx = w.by = 0; }
     if (this.gl) this.gl.zeichne(w);
     else if (this.ebenen) this._zeichneEbenen(w, P);
     else if (this.koerper.firstChild) this.koerper.firstChild.style.transform = 'rotate(' + (w.neig * 20).toFixed(2) + 'deg)';
 
-    this._zeichneStaub(dt, px, py);
-    this._zeichneFunken(dt, px);
+    if (!this.inline) { this._zeichneStaub(dt, px, py); this._zeichneFunken(dt, px); }
 
     // lange keine Berührung → Figur winkt freundlich (nur wenn gewünscht)
     if (this.opt.pauseNach && performance.now() - this.letzteAktivitaet > this.opt.pauseNach * 1000 && z !== 'schlaeft' && z !== 'redet') this.reagiere('pause');
   };
-  Puppe.prototype.arm_spiegel = function () { return this.arm ? this.arm.spiegel : 1; };
+  Puppe.prototype.arm_spiegel = function () { return this.arm ? this.arm.spiegel : this.f.winkArm && this.f.winkArm.seite === 'links' ? -1 : 1; };
 
   // Ebenen-Modus: dieselben Werte als transform/opacity auf die Teil-Bilder
   Puppe.prototype._zeichneEbenen = function (w, P) {
@@ -957,6 +1320,8 @@
     } else {
       E.arm.style.transform = 'rotate(' + (ruheR + E.heben * ar + (E.unter ? 0 : sw * E.schwung)).toFixed(2) + 'deg)';
       if (E.unter) E.unter.style.transform = 'rotate(' + (sw * 30).toFixed(2) + 'deg)';
+      // Handgelenk: hängt dem Schwung hinterher und schwingt nach (Feder hand folgt ellb)
+      if (E.handEbene) E.handEbene.style.transform = 'rotate(' + klemme((P.hand.x - P.ellb.x) * 15 + sw * 4, -11, 11).toFixed(2) + 'deg)';
       // der andere Arm gleicht beim Winken etwas aus
       E.armL.style.transform = 'rotate(' + (ruheL + ar * 4 - sw * 1.5).toFixed(2) + 'deg)';
     }
@@ -998,7 +1363,142 @@
     this.el.innerHTML = ''; this.el.classList.remove('pp-bereit');
   };
 
+  // ---------- Puppe.winkeZurueck: aus jedem vorhandenen Figurenbild eine Puppe, die beim Antippen zurückgrüsst ----------
+  // Das <img> bleibt, wo es ist (Layout, Klicks und Links bleiben gleich). Nur während des Grusses liegt die lebendige
+  // Figur deckungsgleich darüber; danach ist wieder das ruhige Standbild zu sehen (keine Dauerbewegung, spart Akku).
+  function einWinker(e, o) {
+    var img = e && e.tagName === 'IMG' ? e : e && e.querySelector ? e.querySelector('img') : null;
+    if (!img) return null;
+    if (img._puppeWinker) return img._puppeWinker;
+    var src = img.currentSrc || img.src, figur = o.figur || erkenneFigur(src) || '';
+    var host = document.createElement('div');
+    host.className = 'pp-winker'; host.setAttribute('aria-hidden', 'true');
+    img.insertAdjacentElement('afterend', host);
+    var buehne = el('div', 'pp-winker-buehne', host);
+    var cs = getComputedStyle(img);
+    buehne.style.borderRadius = cs.borderRadius;
+    var opt = { figur: figur, bild: src, buehne: false, antippen: false, autoLippen: false, neigenKnopf: false, blaseIn: host, einpassen: cs.objectFit === 'fill' && img.naturalWidth && Math.abs(img.naturalWidth / img.naturalHeight - img.offsetWidth / Math.max(1, img.offsetHeight)) < 0.02 ? 'cover' : cs.objectFit };
+    for (var k in o) if (k !== 'figur' && k !== 'antippen') opt[k] = o[k];
+    // Figur ohne Arm im Bild: im kleinen Bild würde ein gemalter Arm das Gesicht verdecken. Stattdessen winkt eine
+    // Hand 👋 an der Ecke ausserhalb des Bilds (gleiche Winkkurve). Mit { hand: 'gemalt' } kommt der gemalte Arm.
+    var vorl = FIGUREN[figur] || {};
+    if (!(o.winkArm || vorl.winkArm) && o.hand !== 'gemalt') {
+      opt.arm = false;
+      var seiteL = (o.arm && o.arm.seite || vorl.arm && vorl.arm.seite) === 'links';
+      var hz = el('div', 'pp-winkhand' + (seiteL ? ' pp-links' : ''), host);
+      el('span', '', hz).textContent = o.hand && o.hand !== 'emoji' ? o.hand : '👋';
+      opt.winkHand = hz;
+    }
+    function lage() {
+      host.style.left = img.offsetLeft + 'px'; host.style.top = img.offsetTop + 'px';
+      host.style.width = img.offsetWidth + 'px'; host.style.height = img.offsetHeight + 'px';
+      host.style.transform = cs.transform === 'none' ? '' : cs.transform; host.style.transformOrigin = cs.transformOrigin;
+    }
+    lage();
+    var puppe = new Puppe(buehne, opt);
+    puppe.pausiert = true;
+    var bisZeit = null, an = false, alteOpazitaet = img.style.opacity, durchsichtig = null;
+    // Hat das Bild durchsichtige Stellen (PNG)? Dann wird das Original während des Grusses ausgeblendet,
+    // sonst bleibt es sichtbar (Rahmen und Schatten des Bilds bleiben so erhalten) und die Figur deckt es genau ab.
+    function pruefeAlpha() {
+      if (durchsichtig !== null) return durchsichtig;
+      try {
+        var c = document.createElement('canvas'); c.width = c.height = 24;
+        var g = c.getContext('2d'); g.drawImage(img, 0, 0, 24, 24);
+        var d = g.getImageData(0, 0, 24, 24).data; durchsichtig = false;
+        for (var i = 3; i < d.length; i += 4) if (d[i] < 250) { durchsichtig = true; break; }
+      } catch (e) { durchsichtig = true; }
+      return durchsichtig;
+    }
+    function zeigen() {
+      lage(); if (puppe.groesse) puppe.groesse();
+      puppe.pausiert = false; puppe._aktiv = true;
+      if (!an) {
+        an = true; host.classList.add('pp-winker-an');
+        // erst wenn die Figur deckend darüber liegt, das Standbild ausblenden
+        if (pruefeAlpha()) setTimeout(function () { if (an) img.style.opacity = '0'; }, 140);
+      }
+    }
+    function verstecken() {
+      an = false; puppe._aktiv = false;
+      img.style.opacity = alteOpazitaet;
+      host.classList.remove('pp-winker-an');
+      setTimeout(function () { if (!an) puppe.pausiert = true; }, 400);
+    }
+    var w = {
+      puppe: puppe, bild: img, figur: figur,
+      gruesse: function (art, oo) {
+        var los = function () {
+          zeigen(); puppe.gruesse(art, oo);
+          clearTimeout(bisZeit);
+          // Nachschwingen abwarten, dann zurück zum Standbild
+          bisZeit = setTimeout(function warte() {
+            if (puppe.t < (puppe._grussBis || 0) + 0.55 || puppe._zustand === 'redet') bisZeit = setTimeout(warte, 150);
+            else verstecken();
+          }, 400);
+        };
+        if (puppe.modus === 'laden') puppe.el.addEventListener('puppe-bereit', los, { once: true }); else los();
+        return w;
+      },
+      winke: function (oo) { return w.gruesse(oo && oo.gruss ? oo.gruss : null, oo); },
+      loese: function () { clearTimeout(bisZeit); img.removeEventListener('click', tipp); puppe.zerstoere(); host.remove(); img.style.opacity = alteOpazitaet; delete img._puppeWinker; }
+    };
+    function tipp() { w.gruesse(); }
+    if (o.antippen !== false) img.addEventListener('click', tipp);
+    if (window.ResizeObserver) new ResizeObserver(function () { if (an) lage(); }).observe(img);
+    img._puppeWinker = w;
+    return w;
+  }
+  function winkeZurueck(ziel, o) {
+    o = o || {};
+    var liste = typeof ziel === 'string' ? document.querySelectorAll(ziel) : ziel && ziel.length != null && !ziel.tagName ? ziel : [ziel];
+    var r = [];
+    for (var i = 0; i < liste.length; i++) { var w = einWinker(liste[i], o); if (w) r.push(w); }
+    if (r.length === 1) return r[0];
+    return {
+      alle: r,
+      winke: function (oo) { r.forEach(function (w) { w.winke(oo); }); return this; },
+      gruesse: function (a, oo) { r.forEach(function (w) { w.gruesse(a, oo); }); return this; },
+      loese: function () { r.forEach(function (w) { w.loese(); }); }
+    };
+  }
+
+  // ---------- Kamera-Winken (nur wo die App die Kamera schon nutzt): erkennt Hin-und-her-Bewegung im Bild ----------
+  // video: das <video> der App mit laufendem Kamerabild. Gibt eine Stopp-Funktion zurück. Kein Bild verlässt das Gerät.
+  function kameraWinken(video, cb, o) {
+    o = o || {};
+    var w = 32, h = 24, c = document.createElement('canvas'); c.width = w; c.height = h;
+    var g = c.getContext('2d', { willReadFrequently: true }), alt = null, verlauf = [], aus = false, letzt = 0, timer;
+    function schritt() {
+      if (aus) return;
+      timer = setTimeout(schritt, 90);
+      if (!video.videoWidth || video.paused || document.hidden) return;
+      try { g.drawImage(video, 0, 0, w, h); } catch (e) { return; }
+      var d = g.getImageData(0, 0, w, h).data, l = new Float32Array(w * h), jetzt = performance.now();
+      for (var i = 0; i < w * h; i++) l[i] = d[i * 4] * 0.3 + d[i * 4 + 1] * 0.59 + d[i * 4 + 2] * 0.11;
+      if (alt) {
+        var sx = 0, n = 0;
+        for (var y = 0; y < h * 0.75; y++) for (var x = 0; x < w; x++) { var j = y * w + x; if (Math.abs(l[j] - alt[j]) > (o.schwelle || 26)) { sx += x; n++; } }
+        if (n > w * h * 0.025 && n < w * h * 0.5) verlauf.push([jetzt, sx / n / w]);
+      }
+      alt = l;
+      while (verlauf.length && jetzt - verlauf[0][0] > 1600) verlauf.shift();
+      var wechsel = 0, rich = 0;
+      for (i = 1; i < verlauf.length; i++) {
+        var dx = verlauf[i][1] - verlauf[i - 1][1];
+        if (Math.abs(dx) > 0.03) { var nr = dx > 0 ? 1 : -1; if (rich && nr !== rich) wechsel++; rich = nr; }
+      }
+      if (wechsel >= 3 && jetzt - letzt > (o.pause || 4000)) { letzt = jetzt; verlauf = []; try { cb(); } catch (e) {} }
+    }
+    schritt();
+    return function () { aus = true; clearTimeout(timer); };
+  }
+
   window.Puppe = {
+    winkeZurueck: winkeZurueck,
+    kameraWinken: kameraWinken,
+    erkenneFigur: erkenneFigur,
+    winkKurve: winkKurve,
     erstelle: function (ziel, opt) {
       var e = typeof ziel === 'string' ? document.querySelector(ziel) : ziel;
       if (!e) throw new Error('Puppe: Element fehlt');
