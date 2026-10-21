@@ -102,7 +102,14 @@
   function el(h) { var d = document.createElement('div'); d.innerHTML = h.trim(); return d.firstChild; }
   function summ(m) { try { if (navigator.vibrate && !ruhig) navigator.vibrate(m); } catch (e) {} }
   var ruhig = !!C.ruhig || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-  var jetzt = new Date(), M = jetzt.getMonth() + 1, D = jetzt.getDate(), Std = jetzt.getHours();
+  var jetzt = new Date();
+  /* Test-Schalter: ?r6tag=2026-10-31&r6zeit=19 zeigt einen anderen Tag */
+  try {
+    var q = new URLSearchParams(location.search); if (!q.get('r6tag')) try { q = new URL(performance.getEntriesByType('navigation')[0].name).searchParams; } catch (x) {} var qt = /^(\d{4})-(\d{2})-(\d{2})$/.exec(q.get('r6tag') || '');
+    if (qt) jetzt = new Date(+qt[1], +qt[2] - 1, +qt[3], jetzt.getHours(), jetzt.getMinutes());
+    if (q.get('r6zeit')) jetzt.setHours(+q.get('r6zeit'));
+  } catch (e) {}
+  var M = jetzt.getMonth() + 1, D = jetzt.getDate(), Std = jetzt.getHours();
   var heute = jetzt.getFullYear() + '-' + M + '-' + D;
   var tagNr = Math.floor((jetzt.getTime() - jetzt.getTimezoneOffset() * 6e4) / 864e5);
   var F = C.figur;
@@ -142,6 +149,12 @@
     return { k: 'herbst', e: '🍁' };
   }
   var S = saison();
+
+  /* Runde 6b: Tinkos Jahreszeit-Bilder. Halloween-Tage: Halloween-Bild in der Figurenkarte; ab 1.12.: Advent-Bild */
+  var R6BK = S.k === 'halloweenTag' ? 'halloweenTag' : S.k === 'halloween' ? 'halloween' : (S.k === 'advent' || S.k === 'weihnacht') ? 'advent' : '';
+  var R6BB = {'advent': 'saison/advent.jpg'}[R6BK === 'halloweenTag' ? 'halloween' : R6BK] || '';
+  if (R6BB) C.bild = R6BB;
+  window.R6B = { k: R6BK, bild: R6BB };
   function meinName() { var n = hol('name', ''); if (!n && C.nameHol) try { n = C.nameHol() || ''; } catch (e) {} return n; }
   function fuell(t) { return String(t || '').replace(/\{n\}/g, S.n).replace(/\{name\}/g, meinName() || C.du || 'du').replace(/\{figur\}/g, F); }
   function saisonSatz() { return fuell(C.saison[S.k] || C.saison[S.k === 'neujahr' ? 'winter' : 'herbst']); }
@@ -364,4 +377,52 @@
   function los() { try { C.einsetzen(N); } catch (e) { if (window.console) console.warn('Runde 6:', e); } }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', los); else setTimeout(los, 0);
   if (kannReden) try { speechSynthesis.getVoices(); } catch (e) {}
+})();
+
+/* Runde 6b (21.10.2026): Tinkos Jahreszeit-Bilder auf der Bühne.
+   Am 31.10. zeigt die Figur ihr Halloween-Bild, ab 1. Dezember ihr Advent-Bild.
+   Antippen bringt die lebendige Figur zurück; nach einer ruhigen Weile kommt das Saison-Bild wieder. */
+(function () {
+  'use strict';
+  var ZIELE = ['.nb-buehne > img'], ALT = {'halloweenTag': 'Flo mit einer lachenden Kürbislaterne an Halloween', 'advent': 'Flo bei Kerzenlicht im Advent'};
+  function setze(im, s) {
+    if (im.getAttribute('data-r6b')) return;
+    im.setAttribute('data-r6b', '1');
+    var o = document.createElement('img');
+    o.className = 'r6-saisonbild'; o.src = s.bild; o.alt = ALT[s.k] || ''; o.decoding = 'async';
+    // eigene Stile mit !important, damit Bühnen-Regeln für Bilder (Animation, Filter, Grösse) das Saison-Bild nicht verändern
+    function st(k, v) { if (v === '' || v == null) o.style.removeProperty(k); else o.style.setProperty(k, v, 'important'); }
+    'position:absolute|object-fit:cover|pointer-events:none|margin:0|padding:0|max-width:none|max-height:none|min-width:0|min-height:0|box-sizing:border-box|animation:none|filter:none|box-shadow:none|transition:opacity .5s|opacity:1|display:block|right:auto|bottom:auto|inset:auto'.split('|').forEach(function (x) { var i = x.indexOf(':'); st(x.slice(0, i), x.slice(i + 1)); });
+    im.parentNode.insertBefore(o, im.nextSibling);
+    function lage() {
+      var cs = getComputedStyle(im), da = !!(im.offsetParent && im.offsetWidth);
+      st('display', da ? 'block' : 'none'); if (!da) return;
+      st('top', im.offsetTop + 'px'); st('left', im.offsetLeft + 'px');
+      st('width', im.offsetWidth + 'px'); st('height', im.offsetHeight + 'px');
+      st('border-radius', parseFloat(cs.borderRadius) ? cs.borderRadius : '18px'); st('border', cs.border); st('object-position', cs.objectPosition);
+      st('transform', cs.transform === 'none' ? 'none' : cs.transform); st('transform-origin', cs.transformOrigin);
+      st('z-index', cs.zIndex === 'auto' ? '' : cs.zIndex);
+    }
+    lage();
+    if (window.ResizeObserver) new ResizeObserver(lage).observe(im);
+    addEventListener('resize', lage);
+    setInterval(lage, 1500);
+    var t = 0, bereich = im.parentNode;
+    function weg() {
+      st('opacity', '0'); clearTimeout(t);
+      t = setTimeout(function () { lage(); st('opacity', '1'); }, 20000);
+    }
+    bereich.addEventListener('pointerup', weg, true);
+    bereich.addEventListener('click', weg, true);
+  }
+  function los(n) {
+    var s = window.R6B;
+    if (!s || !s.bild || (s.k !== 'halloweenTag' && s.k !== 'advent')) return;
+    var fehlt = 0;
+    ZIELE.forEach(function (sel) { var im = document.querySelector(sel); if (im) setze(im, s); else fehlt++; });
+    if (fehlt && n < 12) setTimeout(function () { los(n + 1); }, 700);
+  }
+  function start() { try { los(0); } catch (e) { if (window.console) console.warn('Runde 6b:', e); } }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(start, 50); });
+  else setTimeout(start, 50);
 })();
