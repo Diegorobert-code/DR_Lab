@@ -373,6 +373,124 @@
   .fantasie .leise { color:var(--leise); font-size:16px; margin:0; }
   .fantasie .fq { font-size:21px; font-weight:800; line-height:1.35; margin:0; max-width:320px; }
   .wege { gap:16px; padding-right:68px; } .wege a { font-size:15px; }
+  /* ===== Runde 4 (21.10.): Design, Tageszeit, Ottis Zimmer, Gefühle, neue Spiele ===== */
+  /* Tageszeit-Stimmung: der Himmel hinter Otti passt zur Uhrzeit (immer ruhig, Nachtblau + Gold als Grundton) */
+  body.zeit-morgen { background:radial-gradient(120% 70% at 50% 110%, #f7a98a55, transparent 60%), radial-gradient(120% 80% at 50% 0%, #2c4b8f, #13245a 70%) #13245a; }
+  body.zeit-tag { background:radial-gradient(120% 70% at 50% 110%, #7fd4ff33, transparent 60%), radial-gradient(120% 80% at 50% 0%, #2d5aa8, #173a7a 70%) #173a7a; }
+  body.zeit-abend { background:radial-gradient(120% 70% at 50% 110%, #c06bd455, transparent 60%), radial-gradient(120% 80% at 50% 0%, #2a2a78, #121a4a 70%) #121a4a; }
+  body.zeit-nacht { background:radial-gradient(120% 80% at 50% 0%, var(--nacht2), var(--nacht) 70%) var(--nacht); }
+  body.zeit-morgen .sterne, body.zeit-tag .sterne { opacity:.35; }
+  .buehne::before { content:''; position:absolute; left:-10%; right:-10%; bottom:-14%; height:34%; border-radius:50%; z-index:0; pointer-events:none;
+    background:radial-gradient(60% 70% at 50% 30%, #2f6b4a, #173a2c 70%); box-shadow:0 -6px 24px #9be37c22; }
+  body.zeit-morgen .buehne { background:radial-gradient(18% 14% at 80% 16%, #fff6d8 0 55%, #ffd8a855 62%, transparent 76%), radial-gradient(90% 70% at 50% 100%, #f6b08c 0%, #7a6fb8 50%, #2c3f86 100%); }
+  body.zeit-tag .buehne { background:radial-gradient(18% 14% at 80% 16%, #fffbe6 0 55%, #fff1b055 62%, transparent 76%), radial-gradient(90% 70% at 50% 100%, #bfe6ff 0%, #5d9ad8 50%, #2a5aa6 100%); }
+  body.zeit-abend .buehne { background:radial-gradient(16% 13% at 82% 14%, #ffe7a8 0 55%, #f5c54255 60%, transparent 75%), radial-gradient(90% 70% at 50% 100%, #e58fb0 0%, #6a4fa8 45%, #1b2766 100%); }
+  .fw { z-index:1; }
+  .mondknopf { position:absolute; right:6%; top:4%; width:24%; aspect-ratio:1; border-radius:50%; border:0; background:transparent; z-index:4; cursor:pointer; padding:0; }
+  .mondknopf::after { content:''; position:absolute; inset:-30%; border-radius:50%; background:radial-gradient(#fff3b0aa, transparent 65%); opacity:0; transition:opacity .6s; }
+  .mondknopf.leuchtet::after { opacity:1; }
+  .mondknopf:focus-visible { outline:3px solid #fff; }
+  .herzflug { position:absolute; left:50%; top:30%; font-size:34px; z-index:5; pointer-events:none; animation:herzflug 1.6s ease-out forwards; }
+  @keyframes herzflug { from { transform:translate(-50%, 0) scale(.4); opacity:0; } 25% { opacity:1; transform:translate(-50%, -10px) scale(1.1); } to { transform:translate(-50%, -90px) scale(.9); opacity:0; } }
+  .namensgruss { color:var(--gold); font-weight:800; }
+
+  /* Kopf: Titel mit kleinem Untertitel, Sternpille öffnet Ottis Zimmer */
+  h1 small { display:block; font-size:13px; letter-spacing:1.5px; color:var(--leise); font-weight:700; text-transform:uppercase; text-shadow:none; margin-top:4px; text-align:center; }
+  h1 { text-align:center; }
+
+  /* Wege unten: vier gleich breite Knöpfe */
+  .wege { display:grid; grid-template-columns:repeat(4, 1fr); gap:4px; width:min(100%, 400px); padding-right:60px; }
+  .wege a, .wege button { display:flex; flex-direction:column; align-items:center; gap:4px; min-height:44px; color:var(--leise); text-decoration:none; font-size:14px; font-weight:700;
+    background:none; border:0; padding:0; cursor:pointer; font-family:inherit; transition:transform .12s var(--ease); }
+  .wege button:active { transform:scale(.95); }
+  .wege button .rund { width:44px; height:44px; border-radius:50%; display:grid; place-items:center; font-size:20px; background:var(--flaeche); border:1px solid var(--rand); }
+  .wege a, .wege button { font-size:13.5px; white-space:nowrap; letter-spacing:-.1px; }
+  .wege .lockt .rund { animation:locken 2.4s ease-in-out 3; border-color:var(--gold); background:#f5c54230; }
+
+  /* Spielwahl: Kapitel, farbige Karten mit Medaillon, NEU-Zeichen und Pokale */
+  .kapitel { margin:16px 0 8px; font-size:15px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); opacity:.9; font-weight:800; display:flex; align-items:center; gap:8px; }
+  .kapitel::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, #f5c54266, transparent); }
+  .blattinnen h2 + .kapitel { margin-top:0; }
+  .sk { --c:#7fd4ff; position:relative; overflow:hidden; background:linear-gradient(160deg, color-mix(in srgb, var(--c) 22%, transparent), #ffffff08 70%); border-color:color-mix(in srgb, var(--c) 40%, transparent); }
+  .sk .e { width:52px; height:52px; border-radius:50%; display:grid; place-items:center; font-size:30px; background:radial-gradient(#ffffff30, #ffffff08); box-shadow:inset 0 0 0 2px #f5c54255; }
+  .sk.breit .e { flex:none; }
+  .sk .neu { position:absolute; right:10px; top:10px; font-size:11px; font-weight:900; letter-spacing:.6px; background:var(--gold); color:#2a1d00; border-radius:999px; padding:2px 8px; }
+  .sk .pokale { position:absolute; right:10px; bottom:8px; font-size:13px; color:var(--gold); font-weight:800; }
+  .sk .pokale:empty { display:none; }
+
+  /* Ebenen von unten: Zimmer, Gefühle */
+  .blattinnen h2 small { display:block; font-size:15px; color:var(--leise); font-weight:600; margin-top:4px; }
+  .zim-oben { display:flex; gap:16px; align-items:center; background:#ffffff0d; border:1px solid #ffffff1a; border-radius:20px; padding:12px 16px; }
+  .zim-oben .gesicht { font-size:44px; line-height:1; }
+  .zim-oben b { display:block; font-size:17px; }
+  .zim-oben span { color:var(--leise); font-size:15px; }
+  .chipreihe { display:flex; flex-wrap:wrap; gap:8px; }
+  .chipreihe button { min-height:44px; padding:8px 14px; border-radius:999px; border:1px solid var(--rand); background:#ffffff10; color:var(--text); font-weight:700; font-size:16px; cursor:pointer; }
+  .chipreihe button:active { transform:scale(.95); }
+  .album { display:grid; grid-template-columns:repeat(6, 1fr); gap:6px; }
+  .album span { aspect-ratio:1; border-radius:14px; display:grid; place-items:center; font-size:26px; background:#ffffff10; border:1px solid #ffffff14; }
+  .album span.leer { font-size:16px; color:#ffffff40; }
+  .album span.neu { border-color:var(--gold); box-shadow:0 0 12px #f5c54288; animation:grossAuf .6s var(--federn) both; }
+  .gartenreihe { font-size:28px; letter-spacing:2px; min-height:40px; background:linear-gradient(transparent 60%, #2f6b4a66 60%); border-radius:12px; padding:4px 8px; word-break:break-all; }
+  .gartenreihe.leer { background:#2f6b4a44; font-size:15px; letter-spacing:0; word-break:normal; line-height:1.4; padding:10px 12px; }
+  .freunde { display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; }
+  .freund { display:flex; flex-direction:column; align-items:center; gap:4px; background:none; border:0; padding:0; color:var(--text); font-size:14px; font-weight:700; cursor:pointer; }
+  .freund img { width:100%; aspect-ratio:1; border-radius:50%; object-fit:cover; box-shadow:0 0 0 2px var(--gold), 0 6px 14px #0006; transition:transform .15s var(--federn); }
+  .freund:active img { transform:scale(.92); }
+  .gefuehle { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; }
+  .gefuehl { min-height:96px; border-radius:22px; border:2px solid #ffffff1f; background:#ffffff10; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; font-weight:700; font-size:16px; cursor:pointer; color:var(--text); }
+  .gefuehl .e { font-size:40px; line-height:1; }
+  .gefuehl:active { transform:scale(.95); border-color:var(--gold); }
+  .woche { display:flex; gap:6px; font-size:24px; flex-wrap:wrap; }
+
+  /* Elternbereich: saubere Gruppen */
+  .ebereich .karte { padding:20px 16px 16px; }
+  .gruppe { background:#ffffff0b; border:1px solid #ffffff14; border-radius:18px; padding:12px 16px; margin-top:12px; }
+  .gruppe h3 { margin:0 0 8px !important; display:flex; align-items:center; gap:8px; }
+  .gruppe .nein { margin-top:4px; }
+  .namensfeld { width:100%; min-height:48px; border-radius:12px; border:1px solid var(--rand); background:#0b1a3a; color:var(--text); font:inherit; font-size:17px; padding:8px 12px; }
+  .ebereich .halten { position:sticky; bottom:0; }
+
+  /* Neue Spiele */
+  .beete { display:grid; grid-template-columns:repeat(var(--n, 3), 1fr); gap:8px; width:100%; max-width:360px; align-items:end; }
+  .beet { position:relative; min-height:112px; border:0; border-radius:18px 18px 28px 28px; background:linear-gradient(transparent 55%, #6b4a2c 55%, #4a3220); cursor:pointer; padding:0; display:flex; align-items:flex-end; justify-content:center; }
+  .beet .pf { font-size:44px; line-height:1; margin-bottom:22px; transform-origin:50% 100%; transition:transform .4s var(--federn); }
+  .beet.waechst .pf { animation:wachsen .6s var(--federn); }
+  @keyframes wachsen { 0% { transform:scale(.6, .4); } 70% { transform:scale(1.1, 1.15); } }
+  .beet:disabled { cursor:default; }
+  .tropfen { position:absolute; left:50%; top:0; font-size:20px; pointer-events:none; animation:tropfen .7s ease-in forwards; }
+  @keyframes tropfen { from { transform:translate(-50%, -10px); opacity:0; } 30% { opacity:1; } to { transform:translate(-50%, 50px); opacity:0; } }
+  .wolkeding { font-size:56px; border:0; background:none; cursor:pointer; padding:0; transition:transform .5s var(--ease), opacity .5s; }
+  .wolkeding.weg { transform:translateX(160px); opacity:0; }
+  .schattenbild { font-size:112px; line-height:1; filter:brightness(0) drop-shadow(0 0 14px #f5c542aa); transition:filter .8s var(--ease); animation:grossAuf .6s var(--federn) both; }
+  .schattenbild.hell { filter:none; }
+  .glocken { display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%; max-width:300px; }
+  .glocke { aspect-ratio:1; max-height:120px; border-radius:28px; border:0; cursor:pointer; font-size:44px; color:#fff; box-shadow:inset 0 -6px 0 #0003; transition:transform .1s, filter .15s, box-shadow .15s; filter:saturate(.75) brightness(.8); }
+  .glocke.an { filter:none; transform:scale(1.06); box-shadow:0 0 28px var(--g), inset 0 -6px 0 #0003; }
+  .glocke:disabled { cursor:default; }
+  .echopunkte { display:flex; gap:8px; } .echopunkte i { width:14px; height:14px; border-radius:50%; background:#ffffff2e; } .echopunkte i.an { background:var(--gold); }
+  .mk.bildkarte .mk-auf { padding:4px; }
+  .mk.bildkarte .mk-auf img { width:100%; height:100%; object-fit:cover; border-radius:10px; }
+  .wuerfelwahl { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; width:100%; max-width:340px; }
+  .wuerfelwahl button { min-height:96px; border-radius:20px; border:2px solid #f5c542aa; background:#ffffff14; color:var(--text); font-weight:700; font-size:15px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:6px; }
+  .wuerfelwahl button:active { transform:scale(.95); }
+  .wuerfelwahl img { width:56px; height:56px; border-radius:50%; object-fit:cover; box-shadow:0 0 0 2px var(--gold); }
+  .wuerfelwahl .e { font-size:36px; line-height:1; }
+  .standbild { width:min(64%, 200px); aspect-ratio:1; border-radius:24px; object-fit:cover; box-shadow:0 0 0 3px var(--gold), 0 12px 30px #0008; animation:ruheEin .8s ease both; }
+  .standbild.emoji { display:grid; place-items:center; font-size:96px; background:radial-gradient(#ffffff22, #ffffff06); }
+  @keyframes ruheEin { from { opacity:0; } }
+  .atemkreis { width:140px; height:140px; border-radius:50%; background:radial-gradient(#fff3b0, #f5c542 60%, #e0a91f); box-shadow:0 0 40px #f5c54288; display:grid; place-items:center; color:#2a1d00; font-weight:900; font-size:18px; transform:scale(.6); transition:transform 4s ease-in-out; }
+  .atemkreis.ein { transform:scale(1); }
+  .ritualschritte { display:flex; gap:6px; justify-content:center; font-size:22px; }
+  .ritualschritte span { opacity:.35; transition:opacity .3s; } .ritualschritte span.an { opacity:1; }
+  .ritualschritte span.fertig { opacity:.8; filter:grayscale(.2); }
+  .endlinks { display:flex; flex-direction:column; gap:8px; width:100%; max-width:320px; }
+  .endlinks a { display:flex; align-items:center; justify-content:center; gap:8px; min-height:52px; border-radius:16px; border:2px solid var(--rand); background:#ffffff12; color:var(--text); text-decoration:none; font-weight:800; font-size:17px; }
+  .stickerneu { display:flex; align-items:center; gap:8px; background:#f5c54222; border:1px solid var(--rand); border-radius:999px; padding:6px 14px; font-weight:800; font-size:16px; animation:zAuf .4s .9s var(--ease) both; }
+  .stickerneu b { font-size:26px; }
+  body.ritual .feld { background:linear-gradient(#141b4a, #0b1233); }
+  @media (max-height:720px) { .beet { min-height:92px; } .beet .pf { font-size:36px; } .schattenbild { font-size:84px; } .glocke { max-height:96px; font-size:36px; } .wuerfelwahl button { min-height:80px; } .atemkreis { width:112px; height:112px; } }
+  @media (prefers-reduced-motion: reduce) { .atemkreis { transition:none; } }
 </style>
 </head>
 <body>
@@ -381,10 +499,10 @@
 
 <header class="kopf">
   <button class="elternknopf" id="elternHalten" type="button" aria-label="Für Eltern – 3 Sekunden gedrückt halten"><span aria-hidden="true">🔒</span></button>
-  <h1>Otti</h1>
+  <h1>Otti<small id="untertitel">Mondschein-Wald</small></h1>
   <div class="kopfrechts">
     <button class="tonknopf" id="tonKnopf" type="button" aria-label="Ton aus" aria-pressed="true">🔊</button>
-    <button class="sternpill" id="sternpill" type="button" aria-label="Deine Sterne"><span aria-hidden="true">⭐</span><span id="sternzahl">0</span></button>
+    <button class="sternpill" id="sternpill" type="button" aria-label="Deine Sterne und Ottis Zimmer"><span aria-hidden="true">⭐</span><span id="sternzahl">0</span></button>
   </div>
 </header>
 <div class="status" id="status" aria-live="polite">&nbsp;</div>
@@ -394,6 +512,7 @@
     <div id="puppe"></div>
     <img class="pose" id="pose" alt="">
   </div>
+  <button class="mondknopf" id="mondKnopf" type="button" aria-label="Den Mond antippen"></button>
   <div class="tipp" id="tipp" hidden><i aria-hidden="true">👆</i> Tipp mich an!</div>
 </div>
 
@@ -416,28 +535,64 @@
 </div>
 <div class="hinweis" id="hinweis" aria-live="polite"></div>
 <nav class="wege" aria-label="Mehr von Otti">
-  <a href="../mondschein/"><span class="rund" aria-hidden="true">📖</span>Geschichten</a>
-  <a href="../mondschein/#gutenacht"><span class="rund" aria-hidden="true">🌙</span>Gute Nacht</a>
-  <a href="../mondschein/#hoeren"><span class="rund" aria-hidden="true">🎧</span>Nur hören</a>
+  <button type="button" id="gefuehlKnopf"><span class="rund" aria-hidden="true">💛</span>Gefühle</button>
+  <button type="button" id="abendKnopf"><span class="rund" aria-hidden="true">🌙</span>Abend</button>
+  <a href="../mondschein/" id="wegGeschichten"><span class="rund" aria-hidden="true">📖</span>Geschichten</a>
+  <a href="../mondschein/#hoeren" id="wegHoeren"><span class="rund" aria-hidden="true">🎧</span>Nur hören</a>
 </nav>
 
 <div class="blatt" id="spielwahl" hidden role="dialog" aria-modal="true" aria-label="Spiel wählen">
   <div class="blattinnen">
     <div class="griff" aria-hidden="true"></div>
     <h2>Was spielen wir?</h2>
+    <h3 class="kapitel">Suchen &amp; bewegen</h3>
     <div class="spielkarten">
-      <button class="sk" type="button" data-spiel="verstecken"><span class="e" aria-hidden="true">🙈</span><b>Verstecken</b><small>Findest du Otti?</small></button>
-      <button class="sk" type="button" data-spiel="sammeln"><span class="e" aria-hidden="true">🍓</span><b>Beeren sammeln</b><small>Schnell tippen!</small></button>
-      <button class="sk" type="button" data-spiel="machmit"><span class="e" aria-hidden="true">🤸</span><b>Mach mit!</b><small>Hüpfen, tanzen, Stopp!</small></button>
-      <button class="sk" type="button" data-spiel="geschichte"><span class="e" aria-hidden="true">📖</span><b>Geschichte</b><small>Du entscheidest</small></button>
-      <button class="sk breit" type="button" data-spiel="fragen"><span class="e" aria-hidden="true">🎲</span><span><b>Fragespiel</b><br><small>Fragen und Rätsel</small></span></button>
+      <button class="sk" style="--c:#9be37c" type="button" data-spiel="verstecken"><span class="e" aria-hidden="true">🙈</span><b>Verstecken</b><small>Findest du Otti?</small><span class="pokale"></span></button>
+      <button class="sk" style="--c:#ff8fb1" type="button" data-spiel="sammeln"><span class="e" aria-hidden="true">🍓</span><b>Beeren sammeln</b><small>Schnell tippen!</small><span class="pokale"></span></button>
+      <button class="sk" style="--c:#7fd4ff" type="button" data-spiel="machmit"><span class="e" aria-hidden="true">🤸</span><b>Mach mit!</b><small>Hüpfen, tanzen, Stopp!</small><span class="pokale"></span></button>
+      <button class="sk" style="--c:#b59bff" type="button" data-spiel="schatten"><span class="neu">NEU</span><span class="e" aria-hidden="true">👤</span><b>Schatten raten</b><small>Wer versteckt sich?</small><span class="pokale"></span></button>
+      <button class="sk" style="--c:#f5c542" type="button" data-spiel="freunde"><span class="neu">NEU</span><span class="e" aria-hidden="true">🖼️</span><b>Freunde-Memory</b><small>Ottis echte Freunde</small><span class="pokale"></span></button>
+      <button class="sk" style="--c:#ffb36b" type="button" data-spiel="fragen"><span class="e" aria-hidden="true">🎲</span><b>Fragespiel</b><small>Fragen und Rätsel</small><span class="pokale"></span></button>
     </div>
-    <h3 class="zuzweit-t"><span aria-hidden="true">🧒👨</span> Zu zweit spielen</h3>
+    <h3 class="kapitel">Ruhig &amp; kreativ</h3>
     <div class="spielkarten">
-      <button class="sk zwei" type="button" data-spiel="memory"><span class="e" aria-hidden="true">🃏</span><b>Memory</b><small>Abwechselnd aufdecken</small></button>
-      <button class="sk zwei" type="button" data-spiel="quiz"><span class="e" aria-hidden="true">🏆</span><b>Otti-Quiz</b><small>Wer weiss mehr?</small></button>
+      <button class="sk" style="--c:#9be37c" type="button" data-spiel="garten"><span class="neu">NEU</span><span class="e" aria-hidden="true">🌷</span><b>Ottis Garten</b><small>Säen, giessen, staunen</small><span class="pokale"></span></button>
+      <button class="sk" style="--c:#7fd4ff" type="button" data-spiel="echo"><span class="neu">NEU</span><span class="e" aria-hidden="true">🔔</span><b>Klang-Echo</b><small>Hör zu, spiel nach</small><span class="pokale"></span></button>
+      <button class="sk" style="--c:#ff8fb1" type="button" data-spiel="wuerfel"><span class="neu">NEU</span><span class="e" aria-hidden="true">🪄</span><b>Erzähl mir was</b><small>Du wählst, Otti erzählt</small><span class="pokale"></span></button>
+      <button class="sk" style="--c:#b59bff" type="button" data-spiel="geschichte"><span class="e" aria-hidden="true">📖</span><b>Weiter-Geschichte</b><small>Du entscheidest</small><span class="pokale"></span></button>
+    </div>
+    <h3 class="kapitel"><span aria-hidden="true">🧒👨</span> Zu zweit</h3>
+    <div class="spielkarten">
+      <button class="sk zwei" type="button" data-spiel="memory"><span class="e" aria-hidden="true">🃏</span><b>Memory</b><small>Abwechselnd aufdecken</small><span class="pokale"></span></button>
+      <button class="sk zwei" type="button" data-spiel="quiz"><span class="e" aria-hidden="true">🏆</span><b>Otti-Quiz</b><small>Wer weiss mehr?</small><span class="pokale"></span></button>
     </div>
     <button class="nein" id="wahlZu" type="button">Zurück</button>
+  </div>
+</div>
+
+<div class="blatt" id="zimmer" hidden role="dialog" aria-modal="true" aria-label="Ottis Zimmer">
+  <div class="blattinnen">
+    <div class="griff" aria-hidden="true"></div>
+    <h2>Ottis Zimmer<small id="zimSterne"></small></h2>
+    <div class="zim-oben"><span class="gesicht" id="zimGesicht" aria-hidden="true">🦔</span><span><b id="zimLaune"></b><span id="zimLauneT"></span></span></div>
+    <h3 class="kapitel">Ottis Lieblingsdinge</h3>
+    <div class="chipreihe" id="zimLieb"></div>
+    <h3 class="kapitel">Deine Sticker <span id="zimAlbumN" style="text-transform:none;letter-spacing:0"></span></h3>
+    <div class="album" id="zimAlbum"></div>
+    <h3 class="kapitel">Ottis Garten</h3>
+    <div class="gartenreihe" id="zimGarten"></div>
+    <h3 class="kapitel">Ottis Freunde</h3>
+    <div class="freunde" id="zimFreunde"></div>
+    <button class="nein" id="zimZu" type="button">Zurück zu Otti</button>
+  </div>
+</div>
+
+<div class="blatt" id="gefuehle" hidden role="dialog" aria-modal="true" aria-label="Wie geht es dir?">
+  <div class="blattinnen">
+    <div class="griff" aria-hidden="true"></div>
+    <h2>Wie geht es dir?<small>Tipp auf dein Gefühl. Alle Gefühle sind okay.</small></h2>
+    <div class="gefuehle" id="gefuehlWahl"></div>
+    <button class="nein" id="gefuehlZu" type="button">Zurück</button>
   </div>
 </div>
 
@@ -445,25 +600,45 @@
   <div class="karte">
     <h2>Für Eltern</h2>
     <p class="leise">Alles hier bleibt auf diesem Handy.</p>
-    <h3>Was Otti sich merkt</h3>
-    <div class="merkt" id="merkt"></div>
-    <button class="nein" id="vergessen" type="button" style="text-align:left">🧽 Otti vergisst alles</button>
-    <h3>Ottis Stimme</h3>
-    <p class="leise" id="stimmeInfo"></p>
-    <h3>Länge eines Live-Gesprächs</h3>
-    <div class="zeile" id="dauerWahl"></div>
-    <p class="leise" style="margin-top:8px">Danach sagt Otti freundlich Tschüss und legt auf.</p>
-    <h3>Live-Gespräch (Internet)</h3>
-    <p id="okInfo"></p>
-    <button class="nein" id="okWeg" type="button" style="text-align:left">Einverständnis zurücknehmen</button>
-    <h3>Otti lernt mit</h3>
-    <label class="haken"><input type="checkbox" id="lernen"> <span>Einmal am Tag nur Zahlen an DR Lab schicken (z. B. «12 Sterne, 3 Spiele»). Nie Stimme, Bild, Namen oder Text.</span></label>
-    <p class="leise" id="lernInfo" style="margin-top:8px"></p>
-    <h3>💬 Mit DR Lab reden</h3>
-    <p class="leise">Was gefällt, was fehlt? Bleibt auf dem Handy, bis du es weitergibst.</p>
-    <div data-feedback-slot></div>
-    <h3>🎬 Einführung</h3>
-    <button class="nein" id="tourNochmal" type="button" style="text-align:left">Einführung für Eltern zeigen</button>
+    <section class="gruppe">
+      <h3><span aria-hidden="true">🧒</span> Dein Kind</h3>
+      <label class="leise" for="kindName">So nennt Otti dein Kind (nur ein Vorname oder Spitzname):</label>
+      <input class="namensfeld" id="kindName" type="text" maxlength="20" autocomplete="off" autocapitalize="words" enterkeyhint="done" placeholder="z. B. Mia">
+      <p class="leise" style="margin-top:8px">Der Name bleibt auf dem Handy und geht nie ans Internet, auch nicht im Live-Gespräch.</p>
+      <h3 style="margin-top:12px !important"><span aria-hidden="true">💛</span> Gefühle der letzten Tage</h3>
+      <div class="woche" id="gefuehlWoche"></div>
+    </section>
+    <section class="gruppe">
+      <h3><span aria-hidden="true">🧠</span> Was Otti sich merkt</h3>
+      <div class="merkt" id="merkt"></div>
+      <button class="nein" id="vergessen" type="button" style="text-align:left">🧽 Otti vergisst alles</button>
+    </section>
+    <section class="gruppe">
+      <h3><span aria-hidden="true">🔊</span> Ottis Stimme</h3>
+      <p class="leise" id="stimmeInfo"></p>
+    </section>
+    <section class="gruppe">
+      <h3><span aria-hidden="true">📞</span> Live-Gespräch (Internet)</h3>
+      <p id="okInfo"></p>
+      <button class="nein" id="okWeg" type="button" style="text-align:left">Einverständnis zurücknehmen</button>
+      <p class="leise" style="margin:8px 0">Länge eines Gesprächs:</p>
+      <div class="zeile" id="dauerWahl"></div>
+      <p class="leise" style="margin-top:8px">Danach sagt Otti freundlich Tschüss und legt auf.</p>
+    </section>
+    <section class="gruppe">
+      <h3><span aria-hidden="true">📊</span> Otti lernt mit</h3>
+      <label class="haken"><input type="checkbox" id="lernen"> <span>Einmal am Tag nur Zahlen an DR Lab schicken (z. B. «12 Sterne, 3 Spiele»). Nie Stimme, Bild, Namen oder Text.</span></label>
+      <p class="leise" id="lernInfo" style="margin-top:8px"></p>
+    </section>
+    <section class="gruppe">
+      <h3><span aria-hidden="true">💬</span> Mit DR Lab reden</h3>
+      <p class="leise">Was gefällt, was fehlt? Bleibt auf dem Handy, bis du es weitergibst.</p>
+      <div data-feedback-slot></div>
+    </section>
+    <section class="gruppe">
+      <h3><span aria-hidden="true">🎬</span> Einführung</h3>
+      <button class="nein" id="tourNochmal" type="button" style="text-align:left">Einführung für Eltern zeigen</button>
+    </section>
     <button class="halten" id="ebZu" type="button" style="margin-top:16px"><span>Zurück zu Otti</span></button>
   </div>
 </div>
@@ -578,10 +753,12 @@
       if (danach) danach();
     });
   }
-  function winken() {
+  function winken(satz) {
     if (versteckt) return;
     if (POSEN.winkt) pose('winkt', 2300);
-    kurzZustand('winkt', 2600);
+    // Flüssig zurückgrüssen (Puppe aus #136): Otti winkt und bewegt den Mund dazu
+    if (puppe && puppe.gruesse) { clearTimeout(zustandT); puppe.gruesse('winken+reden', { satz: satz || 'Hallo!', blase: false, ton: false }); }
+    else kurzZustand('winkt', 2600);
   }
   var stillSeit = Date.now();
   document.addEventListener('pointerdown', function () { stillSeit = Date.now(); }, true);
@@ -926,10 +1103,7 @@
   // Spiel-Schritte warten, solange die Feier offen ist.
   var pausiert = false;
   function weiterWenn(f) { if (pausiert) feierWarte.push(f); else f(); }
-  $('sternpill').addEventListener('click', function () {
-    var n = sterne(); klang('tipp');
-    sagKurz(n ? 'Du hast schon ' + n + (n === 1 ? ' Stern' : ' Sterne') + ' gesammelt. Toll!' : 'Beim Spielen sammelst du Sterne. Tipp auf «Spielen»!');
-  });
+  $('sternpill').addEventListener('click', function () { klang('tipp'); zimmerZeigen(); });
 
   /* ================= Lern-Zahlen: auf dem Handy, Weitergabe nur mit Häkchen ================= */
   var ZAHLEN = 'otti_zahlen';
@@ -975,14 +1149,17 @@
     var f = fsMerk(), g = gedaechtnis(), n = sterne(), z = zahlen(), teile = [];
     teile.push(n ? '⭐ ' + n + (n === 1 ? ' Stern' : ' Sterne') + ' gesammelt.' : '⭐ Noch keine Sterne. Die gibt es beim Spielen.');
     var lieb = Object.keys(z).filter(function (k) { return /^spiel_/.test(k); }).sort(function (a, b) { return z[b] - z[a]; })[0];
-    if (lieb) teile.push('🎮 Lieblingsspiel: ' + ({ spiel_verstecken: 'Verstecken', spiel_sammeln: 'Beeren sammeln', spiel_machmit: 'Mach mit!', spiel_geschichte: 'Weiter-Geschichte', spiel_fragen: 'Fragespiel', spiel_memory: 'Memory zu zweit', spiel_quiz: 'Otti-Quiz zu zweit' }[lieb] || '') + '.');
+    if (lieb) teile.push('🎮 Lieblingsspiel: ' + ({ spiel_verstecken: 'Verstecken', spiel_sammeln: 'Beeren sammeln', spiel_machmit: 'Mach mit!', spiel_geschichte: 'Weiter-Geschichte', spiel_fragen: 'Fragespiel', spiel_memory: 'Memory zu zweit', spiel_quiz: 'Otti-Quiz zu zweit', spiel_garten: 'Ottis Garten', spiel_schatten: 'Schatten raten', spiel_echo: 'Klang-Echo', spiel_freunde: 'Freunde-Memory', spiel_wuerfel: 'Erzähl mir was', spiel_abend: 'Abendritual', spiel_atmen: 'Ballon-Atmen' }[lieb] || '') + '.');
     if (f.length) teile.push('💛 Mag gerne: ' + f.join(', ') + '.');
+    var al = album().length, ga = garten().length; if (al || ga) teile.push('🎁 ' + al + ' Sticker im Album, 🌷 ' + ga + ' Blumen im Garten.');
+    if (z.abende) teile.push('🌙 ' + z.abende + (z.abende === 1 ? ' Abendritual' : ' Abendrituale') + ' zusammen.');
     teile.push(g.length ? '🗨️ Aus den Gesprächen:\n' + erinnerung() : '🗨️ Noch kein Live-Gespräch.');
     m.textContent = teile.join('\n\n');
     vergessen.hidden = !g.length && !f.length && !n;
   }
   vergessen.addEventListener('click', function () {
-    [GED, FS, STERNE, ZAHLEN].forEach(los);
+    [GED, FS, STERNE, ZAHLEN, KIND, ALBUM, GARTEN, GEF, 'otti_abend_tag'].forEach(los);
+    $('kindName').value = ''; zeitStimmung(); woche();
     vergessenZeigen(); sterneZeigen(); statusSetzen('Erledigt. Otti fängt neu an.');
   });
 
@@ -1139,9 +1316,10 @@
   function schlafen(an) { var war = buehne.classList.contains('schlaeft'); buehne.classList.toggle('schlaeft', !!an); if (an) pz('schlaeft'); else if (war) pz('ruhig'); if (an && POSEN.schlaeft) pose('schlaeft'); else if (!an && $('pose').src.indexOf('schlaeft') > -1) pose(''); }
   $('winkKnopf').addEventListener('click', function () {
     tippWeg(); schlafen(false); stillSeit = Date.now();
-    winken();
+    var gs = mitName(zufall(['Hallo! Ich winke dir zu!', 'Huhu! Schön, dass du da bist!', 'Winke, winke!']), .4);
+    winken(gs);
     klang('tipp'); zahl('winken');
-    if (!spielAktiv) sagKurz(zufall(['Hallo! Ich winke dir zu!', 'Huhu! Schön, dass du da bist!', 'Winke, winke!']));
+    if (!spielAktiv) zeile('otti', gs, false);
   });
 
   /* ================= Otti reagiert: jedes Mal ein bisschen anders ================= */
@@ -1160,7 +1338,7 @@
   function ottiFreut(text, vonEl) {
     var x = ohneWdh(LOB, 'lob'); bewegung(x[1]); kurzZustand('freut', 1400);
     klang(Math.random() < .3 ? 'hihi' : 'jubel'); summ([12, 30, 12]); funken(10, vonEl);
-    blase(text || x[0]);
+    blase(text || mitName(x[0], .3));
   }
   function ottiTrost(text) { var x = ohneWdh(TROST, 'trost'); bewegung(x[1]); klang('falsch'); summ(25); blase(text || x[0]); }
 
@@ -1191,7 +1369,7 @@
     timer.forEach(clearTimeout); timer = [];
     if (spielAktiv && spielAktiv.stopp) try { spielAktiv.stopp(); } catch (e) {}
     spielAktiv = null; spielTipp = null;
-    document.body.classList.remove('imspiel'); feldLeeren(); stufeZeigen(0); stimmeStopp(); $('dranBand').hidden = true;
+    document.body.classList.remove('imspiel', 'ritual'); feldLeeren(); stufeZeigen(0); stimmeStopp(); $('dranBand').hidden = true;
     if (versteckt) bewegung('auftauchen');
     spielKnopfZeigen();
   }
@@ -1239,10 +1417,10 @@
     if (spielAktiv !== s) return;
     s.ziel = null; feldLeeren(); stufeZeigen(0); $('dranBand').hidden = true;
     var S = SPIELE[s.name], f = $('feldinhalt'), k = el('div', 'endkarte');
-    var text = S.endeText ? S.endeText(s) : ohneWdh(ENDE_TEXT, 'ende');
+    var text = S.endeText ? S.endeText(s) : mitName(ohneWdh(ENDE_TEXT, 'ende'), .5);
     if (S.endeZeile) k.appendChild(el('div', 'endzeile', S.endeZeile(s)));
     var oben = el('div', 'endoben'), reihe = el('div', 'sternreihe'), st = [];
-    oben.appendChild(el('span', 'pokal', zufall(['🏆', '🥇', '👑', '🌟', '🎉'])));
+    oben.appendChild(el('span', 'pokal', S.ruhigEnde ? S.icon : zufall(['🏆', '🥇', '👑', '🌟', '🎉'])));
     for (var i = 0; i < 3; i++) { var x = el('span', '', '⭐'); x.style.animationDelay = (.3 + i * .25) + 's'; reihe.appendChild(x); st.push(x); }
     oben.appendChild(reihe); k.appendChild(oben);
     var noch = knopfEl('gross-knopf nochmal', '🔁 Nochmal?', function () { klang('tipp'); spielStarten(s.name, true); });
@@ -1250,8 +1428,11 @@
     var w = el('div', 'endwahl');
     w.appendChild(knopfEl('', '🎮 Anderes Spiel', function () { klang('tipp'); spielBeenden(); spielWahl(); }));
     w.appendChild(knopfEl('', '👋 Fertig', function () { spielBeenden(); winken(); klang('summen'); sag(zufall(['Das war schön mit dir. Bis bald!', 'Danke fürs Spielen! Ich ruhe mich kurz aus.', 'Tschüss! Ich freu mich schon aufs nächste Mal.', 'Hihi, das war lustig. Bis bald!', 'Bis bald, mein Spielfreund!'])); statusSetzen('Bis bald!'); }));
+    var stk = stickerDazu();
+    if (stk) { var sn = el('div', 'stickerneu'); sn.appendChild(el('span', '', 'Neuer Sticker für Ottis Zimmer:')); sn.appendChild(el('b', '', stk)); k.insertBefore(sn, noch); }
     k.appendChild(w); f.appendChild(k);
-    konfetti(); klang('feier'); summ([30, 50, 30, 50, 60]); bewegung('tanzen'); kurzZustand('freut', 2600); pose('lacht', 2400);
+    if (S.ruhigEnde) { klang('schlaflied'); summ(20); bewegung('freuen'); kurzZustand('freut', 2000); }
+    else { konfetti(); klang('feier'); summ([30, 50, 30, 50, 60]); bewegung('tanzen'); kurzZustand('freut', 2600); pose('lacht', 2400); }
     st.forEach(function (x, i) { nach(400 + i * 300, function () { sternDazu(x, true); }); });
     blase(text); sprechen(text);
     s.ziel = function () { return noch; };
@@ -1260,7 +1441,7 @@
   function spielWahl() {
     if (conv) return;
     tippWeg(); $('spielKnopf').classList.remove('lockt');
-    $('spielwahl').hidden = false; klang('whoosh');
+    pokaleZeigen(); $('spielwahl').hidden = false; klang('whoosh');
     setTimeout(function () { var b = document.querySelector('.sk'); if (b) b.focus({ preventScroll: true }); }, 300);
   }
   $('spielKnopf').addEventListener('click', function () {
@@ -1868,6 +2049,446 @@
     }
   };
 
+  /* ================= Runde 4 (21.10.): Name, Tageszeit, Lieblingsdinge, Sticker, Garten, Gefühle ================= */
+  // Name des Kindes: nur auf diesem Handy, nie im Internet (auch nicht im Live-Gespräch).
+  var KIND = 'otti_name';
+  function kindName() { return String(lies(KIND, '') || '').replace(/[^\p{L}\p{M}\s'-]/gu, '').trim().slice(0, 20); }
+  function mitName(t, p) { var n = kindName(); if (!n || Math.random() > (p == null ? .35 : p)) return t; return /[!.?]$/.test(t) ? t.replace(/([!.?])$/, ', ' + n + '$1') : t + ', ' + n; }
+  function heute() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+  function tagNr() { var d = new Date(); return Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5) + d.getFullYear() * 400; }
+  function liste(k) { try { var v = JSON.parse(lies(k, '[]')); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
+
+  /* Tageszeit-Stimmung (Vorbild: Sago Mini, Welten wechseln sanft mit dem Tag) */
+  function zeitStimmung() {
+    var h = new Date().getHours(), z = h >= 5 && h < 10 ? 'morgen' : h < 17 && h >= 10 ? 'tag' : h >= 17 && h < 20 ? 'abend' : 'nacht';
+    ['morgen', 'tag', 'abend', 'nacht'].forEach(function (x) { document.body.classList.toggle('zeit-' + x, x === z); });
+    var n = kindName();
+    $('untertitel').textContent = n ? ({ morgen: 'Guten Morgen, ', tag: 'Hallo, ', abend: 'Guten Abend, ', nacht: 'Gute Nacht, ' }[z] + n) : ({ morgen: 'Morgen im Wald', tag: 'Mondschein-Wald', abend: 'Abend im Wald', nacht: 'Nacht im Wald' }[z]);
+    return z;
+  }
+
+  /* Ottis Laune des Tages und Lieblingsdinge (Vorbild: Khan Academy Kids, Figuren mit Gefühlen) */
+  var LAUNEN = [['😊', 'fröhlich', 'Heute hüpft Otti vor Freude.'], ['🧐', 'neugierig', 'Otti will heute alles entdecken.'], ['😴', 'verschlafen', 'Otti hat lange geträumt.'],
+    ['🤗', 'kuschelig', 'Otti möchte heute kuscheln.'], ['🤩', 'aufgeregt', 'Heute ist ein besonderer Tag, findet Otti.'], ['😌', 'ganz ruhig', 'Otti hört heute dem Wind zu.']];
+  function laune() { return LAUNEN[tagNr() % LAUNEN.length]; }
+  var LIEB = [['🍓', 'Walderdbeeren', 'Walderdbeeren sind mein Lieblingsessen. Süss und klein, so wie ich!', 'hops'], ['🌙', 'Mondlicht', 'Im Mondlicht glänzen meine Stacheln wie Gold.', 'strecken'],
+    ['🐌', 'Schnecki', 'Schnecki ist meine langsamste und liebste Freundin.', 'neugierig'], ['🍂', 'Laub', 'Im Laub rascheln ist das Schönste. Rischel, raschel!', 'wind'],
+    ['🧣', 'Halstuch', 'Mein gelbes Halstuch trage ich jeden Tag. Es ist so schön warm.', 'drehen'], ['🛏️', 'Moos-Kissen', 'Auf meinem Moos-Kissen träume ich am allerbesten.', 'igelball']];
+
+  /* Sticker-Album (Vorbild: Khan Academy Kids, Sammeln statt Punkte) */
+  var STICKER = ['🦔', '🐿️', '🦉', '🐸', '🐞', '🦋', '🐌', '🐭', '🦊', '🐰', '🐻', '🐨', '🦁', '🐝', '🍄', '🌻', '🍓', '🌰', '🍁', '🌙', '⭐', '🌈', '🎈', '🪁'];
+  var ALBUM = 'otti_album', stickerNeu = -1;
+  function album() { return liste(ALBUM).filter(function (i) { return i >= 0 && i < STICKER.length; }); }
+  function stickerDazu() {
+    var a = album(), frei = STICKER.map(function (_, i) { return i; }).filter(function (i) { return a.indexOf(i) < 0; });
+    if (!frei.length) return '';
+    var i = zufall(frei); a.push(i); schreib(ALBUM, JSON.stringify(a)); stickerNeu = i; zahl('sticker');
+    return STICKER[i];
+  }
+  /* Ottis Garten (Vorbild: Toca Boca, offenes Spiel ohne Verlieren) */
+  var GARTEN = 'otti_garten', BLUMEN = ['🌷', '🌻', '🌼', '🌸', '🪻', '🌺'];
+  function garten() { return liste(GARTEN).filter(function (b) { return BLUMEN.indexOf(b) > -1; }); }
+  function blumeDazu(b) { var g = garten(); g.push(b); schreib(GARTEN, JSON.stringify(g.slice(-36))); }
+  /* Ottis echte Freunde (Bilder aus den Filmen) */
+  var FREUNDE = [['otti', 'Otti', 'Das bin ich! Otti, der kleine Igel mit dem gelben Halstuch.'], ['hoppel', 'Hoppel', 'Das ist Hoppel, der Hase. Er hat die längsten Ohren im ganzen Wald.'],
+    ['flori', 'Flori', 'Das ist Flori, der Fuchs. Er singt jeden Abend ein leises Lied.'], ['fompa', 'Fompa', 'Das ist Fompa, das Löwenäffchen mit der runden Brille. Er rechnet alles aus.'],
+    ['kiki', 'Kiki', 'Das ist Kiki, der Koala mit dem goldenen Mikrofon. Kiki singt ganz leise.'], ['nova', 'Nova', 'Das ist Nova, der kleine Roboter. Nova weiss viel, aber nicht alles.'],
+    ['zahnboecklein', 'Zahnböcklein', 'Das ist das Zahnböcklein. Mäh! Es putzt mit dir die Zähne.']];
+  function freundBild(k) { return 'freunde/' + k + '.jpg'; }
+
+  /* ================= Ottis Zimmer: Laune, Lieblingsdinge, Sticker, Garten, Freunde ================= */
+  function blattZu(id) { $(id).hidden = true; }
+  function zimmerZeigen() {
+    spielBeenden(); tippWeg();
+    var l = laune(), n = sterne(), a = album();
+    $('zimSterne').textContent = n ? '⭐ ' + n + (n === 1 ? ' Stern gesammelt' : ' Sterne gesammelt') : 'Beim Spielen sammelst du Sterne und Sticker.';
+    $('zimGesicht').textContent = l[0]; $('zimLaune').textContent = 'Otti ist heute ' + l[1] + '.'; $('zimLauneT').textContent = l[2];
+    var lb = $('zimLieb'); lb.innerHTML = '';
+    LIEB.forEach(function (x) { lb.appendChild(knopfEl('', x[0] + ' ' + x[1], function () { blattZu('zimmer'); klang('tipp'); bewegung(x[3]); kurzZustand('freut', 1500); sag(x[2]); })); });
+    var al = $('zimAlbum'); al.innerHTML = '';
+    STICKER.forEach(function (s, i) {
+      var hat = a.indexOf(i) > -1, sp = el('span', hat ? (i === stickerNeu ? 'neu' : '') : 'leer', hat ? s : '?');
+      sp.setAttribute('aria-label', hat ? 'Sticker ' + s : 'Noch nicht gefunden'); al.appendChild(sp);
+    });
+    $('zimAlbumN').textContent = '· ' + a.length + ' von ' + STICKER.length;
+    var g = garten(); $('zimGarten').textContent = g.length ? g.join('') : '🌱 Noch leer. Spiel «Ottis Garten», dann wächst hier etwas.'; $('zimGarten').classList.toggle('leer', !g.length);
+    var fr = $('zimFreunde'); fr.innerHTML = '';
+    FREUNDE.forEach(function (f) {
+      var b = knopfEl('freund'); var im = el('img'); im.src = freundBild(f[0]); im.alt = ''; im.loading = 'lazy'; b.appendChild(im); b.appendChild(el('span', '', f[1]));
+      b.setAttribute('aria-label', f[1]);
+      b.onclick = function () { blattZu('zimmer'); klang('tipp'); bewegung('hops'); kurzZustand('freut', 1400); sag(f[2]); };
+      fr.appendChild(b);
+    });
+    $('zimmer').hidden = false; klang('whoosh'); stickerNeu = -1;
+  }
+  $('zimZu').addEventListener('click', function () { blattZu('zimmer'); });
+  $('zimmer').addEventListener('click', function (e) { if (e.target === this) this.hidden = true; });
+
+  /* ================= Der Mond auf der Bühne: kleine Überraschung beim Antippen (Vorbild: Sago Mini) ================= */
+  var mondI = 0;
+  $('mondKnopf').addEventListener('click', function (e) {
+    e.stopPropagation(); stillSeit = Date.now(); tippWeg();
+    var m = this; m.classList.add('leuchtet'); setTimeout(function () { m.classList.remove('leuchtet'); }, 1600);
+    note(1568, 0, 1.4, 'glocke', .06); note(2093, .18, 1.4, 'glocke', .05); note(1318.5, .36, 1.6, 'glocke', .04);
+    hochSchauen(.7, -.9, 2.2); kurzZustand('freut', 1200);
+    if (++mondI % 4 === 0 && !spielAktiv) { TRICKS.sternschnuppe(); return; }
+    if (!spielAktiv) sagKurz(zufall(['Der Mond zwinkert dir zu!', 'Psst, der Mond hat gerade gelächelt.', 'Hallo, lieber Mond!', 'Der Mond sagt: Schön, dass du da bist.', 'Schau, wie er leuchtet!']));
+  });
+
+  /* ================= Gefühle: «Wie geht es dir?» (Vorbild: Khan Academy Kids, Gefühle benennen) ================= */
+  var GEF = 'otti_gefuehle';
+  var GEFUEHLE = [
+    ['froh', '😊', 'Froh', function () { bewegung('tanzen'); funken(14); sag(mitName('Juhui, du bist froh! Da freue ich mich mit dir.', .6)); }],
+    ['aufgeregt', '🤩', 'Aufgeregt', function () { bewegung('hops3'); sag('Kribbelig im Bauch! Komm, wir hüpfen zusammen dreimal. Hopp, hopp, hopp!'); }],
+    ['muede', '😴', 'Müde', function () { TRICKS.gaehnen(); sag('Uaaah, ich bin auch ein bisschen müde. Tipp unten auf «Abend», dann machen wir es uns gemütlich.', function () { $('abendKnopf').classList.add('lockt'); }); }],
+    ['traurig', '😢', 'Traurig', function () { bewegung('igelball'); herz(); klang('summen'); sag(mitName('Oh, du bist traurig. Das ist okay. Ich bin da und schicke dir eine ganz weiche Igel-Umarmung.', .6)); }],
+    ['wuetend', '😠', 'Wütend', function () { bewegung('stampfen'); sag('Wütend sein ist okay. Komm, wir pusten die Wut weg, wie bei einem Ballon.', function () { spielStarten('atmen'); }); }],
+    ['angst', '😟', 'Ängstlich', function () { bewegung('neugierig'); herz(); sag('Ein bisschen Angst? Ich halte deine Hand. Mutig sein heisst, es trotzdem zu probieren. Und ich bin bei dir.'); }]
+  ];
+  function herz() { var h = deko('herzflug', '💛', 1700); h.style.left = (40 + Math.random() * 20) + '%'; }
+  (function () {
+    var w = $('gefuehlWahl');
+    GEFUEHLE.forEach(function (g) {
+      var b = knopfEl('gefuehl'); b.appendChild(el('span', 'e', g[1])); b.appendChild(el('span', '', g[2])); b.setAttribute('aria-label', g[2]);
+      b.onclick = function () {
+        blattZu('gefuehle'); klang('tipp'); summ(10); zahl('gefuehl_' + g[0]);
+        var l = liste(GEF), neuTag = !l.length || l[l.length - 1].d !== heute();
+        l.push({ d: heute(), g: g[0] }); schreib(GEF, JSON.stringify(l.slice(-14)));
+        g[3]();
+        if (neuTag) setTimeout(function () { sternDazu($('gefuehlKnopf')); }, 900);
+      };
+      w.appendChild(b);
+    });
+  })();
+  $('gefuehlKnopf').addEventListener('click', function () { spielBeenden(); tippWeg(); schlafen(false); $('gefuehle').hidden = false; klang('whoosh'); sagKurz('Wie geht es dir heute?'); });
+  $('gefuehlZu').addEventListener('click', function () { blattZu('gefuehle'); });
+  $('gefuehle').addEventListener('click', function (e) { if (e.target === this) this.hidden = true; });
+  $('abendKnopf').addEventListener('click', function () { this.classList.remove('lockt'); spielStarten('abend'); });
+  function gefuehlEmoji(k) { var g = GEFUEHLE.filter(function (x) { return x[0] === k; })[0]; return g ? g[1] : ''; }
+
+  /* --- 8. Ballon-Atmen (aus «Wütend»): dreimal ein und aus, ganz ruhig --- */
+  function atemRunden(f, n, fertig) {
+    var k = el('div', 'atemkreis', 'Ein …'), i = 0; f.appendChild(k);
+    (function zyklus() {
+      if (!spielAktiv) return;
+      if (i++ >= n) { fertig(); return; }
+      $('feldzahl').textContent = '🌬️ ' + i + ' / ' + n;
+      k.textContent = 'Ein …'; k.classList.add('ein'); gleiten(260, 390, 0, 3.6, .05, 'sine'); blase(i === 1 ? 'Ganz tief einatmen, der Ballon wird gross …' : 'Ein …');
+      nach(4200, function () { k.textContent = 'Aus …'; k.classList.remove('ein'); rauschen(0, 3.6, .04, 700, 300); blase('… und langsam ausatmen. Pffff.'); nach(4400, zyklus); });
+    })();
+  }
+  SPIELE.atmen = { icon: '🎈', titel: 'Ballon-Atmen', stufen: 1, ruhigEnde: true, ansage: 'Wir atmen wie ein Ballon. Ich mache mit.',
+    endeText: function () { return mitName('Gut gemacht. Spürst du, wie es ruhiger wird?', .6); },
+    stufe: function (s, n, fertig) { var f = $('feldinhalt'); s.ziel = null; bewegung('strecken'); atemRunden(f, 3, fertig); } };
+
+  /* --- 9. Abendritual mit Otti (Vorbild: Moshi und Sago Mini, feste Schlaf-Routine) --- */
+  var ZAHN_TEILE = [['⬆️', 'Oben links. Kleine Kreise.'], ['⬆️', 'Oben rechts. Schön sanft.'], ['⬇️', 'Unten links. Auch hinten!'], ['⬇️', 'Unten rechts. Fast geschafft!']];
+  SPIELE.abend = { icon: '🌙', titel: 'Abendritual', stufen: 1, ansage: 'Zeit fürs Abendritual. Ich mache alles mit!',
+    stufe: function (s, n, fertig) {
+      var f = $('feldinhalt'); document.body.classList.add('ritual'); f.classList.add('oben');
+      var SCHRITTE = ['🧸', '👕', '🪥', '🌬️', '💭'], si = 0;
+      function kopf() {
+        var r = el('div', 'ritualschritte'); SCHRITTE.forEach(function (e, i) { r.appendChild(el('span', i < si ? 'fertig' : i === si ? 'an' : '', i < si ? '✅' : e)); });
+        f.innerHTML = ''; f.appendChild(r); $('feldzahl').textContent = (si + 1) + ' / ' + SCHRITTE.length;
+      }
+      function schritt(e, t, knopfT, weiter) {
+        kopf(); var z = el('div', 'zug'); z.appendChild(el('span', 'e', e)); f.appendChild(z);
+        sag(t, function () {
+          if (spielAktiv !== s) return;
+          var b = knopfEl('gross-knopf', knopfT, function () { b.disabled = true; s.ziel = null; klang('stern', si); summ(10); kurzZustand('freut', 1000); si++; nach(500, weiter); });
+          f.appendChild(b); s.ziel = function () { return b; };
+        });
+      }
+      function zaehne() {
+        kopf(); var z = el('div', 'zug'); z.appendChild(el('span', 'e', '🪥')); var tb = el('b', '', 'Zwei Minuten putzen'); z.appendChild(tb); f.appendChild(z);
+        var ring = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); ring.setAttribute('viewBox', '0 0 64 64'); ring.setAttribute('class', 'ring');
+        ring.innerHTML = '<circle class="bahn" cx="32" cy="32" r="28"/><circle class="lauf" cx="32" cy="32" r="28"/>'; f.appendChild(ring);
+        var skip = knopfEl('gross-knopf zweit', '✓ Schon geputzt', function () { ende(); }); f.appendChild(skip);
+        var fertigZ = false, i = 0;
+        function ende() { if (fertigZ) return; fertigZ = true; ring.remove(); skip.remove(); klang('level'); kurzZustand('freut', 1400); sag(mitName('Blitzblank! Deine Zähne glänzen wie Sterne.', .6), function () { si++; nach(300, atmen); }); }
+        sag('Jetzt putzen wir die Zähne. Zwei Minuten. Ich zähle mit.', function () {
+          if (spielAktiv !== s || fertigZ) return;
+          ring.style.setProperty('--d', '120s'); void ring.getBoundingClientRect(); ring.classList.add('laeuft');
+          (function teil() {
+            if (spielAktiv !== s || fertigZ) return;
+            if (i >= ZAHN_TEILE.length) { ende(); return; }
+            var x = ZAHN_TEILE[i++]; tb.textContent = x[0] + ' ' + x[1]; blase(x[1]); note(PENTA[i + 1], 0, 1, 'glocke', .07); bewegung(i % 2 ? 'hops' : 'neugierig');
+            nach(30000, teil);
+          })();
+        });
+      }
+      function atmen() { kopf(); sag('Und jetzt dreimal ganz ruhig atmen.', function () { if (spielAktiv !== s) return; atemRunden(f, 3, function () { si++; nach(300, schoen); }); }); }
+      function schoen() {
+        kopf(); var q = el('div', 'fantasie'); q.appendChild(el('div', 'fq-ic', '💭')); var fq = 'Was war heute dein schönster Moment?';
+        q.appendChild(el('p', 'fq', fq)); q.appendChild(el('p', 'leise', 'Erzähl es Mama oder Papa. Ich höre auch zu.')); f.appendChild(q); kurzZustand('denkt', 2400);
+        sag(fq, function () {
+          if (spielAktiv !== s) return;
+          var b = knopfEl('gross-knopf', '💛 Hab ich erzählt', function () { b.disabled = true; s.ziel = null; si++; klang('stern', 4); gutNacht(); });
+          q.appendChild(b); s.ziel = function () { return b; };
+        });
+      }
+      function gutNacht() {
+        f.innerHTML = ''; $('feldzahl').textContent = '🌙'; s.ziel = null;
+        var k = el('div', 'endkarte'); k.appendChild(el('span', 'pokal', '🌙'));
+        var n = kindName(), t = 'Gute Nacht' + (n ? ', ' + n : '') + '. Schlaf schön und träum etwas Liebes.';
+        k.appendChild(el('div', 'endzeile', 'Gute Nacht' + (n ? ', ' + n : '') + '!'));
+        var st = stickerDazu(); if (st) { var sn = el('div', 'stickerneu'); sn.appendChild(el('span', '', 'Neuer Sticker für Ottis Zimmer:')); sn.appendChild(el('b', '', st)); k.appendChild(sn); }
+        var lk = el('div', 'endlinks');
+        [['wegHoeren', '🎧 Eine Geschichte hören'], ['wegGeschichten', '📖 Eine Geschichte lesen']].forEach(function (x) {
+          var q = $(x[0]), a = el('a', '', x[1]); a.href = q.getAttribute('href'); if (q.target) { a.target = q.target; a.rel = 'noopener'; } lk.appendChild(a);
+        });
+        k.appendChild(lk);
+        k.appendChild(knopfEl('gross-knopf zweit', '😴 Otti schlafen legen', function () { spielBeenden(); schlafen(true); statusSetzen('Psst … Otti schläft. Gute Nacht!'); }));
+        f.appendChild(k);
+        if (lies('otti_abend_tag', '') !== heute()) { schreib('otti_abend_tag', heute()); zahl('abende'); sternDazu(k.firstChild); }
+        zahl('geschafft_abend'); pz('schlaeft'); klang('schlaflied'); blase(t); sprechen(t);
+      }
+      schritt('🧸', mitName('Hol dein liebstes Kuscheltier. Ich hole mein Moos-Kissen.', .5), '🧸 Hab ich!', function () {
+        schritt('👕', 'Jetzt den Pyjama anziehen. Ich warte hier.', '👕 Fertig!', zaehne);
+      });
+    }
+  };
+
+  /* --- 10. Ottis Garten: säen, giessen, staunen. Es gibt kein Verlieren. --- */
+  SPIELE.garten = { icon: '🌷', titel: 'Ottis Garten', ruhigEnde: true, ansage: 'Wir pflanzen Blumen! Tipp auf ein Beet, dann giessen wir.',
+    endeText: function () { return mitName('Schau, wie schön alles blüht! Die Blumen wachsen jetzt in meinem Zimmer weiter.', .6); },
+    stufe: function (s, n, fertig) {
+      var f = $('feldinhalt'), anz = [0, 3, 4, 5][n], g = el('div', 'beete'), fertigN = 0, sonne = n < 2;
+      g.style.setProperty('--n', anz > 4 ? 3 : anz);
+      var himmel = el('div', ''); himmel.style.minHeight = '64px'; f.appendChild(himmel);
+      if (!sonne) {
+        var w = knopfEl('wolkeding', '☁️'); w.setAttribute('aria-label', 'Wolke wegschieben'); himmel.appendChild(w);
+        w.onclick = function () { if (sonne) return; sonne = true; w.classList.add('weg'); klang('wind'); setTimeout(function () { himmel.innerHTML = ''; var so = el('div', 'zug'); so.appendChild(el('span', 'e', '☀️')); himmel.appendChild(so); }, 500); ottiFreut('Die Sonne scheint! Jetzt wachsen die Blumen.', w); s.ziel = function () { return g.querySelector('.beet:not(:disabled)'); }; };
+      } else { var so = el('div', 'zug'); so.appendChild(el('span', 'e', n === 1 ? '🌤️' : '☀️')); himmel.appendChild(so); }
+      $('feldzahl').textContent = '🌷 0 / ' + anz;
+      for (var i = 0; i < anz; i++) (function () {
+        var b = knopfEl('beet'), pf = el('span', 'pf', ''), st = 0, blume = zufall(BLUMEN); b.appendChild(pf); b.setAttribute('aria-label', 'Beet');
+        b.onclick = function () {
+          if (!sonne) { klang('falsch'); blase('Hmm, hinter der Wolke ist es zu dunkel. Schieb die Wolke weg!'); bewegung('neugierig'); return; }
+          st++; var tr = el('span', 'tropfen', st === 1 ? '🌰' : '💧'); b.appendChild(tr); setTimeout(function () { tr.remove(); }, 750);
+          klang('pop', st + 2); summ(8); b.classList.remove('waechst'); void b.offsetWidth; b.classList.add('waechst');
+          pf.textContent = ['', '🌱', '🌿', blume][st];
+          if (st === 1) blase(zufall(['Ein Samen! Jetzt giessen.', 'Plopp, ein Samen in die Erde.', 'Gut gesät! Gieß ihn.']).replace('Gieß', 'Giess'));
+          if (st === 2) blase(zufall(['Es wächst!', 'Schau, ein Blatt!', 'Noch ein bisschen Wasser …']));
+          if (st >= 3) {
+            b.disabled = true; b.setAttribute('aria-label', 'Blume ' + blume); fertigN++; blumeDazu(blume); $('feldzahl').textContent = '🌷 ' + fertigN + ' / ' + anz;
+            ottiFreut(zufall(['Wow, eine Blume!', 'Wie schön sie blüht!', 'Die duftet fein!', 'Hihi, die kitzelt meine Nase.']), b);
+            if (fertigN >= anz) { s.ziel = null; sternDazu(b); if (n === 3) nach(1200, schmetterlinge); else nach(1400, fertig); }
+          }
+        };
+        g.appendChild(b);
+      })();
+      f.appendChild(g);
+      function schmetterlinge() {
+        if (spielAktiv !== s) return;
+        sag('Schau! Die Schmetterlinge kommen zu Besuch. Tipp sie sanft an, dann landen sie auf den Blumen.', function () {
+          if (spielAktiv !== s) return;
+          var r = el('div', 'bildwahl'), da = 0; f.appendChild(r);
+          ['🦋', '🐝', '🦋'].forEach(function (e) {
+            var b = knopfEl('bild', e); b.setAttribute('aria-label', e === '🐝' ? 'Biene' : 'Schmetterling');
+            b.onclick = function () { b.disabled = true; b.classList.add('richtig'); klang('ueberraschung'); summ(8); if (++da >= 3) { s.ziel = null; ottiFreut('Jetzt ist mein Garten voller Leben!', b); nach(1500, fertig); } else blase(e === '🐝' ? 'Summ, summ! Die Biene sagt danke.' : 'Flatter, flatter!'); };
+            r.appendChild(b);
+          });
+          s.ziel = function () { return r.querySelector('.bild:not(:disabled)'); };
+        });
+      }
+      sag(n === 1 ? 'Tipp auf ein Beet, dann noch zweimal zum Giessen.' : n === 2 ? 'Oh, eine Wolke! Schieb sie zuerst weg, dann scheint die Sonne.' : 'Fünf Beete! Und am Ende kommt eine Überraschung.', function () {
+        s.ziel = function () { return sonne ? g.querySelector('.beet:not(:disabled)') : himmel.querySelector('.wolkeding'); };
+      });
+    }
+  };
+
+  /* --- 11. Schatten raten: wessen Schatten ist das? --- */
+  var SCHATTEN = [['🐘', 'ein Elefant'], ['🦒', 'eine Giraffe'], ['🐰', 'ein Hase'], ['🦔', 'ein Igel, so wie ich'], ['🐌', 'eine Schnecke'], ['🦋', 'ein Schmetterling'], ['🐢', 'eine Schildkröte'],
+    ['🦉', 'eine Eule'], ['🐿️', 'ein Eichhörnchen'], ['🐸', 'ein Frosch'], ['🦊', 'ein Fuchs'], ['🐳', 'ein Wal'], ['🦕', 'ein Dino'], ['🐞', 'ein Marienkäfer'], ['🍄', 'ein Pilz'],
+    ['🌙', 'der Mond'], ['🚲', 'ein Velo'], ['☂️', 'ein Schirm'], ['🎈', 'ein Ballon'], ['🍐', 'eine Birne'], ['🦀', 'eine Krabbe'], ['🐧', 'ein Pinguin']];
+  SPIELE.schatten = { icon: '👤', titel: 'Schatten raten', ansage: 'Jemand versteckt sich im Schatten. Wer ist das? Tipp auf das richtige Bild!',
+    stufe: function (s, n, fertig) {
+      var f = $('feldinhalt'), anz = [0, 3, 4, 5][n], runden = 3, r = 0, pool = mischen(SCHATTEN);
+      function runde() {
+        if (spielAktiv !== s) return;
+        if (r >= runden) { fertig(); return; }
+        var ziel = pool[r % pool.length], andere = mischen(SCHATTEN.filter(function (x) { return x[0] !== ziel[0]; })).slice(0, anz - 1), wahl = mischen(andere.concat([ziel]));
+        r++; $('feldzahl').textContent = '👤 ' + r + ' / ' + runden; f.innerHTML = '';
+        var sb = el('div', 'schattenbild', ziel[0]); sb.setAttribute('aria-label', 'Ein Schatten'); f.appendChild(sb); kurzZustand('denkt', 1600);
+        sag(zufall(['Wessen Schatten ist das?', 'Hmm, wer versteckt sich da?', 'Schau genau. Wer ist das?']), function () {
+          if (spielAktiv !== s) return;
+          var g = el('div', 'bildwahl');
+          wahl.forEach(function (x) {
+            var b = knopfEl('bild', x[0]); b.setAttribute('aria-label', x[1].replace(/, so wie ich$/, ''));
+            b.onclick = function () {
+              if (x[0] === ziel[0]) {
+                s.ziel = null; b.classList.add('richtig'); sb.classList.add('hell'); Array.prototype.forEach.call(g.children, function (y) { y.disabled = true; });
+                sternDazu(b); ottiFreut(null, b); sag('Ja! Das ist ' + ziel[1] + '!', function () { nach(500, runde); });
+              } else { b.disabled = true; b.classList.add('wackeln', 'leer'); ottiTrost(zufall(['Hmm, der Schatten sieht anders aus.', 'Schau nochmal genau hin.', 'Fast! Probier ein anderes.'])); }
+            };
+            g.appendChild(b);
+          });
+          f.appendChild(g); s.ziel = function () { return g.querySelector('.bild:not(:disabled)'); };
+        });
+      }
+      runde();
+    }
+  };
+
+  /* --- 12. Klang-Echo: Otti spielt vor, das Kind spielt nach (ohne Verlieren: falsch heisst «nochmal hören») --- */
+  var GLOCKEN = [['🌸', '#ff8fb1', C5], ['⭐', '#e0a91f', E5], ['🍀', '#4fae5f', G5], ['💧', '#3f9be0', A5]];
+  SPIELE.echo = { icon: '🔔', titel: 'Klang-Echo', ansage: 'Ich spiele eine kleine Melodie. Hör gut zu und spiel sie nach!',
+    stufe: function (s, n, fertig) {
+      var f = $('feldinhalt'), laenge = [0, 2, 3, 4][n], runde = 0, folge = [], pos = 0, offen = false, fehler = 0;
+      var g = el('div', 'glocken'), kn = [], punkte = el('div', 'echopunkte');
+      GLOCKEN.forEach(function (x, i) {
+        var b = knopfEl('glocke', x[0]); b.style.background = x[1]; b.style.setProperty('--g', x[1]); b.setAttribute('aria-label', 'Glocke ' + (i + 1));
+        b.onclick = function () { tippe(i); }; g.appendChild(b); kn.push(b);
+      });
+      f.appendChild(punkte); f.appendChild(g);
+      function leuchte(i, ms) { var b = kn[i]; b.classList.add('an'); note(GLOCKEN[i][2], 0, .9, 'glocke', .12); setTimeout(function () { b.classList.remove('an'); }, ms || 420); }
+      function sperren(j) { kn.forEach(function (b) { b.disabled = j; }); }
+      function neueRunde() {
+        if (spielAktiv !== s) return;
+        if (runde >= 2) { fertig(); return; }
+        runde++; folge = []; for (var i = 0; i < laenge + runde - 1; i++) folge.push(Math.floor(Math.random() * 4));
+        $('feldzahl').textContent = '🔔 ' + runde + ' / 2'; vorspielen(runde === 1 ? 'Hör gut zu …' : 'Jetzt eine längere Melodie. Hör zu …');
+      }
+      function vorspielen(t) {
+        offen = false; sperren(true); s.ziel = null; punkte.innerHTML = ''; folge.forEach(function () { punkte.appendChild(el('i')); });
+        kurzZustand('denkt', 800); blase(t);
+        folge.forEach(function (i, k) { nach(900 + k * 700, function () { leuchte(i); }); });
+        nach(900 + folge.length * 700 + 200, function () {
+          pos = 0; offen = true; sperren(false); blase(mitName('Jetzt du!', .3)); bewegung('hops');
+          s.ziel = function () { return kn[folge[pos]] || kn[0]; };
+        });
+      }
+      function tippe(i) {
+        if (!offen) return;
+        leuchte(i, 300); summ(8);
+        if (i === folge[pos]) {
+          punkte.children[pos].classList.add('an'); pos++;
+          if (pos >= folge.length) { offen = false; sperren(true); s.ziel = null; sternDazu(kn[i]); ottiFreut(zufall(['Genau so! Was für ein schönes Echo.', 'Wow, du hast gut zugehört!', 'Perfekt nachgespielt!']), kn[i]); nach(1500, neueRunde); }
+        } else {
+          offen = false; fehler++; sperren(true); klang('falsch');
+          ottiTrost(fehler > 2 ? 'Ich spiele es ganz langsam nochmal.' : zufall(['Hoppla! Hör nochmal zu.', 'Fast! Ich spiele es nochmal.']));
+          nach(1300, function () { vorspielen('Hör nochmal …'); });
+        }
+      }
+      neueRunde();
+    }
+  };
+
+  /* --- 13. Freunde-Memory: Ottis echte Freunde finden (allein) --- */
+  SPIELE.freunde = { icon: '🖼️', titel: 'Freunde-Memory', ansage: 'Finde immer zwei gleiche Freunde! Tipp auf zwei Karten.',
+    stufe: function (s, n, fertig) {
+      var paare = [0, 3, 4, 6][n], wahl = mischen(FREUNDE).slice(0, paare), karten = mischen(wahl.concat(wahl)), f = $('feldinhalt'), offen = [], gesperrt = false, gefunden = 0;
+      f.classList.add('oben');
+      var g = el('div', 'memo'); g.style.setProperty('--sp', paare <= 3 ? 3 : 4);
+      karten.forEach(function (fr, i) {
+        var k = knopfEl('mk bildkarte'); k.setAttribute('aria-label', 'Karte ' + (i + 1));
+        k.innerHTML = '<span class="mk-in"><span class="mk-zu">🌙</span><span class="mk-auf"><img alt="" loading="lazy"></span></span>';
+        k.querySelector('img').src = freundBild(fr[0]); k.dataset.b = fr[0];
+        k.onclick = function () { tippe(k, fr); }; g.appendChild(k);
+      });
+      f.appendChild(g); $('feldzahl').textContent = '🖼️ 0 / ' + paare;
+      sag(n === 1 ? 'Wo sind die gleichen Freunde?' : n === 2 ? 'Jetzt vier Paare!' : 'Sechs Paare! Gut merken.', function () { s.ziel = function () { return g.querySelector('.mk:not(.offen)'); }; });
+      function tippe(k, fr) {
+        if (gesperrt || k.classList.contains('offen') || offen.length >= 2) return;
+        k.classList.add('offen'); klang('karte'); offen.push(k); k.setAttribute('aria-label', fr[1]);
+        if (offen.length < 2) return;
+        gesperrt = true; var a = offen[0], b = offen[1];
+        if (a.dataset.b === b.dataset.b) {
+          setTimeout(function () {
+            a.classList.add('paar'); b.classList.add('paar'); offen = []; gefunden++; $('feldzahl').textContent = '🖼️ ' + gefunden + ' / ' + paare;
+            ottiFreut(fr[1] + '! ' + zufall(['Gefunden!', 'Ein Paar!', 'Hallo, ' + fr[1] + '!']), b);
+            if (gefunden >= paare) { s.ziel = null; sternDazu(b); setTimeout(fertig, 1300); return; }
+            setTimeout(function () { gesperrt = false; }, 500);
+          }, 450);
+        } else {
+          setTimeout(function () {
+            if (spielAktiv !== s) return;
+            klang('falsch'); blase(zufall(['Nicht gleich. Gut merken!', 'Oh, zwei verschiedene Freunde!', 'Fast! Wo war der andere?']));
+            a.classList.remove('offen'); b.classList.remove('offen'); a.setAttribute('aria-label', 'Karte'); b.setAttribute('aria-label', 'Karte'); offen = []; gesperrt = false;
+          }, 1200);
+        }
+      }
+    }
+  };
+
+  /* --- 14. Erzähl mir was: das Kind wählt Held, Ort und Ding, Otti erzählt (feste Textbausteine, ohne Internet) --- */
+  var HELDEN = { hoppel: ['Hoppel', 'der kleine Hase', 'hoppelte'], flori: ['Flori', 'der kleine Fuchs', 'schlich'], fompa: ['Fompa', 'das Löwenäffchen mit der runden Brille', 'kletterte'],
+    kiki: ['Kiki', 'der Koala mit dem goldenen Mikrofon', 'tapste'], nova: ['Nova', 'der kleine Roboter', 'rollte'], zahnboecklein: ['Das Zahnböcklein', 'die kleine Geiss mit der blauen Zahnbürste', 'trippelte'] };
+  var ORTE2 = [['🌲', 'Wald', 'in den Mondschein-Wald', 'Die Bäume flüsterten leise, und im Moos leuchteten die Glühwürmchen.', 'lagen sie im weichen Moos und schauten in die Baumkronen'],
+    ['🌊', 'Meer', 'ans Meer', 'Die Wellen machten schhh, schhh, und der Sand war noch warm von der Sonne.', 'sassen sie am Strand und hörten den Wellen zu'],
+    ['🌙', 'Mond', 'hinauf zum Mond', 'Dort oben war alles silbern und still, und die Erde sah aus wie eine blaue Murmel.', 'sassen sie auf dem Mond und liessen die Beine baumeln'],
+    ['🏰', 'Schloss', 'zum Schloss von Prinzessin Milou', 'Im Schlossgarten plätscherte der Brunnen, und in allen Fenstern brannten kleine Lichter.', 'tanzten sie ganz leise im grossen Saal'],
+    ['❄️', 'Schnee', 'in den tiefen Schnee', 'Der Schnee knirschte bei jedem Schritt, und kleine Flocken tanzten vom Himmel.', 'bauten sie zusammen einen kleinen Schnee-Igel'],
+    ['🚂', 'Nachtzug', 'zum kleinen Nachtzug', 'Der Zug machte tsch-tsch, tsch-tsch, und draussen zogen die Sterne vorbei.', 'schauten sie aus dem Fenster und zählten die Sterne']];
+  var DINGE2 = [['🎈', 'Ballon', 'einen roten Ballon', 'Der Ballon zog {n} sanft in die Höhe, so hoch, dass {n} fast die Sterne kitzeln konnte.'],
+    ['🔑', 'Schlüssel', 'einen goldenen Schlüssel', 'Der Schlüssel passte in eine winzige Tür. Und dahinter war ein Zimmer voller Glühwürmchen.'],
+    ['🍓', 'Erdbeere', 'eine riesige Erdbeere', 'Die Erdbeere war so gross, dass alle Freunde davon essen konnten. Und es blieb sogar noch etwas übrig.'],
+    ['⭐', 'Stern', 'einen kleinen Stern', 'Der Stern flüsterte: «Ich habe mich verirrt. Bringst du mich heim?» Und {n} trug ihn ganz vorsichtig.'],
+    ['🎁', 'Geschenk', 'ein kleines Geschenk', 'Im Geschenk war ein Lied. Als {n} es aufmachte, klang es leise durch die ganze Nacht.'],
+    ['🪁', 'Drachen', 'einen bunten Drachen', 'Der Drachen tanzte im Wind und malte Kringel an den Himmel. Und {n} lachte.']];
+  SPIELE.wuerfel = { icon: '🪄', titel: 'Erzähl mir was', stufen: 1, ruhigEnde: true, ansage: 'Du wählst, wer in der Geschichte vorkommt. Und ich erzähle!',
+    endeText: function () { return mitName('Ende. Das war unsere eigene Geschichte. Du bist eine richtige Geschichten-Erfinderin, ein richtiger Geschichten-Erfinder!', .5); },
+    stufe: function (s, n, fertig) {
+      var f = $('feldinhalt'), held, ort, ding;
+      function waehle(frage, optionen, bau, weiter) {
+        f.innerHTML = ''; $('feldzahl').textContent = '🪄';
+        sag(frage, function () {
+          if (spielAktiv !== s) return;
+          var g = el('div', 'wuerfelwahl');
+          optionen.forEach(function (o) { var b = knopfEl(''); bau(b, o); b.onclick = function () { s.ziel = null; klang('tipp'); summ(8); kurzZustand('freut', 900); weiter(o); }; g.appendChild(b); });
+          f.appendChild(g); s.ziel = function () { return g.firstChild; };
+        });
+      }
+      waehle('Wer soll in der Geschichte vorkommen?', mischen(Object.keys(HELDEN)).slice(0, 3), function (b, k) {
+        var im = el('img'); im.src = freundBild(k); im.alt = ''; b.appendChild(im); b.appendChild(el('span', '', HELDEN[k][0])); b.setAttribute('aria-label', HELDEN[k][0]);
+      }, function (k) {
+        held = k;
+        waehle('Und wo spielt die Geschichte?', mischen(ORTE2).slice(0, 3), function (b, o) { b.appendChild(el('span', 'e', o[0])); b.appendChild(el('span', '', o[1])); }, function (o) {
+          ort = o;
+          waehle('Was findet ' + HELDEN[held][0] + '?', mischen(DINGE2).slice(0, 3), function (b, d) { b.appendChild(el('span', 'e', d[0])); b.appendChild(el('span', '', d[1])); }, function (d) { ding = d; erzaehle(); });
+        });
+      });
+      function erzaehle() {
+        var H = HELDEN[held], nm = H[0], kn = kindName();
+        var saetze = [
+          [held, 'Es war einmal ' + (nm === 'Das Zahnböcklein' ? 'das Zahnböcklein' : nm) + ', ' + H[1] + '. Eines Abends ' + H[2] + ' ' + (nm === 'Das Zahnböcklein' ? 'das Zahnböcklein' : nm) + ' ' + ort[2] + '.'],
+          [ort[0], ort[3]],
+          [ding[0], 'Da entdeckte ' + (nm === 'Das Zahnböcklein' ? 'das Zahnböcklein' : nm) + ' etwas Besonderes: ' + ding[2] + '!'],
+          [ding[0], ding[3].replace(/\{n\}/g, nm === 'Das Zahnböcklein' ? 'das Zahnböcklein' : nm).replace(/^das/, 'Das')],
+          ['otti', nm + ' rief: «Otti, komm schnell, das musst du sehen!» Und Otti kam angerollt, so schnell seine kleinen Beine konnten.'],
+          [ort[0], 'Zusammen ' + ort[4] + '. Es war wunderbar still.'],
+          [held, 'Dann gähnte ' + (nm === 'Das Zahnböcklein' ? 'das Zahnböcklein' : nm) + ' ein grosses Gähnen. Gute Nacht, ' + nm.replace(/^Das /, '') + '. Gute Nacht, Otti.' + (kn ? ' Und gute Nacht, ' + kn + '.' : '')]
+        ];
+        var i = 0; s.ziel = null;
+        (function weiter() {
+          if (spielAktiv !== s) return;
+          if (i >= saetze.length) { frage(); return; }
+          var x = saetze[i++]; f.innerHTML = ''; $('feldzahl').textContent = '📖 ' + i + ' / ' + saetze.length;
+          var bild = /^[a-z]+$/.test(x[0]) ? el('img', 'standbild') : el('div', 'standbild emoji', x[0]);
+          if (bild.tagName === 'IMG') { bild.src = freundBild(x[0]); bild.alt = x[0] === 'otti' ? 'Otti' : HELDEN[x[0]][0]; }
+          f.appendChild(bild);
+          sag(x[1], function () { nach(700, weiter); });
+        })();
+      }
+      function frage() {
+        f.innerHTML = ''; var q = el('div', 'fantasie'), t = 'Was glaubst du, was ' + (HELDEN[held][0] === 'Das Zahnböcklein' ? 'das Zahnböcklein' : HELDEN[held][0]) + ' morgen erlebt?';
+        q.appendChild(el('div', 'fq-ic', '💭')); q.appendChild(el('p', 'fq', t)); q.appendChild(el('p', 'leise', 'Denk kurz nach. Sag es laut oder erzähl es Mama oder Papa.')); f.appendChild(q);
+        kurzZustand('denkt', 2400);
+        sag(t, function () {
+          if (spielAktiv !== s) return;
+          var b = knopfEl('gross-knopf', '💭 Ich hab eine Idee', function () { b.disabled = true; s.ziel = null; klang('tipp'); fertig(); });
+          q.appendChild(b); s.ziel = function () { return b; };
+        });
+      }
+    }
+  };
+  // Pokale auf den Spielkarten
+  function pokaleZeigen() {
+    var z = zahlen();
+    Array.prototype.forEach.call(document.querySelectorAll('.sk[data-spiel]'), function (b) { var n = z['geschafft_' + b.dataset.spiel] || 0, p = b.querySelector('.pokale'); if (p) p.textContent = n ? '🏆 ' + n : ''; });
+  }
+
   /* ================= Elternbereich ================= */
   var DAUER = 'otti_dauer';
   function dauer() { return parseInt(lies(DAUER, '10'), 10) || 10; }
@@ -1891,21 +2512,30 @@
     $('okInfo').textContent = elternOk() ? 'Du hast dem Live-Gespräch zugestimmt. Die Stimme geht dabei an ElevenLabs (USA).' : 'Noch nicht zugestimmt. Otti fragt dich vor dem ersten Live-Gespräch.';
     $('okWeg').hidden = !elternOk();
     $('lernen').checked = lernenAn(); lernInfo();
+    $('kindName').value = kindName(); woche();
     $('ebereich').hidden = false;
   }
   $('okWeg').addEventListener('click', function () { los(OK); ebZeigen(); });
+  $('kindName').addEventListener('input', function () { var v = this.value.replace(/[^\p{L}\p{M}\s'-]/gu, '').slice(0, 20); schreib(KIND, v.trim()); zeitStimmung(); });
+  $('kindName').addEventListener('keydown', function (e) { if (e.key === 'Enter') this.blur(); });
+  function woche() {
+    var w = $('gefuehlWoche'), l = liste(GEF).slice(-7); w.innerHTML = '';
+    if (!l.length) { w.appendChild(el('span', 'leise', 'Noch keine. Unten «💛 Gefühle» antippen.')); return; }
+    l.forEach(function (x) { var d = String(x.d).split('-'), sp = el('span', '', gefuehlEmoji(x.g)); sp.title = d[2] + '.' + d[1] + '.'; sp.setAttribute('aria-label', x.g + ' am ' + sp.title); w.appendChild(sp); });
+  }
   $('ebZu').addEventListener('click', function () { $('ebereich').hidden = true; });
   halteKnopf($('elternHalten'), ebZeigen, function () { hinweis.textContent = '🔒 Für Eltern: Schloss 3 Sekunden gedrückt halten.'; setTimeout(function () { if (/Eltern/.test(hinweis.textContent)) hinweis.textContent = ''; }, 3000); });
   document.addEventListener('drlab-feedback-open', function () { spielBeenden(); });
   addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
-    ['feier', 'spielwahl', 'tour', 'eltern', 'ebereich'].some(function (id) { if (!$(id).hidden) { if (id === 'feier') $('feierZu').click(); else $(id).hidden = true; return true; } });
+    ['feier', 'spielwahl', 'zimmer', 'gefuehle', 'tour', 'eltern', 'ebereich'].some(function (id) { if (!$(id).hidden) { if (id === 'feier') $('feierZu').click(); else $(id).hidden = true; return true; } });
   });
 
   /* ================= Einführung für Eltern ================= */
   var TOUR = [
     ['Hallo, ich bin Otti!', 'Ein kleiner Igel aus dem Mondschein-Wald. Antippen, und er hüpft.'],
-    ['Spielen geht immer', 'Sieben Spiele mit je drei Levels, auch ohne Internet. Zwei davon spielt ihr zu zweit: Memory und Otti-Quiz. Der Ton-Knopf oben schaltet die Musik aus.'],
+    ['Spielen geht immer', 'Elf Spiele, auch ohne Internet: suchen, bewegen, Garten, Klang-Echo, Geschichten zum Mitbestimmen und zwei Spiele zu zweit. Der Ton-Knopf oben schaltet die Musik aus.'],
+    ['Ottis Zimmer und Gefühle', 'Der Stern oben öffnet Ottis Zimmer mit Stickern, Garten und Freunden. «Gefühle» und «Abend» unten helfen beim Benennen von Gefühlen und beim Einschlafen. Den Namen deines Kindes trägst du hier im Elternbereich ein.'],
     ['Reden mit Internet', '«Reden» startet ein Live-Gespräch. Vorher fragt Otti einmal dich als Mama oder Papa.']
   ];
   var tourI = 0;
@@ -1923,15 +2553,17 @@
   /* ================= Erster Eindruck: Otti hüpft herein, winkt, ein klarer erster Schritt ================= */
   sterneZeigen();
   (function () {
-    var h = new Date().getHours();
-    var gruss = h < 11 ? 'Guten Morgen!' : h < 18 ? 'Hallo!' : h < 21 ? 'Guten Abend!' : 'Psst, gute Nacht!';
+    var h = new Date().getHours(), zeit = zeitStimmung(), nm = kindName();
+    setInterval(zeitStimmung, 600000);
+    var gruss = (h < 11 ? 'Guten Morgen' : h < 18 ? 'Hallo' : h < 21 ? 'Guten Abend' : 'Psst, gute Nacht') + (nm ? ', ' + nm : '') + '!';
+    if ((zeit === 'abend' || zeit === 'nacht') && lies('otti_abend_tag', '') !== heute()) setTimeout(function () { $('abendKnopf').classList.add('lockt'); }, 2500);
     var wieder = !ersterTipp;
     fw.classList.add('weg'); versteckt = true;
     setTimeout(function () {
       bewegung('auftauchen', function () { setTimeout(winken, 150); });
       if (wieder) {
-        zeile('otti', gruss + (sterne() ? ' Schön, dass du wieder da bist. Du hast schon ' + sterne() + (sterne() === 1 ? ' Stern.' : ' Sterne.') : ' Schön, dass du wieder da bist.'), false);
-        statusSetzen('Spielen, winken oder reden?');
+        zeile('otti', gruss + ' Schön, dass du wieder da bist. Ich bin heute ' + laune()[1] + '.', false);
+        statusSetzen(zeit === 'abend' || zeit === 'nacht' ? 'Bald Schlafenszeit? Tipp unten auf «Abend».' : 'Spielen, winken oder reden?');
       } else {
         zeile('otti', gruss + ' Ich bin Otti, der kleine Igel.', false);
         $('tipp').hidden = false;
@@ -1944,6 +2576,9 @@
   addEventListener('offline', function () { hinweis.textContent = 'Kein Internet. Spielen geht trotzdem.'; });
   addEventListener('online', function () { hinweis.textContent = ''; lernZahlenSchicken(); });
   setTimeout(lernZahlenSchicken, 4000);
+  // Aus der Redeseite: ../otti/#spiele öffnet die Spielwahl, ../otti/#abend das Abendritual.
+  if (location.hash === '#spiele') setTimeout(spielWahl, 1200);
+  if (location.hash === '#abend') setTimeout(function () { spielStarten('abend'); }, 1200);
 
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
 })();
