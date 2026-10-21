@@ -1066,7 +1066,9 @@ function mount(root, opts){
   root.addEventListener('click', e=>{
     const akt = e.target.closest('[data-ma-actor]');
     if(akt && root.contains(akt)){
-      if(window.Puppe && typeof Puppe.winkeZurueck==='function'){ try{ Puppe.winkeZurueck(akt); }catch(x){} } else { akt.classList.remove('ma-hops'); void akt.offsetWidth; akt.classList.add('ma-hops'); if(!akt.classList.contains('winkt')) pose('winkt', 1600); }
+      const pim = akt.querySelector('.body img'); let pw = null;
+      if(window.Puppe && typeof Puppe.winkeZurueck==='function' && pim){ try{ pw = pim._puppeWinker || Puppe.winkeZurueck(pim, {antippen:false, ton:false, blase:false, gruss:'winken'}); if(pw && pw.winke) pw.winke(); else pw = null; }catch(x){ pw = null; } }
+      if(!pw){ akt.classList.remove('ma-hops'); void akt.offsetWidth; akt.classList.add('ma-hops'); if(!akt.classList.contains('winkt')) pose('winkt', 1600); }
       const b = akt.parentNode && akt.parentNode.querySelector('.bubble'); const txt = b ? b.textContent.trim() : '';
       if(txt) say(txt); haptic(10); return;
     }
