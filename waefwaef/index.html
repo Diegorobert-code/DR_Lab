@@ -411,7 +411,9 @@ const say=(t,mood,req)=>{$('say').innerHTML='<b>Wäf!</b> '+esc(t);const p=$('pu
   const r=$('pupReq'),z=req||REQ[mood];if(z&&!reduce){r.textContent=z;r.classList.remove('zeig');void r.offsetWidth;r.classList.add('zeig');}
   if(window.FigurPosen&&mood) FigurPosen.zeige(p,POSE[mood]||mood,2400,['freut']);
   sprich(t);};
-const POSE={hop:'freut',sad:'traurig',wiggle:'wedelt',schnupper:'schnueffelt'};
+const POSE={hop:'freut',sad:'traurig',wiggle:'wedelt',schnupper:'schnueffelt',schlaf:'schlaeft'};
+/* Grundbild je Lage (Tinko 21.10.): beim Spazieren rennt er, im Kinderteil sitzt er still (Standbild), sonst das normale Bild. */
+function grundBild(){if(!window.FigurPosen)return;const p=$('pup'),k=!$('v-kinder').hidden;if(k)FigurPosen.zeige(p,'sitzt',0);else if(walk)FigurPosen.zeige(p,'rennt',0);else FigurPosen.zurueck(p);}
 function sprich(t){ if(!tonAn||!store.get('ton',true))return;
   if(window.NovaStimme&&NovaStimme.aktiv()){try{NovaStimme.sprich(t)}catch(e){}return;}
   try{if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='de-CH';u.rate=1.02;u.pitch=1.35;
@@ -498,8 +500,8 @@ function walkWerRender(){walkWer=walkWer||Object.keys(fam)[0];$('walkWer').inner
 $('walkArt').querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{walkArt=b.dataset.a;$('walkArt').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
   say(walkArt==='schnueffel'?'Schnüffelrunde! Lass mich alles riechen, das ist meine Zeitung.':walkArt==='spiel'?'Ball? Ball! BALL!':'Raus, raus, raus!','hop',walkArt==='schnueffel'?'👃':walkArt==='spiel'?'🎾':'🐾');});
 $('walkGo').onclick=()=>{
-  if(walk){clearInterval(walkTimer);walk.min=Math.max(1,Math.round((Date.now()-walk.t)/60000));$('walkGo').hidden=true;$('walkEnde').hidden=false;$('pup').classList.remove('laufen');say('Wir sind zurück! Was war los?','wiggle');return;}
-  walk={t:Date.now(),art:walkArt,wer:walkWer};walkNotes=new Set();$('walkGo').textContent='Wir sind zurück';$('spur').innerHTML='';if(!reduce)$('pup').classList.add('laufen');
+  if(walk){clearInterval(walkTimer);walk.min=Math.max(1,Math.round((Date.now()-walk.t)/60000));$('walkGo').hidden=true;$('walkEnde').hidden=false;$('pup').classList.remove('laufen');const w0=walk;walk=null;grundBild();walk=w0;say('Wir sind zurück! Was war los?','wiggle');return;}
+  walk={t:Date.now(),art:walkArt,wer:walkWer};walkNotes=new Set();$('walkGo').textContent='Wir sind zurück';$('spur').innerHTML='';if(!reduce)$('pup').classList.add('laufen');grundBild();
   say(walkArt==='schnueffel'?'Ich schnuppere jetzt ganz langsam. Du darfst warten.':'Los! Ich laufe voraus.','hop');
   walkTimer=setInterval(()=>{const s=Math.floor((Date.now()-walk.t)/1000);$('walkTm').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
     if(s%5===0&&!reduce){const p=document.createElement('i');p.textContent='🐾';p.style.left=(8+Math.random()*80)+'%';$('spur').appendChild(p);if($('spur').children.length>14)$('spur').firstChild.remove();}},1000);};
@@ -603,7 +605,7 @@ const SZ=[
   ['🤗','Du willst Wäf Wäf ganz fest umarmen.','y','Die meisten Hunde mögen Umarmen nicht. Lieber neben ihm sitzen.'],
   ['😌','Wäf Wäf liegt bei dir auf dem Sofa und schmiegt sich an.','g','Ja, er sucht deine Nähe. Ganz sanft streicheln.']];
 let szi=Math.floor(Math.random()*SZ.length);
-function szene(){const s=SZ[szi%SZ.length];$('szene').innerHTML=`<div class="sz-bild"><img src="figur-klein.jpg" alt=""><span>${s[0]}</span></div><p>${esc(s[1])}</p>`;$('antwort').textContent='';$('naechste').hidden=true;
+function szene(){const s=SZ[szi%SZ.length];$('szene').innerHTML=`<div class="sz-bild"><img src="${s[0]==='💤'?'posen/schlaeft.jpg':'posen/sitzt.jpg'}" alt=""><span>${s[0]}</span></div><p>${esc(s[1])}</p>`;$('antwort').textContent='';$('naechste').hidden=true;
   $('punkte').textContent=mem.kinder.r?mem.kinder.r+' richtig gewusst':'';}
 document.querySelectorAll('.ampel [data-r]').forEach(b=>b.onclick=()=>{const s=SZ[szi%SZ.length],ok=b.dataset.r===s[2];
   $('antwort').textContent=(ok?'Richtig! ':'Fast! ')+s[3];$('antwort').className='antwort '+(ok?'gut':'nein');
@@ -656,7 +658,7 @@ $('dialog').onclick=e=>{if(e.target.id==='dialog')dialogZu();};
 const SAG={tag:null,spazieren:'Gehen wir raus? Ich hole schon die Leine!',allein:'Allein bleiben üben wir ganz langsam. Pfote für Pfote.',verstehen:'Willst du wissen, wie ich denke? Ich erzähle es dir.',kinder:'Hallo! Weisst du, wie ich rede? Mit meinem ganzen Körper!',pflege:'Bürsten, Krallen, Zähne. Ich mag es, wenn ihr gut für mich sorgt.'};
 function zeige(v){document.querySelectorAll('.view').forEach(s=>s.hidden=s.id!=='v-'+v);document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===v));
   scrollTo(0,0);if(v==='tag'){render();greet();merktRender();}if(v==='spazieren'){walkWerRender();wocheRender();}if(v==='allein'){alone();betreuungRender();}
-  if(v==='verstehen'){kapitelRender();weltRender();}if(v==='kinder')szene();if(v==='pflege'){pflegeRender();nummernRender();}
+  if(v==='verstehen'){kapitelRender();weltRender();}if(v==='kinder')szene();grundBild();if(v==='pflege'){pflegeRender();nummernRender();}
   if(SAG[v])say(SAG[v],'wiggle');store.set('view',v);}
 document.querySelectorAll('nav a').forEach(a=>a.onclick=e=>{e.preventDefault();zeige(a.dataset.v);});
 $('go').onclick=()=>{tonAn=true;$('start').hidden=true;document.querySelector('main').hidden=false;$('nav').hidden=false;famRender();zeige('tag');};
