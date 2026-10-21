@@ -112,9 +112,11 @@
     sunny: { name: 'Sunny', agent: 'agent_4201m55ssdr3fksaey0x2yh1vpmh', bild: 'figuren/sunny.jpg',
       mund: { linie: [[416, 488], [440, 523], [480, 532], [520, 546], [560, 559], [592, 562], [646, 540]], lippe: 586, kinn: 640, max: 22 } },
     kiki: { name: 'Kiki', agent: 'agent_0401m55r02rvf96a1xrxv1njqbh3', bild: '../kiki/kiki-3d.jpg', ruhe: -0.4,
-      mund: { linie: [[372, 652], [400, 700], [440, 708], [480, 718], [520, 722], [560, 722], [600, 722], [614, 724]], lippe: 795, kinn: 865, max: 22 } }
+      mund: { linie: [[372, 652], [400, 700], [440, 708], [480, 718], [520, 722], [560, 722], [600, 722], [614, 724]], lippe: 795, kinn: 865, max: 22 } },
+    tropfi: { name: 'Tropfi', agent: 'agent_0201m5e5qk98fwf9akjpcfjtn73c', bild: 'figuren/tropfi.jpg', gedaechtnis: true,
+      mund: { linie: [[438, 648], [460, 660], [490, 666], [520, 660], [540, 648]], lippe: 684, kinn: 724, max: 16, innen: [24, 40, 96] } }
   };
-  var BILDCHEN = { nova: 'nova-3d.jpg', otti: '../otti/icon-180.png', kiki: '../kiki/icon-180.png', jackie: '../jackie/icon-180.png', 'mr. ping': '../tradeping/icon-180.png',
+  var BILDCHEN = { nova: 'nova-3d.jpg', tropfi: 'figuren/tropfi-klein.jpg', otti: '../otti/icon-180.png', kiki: '../kiki/icon-180.png', jackie: '../jackie/icon-180.png', 'mr. ping': '../tradeping/icon-180.png',
     sparky: 'figuren/sparky-klein.jpg', 'coin maker': 'figuren/coinmaker-klein.jpg', flo: 'figuren/flo-klein.jpg', fompa: 'figuren/fompa-klein.jpg', sunny: 'figuren/sunny-klein.jpg' };
   var KEY = (new URLSearchParams(location.search).get('f') || 'otti').toLowerCase();
   var F = FIGUREN[KEY] || FIGUREN.otti, NAME = F.name, AGENT = F.agent, RUHE = F.ruhe || 0;
@@ -164,9 +166,9 @@
   function gedaechtnis() { try { return JSON.parse(localStorage.getItem(GED)) || []; } catch (e) { return []; } }
   function merken() {
     if (jetztGesagt.length < 2) { jetztGesagt = []; return; }
-    var t = jetztGesagt.join('\n'); var max = KEY === 'nova' ? 2500 : 900; if (t.length > max) t = t.slice(-max);
+    var t = jetztGesagt.join('\n'); var gross = KEY === 'nova' || KEY === 'tropfi'; var max = gross ? 2500 : 900; if (t.length > max) t = t.slice(-max);
     var g = gedaechtnis(); g.push({ d: new Date().toLocaleDateString('de-CH'), t: t });
-    try { localStorage.setItem(GED, JSON.stringify(g.slice(KEY === 'nova' ? -12 : -4))); } catch (e) {}
+    try { localStorage.setItem(GED, JSON.stringify(g.slice(gross ? -12 : -4))); } catch (e) {}
     if (lernenAn()) zuNova(t);
     jetztGesagt = []; vergessenZeigen();
   }
@@ -226,7 +228,7 @@
   // Nova verbindet: sie bekommt, was die anderen Figuren auf diesem Handy erlebt haben.
   function welt() {
     var teile = [];
-    ['otti', 'kiki', 'jackie', 'mr. ping', 'sparky', 'coin maker', 'flo', 'fompa', 'sunny'].forEach(function (k) {
+    ['tropfi', 'otti', 'kiki', 'jackie', 'mr. ping', 'sparky', 'coin maker', 'flo', 'fompa', 'sunny'].forEach(function (k) {
       var g = []; try { g = JSON.parse(localStorage.getItem(k === 'otti' ? 'otti_gedaechtnis' : 'gedaechtnis_' + k)) || []; } catch (e) {}
       g.slice(-2).forEach(function (x) { teile.push(FIGUREN[k].name + ' am ' + x.d + ':\n' + String(x.t).slice(-450)); });
     });
