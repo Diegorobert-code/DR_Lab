@@ -10,7 +10,7 @@
   'use strict';
   var C = {
     k: 'fiasnest', figur: 'Fia', bild: 'posen/liegt.jpg', zoom: '.screen',
-    saisonBild: { advent: 'saison/advent.jpg' }, saisonZiel: '#home .buehne',
+    saisonBild: { halloween: 'saison/halloween.jpg', halloweenTag: 'saison/halloween.jpg', advent: 'saison/advent.jpg' } /* Runde 6b: Fias Halloween-Bild */, saisonZiel: '#home .buehne',
     hallo: ['{gruss}! Fia wartet im Nest.', '{gruss}, {name}! Fia wartet im Nest.'],
     nameFrage: 'Wie heisst du? Fia merkt sich deinen Namen, nur auf diesem Handy.',
     nameDank: 'Fia kuschelt sich ins Nest: {name}. Schön, dass du da bist.',
@@ -417,7 +417,7 @@
   window['R6_' + C.k] = { karten: N, sag: sag, still: still };
   var H = { sag: sag, still: still, nurHoeren: nurHoeren, feier: feier, saison: S, el: el, esc: esc, hol: hol, leg: leg, ruhig: ruhig, kannReden: kannReden, fuell: fuell, M: M, D: D, tz: tz, heute: heute, jetzt: jetzt };
   function saisonBildZeigen() {
-    if (!SB) return;
+    if (!SB || S.k === 'halloween') return; /* Runde 6b: auf der Bühne nur am 31.10., in der Karte schon in den Halloween-Tagen */
     var alt = F + (S.k === 'halloweenTag' ? ' mit einer lachenden Kürbislaterne' : ' bei Kerzenlicht im Advent');
     if (C.saisonImg) { var im = document.querySelector(C.saisonImg); if (im) { im.src = SB; im.alt = alt; } return; }
     var z = C.saisonZiel && document.querySelector(C.saisonZiel); if (!z) return;
