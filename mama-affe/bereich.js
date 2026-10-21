@@ -301,7 +301,7 @@ const PARENT_TABS = [
 const KID_TABS = [
  {k:'schule', e:'🏫', l:'Schule'}, {k:'koerper', e:'🦶', l:'Körper'}, {k:'staerken', e:'💪', l:'Stärken'}, {k:'tier', e:'🐻', l:'Tier'}, {k:'abend', e:'🌙', l:'Abend'}
 ];
-const PROPS = {winkt:'👋', denkt:'💭', jubelt:'⭐', schlaeft:'💤', atmet:'🍃', turnt:'🦶', zeigt:'👉'};
+const PROPS = {winkt:'👋', denkt:'💭', jubelt:'⭐', schlaeft:'💤', atmet:'🍃', turnt:'🦶', zeigt:'👉', wuerfelt:'🎲', wetter:'🌦️'};
 
 /* KI-Verse: das Schulhaus von Mama Affe in der Nachtwelt (Pinien, Mond, leuchtende Fenster) */
 const HOUSE = `<svg class="house" viewBox="0 0 320 120" aria-hidden="true">
@@ -870,7 +870,7 @@ function mount(root, opts){
     const q = W_FRAGEN[new Date().getDate() % W_FRAGEN.length];
     const satz = l.length===3 ? 'Erfinde eine Geschichte. Darin kommen vor: '+l[0][1]+', '+l[1][1]+' und '+l[2][1]+'. '+q : 'Tipp auf «Würfeln». Dann erfindest du eine Geschichte.';
     return topBar('Geschichten-Würfel') + `<div class="scene">
-     ${stage('denkt', satz, 110)}
+     ${stage('wuerfelt', satz, 110)}
      <div class="grid3 ma-wuerfel">${(l.length===3?l:[['❔',''],['❔',''],['❔','']]).map(x=>`<div class="tile" aria-label="${esc(x[1]||'noch leer')}"><span class="e" style="font-size:2.6rem">${x[0]}</span><span class="small muted">${esc(x[1])}</span></div>`).join('')}</div>
      <button class="btn block" data-act="wurf">🎲 ${l.length===3?'Nochmal würfeln':'Würfeln'}</button>
      ${l.length===3?`<button class="btn alt block" data-say="${esc(satz)}">🎧 Nur hören</button>
@@ -890,7 +890,7 @@ function mount(root, opts){
   function vWetter(){
     const today = new Date().toDateString(); const s = store.get('wetter', null); const pick = s && s.d===today ? WETTER.find(w=>w.k===s.k) : null;
     return topBar('Gefühls-Wetter') + `<div class="scene">
-     ${stage(pick?'atmet':'zeigt', pick? pick.m : 'Wie ist das Wetter in dir drin, gerade jetzt?', 110)}
+     ${stage(pick?'atmet':'wetter', pick? pick.m : 'Wie ist das Wetter in dir drin, gerade jetzt?', 110)}
      <div class="grid3">${WETTER.map(w=>`<button class="tile ${pick&&pick.k===w.k?'sel':''}" data-wetter="${w.k}"><span class="e">${w.e}</span><span class="l">${w.l}</span></button>`).join('')}</div>
      ${pick?`<div class="card gold" style="text-align:center"><div style="font-size:3rem">${pick.e}</div><p style="font-weight:700">${esc(pick.u)}</p><button class="btn alt" data-say="${esc(pick.m+' '+pick.u)}">🎧 Nur hören</button></div>
      <div class="card soft"><p class="small">Was meinst du: Wie sieht das Wetter in dir morgen aus? Du darfst es dir ausdenken.</p></div>`:''}
