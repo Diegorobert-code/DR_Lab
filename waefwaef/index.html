@@ -137,7 +137,7 @@ nav a.on{color:var(--gold);background:rgba(242,193,78,.1)}
 .hero{position:relative;padding-top:6px}
 .wiese,.wiese-start{position:absolute;left:-16px;right:-16px;bottom:58px;height:70px;z-index:-1;pointer-events:none;
   background:radial-gradient(120% 100% at 50% 100%,#3c8a5a 0%,#2c6e4a 45%,transparent 70%)}
-.wiese-start{bottom:auto;top:250px;height:120px;opacity:.7}
+.wiese-start{bottom:auto;top:250px;height:120px;opacity:.7;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 35%,#000 60%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 35%,#000 60%,transparent)}
 .wiese .bl,.wiese-start .bl{position:absolute;bottom:18px;width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px #FF8FB1}
 .wiese .bl:nth-child(1){left:12%}.wiese .bl:nth-child(2){left:28%;bottom:30px;box-shadow:0 0 0 3px #F2C14E}.wiese .bl:nth-child(3){right:16%;box-shadow:0 0 0 3px #3FD0C9}.wiese .bl:nth-child(4){right:30%;bottom:34px}
 .wiese-start .bl:nth-child(1){left:14%}.wiese-start .bl:nth-child(2){right:18%;box-shadow:0 0 0 3px #F2C14E}.wiese-start .bl:nth-child(3){left:40%;bottom:40px;box-shadow:0 0 0 3px #3FD0C9}
@@ -229,7 +229,7 @@ body:has(#v-kinder:not([hidden])) .schwanz.wedelt{animation:wedeln .5s ease-in-o
 #hoerenW[hidden]{display:none}
 #hoerenW .h-titel{font-size:18px;line-height:1.4;opacity:.62;max-width:30ch;min-height:2.8em;margin:0}
 #hoerenW .h-knopf{width:136px;height:136px;border-radius:50%;border:2px solid #313a63;background:#0a0f22;color:#d6dcf3;font-size:54px;line-height:1;cursor:pointer}
-#hoerenW .h-info{font-size:15px;line-height:1.45;opacity:.5;max-width:32ch;margin:0}
+#hoerenW .h-info{font-size:15px;line-height:1.45;opacity:.78;max-width:32ch;margin:0}
 #hoerenW .h-zu{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);left:16px;min-height:44px;padding:8px 16px;border-radius:999px;border:1px solid #262d52;background:none;color:#8890b5;font:inherit;font-size:15px}
 body.hoermodus .nova-btn,body.hoermodus .nova-pille,body.hoermodus .nova-panel{display:none!important}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -549,7 +549,8 @@ function run(sec){
   let s=sec;const fmt=n=>Math.floor(n/60)+':'+String(n%60).padStart(2,'0');
   $('aBody').innerHTML=`<div class="decke" aria-hidden="true">🛏️</div><div class="timer" id="tm">${fmt(s)}</div><button class="ghost" id="aStop">Ich bin schon zurück</button>`;
   say('Ich warte hier auf meiner Decke. Ich bin ganz tapfer.','schlaf','💤');
-  timer=setInterval(()=>{s--;$('tm').textContent=fmt(Math.max(s,0));if(s<=0){clearInterval(timer);ask();}},1000);
+  clearInterval(timer);
+  timer=setInterval(()=>{const tm=$('tm');if(!tm){clearInterval(timer);return;}s--;tm.textContent=fmt(Math.max(s,0));if(s<=0){clearInterval(timer);ask();}},1000);
   $('aStop').onclick=()=>{clearInterval(timer);ask();};
 }
 function ask(){
@@ -606,7 +607,7 @@ const SZ=[
   ['🤗','Du willst Wäf Wäf ganz fest umarmen.','y','Die meisten Hunde mögen Umarmen nicht. Lieber neben ihm sitzen.'],
   ['😌','Wäf Wäf liegt bei dir auf dem Sofa und schmiegt sich an.','g','Ja, er sucht deine Nähe. Ganz sanft streicheln.']];
 let szi=Math.floor(Math.random()*SZ.length);
-function szene(){const s=SZ[szi%SZ.length];$('szene').innerHTML=`<div class="sz-bild"><img src="${s[0]==='💤'?'posen/schlaeft.jpg':'posen/sitzt.jpg'}" alt=""><span>${s[0]}</span></div><p>${esc(s[1])}</p>`;$('antwort').textContent='';$('naechste').hidden=true;
+function szene(){const s=SZ[szi%SZ.length];$('szene').innerHTML=`<div class="sz-bild"><img loading="lazy" decoding="async" src="${s[0]==='💤'?'posen/schlaeft.jpg':'posen/sitzt.jpg'}" alt=""><span>${s[0]}</span></div><p>${esc(s[1])}</p>`;$('antwort').textContent='';$('naechste').hidden=true;
   $('punkte').textContent=mem.kinder.r?mem.kinder.r+' richtig gewusst':'';}
 document.querySelectorAll('.ampel [data-r]').forEach(b=>b.onclick=()=>{const s=SZ[szi%SZ.length],ok=b.dataset.r===s[2];
   $('antwort').textContent=(ok?'Richtig! ':'Fast! ')+s[3];$('antwort').className='antwort '+(ok?'gut':'nein');
@@ -740,6 +741,7 @@ planAusLink();saveMem();teilen();
 <script src="../nova/puppe.js" defer></script>
 <script src="runde4.js"></script>
 <script src="runde6.js"></script>
+<script src="runde7.js"></script>
 <script src="../nova/seelen.js" defer></script>
 <script src="seele.js" defer></script>
 <script src="feedback.js" data-app="Wäf Wäf" defer></script>
