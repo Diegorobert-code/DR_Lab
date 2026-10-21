@@ -28,7 +28,7 @@
         bau: function (H) {
           var L = H.hol('park', []);
           var n = H.karte('parkplatz', '📝 Gedanken-Parkplatz',
-            '<p>Kreist im Kopf, was morgen zu tun ist? Schreib es hier hin. Fia passt darauf auf, bis du wach bist. Dann darf der Kopf ruhen.</p>' +
+            '<img class="r7-bild" alt="Fia schreibt mit einem Stift eine Notiz" loading="lazy" decoding="async" width="768" height="480" src="posen/notiz.jpg" style="object-position:50% 40%"><p>Kreist im Kopf, was morgen zu tun ist? Schreib es hier hin. Fia passt darauf auf, bis du wach bist. Dann darf der Kopf ruhen.</p>' +
             '<form class="r7-pf" style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap"><label class="r7-feld" style="flex:1 1 200px">Für morgen<input name="t" maxlength="80" placeholder="z. B. Zahnarzt anrufen" autocomplete="off" enterkeyhint="done"></label><button type="submit" class="r7-btn voll">Parkieren</button></form>' +
             '<ul class="r7-liste r7-pl"></ul><div class="r7-reihe"><button type="button" class="r7-btn" data-a="leer" hidden>Alles erledigt, leeren</button></div>');
           function zeig() {
@@ -56,14 +56,14 @@
         id: 'nap', emo: '😴', titel: 'Power-Nap', kurz: '20 Minuten ausruhen, dann weckt dich ein sanfter Sonnenaufgang.',
         bau: function (H) {
           var n = H.karte('nap', '😴 Power-Nap',
-            '<p>Ein kurzes Nickerchen am Nachmittag erfrischt, ohne den Nachtschlaf zu stören. Bleib unter 30 Minuten und am besten vor 15 Uhr.</p>' +
+            '<img class="r7-bild" alt="Fia schläft im Nest, draussen geht die Sonne unter" loading="lazy" decoding="async" width="768" height="480" src="posen/nickerchen.jpg" style="object-position:50% 55%"><p>Ein kurzes Nickerchen am Nachmittag erfrischt, ohne den Nachtschlaf zu stören. Bleib unter 30 Minuten und am besten vor 15 Uhr.</p>' +
             '<div class="r7-chips" role="group" aria-label="Dauer"><button type="button" data-m="10">10 Min.</button><button type="button" data-m="20">20 Min.</button><button type="button" data-m="25">25 Min.</button></div>' +
             '<p class="r7-leise">Die App muss offen bleiben, der Bildschirm darf dunkel werden. Lauter als nötig wird es nicht.</p>');
           n.addEventListener('click', function (e) {
             var b = e.target.closest('[data-m]'); if (!b) return;
             var ges = +b.getAttribute('data-m') * 60, t0 = Date.now(), iv = 0, wl = null, geweckt = false;
             try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function (x) { wl = x; }, function () {}); } catch (x) {}
-            var v = H.voll('<img alt="" src="posen/schlaeft.jpg" style="opacity:.55;transition:opacity 2s"><p style="opacity:.75">Augen zu. Fia passt auf die Zeit auf.</p><p class="r7-zahl" style="opacity:.5" aria-live="off"></p><button type="button" class="r7-btn" style="opacity:.7">Aufwachen</button>', function () { clearInterval(iv); try { if (wl) wl.release(); } catch (x) {} });
+            var v = H.voll('<img alt="" src="posen/nickerchen.jpg" style="opacity:.55;transition:opacity 2s"><p style="opacity:.75">Augen zu. Fia passt auf die Zeit auf.</p><p class="r7-zahl" style="opacity:.5" aria-live="off"></p><button type="button" class="r7-btn" style="opacity:.7">Aufwachen</button>', function () { clearInterval(iv); try { if (wl) wl.release(); } catch (x) {} });
             v.el.style.setProperty('background', '#05060f', 'important'); v.el.style.transition = 'background 60s linear';
             v.el.querySelector('button').onclick = v.zu;
             iv = setInterval(function () {
@@ -173,6 +173,8 @@
     '.r7-feld input,.r7-feld textarea,.r7-feld select{width:100%;box-sizing:border-box;min-height:44px;padding:10px 12px;border-radius:var(--r7-rad-s);border:1px solid rgba(242,193,78,.5);background:rgba(8,14,36,.7);color:var(--r7-text);font:inherit;font-size:16px;font-weight:400}',
     '.r7-feld textarea{min-height:88px;resize:vertical}',
     '.r7-kopf{display:flex;gap:var(--r7-2);align-items:center}',
+    /* Runde 7d: Tinko-Bilder in den Karten */
+    '.r7-bild{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:50% 40%;border-radius:var(--r7-rad-s);margin:var(--r7-1) 0 var(--r7-2);border:1px solid rgba(242,193,78,.35);background:#0e1838}',
     '.r7-kopf img{flex:none;width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--r7-gold);background:#0e1838}',
     '.r7-gross{font-size:22px;line-height:1.4;font-weight:700;color:var(--r7-text);margin:var(--r7-1) 0}',
     '.r7-leer{display:flex;gap:var(--r7-2);align-items:center;padding:var(--r7-2);border-radius:var(--r7-rad);border:1px dashed rgba(242,193,78,.45);background:rgba(242,193,78,.06);color:var(--r7-leise);margin-top:var(--r7-1)}',
