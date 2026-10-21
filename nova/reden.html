@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-21-11">
+<meta name="stand" content="2026-10-21-12">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -390,6 +390,8 @@
     if (conv) {
       var v = 0, iv = 0;
       try { v = conv.getOutputVolume() || 0; } catch (e) {}
+      // iPhone liefert manchmal keine Lautstärke: dann spricht der Mund im Silbentakt, solange sie redet.
+      if (conv.__spricht && v < 0.01) { var t = performance.now(); v = Math.max(0, 0.25 + 0.35 * Math.sin(t / 95) * Math.sin(t / 37 + 1)); }
       try { iv = conv.getInputVolume() || 0; } catch (e) {}
       spitze = Math.max(spitze * 0.997, v, 0.08);
       if (conv.__spricht) ziel = Math.min(1, Math.max(-1, RUHE + (v / spitze) * 1.25 - 0.12 + (RUHE < 0 ? -0.6 : 0)));
