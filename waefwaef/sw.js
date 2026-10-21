@@ -1,6 +1,6 @@
 // Wäf Wäf – Offline-Cache (nur eigene Dateien, keine Daten)
-const CACHE = 'waefwaef-v5';
-const FILES = ['./', './index.html', './posen.js', './seele.js', './feedback.js', './figur.jpg', './figur-klein.jpg', './posen/sitzt.jpg', './posen/rennt.jpg', './posen/schlaeft.jpg', './icon-180.png', './icon-192.png', './manifest.webmanifest', '../nova/nova.js', '../nova/seelen.js'];
+const CACHE = 'waefwaef-v6';
+const FILES = ['./', './index.html', './posen.js', './runde4.js', './seele.js', './feedback.js', './figur.jpg', './figur-klein.jpg', './posen/sitzt.jpg', './posen/rennt.jpg', './posen/schlaeft.jpg', './icon-180.png', './icon-192.png', './manifest.webmanifest', '../nova/nova.js', '../nova/seelen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(FILES.map(f => c.add(f).catch(() => {})))).then(() => self.skipWaiting()));
 });
