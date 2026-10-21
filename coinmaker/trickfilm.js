@@ -11,7 +11,7 @@
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
   var ruhig = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var BILD = { ruhig: 'posen/freude.jpg', freude: 'posen/freude.jpg', nicken: 'posen/freude.jpg', winken: 'posen/freude.jpg', erzaehlen: 'posen/freude.jpg', kuchen: 'posen/freude.jpg',
+  var BILD = { ruhig: 'posen/freude.jpg', freude: 'posen/freude.jpg', nicken: 'posen/freude.jpg', winken: 'posen/winken.jpg', erzaehlen: 'posen/freude.jpg', kuchen: 'posen/freude.jpg',
     hebel: 'posen/hebel.jpg', tresor: 'posen/hebel.jpg', lupe: 'posen/lupe.jpg', ernst: 'posen/lupe.jpg', waage: 'posen/lupe.jpg' };
   var HAKEN = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#3a2406" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
 
@@ -123,13 +123,14 @@
   var pp = null;
   function puppeGruss() {
     if (!(window.Puppe && typeof window.Puppe.winkeZurueck === 'function')) return false;
-    try { pp = pp || window.Puppe.winkeZurueck(a, { figur: 'coinmaker', gruss: 'winken', antippen: false, blase: false }); if (pp && typeof pp.gruesse === 'function') { pp.gruesse('winken'); return true; } } catch (e) {}
+    // Runde 5: Tinkos «Coin Maker winkt» (Hand frei) – genau diese Hand schwingt
+    try { pp = pp || window.Puppe.winkeZurueck(a, { figur: 'coinmaker', gruss: 'winken', antippen: false, blase: false, bild: 'posen/winken.jpg', arm: false, augen: [[9, 9, 0.01, 0.01]], mund: { l: [9, 9], r: [9.1, 9], oben: 0, unten: 0, kinn: 0.01 }, kopf: [0.5, 0.35, 0.3], gesicht: [0.52, 0.4, 0.2], winkArm: { x: 0.15, y: 0.65, r: 0.16, dx: 0.22, dy: 0.95, seite: 'links' } }); if (pp && typeof pp.gruesse === 'function') { pp.gruesse('winken'); return true; } } catch (e) {}
     return false;
   }
   function winke(ev) {
     if (ev) { ev.stopPropagation(); ev.preventDefault(); }
     var lebendig = puppeGruss();
-    if (window.CMPlus) { if (!lebendig) CMPlus.pose('winken', 1800); CMPlus.sag(GRUSS[gi++ % GRUSS.length], 'Leg etwas in den Automaten und zieh am Hebel.'); }
+    if (window.CMPlus) { CMPlus.pose('winken', lebendig ? 3400 : 1800); if (lebendig) { var rq = $('cmreq'); if (rq) rq.classList.remove('zeig'); } CMPlus.sag(GRUSS[gi++ % GRUSS.length], 'Leg etwas in den Automaten und zieh am Hebel.'); }
     if (!lebendig && !ruhig) { hand.classList.remove('an'); void hand.offsetWidth; hand.classList.add('an'); }
     try { navigator.vibrate && navigator.vibrate(12); } catch (e) {}
   }
