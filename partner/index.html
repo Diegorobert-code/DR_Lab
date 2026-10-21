@@ -1,0 +1,702 @@
+<meta charset="utf-8">
+<title>DR Lab Partner</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&family=Caveat:wght@600&display=swap">
+<style>
+/* Layout: ein Nachtplatz als Store. Himmel oben folgt der Uhrzeit, Läden (Apps) darunter, Tab-Leiste unten wie ein Holzsteg. Bewusst nur ein Look: Nachtblau + Gold. */
+:root{
+  --nacht:#0b1430; --nacht2:#13204a; --tiefe:#070d22;
+  --gold:#f4c35a; --gold2:#ffdf95; --koralle:#ff8a6b; --mint:#7fe0c6;
+  --text:#f3f0e6; --leise:#aab3d4; --linie:rgba(244,195,90,.18); --glas:rgba(255,255,255,.06);
+  --holz:#8a5a33; --holz2:#b07a46;
+  --f-display:"Fredoka","Baloo 2",ui-rounded,system-ui,sans-serif;
+  --f-text:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-hand:"Caveat","Bradley Hand","Comic Sans MS",cursive;
+  --r:22px; --gross:1;
+  color-scheme:dark;
+}
+html,body{background:var(--tiefe);color:var(--text)}
+body{font-family:var(--f-text);font-size:calc(15px*var(--gross));line-height:1.45;min-height:100%;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--nacht)}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:10px}
+a{color:var(--gold2)}
+.wrap{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 120px;position:relative}
+#himmel{position:fixed;inset:0;z-index:0;pointer-events:none}
+main{position:relative;z-index:1}
+
+/* Kopf */
+.kopf{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;gap:12px;padding:12px 0 10px;background:linear-gradient(var(--nacht) 70%,transparent)}
+.marke{font-family:var(--f-display);font-weight:700;font-size:1.25rem;letter-spacing:.02em;display:flex;align-items:center;gap:8px}
+.marke b{color:var(--gold)}
+.mond{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--gold2),var(--gold) 60%,#c48a2a);box-shadow:0 0 18px rgba(244,195,90,.6)}
+.uhr{margin-left:auto;font-size:.78rem;color:var(--leise);text-align:right;line-height:1.2}
+.uhr strong{display:block;color:var(--gold2);font-family:var(--f-display);font-weight:600;font-size:.9rem}
+
+h1,h2,h3{font-family:var(--f-display);font-weight:600;text-wrap:balance;margin:0}
+h2{font-size:1.35rem;margin:28px 0 12px;display:flex;align-items:baseline;gap:10px}
+h2 small{font-family:var(--f-text);font-size:.78rem;font-weight:600;color:var(--leise);letter-spacing:.06em;text-transform:uppercase}
+
+/* Bühne / Geschichte des Tages */
+.buehne{position:relative;border-radius:28px;overflow:hidden;aspect-ratio:4/4.6;max-width:100%;box-shadow:0 30px 60px -20px #000,0 0 0 1px var(--linie);isolation:isolate;cursor:pointer}
+.buehne img.sz{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.08);animation:atmen 18s ease-in-out infinite alternate}
+@keyframes atmen{to{transform:scale(1) translateY(-2%)}}
+.buehne::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,13,34,0) 35%,rgba(7,13,34,.92) 88%);z-index:1}
+.vorhang{position:absolute;inset:0;z-index:3;display:flex;pointer-events:none}
+.vorhang i{flex:1;background:repeating-linear-gradient(90deg,#7a1630 0 14px,#8f1d3a 14px 28px);box-shadow:inset 0 -30px 40px rgba(0,0,0,.4);transition:transform 1.4s cubic-bezier(.7,0,.2,1) .3s}
+.offen .vorhang i:first-child{transform:translateX(-102%)}
+.offen .vorhang i:last-child{transform:translateX(102%)}
+.b-text{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:22px}
+.eyebrow{font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.b-text h1{font-size:clamp(1.7rem,7vw,2.3rem);line-height:1.05;margin:6px 0 8px}
+.b-text p{margin:0;color:#dfe3f5;max-width:34ch}
+.b-zeile{display:flex;align-items:center;gap:10px;margin-top:14px}
+.mini{width:44px;height:44px;border-radius:12px;object-fit:cover;box-shadow:0 0 0 1px var(--linie)}
+
+/* Stimmung */
+.stimmung{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;margin-right:calc(-1*max(16px,env(safe-area-inset-right,0px)))}
+.stimmung::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:10px 14px;border-radius:999px;background:var(--glas);box-shadow:inset 0 0 0 1px var(--linie);font-weight:600;white-space:nowrap;transition:.2s}
+.chip[aria-pressed="true"]{background:var(--gold);color:var(--nacht);box-shadow:0 6px 18px -6px var(--gold)}
+.empf{margin-top:12px;display:grid;gap:10px}
+
+/* App-Zeile */
+.app{display:grid;grid-template-columns:64px 1fr auto;gap:14px;align-items:center;padding:10px;border-radius:18px;text-align:left;width:100%;transition:background .2s}
+.app:hover{background:var(--glas)}
+.app img{width:64px;height:64px;border-radius:16px;object-fit:cover;box-shadow:0 0 0 1px var(--linie),0 8px 20px -10px #000}
+.app .n{font-family:var(--f-display);font-weight:600;font-size:1.05rem}
+.app .k{color:var(--leise);font-size:.85rem;min-width:0}
+.app>div{min-width:0}
+.oeffnen{padding:8px 16px;border-radius:999px;background:rgba(244,195,90,.14);color:var(--gold2);font-weight:800;font-size:.85rem;letter-spacing:.04em}
+
+/* Läden-Reihe */
+.reihe{display:flex;gap:14px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none;scroll-snap-type:x mandatory;margin-right:calc(-1*max(16px,env(safe-area-inset-right,0px)))}
+.reihe::-webkit-scrollbar{display:none}
+.laden{flex:none;width:150px;scroll-snap-align:start;text-align:left}
+.laden .fenster{position:relative;border-radius:20px 20px 16px 16px;overflow:hidden;aspect-ratio:1;box-shadow:0 0 0 1px var(--linie)}
+.laden .fenster img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.laden:hover .fenster img{transform:scale(1.06)}
+.markise{height:16px;border-radius:12px 12px 0 0;background:repeating-linear-gradient(90deg,var(--c,var(--gold)) 0 15px,#f3f0e6 15px 30px);margin:0 6px -2px;position:relative;z-index:1;opacity:.92}
+.laden .n{font-family:var(--f-display);font-weight:600;margin-top:8px}
+.laden .k{font-size:.8rem;color:var(--leise)}
+.licht{position:absolute;top:8px;right:8px;width:9px;height:9px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint)}
+.licht.zu{background:#5b6488;box-shadow:none}
+
+/* Karten */
+.karte{border-radius:var(--r);padding:18px;background:linear-gradient(160deg,var(--nacht2),var(--nacht));box-shadow:0 0 0 1px var(--linie)}
+.zwei{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.welt{position:relative;border-radius:20px;overflow:hidden;aspect-ratio:1/1.1;text-align:left;box-shadow:0 0 0 1px var(--linie)}
+.welt img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.75}
+.welt span{position:absolute;inset:auto 0 0 0;padding:12px;background:linear-gradient(transparent,rgba(7,13,34,.95));font-family:var(--f-display);font-weight:600;font-size:1.05rem}
+.welt span small{display:block;font-family:var(--f-text);font-weight:600;font-size:.75rem;color:var(--leise)}
+
+/* Hasi */
+.tresen{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:end}
+.tresen img{width:110px;height:110px;border-radius:24px;object-fit:cover}
+.schild{position:relative;background:linear-gradient(180deg,var(--holz2),var(--holz));color:#fff7e6;border-radius:12px;padding:14px 16px;font-family:var(--f-hand);font-size:1.55rem;line-height:1.1;box-shadow:inset 0 -4px 0 rgba(0,0,0,.25),0 10px 20px -10px #000;transform:rotate(-1.5deg)}
+.schild::before,.schild::after{content:"";position:absolute;top:-14px;width:2px;height:14px;background:#d9b98a}
+.schild::before{left:22%}.schild::after{right:22%}
+.geste{font-style:italic;color:var(--leise);font-size:.85rem;margin-top:6px}
+.suche{display:flex;gap:8px;margin-top:14px}
+.suche input{flex:1;min-width:0;padding:14px 16px;border-radius:16px;border:0;background:var(--glas);box-shadow:inset 0 0 0 1px var(--linie);color:var(--text);font:inherit}
+.suche button{padding:0 18px;border-radius:16px;background:var(--gold);color:var(--nacht);font-weight:800}
+.beispiele{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.beispiele button{font-size:.8rem;padding:6px 10px;border-radius:999px;background:var(--glas);color:var(--leise)}
+
+/* Detail-Blatt */
+.blatt{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center;background:rgba(3,6,18,.6);backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .3s}
+.blatt.auf{opacity:1;pointer-events:auto}
+.blatt-in{width:100%;max-width:560px;max-height:94%;overflow-y:auto;background:var(--nacht);border-radius:30px 30px 0 0;transform:translateY(40px);transition:transform .45s cubic-bezier(.2,.9,.2,1);padding-bottom:calc(30px + env(safe-area-inset-bottom,0px));box-shadow:0 -20px 60px #000}
+.blatt.auf .blatt-in{transform:none}
+.d-hero{position:relative;height:250px;overflow:hidden}
+.d-hero img.bg{width:100%;height:100%;object-fit:cover;filter:saturate(1.1)}
+.d-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 30%,var(--nacht))}
+.zu-knopf{position:absolute;top:14px;right:14px;z-index:2;width:38px;height:38px;border-radius:50%;background:rgba(7,13,34,.7);font-size:1.2rem}
+.griff{position:absolute;top:8px;left:50%;translate:-50%;width:44px;height:5px;border-radius:9px;background:rgba(255,255,255,.4);z-index:2}
+.d-inhalt{padding:0 max(18px,env(safe-area-inset-right,0px)) 0 max(18px,env(safe-area-inset-left,0px));margin-top:-70px;position:relative;z-index:1;display:grid;gap:18px}
+.d-kopf{display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:end}
+.d-kopf img{width:96px;height:96px;border-radius:24px;box-shadow:0 0 0 2px var(--gold),0 14px 30px -10px #000;object-fit:cover}
+.d-kopf h3{font-size:1.6rem;line-height:1.05}
+.d-kopf .k{color:var(--leise);font-size:.9rem}
+.blase{position:relative;background:#f7f2e2;color:#1b2245;border-radius:20px;padding:14px 16px;font-size:1rem;min-height:3.2em}
+.blase::before{content:"";position:absolute;top:-9px;left:34px;border:10px solid transparent;border-bottom-color:#f7f2e2;border-top:0}
+.blase .wer{display:block;font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#8a6a1e;margin-bottom:2px}
+.blase.holz{background:linear-gradient(180deg,var(--holz2),var(--holz));color:#fff7e6;font-family:var(--f-hand);font-size:1.45rem}
+.blase.holz::before{border-bottom-color:var(--holz2)}
+.blase.holz .wer{font-family:var(--f-text);color:#ffe2b0}
+.knoepfe{display:grid;grid-template-columns:1fr auto auto;gap:10px}
+.gross-knopf{display:flex;align-items:center;justify-content:center;gap:8px;padding:15px;border-radius:18px;background:linear-gradient(180deg,var(--gold2),var(--gold));color:var(--nacht);font-weight:800;font-size:1.05rem;text-decoration:none;box-shadow:0 10px 24px -8px rgba(244,195,90,.7)}
+.rund{width:54px;border-radius:18px;background:var(--glas);box-shadow:inset 0 0 0 1px var(--linie);font-size:1.3rem}
+.rund[aria-pressed="true"]{background:rgba(255,138,107,.18);box-shadow:inset 0 0 0 1px var(--koralle)}
+.unter{font-size:.78rem;color:var(--leise);text-align:center;margin-top:-8px}
+.siegel{display:flex;flex-wrap:wrap;gap:8px}
+.siegel span{padding:7px 11px;border-radius:12px;background:rgba(127,224,198,.1);color:var(--mint);font-size:.8rem;font-weight:700}
+.etikett{border-radius:18px;background:#f7f2e2;color:#1b2245;padding:16px;font-size:.9rem}
+.etikett h4{margin:0 0 8px;font-family:var(--f-display);font-size:1.05rem;display:flex;justify-content:space-between}
+.etikett h4 em{font-style:normal;font-size:.72rem;font-weight:800;letter-spacing:.1em;color:#8a6a1e;align-self:center}
+.etikett dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0}
+.etikett dt{font-weight:800}
+.etikett dd{margin:0}
+.gelernt{border-left:3px solid var(--gold);padding-left:14px}
+.gelernt b{font-family:var(--f-display);font-weight:600;color:var(--gold2)}
+.gelernt ul{margin:6px 0 0;padding-left:18px;color:#dfe3f5}
+.gefuehl{display:flex;justify-content:space-between;gap:6px}
+.gefuehl button{flex:1;padding:10px 0;border-radius:14px;background:var(--glas);font-size:1.5rem;transition:transform .2s}
+.gefuehl button[aria-pressed="true"]{background:rgba(244,195,90,.2);transform:translateY(-4px)}
+.gefuehl-text{font-size:.82rem;color:var(--leise);margin-top:6px}
+textarea{width:100%;min-height:80px;border-radius:16px;border:0;padding:12px 14px;background:var(--glas);box-shadow:inset 0 0 0 1px var(--linie);color:var(--text);font:inherit;resize:vertical}
+.zweiteilig{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px}
+.klein-knopf{padding:10px 14px;border-radius:14px;background:rgba(244,195,90,.14);color:var(--gold2);font-weight:800}
+.qr-box{display:none;place-items:center;gap:8px;padding:16px;border-radius:18px;background:#f7f2e2;color:#1b2245;text-align:center}
+.qr-box.auf{display:grid}
+.qr-box canvas,.qr-box img{border-radius:8px}
+.schritte{margin:0;padding-left:20px;color:#dfe3f5}
+.schritte li{margin:4px 0}
+
+/* Bildschirmfotos */
+.fotos{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 10px;scrollbar-width:none}
+.fotos::-webkit-scrollbar{display:none}
+.fotos button{flex:none;width:44%;max-width:200px;scroll-snap-align:start;border-radius:22px;overflow:hidden;padding:0;box-shadow:0 0 0 1px var(--linie),0 16px 30px -14px #000;background:#000}
+.fotos img{display:block;width:100%;aspect-ratio:390/844;object-fit:cover}
+.fotos-hinweis{font-size:.74rem;color:var(--leise);margin-top:-4px}
+.lupe{position:fixed;inset:0;z-index:80;background:rgba(3,6,18,.92);display:grid;place-items:center;padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px))}
+.lupe img{max-height:86vh;max-width:100%;border-radius:28px;box-shadow:0 0 0 2px var(--gold)}
+/* Infos */
+.infos{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--linie);border-radius:18px;overflow:hidden}
+.infos div{background:var(--nacht);padding:12px 8px;text-align:center}
+.infos small{display:block;font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--leise)}
+.infos b{font-family:var(--f-display);font-weight:600;font-size:1.05rem}
+.infos em{display:block;font-style:normal;font-size:.72rem;color:var(--leise)}
+.aehnlich{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none}
+.aehnlich::-webkit-scrollbar{display:none}
+.aehnlich button{flex:none;width:78px;text-align:center;font-size:.76rem;color:var(--leise)}
+.aehnlich img{width:78px;height:78px;border-radius:20px;display:block;margin-bottom:6px;box-shadow:0 0 0 1px var(--linie)}
+.leiste{position:sticky;bottom:0;z-index:3;display:flex;align-items:center;gap:12px;padding:12px max(18px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));background:rgba(11,20,48,.94);backdrop-filter:blur(12px);box-shadow:0 -1px 0 var(--linie);transform:translateY(110%);transition:transform .3s;margin-top:20px}
+.leiste.zeig{transform:none}
+.leiste img{width:40px;height:40px;border-radius:11px}
+.leiste b{font-family:var(--f-display);font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.leiste a{padding:10px 16px;border-radius:999px;background:var(--gold);color:var(--nacht);font-weight:800;text-decoration:none;white-space:nowrap}
+.blatt-in{padding-bottom:0}
+/* Preis */
+.preis{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,rgba(244,195,90,.16),rgba(244,195,90,.04));box-shadow:inset 0 0 0 1px var(--linie)}
+.preis b{display:block;font-family:var(--f-display);font-size:1.7rem;color:var(--gold2);line-height:1.1}
+.preis small{color:var(--leise);font-size:.8rem}
+.preis .ander{text-align:right;font-size:.78rem;color:var(--leise)}
+.preis .ander s{display:block;font-size:1.05rem;font-weight:700;color:#8790b3}
+.ptab{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.9rem}
+.ptab th,.ptab td{padding:8px 4px;border-bottom:1px solid var(--linie);text-align:right}
+.ptab th:first-child,.ptab td:first-child{text-align:left}
+.ptab th{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--leise)}
+.ptab td.g{color:var(--gold2);font-weight:800}
+/* Mit Diego */
+.diego{display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:center}
+.diego-foto{width:96px;height:120px;object-fit:cover;object-position:center 20%;border-radius:18px;box-shadow:0 0 0 2px var(--gold)}
+.diego-text b{font-family:var(--f-display);font-size:1.15rem;font-weight:600}
+.diego-text p{margin:4px 0 0;color:var(--leise);font-size:.9rem}
+.dienst-liste{display:grid;gap:12px;margin-top:12px}
+.dienst{border-radius:var(--r);padding:16px;background:var(--glas);box-shadow:inset 0 0 0 1px var(--linie);display:grid;gap:10px}
+.d-kopf2{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:center}
+.d-sym{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(244,195,90,.14);color:var(--gold2);font-size:1.2rem}
+.d-kopf2 b{font-family:var(--f-display);font-weight:600;font-size:1.05rem;display:block}
+.d-kopf2 small{color:var(--leise);font-size:.8rem}
+.dienst ul{margin:0;padding-left:18px;color:#dfe3f5;font-size:.9rem}
+.dienst li{margin:3px 0}
+.intern{font-size:.78rem;color:var(--koralle);border-left:2px solid var(--koralle);padding-left:10px}
+.anfrage{justify-self:start}
+/* Elterntor */
+.tor{display:grid;gap:10px}
+.tor .frage{font-family:var(--f-display);font-size:1.15rem}
+.tor .wahl{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tor .wahl button{padding:12px 0;border-radius:14px;background:var(--glas);font-weight:800}
+
+/* Feinheiten */
+.feinheiten{display:grid;gap:10px;counter-reset:f}
+.fein{display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:start}
+.fein .s{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:rgba(244,195,90,.12);font-size:1.1rem}
+.fein b{font-family:var(--f-display);font-weight:600}
+.fein p{margin:2px 0 0;color:var(--leise);font-size:.88rem}
+.vs{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.06em;color:var(--koralle);margin-left:6px}
+
+/* Einstellungen */
+.schalter{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--linie)}
+.schalter:last-child{border:0}
+.sw{width:50px;height:30px;border-radius:99px;background:#333c63;position:relative;transition:.2s;flex:none}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.2s}
+.sw[aria-checked="true"]{background:var(--mint)}
+.sw[aria-checked="true"]::after{left:23px}
+
+/* Tab-Leiste */
+.steg{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:linear-gradient(transparent,rgba(7,13,34,.96) 30%)}
+.steg nav{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:6px;border-radius:24px;background:rgba(19,32,74,.85);backdrop-filter:blur(14px);box-shadow:0 0 0 1px var(--linie),0 20px 40px -10px #000}
+.steg button{display:grid;justify-items:center;gap:2px;padding:8px 0;border-radius:18px;font-size:.72rem;font-weight:700;color:var(--leise)}
+.steg button span{font-size:1.3rem;line-height:1}
+.steg button[aria-current="page"]{background:rgba(244,195,90,.16);color:var(--gold2)}
+.seite[hidden]{display:none}
+.hinweis{font-size:.78rem;color:var(--leise);text-align:center;margin-top:30px}
+.toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom,0px));translate:-50% 20px;z-index:60;background:var(--gold);color:var(--nacht);padding:10px 16px;border-radius:999px;font-weight:800;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap}
+.toast.zeig{opacity:1;translate:-50% 0}
+.funke{position:fixed;z-index:70;width:8px;height:8px;border-radius:50%;background:var(--gold2);box-shadow:0 0 12px var(--gold);pointer-events:none}
+.leer{color:var(--leise);font-size:.88rem;padding:8px 0}
+body.ruhig *{animation:none!important;transition:none!important}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.nova-hol{display:flex;align-items:center;gap:14px;margin:6px 0 10px;padding:14px;border-radius:22px;text-decoration:none;color:inherit;background:linear-gradient(135deg,rgba(157,183,255,.28),rgba(244,195,90,.12));box-shadow:inset 0 0 0 1px var(--linie),0 10px 30px rgba(0,0,0,.35)}
+.nova-hol img{width:68px;height:68px;border-radius:18px;object-fit:cover}
+.nova-hol div{flex:1;min-width:0}.nova-hol b{display:block;font-family:var(--f-display);font-size:1.45rem}.nova-hol small{color:var(--leise);font-size:.82rem}
+.privat-hinweis{color:var(--leise);font-size:.85rem;margin:0 0 18px}
+.kauf-k{width:100%;margin-top:10px;padding:14px;border:0;border-radius:16px;font-weight:800;font-size:1rem;font-family:inherit;color:var(--nacht);background:linear-gradient(180deg,#fff,#e9e2cf);cursor:pointer}
+.kauf-k.hat{background:rgba(120,220,160,.18);color:#9ff0c0;box-shadow:inset 0 0 0 1px rgba(120,220,160,.4)}
+.kasse{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center;background:rgba(3,6,18,.7);backdrop-filter:blur(8px);opacity:0;transition:opacity .25s}
+.kasse.auf{opacity:1}
+.kasse-in{width:100%;max-width:520px;background:var(--nacht);border-radius:28px 28px 0 0;padding:18px 18px calc(22px + env(safe-area-inset-bottom,0px));display:grid;gap:14px;transform:translateY(30px);transition:transform .35s cubic-bezier(.2,.9,.2,1);box-shadow:0 -20px 60px #000}
+.kasse.auf .kasse-in{transform:none}
+.test-band{justify-self:center;font-size:.72rem;font-weight:800;letter-spacing:.08em;color:#ffcf70;background:rgba(244,195,90,.14);padding:5px 12px;border-radius:99px}
+.k-kopf{display:flex;align-items:center;gap:12px}.k-kopf img{width:54px;height:54px;border-radius:14px}.k-kopf div{flex:1}.k-kopf b{display:block;font-family:var(--f-display);font-size:1.2rem}.k-kopf small{color:var(--leise)}
+.k-preis{font-family:var(--f-display);font-size:1.3rem;color:var(--gold2)}
+.k-wahl{display:grid;gap:8px}
+.k-art{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:16px;border:0;background:rgba(255,255,255,.05);color:inherit;font-weight:600;font-size:.98rem;font-family:inherit;text-align:left;box-shadow:inset 0 0 0 1px var(--linie);cursor:pointer}
+.k-art.an{box-shadow:inset 0 0 0 2px var(--gold2);background:rgba(244,195,90,.08)}
+.twint{font-weight:900;font-size:.72rem;background:#000;color:#fff;padding:5px 7px;border-radius:7px;letter-spacing:.04em}
+.apay{width:34px;height:22px;border-radius:6px;background:#fff;display:inline-block;position:relative}.apay::after{content:"Pay";position:absolute;inset:0;display:grid;place-items:center;color:#000;font-weight:800;font-size:.7rem}
+.karte-i{font-size:1.2rem}
+.k-klein{margin:0;font-size:.76rem;color:var(--leise);line-height:1.4}
+.k-zu{background:none;border:0;color:var(--leise);font-weight:600;font-size:.95rem;font-family:inherit;padding:6px;cursor:pointer}
+.k-fertig{display:grid;gap:10px;justify-items:center;text-align:center;padding:10px 0}
+.k-fertig .haken{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font-size:2.2rem;color:var(--nacht);background:linear-gradient(180deg,#a8f5c8,#5fd497);animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
+.k-fertig b{font-family:var(--f-display);font-size:1.4rem}.k-fertig small{color:var(--leise)}.k-fertig .gross-knopf{width:100%}
+@keyframes pop{from{transform:scale(.3);opacity:0}}
+@media (prefers-reduced-motion:reduce){.k-fertig .haken{animation:none}}
+.kauf-k,.preis,#qr-k,#qr-box{display:none!important}
+.tor-code{position:fixed;inset:0;z-index:99;display:grid;place-items:center;background:var(--nacht);padding:24px}
+.tor-code form{display:grid;gap:14px;width:100%;max-width:320px;text-align:center}
+.tor-code input{font:700 1.6rem/1 var(--f-display);text-align:center;letter-spacing:.3em;padding:14px;border-radius:16px;border:0;text-transform:uppercase}
+.tor-code .fehler{color:#ffb3b3;min-height:1.2em}
+</style>
+
+<div class="tor-code" id="tor-code"><form id="tor-form"><div class="marke">DR&nbsp;Lab <b>Store</b></div><p style="color:var(--leise)">Partner-Zugang. Bitte deinen Code eingeben.</p><input id="tor-in" autocomplete="off" autocapitalize="characters" maxlength="12" aria-label="Code"><button class="gross-knopf" type="submit">Öffnen</button><div class="fehler" id="tor-f" role="status"></div></form></div>
+<canvas id="himmel" aria-hidden="true"></canvas>
+<main class="wrap">
+  <header class="kopf">
+    <div class="mond" aria-hidden="true"></div>
+    <div class="marke">DR&nbsp;Lab <b>Store</b> <small style="font-size:.6em;opacity:.7">Partner</small></div>
+    <div class="uhr" id="uhr"><strong>Abend</strong>Nachtplatz</div>
+  </header>
+
+  <!-- HEUTE -->
+  <section class="seite" id="s-heute">
+    <p class="privat-hinweis">Partner-Vorschau. Jede App mit «Holen» öffnen, dann Teilen ⬆︎ und «Zum Home-Bildschirm». Alles gratis, nichts zu bezahlen.</p>
+    <div class="buehne" id="buehne" role="button" tabindex="0" aria-label="Geschichte des Tages öffnen">
+      <img class="sz" id="b-bild" src="img/sz-fia-nest.jpg" alt="">
+      <div class="vorhang" aria-hidden="true"><i></i><i></i></div>
+      <div class="b-text">
+        <div class="eyebrow" id="b-eye">Geschichte des Abends</div>
+        <h1 id="b-titel">Fia macht das Licht leiser</h1>
+        <p id="b-text">Ab 21 Uhr glüht Fias Nest langsam von Gold zu Dunkelrot. Je später, desto ruhiger.</p>
+        <div class="b-zeile"><img class="mini" id="b-icon" src="img/fia.jpg" alt=""><span class="oeffnen">Ansehen</span></div>
+      </div>
+    </div>
+
+    <h2>Wie geht's dir gerade?</h2>
+    <div class="stimmung" id="stimmung" role="group" aria-label="Stimmung wählen"></div>
+    <div class="empf" id="empf"></div>
+
+    <h2>Läden am Platz <small id="offen-zahl"></small></h2>
+    <div class="reihe" id="reihe"></div>
+
+    <h2>Das haben sie diese Woche gelernt</h2>
+    <div class="karte" id="gelernt-liste" style="display:grid;gap:16px"></div>
+
+    <h2>Zahl mit einer Idee</h2>
+    <div class="karte" style="display:grid;grid-template-columns:80px 1fr;gap:14px;align-items:center">
+      <img src="img/coin.jpg" alt="" style="width:80px;height:80px;border-radius:20px">
+      <div><b style="font-family:var(--f-display);font-size:1.1rem">Der Coin Maker prüft deine Idee</b>
+        <p style="margin:4px 0 0;color:var(--leise);font-size:.9rem">Gute Ideen werden Funken. Funken öffnen Extras. Kein Geld, keine Karte.</p>
+        <p style="margin:6px 0 0;font-weight:800;color:var(--gold2)">Deine Funken: <span id="funken">0</span> ✦</p></div>
+    </div>
+
+    <h2>Kinder-Ecke <small>mit Elterntor</small></h2>
+    <div class="karte" id="kinder"></div>
+  </section>
+
+  <!-- FINDEN -->
+  <section class="seite" id="s-finden" hidden>
+    <h2>Hasis Tresen</h2>
+    <div class="tresen">
+      <img src="img/hasi.jpg" alt="Hasi hinter dem Tresen">
+      <div>
+        <div class="schild" id="hasi-schild">Was brauchst du?</div>
+        <div class="geste" id="hasi-geste">Hasi verbeugt sich und zeigt auf das Schild.</div>
+      </div>
+    </div>
+    <form class="suche" id="such-form">
+      <label for="such" class="sr" hidden>Was brauchst du?</label>
+      <input id="such" placeholder="Sag es in deinen Worten" autocomplete="off">
+      <button type="submit">Zeigen</button>
+    </form>
+    <div class="beispiele" id="beispiele"></div>
+    <div id="treffer" style="margin-top:14px;display:grid;gap:4px"></div>
+
+    <h2>Alle Läden</h2>
+    <div id="alle" style="display:grid;gap:2px"></div>
+  </section>
+
+  <!-- WELTEN -->
+  <section class="seite" id="s-welten" hidden>
+    <h2>Welten</h2>
+    <div class="zwei" id="welten"></div>
+    <div id="welt-inhalt"></div>
+  </section>
+
+  <!-- REGAL -->
+  <section class="seite" id="s-regal" hidden>
+    <h2>Mein Regal</h2>
+    <div id="regal"></div>
+
+    <h2>So wie du's magst</h2>
+    <div class="karte">
+      <div class="schalter"><span>Figuren lesen vor</span><button class="sw" role="switch" aria-checked="false" id="sw-vorlesen" aria-label="Figuren lesen vor"></button></div>
+      <div class="schalter"><span>Grosse Schrift</span><button class="sw" role="switch" aria-checked="false" id="sw-gross" aria-label="Grosse Schrift"></button></div>
+      <div class="schalter"><span>Ruhemodus (keine Bewegung)</span><button class="sw" role="switch" aria-checked="false" id="sw-ruhe" aria-label="Ruhemodus"></button></div>
+    </div>
+
+    <h2>Preise <small>Vorschlag</small></h2>
+    <div class="karte"><div style="overflow-x:auto"><table class="ptab" id="ptab"></table></div>
+      <p class="leer" style="margin:10px 0 0">Bei uns günstiger, bei Apple und Play rund 20 % mehr (deren Gebühr). Einmal zahlen, kein Abo. Jackie, Coin Maker, Hasi und Nova bleiben gratis. Verkauf erst mit GmbH und gesicherten Marken.</p></div>
+
+    <h2>12 Feinheiten <small>die Apple und Play nicht haben</small></h2>
+    <div class="feinheiten" id="feinheiten"></div>
+    <p class="hinweis">Design-Entwurf · DR Lab · Stand 19.10.2026 · noch nichts veröffentlicht</p>
+  </section>
+</main>
+
+<div class="steg"><nav aria-label="Bereiche">
+  <button data-tab="heute" aria-current="page"><span>🌙</span>Heute</button>
+  <button data-tab="finden"><span>🐇</span>Finden</button>
+  <button data-tab="welten"><span>🏘️</span>Welten</button>
+  <button data-tab="regal"><span>♡</span>Mein Regal</button>
+</nav></div>
+
+<div class="blatt" id="blatt" aria-hidden="true">
+  <div class="blatt-in" role="dialog" aria-modal="true" aria-labelledby="d-name" id="blatt-in"></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const G='https://raw.githack.com/Diegorobert-code/DR_Lab/';
+const APPS=[
+ {id:'fia',n:'Fias Nest',f:'Fia',img:'fia',sz:'fia-nest',welt:'kosmos',c:'#ff8a6b',k:'Einschlafen, ruhig werden',
+  gruss:'Psst. Ich bin Fia. Bei mir wird es abends langsam dunkel, und du wirst ruhig.',
+  link:'../schlaf/',alter:'ab 12',
+  daten:['Bleibt auf deinem Handy','Nichts','Nein','Ja, Ton aus jederzeit'],
+  neu:['Glüht mit der Uhrzeit herunter','Fia schläft nachts mit','Kleines Städtchen im Hintergrund'],
+  such:'schlaf einschlafen müde nacht ruhe unruhig grübeln wach atmen'},
+ {id:'sparky',n:'Human Sparks',f:'Sparky',img:'sparky',sz:'sparky-dach',welt:'kosmos',c:'#ff9e45',k:'Herz und Atem spüren',
+  gruss:'Hey, ich bin Sparky. Was wünschst du dir wirklich?',
+  link:'../humanspark/',alter:'ab 12',
+  daten:['Bleibt auf deinem Handy','Kamera für Puls, nur wenn du willst','Nein','Ja'],
+  neu:['Meine Herzsprache: Gefühl wird Farbe','Sparky fragt in zwei Schichten nach'],
+  such:'herz stress puls atem gefühl wunsch angst nervös'},
+ {id:'affe',n:'Mama Affe',f:'Mama Affe',img:'affe',sz:'g-affe',welt:'kosmos',c:'#c98b4a',k:'Bewegung wie im Dschungel',
+  gruss:'Lange Arme, greifende Füsse. Komm in mein Schulhaus!',
+  link:'../mama-affe/',alter:'ab 6',
+  daten:['Bleibt auf deinem Handy','Nichts','Nein','Ja'],
+  neu:['Tagesform Rakete, Velo oder Schnecke','Landkarte in jedem Zimmer'],
+  such:'bewegung füsse turnen kinder familie hängen'},
+ {id:'otti',n:'Otti',f:'Otti',img:'otti',sz:'otti-tor',welt:'kinder',c:'#ffd166',k:'Geschichten und Reisen',kids:1,
+  gruss:'Hallo! Ich bin Otti. Heute reisen wir nach New York.',
+  link:'../otti/',alter:'4–8',
+  daten:['Bleibt auf dem Handy','Nichts','Nein, Kinderschutz','Ja'],
+  neu:['Otti geht nach New York (19 Szenen)','Ottis Reisen 2: Der Katzenplanet'],
+  such:'kinder geschichte gute nacht film reise igel'},
+ {id:'mondschein',n:'Mondschein',f:'Otti + Zahnböcklein',img:'otti',sz:'mondschein-otti-zahnboecklein',welt:'kinder',c:'#9db7ff',k:'Zähneputzen und Gute Nacht',kids:1,
+  gruss:'Drei Minuten putzen, dann gibt es einen Zahnstern!',
+  link:'../mondschein/',alter:'4–8',
+  daten:['Bleibt auf dem Handy','Mikrofon nur beim Singen','Nein, Kinderschutz','Ja'],
+  neu:['Zahnlied 3 Minuten','Goldmedaille nach 90 Tagen'],
+  such:'zähne putzen kinder abend schlafen gute nacht'},
+ {id:'kiki',n:'Kiki',f:'Kiki',img:'kiki',sz:'kiki-singschule',welt:'musik',c:'#b07cff',k:'Singen lernen',
+  gruss:'La-la-laaa! Ich bin Kiki. Triffst du meinen Ton?',
+  link:'../kiki/',alter:'ab 6',
+  daten:['Bleibt auf deinem Handy','Mikrofon beim Singen','Nein','Ja'],
+  neu:['Oktave höher oder tiefer zählt','Mein Stimmraum'],
+  such:'singen stimme musik ton lied chor'},
+ {id:'milulu',n:'Milulu',f:'Milulu',img:'milulu',sz:'g-milulu',welt:'musik',c:'#ff6fa3',k:'Salsa tanzen lernen',
+  gruss:'¡Hola! Eins, zwei, drei … und fünf, sechs, sieben!',
+  link:'../carmen/',alter:'ab 6',
+  daten:['Bleibt auf deinem Handy','Kamera nur für den Coach','Nein','Ja'],
+  neu:['Stopptanz mit 6 Runden','Salsa-Stufe 5: Kreuzschritt'],
+  such:'tanzen salsa musik bewegung party kuba'},
+ {id:'jackie',n:"Jackie's Advice",f:'Jackie',img:'jackie',sz:'jackie-gasse',welt:'mut',c:'#ffb3c7',k:'Rat für Alltag und Sicherheit',
+  gruss:'Ich bin Jackie. Was du hier liest, bleibt hier.',
+  link:'../jackie/',alter:'ab 16',
+  daten:['Speichert im Hilfebereich gar nichts','Nichts','Nein','Ja, ohne Konto'],
+  neu:['Schnellausstieg auf jeder Hilfeseite','Hilfe ohne Netz und ohne Konto'],
+  such:'hilfe angst sicher zuhause gewalt rat frau beziehung'},
+ {id:'granny',n:'Granny',f:'Granny',img:'granny',sz:'g-granny',welt:'alltag',c:'#7fe0c6',k:'Ein Knopf für Grosi',
+  gruss:'Wo hab ich meine Brille? Ah, auf dem Kopf!',
+  link:'../granny/',alter:'alle',
+  daten:['Bleibt auf dem Handy','Mikrofon zum Reden','Nein','Ja, Familie richtet ein'],
+  neu:['Merkhilfe «Wo liegt was?»','Nachrichten mit vertrauter Stimme'],
+  such:'oma grosi mama alt telefon einfach familie anrufen'},
+ {id:'fompa',n:'Fompa',f:'Fompa',img:'fompa',sz:'g-fompa',welt:'geld',c:'#f4c35a',k:'Buchhaltung zum Reinreden',
+  gruss:'Sag einfach «Kaffee 4.80 mit Twint». Den Rest rechne ich.',
+  link:'../fompa/',alter:'ab 16',
+  daten:['Bleibt auf deinem Handy','Mikrofon zum Reinreden','Nein','Ja'],
+  neu:['Versteht Euro und Dollar','«Was ist fällig?» als Frage'],
+  such:'geld buchhaltung steuern ausgaben budget quittung belege'},
+ {id:'transkript',n:'Transkript',f:'Fompa',img:'fompa',sz:'g-fompa',welt:'alltag',c:'#f4c35a',k:'Reden wird Text',
+  gruss:'Erzähl einfach. Ich schreibe mit und sortiere.',
+  link:'../transkript/',alter:'ab 12',
+  daten:['Bleibt auf deinem Handy','Mikrofon','Nein','Ja'],
+  neu:['Stichworte statt Fliesstext'],
+  such:'diktieren text schreiben notizen sprache transkription'},
+ {id:'flo',n:'Food and Flow',f:'Flo',img:'flo',sz:'g-flo',welt:'alltag',c:'#7fe0c6',k:'Essen ohne Kalorienstress',
+  gruss:'Erzähl mir, was auf deinem Teller war. Ich zähle sanft.',
+  link:'../appid/',alter:'ab 16',
+  daten:['Bleibt auf deinem Handy','Mikrofon zum Erzählen','Nein','Ja'],
+  neu:['Teller statt Zahlen','Sanfte Ansicht ohne Kalorien'],
+  such:'essen ernährung kalorien abnehmen rezepte wasser'},
+ {id:'waef',n:'Wäf Wäf',f:'Wäf Wäf',img:'waef',sz:'g-waef',welt:'alltag',c:'#ffd166',k:'Familienplan für den Hund',
+  gruss:'Wuff! Wer geht heute mit mir raus?',
+  link:'../waefwaef/',alter:'alle',
+  daten:['Bleibt auf dem Handy','Nichts','Nein','Ja'],
+  neu:['Spazieren mit Pfotenspur','Suchspiel der Woche'],
+  such:'hund familie spazieren haustier plan'},
+ {id:'ping',n:'TradePing',f:'Mr. Ping',img:'ping',sz:'g-ping',welt:'geld',c:'#9db7ff',k:'Spielgeld mit Regeln',
+  gruss:'Erst Regeln, dann Kauf. Ich passe auf deinen Topf auf.',
+  link:'../tradeping/',alter:'ab 18',
+  daten:['Bleibt auf deinem Handy','Nichts','Nein','Ja, keine Anlageberatung'],
+  neu:['Ping-Tafel mit ▲ und ▼','Pause bei Topf −25 %'],
+  such:'börse aktien trading geld risiko investieren'},
+ {id:'coin',n:'Coin Maker',f:'Coin Maker',img:'coin',sz:'g-coin',welt:'geld',c:'#f4c35a',k:'Ideen werden Funken',
+  gruss:'Leg deine Idee auf meine Waage. Mal sehen, was sie wiegt.',
+  link:'../coinmaker/',alter:'alle',
+  daten:['Bleibt auf deinem Handy','Nichts','Nein','Ja, Punkte ohne Geldwert'],
+  neu:['Ideen-Waage 5 · 2 · 0','Film «Zahlen mit Daten»'],
+  such:'idee bezahlen funken münzen kleinunternehmen'},
+ {id:'hasi',n:'Hasis Laden',f:'Hasi',img:'hasi',sz:'g-hasi',welt:'geld',c:'#b07a46',k:'Freie Werkzeuge',stumm:1,
+  gruss:'Hasi hält ein Schild hoch: «Willkommen.»',
+  link:'../hasi/',alter:'alle',
+  daten:['Bleibt auf deinem Handy','Nichts','Nein','Ja, nur freie Lizenzen'],
+  neu:['Berater «Was brauchst du?»','Würfel wird Hologramm'],
+  such:'werkzeug programm open source laden'}
+];
+const PREIS={fia:[9,11],fiakosmos:[12,15],sparky:[9,11],affe:[7,9],otti:[5,6],mondschein:[4,5],kiki:[6,8],milulu:[7,9],jackie:[0,0],granny:[9,11],fompa:[12,15],transkript:[5,6],flo:[7,9],waef:[4,5],ping:[9,11],coin:[0,0],hasi:[0,0],nova:[9,11]};
+APPS.forEach(a=>a.p=PREIS[a.id]);
+const SC={sparky:3,fia:3,fiakosmos:3,otti:2,mondschein:2,jackie:1,kiki:3,affe:3,fompa:3,transkript:3,flo:2,ping:3,granny:2,milulu:2,waef:3,coin:3,hasi:3,nova:2};
+const chf=v=>v?'CHF '+v:'Gratis';
+const WELTEN={kosmos:['Körperkosmos','Körper, Schlaf, Atem','g-fiakosmos'],kinder:['Kinder','mit Elterntor','mondschein-otti-zahnboecklein'],musik:['Musik & Tanz','Singen, Salsa','kiki-singschule'],mut:['Mut & Schutz','still und sicher','jackie-gasse'],alltag:['Alltag','Essen, Familie, Grosi','g-granny'],geld:['Geld & Ideen','Buchhaltung, Funken','g-coin']};
+const STIMMUNG=[['😴','Müde, will schlafen',['fia','mondschein','fiakosmos']],['😣','Gestresst',['sparky','fia','affe']],['🤸','Will mich bewegen',['affe','milulu','fiakosmos']],['🎶','Will Musik',['kiki','milulu']],['🧾','Papierkram',['fompa','transkript']],['👧','Mit Kindern',['otti','mondschein','affe']],['🫶','Brauche Rat',['jackie','nova','sparky']],['💡','Hab eine Idee',['coin','hasi']]];
+const FEIN=[
+ ['⚡','Sofort öffnen, nichts laden','Ein Tipp und die App läuft. Kein Konto, kein Download, keine Wartezeit.'],
+ ['🗣️','Die Figur begrüsst dich','Jede App stellt sich selbst vor, in ihrer Stimme. Hasi spricht nie, er hält ein Schild hoch.'],
+ ['🌗','Der Store kennt die Uhrzeit','Morgens Bewegung vorne, abends Schlaf. Der Himmel oben ist die echte Tageszeit.'],
+ ['🫥','Suchen mit Gefühl','«Ich kann nicht einschlafen» statt Stichwort. Hasi zeigt die passenden Läden.'],
+ ['🏷️','Ehrlich-Etikett','Was die App weiss, in vier Zeilen und Alltagssprache. Kein Juristendeutsch.'],
+ ['📖','Updates als Geschichte','«Das hat Fia gelernt» statt «Fehlerbehebungen und Leistungsverbesserungen».'],
+ ['✦','Günstiger direkt bei uns','Einmal zahlen, kein Abo. Oder mit Ideen: Coin Maker wiegt sie, Funken statt Kreditkarte.'],
+ ['📱','Echte Bildschirme und QR','Fotos aus der App statt Werbegrafik. Jede App hat ihren QR-Code: Grosi scannt, fertig.'],
+ ['🙂','Gefühl statt Sterne','Wie fühlst du dich nach der App? Nicht: wie viele Sterne.'],
+ ['💌','Ideenwand pro App','Deine Idee geht direkt an die Werkstatt, nicht in ein Formular.'],
+ ['🔒','Elterntor in Worten','Kinder-Ecke öffnet nur mit einer Rechnung in Worten.'],
+ ['🌙','Ruhemodus und Vorlesen','Keine Bewegung, grosse Schrift, Figuren lesen vor. Für alle Augen.']
+];
+
+const $=s=>document.querySelector(s);
+const per=id=>APPS.find(a=>a.id===id);
+const store={get(k,d){try{return JSON.parse(localStorage.getItem('drstore-'+k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem('drstore-'+k,JSON.stringify(v))}catch(e){}}};
+let gekauft=store.get('gekauft',[]),regal=store.get('regal',[]), gefuehle=store.get('gefuehl',{}), funken=store.get('funken',0), ideen=store.get('ideen',{});
+const zeile=a=>!a?'':`<button class="app" data-app="${a.id}"><img src="img/${a.img}.jpg" alt=""><div><div class="n">${a.n}</div><div class="k">${a.k}</div></div><span class="oeffnen">HOLEN</span></button>`;
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('zeig');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('zeig'),1800)}
+function tick(){try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}}
+
+/* Tageszeit */
+const h=new Date().getHours();
+const ZEIT=h<5?['Nacht','Alles schläft',['fia','mondschein']]:h<11?['Morgen','Guten Morgen',['affe','fiakosmos','sparky']]:h<17?['Tag','Platz ist offen',['fompa','flo','kiki']]:h<21?['Abend','Lichter gehen an',['mondschein','kiki','fia']]:['Nacht','Fast alle schlafen',['fia','mondschein']];
+$('#uhr').innerHTML=`<strong>${ZEIT[0]}</strong>${ZEIT[1]}`;
+const GESCH={
+ fia:['Fia macht das Licht leiser','Ab 21 Uhr glüht Fias Nest langsam von Gold zu Dunkelrot. Je später, desto ruhiger.'],
+ mondschein:['Drei Minuten bis zum Zahnstern','Das Zahnböcklein singt, Otti putzt mit. Nach 90 Tagen gibt es Gold.'],
+ affe:['Mama Affe öffnet ihr Schulhaus','Bist du heute Rakete, Velo oder Schnecke? Die Übungen passen sich an.'],
+ fiakosmos:['Dein Körper ist ein Himmel','Fia zeigt dir acht Posen. Jede Übung lässt Funken steigen.'],
+ sparky:['Was wünschst du dir wirklich?','Sparky fragt nach, ohne zu werten. Dein Gefühl wird eine Farbe.'],
+ fompa:['Kaffee 4.80 mit Twint','Fompa hört zu, rechnet mit und hüpft, wenn ein Stern ins Glas fliegt.'],
+ flo:['Teller statt Zahlen','Flo zeigt deinen Tag als bunten Teller. Ohne Kalorienstress.'],
+ kiki:['Papa singt tief, Tochter hoch','Kiki zählt beide richtig. Eine Oktave Unterschied ist kein Fehler.']};
+let tagesApp=ZEIT[2][0];
+function buehne(id){if(!per(id))id='fia';const a=per(id),g=GESCH[id]||[a.n,a.k];$('#b-bild').src='img/sz-'+a.sz+'.jpg';$('#b-icon').src='img/'+a.img+'.jpg';$('#b-eye').textContent='Geschichte des '+(ZEIT[0]==='Morgen'?'Morgens':ZEIT[0]==='Tag'?'Tages':ZEIT[0]==='Abend'?'Abends':'Nacht');$('#b-titel').textContent=g[0];$('#b-text').textContent=g[1];tagesApp=id}
+buehne(tagesApp);
+setTimeout(()=>$('#buehne').classList.add('offen'),200);
+$('#buehne').onclick=()=>zeig(tagesApp);
+$('#buehne').onkeydown=e=>{if(e.key==='Enter')zeig(tagesApp)};
+
+/* Stimmung */
+$('#stimmung').innerHTML=STIMMUNG.map((s,i)=>`<button class="chip" aria-pressed="${i===0}" data-s="${i}">${s[0]} ${s[1]}</button>`).join('');
+function stimmung(i){document.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.s==i));$('#empf').innerHTML=STIMMUNG[i][2].map(id=>zeile(per(id))).join('')}
+$('#stimmung').onclick=e=>{const c=e.target.closest('.chip');if(c){tick();stimmung(c.dataset.s)}};
+stimmung(ZEIT[0]==='Morgen'?2:0);
+
+/* Läden-Reihe: wach je nach Tageszeit */
+const schlafend=id=>(ZEIT[0]==='Nacht')&&!['fia','mondschein','jackie','nova'].includes(id);
+$('#reihe').innerHTML=APPS.filter(a=>a.id!=='transkript').map(a=>`<button class="laden" data-app="${a.id}" style="--c:${a.c}"><div class="markise"></div><div class="fenster"><img src="img/${a.img}.jpg" alt="" loading="lazy"><i class="licht ${schlafend(a.id)?'zu':''}"></i></div><div class="n">${a.n}</div><div class="k">${a.f}</div></button>`).join('');
+$('#offen-zahl').textContent=APPS.filter(a=>!schlafend(a.id)).length+' Fenster hell';
+
+$('#gelernt-liste').innerHTML=['fia','otti','fompa','jackie'].map(id=>{const a=per(id);return `<div class="gelernt"><b>Das hat ${a.f} gelernt</b><ul>${a.neu.map(x=>`<li>${x}</li>`).join('')}</ul></div>`}).join('');
+$('#funken').textContent=funken;
+
+/* Elterntor */
+function kinderTor(){const a=Math.floor(Math.random()*4)+3,b=Math.floor(Math.random()*3)+3,r=a*b;const W=['null','eins','zwei','drei','vier','fünf','sechs','sieben','acht','neun'];
+ const opts=[r,r+a,r-b,r+2].sort(()=>Math.random()-.5);
+ $('#kinder').innerHTML=`<div class="tor"><div class="frage">Für Eltern: Was ist ${W[a]} mal ${W[b]}?</div><div class="wahl">${opts.map(o=>`<button data-o="${o}">${o}</button>`).join('')}</div><div class="leer">Danach öffnen sich Otti, Mondschein und Mama Affe. Keine Werbung, keine Käufe.</div></div>`;
+ $('#kinder').querySelectorAll('button').forEach(bt=>bt.onclick=()=>{tick();if(+bt.dataset.o===r){$('#kinder').innerHTML=APPS.filter(x=>x.kids||x.id==='affe').map(zeile).join('');toast('Elterntor offen')}else toast('Nochmal versuchen')})}
+kinderTor();
+document.querySelectorAll('.anfrage').forEach(b=>b.onclick=()=>{tick();toast('Entwurf: Anfragen gehen erst mit deinem Go')});
+
+/* Finden / Hasi */
+const BSP=['Ich kann nicht einschlafen','Mein Kind putzt nicht gern','Ich habe Angst zuhause','Quittungen überall','Ich will tanzen'];
+$('#beispiele').innerHTML=BSP.map(b=>`<button>${b}</button>`).join('');
+$('#beispiele').onclick=e=>{if(e.target.tagName==='BUTTON'){$('#such').value=e.target.textContent;suche()}};
+function suche(){const q=$('#such').value.toLowerCase().replace(/[^a-zäöü ]/g,' ').split(/\s+/).filter(w=>w.length>2);
+ const st=w=>w.slice(0,5);
+ const tr=APPS.map(a=>({a,p:q.reduce((s,w)=>s+((a.such+' '+a.n+' '+a.k).toLowerCase().split(' ').some(x=>x.length>2&&(st(x)===st(w)||x.includes(w)))?1:0),0)})).filter(x=>x.p).sort((x,y)=>y.p-x.p).slice(0,3);
+ const s=$('#hasi-schild'),g=$('#hasi-geste');
+ if(!tr.length){s.textContent='Hmm …';g.textContent='Hasi kratzt sich am Ohr und schüttelt den Kopf. Sag es anders?';$('#treffer').innerHTML='';return}
+ s.textContent=tr.length===1?'Dieser hier!':'Diese '+['','','zwei','drei'][tr.length]+'!';g.textContent='Hasi wackelt mit den Ohren und zeigt mit beiden Pfoten nach unten.';
+ $('#treffer').innerHTML=tr.map(x=>zeile(x.a)).join('');tick()}
+$('#such-form').onsubmit=e=>{e.preventDefault();suche()};
+let st0;$('#such').oninput=()=>{clearTimeout(st0);st0=setTimeout(()=>{if($('#such').value.trim().length>3)suche()},350)};
+$('#alle').innerHTML=APPS.map(zeile).join('');
+
+/* Welten */
+$('#welten').innerHTML=Object.entries(WELTEN).map(([k,w])=>`<button class="welt" data-w="${k}"><img src="img/sz-${w[2]}.jpg" alt="" loading="lazy"><span>${w[0]}<small>${w[1]} · ${APPS.filter(a=>a.welt===k).length} Läden</small></span></button>`).join('');
+$('#welten').onclick=e=>{const b=e.target.closest('.welt');if(!b)return;tick();const k=b.dataset.w;$('#welt-inhalt').innerHTML=`<h2>${WELTEN[k][0]}</h2>`+APPS.filter(a=>a.welt===k).map(zeile).join('');$('#welt-inhalt').scrollIntoView({behavior:'smooth'})};
+
+/* Regal */
+function zeigRegal(){$('#regal').innerHTML=regal.length?regal.map(id=>zeile(per(id))).join(''):`<div class="karte leer">Noch leer. Tippe bei einer App auf ♡, dann steht sie hier, mit allem, was sie Neues gelernt hat.</div>`}
+zeigRegal();
+$('#ptab').innerHTML='<tr><th>App</th><th>DR Lab Store</th><th>Apple / Play</th></tr>'+APPS.map(a=>`<tr><td>${a.n}</td><td class="g">${chf(a.p[0])}</td><td>${chf(a.p[1])}</td></tr>`).join('');
+$('#feinheiten').innerHTML=FEIN.map(f=>`<div class="fein"><div class="s">${f[0]}</div><div><b>${f[1]}</b><p>${f[2]}</p></div></div>`).join('');
+
+/* Schalter */
+const set=store.get('set',{});
+function schalter(id,key,fn){const b=$('#'+id);const an=()=>{b.setAttribute('aria-checked',!!set[key]);fn(!!set[key])};b.onclick=()=>{set[key]=!set[key];store.set('set',set);tick();an()};an()}
+schalter('sw-gross','gross',v=>document.documentElement.style.setProperty('--gross',v?1.18:1));
+schalter('sw-ruhe','ruhe',v=>document.body.classList.toggle('ruhig',v));
+schalter('sw-vorlesen','vorlesen',()=>{});
+function sprich(t){if(!set.vorlesen||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='de-CH';u.rate=.95;speechSynthesis.speak(u)}catch(e){}}
+
+/* Detail-Blatt */
+const GEF=[['😌','ruhiger'],['🙂','gut'],['😐','gleich'],['🤔','verwirrt'],['🤩','begeistert']];
+function zeig(id){const a=per(id);if(!a)return;tick();
+ const imRegal=regal.includes(id);
+ $('#blatt-in').innerHTML=`
+ <div class="d-hero"><div class="griff"></div><img class="bg" src="img/sz-${a.sz}.jpg" alt=""><button class="zu-knopf" id="zu" aria-label="Schliessen">✕</button></div>
+ <div class="d-inhalt">
+  <div class="d-kopf"><img src="img/${a.img}.jpg" alt=""><div><h3 id="d-name">${a.n}</h3><div class="k">${a.k} · ${a.alter}</div></div></div>
+  <div class="blase ${a.stumm?'holz':''}"><span class="wer">${a.stumm?'Hasi hält ein Schild hoch':a.f+' sagt'}</span><span id="gruss"></span></div>
+  <div class="knoepfe"><a class="gross-knopf" href="${a.link}"${a.link.startsWith('http')?' target="_blank" rel="noopener"':''}>Holen ↗</a><button class="rund" id="qr-k" aria-label="QR-Code zeigen">▦</button><button class="rund" id="herz" aria-pressed="${imRegal}" aria-label="Ins Regal">${imRegal?'♥':'♡'}</button></div>
+  <div class="unter">${a.live?'Läuft live':'Testversion'} · ohne Konto · ohne Download</div>
+  <div><h3 style="font-size:1.1rem;margin-bottom:10px">So sieht's aus</h3>
+   <div class="fotos" id="fotos">${Array.from({length:SC[a.id]},(_,n)=>`<button data-foto="img/sc-${a.id}-${n}.jpg" aria-label="Bild ${n+1} gross"><img src="img/sc-${a.id}-${n}.jpg" alt="Bildschirm ${a.n} ${n+1}" loading="lazy"></button>`).join('')}</div>
+   <div class="fotos-hinweis">Echte Bildschirme aus der Testversion vom 19.10.</div></div>
+  <div class="infos">
+   <div><small>Alter</small><b>${a.alter}</b></div>
+   <div><small>Grösse</small><b>0 MB</b><em>läuft sofort</em></div>
+   <div><small>Sprache</small><b>DE</b><em>${['granny','milulu'].includes(a.id)?'+ ES':'Schweiz'}</em></div>
+   <div><small>Figur</small><b>${a.f}</b></div>
+   <div><small>Stand</small><b>${a.live?'Live':'Test'}</b><em>19.10.2026</em></div>
+   <div><small>Aus</small><b>Zürich</b><em>DR Lab</em></div>
+  </div>
+  <div class="preis">${a.p[0]?`<div><span class="eyebrow">Im DR Lab Store</span><b>CHF ${a.p[0]}.–</b><small>einmal zahlen, für immer deins</small></div><div class="ander"><span>Apple / Play</span><s>CHF ${a.p[1]}.–</s></div></div><button class="kauf-k${gekauft.includes(a.id)?' hat':''}" id="kauf-k">${gekauft.includes(a.id)?'✓ Gehört dir (Test)':'Kaufen · CHF '+a.p[0]+'.–'}</button><div style="display:none">`:`<div><span class="eyebrow">Für alle</span><b>Gratis</b><small>${a.id==='jackie'?'Hilfe kostet nie etwas':'ohne Haken'}</small></div>`}</div>
+  <div class="unter">Preisvorschlag · Verkauf erst mit GmbH und Marken</div>
+  <div class="qr-box" id="qr-box"><div id="qr"></div><div style="font-size:.85rem">Mit dem anderen Handy scannen, schon offen.</div></div>
+  <div class="siegel"><span>Ohne Werbung</span><span>Ohne Abo-Falle</span><span>Ohne Konto</span>${a.kids?'<span>Elterntor</span>':''}</div>
+  <div class="etikett"><h4>Ehrlich-Etikett <em>DR LAB</em></h4><dl>
+   <dt>Deine Daten</dt><dd>${a.daten[0]}</dd><dt>Braucht</dt><dd>${a.daten[1]}</dd><dt>Werbung</dt><dd>${a.daten[2]}</dd><dt>Gratis</dt><dd>${a.daten[3]}</dd></dl></div>
+  <div class="gelernt"><b>Das hat ${a.f} diese Woche gelernt</b><ul>${a.neu.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+  <div><h3 style="font-size:1.1rem;margin-bottom:8px">Wie fühlst du dich danach?</h3>
+   <div class="gefuehl" id="gef">${GEF.map((g,i)=>`<button aria-pressed="${gefuehle[id]===i}" data-g="${i}" aria-label="${g[1]}">${g[0]}</button>`).join('')}</div>
+   <div class="gefuehl-text" id="gef-t">${gefuehle[id]!=null?'Du fühlst dich danach '+GEF[gefuehle[id]][1]+'. Danke.':'Noch keine Stimmen. Sei die erste.'}</div></div>
+  <div><h3 style="font-size:1.1rem;margin-bottom:8px">Deine Idee für ${a.f}</h3>
+   <textarea id="idee-${a.id}" placeholder="Was soll ${a.f} noch können?">${ideen[id]||''}</textarea>
+   <div class="zweiteilig"><span class="leer">Coin Maker prüft jede Idee. Gute werden Funken.</span><button class="klein-knopf" id="idee-senden">Abgeben ✦</button></div></div>
+  <div><h3 style="font-size:1.1rem;margin-bottom:10px">Nachbarn am Platz</h3>
+   <div class="aehnlich">${APPS.filter(x=>x.welt===a.welt&&x.id!==a.id).slice(0,6).map(x=>`<button data-app="${x.id}"><img src="img/${x.img}.jpg" alt="">${x.n}</button>`).join('')}</div></div>
+  <div><h3 style="font-size:1.1rem;margin-bottom:6px">Auf den Home-Bildschirm</h3>
+   <ol class="schritte"><li>«Holen» tippen</li><li>Teilen-Knopf ⬆︎ unten</li><li>«Zum Home-Bildschirm», fertig. ${a.f} wohnt jetzt bei dir.</li></ol></div>
+ </div>
+ <div class="leiste" id="leiste"><img src="img/${a.img}.jpg" alt=""><b>${a.n}</b><span style="color:var(--gold2);font-weight:800">${chf(a.p[0])}</span><a href="${a.link}"${a.link.startsWith('http')?' target="_blank" rel="noopener"':''}>Holen</a></div>`;
+ $('#blatt-in').scrollTop=0;
+ try{const io=new IntersectionObserver(([en])=>$('#leiste').classList.toggle('zeig',!en.isIntersecting),{root:$('#blatt-in')});io.observe($('#blatt-in .gross-knopf'))}catch(e){}
+ $('#fotos').onclick=e=>{const b=e.target.closest('[data-foto]');if(!b)return;tick();const l=document.createElement('div');l.className='lupe';l.innerHTML=`<img src="${b.dataset.foto}" alt="">`;l.onclick=()=>l.remove();document.body.appendChild(l)};
+ const bl=$('#blatt');bl.classList.add('auf');bl.setAttribute('aria-hidden','false');
+ const gs=$('#gruss');let i=0;const t=a.gruss;(function tip(){gs.textContent=t.slice(0,++i);if(i<t.length&&!document.body.classList.contains('ruhig'))setTimeout(tip,22);else gs.textContent=t})();
+ sprich(a.stumm?'':a.gruss);
+ $('#zu').onclick=zu;
+ $('#herz').onclick=e=>{tick();const b=e.currentTarget;if(regal.includes(id)){regal=regal.filter(x=>x!==id);b.textContent='♡';b.setAttribute('aria-pressed','false');toast('Aus dem Regal')}else{regal.push(id);b.textContent='♥';b.setAttribute('aria-pressed','true');toast(a.n+' steht im Regal')}store.set('regal',regal);zeigRegal()};
+ const kk=$('#kauf-k');if(kk)kk.onclick=()=>{tick();if(gekauft.includes(id))return toast(a.n+' gehört dir schon');kasse(a)};
+ $('#qr-k').onclick=()=>{tick();const box=$('#qr-box');box.classList.toggle('auf');if(box.classList.contains('auf')&&!$('#qr').hasChildNodes())$('#qr').innerHTML=`<img src="img/qr-${a.id}.png" alt="QR-Code für ${a.n}" width="170" height="170">`};
+ $('#gef').onclick=e=>{const b=e.target.closest('button');if(!b)return;tick();gefuehle[id]=+b.dataset.g;store.set('gefuehl',gefuehle);$('#gef').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));$('#gef-t').textContent='Du fühlst dich danach '+GEF[+b.dataset.g][1]+'. Danke.'};
+ $('#idee-senden').onclick=e=>{const v=$('#idee-'+id).value.trim();if(v.length<5){toast('Schreib noch ein paar Worte');return}ideen[id]=v;store.set('ideen',ideen);funken+=3;store.set('funken',funken);$('#funken').textContent=funken;funkenFlug(e.currentTarget);toast('+3 Funken ✦ Idee liegt beim Coin Maker')};
+}
+function zu(){const bl=$('#blatt');bl.classList.remove('auf');bl.setAttribute('aria-hidden','true');try{speechSynthesis.cancel()}catch(e){}}
+$('#blatt').onclick=e=>{if(e.target.id==='blatt')zu()};
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const l=document.querySelector('.lupe');l?l.remove():zu()});
+function funkenFlug(el){if(document.body.classList.contains('ruhig'))return;const r=el.getBoundingClientRect();for(let i=0;i<14;i++){const f=document.createElement('i');f.className='funke';f.style.left=r.left+r.width/2+'px';f.style.top=r.top+'px';document.body.appendChild(f);const dx=(Math.random()-.5)*160,dy=-60-Math.random()*140;f.animate([{transform:'translate(0,0)',opacity:1},{transform:`translate(${dx}px,${dy}px) scale(.3)`,opacity:0}],{duration:800+Math.random()*500,easing:'cubic-bezier(.2,.8,.3,1)'}).onfinish=()=>f.remove()}}
+
+/* Klicks auf Apps */
+document.addEventListener('click',e=>{const b=e.target.closest('[data-app]');if(b)zeig(b.dataset.app)});
+
+/* Tabs */
+function tab(t){document.querySelectorAll('.seite').forEach(s=>s.hidden=s.id!=='s-'+t);document.querySelectorAll('[data-tab]').forEach(b=>b.toggleAttribute('aria-current',b.dataset.tab===t)||b.dataset.tab===t&&b.setAttribute('aria-current','page'));window.scrollTo({top:0});store.set('tab',t)}
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tick();tab(b.dataset.tab)});
+const start=(location.hash||'').slice(1);if(['heute','finden','welten','regal'].includes(start))tab(start);
+
+/* Himmel: Farbe nach Uhrzeit + Sterne + fliegende Funken */
+const cv=$('#himmel'),cx=cv.getContext('2d');let W,H,st=[];
+const HIMMEL={Morgen:['#2b3d7a','#0b1430'],Tag:['#22377a','#0b1430'],Abend:['#3a2a6a','#0b1430'],Nacht:['#0d1840','#050a1c']}[ZEIT[0]];
+function gr(){W=cv.width=innerWidth*devicePixelRatio;H=cv.height=innerHeight*devicePixelRatio;st=Array.from({length:110},()=>({x:Math.random()*W,y:Math.random()*H*.7,r:Math.random()*1.4*devicePixelRatio+.3,p:Math.random()*6}))}
+gr();addEventListener('resize',gr);
+function mal(t){const g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,HIMMEL[0]);g.addColorStop(.55,HIMMEL[1]);g.addColorStop(1,'#070d22');cx.fillStyle=g;cx.fillRect(0,0,W,H);
+ for(const s of st){const a=document.body.classList.contains('ruhig')?.6:.35+.35*Math.sin(t/900+s.p);cx.fillStyle=`rgba(255,240,200,${a})`;cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fill()}
+ if(!document.body.classList.contains('ruhig')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)requestAnimationFrame(mal)}
+requestAnimationFrame(mal);
+
+/* Kasse – Testmodus, keine echte Abbuchung */
+function kasse(a){const k=document.createElement('div');k.className='kasse';
+ const gebuehr=(a.p[0]*0.029+0.30);
+ k.innerHTML=`<div class="kasse-in" role="dialog" aria-modal="true" aria-label="Bezahlen">
+  <div class="test-band">TESTMODUS · es wird nichts abgebucht</div>
+  <div class="k-kopf"><img src="img/${a.img}.jpg" alt=""><div><b>${a.n}</b><small>einmal zahlen, für immer deins</small></div><span class="k-preis">CHF ${a.p[0]}.–</span></div>
+  <div class="k-wahl" role="radiogroup" aria-label="Zahlungsart">
+   <button class="k-art an" data-art="TWINT" role="radio" aria-checked="true"><span class="twint">TWINT</span>Mit der TWINT-App</button>
+   <button class="k-art" data-art="Apple Pay" role="radio" aria-checked="false"><span class="apay"></span>Apple Pay</button>
+   <button class="k-art" data-art="Karte" role="radio" aria-checked="false"><span class="karte-i">💳</span>Karte (Visa, Mastercard)</button>
+  </div>
+  <button class="gross-knopf" id="k-zahl">Bezahlen · CHF ${a.p[0]}.–</button>
+  <p class="k-klein">Intern: Gebühr ca. CHF ${gebuehr.toFixed(2)} (2,9 % + CHF 0.30), dir bleiben CHF ${(a.p[0]-gebuehr).toFixed(2)}. Scharf erst mit GmbH, Marken, AGB und deinem Go.</p>
+  <button class="k-zu" id="k-zu">Abbrechen</button></div>`;
+ document.body.appendChild(k);requestAnimationFrame(()=>k.classList.add('auf'));
+ let art='TWINT';
+ k.querySelector('.k-wahl').onclick=e=>{const b=e.target.closest('.k-art');if(!b)return;tick();art=b.dataset.art;k.querySelectorAll('.k-art').forEach(x=>{x.classList.toggle('an',x===b);x.setAttribute('aria-checked',x===b)})};
+ const zu=()=>{k.classList.remove('auf');setTimeout(()=>k.remove(),300)};
+ k.querySelector('#k-zu').onclick=zu;k.onclick=e=>{if(e.target===k)zu()};
+ k.querySelector('#k-zahl').onclick=e=>{const b=e.currentTarget;b.disabled=true;b.textContent=art==='TWINT'?'TWINT-App bestätigen …':'Wird geprüft …';
+  setTimeout(()=>{gekauft.push(a.id);store.set('gekauft',gekauft);if(!regal.includes(a.id)){regal.push(a.id);store.set('regal',regal);zeigRegal()}
+   k.querySelector('.kasse-in').innerHTML=`<div class="k-fertig"><div class="haken">✓</div><b>${a.f} gehört dir</b><small>Test mit ${art}. Nichts abgebucht.</small><a class="gross-knopf" href="${a.link}"${a.link.startsWith('http')?' target="_blank" rel="noopener"':''}>Jetzt holen ↗</a><button class="k-zu" id="k-ok">Fertig</button></div>`;
+   try{navigator.vibrate&&navigator.vibrate([10,40,10])}catch(_){}
+   k.querySelector('#k-ok').onclick=()=>{zu();const kk=$('#kauf-k');if(kk){kk.textContent='✓ Gehört dir (Test)';kk.classList.add('hat')}}},1400)}}
+
+/* Nova-Karte: zuerst Test-Kauf, danach direkt öffnen */
+false&&document.getElementById('nova-hol').addEventListener('click',e=>{if(!gekauft.includes('nova')){e.preventDefault();zeig('nova');setTimeout(()=>kasse(per('nova')),350)}});
+
+/* Partner-Code (nur Hash im Code) */
+(function(){const H='7480607c28da5b9d27be1b44509b2bebcbab9a086c212ea77154440665924c60',t=document.getElementById('tor-code');
+ const ok=()=>{t.remove();try{localStorage.setItem('drpartner','1')}catch(e){}};
+ try{if(localStorage.getItem('drpartner')==='1')return ok()}catch(e){}
+ document.getElementById('tor-form').addEventListener('submit',async e=>{e.preventDefault();const v=document.getElementById('tor-in').value.trim().toUpperCase();
+  const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));const h=[...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  if(h===H)ok();else document.getElementById('tor-f').textContent='Der Code stimmt nicht.'})})();
+</script>

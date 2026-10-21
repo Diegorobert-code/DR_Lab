@@ -1,0 +1,58 @@
+# Codemagic: iOS-Build für Zahnböcklein (Cloud-Mac, kein eigener Mac nötig).
+# Start von Hand in Codemagic («Start new build», Workflow «Zahnböcklein iOS»).
+# Ergebnis: signiertes IPA, wird nach App Store Connect hochgeladen (TestFlight, interne Tester).
+# Zur Prüfung eingereicht wird nie automatisch.
+#
+# Einmalig in Codemagic (macht Diego, nie im Repo und nie im Chat):
+#   Team settings → Integrations → Developer Portal → App Store Connect API-Schlüssel hinzufügen
+#   (Issuer ID, Key ID, .p8-Datei). Name der Integration genau: ZB_ASC_KEY
+#   Dann unten APP_STORE_APPLE_ID durch die Apple ID der App ersetzen
+#   (App Store Connect → App → App-Informationen → «Apple ID», eine Zahl).
+workflows:
+  zahnboecklein-ios:
+    name: Zahnböcklein iOS
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    integrations:
+      app_store_connect: ZB_ASC_KEY
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: ch.zahnboecklein.app
+      vars:
+        APP_STORE_APPLE_ID: 0000000000   # PLATZHALTER: Apple ID der App eintragen
+        XCODE_PROJECT: zahnboecklein-native/ios/App/App.xcodeproj
+        XCODE_SCHEME: App
+        ZB_VERSION_NAME: 1.0.0
+      node: 22
+      xcode: latest
+    scripts:
+      - name: Pakete installieren
+        script: |
+          cd zahnboecklein-native
+          npm ci
+      - name: Web-App kopieren und iOS synchronisieren
+        script: |
+          cd zahnboecklein-native
+          npm run sync:ios
+      - name: Signier-Profile einsetzen
+        script: |
+          xcode-project use-profiles --project "$XCODE_PROJECT"
+      - name: Build-Nummer bestimmen
+        script: |
+          LETZTE=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" || echo 0)
+          echo "ZB_BUILD=$((LETZTE + 1))" >> "$CM_ENV"
+      - name: IPA bauen
+        script: |
+          xcode-project build-ipa \
+            --project "$XCODE_PROJECT" \
+            --scheme "$XCODE_SCHEME" \
+            --archive-xcargs "CURRENT_PROJECT_VERSION=$ZB_BUILD MARKETING_VERSION=$ZB_VERSION_NAME"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: false
+        submit_to_app_store: false
