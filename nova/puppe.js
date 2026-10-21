@@ -176,13 +176,23 @@
       winkArm: { x: 0.27, y: 0.63, r: 0.13, dx: 0.22, dy: 0.92, seite: 'links' },
       glow: '#f2c14e', gruss: 'lachen+winken', satz: 'Hey du!'
     },
+    // Otti im gültigen Look (rund, flauschig, gelbes Halstuch): Tinkos Winkebild otti/posen/winkt.jpg (768 x 768, = mondschein/figur-gross.jpg)
     'otti-winkt': {
-      name: 'Otti', bild: 'mondschein/otti-winkt-fig.jpg',
-      augen: [[0.465, 0.27, 0.03, 0.03], [0.555, 0.27, 0.03, 0.03]],
-      mund: { l: [0.48, 0.355], r: [0.54, 0.355], oben: 0.003, unten: 0.008, kinn: 0.03 },
-      kopf: [0.51, 0.3, 0.16], hals: [0.51, 0.45], innen: [0.25, 0.08, 0.06],
-      winkArm: { x: 0.79, y: 0.24, r: 0.11, dx: 0.73, dy: 0.42, seite: 'rechts' },
-      glow: '#f2c14e', gruss: 'winken'
+      name: 'Otti', bild: 'otti/posen/winkt.jpg',
+      augen: [[0.391, 0.425, 0.048, 0.05], [0.616, 0.42, 0.048, 0.05]],
+      mund: { l: [0.414, 0.518], r: [0.592, 0.52], oben: 0.012, unten: 0.058, kinn: 0.05, offen: true },
+      kopf: [0.51, 0.40, 0.30], hals: [0.5, 0.64], innen: [0.3, 0.07, 0.07],
+      winkArm: { x: 0.84, y: 0.53, r: 0.10, dx: 0.77, dy: 0.66, seite: 'rechts', winkel: 16 },
+      glow: '#f2c14e', gruss: 'winken+reden', satz: 'Hoi! Schön, bisch da.'
+    },
+    // Otti im gültigen Look, ganze Figur aus den Puppen-Teilen (nova/puppe/otti/gesamt.png, Gelenke hals 517/630, Schultern 280/745 auf 662 von 1024)
+    'otti-ganz': {
+      name: 'Otti', bild: 'nova/puppe/otti/gesamt.png',
+      augen: [[0.395, 0.437, 0.058, 0.058], [0.614, 0.437, 0.058, 0.058]],
+      mund: { l: [0.458, 0.548], r: [0.552, 0.548], oben: 0.01, unten: 0.03, kinn: 0.05, offen: true },
+      kopf: [0.505, 0.42, 0.34], hals: [0.505, 0.615], innen: [0.3, 0.07, 0.07],
+      winkArm: { x: 0.745, y: 0.71, r: 0.085, dx: 0.728, dy: 0.646, seite: 'rechts' },
+      glow: '#f2c14e', gruss: 'winken+reden', satz: 'Hoi! Schön, bisch da.'
     }
   };
   FIGUREN.otti.gruss = 'winken+reden'; FIGUREN.otti.satz = 'Hoi! Schön, bisch da.'; FIGUREN.otti.bild = 'otti/otti-3d.jpg';
@@ -190,7 +200,7 @@
   FIGUREN.fia.bild = 'nova/figuren/fia-wacht.jpg';
   // Figur aus dem Bildpfad erraten (für Puppe.winkeZurueck ohne «figur»)
   var ERKENNE = [
-    [/otti-winkt-fig/, 'otti-winkt'], [/otti[-\/](3d|icon)|\/otti\//, 'otti'], [/nova(-3d)?\.jpg|nova\/icon/, 'nova'], [/fia/, 'fia'],
+    [/otti\/posen\/winkt|mondschein\/figur-gross/, 'otti-winkt'], [/puppe\/otti\/gesamt/, 'otti-ganz'], [/otti[-\/](3d|icon)|\/otti\//, 'otti'], [/nova(-3d)?\.jpg|nova\/icon/, 'nova'], [/fia/, 'fia'],
     [/flo\b|flo(-klein)?\.jpg|food-?flow/, 'flo'], [/fompa/, 'fompa'], [/granny/, 'granny'], [/hasi/, 'hasi'],
     [/ping-3d|tradeping\/(figur|icon)/, 'ping'], [/waefwaef|waef/, 'waefwaef'], [/sunny/, 'sunny'], [/sparky|humanspark/, 'sparky'],
     [/coinmaker/, 'coinmaker'], [/kiki/, 'kiki'], [/carmen/, 'carmen'], [/jackie/, 'jackie']
@@ -745,6 +755,8 @@
       E.armL = gelenk(k, G.schulterL, [gr * 0.3, gr * 0.62]);
       bild(armL, E.armL);
       bild(T.koerper, k);
+      // armLVorne (puppe.json): linker Arm liegt vor dem Körper (Otti: deckt die Schulter-Füllung des Körpers)
+      if (cfg.armLVorne && !fluegel) k.appendChild(E.armL);
       E.kopf = gelenk(k, G.hals, [gr * 0.5, gr * 0.6]);
       bild(T.kopf, E.kopf);
       E.ausdruck = {};
