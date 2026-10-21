@@ -9,6 +9,7 @@ window.R7 = {
   himmel: '.ping-buehne',
   neuTitel: 'Neu bei Mr. Ping', neuText: 'Drei Helfer für ruhige Entscheide. Spielgeld, kein Rat.',
   css: [
+    '.r7c-fig{display:flex;gap:16px;align-items:center;margin:0 0 16px}.r7c-fig img{flex:none;width:80px;height:80px;border-radius:16px;object-fit:cover;object-position:50% 20%;border:1px solid rgba(242,193,78,.45);box-shadow:0 6px 18px -8px rgba(0,0,0,.6)}.r7c-fig p{margin:0!important}',
     '.r4-nav a{min-height:44px!important}',
     '.radar .rings,.radar .sweep{pointer-events:none}',
     '.tp-sicherung summary,.st-regeln summary{min-height:44px!important}',
@@ -55,13 +56,15 @@ window.R7 = {
       var t = document.getElementById('mpTafelText'); if (t && !t.hasAttribute('tabindex')) t.setAttribute('tabindex', '0');
     }
     a11y(); new MutationObserver(a11y).observe(document.body, { childList: true });
+    // Runde 7c: Tinkos neues Denk-Bild von Mr. Ping in den Blättern
+    function fig(text) { return '<div class="r7c-fig"><img src="posen/denkt.jpg" alt="" width="80" height="80"><p>' + R.esc(text) + '</p></div>'; }
     var S = {
       gefuehl: function () {
         var log = R.hol('gefuehle', []);
-        var html = '<p>Bevor Sie kaufen: Wie fühlen Sie sich gerade? Ehrlich ist hier ganz privat, nichts verlässt das Handy.</p><div class="r7-gefuehle" role="group" aria-label="Gefühl wählen">' +
+        var html = fig('Bevor Sie kaufen: Wie fühlen Sie sich gerade? Ehrlich ist hier ganz privat, nichts verlässt das Handy. Keine Anlageberatung, nur Ihre eigenen Regeln.') + '<div class="r7-gefuehle" role="group" aria-label="Gefühl wählen">' +
           Object.keys(G).map(function (k) { return '<button type="button" data-g="' + k + '" aria-pressed="false"><span class="e" aria-hidden="true">' + G[k][0] + '</span>' + G[k][1] + '</button>'; }).join('') +
           '</div><div id="r7GAnt" aria-live="polite"></div><h3>Ihre letzten 14 Tage</h3><div id="r7GLog"></div>';
-        var inh = R.blatt({ titel: 'Gefühls-Check vor dem Kauf', html: html });
+        var inh = R.blatt({ titel: 'Gefühls-Check vor dem Kauf', html: html, bild: 'posen/denkt.jpg' });
         function zeigLog() {
           var grenze = Date.now() - 14 * 864e5, z = {};
           log.filter(function (x) { return x.t > grenze; }).forEach(function (x) { z[x.g] = (z[x.g] || 0) + 1; });
@@ -78,7 +81,7 @@ window.R7 = {
           var g = G[b.dataset.g];
           [].forEach.call(inh.querySelectorAll('[data-g]'), function (x) { x.setAttribute('aria-pressed', x === b); });
           log.push({ t: Date.now(), g: b.dataset.g }); log = log.slice(-60); R.leg('gefuehle', log);
-          inh.querySelector('#r7GAnt').innerHTML = '<div class="r7-karte"><div class="r7-ant"><img src="' + (b.dataset.g === 'ruhig' ? 'posen/denk.jpg' : 'posen/warn.jpg') + '" alt="" width="56" height="56"><p>' + R.esc(g[2]) + '</p></div><div class="r7-reihe"><button type="button" class="r7-knopf" data-geh="' + g[3] + '">' + R.esc(g[4]) + '</button></div></div>';
+          inh.querySelector('#r7GAnt').innerHTML = '<div class="r7-karte"><div class="r7-ant"><img src="' + (b.dataset.g === 'ruhig' ? 'posen/denkt.jpg' : 'posen/warn.jpg') + '" alt="" width="56" height="56"><p>' + R.esc(g[2]) + '</p></div><div class="r7-reihe"><button type="button" class="r7-knopf" data-geh="' + g[3] + '">' + R.esc(g[4]) + '</button></div></div>';
           zeigLog();
         });
       },
@@ -87,12 +90,11 @@ window.R7 = {
         var beispiel = !topf.length;
         if (beispiel) topf = [{ name: 'Beispiel A', einsatz: 100, grenze: 15 }, { name: 'Beispiel B', einsatz: 100, grenze: 15 }];
         var ein = topf.reduce(function (a, p) { return a + (p.einsatz || 0); }, 0);
-        var html = (beispiel ? R.leer('Noch kein Titel im Topf. Ich rechne mit einem Beispiel: 2 × CHF 100.', 'posen/denk.jpg') : '') +
-          '<p>Schieben Sie den Regler: So sähe Ihr Topf aus, wenn sich alles gleich stark bewegt. Nur Rechnen, keine Vorhersage.</p>' +
+        var html = (beispiel ? R.leer('Noch kein Titel im Topf. Ich rechne mit einem Beispiel: 2 × CHF 100.', 'posen/denkt.jpg') + '<p>Schieben Sie den Regler: So sähe Ihr Topf aus, wenn sich alles gleich stark bewegt. Nur Rechnen, keine Vorhersage, keine Anlageberatung.</p>' : fig('Schieben Sie den Regler: So sähe Ihr Topf aus, wenn sich alles gleich stark bewegt. Nur Rechnen, keine Vorhersage, keine Anlageberatung.')) +
           '<label for="r7W">Bewegung aller Titel: <b id="r7WP">0 %</b></label><input type="range" id="r7W" min="-50" max="50" step="5" value="0">' +
           '<div class="r7-ww" aria-live="polite"><div class="r7-karte"><span class="r7-klein">Topf danach</span><div class="r7-zahl" id="r7WT"></div></div><div class="r7-karte" id="r7WDk"><span class="r7-klein">Seit Einsatz</span><div class="r7-zahl" id="r7WD"></div></div></div>' +
           '<div class="r7-karte" id="r7WR"></div><ul class="r7-tz" id="r7WL"></ul>';
-        var inh = R.blatt({ titel: 'Was wäre, wenn …?', html: html, bild: 'posen/denk.jpg' });
+        var inh = R.blatt({ titel: 'Was wäre, wenn …?', html: html, bild: 'posen/denkt.jpg' });
         var r = inh.querySelector('#r7W');
         function rechne() {
           var x = +r.value / 100, tot = 0, gerissen = 0;
