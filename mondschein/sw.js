@@ -1,5 +1,5 @@
 // Mondschein – Offline-Cache (nur eigene Dateien, keine Daten)
-const CACHE = 'ms-v47';
+const CACHE = 'ms-v48';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './nova.jpg', './hase.jpg', './fuchs.jpg', './figur.jpg', './figur-gross.jpg', './otti-figur.png', './zahnboecklein.jpg', './fompa-affe.jpg', './kiki-koala.jpg', './eule.jpg', './kissenwolke.jpg', './posen/hallo.jpg', './posen/winkt.jpg', './posen/lacht.jpg', './posen/schlaeft.jpg', './icon-192.png', './kino/index.json', './posen/index.json', './feedback.js', '../nova/nova.js', '../nova/seelen.js', '../nova/intro.js', '../nova/puppe.js', '../nova/puppe.css'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
