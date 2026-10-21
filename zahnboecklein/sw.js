@@ -2,7 +2,7 @@
    Beim Erhöhen der App-Version VERSION ändern, dann wird der alte Cache gelöscht.
    Liegt neben index.html (die App-Datei zahnboecklein-app.html beim Veröffentlichen in index.html umbenennen).
    Audiodateien, falls als eigene Dateien ausgeliefert, unten in DATEIEN ergänzen. */
-const VERSION = 'zahnboecklein-v7';
+const VERSION = 'zahnboecklein-v7-1';
 const DATEIEN = [
   './',
   './index.html',
@@ -118,6 +118,38 @@ const DATEIEN = [
   './musik/monsterfunk.mp3',
   './musik/sternenreggae.mp3',
   './musik/zahnfeewalzer.mp3',
+  './bilder/tanz/hopsen-1.jpg',
+  './bilder/tanz/hopsen-2.jpg',
+  './bilder/tanz/hopsen-3.jpg',
+  './bilder/tanz/hopsen-4.jpg',
+  './bilder/tanz/powackeln-1.jpg',
+  './bilder/tanz/powackeln-2.jpg',
+  './bilder/tanz/powackeln-3.jpg',
+  './bilder/tanz/powackeln-4.jpg',
+  './bilder/tanz/kniebeuge-1.jpg',
+  './bilder/tanz/kniebeuge-2.jpg',
+  './bilder/tanz/kniebeuge-3.jpg',
+  './bilder/tanz/kniebeuge-4.jpg',
+  './bilder/tanz/drehen-1.jpg',
+  './bilder/tanz/drehen-2.jpg',
+  './bilder/tanz/drehen-3.jpg',
+  './bilder/tanz/drehen-4.jpg',
+  './bilder/tanz/marschieren-1.jpg',
+  './bilder/tanz/marschieren-2.jpg',
+  './bilder/tanz/marschieren-3.jpg',
+  './bilder/tanz/marschieren-4.jpg',
+  './bilder/tanz/wiegen-1.jpg',
+  './bilder/tanz/wiegen-2.jpg',
+  './bilder/tanz/wiegen-3.jpg',
+  './bilder/tanz/wiegen-4.jpg',
+  './bilder/tanz/baeh-1.jpg',
+  './bilder/tanz/baeh-2.jpg',
+  './bilder/tanz/baeh-3.jpg',
+  './bilder/tanz/baeh-4.jpg',
+  './bilder/tanz/jubel-1.jpg',
+  './bilder/tanz/jubel-2.jpg',
+  './bilder/tanz/jubel-3.jpg',
+  './bilder/tanz/jubel-4.jpg',
   './mund3d/mund3d.js',
   './mund3d/three.module.min.js',
   './audio/e_wahl.mp3'
