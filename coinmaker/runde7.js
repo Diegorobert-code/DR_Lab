@@ -92,7 +92,7 @@ window.R7 = {
         function zeig() {
           var ideen = echte().filter(function (i) { return i.type === 'idee' && i.text; });
           var box = inh.querySelector('#r7Sp');
-          if (!ideen.length) { box.innerHTML = R.leer('Noch keine eigene Idee. Der Automat wartet: Idee rein, Hebel ziehen.', 'posen/hebel.jpg'); return; }
+          if (!ideen.length) { box.innerHTML = R.leer('Noch keine eigene Idee. Das Brett ist leer und wartet: Idee in den Automaten, Hebel ziehen.', 'posen/leer.jpg') /* Runde 7c: Tinkos «leer» */; return; }
           box.innerHTML = SP.map(function (titel, s) {
             var l = ideen.filter(function (i) { return (brett[i.id] || 0) === s; });
             return '<section class="r7-spalte" aria-label="' + titel + '"><h3><span>' + titel + '</span><span class="r7-klein">' + l.length + '</span></h3>' + (l.length ? l.map(function (i) {
