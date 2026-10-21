@@ -202,6 +202,7 @@ window.R7_CFG = {
   var FILTER = [['alle', 'Alle'], ['gratis', 'Gratis'], ['einmal', 'Einmalig'], ['abo', 'Im Abo'], ['anfrage', 'Auf Anfrage']];
   function art(p) { p = String(p || '').toLowerCase(); if (/^gratis/.test(p)) return 'gratis'; if (/anfrage/.test(p)) return 'anfrage'; if (/pro monat|abo|monat/.test(p)) return 'abo'; if (/einmal|chf/.test(p)) return 'einmal'; if (/gratis/.test(p)) return 'gratis'; return 'anfrage'; }
   var sk = el('<section class="r7 r7-karte" aria-labelledby="r7s-t"><p class="r7-eb">Alle Regale auf einmal</p><h2 id="r7s-t">🔎 Hasi sucht mit</h2>' +
+    '<div style="display:flex;gap:16px;align-items:center;margin-bottom:16px"><img class="r7-figur" src="posen/lupe.jpg" alt="Hasi schaut mit einer grossen Lupe" loading="lazy" width="72" height="72"><p class="r7-p" style="margin:0">Hasi nimmt die Lupe und schaut alle Regale für dich durch.</p></div>' +
     '<label class="r7-vh" for="r7s-q">Wonach suchst du?</label><input id="r7s-q" type="search" placeholder="z. B. Termine, Hund, Kinder" autocomplete="off" style="width:100%">' +
     '<div class="r7-reihe r7-s-f" role="radiogroup" aria-label="Preis"></div><ul class="r7-s-l" style="list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px"></ul>' +
     '<p class="r7-leise r7-s-n" aria-live="polite"></p></section>');
@@ -276,6 +277,8 @@ window.R7_CFG = {
     ['🧰', 'Sammler', '3 Würfel im Kasten', function () { return kasten().length >= 3; }],
     ['🔍', 'Genau hingeschaut', 'Zwei Werkzeuge verglichen', function () { return R.hol('abzVgl', 0) >= 1; }]
   ];
+  /* Runde 7b: Tinkos geschnitzte Holzmedaillen statt Emoji */
+  var MED = {"Neugierig": "gluehbirne", "Stammgast": "stern", "Problemlöser": "zahnrad", "Werkbank-Lehrling": "schluessel-werkzeug", "Erster Bau": "rakete", "Code-Leser": "buch", "Sauberer Code": "pinsel", "Erfinder": "krone", "Tinkos Freund": "blatt", "Kinogast": "note", "Treue Pfote": "herz", "Sammler": "schluessel", "Genau hingeschaut": "kompass"};
   var ak = el('<section class="r7 r7-karte" aria-labelledby="r7a-t"><p class="r7-eb">Hasis Holzmedaillen</p><h2 id="r7a-t">🏅 Erfinder-Abzeichen</h2><p class="r7-p r7-abz-stand"></p><div class="r7-abz" role="list"></div></section>');
   function abzZeigen(neuPruefen) {
     var z = zahlen(), alt = R.hol('abz', []), neu = [];
@@ -283,7 +286,7 @@ window.R7_CFG = {
     ABZ.forEach(function (a) {
       var hat = false; try { hat = !!a[3](z); } catch (e) {}
       if (hat && alt.indexOf(a[1]) < 0) neu.push(a[1]);
-      g.appendChild(el('<div role="listitem" class="r7-abz-m' + (hat ? ' hat' : '') + '" aria-label="' + esc(a[1] + ': ' + a[2] + (hat ? ', erreicht' : ', noch offen')) + '"><span aria-hidden="true">' + a[0] + '</span><b>' + esc(a[1]) + '</b><small>' + esc(a[2]) + '</small></div>'));
+      g.appendChild(el('<div role="listitem" class="r7-abz-m' + (hat ? ' hat' : '') + '" aria-label="' + esc(a[1] + ': ' + a[2] + (hat ? ', erreicht' : ', noch offen')) + '"><span aria-hidden="true">' + (MED[a[1]] ? '<img src="medaillen/' + MED[a[1]] + '.jpg" alt="" width="64" height="64" loading="lazy" decoding="async">' : a[0]) + '</span><b>' + esc(a[1]) + '</b><small>' + esc(a[2]) + '</small></div>'));
     });
     var n = ABZ.filter(function (a) { try { return a[3](z); } catch (e) { return false; } }).length;
     ak.querySelector('.r7-abz-stand').textContent = n + ' von ' + ABZ.length + ' Medaillen. Hasi schnitzt jede selbst.';
@@ -302,10 +305,14 @@ window.R7_CFG = {
     '.r7-wahl input{width:24px;height:24px;min-height:0!important;padding:0!important;accent-color:#f2c14e;flex:none}',
     '.r7-abz{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-top:8px}',
     '.r7-abz-m{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:12px 6px;border-radius:16px;border:1px dashed rgba(255,255,255,.2);opacity:.6}',
-    '.r7-abz-m span{font-size:28px;width:52px;height:52px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.08);filter:grayscale(1)}',
+    '.r7-abz-m span{font-size:28px;width:64px;height:64px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.08);filter:grayscale(1) brightness(.7);overflow:hidden}',
+    '.r7-abz-m span img{width:100%;height:100%;object-fit:cover;transform:scale(1.32);display:block}',
     '.r7-abz-m b{font-size:14px;line-height:1.2}.r7-abz-m small{font-size:12px;line-height:1.25;color:var(--r7-leise)}',
     '.r7-abz-m.hat{opacity:1;border:1px solid rgba(242,193,78,.6);background:rgba(242,193,78,.1)}',
     '.r7-abz-m.hat span{filter:none;background:radial-gradient(circle at 35% 30%,#ffe9a8,#c99a3e);box-shadow:0 0 14px rgba(242,193,78,.4)}',
+    '.r7-abz-m.hat span img{animation:r7Med .6s ease-out}',
+    '@keyframes r7Med{from{transform:scale(1.1) rotate(-8deg)}to{transform:scale(1.32) rotate(0)}}',
+    '@media (prefers-reduced-motion:reduce){.r7-abz-m.hat span img{animation:none}}',
     '.r7-vt{width:100%;border-collapse:collapse;font-size:15px}.r7-vt th,.r7-vt td{padding:10px 8px;border-bottom:1px solid rgba(255,255,255,.1);vertical-align:top;text-align:left}',
     '.r7-vt thead th{color:var(--r7-gold2);font-size:16px}.r7-vt tbody th{color:var(--r7-leise);font-weight:700;width:28%}',
     '.r7-schild{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:2147483000;max-width:min(360px,calc(100vw - 32px));padding:12px 20px;border-radius:10px;background:linear-gradient(180deg,#b7793e,#8a5528);border:3px solid #5c3417;color:#fff6e2;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.45);animation:r7Rein .3s ease-out;transition:opacity .4s}',
