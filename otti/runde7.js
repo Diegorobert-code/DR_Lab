@@ -31,7 +31,7 @@
           ];
           var gesehen = H.hol('igel', []), i = H.hol('igelI', -1);
           var n = H.karte('igel', '🦔 Igel-Wissen',
-            '<div class="r7-kopf"><img alt="" loading="lazy" src="posen/staunt.jpg"><p class="r7-gross" aria-live="polite" style="font-size:18px"></p></div>' +
+            '<img class="r7-bild" alt="Otti hat sich zu einer Stachelkugel eingerollt" loading="lazy" decoding="async" width="768" height="480" src="posen/kugel.jpg" style="object-position:50% 55%"><p class="r7-gross" aria-live="polite" style="font-size:18px"></p>' +
             '<p class="r7-leise r7-zaehl"></p>' +
             '<div class="r7-reihe"><button type="button" class="r7-btn voll" data-a="weiter">🦔 Noch ein Igel-Geheimnis</button>' +
             (H.kannReden ? '<button type="button" class="r7-btn" data-a="hoer" aria-label="Vorlesen">🎧 Nur hören</button>' : '') + '</div>');
@@ -84,7 +84,7 @@
         id: 'sanduhr', emo: '⏳', titel: 'Ottis Sanduhr (für Eltern)', kurz: 'Nach der gewählten Zeit macht Otti Pause, und das Handy auch.',
         bau: function (H) {
           var n = H.karte('sanduhr', '⏳ Ottis Sanduhr',
-            '<p>Für Eltern: Wie lange darf Otti heute spielen? Wenn die Zeit um ist, legt sich Otti schlafen und der Bildschirm wird ruhig.</p>' +
+            '<img class="r7-bild" alt="Otti gähnt und hält eine kleine Sanduhr" loading="lazy" decoding="async" width="768" height="480" src="posen/gaehnt.jpg" style="object-position:50% 35%"><p>Für Eltern: Wie lange darf Otti heute spielen? Wenn die Zeit um ist, legt sich Otti schlafen und der Bildschirm wird ruhig.</p>' +
             '<div class="r7-chips" role="group" aria-label="Spielzeit wählen"><button type="button" data-m="5" aria-pressed="false">5 Min.</button><button type="button" data-m="10" aria-pressed="false">10 Min.</button><button type="button" data-m="15" aria-pressed="false">15 Min.</button></div>' +
             '<p class="r7-leise r7-st" aria-live="polite"></p><div class="r7-reihe"><button type="button" class="r7-btn" data-a="stop" hidden>Sanduhr anhalten</button></div>');
           var st = n.querySelector('.r7-st'), stop = n.querySelector('[data-a=stop]'), tick = 0;
@@ -209,6 +209,8 @@
     '.r7-feld input,.r7-feld textarea,.r7-feld select{width:100%;box-sizing:border-box;min-height:44px;padding:10px 12px;border-radius:var(--r7-rad-s);border:1px solid rgba(242,193,78,.5);background:rgba(8,14,36,.7);color:var(--r7-text);font:inherit;font-size:16px;font-weight:400}',
     '.r7-feld textarea{min-height:88px;resize:vertical}',
     '.r7-kopf{display:flex;gap:var(--r7-2);align-items:center}',
+    /* Runde 7d: Tinko-Bilder in den Karten */
+    '.r7-bild{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:50% 40%;border-radius:var(--r7-rad-s);margin:var(--r7-1) 0 var(--r7-2);border:1px solid rgba(242,193,78,.35);background:#0e1838}',
     '.r7-kopf img{flex:none;width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--r7-gold);background:#0e1838}',
     '.r7-gross{font-size:22px;line-height:1.4;font-weight:700;color:var(--r7-text);margin:var(--r7-1) 0}',
     '.r7-leer{display:flex;gap:var(--r7-2);align-items:center;padding:var(--r7-2);border-radius:var(--r7-rad);border:1px dashed rgba(242,193,78,.45);background:rgba(242,193,78,.06);color:var(--r7-leise);margin-top:var(--r7-1)}',

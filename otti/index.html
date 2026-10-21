@@ -288,6 +288,8 @@
   @keyframes fingerTipp { 45%, 55% { transform:translateY(14px) scale(.9); } }
   .endkarte { display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center; width:100%; max-width:340px; }
   .endoben { display:flex; align-items:center; gap:16px; }
+  .endkarte .abendbild { width:min(40vw,150px); aspect-ratio:1; object-fit:cover; object-position:50% 40%; border-radius:18px; border:2px solid #f5c54288; box-shadow:0 8px 28px #0008; }
+  .endkarte .abendbild + .pokal { display:none; }
   .endkarte .pokal { font-size:64px; line-height:1; animation:drehenGross 1.2s var(--federn) both; filter:drop-shadow(0 0 20px #f5c54288); }
   .endzeile { font-size:24px; font-weight:900; color:var(--gold); letter-spacing:1px; white-space:pre; }
   .sternreihe { display:flex; gap:4px; font-size:32px; }
@@ -2236,7 +2238,7 @@
       }
       function gutNacht() {
         f.innerHTML = ''; $('feldzahl').textContent = '🌙'; s.ziel = null;
-        var k = el('div', 'endkarte'); k.appendChild(el('span', 'pokal', '🌙'));
+        var k = el('div', 'endkarte'); var fb = el('img', 'abendbild'); fb.alt = 'Otti sitzt am Fenster und schaut zum Mond'; fb.src = 'posen/fenster.jpg'; k.appendChild(fb); k.appendChild(el('span', 'pokal', '🌙'));
         var n = kindName(), t = 'Gute Nacht' + (n ? ', ' + n : '') + '. Schlaf schön und träum etwas Liebes.';
         k.appendChild(el('div', 'endzeile', 'Gute Nacht' + (n ? ', ' + n : '') + '!'));
         var st = stickerDazu(); if (st) { var sn = el('div', 'stickerneu'); sn.appendChild(el('span', '', 'Neuer Sticker für Ottis Zimmer:')); sn.appendChild(el('b', '', st)); k.appendChild(sn); }
