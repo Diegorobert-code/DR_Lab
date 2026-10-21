@@ -368,6 +368,39 @@ h2.abschnitt{font-size:1.125rem;margin:8px 4px -4px;color:var(--cream)}
 @keyframes flashIn{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
 .onb-box p{font-size:1rem}
 @media (prefers-reduced-motion:reduce){.sheet-box{transform:none}.stern{display:none}}
+
+/* ===== Runde 4: ruhige Premium-Anmutung, Nur hören, Klang-Mix, eigene Geschichte, Nacht-Monde ===== */
+button[disabled]:not(.ghost){opacity:1;background:rgba(242,193,78,.1);color:rgba(245,230,211,.45);box-shadow:none;border:1px solid var(--line)}
+.flash{width:max-content;max-width:min(90vw,380px);border-radius:22px;line-height:1.35}
+body.unterseite #sparks{opacity:.35;transition:opacity 1.2s}
+#sparks{transition:opacity 1.2s}
+.p-winkt{animation:winkeZurueck 1.3s cubic-bezier(.3,.7,.3,1) 1!important;transform-origin:50% 88%}
+@keyframes winkeZurueck{0%{transform:rotate(0) translateY(0)}18%{transform:rotate(-7deg) translateY(-6px)}36%{transform:rotate(6deg) translateY(-8px)}54%{transform:rotate(-4deg) translateY(-4px)}72%{transform:rotate(2.5deg) translateY(-1px)}100%{transform:rotate(0) translateY(0)}}
+.winkhand{position:absolute;z-index:3;font-size:34px;pointer-events:none;transform-origin:70% 90%;animation:winkHand 1.3s cubic-bezier(.3,.7,.3,1) both;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
+@keyframes winkHand{0%{opacity:0;transform:scale(.4) rotate(0)}15%{opacity:1;transform:scale(1) rotate(-18deg)}35%{transform:rotate(16deg)}55%{transform:rotate(-12deg)}75%{opacity:1;transform:rotate(8deg)}100%{opacity:0;transform:rotate(0) translateY(-10px)}}
+.buehne{position:relative}
+.dauer{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:99px;font-style:normal;font-size:.8125rem;font-weight:500;color:var(--gold);border:1px solid var(--line);background:rgba(242,193,78,.08);vertical-align:1px;white-space:nowrap}
+.nurhoeren{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(135deg,rgba(242,193,78,.12),rgba(14,24,56,.6))}
+.nurhoeren b{display:block;font-size:1rem}.nurhoeren small{color:var(--muted);font-size:.9375rem;line-height:1.35;display:block}
+label.nurhoeren{flex-direction:row;color:var(--cream);cursor:pointer}
+label.nurhoeren input{width:22px;height:22px;margin:0 4px 0 0;accent-color:var(--gold);transform:scale(1.3);flex:none}
+.dim.hoeren p,.dim.hoeren .dimfig{opacity:0!important;transition:opacity 2s}
+.dim.hoeren .orb{opacity:.35;transition:opacity 2s}
+.dim .hoerlabel{display:none;font-size:.875rem;letter-spacing:.08em;color:#5A2A1C}
+.dim.hoeren .hoerlabel{display:block}
+.mix{display:grid;gap:12px}
+.mix label{display:grid;grid-template-columns:7.5em 1fr 2.5em;align-items:center;gap:10px;font-size:1rem;color:var(--cream)}
+.mix input[type=range]{width:100%;accent-color:var(--gold);height:32px;margin:0}
+.mix output{color:var(--muted);font-size:.875rem;text-align:right;font-variant-numeric:tabular-nums}
+.wahl h3{font-size:.9375rem;font-weight:600;color:var(--muted);margin:6px 0 0}
+.monde{display:flex;justify-content:space-between;gap:6px}
+.monde button{all:unset;box-sizing:border-box;cursor:pointer;flex:1;min-height:56px;display:grid;place-items:center;font-size:1.75rem;border-radius:16px;border:1px solid var(--line);background:rgba(6,10,28,.45);transition:transform .18s,border-color .3s,background-color .3s}
+.monde button:active{transform:scale(.94)}
+.monde button.sel{border-color:var(--gold);background:rgba(242,193,78,.18);box-shadow:0 0 18px rgba(242,193,78,.25)}
+.monde button:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
+.mondwoche{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.mondwoche span{font-size:1.4rem;line-height:1.2}
+.mondwoche small{display:block;font-size:.75rem;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -461,6 +494,13 @@ h2.abschnitt{font-size:1.125rem;margin:8px 4px -4px;color:var(--cream)}
     <h2>Wie fühlst du dich heute Morgen?</h2>
     <div class="faces" id="faces"><button data-f="schwer" aria-label="Schwer">😔</button><button data-f="okay" aria-label="Okay">😐</button><button data-f="gut" aria-label="Gut">🙂</button></div>
     <p class="muted" id="faceSay">Kein richtig, kein falsch. Fia merkt es sich nur für dich.</p>
+  </div>
+  <div class="card" id="mondCard">
+    <h2>🌙 Wie war deine Nacht?</h2>
+    <p class="muted">Ein Gefühl, keine Messung. Tipp den Mond, der passt.</p>
+    <div class="monde" id="monde"><button data-m="1" aria-label="Sehr unruhig">🌑</button><button data-m="2" aria-label="Unruhig">🌒</button><button data-m="3" aria-label="Mittel">🌓</button><button data-m="4" aria-label="Recht gut">🌔</button><button data-m="5" aria-label="Erholsam">🌕</button></div>
+    <p class="muted" id="mondSay"></p>
+    <div class="mondwoche" id="mondWoche" aria-label="Deine Nächte der letzten sieben Tage"></div>
   </div>
   <div class="card">
     <h2>Traum-Nest</h2>
@@ -566,6 +606,7 @@ h2.abschnitt{font-size:1.125rem;margin:8px 4px -4px;color:var(--cream)}
 <section class="screen" id="bett" hidden>
   <button class="ghost back" data-go="home">‹ Fias Nest</button>
   <header><h1>Im Bett</h1><p>Wähle einen Weg. Der Bildschirm wird dunkel, Fia führt mit Stimme und Klang.</p></header>
+  <label class="nurhoeren"><span><b>🎧 Nur hören</b><small>Ganz schwarzer Bildschirm, keine Schrift. Fia erzählt wie ein Hörbuch.</small></span><input type="checkbox" id="nurHoeren"></label>
   <div class="ways">
     <button class="tile wide" data-way="atmen"><span class="ic">🫁</span><span><b>Atmen mit Fia</b><br><small>Fias Glut hebt und senkt sich, langes Ausatmen</small></span></button>
     <button class="tile wide" data-way="trommel"><span class="ic">🥁</span><span><b>Herzschlag-Trommel</b><br><small>Weicher Schlag, wird langsamer und leiser bis zur Stille</small></span></button>
@@ -578,6 +619,20 @@ h2.abschnitt{font-size:1.125rem;margin:8px 4px -4px;color:var(--cream)}
     <h2>📖 Gute-Nacht-Geschichten</h2>
     <p class="muted">Sieben ruhige Geschichten aus Fias Städtchen. Ohne Spannung, mit offenem Ende. Die von heute leuchtet.</p>
     <div class="ways" id="geschichten"></div>
+  </div>
+  <div class="card wahl" id="eigeneCard">
+    <h2>✨ Deine eigene Geschichte</h2>
+    <p class="muted">Du wählst drei Dinge, Fia erzählt daraus eine ruhige Geschichte. Jedes Mal ein bisschen anders.</p>
+    <h3>Wohin?</h3><div class="chips" id="egOrt"></div>
+    <h3>Mit wem?</h3><div class="chips" id="egWer"></div>
+    <h3>Was findet ihr?</h3><div class="chips" id="egDing"></div>
+    <div class="row"><button id="egGo">Geschichte erzählen</button><button class="ghost" id="egZufall">Fia wählt</button></div>
+  </div>
+  <div class="card">
+    <h2>🎚️ Dein Klang-Mix</h2>
+    <p class="muted">Misch dir deinen eigenen Abendklang. Alles wird im Handy erzeugt und hört von selbst auf (Dauer wie unten).</p>
+    <div class="mix" id="mix"></div>
+    <div class="row"><button id="mixGo">Mix starten</button><button class="ghost" id="mixNull">Zurücksetzen</button></div>
   </div>
   <div class="card">
     <h2>🌊 Leise Klänge</h2>
@@ -1585,6 +1640,110 @@ if('serviceWorker' in navigator&&location.protocol==='https:'&&!NATIV)navigator.
 const vonHash=()=>go((location.hash||'').slice(1) in STAGE?location.hash.slice(1):'home');
 addEventListener('hashchange',vonHash);vonHash();
 if(!S.onb)onbZeigen();else if(AKTUELL==='home')film();
+</script>
+<script>
+/* ===== Fias Nest Runde 4: Fia winkt zurück, Nur hören, eigene Geschichte, Klang-Mix, Nacht-Monde, ruhigere Unterseiten ===== */
+(function(){
+/* Fia winkt zurück, sobald man sie antippt. Kommt nova/puppe.js mit Puppe.winkeZurueck, übernimmt die Puppe. */
+POSE_KL.push('p-winkt');
+function winke(el){if(!el)return;
+  try{if(window.Puppe&&typeof Puppe.winkeZurueck==='function'){Puppe.winkeZurueck(el);return}}catch(e){}
+  setPose(el,'winkt',1350,grundPose());
+  if(reduce)return;const box=el.parentNode;if(!box)return;const h=document.createElement('span');h.className='winkhand';h.textContent='👋';h.setAttribute('aria-hidden','true');
+  const r=el.getBoundingClientRect(),b=box.getBoundingClientRect();h.style.left=(r.right-b.left-34)+'px';h.style.top=(r.top-b.top+6)+'px';box.appendChild(h);setTimeout(()=>h.remove(),1400)}
+window.winke=winke;
+/* Nach Fias eigener Reaktion (Satz, Funken) winkt sie zurück */
+$('cover').addEventListener('click',()=>winke($('cover')));
+$('cover').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')winke($('cover'))});
+
+/* Ruhige Unterseiten: Funken nur auf der Startseite voll, sonst gedämpft */
+const _goR4=go;go=function(id){const r=_goR4(id);nachGo(id);return r};
+function nachGo(id){document.body.classList.toggle('unterseite',id!=='home');if(id==='bett')bettR4();if(id==='morgen')mondRender()}
+
+/* 🎧 Nur hören: Bildschirm ganz schwarz, keine Schrift, wie ein Hörbuch oder Podcast */
+S.nurHoeren=!!S.nurHoeren;$('nurHoeren').checked=S.nurHoeren;
+$('nurHoeren').onchange=()=>{S.nurHoeren=$('nurHoeren').checked;save();haptik(8);flash(S.nurHoeren?'🎧 Nur hören ist an':'Fias Worte sind wieder da')};
+if(!$('dim').querySelector('.hoerlabel')){const l=document.createElement('span');l.className='hoerlabel';l.textContent='🎧 Nur hören';$('dim').insertBefore(l,$('dimStop'))}
+const _openDim=openDim;openDim=function(){const id=_openDim();$('dim').classList.toggle('hoeren',!!S.nurHoeren);return id};
+
+/* Dauer an jedem Weg im Bett: man weiss, worauf man sich einlässt */
+const DAUER={atmen:'2 Min',trommel:'10 Min',koerper:'3 Min',traum:'2 Min',tiefenruhe:'10 Min',bilder:'bis 10 Min'};
+document.querySelectorAll('#bett .ways .tile[data-way]').forEach(t=>{const d=DAUER[t.dataset.way],b=t.querySelector('b');if(d&&b&&!b.querySelector('.dauer'))b.insertAdjacentHTML('beforeend',' <em class="dauer">'+d+'</em>')});
+
+/* ✨ Deine eigene Geschichte: drei Dinge wählen, Fia erzählt ruhig daraus */
+const ORTE={meer:{n:'Ans Meer',w:'hinunter ans Meer',s:['Der Sand ist noch warm von der Sonne.','Die Wellen kommen … und gehen. Kommen … und gehen.','Weit draussen blinkt der Leuchtturm, ganz ruhig.','Eine Möwe schläft auf einem Pfosten, den Kopf unter dem Flügel.']},
+  wald:{n:'In den Pinienwald',w:'in den Pinienwald',s:['Der Weg wird weich von alten Nadeln.','Es duftet nach Harz und warmem Holz.','Über euch rauschen die Pinien leise im Wind.','Zwischen den Stämmen leuchten die ersten Sterne.']},
+  turm:{n:'Auf den Turm',w:'die Steintreppe hinauf auf Brix’ Turm',s:['Stufe für Stufe, ganz ohne Eile.','Oben glimmt Brix’ Laterne warm und gelb.','Unten wird ein Fenster nach dem anderen dunkel.','Der Wind vom Meer streicht sanft über die Mauer.']},
+  hafen:{n:'In den Hafen',w:'in den kleinen Hafen',s:['Die Boote schaukeln leise an ihren Seilen.','Das Wasser gluckst am Steg.','Ein Fischer rollt sein Netz zusammen und nickt euch zu.','Die Lichter spiegeln sich im dunklen Wasser.']},
+  garten:{n:'In den Zitronengarten',w:'in den alten Zitronengarten',s:['Die Blätter glänzen im Mondlicht.','Es riecht frisch und ein bisschen süss.','Eine Grille zirpt, dann wird sie still.','Das Gras ist kühl unter deinen Füssen.']}};
+const WER={fia:{n:'Fia',l:'Fia, das kleine Phönix-Küken'},otti:{n:'Otti',l:'Otti, der kleine Igel'},waef:{n:'Wäf Wäf',l:'Wäf Wäf, der treue Hund'},sunny:{n:'Sunny',l:'Sunny, der freundliche Drache'}};
+const DINGE={feder:{n:'Eine goldene Feder',s:['Da liegt etwas im Licht: eine goldene Feder.','{wer} hebt sie vorsichtig auf. Sie ist leicht wie ein Atemzug.','Du hältst die Feder in der Hand und spürst, wie auch du leichter wirst.'],k:'Die goldene Feder'},
+  muschel:{n:'Eine Muschel',s:['Im Sand schimmert eine kleine Muschel.','{wer} hält sie dir ans Ohr. Darin rauscht ganz leise das Meer.','Mit jedem Rauschen wird dein Atem ein bisschen länger.'],k:'Die Muschel'},
+  stein:{n:'Einen warmen Stein',s:['Am Weg liegt ein runder Stein, noch warm vom Tag.','{wer} legt ihn dir in die Hand. Er ist schwer und gut.','Die Wärme wandert langsam in deine Hand, in den Arm, in die Schultern.'],k:'Der warme Stein'},
+  laterne:{n:'Eine kleine Laterne',s:['An einer Mauer hängt eine kleine Laterne.','{wer} dreht den Docht ein bisschen kleiner. Das Licht wird weich.','Ihr schaut beide eine Weile in das warme, ruhige Licht.'],k:'Die kleine Laterne'},
+  stern:{n:'Einen Sternenfunken',s:['Vom Himmel fällt ein winziger Funke, ganz langsam.','{wer} fängt ihn mit beiden Händen auf. Er glimmt wie Fias Glut.','Der Funke wird kleiner und ruhiger, so wie du.'],k:'Der Sternenfunke'}};
+S.eg=S.eg||{ort:'meer',wer:'fia',ding:'feder'};
+function egChips(box,obj,key){box.innerHTML='';Object.keys(obj).forEach(k=>{const c=document.createElement('button');c.className='chip'+(S.eg[key]===k?' sel':'');c.type='button';c.textContent=obj[k].n;
+  c.onclick=()=>{S.eg[key]=k;save();egChips(box,obj,key)};box.appendChild(c)})}
+function egRender(){egChips($('egOrt'),ORTE,'ort');egChips($('egWer'),WER,'wer');egChips($('egDing'),DINGE,'ding')}
+const misch=a=>a.slice().sort(()=>Math.random()-.5);
+function egText(){const o=ORTE[S.eg.ort],w=WER[S.eg.wer],d=DINGE[S.eg.ding],sz=misch(o.s);
+  const SCHLUSS=misch(['Die Nacht ist weich wie eine Wolldecke.','Irgendwo läutet ganz leise die Glocke im Turm.','Der Mond schaut über den Berg.']);
+  return['Es ist Abend im Städtchen am Meer.',w.l+' wartet schon auf dich.','Zusammen geht ihr '+o.w+', ganz ohne Eile.',sz[0],sz[1],
+    ...d.s.map(t=>t.replace('{wer}',w.n)),'Ihr setzt euch hin. Niemand muss etwas sagen.',sz[2],SCHLUSS[0],
+    w.n+' gähnt leise, und du gähnst ein bisschen mit.','Langsam geht ihr zurück, Schritt für Schritt, bis zum warmen Nest am Berg.',
+    d.k+' liegt neben dir. Alles ist gut.','Du darfst jetzt schlafen.']}
+NAMEN.eigene='Eigene Geschichte';
+NEU_WAY.eigene=async id=>{lernen('eigene',S.eg.ort+'-'+S.eg.wer+'-'+S.eg.ding);const L=egText();
+  for(const t of L){if(!await line(t,reduce?1200:5000,id))return}if(id===RUN){await wait(4000);if(id===RUN)$('dimSay').textContent=''}};
+$('egGo').onclick=()=>way('eigene');
+$('egZufall').onclick=()=>{const r=o=>{const k=Object.keys(o);return k[Math.floor(Math.random()*k.length)]};S.eg={ort:r(ORTE),wer:r(WER),ding:r(DINGE)};save();egRender();haptik(8);
+  const b=$('egZufall').getBoundingClientRect();if(typeof feiern==='function')feiern(b.left+b.width/2,b.top,'leise')};
+
+/* 🎚️ Klang-Mix: mehrere Klänge gleichzeitig, je eigener Regler, wird leiser und hört auf */
+const MIXK=[['rauschen','Rauschen'],['meer','Meer'],['regen','Regen'],['glut','Glut']];
+S.mix=S.mix||{meer:60,glut:30};
+function mixRender(){const box=$('mix');box.innerHTML='';MIXK.forEach(([k,n])=>{const l=document.createElement('label');const v=S.mix[k]||0;
+  l.innerHTML='<span>'+n+'</span><input type="range" min="0" max="100" step="5" value="'+v+'" aria-label="Lautstärke '+n+'"><output>'+v+'</output>';
+  const i=l.querySelector('input'),o=l.querySelector('output');i.oninput=()=>{S.mix[k]=+i.value;o.textContent=i.value;if(KL&&KL.mix&&KL.mix[k])KL.mix[k].gain.value=i.value/100;save()};box.appendChild(l)})}
+function mixStart(min){const a=audio();if(!a)return false;klangStopp();
+  const g=a.createGain();g.gain.value=0;g.connect(a.destination);const quellen=[],lfos=[],mix={};let knister=null;
+  MIXK.forEach(([art])=>{const v=(S.mix[art]||0)/100;if(!v)return;
+    const src=a.createBufferSource();src.buffer=rauschBuffer(a,art==='regen'?'weiss':'braun');src.loop=true;
+    const f=a.createBiquadFilter();f.type='lowpass';f.frequency.value={rauschen:900,meer:650,glut:420,regen:2600}[art];
+    const amp=a.createGain();amp.gain.value=(art==='meer'?.55:.8);const vol=a.createGain();vol.gain.value=v;mix[art]=vol;
+    src.connect(f);f.connect(amp);amp.connect(vol);vol.connect(g);
+    if(art==='meer'){const l=a.createOscillator(),lg=a.createGain();l.frequency.value=.1;lg.gain.value=.45;l.connect(lg);lg.connect(amp.gain);l.start();lfos.push(l)}
+    if(art==='glut'){KNACK=KNACK||knackBuf(a);knister=setInterval(()=>{if(Math.random()<.45)return;const n=a.createBufferSource(),ng=a.createGain(),hp=a.createBiquadFilter();
+      n.buffer=KNACK;hp.type='highpass';hp.frequency.value=1200+Math.random()*2400;ng.gain.value=(.04+Math.random()*.12)*vol.gain.value*1.4;n.connect(hp);hp.connect(ng);ng.connect(g);n.start(a.currentTime+Math.random()*.25)},170)}
+    src.start();quellen.push(src)});
+  if(!quellen.length&&!knister)return false;
+  const t0=a.currentTime,T=min*60;g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.5,t0+5);g.gain.setValueAtTime(.5,t0+T*.4);g.gain.linearRampToValueAtTime(.0001,t0+T);
+  KL={src:{stop(){quellen.forEach(q=>{try{q.stop()}catch(e){}})}},g,lfos,knister,mix,ende:setTimeout(()=>{klangStopp();if(!$('dim').hidden)$('dimSay').textContent=''},T*1000+300)};return true}
+NAMEN.mix='Klang-Mix';
+NEU_WAY.mix=async id=>{const min=+document.querySelector('#dauer .sel').dataset.min;lernen('klang','mix');
+  if(!mixStart(min)){await line('Schieb zuerst einen Regler nach oben. Dann mischt Fia deinen Klang.',2500,id);stopDim();return}
+  if(S.mix.meer)$('dim').classList.add('wiegen');
+  const teile=MIXK.filter(([k])=>S.mix[k]).map(([,n])=>n);await line('Dein Klang: '+teile.join(', ')+'. Er wird langsam leiser.',4000,id);if(id===RUN)$('dimSay').textContent=''};
+$('mixGo').onclick=()=>way('mix');
+$('mixNull').onclick=()=>{S.mix={meer:60,glut:30};save();mixRender()};
+
+function bettR4(){egRender();mixRender();$('nurHoeren').checked=!!S.nurHoeren}
+
+/* 🌙 Wie war deine Nacht? Monde statt Zahlen, die Woche als Mondreihe */
+const MOND=['','🌑','🌒','🌓','🌔','🌕'];
+const MOND_SAY={1:'Eine unruhige Nacht. Heute darf alles langsamer gehen. Viel Licht am Morgen hilft der nächsten Nacht.',2:'Nicht ganz leicht. Ein Mittagsnest vor 15 Uhr ist erlaubt.',3:'Eine mittlere Nacht. Auch das trägt dich durch den Tag.',4:'Recht gut. Schön, dass die Nacht dich gehalten hat.',5:'Erholsam. Nimm das Licht mit in den Tag.'};
+function mondRender(){const m=tag().nachtMond;document.querySelectorAll('#monde button').forEach(b=>b.classList.toggle('sel',+b.dataset.m===m));
+  $('mondSay').textContent=m?MOND_SAY[m]:'Fia merkt es sich nur für dich. Am Sonntag zeigt sie dir deine Woche.';
+  const box=$('mondWoche');box.innerHTML='';let n=0;
+  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const t=S.tage[heute(d)]||{},v=t.nachtMond;if(v)n++;
+    const c=document.createElement('div');c.innerHTML='<span>'+(v?MOND[v]:'·')+'</span><small>'+d.toLocaleDateString('de-CH',{weekday:'short'}).replace('.','')+'</small>';box.appendChild(c)}
+  box.hidden=n<1}
+document.querySelectorAll('#monde button').forEach(b=>b.onclick=()=>{tag().nachtMond=+b.dataset.m;tag().morgen=tag().morgen||'da';save();mondRender();haptik(8);
+  if(+b.dataset.m>=4){const r=b.getBoundingClientRect();if(typeof feiern==='function')feiern(r.left+r.width/2,r.top,'leise')}});
+
+nachGo(AKTUELL||'home');
+})();
 </script>
 <script src="../nova/seelen.js" defer></script>
 <script src="../nova/nova.js" data-nova-bild="figuren/fia.jpg" data-nova-app="Fias Nest" defer></script>
