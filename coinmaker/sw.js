@@ -1,6 +1,6 @@
 // Coin Maker – Offline-Cache (nur eigene Dateien, keine Daten, keine Ideen-Texte)
-const CACHE = 'coinmaker-v6';
-const FILES = ['./', './index.html', './werkstatt.js', './glanz.js', './trickfilm.js', './ziele.js', './posen.js', './feedback.js', './figur.jpg', './figur-klein.jpg', './posen/lupe.jpg', './posen/hebel.jpg', './posen/freude.jpg', './posen/winken.jpg', './icon-180.png', './icon-192.png', './manifest.webmanifest', '../nova/nova.js', '../nova/seelen.js', '../nova/intro.js', '../nova/puppe.js', '../nova/puppe.css'];
+const CACHE = 'coinmaker-v7';
+const FILES = ['./runde6.js', './besuch/fompa.jpg', './besuch/hasi.jpg', './besuch/mrping.jpg', './', './index.html', './werkstatt.js', './glanz.js', './trickfilm.js', './ziele.js', './posen.js', './feedback.js', './figur.jpg', './figur-klein.jpg', './posen/lupe.jpg', './posen/hebel.jpg', './posen/freude.jpg', './posen/winken.jpg', './icon-180.png', './icon-192.png', './manifest.webmanifest', '../nova/nova.js', '../nova/seelen.js', '../nova/intro.js', '../nova/puppe.js', '../nova/puppe.css'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(FILES.map(f => c.add(f).catch(() => {})))).then(() => self.skipWaiting()));
 });
