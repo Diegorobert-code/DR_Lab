@@ -20,7 +20,7 @@ on:
         description: 'Welche App'
         type: choice
         default: alle
-        options: [alle, mondschein, humanspark, tradeping, jackie]
+        options: [alle, mondschein, humanspark, tradeping, jackie, nova]
 
 concurrency:
   group: ios-${{ github.ref }}
@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        app: [mondschein, humanspark, tradeping, jackie]
+        app: [mondschein, humanspark, tradeping, jackie, nova]
     env:
       HOCHLADEN: ${{ github.event_name == 'workflow_dispatch' && inputs.hochladen && (inputs.app == 'alle' || inputs.app == matrix.app) }}
       UEBERSPRINGEN: ${{ github.event_name == 'workflow_dispatch' && inputs.app != 'alle' && inputs.app != matrix.app }}
@@ -61,7 +61,8 @@ jobs:
         working-directory: appstore/${{ matrix.app }}
         run: |
           npm ci --no-fund --no-audit
-          node ../web-bauen.mjs ${{ matrix.app }}
+          # Nova lädt sich live von der Website, ihr www/ liegt fertig im Repo.
+          if [ "${{ matrix.app }}" != nova ]; then node ../web-bauen.mjs ${{ matrix.app }}; fi
           npx cap sync ios
 
       - name: Test-Build (Simulator, ohne Signatur)
