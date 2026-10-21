@@ -2,6 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
+<meta name="stand" content="2026-10-21-1">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -406,6 +407,20 @@
     if (conv && !conv.__text) { zeile('du', bitte); eigene.push(bitte); try { conv.sendUserMessage(bitte); } catch (err) {} }
     else senden(bitte);
   });
+
+  // Wie eine Store-App: beim Öffnen holt sich die App still die neueste Fassung, nie mitten im Gespräch.
+  var stand = (document.querySelector('meta[name=stand]') || {}).content;
+  function frisch() {
+    if (document.hidden || conv || startet || !stand) return;
+    fetch(location.pathname + '?s=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (h) {
+      var m = h.match(/<meta name="stand" content="([^"]+)"/);
+      if (!m || m[1] === stand || conv || startet) return;
+      try { if (sessionStorage.getItem('stand.neu') === m[1]) return; sessionStorage.setItem('stand.neu', m[1]); } catch (e) {}
+      var u = new URL(location.href); u.searchParams.set('v', m[1]); location.replace(u.toString());
+    }).catch(function () {});
+  }
+  document.addEventListener('visibilitychange', frisch);
+  window.addEventListener('pageshow', frisch);
 
   knopf.addEventListener('click', function () {
     // Vom Schreiben zur Stimme: Text-Gespräch schliessen, dann mit Mikrofon neu starten.
