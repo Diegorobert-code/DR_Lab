@@ -35,7 +35,7 @@ Deine Stufen als Linie, die Wochenkurve und alle Einträge auf einen Blick.
 DEINE DATEN
 Alle Messungen und Einträge bleiben auf deinem iPhone. Kein Konto, keine Werbung. Du kannst alles jederzeit löschen.
 
-Wichtig: HumanSpark ist kein Medizinprodukt und stellt keine Diagnosen. Bei Brustschmerz, Atemnot oder Ohnmacht sofort 144 anrufen.
+Wichtig: HumanSpark ist eine Wohlfühl-App und kein Medizinprodukt. Bei Brustschmerz, Atemnot oder Ohnmacht sofort 144 anrufen.
 
 HumanSpark ist ein Projekt von DR Lab, Zürich.
 ```
