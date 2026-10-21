@@ -57,6 +57,8 @@ Alles «Keine» (kein Glücksspiel, kein echtes Geld in der App). Ergebnis: **4+
 ## App-Datenschutz
 **Nein, wir erfassen keine Daten.** Für Krypto-Kurse fragt die App bei CoinGecko nach öffentlichen Preisen, ohne Namen, Konto oder Kennung.
 
+Ab Version mit Mr. Ping (Branch claude/tradeping-ideen, Stand 19.10.2026): Für Aktien-Kurse fragt die App zusätzlich den eigenen DR-Lab-Server (`sense-….sslip.io/kursping/kurse?s=AAPL,…`) nur mit den Kürzeln der Titel. «Keine Daten erfasst» stimmt nur, wenn der Server diese Abrufe **nicht speichert** (keine Protokolle mit IP und Kürzeln). Sonst ankreuzen: «Nutzungsdaten – Produktinteraktion», nicht mit Identität verknüpft, kein Tracking, Zweck App-Funktionalität. Siehe appstore/PRUEFUNG-2026-10-19.md.
+
 ## Hinweise für die Prüfung
 ```
 TradePing is a price alert app. Users set an upper or lower mark per symbol; the app plays a sound and shows a local notification while it is open when a mark is reached. Crypto prices come from the public CoinGecko API, other symbols are entered manually. Tap "Demo" on the first screen to see simulated prices. No trading, no account, no financial advice, all data stays on the device.
