@@ -237,6 +237,52 @@ details.buchbox summary .muted{font-weight:400;margin-left:auto;margin-right:8px
 .funke{width:7px;height:7px;border-radius:50%;background:radial-gradient(circle,#fff3c4,var(--glut) 60%,transparent 72%);box-shadow:0 0 10px var(--glut)}
 @keyframes funkeFlug{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}25%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1)}}
 @media (prefers-reduced-motion:reduce){.stern,.funke{display:none}}
+/* ===== Runde 4: Körperkosmos-Rad, Sternbild, Körperreise, Fia winkt zurück ===== */
+.actor .body.winkzurueck{animation:winkeZurueck 1.3s cubic-bezier(.3,.7,.3,1) 1!important}
+@keyframes winkeZurueck{0%{transform:rotate(0) translateY(0)}18%{transform:rotate(-7deg) translateY(-6px)}36%{transform:rotate(6deg) translateY(-8px)}54%{transform:rotate(-4deg) translateY(-4px)}72%{transform:rotate(2.5deg) translateY(-1px)}100%{transform:rotate(0) translateY(0)}}
+.actor .prop.wink{animation:winkHand 1.3s cubic-bezier(.3,.7,.3,1) both;transform-origin:70% 90%}
+@keyframes winkHand{0%{opacity:0;transform:scale(.4)}15%{opacity:1;transform:scale(1) rotate(-18deg)}35%{transform:rotate(16deg)}55%{transform:rotate(-12deg)}75%{transform:rotate(8deg)}100%{transform:rotate(0)}}
+.rad-box{background:radial-gradient(120% 90% at 50% 40%,rgba(42,58,134,.55),rgba(10,15,40,.4));border-color:rgba(242,193,78,.3)}
+.rad-kopf{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.rad-kopf h2{white-space:nowrap;min-width:0}
+.rad-zahl{font-size:14px;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+.rad{display:block;width:100%;max-width:340px;margin:4px auto 0;overflow:visible;touch-action:manipulation}
+.rad .bahn{fill:none;stroke:rgba(242,193,78,.18);stroke-width:1}
+.rad .fluss{fill:none;stroke:rgba(242,193,78,.55);stroke-width:1.6;stroke-dasharray:4 6;animation:fliessen 6s linear infinite}
+@keyframes fliessen{to{stroke-dashoffset:-60}}
+.rad .el{cursor:pointer}
+.rad .el circle.k{stroke-width:2;transition:transform .25s var(--ease),stroke-width .2s;transform-box:fill-box;transform-origin:center}
+.rad .el.an circle.k{stroke-width:3.5;transform:scale(1.12)}
+.rad .el.jetzt circle.halo{animation:puls 3s ease-out infinite;transform-box:fill-box;transform-origin:center}
+.rad .el text{font-size:20px;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.rad .el text.n{font-size:10.5px;fill:var(--creme);font-weight:600}
+.rad .st{cursor:pointer}
+.rad .st circle.p{fill:#2a3366;stroke:rgba(242,193,78,.35);stroke-width:1;transition:fill .6s,r .3s}
+.rad .st.hell circle.p{fill:#ffd27a;stroke:#fff3c4;filter:drop-shadow(0 0 5px #ff8a3d)}
+.rad .st.an circle.p{stroke:var(--gold);stroke-width:2.5}
+.rad .st text{font-size:12px;fill:var(--muted);text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.rad .st.hell text{fill:var(--gold)}
+.rad .st .hit{fill:transparent}
+.rad .mitte{cursor:pointer}
+.rad .st.neu circle.p{animation:sternNeu 1.6s var(--ease) 2}
+@keyframes sternNeu{50%{r:9}}
+.rad-info{min-height:96px;margin-top:8px;padding:12px 14px;border-radius:16px;background:rgba(10,15,40,.5);border:1px solid var(--rand);animation:herein .35s ease}
+.rad-info b.t{display:block;font-size:17px;color:var(--gold);margin-bottom:2px}
+.rad-info p{margin:4px 0}
+.rad-info .reihe{margin-top:6px}
+.reise{margin-top:12px}
+.reisebild{position:fixed;inset:0;z-index:2147483150;background:#03050f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px;text-align:center}
+.reise-orb{width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(242,193,78,.5),rgba(255,138,61,.18) 50%,transparent 72%);transition:transform 5s ease-in-out,opacity 2s}
+.reise-ort{margin:0;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,193,78,.55)}
+.reise-text{margin:0;max-width:330px;min-height:4.5em;font-size:20px;line-height:1.45;color:#d9c9a8;transition:opacity .8s}
+.reise-hoer{display:none;font-size:13px;letter-spacing:.08em;color:#4a4060}
+.reisebild.hoeren .reise-text,.reisebild.hoeren .reise-ort{opacity:0}
+.reisebild.hoeren .reise-orb{opacity:.3}
+.reisebild.hoeren .reise-hoer{display:block}
+.reisebild .btn.ghost{color:#8a7a6a;border-color:#2a2440;background:transparent}
+.mehr-reihen{margin-top:8px}
+.ztag-kurz .satz{margin:10px 0 6px}
+
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 <script src="../nova/intro.js" data-art="funken" data-bild="figur-gross.jpg" data-text="Fia öffnet den Körperkosmos"></script>
@@ -259,8 +305,15 @@ details.buchbox summary .muted{font-weight:400;margin-left:auto;margin-right:8px
       <span class="tipp" id="tippHint" aria-hidden="true">Tipp mich an</span>
     </div>
     <button class="jetzt" id="jetzt" type="button" data-reihe="oeffnung"><span class="ic" id="jetztIc">🌸</span><span class="txt"><small>Jetzt, 2 Minuten mit Fia</small><b id="jetztT">Die Öffnung</b><em id="jetztS">Ankommen, atmen, weit werden</em></span><span class="pfeil" aria-hidden="true">›</span></button>
-    <div class="glutreihe" aria-label="Deine Tage im Körperkosmos diese Woche"><span class="glutlabel">Deine Woche</span><span class="chain" id="kette"></span><span class="glutzahl" id="ketteZahl"></span></div>
+    <div class="glutreihe" aria-label="Deine Tage im Körperkosmos diese Woche"><span class="glutlabel">Deine Woche</span><span class="chain" id="woche"></span><span class="glutzahl" id="ketteZahl"></span></div>
     <a class="welt" id="weltOben" data-geschwister hidden><img src="posen/wacht.jpg" alt="" width="56" height="56" loading="lazy" decoding="async"><span><small>Fias Welt · am Abend</small><b>Fias Nest</b><em>Ruhig werden und einschlafen mit Fia</em></span><span class="pfeil" aria-hidden="true">›</span></a>
+
+    <div class="box rad-box" id="radBox">
+      <div class="rad-kopf"><h2>Dein Körperkosmos</h2><span class="rad-zahl" id="radZahl"></span></div>
+      <p class="muted">Alles in einem Bild. Tipp ein Element oder einen Stern an.</p>
+      <svg class="rad" id="rad" viewBox="0 0 320 320" role="group" aria-label="Körperkosmos: fünf Elemente innen, zwölf Zeichen aussen"></svg>
+      <div class="rad-info" id="radInfo" aria-live="polite"></div>
+    </div>
 
     <div class="box" id="dreiFragen">
       <h2>Drei Fragen</h2>
@@ -306,15 +359,17 @@ details.buchbox summary .muted{font-weight:400;margin-left:auto;margin-right:8px
       <p class="klein muted">Der dritte Teil sind die Schulungen (unter «Wissen»).</p>
     </div>
 
-    <div class="box">
-      <h2>Was Fia sich merkt</h2>
+    <details class="buchbox" id="merkBox">
+      <summary>🪶 Was Fia sich merkt</summary>
+      <div class="inhalt">
       <p class="klein muted">Nur Zahlen, nur auf diesem Handy. Keine Texte, keine Stimme, keine Bilder.</p>
       <div id="memListe"></div>
       <div class="hinweis" id="memTipp"></div>
       <label class="check"><input type="checkbox" id="memOk"> <span>Ich bin einverstanden, dass die Lern-Zahlen (ohne Namen, ohne Texte) an Diego gehen, damit Fia besser wird.</span></label>
       <div class="reihe"><button class="btn ghost" id="memTeilen" type="button">Zahlen weitergeben</button><button class="btn ghost" id="memVergessen" type="button">Vergessen</button></div>
       <div class="hinweis hidden" id="memMsg"></div>
-    </div>
+      </div>
+    </details>
 
     <details class="buchbox">
       <summary>📓 Mein Spür-Buch <span class="muted" id="buchZahl"></span></summary>
@@ -365,6 +420,10 @@ details.buchbox summary .muted{font-weight:400;margin-left:auto;margin-right:8px
       <p class="muted">Vier quer liegende Böden tragen dich, von unten nach oben. Zusammen bilden sie die Schwerkraftlinie.</p>
       <div class="liste-reihen" id="kette"></div>
       <div id="ketteOut"></div>
+      <div class="reise">
+        <button class="btn voll" id="reiseGo" type="button">🎧 Reise durch die vier Böden (4 Min)</button>
+        <label class="check"><input type="checkbox" id="reiseHoeren"> <span><b>Nur hören:</b> Bildschirm schwarz, keine Schrift. Fia führt mit der Stimme, wie ein Hörbuch. Gut im Liegen.</span></label>
+      </div>
     </div>
 
     <div class="box">
@@ -488,6 +547,15 @@ details.buchbox summary .muted{font-weight:400;margin-left:auto;margin-right:8px
     </div>
     <p class="klein muted" style="margin-top:10px">Nur so weit, wie der Körper antwortet. Bei Schmerz, Schwindel oder Taubheit: aufhören und eine Fachperson fragen.</p>
   </div>
+</div>
+
+<!-- Körperreise: dunkel, ruhig, auf Wunsch nur hören -->
+<div class="reisebild hidden" id="reiseBild" role="dialog" aria-modal="true" aria-label="Reise durch die vier Böden">
+  <div class="reise-orb" id="reiseOrb"></div>
+  <p class="reise-ort" id="reiseOrt"></p>
+  <p class="reise-text" id="reiseText"></p>
+  <span class="reise-hoer">🎧 Nur hören</span>
+  <button class="btn ghost" id="reiseStopp" type="button">Beenden</button>
 </div>
 
 <!-- Einführung beim ersten Start -->
@@ -1215,7 +1283,7 @@ function ketteRender(){
   var m = memLaden(), h = '', n = 0;
   for (var i = 6; i >= 0; i--){ var d = new Date(Date.now() - i * 864e5).toISOString().slice(0, 10), an = m.tage.indexOf(d) >= 0; if (an) n++;
     h += '<span class="' + (an ? 'on' : '') + (i === 0 ? ' heute' : '') + '" title="' + new Date(Date.now() - i * 864e5).toLocaleDateString('de-CH', {weekday:'long'}) + '"></span>'; }
-  $('kette').innerHTML = h; $('ketteZahl').textContent = n + ' von 7';
+  $('woche').innerHTML = h; $('ketteZahl').textContent = n + ' von 7';
 }
 var _memRender = memRender;
 memRender = function(){ _memRender(); jetztRender(); ketteRender(); };
@@ -1247,6 +1315,157 @@ $('fOk').addEventListener('click', function(){ var m = mitte($('fOk')); feiern(m
 document.addEventListener('click', function(ev){ if (ev.target.closest('.jetzt,.tab,#einfWeiter')) haptik(6); });
 /* Bild fehlt? Dann Fia statt kaputtem Symbol */
 document.addEventListener('error', function(e){ var i = e.target; if (i && i.tagName === 'IMG' && !i.dataset.ersatz){ i.dataset.ersatz = 1; i.src = FIG; } }, true);
+
+/* ================= Runde 4: Fia winkt zurück, Körperkosmos-Rad mit Sternbild, Zeichen des Tages kompakt, Körperreise ================= */
+/* Fia winkt zurück, sobald man sie antippt. Kommt nova/puppe.js mit Puppe.winkeZurueck, übernimmt die Puppe. */
+function winke(el){
+  var a = el && (el.classList && el.classList.contains('actor') ? el : el.querySelector('.actor')); if (!a) return;
+  try { if (window.Puppe && typeof Puppe.winkeZurueck === 'function'){ Puppe.winkeZurueck(a); return; } } catch(e){}
+  var b = a.querySelector('.body'), pr = a.querySelector('.prop'); if (!b) return;
+  b.classList.remove('winkzurueck'); void b.offsetWidth; b.classList.add('winkzurueck');
+  if (pr){ var alt = pr.textContent; pr.textContent = '👋'; pr.classList.remove('wink'); void pr.offsetWidth; pr.classList.add('wink');
+    setTimeout(function(){ pr.classList.remove('wink'); if (pr.textContent === '👋') pr.textContent = alt; }, 1350); }
+  setTimeout(function(){ b.classList.remove('winkzurueck'); }, 1350);
+}
+window.winke = winke;
+$('buehneHeute').addEventListener('click', function(ev){ var a = ev.target.closest('.actor'); if (a) setTimeout(function(){ winke(a); }, 30); });
+$('buehneHeute').addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') setTimeout(function(){ winke($('buehneHeute')); }, 30); });
+/* Auch im Kopf und in der Einführung: Fia antippen, sie winkt */
+document.querySelector('header.kopf img').addEventListener('click', function(){ zeigeTab('heute'); setTimeout(function(){ winke($('buehneHeute')); haptik(8); }, 250); });
+document.querySelector('header.kopf img').style.cursor = 'pointer';
+$('einfBuehne').addEventListener('click', function(ev){ var a = ev.target.closest('.actor'); if (a){ winke(a); haptik(8); } });
+
+/* Zeichen des Tages: kurz und schön, alles Weitere auf Wunsch */
+kTagRender = function(){
+  var z = kTagZeichen(), e = ELEM[z.te];
+  $('kTag').innerHTML = '<h2>Zeichen des Tages</h2>' +
+    '<div class="zkarte ztag-kurz"><div class="zk"><b class="sym">' + z.s + '</b><div><strong>' + esc(z.z) + ' · ' + esc(z.org) + '</strong><small class="muted">' + e.e + ' ' + esc(z.te) + ' · ' + esc(z.thema) + '</small></div></div>' +
+    '<div class="satz">«' + esc(z.satz) + '»</div>' +
+    '<p class="muted klein" style="margin:0 0 8px">Frage des Elements: <b>' + esc(e.tag) + '</b></p>' +
+    '<button class="btn voll" type="button" data-reihe="k_' + z.id + '">Reihe mit Fia (2 Min)</button>' +
+    '<button class="btn ghost voll" type="button" id="kTagMehr" aria-expanded="false">Mehr zu ' + esc(z.z) + '</button><div id="kTagVoll"></div></div>';
+  $('kTagMehr').addEventListener('click', function(){ var v = $('kTagVoll'), auf = !v.innerHTML;
+    v.innerHTML = auf ? kKarte(z) : ''; this.setAttribute('aria-expanded', auf ? 'true' : 'false'); this.textContent = auf ? 'Weniger zeigen' : 'Mehr zu ' + z.z; });
+};
+
+/* Übungsreihen: erst die acht wichtigsten, alle auf Wunsch */
+var rAlle = false;
+var _rRender = rRender;
+rRender = function(){
+  _rRender();
+  var L = $('rListe'), kn = L.querySelectorAll('button[data-reihe]');
+  if (rFilter === 'Alle' && !rAlle && kn.length > 8){
+    var oben = ['oeffnung', 'fluss', 'lot', 'fuesse', 'kiefer', 'beine', 'gehen', 'yoga'];
+    kn.forEach(function(b){ if (oben.indexOf(b.dataset.reihe) < 0) b.classList.add('hidden'); });
+    oben.slice().reverse().forEach(function(id){ var b = L.querySelector('[data-reihe="' + id + '"]'); if (b) L.insertBefore(b, L.firstChild); });
+    L.insertAdjacentHTML('beforeend', '<button type="button" class="mehr-reihen" id="rMehr"><span class="ic">✨</span><span><b>Alle ' + kn.length + ' Reihen zeigen</b><small>Auch die zwölf Zeichen und fünf Elemente</small></span></button>');
+    $('rMehr').addEventListener('click', function(){ rAlle = true; rRender(); });
+  }
+};
+
+/* Körperkosmos-Rad: innen die fünf Elemente im Nährkreis, aussen die zwölf Zeichen als Sternbild.
+   Jede Zeichen-Reihe lässt ihren Stern leuchten (nur auf diesem Handy). */
+var RAD_EL_ZEIT = {Holz:'Morgen', Feuer:'Mittag', Erde:'Nachmittag', Metall:'Abend', Wasser:'Nacht'};
+function radJetzt(){ var h = new Date().getHours(); return h >= 5 && h < 11 ? 'Holz' : h < 14 ? 'Feuer' : h < 17 ? 'Erde' : h < 21 ? 'Metall' : 'Wasser'; }
+var radWahl = null, radHell = [];
+function radPunkt(r, i, n){ var w = (i / n) * Math.PI * 2 - Math.PI / 2; return [160 + r * Math.cos(w), 160 + r * Math.sin(w)]; }
+function radRender(){
+  var m = memLaden(), jetzt = radJetzt(), h = '';
+  var hell = KZ.filter(function(z){ return m.re['k_' + z.id]; }).map(function(z){ return z.id; });
+  h += '<defs><clipPath id="radClip"><circle cx="160" cy="160" r="33"/></clipPath><marker id="radPfeil" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="rgba(242,193,78,.75)"/></marker></defs>';
+  h += '<circle class="bahn" cx="160" cy="160" r="138"/><circle class="bahn" cx="160" cy="160" r="82"/>';
+  /* Nährkreis: Holz → Feuer → Erde → Metall → Wasser → Holz */
+  for (var i = 0; i < 5; i++){ var a = radPunkt(82, i + .22, 5), b = radPunkt(82, i + .78, 5);
+    h += '<path class="fluss" d="M' + a[0].toFixed(1) + ' ' + a[1].toFixed(1) + ' A82 82 0 0 1 ' + b[0].toFixed(1) + ' ' + b[1].toFixed(1) + '" marker-end="url(#radPfeil)"/>'; }
+  /* Zwölf Sterne */
+  KZ.forEach(function(z, i){ var p = radPunkt(138, i, 12), t = radPunkt(116, i, 12), an = hell.indexOf(z.id) >= 0;
+    h += '<g class="st' + (an ? ' hell' : '') + (radWahl === 'z:' + z.id ? ' an' : '') + (radHell.indexOf(z.id) >= 0 ? ' neu' : '') + '" data-rz="' + z.id + '" role="button" tabindex="0" aria-label="' + esc(z.z) + (an ? ', leuchtet' : '') + '">' +
+      '<circle class="hit" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="17"/><circle class="p" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="' + (an ? 6 : 4.5) + '"/>' +
+      '<text x="' + t[0].toFixed(1) + '" y="' + t[1].toFixed(1) + '">' + z.s + '</text></g>'; });
+  /* Fünf Elemente */
+  ELIST.forEach(function(k, i){ var e = ELEM[k], p = radPunkt(82, i, 5);
+    h += '<g class="el' + (radWahl === 'e:' + k ? ' an' : '') + (k === jetzt ? ' jetzt' : '') + '" data-re="' + k + '" role="button" tabindex="0" aria-label="' + k + ', ' + esc(e.spiegel) + '">' +
+      (k === jetzt ? '<circle class="halo" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="27" fill="none" stroke="' + e.hex + '" stroke-width="2"/>' : '') +
+      '<circle class="k" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="25" fill="rgba(10,15,40,.92)" stroke="' + e.hex + '"/>' +
+      '<text x="' + p[0].toFixed(1) + '" y="' + (p[1] - 5).toFixed(1) + '">' + e.e + '</text><text class="n" x="' + p[0].toFixed(1) + '" y="' + (p[1] + 13).toFixed(1) + '">' + k + '</text></g>'; });
+  /* Fia in der Mitte */
+  h += '<g class="mitte" id="radFia" role="button" tabindex="0" aria-label="Fia antippen"><circle cx="160" cy="160" r="37" fill="rgba(255,138,61,.25)"/><image href="' + bildFuer('fliegt') + '" x="127" y="127" width="66" height="66" clip-path="url(#radClip)" preserveAspectRatio="xMidYMid slice"/><circle cx="160" cy="160" r="33" fill="none" stroke="#f2c14e" stroke-width="2.5"/></g>';
+  $('rad').innerHTML = h; radHell = [];
+  $('radZahl').textContent = '✦ ' + hell.length + ' von 12 Sternen';
+  if (!radWahl) radInfo();
+}
+function radInfo(){
+  var jetzt = radJetzt();
+  $('radInfo').innerHTML = '<b class="t">So liest du das Bild</b><p>Innen die <b>fünf Elemente</b>. Sie nähren einander im Kreis, wie der Atem: Holz wird Feuer, Feuer wird Erde, Erde wird Metall, Metall wird Wasser.</p>' +
+    '<p>Aussen die <b>zwölf Zeichen</b>. Jede Zeichen-Reihe, die du machst, lässt ihren Stern leuchten. Jetzt ist ' + RAD_EL_ZEIT[jetzt] + ': <b>' + ELEM[jetzt].e + ' ' + jetzt + '-Zeit</b>.</p>';
+}
+function radElement(k){
+  var e = ELEM[k]; radWahl = 'e:' + k; radRender(); haptik(6);
+  $('radInfo').innerHTML = '<b class="t">' + e.e + ' ' + k + ' · ' + esc(e.spiegel) + '</b>' +
+    '<p class="klein muted">Im Atem: ' + esc(e.atem) + ' · Tageszeit: ' + esc(e.tagb) + '</p><p>' + esc(e.fragen[0]) + '</p>' +
+    '<div class="reihe"><button class="btn" type="button" data-reihe="e_' + k + '">Bewegung (2 Min)</button><button class="btn ghost" type="button" data-espiegel="' + k + '">Zum Spiegel</button></div>';
+  sag(k + '. ' + e.spiegel + '. ' + e.fragen[0]);
+}
+function radZeichen(id){
+  var z = kFind(id), m = memLaden(), an = !!m.re['k_' + id]; radWahl = 'z:' + id; radRender(); haptik(6);
+  $('radInfo').innerHTML = '<b class="t">' + z.s + ' ' + esc(z.z) + ' · ' + esc(z.org) + '</b>' +
+    '<p class="klein muted">' + ELEM[z.te].e + ' ' + esc(z.te) + ' · ' + esc(z.thema) + (an ? ' · ✦ leuchtet' : '') + '</p><p>' + esc(z.fragen[0]) + '</p>' +
+    '<div class="reihe"><button class="btn" type="button" data-reihe="k_' + id + '">' + (an ? 'Nochmals (2 Min)' : 'Stern anzünden (2 Min)') + '</button><button class="btn ghost" type="button" data-radz="' + id + '">Ganzes Zeichen</button></div>';
+}
+$('rad').addEventListener('click', function(ev){
+  var g = ev.target.closest('[data-re]'); if (g){ radElement(g.dataset.re); return; }
+  var s = ev.target.closest('[data-rz]'); if (s){ radZeichen(s.dataset.rz); return; }
+  if (ev.target.closest('#radFia')){ radWahl = null; radRender(); var f = $('radFia').getBoundingClientRect(); feiern(f.left + f.width / 2, f.top + f.height / 2, true); var t = 'Das ist dein Körperkosmos. Fang irgendwo an.'; sag(t); }
+});
+$('rad').addEventListener('keydown', function(ev){ if (ev.key !== 'Enter' && ev.key !== ' ') return; var g = ev.target.closest('[data-re],[data-rz]'); if (!g) return; ev.preventDefault(); if (g.dataset.re) radElement(g.dataset.re); else radZeichen(g.dataset.rz); });
+$('radInfo').addEventListener('click', function(ev){ var b = ev.target.closest('[data-radz]'); if (b){ zeigeTab('koerper'); setTimeout(function(){ kZeige(b.dataset.radz); }, 60); } });
+/* Neuer Stern: nach einer Zeichen-Reihe leuchtet er auf, mit kleiner Feier */
+$('plFertig').addEventListener('click', function(){
+  if (!pl || pl.id.indexOf('k_') !== 0) return; var id = pl.id.slice(2), m = memLaden();
+  var vorher = m.re[pl.id] ? m.re[pl.id].n : 0;
+  if (vorher === 0){ radHell.push(id); setTimeout(function(){ var n = KZ.filter(function(z){ return memLaden().re['k_' + z.id]; }).length; var hz = $('plErg'); if (hz) hz.textContent += ' ✦ Ein neuer Stern leuchtet in deinem Körperkosmos (' + n + ' von 12).'; }, 50); }
+}, true);
+var _memRenderR4 = memRender;
+memRender = function(){ _memRenderR4(); radRender(); if (radWahl && radWahl.indexOf('z:') === 0) radZeichen(radWahl.slice(2)); };
+
+/* Reise durch die vier Böden: im Liegen, dunkel, auf Wunsch nur hören (wie ein Hörbuch) */
+var REISE = [
+  ['', 'Leg dich bequem hin oder setz dich. Die Augen dürfen zugehen.', 6],
+  ['', 'Wir reisen von unten nach oben, durch die vier Böden, die dich tragen.', 6],
+  ['Fusssohle', 'Spür deine Fusssohlen. Ferse, Aussenkante, Ballen, grosse Zehe. Das Gewicht darf nach unten sinken.', 14],
+  ['Fusssohle', 'Gewicht ist die Antwort der Erde. Du musst dich nicht halten. Du wirst gehalten.', 12],
+  ['Beckenboden', 'Jetzt das Becken. Beim Einatmen sinkt der Beckenboden ein wenig, beim Ausatmen hebt er sich. Nur zuschauen.', 16],
+  ['Beckenboden', 'Er schwingt mit, ganz von allein, wie ein Tuch im Wind.', 12],
+  ['Zwerchfell', 'Weiter nach oben, unter die Rippen. Das Zwerchfell ist eine Kuppel, die sich mit jedem Atemzug bewegt.', 16],
+  ['Zwerchfell', 'Das Herz sitzt oben darauf und fährt mit. Ein … und aus. Nichts verändern.', 14],
+  ['Mundboden', 'Und jetzt ganz oben: der Mundboden, unter der Zunge. Lass die Zunge weich liegen. Der Kiefer wird locker.', 16],
+  ['Mundboden', 'Wenn du magst, summ ein leises Mmm. Spür, wie es bis in die Füsse schwingt.', 14],
+  ['Alle vier', 'Fusssohle, Becken, Zwerchfell, Mundboden. Vier Böden, übereinander, wie Stockwerke eines Hauses.', 14],
+  ['Alle vier', 'Sie atmen zusammen. Du darfst einfach da sein.', 14],
+  ['', 'Bleib noch liegen, solange du magst. Wenn du zurückkommst: Finger und Zehen bewegen, strecken, Augen auf.', 8]
+];
+var reiseRun = 0;
+function reiseWarte(ms, id){ return new Promise(function(r){ setTimeout(function(){ r(id === reiseRun); }, reduced ? Math.min(ms, 1500) : ms); }); }
+function reiseSprich(t){ if ('speechSynthesis' in window || window.NovaStimme){ var alt = tonAn; tonAn = true; sag(t); tonAn = alt; } }
+function reiseStart(){
+  var id = ++reiseRun, hoeren = $('reiseHoeren').checked; store.set('reiseHoeren', hoeren ? 1 : 0);
+  tonStopp(); atemStopp(false); still();
+  $('reiseBild').classList.toggle('hoeren', hoeren); $('reiseBild').classList.remove('hidden'); document.body.style.overflow = 'hidden';
+  try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function(w){ reiseStart.lock = w; }).catch(function(){}); } catch(e){}
+  memZahl('reise'); var o = $('reiseOrb'), i = 0;
+  (function weiter(){
+    if (id !== reiseRun) return;
+    if (i >= REISE.length){ $('reiseText').textContent = ''; $('reiseOrt').textContent = ''; return; }
+    var s = REISE[i++]; $('reiseOrt').textContent = s[0]; $('reiseText').textContent = s[1]; reiseSprich(s[1]);
+    o.style.transform = 'scale(' + (i % 2 ? 1.35 : .85) + ')';
+    reiseWarte(2500 + s[1].length * 65 + s[2] * 1000, id).then(function(ok){ if (ok) weiter(); });
+  })();
+}
+function reiseStopp(){ reiseRun++; still(); $('reiseBild').classList.add('hidden'); document.body.style.overflow = ''; try { if (reiseStart.lock) reiseStart.lock.release(); } catch(e){} reiseStart.lock = null; memRender(); }
+$('reiseHoeren').checked = !!store.get('reiseHoeren', 0);
+$('reiseGo').addEventListener('click', reiseStart);
+$('reiseStopp').addEventListener('click', reiseStopp);
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !$('reiseBild').classList.contains('hidden')) reiseStopp(); });
 
 /* ================= Start ================= */
 heuteBuehne(); kTagRender(); rRender(); memRender(); buchRender(); eWaehle(ELIST[Math.floor(Date.now() / 864e5) % 5], true);
