@@ -256,6 +256,7 @@ header{gap:8px}
 section{animation:auftauchen .3s ease both}
 @media (prefers-reduced-motion:reduce){#buehnePlatz{animation:none}}
 </style>
+<link rel="stylesheet" href="../nova/puppe.css">
 </head>
 <body>
 <div class="himmel" id="himmel" aria-hidden="true"><span class="mond"></span></div>
@@ -868,7 +869,7 @@ function renderAll(){
 let poseT;
 function pose(name, zeichen, ms = 1800){
   const f = $('#figur'), z = $('#zeichen');
-  f.classList.remove('freut','denkt','rechnet','staunt','schlaeft'); void f.offsetWidth;
+  f.classList.remove('freut','denkt','rechnet','staunt','schlaeft','nickt'); void f.offsetWidth;
   z.className = 'zeichen'; z.textContent = '';
   clearTimeout(poseT);
   if (name) f.classList.add(name);
@@ -1998,6 +1999,7 @@ async function einstSpeichern(){ await kvSet('einst', einst); renderAll(); }
 })();
 </script>
 <script src="../apps/sprechen/sprechen.js" data-figur="fompa" data-name="Fompa" data-bild="figur.jpg" data-stimme-handy="mann" data-unten="16" data-saetze='{"gruss":["Hallo, ich bin Fompa. Sag mir, was du bezahlt hast, zum Beispiel: Migros Büromaterial 23.50 mit Karte. Oder frag mich: Wie viel habe ich diese Woche noch?"],"lob":["Wunderbar, wieder ein Zettel gerettet. Mein Glas glitzert schon."],"mut":["Keine Sorge, wir machen das Zettel für Zettel. Nichts geht verloren."],"frage":["Sag mir einfach Wofür, Betrag und womit bezahlt. Ob etwas abziehbar ist, entscheidet dein Steuerberater, ich ordne nur."],"abschied":["Bis bald. Ich passe auf deine Zettel auf."]}' defer></script>
+<script src="../nova/puppe.js"></script>
 <script src="../nova/seelen.js" defer></script>
 <script src="../nova/buehne.js" data-figur="fompa" data-name="Fompa" data-bild="held.jpg" data-satz="Ich sammle deine Zettel, rechne in Sitzungen und erinnere dich an alles, was fällig ist." data-vor="#buehnePlatz" defer></script>
 <script src="../nova/nova.js" data-nova-bild="icon-192.png" data-nova-app="Fompa" defer></script>

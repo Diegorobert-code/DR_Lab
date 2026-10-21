@@ -157,7 +157,7 @@
   var pp = [];
   function puppeGruss(el) {
     if (!el || !(window.Puppe && typeof window.Puppe.winkeZurueck === 'function')) return false;
-    try { var f = pp.filter(function (x) { return x[0] === el; })[0]; if (!f) { f = [el, window.Puppe.winkeZurueck(el, { figur: 'fompa', gruss: 'nicken', antippen: false, blase: false })]; pp.push(f); } if (f[1] && typeof f[1].gruesse === 'function') { f[1].gruesse('nicken'); return true; } } catch (x) {}
+    try { var f = pp.filter(function (x) { return x[0] === el; })[0]; if (!f) { f = [el, window.Puppe.winkeZurueck(el, el.closest && el.closest('#figur') ? { figur: 'fompa', gruss: 'nicken', antippen: false, blase: false, bild: 'posen/nickt.jpg', augen: [[9, 9, 0.01, 0.01]], mund: { l: [9, 9], r: [9.1, 9], oben: 0, unten: 0, kinn: 0.01 }, kopf: [0.5, 0.42, 0.22], hals: [0.5, 0.72], gesicht: [0.5, 0.44, 0.16] } : { figur: 'fompa', gruss: 'nicken', antippen: false, blase: false })]; pp.push(f); } if (f[1] && typeof f[1].gruesse === 'function') { f[1].gruesse('nicken'); return true; } } catch (x) {}
     return false;
   }
   function winke(el) {
@@ -169,7 +169,7 @@
   if (fig) document.addEventListener('click', function (ev) {
     if (!ev.target.closest || !ev.target.closest('#figur')) return;
     ev.stopPropagation();
-    if (typeof pose === 'function') pose('freut', '👋', 1600);
+    if (typeof pose === 'function') pose('nickt', '👋', 3200); // Runde 5: Tinkos «Fompa nickt» (Münzglas), die Puppe nickt mit
     var img = fig.querySelector('img') || fig;
     if (!winke(img)) { fig.classList.remove('r4-wink'); void fig.offsetWidth; if (!ruhigM) fig.classList.add('r4-wink'); }
     var b = document.getElementById('bubble'); if (b) b.innerHTML = e(SAETZE[si++ % SAETZE.length]);

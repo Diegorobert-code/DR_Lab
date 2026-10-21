@@ -1,6 +1,6 @@
 // Fompa – Offline-Cache (nur eigene Dateien, keine Belege)
-const CACHE = 'fompa-v9';
-const FILES = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-96.png', './figur.jpg', './held.jpg', './fompa-posen.jpg', './feedback.js', './runde4.js', './posen/posen.json', './posen/freut.jpg', './posen/denkt.jpg', './posen/rechnet.jpg', './posen/staunt.jpg', './posen/schlaeft.jpg', '../apps/sprechen/sprechen.js', '../nova/intro.js', '../nova/buehne.js', '../nova/nova.js', '../nova/seelen.js'];
+const CACHE = 'fompa-v10';
+const FILES = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-96.png', './figur.jpg', './held.jpg', './fompa-posen.jpg', './feedback.js', './runde4.js', './posen/posen.json', './posen/freut.jpg', './posen/denkt.jpg', './posen/rechnet.jpg', './posen/staunt.jpg', './posen/schlaeft.jpg', './posen/nickt.jpg', '../nova/puppe.js', '../nova/puppe.css', '../apps/sprechen/sprechen.js', '../nova/intro.js', '../nova/buehne.js', '../nova/nova.js', '../nova/seelen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
 });
