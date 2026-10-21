@@ -40,7 +40,7 @@ Kennt Flo ein Essen noch nicht, bringst du es ihr bei. «Was Flo sich merkt» ze
 OHNE DRUCK
 • Sanfte Ansicht: Teller und Wetter statt Kalorien-Zahlen (umschaltbar), keine Diät, keine Bewertung
 • Kein Konto, keine Werbung, keine Käufe
-• Food and Flow ist eine Wohlfühl-App und kein Medizinprodukt. Für Ernährungsfragen bei Krankheit sprich mit deiner Ärztin oder Ernährungsberatung.
+• Food and Flow ist eine Wohlfühl-App und kein Medizinprodukt. Für Ernährungsfragen bei Krankheit hol dir Rat bei einer Fachperson.
 
 Food and Flow ist ein Projekt von DR Lab, Zürich.
 ```

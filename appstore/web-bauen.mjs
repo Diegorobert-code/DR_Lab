@@ -48,8 +48,9 @@ const RAUS = new Set(['sw.js', 'feedback.js', 'FIGUR.md']);
 fs.cpSync(appQuelle, path.join(www, app.ordner), { recursive: true, filter: q => !RAUS.has(path.basename(q)) || path.dirname(q) !== appQuelle });
 
 // Bausteine ausserhalb des App-Ordners, die die App benutzt (../nova/intro.js, ../apps/sprechen/sprechen.js, Figurenbilder …).
-// Ohne Nova (nova: false) bleibt alles weg, was mit dem Server redet: nova.js, mund.js, reden.html, ElevenLabs.
-const NOVA_SERVER = /^nova\/(nova\.js|mund\.js|reden\.html|elevenlabs[^/]*)$/;
+// Ohne Nova (nova: false) bleibt alles weg, was mit dem Server redet: nova.js, reden.html, ElevenLabs.
+// mund.js bleibt drin: es bewegt nur den Mund auf dem Bild, ganz im Gerät (braucht Otti).
+const NOVA_SERVER = /^nova\/(nova\.js|reden\.html|elevenlabs[^/]*)$/;
 const textDatei = f => /\.(html|js|css|json)$/i.test(f);
 function alleDateien(d) {
   return fs.readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? alleDateien(path.join(d, e.name)) : [path.join(d, e.name)]);
@@ -111,7 +112,7 @@ for (const datei of fs.readdirSync(path.join(www, app.ordner)).filter(f => f.end
   html = html.replace(/DR Lab · Testphase/g, 'DR Lab').replace(/Testphase gratis\./g, 'Gratis.')
     .replace(/<span class="tag">(DR Lab · )?Prototyp<\/span>/g, '');
   html = html.replace(/<script[^>]+src="feedback\.js"[^>]*><\/script>\s*/g, '');
-  if (!app.nova) html = html.replace(/<script[^>]+src="\.\.\/nova\/(nova|mund)\.js"[^>]*><\/script>\s*/g, '');
+  if (!app.nova) html = html.replace(/<script[^>]+src="\.\.\/nova\/nova\.js"[^>]*><\/script>\s*/g, '');
   // Nach <meta charset> einfügen, damit die Zeichenkodierung zuerst kommt (Umlaute).
   if (/<meta charset[^>]*>/i.test(html)) html = html.replace(/<meta charset[^>]*>/i, m => m + '\n' + kopf);
   else html = html.replace(/<head>/i, m => m + '\n' + kopf);

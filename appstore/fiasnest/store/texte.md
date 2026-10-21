@@ -46,7 +46,7 @@ OHNE DRUCK
 • Kein Konto, keine Werbung, keine Käufe
 • Alles bleibt auf deinem iPhone
 
-Fias Nest ist eine Wohlfühl-App und kein Medizinprodukt. Wenn du seit Wochen schlecht schläfst, sprich mit deiner Hausärztin oder deinem Hausarzt.
+Fias Nest ist eine Wohlfühl-App und kein Medizinprodukt. Wenn du seit Wochen schlecht schläfst, hol dir Unterstützung von einer Fachperson.
 
 Fias Nest ist ein Projekt von DR Lab, Zürich.
 ```

@@ -35,7 +35,7 @@ Alle wichtigen Nummern mit einem Tipp: 144 Sanität, 117 Polizei, 112 Euronotruf
 DEINE DATEN
 Alles bleibt auf deinem iPhone. Kein Konto, keine Werbung. Du kannst alles jederzeit löschen.
 
-Jackie's Advice ersetzt keine Fachperson, keine Rechtsberatung und keine Diagnose.
+Jackie's Advice ersetzt keine Fachperson und keine Rechtsberatung.
 
 Ein Projekt von DR Lab, Zürich.
 ```

@@ -1,6 +1,6 @@
 # DR Lab Apps in den App Store – Anleitung
 
-Stand 19.10.2026. Neun Apps sind vorbereitet. Eingereicht wird erst, wenn du selbst auf «Zur Prüfung einreichen» tippst. Hochladen machst du selbst, nach deinem Go.
+Stand 21.10.2026. 17 Apps sind vorbereitet, jede für iPhone (App Store) und Android (Google Play). Eingereicht wird erst, wenn du selbst auf «Zur Prüfung einreichen» tippst. Hochladen machst du selbst, nach deinem Go.
 
 | App | Ordner im Paket | Bundle-ID | Web-Ordner im Repo |
 |---|---|---|---|
@@ -13,8 +13,17 @@ Stand 19.10.2026. Neun Apps sind vorbereitet. Eingereicht wird erst, wenn du sel
 | Mama Affe | `appstore/mamaaffe/` | `ch.drlab.mamaaffe` | `mama-affe/` |
 | Fompa | `appstore/fompa/` | `ch.drlab.fompa` | `fompa/` |
 | Food and Flow | `appstore/foodandflow/` | `ch.drlab.foodandflow` | `appid/` |
+| Otti | `appstore/otti/` | `ch.drlab.otti` | `otti/` |
+| Transkript | `appstore/transkript/` | `ch.drlab.transkript` | `transkript/` |
+| Granny | `appstore/granny/` | `ch.drlab.granny` | `granny/` |
+| Carmen – Salsa | `appstore/carmen/` | `ch.drlab.carmen` | `carmen/` |
+| Wäf Wäf | `appstore/waefwaef/` | `ch.drlab.waefwaef` | `waefwaef/` |
+| Coin Maker | `appstore/coinmaker/` | `ch.drlab.coinmaker` | `coinmaker/` |
+| Hasis Programmladen | `appstore/hasi/` | `ch.drlab.hasi` | `hasi/` |
+| Fia Körperkosmos | `appstore/fiakosmos/` | `ch.drlab.fiakosmos` | `fia-kosmos/` (bis zum Merge aus Branch `fia-koerperkosmos`) |
 
 Pro App liegt alles in `appstore/<app>/`: die iPhone-App (`ios/`), die Texte (`store/texte.md`), das Icon (`store/icon-1024.png`) und die Bilder (`store/screenshots-6.9/`).
+Für Google Play: das Android-Projekt (`android/`, gebaut von `.github/workflows/android-build.yml`), `store/texte-play.md`, `store/app-inhalte-play.md` (alle Formular-Antworten), `store/play-icon-512.png`, `store/play-feature-1024x500.png` und `store/screenshots-play/` (1080 × 1920). Signiert wird nur mit den Secrets PLAY_KEYSTORE_BASE64, PLAY_KEYSTORE_PASSWORD, PLAY_KEY_ALIAS, PLAY_KEY_PASSWORD.
 Was Apple prüft und was noch fehlt: `appstore/PRUEFUNG-2026-10-19.md`.
 
 ## Deine Schritte (ein Schritt pro Zeile)
