@@ -17,6 +17,7 @@
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-180.png">
 <title>Fias Nest</title>
+<link rel="stylesheet" href="../nova/puppe.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Figtree:wght@400;500;600&display=swap">
 <style>
 /* Fias Nest v1.0: ein Tag mit Fia in sechs Teilen. Nachtblau wie Fias Sternenhimmel, Gold wie ihre Glut.
@@ -1647,7 +1648,8 @@ if(!S.onb)onbZeigen();else if(AKTUELL==='home')film();
 /* Fia winkt zurück, sobald man sie antippt. Kommt nova/puppe.js mit Puppe.winkeZurueck, übernimmt die Puppe. */
 POSE_KL.push('p-winkt');
 function winke(el){if(!el)return;
-  try{if(window.Puppe&&typeof Puppe.winkeZurueck==='function'){Puppe.winkeZurueck(el);return}}catch(e){}
+  /* Puppe (nova/puppe.js): Fia flattert flüssig zurück. Ohne Puppe: sanfte CSS-Animation wie bisher. */
+  try{if(window.Puppe&&typeof Puppe.winkeZurueck==='function'){const w=Puppe.winkeZurueck(el,{figur:'fia',gruss:'flattern',antippen:false,ton:false,blase:false});if(w&&w.winke){w.winke({gruss:'flattern'});return}}}catch(e){}
   setPose(el,'winkt',1350,grundPose());
   if(reduce)return;const box=el.parentNode;if(!box)return;const h=document.createElement('span');h.className='winkhand';h.textContent='👋';h.setAttribute('aria-hidden','true');
   const r=el.getBoundingClientRect(),b=box.getBoundingClientRect();h.style.left=(r.right-b.left-34)+'px';h.style.top=(r.top-b.top+6)+'px';box.appendChild(h);setTimeout(()=>h.remove(),1400)}
@@ -1745,6 +1747,7 @@ document.querySelectorAll('#monde button').forEach(b=>b.onclick=()=>{tag().nacht
 nachGo(AKTUELL||'home');
 })();
 </script>
+<script src="../nova/puppe.js" defer></script>
 <script src="../nova/seelen.js" defer></script>
 <script src="../nova/nova.js" data-nova-bild="figuren/fia.jpg" data-nova-app="Fias Nest" defer></script>
 <script>/* Gesprächsfenster an Claude nur im Web, nicht in der iPhone-App */

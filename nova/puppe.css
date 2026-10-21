@@ -1,0 +1,121 @@
+/* Puppe: Bühne für eine lebendige Figur (siehe puppe.js). Nur transform/opacity bewegen → flüssig auf dem iPhone. */
+.puppe-buehne {
+  position: relative; overflow: hidden; width: 100%; aspect-ratio: 3 / 4; max-width: 520px; margin: 0 auto;
+  border-radius: 28px; isolation: isolate; touch-action: manipulation; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
+  background:
+    radial-gradient(120% 70% at 50% 100%, rgba(242, 193, 78, .16), transparent 60%),
+    radial-gradient(90% 60% at 50% 25%, #1b2c66 0%, #0f1b44 55%, #070d24 100%);
+  box-shadow: inset 0 0 0 1px rgba(242, 193, 78, .28), 0 18px 50px -14px rgba(0, 0, 0, .55);
+}
+.puppe-buehne > * { position: absolute; }
+.pp-staub, .pp-funken { inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.pp-funken { z-index: 5; }
+.pp-tiefe { inset: 0; perspective: 900px; will-change: transform; }
+
+/* Lichtkreis am Boden (Projektor) mit weichem Schatten */
+.pp-boden {
+  left: 50%; width: 70%; height: 12%; margin-top: -6%; transform-origin: 50% 50%; will-change: transform, opacity; pointer-events: none;
+  background:
+    radial-gradient(closest-side, rgba(3, 6, 18, .75), rgba(3, 6, 18, .35) 55%, transparent 70%),
+    radial-gradient(closest-side, transparent 72%, rgba(242, 193, 78, .55) 80%, rgba(242, 193, 78, .12) 90%, transparent 100%);
+}
+.pp-boden::after {
+  content: ""; position: absolute; inset: -40% -12%; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(242, 193, 78, .28), transparent 70%);
+}
+.pp-strahl {
+  left: 50%; bottom: 15%; width: 70%; height: 60%; transform: translateX(-50%); pointer-events: none;
+  background: radial-gradient(50% 100% at 50% 100%, rgba(242, 193, 78, .16), rgba(242, 193, 78, .05) 55%, transparent 100%);
+}
+
+.pp-figur { position: absolute; transform-origin: 50% 100%; will-change: transform; cursor: pointer; transform-style: preserve-3d; }
+.pp-glow { inset: -14%; position: absolute; border-radius: 50%; pointer-events: none; will-change: opacity; filter: blur(6px); }
+.pp-koerper { position: absolute; inset: 0; opacity: 0; transition: opacity .6s ease; }
+.pp-bereit .pp-koerper { opacity: 1; }
+.pp-bild { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.pp-einfach {
+  object-fit: cover; border-radius: 50%;
+  -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%); mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
+}
+
+/* winkender Arm (Ein-Bild-Modus) */
+.pp-arm { position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none; will-change: opacity; }
+.pp-ober { position: absolute; transform-origin: 50% 100%; will-change: transform; }
+.pp-unter { position: absolute; transform-origin: 50% 85.3%; will-change: transform; }
+.pp-ober > img, .pp-unter > img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
+.pp-ober > img { -webkit-mask-image: linear-gradient(to top, transparent 0, #000 35%); mask-image: linear-gradient(to top, transparent 0, #000 35%); }
+.pp-links .pp-ober > img, .pp-links .pp-unter > img { transform: scaleX(-1); }
+
+/* Ebenen-Modus */
+.pp-ebenen .pp-gelenk, .pp-ebenen .pp-teil { position: absolute; inset: 0; width: 100%; height: 100%; }
+.pp-ebenen .pp-gelenk { will-change: transform; }
+.pp-teil { display: block; pointer-events: none; -webkit-user-drag: none; }
+.pp-teil.pp-aus { opacity: 0; }
+/* Mund wechselt sofort (Überblenden liesse den gemalten Mund durchscheinen), Lider werden pro Bild gesetzt, Ausdruck blendet weich */
+.pp-ausdruck { transition: opacity 140ms ease; }
+
+/* Gedanken-Punkte und Zzz */
+.pp-deko { position: absolute; inset: 0; pointer-events: none; }
+.pp-deko i { position: absolute; display: block; opacity: 0; transition: opacity .5s ease; font-style: normal; }
+.pp-gedanke { left: 4%; top: 2%; width: 30%; height: 20%; }
+.pp-gedanke b { position: absolute; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fffbe8, #f6d98a 60%, rgba(242,193,78,.5)); box-shadow: 0 0 14px rgba(242, 193, 78, .7); }
+.pp-gedanke b:nth-child(1) { width: 9%; aspect-ratio: 1; right: 6%; bottom: 0; }
+.pp-gedanke b:nth-child(2) { width: 14%; aspect-ratio: 1; right: 22%; bottom: 22%; }
+.pp-gedanke b:nth-child(3) { width: 22%; aspect-ratio: 1; right: 44%; bottom: 46%; }
+.pp-z-denkt .pp-gedanke { opacity: 1; }
+.pp-z-denkt .pp-gedanke b { animation: ppPunkt 2.4s ease-in-out infinite both; }
+.pp-z-denkt .pp-gedanke b:nth-child(2) { animation-delay: .3s; }
+.pp-z-denkt .pp-gedanke b:nth-child(3) { animation-delay: .6s; }
+@keyframes ppPunkt { 0% { transform: scale(0); opacity: 0 } 25%, 80% { transform: scale(1) translateY(-6%); opacity: 1 } 100% { transform: scale(.9); opacity: 0 } }
+.pp-zzz { right: 8%; top: 4%; width: 26%; height: 30%; font: 700 italic 26px/1 Georgia, serif; color: #f6d98a; text-shadow: 0 0 12px rgba(242, 193, 78, .8); }
+.pp-zzz b { position: absolute; left: 10%; bottom: 0; opacity: 0; }
+.pp-z-schlaeft .pp-zzz { opacity: 1; }
+.pp-z-schlaeft .pp-zzz b { animation: ppZ 3.6s ease-out infinite; }
+.pp-z-schlaeft .pp-zzz b:nth-child(2) { animation-delay: 1.2s; font-size: 30px; }
+.pp-z-schlaeft .pp-zzz b:nth-child(3) { animation-delay: 2.4s; font-size: 36px; }
+@keyframes ppZ { 0% { transform: translate(0, 0) scale(.5) rotate(-10deg); opacity: 0 } 20% { opacity: 1 } 100% { transform: translate(120%, -260%) scale(1.1) rotate(12deg); opacity: 0 } }
+
+/* Knopf «Bewegung» (iPhone: Neigung erlauben) */
+.pp-neigen {
+  right: 12px; top: 12px; z-index: 6; border: 1px solid rgba(242, 193, 78, .5); background: rgba(8, 14, 38, .6); color: #f6d98a;
+  font: 600 13px/1 system-ui, -apple-system, sans-serif; padding: 8px 12px; border-radius: 999px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.pp-neigen[hidden] { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pp-z-denkt .pp-gedanke b, .pp-z-schlaeft .pp-zzz b { animation: none; opacity: 1; }
+  .pp-z-schlaeft .pp-zzz b:nth-child(1) { transform: translate(0, 0); }
+  .pp-z-schlaeft .pp-zzz b:nth-child(2) { transform: translate(60%, -110%); }
+  .pp-z-schlaeft .pp-zzz b:nth-child(3) { transform: translate(120%, -230%); }
+}
+
+/* Ohne Bühne (buehne:false, z.B. Puppe.winkeZurueck): nur die Figur, deckungsgleich mit dem Original-Bild */
+.puppe-buehne.pp-inline { aspect-ratio: auto; max-width: none; margin: 0; border-radius: 0; background: none; box-shadow: none; width: 100%; height: 100%; }
+.pp-inline .pp-staub, .pp-inline .pp-funken, .pp-inline .pp-boden, .pp-inline .pp-strahl, .pp-inline .pp-glow, .pp-inline .pp-deko, .pp-inline .pp-neigen { display: none; }
+.pp-inline .pp-tiefe { perspective: none; }
+.pp-inline .pp-koerper { transition: none; }
+.pp-winker { position: absolute; z-index: 2; pointer-events: none; opacity: 0; transition: opacity .14s ease-out; }
+.pp-winker.pp-winker-an { opacity: 1; transition-duration: .12s; }
+.pp-winker:not(.pp-winker-an) { transition-duration: .22s; }
+.pp-winker-buehne { position: absolute; inset: 0; overflow: hidden; }
+
+/* Sprechblase (Gruss «reden») */
+.pp-blase {
+  position: absolute; left: 50%; top: 4%; z-index: 7; max-width: min(78%, 260px); width: max-content; pointer-events: none;
+  padding: 8px 14px; border-radius: 16px; background: rgba(255, 250, 236, .96); color: #1b2550; text-align: center;
+  font: 600 15px/1.3 ui-rounded, "SF Pro Rounded", system-ui, -apple-system, sans-serif;
+  box-shadow: 0 8px 22px -8px rgba(0, 0, 0, .45), 0 0 0 1px rgba(242, 193, 78, .55);
+  opacity: 0; transform: translate(calc(-50% + var(--dx, 0px)), 6px) scale(.92); transform-origin: 50% 100%; transition: opacity .22s ease, transform .32s cubic-bezier(.2, 1.4, .4, 1);
+}
+.pp-blase::after { content: ""; position: absolute; left: calc(50% - var(--dx, 0px)); bottom: -6px; width: 12px; height: 12px; margin-left: -6px; background: inherit; transform: rotate(45deg); border-radius: 0 0 3px 0; box-shadow: 1px 1px 0 rgba(242, 193, 78, .55); }
+.pp-blase.pp-blase-an { opacity: 1; transform: translate(calc(-50% + var(--dx, 0px)), 0) scale(1); }
+.pp-winker > .pp-blase.pp-blase-unten { bottom: auto; top: calc(100% + 10px); }
+.pp-blase-unten::after { bottom: auto; top: -6px; transform: rotate(225deg); }
+.pp-winker > .pp-blase { top: auto; bottom: calc(100% + 10px); max-width: 240px; font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { .pp-blase, .pp-blase.pp-blase-an { transition: opacity .2s ease; transform: translate(calc(-50% + var(--dx, 0px)), 0); } }
+
+/* Winke-Hand an der Bildecke (Puppe.winkeZurueck, Figur ohne Arm im Bild) */
+.pp-winkhand { position: absolute; right: -16%; top: -12%; width: 52%; aspect-ratio: 1; opacity: 0; pointer-events: none; will-change: transform, opacity; transform-origin: 62% 92%; container-type: inline-size; }
+.pp-winkhand span { display: block; font-size: 30px; font-size: 72cqw; line-height: 1; text-align: center; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .35)); }
+.pp-winkhand.pp-links { right: auto; left: -16%; transform-origin: 38% 92%; }
+.pp-winkhand.pp-links span { transform: scaleX(-1); }
