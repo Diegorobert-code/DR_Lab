@@ -434,10 +434,40 @@ body.im-schutz .wrap{padding-top:calc(74px + var(--sat))}
 .privacy{font-size:15px}
 .tile:active,.notecta:active,.jk-tuer:active{transform:scale(.98)}
 @media (prefers-reduced-motion:reduce){.jk-buehne img,.jk-blase{animation:none!important}}
+
+/* Runde 4: Notruf immer sichtbar, Klack-Schuhe, Sicher unterwegs */
+.jk-notruf{grid-template-columns:1fr 1fr 1fr .8fr}
+.jk-notruf .nr{gap:6px;padding:8px 6px}
+.jk-notruf .nr svg.i{width:16px;height:16px}
+@media (max-width:370px){.jk-notruf .nr svg.i{display:none}}
+.jk-sticky-nr{position:fixed;left:0;right:0;top:0;z-index:70;display:flex;gap:6px;padding:calc(6px + var(--sat)) calc(12px + var(--sar)) 6px calc(12px + var(--sal));background:rgba(10,16,40,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,143,128,.35);transform:translateY(-110%);transition:transform .25s var(--ease)}
+.jk-sticky-nr.an{transform:none}
+.jk-sticky-nr a{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;border-radius:12px;background:#3a2236;border:1px solid rgba(255,143,128,.55);color:#ffe3de;text-decoration:none;font:500 14px var(--sans);white-space:nowrap}
+.jk-sticky-nr a b{font-size:17px;color:#fff}
+body.im-schutz .jk-sticky-nr{display:none}
+@media (prefers-reduced-motion:reduce){.jk-sticky-nr{transition:none}}
+.jk-klack{position:absolute;left:12px;top:40%;width:110px;height:40px;z-index:1;pointer-events:none;opacity:0}
+.jk-klack svg{position:absolute;bottom:0;width:52px;filter:drop-shadow(0 0 10px rgba(242,193,78,.8))}
+.jk-klack .l{left:2px;transform:scaleX(-1)}.jk-klack .r{right:2px}
+.jk-klack i{position:absolute;left:50%;bottom:16px;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:#fff;box-shadow:0 0 12px 6px rgba(255,233,168,.9);opacity:0}
+.jk-klack.an{animation:jkKlackDa 1.5s ease both}
+.jk-klack.an .l{animation:jkKlackL .32s ease-in-out 2 .15s}
+.jk-klack.an .r{animation:jkKlackR .32s ease-in-out 2 .15s}
+.jk-klack.an i{animation:jkKlackFunke .32s ease-out 2 .3s}
+@keyframes jkKlackDa{0%{opacity:0;transform:translateY(8px)}15%,80%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes jkKlackL{50%{transform:scaleX(-1) translateX(-14px) rotate(-8deg)}}
+@keyframes jkKlackR{50%{transform:translateX(-14px) rotate(-8deg)}}
+@keyframes jkKlackFunke{0%{opacity:0;transform:scale(.3)}40%{opacity:1;transform:scale(1.4)}100%{opacity:0;transform:scale(.6)}}
+@media (prefers-reduced-motion:reduce){.jk-klack.an,.jk-klack.an *{animation:none!important}}
+.jk-unterwegs{display:flex;align-items:center;gap:14px;width:100%;margin:12px 0 4px;padding:14px 16px;min-height:64px;border-radius:20px;border:1px solid rgba(91,141,239,.45);background:linear-gradient(135deg,rgba(40,60,130,.55),rgba(20,30,70,.7));color:var(--ink);text-align:left;cursor:pointer;font:inherit}
+.jk-unterwegs b{display:block;font-size:17px}.jk-unterwegs small{display:block;font-size:14px;line-height:1.35;color:var(--muted)}
+.jk-uw-ic{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:rgba(91,141,239,.25);color:#cfe0ff}
+.jk-uw-pfeil{margin-left:auto;opacity:.6}
 </style>
 </head>
 <body>
-<script src="../nova/intro.js" data-art="portal" data-bild="schuhmacher.jpg" data-fokus="0.55,0.3" data-text="Willkommen in der Werkstatt vom Schuhmacher"></script>
+<!-- Runde 4: kein Kino-Intro mehr. Es lag 3 Sekunden über den Notrufnummern. Jackie grüsst stattdessen auf der Bühne (winkt, klackt mit den Schuhen). -->
+<div class="jk-sticky-nr" id="jkStickyNr" role="region" aria-label="Notruf, immer erreichbar" aria-hidden="true"><a href="tel:117" tabindex="-1"><b>117</b> Polizei</a><a href="tel:144" tabindex="-1"><b>144</b> Sanität</a><a href="tel:142" tabindex="-1"><b>142</b> Opferhilfe</a></div>
 
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -482,14 +512,16 @@ body.im-schutz .wrap{padding-top:calc(74px + var(--sat))}
   <section id="vHome">
     <div class="jk-notruf" role="region" aria-label="Notfall – sofort Hilfe">
       <a class="nr" href="tel:117"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg><span><b>117</b><small>Polizei</small></span></a>
+      <a class="nr" href="tel:144"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg><span><b>144</b><small>Sanität</small></span></a>
       <a class="nr" href="tel:142"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg><span><b>142</b><small>Opferhilfe</small></span></a>
-      <button class="nr mehr" id="btnSos" type="button" aria-label="Alle Notfallnummern"><span><b>Notfall</b><small>alle Nummern</small></span></button>
+      <button class="nr mehr" id="btnSos" type="button" aria-label="Alle Notfallnummern"><span><b>Alle</b><small>Nummern</small></span></button>
     </div>
     <section class="jk-buehne" aria-label="Jackie" id="jkBuehne">
       <img src="jackie-3d.jpg" alt="Jackie" width="1024" height="1024" id="jkBild">
       <div class="jk-blase" id="jkBlase" aria-live="polite"><span id="jkBlaseText">Ich höre dir zu. Tipp aufs goldene Mikrofon.</span></div>
       <button class="jk-stagemic" id="stageMic" type="button" aria-label="Jackie erzählen: Mikrofon starten"><svg class="i"><use href="#i-mic"/></svg></button>
       <svg class="jk-flugschuh" viewBox="0 0 120 70" aria-hidden="true"><use href="#i-goldschuh"/></svg>
+      <span class="jk-klack" id="jkKlack" aria-hidden="true"><svg class="l" viewBox="0 0 120 70"><use href="#i-goldschuh"/></svg><svg class="r" viewBox="0 0 120 70"><use href="#i-goldschuh"/></svg><i></i></span>
       <div class="unten"><b>Ich bin Jackie.</b><span>Erzähl mir, was los ist. Wir finden zusammen den nächsten Schritt.</span>
       <a class="jk-reden" href="../nova/reden.html?f=jackie">📞 Mit Jackie reden</a></div>
     </section>
@@ -506,6 +538,11 @@ body.im-schutz .wrap{padding-top:calc(74px + var(--sat))}
       <span><b>Fühlst du dich zuhause nicht sicher?</b><small>Hilfe ohne Konto, gratis, vertraulich. Nichts wird gespeichert.</small></span>
     </button>
     <div class="jk-tuer-sprachen" aria-label="Hilfe in anderen Sprachen"><button type="button" data-schutz="sofort" data-schutz-lang="fr" lang="fr">Aide · Français</button><button type="button" data-schutz="sofort" data-schutz-lang="it" lang="it">Aiuto · Italiano</button><button type="button" data-schutz="sofort" data-schutz-lang="en" lang="en">Help · English</button></div>
+    <button class="jk-unterwegs" id="btnUnterwegs" type="button">
+      <span class="jk-uw-ic" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg></span>
+      <span><b>Sicher unterwegs</b><small>Scheinanruf · Begleit-Timer · Wo bin ich? Alles nur auf deinem Handy.</small></span>
+      <svg class="i jk-uw-pfeil" aria-hidden="true" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
 
     <div id="recallBox"></div>
 
@@ -769,6 +806,7 @@ body.im-schutz .wrap{padding-top:calc(74px + var(--sat))}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="schutz.js"></script>
+<script src="unterwegs.js"></script>
 <script>
 (function(){
 'use strict';
@@ -1061,7 +1099,7 @@ function renderGreeting(){
     ? 'Der Tag war lang. Erzähl mir, was dich noch beschäftigt – dann darf es ruhen.'
     : 'Erzähl mir, was dich gerade beschäftigt. Ich höre zu – ohne zu urteilen.';
 }
-function renderHome(){ renderGreeting(); renderRecall(); updateNoteCount(); renderSchuhe(); renderBlase(); markTiles(); setTimeout(()=>{ const vh=$('vHome'); if(vh && !vh.classList.contains('hide') && !document.querySelector('#jkBild[class*="jk-pose-"]')) pose('winkt'); }, 400); }
+function renderHome(){ renderGreeting(); renderRecall(); updateNoteCount(); renderSchuhe(); renderBlase(); markTiles(); setTimeout(()=>{ const vh=$('vHome'); if(vh && !vh.classList.contains('hide') && !document.querySelector('#jkBild[class*="jk-pose-"]')) winke(false); }, 400); }
 
 /* ---------- Ablauf ---------- */
 let flow = null;
@@ -1737,7 +1775,19 @@ function renderBlase(){
   if(z && z.art==='thema' && TOPICS[z.wert] && z.wert!=='pause' && Date.now()-z.am>6*3600e3 && Date.now()-z.am<14*86400e3) opts.push('Letztes Mal ging es um «'+TOPICS[z.wert].name+'». Wie ist es weitergegangen?');
   blase(opts[opts.length-1]);
 }
-$('jkBild').addEventListener('click', ()=>{ pose('hops'); blase(['Ich höre dir zu. Ganz in Ruhe.','Du musst das nicht allein lösen.','Ein kleiner Schritt reicht für heute.','Tipp auf das goldene Mikrofon und erzähl.'][Math.floor(Math.random()*4)]); });
+/* Runde 4: Jackie winkt zurück und klackt mit den Zauberschuhen (warm, ruhig, verdeckt nichts). */
+let klackCtx=null;
+function klackTon(){ try{ if(document.body.classList.contains('im-schutz')) return; klackCtx=klackCtx||new (window.AudioContext||window.webkitAudioContext)(); const c=klackCtx; if(c.state==='suspended') c.resume();
+  [0,0.16].forEach(t=>{ const o=c.createOscillator(), g=c.createGain(); o.type='triangle'; o.frequency.setValueAtTime(1500,c.currentTime+t); o.frequency.exponentialRampToValueAtTime(700,c.currentTime+t+0.05); g.gain.setValueAtTime(0.0001,c.currentTime+t); g.gain.exponentialRampToValueAtTime(0.12,c.currentTime+t+0.005); g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+t+0.08); o.connect(g).connect(c.destination); o.start(c.currentTime+t); o.stop(c.currentTime+t+0.1); }); }catch(e){} }
+function winke(mitTon){
+  pose('winkt');
+  const k=$('jkKlack'); if(k){ k.classList.remove('an'); void k.offsetWidth; k.classList.add('an'); }
+  if(mitTon){ klackTon(); try{ navigator.vibrate&&navigator.vibrate([12,140,12]); }catch(e){} }
+}
+window.JackieWinke=winke;
+$('jkBild').addEventListener('click', ()=>{
+  if(window.Puppe && typeof window.Puppe.winkeZurueck==='function'){ try{ window.Puppe.winkeZurueck($('jkBild'),{figur:'jackie'}); }catch(e){} }
+  winke(true); blase(['Ich höre dir zu. Ganz in Ruhe.','Du musst das nicht allein lösen.','Ein kleiner Schritt reicht für heute.','Tipp auf das goldene Mikrofon und erzähl.'][Math.floor(Math.random()*4)]); });
 
 /* Mikrofon auf dem Bild (Yulia v2): startet dasselbe Zuhören wie der grosse Knopf */
 $('stageMic').addEventListener('click', ()=>{
