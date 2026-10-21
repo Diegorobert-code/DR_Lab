@@ -97,6 +97,9 @@
 .pp-winker { position: absolute; z-index: 2; pointer-events: none; opacity: 0; transition: opacity .14s ease-out; }
 .pp-winker.pp-winker-an { opacity: 1; transition-duration: .12s; }
 .pp-winker:not(.pp-winker-an) { transition-duration: .22s; }
+/* Ruhende Winker: keine eigenen Grafik-Ebenen (spart Speicher auf dem Handy), nach dem Ausblenden ganz unsichtbar */
+.pp-winker:not(.pp-winker-an) { visibility: hidden; transition: opacity .22s ease-out, visibility 0s .22s; }
+.pp-winker:not(.pp-winker-an) * { will-change: auto !important; }
 .pp-winker-buehne { position: absolute; inset: 0; overflow: hidden; }
 
 /* Sprechblase (Gruss «reden») */
