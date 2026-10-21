@@ -1,6 +1,6 @@
 // Wäf Wäf – Offline-Cache (nur eigene Dateien, keine Daten)
-const CACHE = 'waefwaef-v8';
-const FILES = ['./', './index.html', './posen.js', './runde4.js', './seele.js', './feedback.js', './figur.jpg', './figur-klein.jpg', './posen/sitzt.jpg', './posen/rennt.jpg', './posen/schlaeft.jpg', './posen/freut.jpg', './posen/trick.jpg', './posen/schnueffelt.jpg', './icon-180.png', './icon-192.png', './manifest.webmanifest', '../nova/nova.js', '../nova/puppe.js', '../nova/puppe.css', '../nova/seelen.js'];
+const CACHE = 'waefwaef-v9';
+const FILES = ['./runde6.js', './besuch/granny.jpg', './besuch/hasi.jpg', './besuch/otti.jpg', './besuch/fia.jpg', './', './index.html', './posen.js', './runde4.js', './seele.js', './feedback.js', './figur.jpg', './figur-klein.jpg', './posen/sitzt.jpg', './posen/rennt.jpg', './posen/schlaeft.jpg', './posen/freut.jpg', './posen/trick.jpg', './posen/schnueffelt.jpg', './icon-180.png', './icon-192.png', './manifest.webmanifest', '../nova/nova.js', '../nova/puppe.js', '../nova/puppe.css', '../nova/seelen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(FILES.map(f => c.add(f).catch(() => {})))).then(() => self.skipWaiting()));
 });
