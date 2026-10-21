@@ -445,5 +445,6 @@
     '.pant-box p{font-style:italic;line-height:1.5;margin:12px 0 14px}.pant-box .btn{width:100%}.pant-skip{background:none;border:0;color:#d8cbb4;font:inherit;min-height:44px;margin-top:6px;cursor:pointer}' +
     '.hasi-fig.mit-bild svg{opacity:0}#hasiBild{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:22px;box-shadow:0 0 0 2px rgba(242,193,78,.55),0 10px 26px rgba(0,0,0,.45)}.kunden{margin-top:6px}';
   document.head.appendChild(r2);
+  window.HasiLaden = { hasi: hasi, zeige: zeige, W: W, PROB: PROB, zaehl: zaehl, klang: klang, glocke: glocke };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
