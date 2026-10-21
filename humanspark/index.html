@@ -1587,7 +1587,9 @@ function stimmePulsHtml(e){
   h += '<p class="muted" style="margin-top:6px">Zahl im Kästchen: Unterschied zum Ruhepuls am Anfang' + (e.start && e.start.bpm ? ' (' + e.start.bpm + ')' : '') + '. Beim Sprechen steigt der Puls oft leicht, das ist normal.</p>';
   var verb = novaBereit();
   h += '<div class="ex" id="novaBox"><b>An Nova schicken</b><p class="muted" style="margin:4px 0 8px">' + (verb ? 'Geht verschlüsselt an euren DR-Lab-Server (Sense Engine), nur mit Kürzel, ohne Namen. Nicht an Apple oder andere.' : 'Nova ist auf diesem Handy noch nicht verbunden. Öffne einmal die Seite «Handy verbinden», dann geht es hier mit einem Tipp.') + '</p>' +
-    (verb ? '<label class="chk"><input type="checkbox" id="novaOk"> Ich bin einverstanden, dass diese Sätze mit Puls an Nova gehen.</label><button class="btn primary" id="novaSend" disabled>An Nova schicken</button><div class="notice hidden" id="novaMsg"></div>' : '') + '<button class="btn ghost" id="spCopy">Als Text kopieren (für Claude)</button></div>';
+    (verb ? '<label class="chk"><input type="checkbox" id="novaOk"> Ich bin einverstanden, dass diese Sätze mit Puls an Nova gehen.</label><button class="btn primary" id="novaSend" disabled>An Nova schicken</button><div class="notice hidden" id="novaMsg"></div>' : '') + '<button class="btn ghost" id="spCopy">Als Text kopieren (für Claude)</button>' +
+    '<button class="btn primary" id="spSparky">🦊 Mit Sparky besprechen</button><div class="muted" id="spSparkyNote">Nur beim Tippen: Diese Auswertung geht an Sparkys Stimme (ElevenLabs, USA).</div>' +
+    '<button class="btn ghost hidden" id="spAbschrift">Gespräch als Text kopieren (für Claude)</button></div>';
   return h;
 }
 function novaGet(k){ try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch(x){ return null; } }
@@ -1633,6 +1635,45 @@ function novaText(e){
 document.addEventListener('click', function(ev){
   if (!ev.target || ev.target.id !== 'spCopy' || !sLastOut) return;
   var t = novaText(sLastOut), b = ev.target;
+  var ok = function(){ b.textContent = 'Kopiert ✓ – jetzt im Chat einfügen'; };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function(){ uiAlert(t); });
+  else uiAlert(t);
+});
+// Auswertung mit Sparky besprechen (Diegos Entscheid 21.10.: nur auf Tipp, Werte gehen an ElevenLabs)
+var SPARKY_AGENT = 'agent_7401m55j20jwek69gsh3gkfhaa77', spGespraech = null, spStartet = false, spAbschrift = [];
+function spKnopf(t){ var b = $('spSparky'); if (b) b.textContent = t || (spGespraech ? '■ Gespräch mit Sparky beenden' : '🦊 Mit Sparky besprechen'); }
+function spSdk(){
+  if (window.ElevenLabsClient) return Promise.resolve();
+  return new Promise(function(ok, nein){
+    var sc = document.createElement('script'); sc.src = '../nova/elevenlabs-client-1.26.0.js';
+    sc.onload = ok; sc.onerror = nein; document.head.appendChild(sc);
+  });
+}
+function spEnde(){ var c = spGespraech; spGespraech = null; spStartet = false; spKnopf(); if (c) try { c.endSession(); } catch(e){} }
+document.addEventListener('click', function(ev){
+  if (!ev.target || ev.target.id !== 'spSparky' || !sLastOut) return;
+  if (spGespraech || spStartet){ spEnde(); return; }
+  var text = novaText(sLastOut).replace(/^\[stimme-puls\] /, '');
+  spStartet = true; spAbschrift = []; stimmeStopp(); spKnopf('🦊 Sparky wacht auf …');
+  spSdk().then(function(){
+    return ElevenLabsClient.Conversation.startSession({
+      agentId: SPARKY_AGENT, connectionType: 'websocket',
+      onMessage: function(m){
+        if (!m || !m.message || /^Hier ist meine Sitzung von HumanSpark/.test(m.message)) return;
+        spAbschrift.push((m.source === 'user' ? 'Diego: ' : 'Sparky: ') + m.message);
+        $('spAbschrift').classList.remove('hidden');
+      },
+      onDisconnect: function(){ spGespraech = null; spStartet = false; spKnopf(); },
+      onError: function(){}
+    });
+  }).then(function(c){
+    spGespraech = c; spStartet = false; spKnopf();
+    try { c.sendUserMessage('Hier ist meine Sitzung von HumanSpark. Bitte besprich sie kurz mit mir: Was fällt dir auf, wo ging der Puls hoch oder runter, bei welchen Sätzen? Keine Diagnose.\n\n' + text); } catch(e){}
+  }).catch(function(){ spStartet = false; spKnopf(); $('spSparkyNote').textContent = 'Sparky ist gerade nicht erreichbar. Internet prüfen und nochmals tippen.'; });
+});
+document.addEventListener('click', function(ev){
+  if (!ev.target || ev.target.id !== 'spAbschrift' || !sLastOut) return;
+  var t = novaText(sLastOut).replace(/^\[stimme-puls\] /, '') + '\n\nGespräch mit Sparky:\n' + spAbschrift.join('\n'), b = ev.target;
   var ok = function(){ b.textContent = 'Kopiert ✓ – jetzt im Chat einfügen'; };
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function(){ uiAlert(t); });
   else uiAlert(t);
