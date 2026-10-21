@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1636">
+<title>Otti lebt – Puppe</title>
+<link rel="icon" href="nova.jpg">
+<link rel="stylesheet" href="puppe.css">
+<style>
+  :root { --nacht: #0b1636; --gold: #f2c14e; --gold2: #f6d98a; --text: #f3ece4; --leise: #aab2d4; --karte: rgba(255,255,255,.06); --linie: rgba(242,193,78,.28); }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: radial-gradient(120% 60% at 50% 0%, #17265a, var(--nacht) 60%, #060b20); color: var(--text); min-height: 100%; overflow-x: hidden; }
+  body { font: 16px/1.45 ui-rounded, "SF Pro Rounded", system-ui, -apple-system, sans-serif; padding: calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 24px); }
+  .wrap { max-width: 520px; margin: 0 auto; }
+  h1 { font: 700 26px/1.1 Georgia, serif; color: var(--gold); margin: 0 0 4px; }
+  .unter { color: var(--leise); font-size: 14px; margin: 0 0 12px; }
+  #otti { margin-bottom: 14px; }
+  .sprechblase { min-height: 22px; text-align: center; color: var(--gold2); font-size: 15px; margin: -4px 0 12px; transition: opacity .3s; }
+  h2 { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--leise); margin: 16px 0 8px; font-weight: 600; }
+  .knoepfe { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .knoepfe.drei { grid-template-columns: repeat(3, 1fr); }
+  button.k {
+    appearance: none; border: 1px solid var(--linie); background: var(--karte); color: var(--text); border-radius: 14px; padding: 10px 4px 9px;
+    font: 600 13px/1.15 inherit; font-family: inherit; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 58px; cursor: pointer;
+    transition: transform .15s ease, background .2s ease, border-color .2s ease;
+  }
+  button.k span { font-size: 20px; line-height: 1; }
+  button.k:active { transform: scale(.95); }
+  button.k.an { background: rgba(242,193,78,.18); border-color: var(--gold); color: #fff; box-shadow: 0 0 18px rgba(242,193,78,.25); }
+  .info { margin-top: 18px; font-size: 13px; color: var(--leise); background: var(--karte); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 12px 14px; }
+  .info b { color: var(--gold2); font-weight: 600; }
+  code { font-size: 12px; color: var(--gold2); word-break: break-word; }
+  .knoepfe.zwei { grid-template-columns: 1fr 1fr; }
+  button.k.gross { min-height: 64px; font-size: 15px; flex-direction: row; justify-content: center; gap: 8px; }
+  button.k.gross span { font-size: 24px; }
+  button.k.gross b { font-weight: 600; }
+  .arten { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .arten button { appearance: none; border: 1px solid var(--linie); background: transparent; color: var(--leise); border-radius: 999px; padding: 6px 11px; font: 600 12.5px/1 inherit; font-family: inherit; cursor: pointer; }
+  .arten button:active { transform: scale(.95); }
+  .figuren { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .figuren button { appearance: none; border: 1px solid var(--linie); background: var(--karte); color: var(--text); border-radius: 14px; padding: 6px 2px 7px; font: 600 11.5px/1.15 inherit; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; }
+  .figuren img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; display: block; box-shadow: 0 0 0 1px rgba(242,193,78,.35); }
+  .figuren button.an { background: rgba(242,193,78,.18); border-color: var(--gold); box-shadow: 0 0 18px rgba(242,193,78,.25); }
+  .figuren span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .reihe { display: flex; justify-content: space-around; gap: 10px; padding: 46px 4px 8px; }
+  .reihe img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 2px rgba(242,193,78,.5), 0 6px 18px -6px rgba(0,0,0,.6); cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Otti lebt</h1>
+  <p class="unter">Tipp Otti an, neig das Handy – und probier die Knöpfe.</p>
+  <div id="otti" aria-label="Otti der Igel"></div>
+  <div class="sprechblase" id="blase" aria-live="polite"></div>
+
+  <h2>Grüssen</h2>
+  <div class="knoepfe zwei">
+    <button class="k gross" id="winken"><span>👋</span>Winken</button>
+    <button class="k gross" id="gruss"><span>✨</span><b id="grussName">Auf ihre Art</b></button>
+  </div>
+  <div class="arten" id="arten"></div>
+
+  <h2>Figur</h2>
+  <div class="figuren" id="figuren"></div>
+  <div class="knoepfe drei" style="margin-top:8px">
+    <button class="k" id="ebenen"><span>🧩</span>Ebenen</button>
+    <button class="k" id="neig"><span>📱</span>Neigung</button>
+  </div>
+
+  <h2>Zustand</h2>
+  <div class="knoepfe" id="zustaende"></div>
+
+  <h2>Ereignisse</h2>
+  <div class="knoepfe drei">
+    <button class="k" data-r="richtig"><span>⭐</span>Richtig</button>
+    <button class="k" data-r="falsch"><span>🌧️</span>Falsch</button>
+    <button class="k" data-r="pause"><span>⏳</span>Pause</button>
+  </div>
+
+  <h2>Reden</h2>
+  <div class="knoepfe drei">
+    <button class="k" id="ton"><span>🔊</span>Test-Ton</button>
+    <button class="k" id="zeit"><span>🕒</span>Mit Zeitstempeln</button>
+    <button class="k" id="text"><span>💬</span>Nur Text</button>
+  </div>
+
+  <h2>Zurückwinken in einer App</h2>
+  <p class="unter">So sieht <code>Puppe.winkeZurueck()</code> aus: normale Bilder bleiben ruhig – tippst du eins an, grüsst die Figur zurück.</p>
+  <div class="reihe" id="reihe">
+    <img src="../otti/otti-3d.jpg" alt="Otti" width="72" height="72">
+    <img src="../hasi/icon-512.png" alt="Hasi" width="72" height="72">
+    <img src="../tradeping/ping-3d.jpg" alt="Mr. Ping" width="72" height="72">
+    <img src="../waefwaef/icon-512.png" alt="Wäf Wäf" width="72" height="72">
+  </div>
+
+  <p class="info" id="info">Modus: <b id="modus">…</b><br>
+    <b>Ebenen</b>: Figur aus Tinkos Teilen (Körper, Kopf, Arme/Flügel, Lider, Ausdrücke, 9 Mundformen) – Apps schalten mit <code>ordner:'../nova/puppe/otti/'</code> um.
+    <b>Ein-Bild</b>: ein einziges Figurenbild wird per WebGL verformt (Ersatz, z.B. Otti Mond).</p>
+</div>
+
+<script src="puppe.js"></script>
+<script>
+(function () {
+  var Z = [['ruhig', '😌', 'Ruhig'], ['hoert', '👂', 'Hört zu'], ['redet', '🗣️', 'Redet'], ['freut', '🥳', 'Freut sich'], ['winkt', '👋', 'Winkt'], ['denkt', '💭', 'Denkt'], ['schlaeft', '😴', 'Schläft']];
+  var q = new URLSearchParams(location.search);
+  // alle Figuren mit Posenbild im Repo (Pfade in Puppe.figuren relativ zum Repo-Hauptordner)
+  var F = Puppe.figuren, LISTE = ['otti', 'otti-winkt', 'otti-ganz', 'nova', 'fia', 'flo', 'granny', 'hasi', 'ping', 'waefwaef', 'fompa', 'sunny', 'sparky', 'coinmaker', 'kiki', 'carmen', 'jackie'];
+  var MOND = '../mondschein/figur-gross.jpg';
+  var EBENEN = { otti: 1, nova: 1, fia: 1 };
+  var figur = F[q.get('figur')] ? q.get('figur') : 'otti';
+  var bild = q.get('bild') || '../' + F[figur].bild;
+  // Ebenen-Modus (Tinkos Teile) ist Standard; ?ebenen=0 zeigt den Ein-Bild-Modus
+  var ebenenAn = q.get('ebenen') !== '0';
+  function ordner() { return ebenenAn && EBENEN[opt.figur] && opt.bild !== MOND ? 'puppe/' + opt.figur + '/' : false; }
+  var opt = { figur: figur, bild: bild, pauseNach: 25, antippen: 'gruss' };
+  opt.ordner = ordner();
+  var otti = window.otti = Puppe.erstelle('#otti', opt);
+  var blase = document.getElementById('blase');
+
+  var box = document.getElementById('zustaende');
+  Z.forEach(function (z) {
+    var b = document.createElement('button'); b.className = 'k'; b.dataset.z = z[0];
+    b.innerHTML = '<span>' + z[1] + '</span>' + z[2];
+    b.onclick = function () { if (z[0] === 'redet') return sprich(); otti.zustand(z[0]); };
+    box.appendChild(b);
+  });
+  function markiere() {
+    var a = otti.zustand();
+    box.querySelectorAll('button').forEach(function (b) { b.classList.toggle('an', b.dataset.z === a); });
+  }
+  function binde(o) {
+    o.el.addEventListener('puppe-zustand', markiere);
+    o.el.addEventListener('puppe-bereit', function (e) { document.getElementById('modus').textContent = { 'ein-bild': 'Ein-Bild (WebGL)', 'ein-bild-einfach': 'Ein-Bild (einfach)', 'ebenen': 'Ebenen' }[e.detail.modus] || e.detail.modus; });
+    markiere();
+  }
+  binde(otti);
+
+  document.querySelectorAll('[data-r]').forEach(function (b) { b.onclick = function () { otti.reagiere(b.dataset.r); }; });
+  var ARTEN = { winken: '👋 winken', reden: '💬 reden', flattern: '🪽 flattern', nicken: '🙂 nicken', huepfen: '🐇 hüpfen', glocke: '🔔 Glocke', wedeln: '🐶 wedeln', lachen: '😄 lachen', joggen: '🏃 joggen' };
+  function artName(a) { return a.split('+').map(function (x) { return (ARTEN[x] || x).replace(/^\S+ /, ''); }).join(' + '); }
+  var figBox = document.getElementById('figuren');
+  LISTE.forEach(function (n) {
+    var b = document.createElement('button'); b.type = 'button'; b.dataset.figur = n;
+    b.innerHTML = '<img alt="" loading="lazy" src="../' + F[n].bild + '"><span>' + (n === 'otti-winkt' ? 'Otti winkt' : n === 'otti-ganz' ? 'Otti ganz' : F[n].name) + '</span>';
+    b.onclick = function () { opt.figur = n; opt.bild = '../' + F[n].bild; neu(); };
+    figBox.appendChild(b);
+  });
+  var artBox = document.getElementById('arten');
+  Object.keys(ARTEN).forEach(function (a) {
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = ARTEN[a];
+    b.onclick = function () { otti.gruesse(a); };
+    artBox.appendChild(b);
+  });
+  document.getElementById('winken').onclick = function () { otti.winke(); };
+  document.getElementById('gruss').onclick = function () { otti.gruesse(); };
+  function figurKnoepfe() {
+    figBox.querySelectorAll('button').forEach(function (x) { x.classList.toggle('an', x.dataset.figur === opt.figur); });
+    var e = document.getElementById('ebenen'); e.classList.toggle('an', ebenenAn && !!EBENEN[opt.figur]); e.disabled = !EBENEN[opt.figur];
+    e.lastChild.textContent = ebenenAn && EBENEN[opt.figur] ? 'Ebenen' : 'Ein-Bild';
+    document.getElementById('grussName').textContent = 'Auf ' + (F[opt.figur].name) + 's Art: ' + artName(F[opt.figur].gruss || 'winken');
+  }
+  function neu() { opt.ordner = ordner(); figurKnoepfe(); titel(); otti.zerstoere(); otti = window.otti = Puppe.erstelle('#otti', opt); binde(otti); }
+  function titel() { var nm = F[opt.figur].name; document.querySelector('h1').textContent = nm + ' lebt'; document.querySelector('.unter').textContent = 'Tipp ' + nm + ' an – und probier «Winken».'; document.getElementById('otti').setAttribute('aria-label', nm); }
+  figurKnoepfe(); titel();
+  // Zurückwinken-Beispiel: jedes Bild grüsst beim Antippen auf seine Art
+  window.winker = Puppe.winkeZurueck('#reihe img');
+  document.getElementById('ebenen').onclick = function () { ebenenAn = !ebenenAn; neu(); };
+  document.getElementById('neig').onclick = function () { otti.erlaubeNeigung(); };
+
+  // ---- Test-Stimme: kleiner Formant-Synthesizer (Web Audio, offline gerendert, als WAV in ein <audio>) ----
+  var SATZ = 'Hoi! Schön, dass du da bisch.';
+  var FORMANT = { a: [800, 1250], e: [480, 1900], i: [320, 2300], o: [500, 900], u: [340, 760], 'ä': [650, 1700], 'ö': [450, 1500], 'ü': [300, 1700] };
+  function stimme(al) {
+    var C = window.OfflineAudioContext || window.webkitOfflineAudioContext, sr = 22050;
+    var dauer = al.dauer + 0.3, ctx = new C(1, Math.ceil(sr * dauer), sr);
+    var quelle = ctx.createOscillator(); quelle.type = 'sawtooth';
+    var f1 = ctx.createBiquadFilter(), f2 = ctx.createBiquadFilter(), lp = ctx.createBiquadFilter();
+    f1.type = f2.type = 'bandpass'; f1.Q.value = 6; f2.Q.value = 9; lp.type = 'lowpass'; lp.frequency.value = 3800;
+    var g = ctx.createGain(), g1 = ctx.createGain(), g2 = ctx.createGain(); g.gain.value = 0; g1.gain.value = 1.4; g2.gain.value = 0.8;
+    quelle.connect(f1); quelle.connect(f2); f1.connect(g1); f2.connect(g2); g1.connect(lp); g2.connect(lp); lp.connect(g); g.connect(ctx.destination);
+    // Rauschen für s/sch/f/ch
+    var nb = ctx.createBuffer(1, sr, sr), nd = nb.getChannelData(0); for (var i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+    var rausch = ctx.createBufferSource(); rausch.buffer = nb; rausch.loop = true;
+    var hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 3500; var gn = ctx.createGain(); gn.gain.value = 0;
+    rausch.connect(hp); hp.connect(gn); gn.connect(ctx.destination);
+    var c = al.characters, s = al.character_start_times_seconds, e = al.character_end_times_seconds;
+    for (i = 0; i < c.length; i++) {
+      var ch = c[i].toLowerCase(), t0 = s[i] + 0.15, t1 = e[i] + 0.15, fm = FORMANT[ch];
+      quelle.frequency.setTargetAtTime(210 + 40 * Math.sin(i * 0.7) + (ch === '!' ? 60 : 0), t0, 0.03);
+      if (fm) { f1.frequency.setTargetAtTime(fm[0], t0, 0.015); f2.frequency.setTargetAtTime(fm[1], t0, 0.015); g.gain.setTargetAtTime(0.5, t0, 0.012); gn.gain.setTargetAtTime(0, t0, 0.01); }
+      else if (/[mnlr]/.test(ch)) { f1.frequency.setTargetAtTime(280, t0, 0.02); f2.frequency.setTargetAtTime(1200, t0, 0.02); g.gain.setTargetAtTime(0.16, t0, 0.012); gn.gain.setTargetAtTime(0, t0, 0.01); }
+      else if (/[sfzc]/.test(ch)) { g.gain.setTargetAtTime(0.02, t0, 0.01); gn.gain.setTargetAtTime(0.18, t0, 0.01); }
+      else if (/[a-z]/.test(ch)) { g.gain.setTargetAtTime(0.04, t0, 0.008); gn.gain.setTargetAtTime(0.06, t0, 0.01); }
+      else { g.gain.setTargetAtTime(0, t0, 0.02); gn.gain.setTargetAtTime(0, t0, 0.01); }
+    }
+    g.gain.setTargetAtTime(0, al.dauer + 0.15, 0.03); gn.gain.setTargetAtTime(0, al.dauer + 0.15, 0.01);
+    quelle.start(0); rausch.start(0);
+    return ctx.startRendering().then(wav);
+  }
+  function wav(buf) {
+    var d = buf.getChannelData(0), n = d.length, b = new ArrayBuffer(44 + n * 2), v = new DataView(b), sr = buf.sampleRate;
+    function str(o, s) { for (var i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); }
+    str(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); str(8, 'WAVE'); str(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); str(36, 'data'); v.setUint32(40, n * 2, true);
+    for (var i = 0; i < n; i++) v.setInt16(44 + i * 2, Math.max(-1, Math.min(1, d[i])) * 32000, true);
+    return URL.createObjectURL(new Blob([b], { type: 'audio/wav' }));
+  }
+  var al = Puppe.textZeiten(SATZ), tonUrl = null;
+  // ElevenLabs liefert die Zeiten ab Tonbeginn; unser Ton hat 0.15 s Vorlauf
+  var alEleven = { characters: al.characters, character_start_times_seconds: al.character_start_times_seconds.map(function (x) { return x + 0.15; }), character_end_times_seconds: al.character_end_times_seconds.map(function (x) { return x + 0.15; }) };
+  function ton() { return tonUrl ? Promise.resolve(tonUrl) : stimme(al).then(function (u) { return (tonUrl = u); }); }
+  var audio = new Audio();
+  function zeige(t) { blase.textContent = t; blase.style.opacity = 1; clearTimeout(zeige.z); zeige.z = setTimeout(function () { blase.style.opacity = 0; }, al.dauer * 1000 + 900); }
+  document.getElementById('ton').onclick = function () { ton().then(function (u) { audio.src = u; zeige('«' + SATZ + '»'); otti.sage(audio); }); };
+  document.getElementById('zeit').onclick = function () { ton().then(function (u) { audio.src = u; zeige('«' + SATZ + '» (Zeitstempel)'); otti.sage(audio, { alignment: alEleven }); }); };
+  function sprich() { zeige('«' + SATZ + '»'); otti.sprich(SATZ); }
+  document.getElementById('text').onclick = sprich;
+})();
+</script>
+</body>
+</html>
