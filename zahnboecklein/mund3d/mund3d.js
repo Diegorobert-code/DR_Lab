@@ -51,7 +51,7 @@ export function create(canvas, hintEl) {
   const inner = new THREE.PointLight(0xffe2c4, 6, 9); inner.position.set(0, 0, -0.6); S.add(inner);
 
   // Mundhöhle, Gaumen, Zunge
-  const cav = new THREE.Mesh(new THREE.SphereGeometry(14, 32, 24), new THREE.MeshBasicMaterial({ color: 0x3a0c22, side: THREE.BackSide }));
+  const cav = new THREE.Mesh(new THREE.SphereGeometry(14, 32, 24), new THREE.MeshBasicMaterial({ color: 0x4a1330, side: THREE.BackSide }));
   cav.position.set(0, 0, -1); S.add(cav);
   const gumMat = new THREE.MeshPhysicalMaterial({ color: 0xf07c9c, roughness: 0.45, clearcoat: 0.5, clearcoatRoughness: 0.4 });
   const up = new THREE.Group(), lo = new THREE.Group(); S.add(up, lo);
@@ -107,7 +107,7 @@ export function create(canvas, hintEl) {
       const i = cnt[m.q] = (cnt[m.q] || 0) + 1; let sp = msprites.get(m);
       if (!sp) { sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: mtex[COLS.indexOf(m.c) < 0 ? 0 : COLS.indexOf(m.c)], transparent: true, depthTest: true })); sp.position.copy(monsterPos(m.q, i - 1)); (m.q < 2 ? up : lo).add(sp); msprites.set(m, sp); sp.userData.base = sp.position.clone(); }
       if (m.gone) { if (sp.visible) { sp.visible = false; for (let k = 0; k < 14; k++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: stex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); s.position.copy(sp.getWorldPosition(new THREE.Vector3())); s.userData.v = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.2, Math.random() - 0.5).multiplyScalar(2.2); s.userData.l = 1; s.scale.setScalar(0.25); S.add(s); sparks.push(s); } } continue; }
-      sp.visible = true; const sc = 0.32 + 0.3 * m.life; sp.scale.setScalar(sc); sp.material.opacity = 0.35 + 0.65 * m.life;
+      sp.visible = true; const sc = 0.46 + 0.36 * m.life; sp.scale.setScalar(sc); sp.material.opacity = 0.35 + 0.65 * m.life;
     }
     for (const [m, sp] of msprites) if (!list.includes(m)) { sp.parent && sp.parent.remove(sp); msprites.delete(m); }
   }
@@ -126,7 +126,7 @@ export function create(canvas, hintEl) {
     let pt, n, h, cp, look, vis = { up: true, lo: true, lips: false };
     if (part === "aussen") {
       pt = p.clone().add(o.clone().multiplyScalar(d.d / 2)).setY(sy * (GAP + d.h * 0.5)); n = o.clone(); h = toFront(th);
-      cp = pt.clone().add(o.clone().multiplyScalar(4.6)).add(new THREE.Vector3(0, sy * 0.5, 2.2)); look = pt.clone(); vis.lips = Math.abs(th) < 0.5;
+      cp = pt.clone().add(o.clone().multiplyScalar(3.3)).add(new THREE.Vector3(0, sy * 0.45, 1.4)); look = pt.clone(); vis.lips = Math.abs(th) < 0.5;
     } else if (part === "kau") {
       pt = p.clone().setY(sy * GAP); n = new THREE.Vector3(0, -sy, 0); h = new THREE.Vector3(-p.x * 0.25, 0, 1);
       cp = pt.clone().add(new THREE.Vector3(-side * 0.5, -sy * 3.8, 1.1)); look = pt.clone(); if (upper) vis.lo = false; else vis.up = false;
