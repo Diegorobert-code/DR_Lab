@@ -51,6 +51,8 @@ button.alt:active{box-shadow:0 2px 0 #58b597}
 .where{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,7vw,2.3rem);color:var(--ink);line-height:1.05;text-align:left}
 .where small{display:block;font-family:var(--body);font-size:.9rem;font-weight:700;color:var(--mint);letter-spacing:.08em;text-transform:uppercase}
 #mouth{width:min(92vw,420px);max-width:100%;height:auto;display:block}
+#mouth3d{width:min(92vw,420px);max-width:100%;aspect-ratio:3/2;height:auto;display:block;border-radius:22px}#mouth3d[hidden]{display:none}
+.zonehint{margin:-6px auto 4px;padding:3px 14px;border-radius:999px;background:rgba(242,193,78,.18);color:#f2c14e;font-weight:700;font-size:15px;width:max-content}.zonehint[hidden]{display:none}
 .lyric{min-height:3.2em;font-family:var(--display);font-weight:600;font-size:clamp(1.25rem,5.4vw,1.6rem);line-height:1.25;color:var(--ink);max-width:22ch;text-wrap:balance}
 .lyric .next{display:block;font-size:.75em;color:var(--muted);font-weight:600}
 .bar{width:min(86vw,380px);height:14px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}
@@ -65,12 +67,32 @@ label.toggle input{width:20px;height:20px;accent-color:var(--gold)}
 #map{width:100%;height:auto;display:block}
 .chapter{max-width:none;color:var(--ink);font-size:1.02rem;text-align:left}
 button.big{font-size:2rem;padding:.6em 1.8em}
+.songs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px auto 4px;max-width:420px}.songs b{width:100%;text-align:center;font-size:15px;opacity:.85}.songs button{font-size:15px;padding:.45em .9em;border-radius:999px;background:rgba(255,255,255,.12);color:inherit;box-shadow:none}.songs button.on{background:#f2c14e;color:#161b45}
 .modes button.big small{font-size:.95rem}
 .move{font-family:var(--display);font-weight:800;font-size:clamp(1.4rem,6vw,2rem);color:var(--pink);line-height:1.1;max-width:20ch;text-wrap:balance}
 .dancer{width:min(62vw,280px);aspect-ratio:1;border-radius:22px;overflow:hidden;box-shadow:0 0 0 4px rgba(247,168,196,.45)}
 .dancer img{width:100%;height:100%;object-fit:cover;display:block}
 .dancer.goatonly{aspect-ratio:1;width:min(48vw,220px);border-radius:50%}
-.party #mouth{width:min(70vw,300px)}
+/* Tänze: das Zahnböcklein macht vor, was die Stimme sagt */
+.dancer[data-t]{animation:none;overflow:visible}.dancer[data-t] img{transform-origin:50% 90%;border-radius:22px}
+.dancer[data-t="hopsen"] img{animation:t-hops .5s cubic-bezier(.3,0,.4,1) infinite}
+.dancer[data-t="powackeln"] img{animation:t-wackel .5s ease-in-out infinite alternate}
+.dancer[data-t="kniebeuge"] img{animation:t-knie 1s ease-in-out infinite}
+.dancer[data-t="drehen"] img{animation:t-dreh 2.4s linear infinite}
+.dancer[data-t="marschieren"] img{animation:t-marsch .5s ease-in-out infinite alternate}
+.dancer[data-t="wiegen"] img{animation:t-wieg 2s ease-in-out infinite alternate}
+.dancer[data-t="baeh"] img{animation:t-baeh .35s ease-in-out infinite alternate}
+.dancer[data-t="jubel"] img{animation:t-jubel 1.6s ease-in-out infinite}
+@keyframes t-hops{0%,100%{transform:translateY(0) scaleY(.94)}45%{transform:translateY(-20px) rotate(-6deg) scaleY(1.04)}}
+@keyframes t-wackel{from{transform:rotate(-12deg) translateX(-10px)}to{transform:rotate(12deg) translateX(10px)}}
+@keyframes t-knie{0%,100%{transform:scaleY(1) translateY(0)}50%{transform:scaleY(.78) scaleX(1.08) translateY(10px)}}
+@keyframes t-dreh{from{transform:perspective(600px) rotateY(0)}to{transform:perspective(600px) rotateY(360deg)}}
+@keyframes t-marsch{from{transform:rotate(-7deg) translateY(-14px)}to{transform:rotate(7deg) translateY(0)}}
+@keyframes t-wieg{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}
+@keyframes t-baeh{from{transform:rotate(-4deg) scale(1)}to{transform:rotate(4deg) scale(1.06)}}
+@keyframes t-jubel{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-40px) rotate(-10deg) scale(1.05)}60%{transform:translateY(-10px) rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.dancer[data-t] img{animation:none}}
+.party #mouth,.party #mouth3d{width:min(70vw,300px)}
 .party .mini{display:none}
 .parents{width:min(92vw,460px);max-width:100%;box-sizing:border-box;text-align:left;background:rgba(255,255,255,.06);border:1px solid rgba(143,227,200,.3);border-radius:22px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
 .parents h2{margin:6px 0 0;font-family:var(--display);font-weight:800;font-size:1.2rem;color:var(--mint)}
@@ -98,7 +120,7 @@ button.big{font-size:2rem;padding:.6em 1.8em}
 .buddy.wave{animation:winke .45s ease-in-out 6}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 @keyframes winke{0%,100%{transform:rotate(0) scale(1.05)}50%{transform:rotate(-18deg) scale(1.12)}}
-.mirroron #mouth{display:none}
+.mirroron #mouth,.mirroron #mouth3d,.mirroron .zonehint{display:none}
 .playbig{font-size:1.4rem;padding:18px 30px}
 </style>
 
@@ -112,6 +134,7 @@ button.big{font-size:2rem;padding:.6em 1.8em}
     <button id="go" class="big" type="button">Los geht's!<small>Zähneputzen · 2 Minuten</small></button>
     <button id="go2" class="alt" type="button">Glitzer-Putzparty<small>5 Minuten · tanzen</small></button>
   </div>
+  <div class="songs" id="songs"><b>🎵 Welches Lied?</b></div>
   <div class="kino">
     <button id="film1" type="button">Zahnfee-Film</button>
     <button id="film2" type="button">Tanzfilm 5 Min</button>
@@ -164,6 +187,7 @@ button.big{font-size:2rem;padding:.6em 1.8em}
   <div class="move" id="move" hidden></div>
   <div class="camwrap" id="camWrap" hidden><video id="cam" playsinline muted></video><canvas id="glitter" width="360" height="480"></canvas><div class="buddy" id="buddy"><img id="buddyImg" alt="Zahnböcklein"></div><small id="camInfo">Zauberspiegel startet …</small><button class="ghost" id="camOff" type="button">Spiegel aus</button></div>
   <canvas id="mouth" width="840" height="560" aria-label="Mund mit Zuckermonstern"></canvas>
+  <canvas id="mouth3d" hidden aria-label="3D-Mund: die Zahnbürste zeigt, wo geputzt wird"></canvas><div class="zonehint" id="zoneHint" hidden></div>
   <div class="lyric" id="lyric" aria-live="polite"></div>
   <div class="bar"><i id="prog"></i></div>
   <div class="row">
@@ -247,8 +271,18 @@ function tone(f,t,d,vol,type){const o=ac.createOscillator(),g=ac.createGain();o.
 function bell(f,t){tone(f,t,0.9,0.22,"sine");tone(f*2,t,0.35,0.06,"sine");tone(f*3.01,t,0.18,0.03,"triangle")}
 function shaker(t,v){const len=0.06,b=ac.createBuffer(1,ac.sampleRate*len,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);const s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();f.type="highpass";f.frequency.value=6000;g.gain.value=v;s.buffer=b;s.connect(f);f.connect(g);g.connect(master);s.start(t)}
 function schedule(){while(nextNote<ac.currentTime+0.2){const m=MEL[step%MEL.length];if(m)bell(N[m],nextNote);if(step%2===0){const b=BASS[(step/2)%BASS.length];if(b)tone(N[b],nextNote,0.5,0.18,"triangle")}shaker(nextNote,step%2?0.05:0.09);nextNote+=SPB;step++}}
-function musicStart(){ensureAC();nextNote=ac.currentTime+0.1;step=0;clearInterval(musicTimer);musicTimer=setInterval(schedule,50)}
-function musicStop(){clearInterval(musicTimer);musicTimer=null}
+function synthStart(){ensureAC();nextNote=ac.currentTime+0.1;step=0;clearInterval(musicTimer);musicTimer=setInterval(schedule,50)}
+/* Lieder zum Aussuchen: selbst erzeugt, laufen in Schleife; «Spieluhr» ist die alte Melodie */
+const LIEDER=[["glitzerpop","Glitzer-Pop"],["discodrache","Disco-Drache"],["monsterfunk","Monster-Funk"],["sternenreggae","Sternen-Reggae"],["zahnfeewalzer","Zahnfee-Walzer"],["spieluhr","Spieluhr"]];
+let LIED="glitzerpop";try{LIED=localStorage.getItem("zb-lied")||LIED}catch(e){}
+const SONGBUF={};let songSrc=null,musicGen=0,previewT=null;
+function songBuf(k){if(!SONGBUF[k])SONGBUF[k]=fetch("musik/"+k+".mp3").then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>new Promise((res,rej)=>ac.decodeAudioData(b,res,rej))).catch(()=>{delete SONGBUF[k];return null});return SONGBUF[k]}
+function musicStart(){ensureAC();musicStop();const g=++musicGen;if(LIED==="spieluhr"){synthStart();return}
+ songBuf(LIED).then(buf=>{if(g!==musicGen)return;if(!buf){synthStart();return}const s=ac.createBufferSource();s.buffer=buf;s.loop=true;s.connect(master);s.start();songSrc=s})}
+function musicStop(){musicGen++;clearInterval(musicTimer);musicTimer=null;if(songSrc){try{songSrc.stop()}catch(e){}songSrc=null}}
+function drawSongs(){const box=$("songs");box.querySelectorAll("button").forEach(b=>b.remove());LIEDER.forEach(([k,n])=>{const b=document.createElement("button");b.type="button";b.textContent=n;if(k===LIED)b.className="on";
+ b.addEventListener("click",()=>{LIED=k;try{localStorage.setItem("zb-lied",k)}catch(e){}drawSongs();if(!running){musicStart();clearTimeout(previewT);previewT=setTimeout(()=>{if(!running)musicStop()},7000)}});box.appendChild(b)})}
+drawSongs();
 function duck(on){if(master)master.gain.setTargetAtTime(on?0.32:0.7,ac.currentTime,0.08)}
 function fanfare(){if(!ac)return;const t=ac.currentTime+0.05;["C5","E5","G5","C5"].forEach((n,i)=>bell(N[n]*(i===3?2:1),t+i*0.14))}
 function pop(){if(!ac)return;const t=ac.currentTime;tone(900,t,0.12,0.15,"sine");tone(1400,t+0.05,0.15,0.1,"sine")}
@@ -319,7 +353,8 @@ function fmt(s){s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+":"+String(s%
 function show(id){for(const k of ["start","brush","done","kino"])$(k).hidden=k!==id;window.scrollTo(0,0)}
 function begin(m){if(m)setMode(m);ensureAC();preload(PH.map(p=>p.clip).concat(PH.map(p=>p.mid).filter(Boolean),["fertig","party_fertig"],MODE==="party"?["k_kreise","k_hinten","k_vorne","k_innen","k_tanz","k_super","k_atmen","k_noch10"]:[]));midDone={};makeMonsters();elapsed=0;lastLine=-1;lastPhase=-1;paused=false;$("pause").textContent="Pause";show("brush");musicStart();running=true;last=performance.now();lastCoach=-99;coachI=0;noch10={};zoneT={};try{navigator.wakeLock&&navigator.wakeLock.request("screen").catch(()=>{})}catch(e){}}
 function finish(){running=false;musicStop();const tipp=camOn?putzTipp():"";if(camOn)merkeZeiten();camStop();fanfare();const n=getStars()+(MODE==="party"?2:1);setStars(n);showStars();$("doneText").textContent=MODE==="party"?"Glitzer-Putzparty geschafft! Zähne, Zahnfleisch und Zunge glänzen. Dafür gibt es zwei Sterne!":(n===1?"Alle Zuckermonster sind weg. Hier ist dein erster Stern!":"Alle Zuckermonster sind weg. Das ist Stern Nummer "+n+".");if(tipp)$("doneText").textContent+=" "+tipp;showTrip(n);show("done");say(MODE==="party"?"party_fertig":"fertig",true);say(TRIPKEY(((n-1)%30)+1))}
-function tick(dt){elapsed+=dt;let ph=0;while(ph<PH.length-1&&elapsed>=STARTS[ph+1])ph++;const P=PH[ph],inPh=elapsed-STARTS[ph],LS=P.dur/P.lines.length,li=Math.min(P.lines.length-1,Math.floor(inPh/LS));
+let curP=null,curIn=0;
+function tick(dt){elapsed+=dt;let ph=0;while(ph<PH.length-1&&elapsed>=STARTS[ph+1])ph++;const P=PH[ph],inPh=elapsed-STARTS[ph];curP=P;curIn=inPh;const LS=P.dur/P.lines.length,li=Math.min(P.lines.length-1,Math.floor(inPh/LS));
  if(ph!==lastPhase){monsters.forEach(m=>{if(!m.gone&&PH.slice(0,ph).some(pp=>pp.q===m.q)){m.gone=true;m.burst=1}});lastPhase=ph;$("phaseNo").textContent=MODES[MODE].title+" · "+(ph+1)+" von "+PH.length;$("phaseName").textContent=P.name;say(P.clip,true);if(P.move){$("move").textContent=P.move;setDance(P.img)}}
  if(P.mid&&!midDone[ph]&&inPh>=P.dur*0.55){midDone[ph]=1;say(P.mid)}
  coachTick(ph,P,inPh);camTick(dt,ph,P,inPh);
@@ -329,7 +364,9 @@ function tick(dt){elapsed+=dt;let ph=0;while(ph<PH.length-1&&elapsed>=STARTS[ph+
  if(elapsed>=TOTAL){monsters.forEach(m=>{if(!m.gone){m.gone=true;m.burst=1}});if(camOn){running=false;musicStop();camFarewell(finish)}else finish()}
  return P.q>=0?P.q:"all"}
 let activeQ=null;
-function loop(t){drawSky(t);if(running&&!paused){const now=performance.now();activeQ=tick((now-last)/1000);last=now}else{last=performance.now()}if(!$("brush").hidden)drawMouth(t,running?activeQ:null);requestAnimationFrame(loop)}
+function loop(t){drawSky(t);if(running&&!paused){const now=performance.now();activeQ=tick((now-last)/1000);last=now}else{last=performance.now()}if(!$("brush").hidden){if(M3){try{M3.frame(running&&curP&&elapsed>=0?{key:curP.q>=0?"q"+curP.q:({"Kauflächen":"kau","Zahnfleisch":"zf","Zunge":"zunge","Ausspucken":"spuck"}[curP.name]||"all"),s:Math.min(1,Math.max(0,curIn/curP.dur))}:null,monsters)}catch(e){M3=null;$("mouth3d").hidden=true;$("mouth").hidden=false;$("zoneHint").hidden=true}}else drawMouth(t,running?activeQ:null)}requestAnimationFrame(loop)}
+/* 3D-Mund laden, wenn das Gerät WebGL kann; sonst bleibt der flache Mund */
+let M3=null;(function(){let ok=false;try{const c=document.createElement("canvas");ok=!!(c.getContext("webgl2")||c.getContext("webgl"))}catch(e){}if(!ok)return;import("./mund3d/mund3d.js").then(m=>{M3=m.create($("mouth3d"),$("zoneHint"));$("mouth").hidden=true;$("mouth3d").hidden=false}).catch(()=>{M3=null})})();
 requestAnimationFrame(loop);
 
 function withMirror(){if(!pref("zb-kamera",false))return;paused=true;musicStop();camStart().then(ok=>{if(!ok){paused=false;musicStart();return}camIntro(()=>{last=performance.now();paused=false;musicStart()})})}
@@ -435,7 +472,15 @@ let gateR=0;function gateAsk(){const a=6+Math.floor(Math.random()*4),b=7+Math.fl
 $("gateOk").addEventListener("click",()=>{const w=$("whyCard");$("gate").hidden=true;if(parseInt($("gateA").value,10)===gateR){w.hidden=false;w.scrollIntoView({behavior:"smooth"})}});
 $("why").addEventListener("pointerdown",holdGo);["pointerup","pointerleave","pointercancel"].forEach(ev=>$("why").addEventListener(ev,holdStop));
 /* Tanzbilder vom Zahnböcklein (bilder/tanzXX.jpg), sonst tanzt das Logo */
-const LOGO=$("danceImg").src;function setDance(k){const im=new Image();im.onload=()=>{$("danceImg").src=im.src;$("dancer").classList.remove("goatonly")};im.onerror=()=>{$("danceImg").src=LOGO;$("dancer").classList.add("goatonly")};im.src="bilder/"+k+".jpg"}
+const LOGO=$("danceImg").src;
+/* Jede Phase hat ihren Tanz. Liegen die vier Posen (bilder/tanz/<tanz>-1..4.jpg) da, blättern sie im Takt wie ein Daumenkino. */
+const TANZ={tanz02:"hopsen",tanz03:"powackeln",tanz04:"kniebeuge",tanz05:"drehen",tanz06:"marschieren",tanz07:"wiegen",tanz08:"baeh",tanz09:"jubel"};
+const POSEN={};let poseT=null;
+function posen(t){if(!POSEN[t])POSEN[t]=Promise.all([1,2,3,4].map(i=>new Promise(res=>{const im=new Image();im.onload=()=>res(im.src);im.onerror=()=>res(null);im.src="bilder/tanz/"+t+"-"+i+".jpg"}))).then(a=>a.every(Boolean)?a:null);return POSEN[t]}
+function setDance(k){const t=TANZ[k],d=$("dancer");clearInterval(poseT);if(t)d.dataset.t=t;else delete d.dataset.t;
+ const single=()=>{const im=new Image();im.onload=()=>{$("danceImg").src=im.src;d.classList.remove("goatonly")};im.onerror=()=>{$("danceImg").src=LOGO;d.classList.add("goatonly")};im.src="bilder/"+k+".jpg"};
+ if(!t){single();return}
+ posen(t).then(a=>{if(d.dataset.t!==t)return;if(!a){single();return}d.classList.remove("goatonly");let i=0;$("danceImg").src=a[0];poseT=setInterval(()=>{i=(i+1)%4;$("danceImg").src=a[i]},t==="wiegen"||t==="drehen"?600:420)})}
 /* Ideen der Eltern aufnehmen (bleibt auf dem Gerät) */
 let mr=null,chunks=[],ideaBlob=null;
 $("rec").addEventListener("click",async()=>{if(mr&&mr.state==="recording"){mr.stop();return}try{const st=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];mr=new MediaRecorder(st);mr.ondataavailable=e=>chunks.push(e.data);mr.onstop=()=>{st.getTracks().forEach(x=>x.stop());ideaBlob=new Blob(chunks,{type:mr.mimeType||"audio/mp4"});$("recPlay").src=URL.createObjectURL(ideaBlob);$("recPlay").hidden=false;$("share").hidden=false;$("rec").textContent="Neu aufnehmen"};mr.start();$("rec").textContent="Stopp"}catch(e){$("rec").textContent="Mikrofon nicht erlaubt"}});
