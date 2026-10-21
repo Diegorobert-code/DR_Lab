@@ -14,6 +14,8 @@ window.R7 = {
   neuTitel: 'Neu bei Jackie', neuText: 'Vier kleine Helfer. Alles bleibt auf deinem Handy.',
   css: [
     '#btnGo{color:#1a1f3a!important;font-weight:700}',
+    '.jk-notruf .nr{min-width:0}',
+    '@media (max-width:400px){html.r6-gross .jk-notruf{grid-template-columns:1fr 1fr}html.r6-gross header.top{flex-wrap:wrap}html.r6-gross header.top .pills{flex-wrap:wrap;flex:1 1 auto;min-width:0}html.r6-gross header.top .pill{padding:0 10px}html.r6-gross header.top>*{min-width:0;max-width:100%}html.r6-gross .mic{gap:12px;padding:16px}html.r6-gross .mic .orb{width:56px;height:56px}}',
     '.brand span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
     '.r7-notruf{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 16px;padding:8px 12px;border-radius:14px;background:rgba(255,143,128,.12);border:1px solid rgba(255,143,128,.35);font-size:.875rem;color:#ffd9d2}',
     '.r7-notruf a{display:inline-flex;align-items:center;justify-content:center;min-width:56px;min-height:44px;padding:0 12px;border-radius:999px;background:#a43a30;color:#fff;font-weight:800;text-decoration:none}',
@@ -432,6 +434,11 @@ window.R7 = {
     rb.addEventListener('click', function () { var an = !hol('ruhig', false); leg('ruhig', an); rb.setAttribute('aria-pressed', an); H.classList.toggle('r7-ruhig', an); });
   }
 
+  d.addEventListener('submit', function (e) {
+    var f = e.target; if (!f || f.id !== 'r6Name') return;
+    var i = f.querySelector('input'); if (!i || i.value.trim()) return;
+    i.setAttribute('aria-invalid', 'true'); i.placeholder = 'Bitte einen Vornamen eintragen'; try { i.focus(); } catch (x) {}
+  }, true);
   window.R7K = { hol: hol, leg: leg, esc: esc, blatt: blatt, zu: zu, feier: feier, leer: leer, summ: summ, phase: phase, stunde: stunde, heute: heute, param: param, ruhig: ruhig };
   function start() {
     try { himmel(); } catch (e) { console.warn('r7 himmel', e); }
