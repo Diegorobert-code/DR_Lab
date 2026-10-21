@@ -35,7 +35,12 @@ window.R7 = {
     '.r7-bb{height:10px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden;margin:10px 0 6px}',
     '.r7-bb i{display:block;height:100%;width:0;border-radius:5px;background:linear-gradient(90deg,#4fd6c8,#f2b84b);transition:width .4s}',
     '.r7-bb.ueber i{background:#ff7a6b}',
-    '.r7-budget small{display:block;color:#c9bfe6;font-size:.8125rem}'
+    '.r7-budget small{display:block;color:#c9bfe6;font-size:.8125rem}',
+    /* Runde 7c: Copa zeigt die Produkte (Tinko) als «Tipp des Tages» im Startbereich */
+    '.r7c-tipp{display:flex;align-items:center;gap:16px;width:100%;box-sizing:border-box;margin:0 0 16px;padding:12px;border-radius:20px;border:1px solid rgba(242,184,75,.45);background:linear-gradient(150deg,#3b2d78,#2a1f5c);color:#fdf6ea;font:inherit;text-align:left;cursor:pointer;box-shadow:0 10px 28px -14px rgba(0,0,0,.7)}',
+    '.r7c-tipp img{flex:none;width:96px;height:96px;border-radius:16px;object-fit:cover;object-position:40% 60%}',
+    '.r7c-tipp span{min-width:0;display:flex;flex-direction:column;gap:4px}.r7c-tipp small{font-size:.75rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#4fd6c8}.r7c-tipp b{font-size:1.0625rem;line-height:1.3;overflow-wrap:break-word}.r7c-tipp em{font-style:normal;color:#ffd98a;font-size:.875rem}',
+    '.r7-qv-tipp{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:50% 62%;border-radius:20px;margin:0 0 16px}'
   ].join('\n'),
   start: function (R) {
     if (typeof WAREN === 'undefined') return;
@@ -56,10 +61,10 @@ window.R7 = {
       var b = document.querySelector('#regal .ware[data-r7id="' + id + '"] .knopf'); if (b) b.classList.add('drin');
     }
     function merken(id) { var z = R.hol('zuletzt', []).filter(function (x) { return x !== id; }); z.unshift(id); R.leg('zuletzt', z.slice(0, 4)); zuletzt(); }
-    function ansicht(id, titel) {
+    function ansicht(id, titel, tipp) {
       var x = w(id); if (!x) return;
       merken(id);
-      var html = '<div class="r7-qv-bild">' + bildHtml(x) + '</div><span class="r7-qv-mark">' + R.esc(x.kat) + '</span><p style="color:#fdf6ea;font-size:1.0625rem">' + R.esc(x.text) + '</p>' +
+      var html = (tipp ? '<img class="r7-qv-tipp" src="copa/produkte.jpg" alt="Copa hinter dem Ladentisch mit Kerze, Tuch, Tasse und Armband" width="768" height="432">' : '') + '<div class="r7-qv-bild">' + bildHtml(x) + '</div><span class="r7-qv-mark">' + R.esc(x.kat) + '</span><p style="color:#fdf6ea;font-size:1.0625rem">' + R.esc(x.text) + '</p>' +
         '<div class="r7-reihe" style="align-items:center"><span class="r7-qv-preis" style="flex:0 0 auto">' + preis(x.preis) + '</span><button type="button" class="r7-knopf" data-korb="' + x.id + '">In den Korb</button></div>' +
         '<h3>Passt dazu</h3><div class="r7-passt">' + passend(id).map(function (y) { return '<button type="button" data-qv="' + y.id + '"><span class="e" aria-hidden="true">' + y.em + '</span><b>' + R.esc(y.name) + '</b><small>' + preis(y.preis) + '</small></button>'; }).join('') + '</div>';
       var inh = R.blatt({ titel: titel || x.name, html: html, bild: 'copa/freut.jpg' });
@@ -116,7 +121,7 @@ window.R7 = {
     budget();
     function tagesTipp() { var t = new Date(), n = t.getFullYear() * 400 + t.getMonth() * 31 + t.getDate(); return WAREN[n % WAREN.length]; }
     var S = {
-      tipp: function () { var x = tagesTipp(); ansicht(x.id, 'Copas Tipp: ' + x.name); },
+      tipp: function () { var x = tagesTipp(); ansicht(x.id, 'Copas Tipp: ' + x.name, true); },
       zuletzt: function () {
         var l = R.hol('zuletzt', []).map(w).filter(Boolean);
         var inh = R.blatt({ titel: 'Zuletzt angesehen', html: l.length ? '<p>Deine letzten Blicke ins Regal. Antippen und nochmals anschauen.</p><div class="r7-passt">' + l.map(function (y) { return '<button type="button" data-qv="' + y.id + '"><span class="e" aria-hidden="true">' + y.em + '</span><b>' + R.esc(y.name) + '</b><small>' + preis(y.preis) + '</small></button>'; }).join('') + '</div>' : R.leer('Noch nichts angeschaut. Tipp im Regal auf ein Geschenkbild, dann merke ich es mir.', 'copa/winkt.jpg') });
@@ -131,6 +136,14 @@ window.R7 = {
       }
     };
     window.R7.neu.forEach(function (n) { n.auf = S[n.id]; });
+    // Startbereich: Tipp des Tages mit Copas Produkte-Bild
+    var fi = document.getElementById('filter');
+    if (fi) {
+      var tt = tagesTipp(), tk = document.createElement('button'); tk.type = 'button'; tk.className = 'r7c-tipp';
+      tk.innerHTML = '<img src="copa/produkte.jpg" alt="" width="96" height="96" loading="lazy"><span><small>Copas Tipp des Tages</small><b>' + R.esc(tt.em + ' ' + tt.name) + '</b><em>' + preis(tt.preis) + ' · anschauen</em></span>';
+      tk.addEventListener('click', S.tipp);
+      fi.parentNode.insertBefore(tk, fi);
+    }
   },
   neu: [
     { id: 'tipp', e: '🦜', titel: 'Copas Tipp', text: 'Ein Geschenk des Tages, mit «Passt dazu»' },
