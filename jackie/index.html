@@ -1779,14 +1779,20 @@ function renderBlase(){
 let klackCtx=null;
 function klackTon(){ try{ if(document.body.classList.contains('im-schutz')) return; klackCtx=klackCtx||new (window.AudioContext||window.webkitAudioContext)(); const c=klackCtx; if(c.state==='suspended') c.resume();
   [0,0.16].forEach(t=>{ const o=c.createOscillator(), g=c.createGain(); o.type='triangle'; o.frequency.setValueAtTime(1500,c.currentTime+t); o.frequency.exponentialRampToValueAtTime(700,c.currentTime+t+0.05); g.gain.setValueAtTime(0.0001,c.currentTime+t); g.gain.exponentialRampToValueAtTime(0.12,c.currentTime+t+0.005); g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+t+0.08); o.connect(g).connect(c.destination); o.start(c.currentTime+t); o.stop(c.currentTime+t+0.1); }); }catch(e){} }
+/* Puppe aus nova/puppe.js (#136): wenn geladen, grüsst Jackie lebendig mit «lachen+winken». Sonst CSS-Pose (Fallback). */
+let jkPuppe=null;
+function puppeGruss(){
+  if(!(window.Puppe && typeof window.Puppe.winkeZurueck==='function')) return false;
+  try{ jkPuppe=jkPuppe||window.Puppe.winkeZurueck($('jkBild'),{figur:'jackie',gruss:'lachen+winken',antippen:false,blase:false}); if(jkPuppe&&typeof jkPuppe.gruesse==='function'){ jkPuppe.gruesse('lachen+winken'); return true; } }catch(e){}
+  return false;
+}
 function winke(mitTon){
-  pose('winkt');
+  if(!(mitTon && puppeGruss())) pose('winkt');
   const k=$('jkKlack'); if(k){ k.classList.remove('an'); void k.offsetWidth; k.classList.add('an'); }
   if(mitTon){ klackTon(); try{ navigator.vibrate&&navigator.vibrate([12,140,12]); }catch(e){} }
 }
 window.JackieWinke=winke;
 $('jkBild').addEventListener('click', ()=>{
-  if(window.Puppe && typeof window.Puppe.winkeZurueck==='function'){ try{ window.Puppe.winkeZurueck($('jkBild'),{figur:'jackie'}); }catch(e){} }
   winke(true); blase(['Ich höre dir zu. Ganz in Ruhe.','Du musst das nicht allein lösen.','Ein kleiner Schritt reicht für heute.','Tipp auf das goldene Mikrofon und erzähl.'][Math.floor(Math.random()*4)]); });
 
 /* Mikrofon auf dem Bild (Yulia v2): startet dasselbe Zuhören wie der grosse Knopf */
