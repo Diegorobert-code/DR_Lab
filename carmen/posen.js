@@ -10,7 +10,7 @@
   // Nur Posen aus dieser Liste werden angefragt (so gibt es keine 404 für fehlende Bilder).
   // Liegt ein Bild posen/<pose>.jpg im Ordner, hier den Namen eintragen, z. B. ['lachen', 'winken'].
   // Eine App kann die Liste auch vorher mit window.POSEN_DA setzen. Leer = gar nichts wird angefragt.
-  var POSEN_DA = Array.isArray(window.POSEN_DA) ? window.POSEN_DA : [];
+  var POSEN_DA = Array.isArray(window.POSEN_DA) ? window.POSEN_DA : ['tanzt', 'dreht', 'verbeugt']; // Tinko 21.10.
   var stand = {};
   function pruef(p) {
     if (!p || POSEN_DA.indexOf(p) < 0) return Promise.resolve(null);
