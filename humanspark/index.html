@@ -187,6 +187,30 @@ h1{color:#F2C14E}
       <div class="seg" id="modSeg">
         <button data-mod="hrv" aria-pressed="true">Ruhe (HRV)</button>
         <button data-mod="pulsbild" aria-pressed="false">Pulsbild</button>
+        <button data-mod="sensor" aria-pressed="false">Sensor</button>
+      </div>
+      <div id="snBox" class="hidden">
+        <p class="muted">Drei-Finger-Sensor: beschreibt nur Pulswelle und Kraft, keine Diagnose. Zuerst nur für dich.</p>
+        <label class="lbl" for="snModus">Modus</label>
+        <select id="snModus" class="inp">
+          <option value="puls">Puls (3 Finger)</option><option value="druck">Druck (Kraft pro Finger)</option>
+          <option value="muskeltest">Muskeltest (kg)</option><option value="behandlung">Behandlungsdruck (neben HRV)</option>
+        </select>
+        <label class="lbl" for="snOrt">Wo liegen die Kissen?</label>
+        <select id="snOrt" class="inp">
+          <option>Finger (Zeige-, Mittel-, Ringfinger)</option><option>Fusssohle Ferse</option><option>Fusssohle Ballen</option>
+          <option>Kiefer links</option><option>Kiefer rechts</option><option>Atmung (Bauch)</option>
+        </select>
+        <ol class="muted" style="padding-left:20px;margin:10px 0">
+          <li>iPhone mit dem WLAN «HumanSpark-Puls» verbinden.</li>
+          <li>«Sensor öffnen», dort messen und «An Human Sparks übergeben» tippen.</li>
+          <li>Zurück hier: «Datei vom Sensor laden».</li>
+        </ol>
+        <a class="btn ghost" id="snOeffnen" href="http://192.168.4.1" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;text-decoration:none">Sensor öffnen</a>
+        <label class="btn primary" for="snDatei" style="display:flex;align-items:center;justify-content:center">Datei vom Sensor laden</label>
+        <input type="file" id="snDatei" accept=".json,application/json" style="display:none">
+        <div class="notice hidden" id="snMsg"></div>
+        <div id="snOut"></div>
       </div>
       <p class="muted hidden" id="pbHelp">Pulsbild: Tempo, Rhythmus, Welle und Stärke deines Pulses, angelehnt an die Pulsbeobachtung. Beschreibung, keine Diagnose.</p>
       <div class="seg web-only" id="srcSeg">
@@ -950,7 +974,11 @@ document.querySelectorAll('#modSeg button').forEach(function(b){
     document.querySelectorAll('#modSeg button').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
     $('pbHelp').classList.toggle('hidden', modus !== 'pulsbild');
     $('gfBox').classList.toggle('hidden', modus === 'pulsbild');
-    $('srcSeg').classList.toggle('hidden', modus === 'pulsbild');
+    $('srcSeg').classList.toggle('hidden', modus !== 'hrv');
+    var sn = modus === 'sensor';
+    $('snBox').classList.toggle('hidden', !sn);
+    ['camHelp','btnStart','btnDemo'].forEach(function(id){ $(id).classList.toggle('hidden', sn); });
+    if (sn) $('gfBox').classList.add('hidden');
   });
 });
 $('pbTast').innerHTML = PB_TAST.map(function(w){ return '<button class="chip" aria-pressed="false">' + w + '</button>'; }).join('');
@@ -1038,6 +1066,54 @@ $('pbSave').addEventListener('click', function(){
   var n = $('pbSaved'); n.textContent = 'Gespeichert. Im Verlauf siehst du Messung und Tastbefund nebeneinander.'; n.className = 'notice';
 });
 $('pbNew').addEventListener('click', function(){ showBox('startBox'); });
+
+/* ---------- Drei-Finger-Sensor (ESP32 im eigenen WLAN, Übergabe per Datei) ---------- */
+var SN_MODI = {puls:'Puls', druck:'Druck', muskeltest:'Muskeltest', behandlung:'Behandlungsdruck'};
+var SN_FARBEN = ['#e4572e', '#2e86ab', '#6a994e'];
+function snKurz(a, n){ if (a.length <= n) return a.slice(); var o = []; for (var i = 0; i < n; i++) o.push(a[Math.floor(i * a.length / n)]); return o; }
+function snSvg(e){
+  if (!e.kurven || !e.kurven.length) return '';
+  var W = 520, H = 50, g = '';
+  e.kurven.forEach(function(k, c){
+    if (!k.length) return;
+    var mn = Math.min.apply(null, k), mx = Math.max.apply(null, k), r = mx - mn || 1;
+    g += '<polyline transform="translate(0,' + (c * H) + ')" points="' + k.map(function(v, i){ return (4 + i / (k.length - 1) * (W - 8)).toFixed(1) + ',' + (H - 6 - (v - mn) / r * (H - 12)).toFixed(1); }).join(' ') + '" fill="none" stroke="' + SN_FARBEN[c % 3] + '" stroke-width="2"/>';
+  });
+  return '<svg viewBox="0 0 ' + W + ' ' + (H * e.kurven.length) + '" style="width:100%;height:auto;display:block;margin:6px 0">' + g + '</svg>';
+}
+function snZeile(e){
+  var t = (e.kanaele || []).map(function(k){ return k.name + ': ' + (e.modus === 'puls' && k.bpm ? k.bpm + '/Min, ' : '') + 'Mittel ' + k.mittel + ', höchste ' + k.max; }).join(' · ');
+  if (e.kg != null) t += (t ? ' · ' : '') + 'Muskeltest höchste ' + e.kg + ' kg';
+  return t + ' · ' + e.dauer + ' s';
+}
+$('snDatei').addEventListener('change', function(){
+  var f = this.files && this.files[0], msg = $('snMsg'); this.value = '';
+  if (!f) return;
+  var rd = new FileReader();
+  rd.onload = function(){
+    var d; try { d = JSON.parse(rd.result); } catch(x){ d = null; }
+    if (!d || d.app !== 'HumanSpark-Sensor' || !Array.isArray(d.t) || !Array.isArray(d.f)){ msg.textContent = 'Das ist keine Datei vom HumanSpark-Sensor.'; msg.className = 'notice warn'; return; }
+    var t = d.t.map(Number), t0 = t[0] || 0, ts = t.map(function(v){ return (v - t0) / 1000; });
+    var modus = $('snModus').value;
+    var e = {id:uid(), t:Date.now(), type:'sensor', modus:modus, ort:$('snOrt').value, sensorZeit:d.datum || null,
+      dauer: Math.round(ts[ts.length - 1] || 0), kanaele:[], kurven:[], kg: modus === 'muskeltest' || d.muskeltest_hoechste_kg ? (Math.round((+d.muskeltest_hoechste_kg || 0) * 10) / 10) : null};
+    d.f.forEach(function(k, c){
+      var v = (k || []).map(Number); if (!v.length) return;
+      var m = v.reduce(function(a, x){ return a + x; }, 0) / v.length, kn = {name:(d.finger && d.finger[c]) || ('Kanal ' + (c + 1)), mittel:Math.round(m), max:Math.round(Math.max.apply(null, v))};
+      if (modus === 'puls' || modus === 'behandlung'){
+        var r = analyse(ts.map(function(x, i){ return [x, -v[i]]; }), 0);
+        if (r.ok){ kn.bpm = r.bpm; kn.qualitaet = r.quality; }
+      }
+      e.kanaele.push(kn);
+      e.kurven.push(snKurz(v.slice(-Math.min(v.length, 600)), 150).map(Math.round));
+    });
+    if (!e.kanaele.length && e.kg == null){ msg.textContent = 'Die Datei enthält keine Messwerte.'; msg.className = 'notice warn'; return; }
+    addEntry(e);
+    msg.textContent = 'Gespeichert (' + SN_MODI[modus] + ', ' + e.ort + '). Im Verlauf neben Pulsbild und Tastbefund.'; msg.className = 'notice';
+    $('snOut').innerHTML = snSvg(e) + '<p class="muted">' + esc(snZeile(e)) + '</p>';
+  };
+  rd.readAsText(f);
+});
 
 var curEx = null;
 function showResult(e, before){
@@ -1886,6 +1962,8 @@ function renderHistory(){
         '<button class="btn ghost" data-open="' + e.id + '" style="min-height:44px;margin-top:6px">Auswertung öffnen</button></div>';
     }
     var st = e.stage ? STAGES[e.stage-1] : null;
+    if (e.type === 'sensor') return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · Sensor · ' + esc(SN_MODI[e.modus] || e.modus) + '</span></div>' + snSvg(e) +
+      '<div class="muted">' + esc(e.ort) + ' · ' + esc(snZeile(e)) + '</div></div>';
     if (e.type === 'pulsbild') return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · Pulsbild' + (e.demo ? ' · Demo' : '') + '</span></div>' + pbSvg(e.welle, 260, 70) +
       '<div class="muted">' + esc(pbZeile(e)) + '</div>' + (e.tast && e.tast.length ? '<div class="txt">Tastbefund: ' + esc(e.tast.join(', ')) + '</div>' : '') + '</div>';
     var head = e.type === 'messung' ? (e.pairOf ? 'Nachmessung' : 'Messung') + (e.source === 'polar' ? ' (Polar)' : '') : 'Reinreden';
