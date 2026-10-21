@@ -32,7 +32,14 @@ document.head.appendChild(css);
 let POSEN=[];
 fetch("posen/posen.json",{cache:"no-cache"}).then(r=>r.ok?r.json():null).then(j=>{if(j&&Array.isArray(j.posen))POSEN=j.posen.map(String)}).catch(()=>{});
 const heroImg=()=>$$(".figur-hero img");
-window.FLO_POSEBILD=function(name){const img=heroImg();if(!img)return;const n=name||"ruhe",src=POSEN.includes(n)?"posen/"+n+".jpg":"figur.jpg";if(img.getAttribute("src")!==src)img.setAttribute("src",src)};
+/* Seit der Bühne (nova/buehne.js) gibt es oft keinen .figur-hero mehr: dann zeigt das grosse Bühnenbild die Pose
+   und kehrt ohne Pose zu seinem eigenen Bild zurück (Tinko-Posen 21.10.). */
+window.FLO_POSEBILD=function(name){
+  const hero=heroImg();
+  if(hero){const n=name||"ruhe",src=POSEN.includes(n)?"posen/"+n+".jpg":"figur.jpg";if(hero.getAttribute("src")!==src)hero.setAttribute("src",src);return}
+  const img=document.querySelector(".nb-buehne img");if(!img)return;
+  if(!img.dataset.grund)img.dataset.grund=img.getAttribute("src");
+  const src=name&&POSEN.includes(name)?"posen/"+name+".jpg":img.dataset.grund;if(img.getAttribute("src")!==src)img.setAttribute("src",src)};
 
 /* ---------- Flo grüsst auf Schweizerdeutsch ---------- */
 function gruss(){const h=new Date().getHours();return h<10?"Guete Morge! Was gab es zum Zmorge?":h<14?"En Guete! Erzähl mir vom Zmittag.":h<17?"Zvieri-Zeit. Ein Apfel und ein paar Nüsse?":h<21?"Guete Abig. Was kommt zum Znacht auf den Teller?":"Gueti Nacht bald. Morgen erzählst du mir weiter."}

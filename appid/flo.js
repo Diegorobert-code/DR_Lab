@@ -99,7 +99,8 @@ function sag(t){ // Flo spricht: Figurenstimme über Nova, sonst Handystimme
 function floSatz(t){const s=document.getElementById("floSatz");if(!s)return;s.textContent=t;s.classList.remove("film-neu");void s.offsetWidth;s.classList.add("film-neu")}
 let poseT;
 function pose(name,ms,prop){
-  const img=document.querySelector(".figur-hero img");if(!img)return;
+  const img=document.querySelector(".figur-hero img");
+  if(!img){if(window.FLO_POSEBILD)window.FLO_POSEBILD(name);clearTimeout(poseT);if(ms)poseT=setTimeout(()=>pose(grundPose()[0],0,grundPose()[1]),ms);return}
   img.classList.remove("pose-jubel","pose-jog","pose-hoert","pose-ruhig","pose-winkt","pose-denkt","film-hops");
   void img.offsetWidth; if(name)img.classList.add("pose-"+name);
   if(window.FLO_POSEBILD)window.FLO_POSEBILD(name);
