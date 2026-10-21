@@ -74,14 +74,16 @@
     var pp = null;
     var puppeGruss = function (img) {
       if (!(window.Puppe && typeof window.Puppe.winkeZurueck === 'function')) return false;
-      try { pp = pp || window.Puppe.winkeZurueck(img, { figur: 'mrping', gruss: 'glocke', antippen: false, blase: false }); if (pp && typeof pp.gruesse === 'function') { pp.gruesse('glocke'); return true; } } catch (e) {}
+      // Runde 5: Tinkos «Mr. Ping winkt» (Hand frei, Glocke in der anderen) – genau diese Hand schwingt
+      try { pp = pp || window.Puppe.winkeZurueck(img, { figur: 'mrping', gruss: 'glocke', antippen: false, blase: false, bild: 'posen/winkt.jpg', arm: false, augen: [[9, 9, 0.01, 0.01]], mund: { l: [9, 9], r: [9.1, 9], oben: 0, unten: 0, kinn: 0.01 }, kopf: [0.6, 0.4, 0.2], gesicht: [0.6, 0.42, 0.15], winkArm: { x: 0.15, y: 0.38, r: 0.13, dx: 0.17, dy: 0.68, seite: 'links' } }); if (pp && typeof pp.gruesse === 'function') { pp.gruesse('glocke'); return true; } } catch (e) {}
       return false;
     };
     var winke = function () {
       var img = ava.querySelector('img');
+      if (window.MP_POSEBILD) window.MP_POSEBILD('winkt');
       if (!puppeGruss(img) && !ruhig) { img.classList.remove('r4-wink'); hand.classList.remove('an'); void img.offsetWidth; img.classList.add('r4-wink'); hand.classList.add('an'); }
       brr(12);
-      setTimeout(function () { M.pose('ping', GRUESSE[gi++ % GRUESSE.length]); }, 30);
+      setTimeout(function () { M.pose('winkt', GRUESSE[gi++ % GRUESSE.length]); }, 30);
     };
     ava.addEventListener('click', winke);
     ava.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); winke(); } });
