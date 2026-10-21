@@ -18,7 +18,7 @@
           var FELD = [['name', 'Name des Hundes', 'text', 'Wäf Wäf'], ['geb', 'Geburtstag', 'text', 'z. B. 3. Mai 2025'], ['chip', 'Chip-Nummer', 'text', '15 Ziffern'], ['arzt', 'Tierarztpraxis', 'text', 'Name der Praxis'], ['tel', 'Telefon Tierarzt', 'tel', '044 …'], ['notfall', 'Notfallkontakt', 'text', 'Name und Telefon'], ['hinweis', 'Wichtig zu wissen', 'textarea', 'Allergien, Futter, Ängste …']];
           var d = H.hol('pass', {});
           var n = H.karte('pass', '🪪 Hundepass',
-            '<p>Alles Wichtige an einem Ort, wenn es schnell gehen muss. Bleibt nur auf diesem Handy.</p><div class="r7-ansicht"></div>' +
+            '<img class="r7-bild" alt="Wäf Wäf mit goldener Hundemarke am Halsband" loading="lazy" decoding="async" width="768" height="480" src="posen/hundemarke.jpg" style="object-position:50% 45%"><p>Alles Wichtige an einem Ort, wenn es schnell gehen muss. Bleibt nur auf diesem Handy.</p><div class="r7-ansicht"></div>' +
             '<form class="r7-form" hidden>' + FELD.map(function (f) { return '<label class="r7-feld">' + f[1] + (f[2] === 'textarea' ? '<textarea name="' + f[0] + '" placeholder="' + f[3] + '" maxlength="300"></textarea>' : '<input name="' + f[0] + '" type="' + f[2] + '" placeholder="' + f[3] + '" maxlength="80" autocomplete="off">') + '</label>'; }).join('') +
             '<div class="r7-reihe"><button type="submit" class="r7-btn voll">Speichern</button><button type="button" class="r7-btn" data-a="abbr">Abbrechen</button></div></form>' +
             '<div class="r7-reihe r7-knoepfe"><button type="button" class="r7-btn voll" data-a="edit">✎ Ausfüllen</button><button type="button" class="r7-btn" data-a="teilen">Teilen</button></div>');
@@ -64,7 +64,7 @@
           };
           var heut = H.hol('wetterTag', '') === H.heute ? H.hol('wetter', '') : '';
           var n = H.karte('wetter', '🌡️ Pfoten-Wetter',
-            '<p>Wie ist das Wetter heute? Wäf Wäf sagt dir, was ihm guttut.</p>' +
+            '<img class="r7-bild" alt="Wäf Wäf im gelben Regenmantel" loading="lazy" decoding="async" width="768" height="480" src="posen/regenmantel.jpg" style="object-position:50% 45%"><p>Wie ist das Wetter heute? Wäf Wäf sagt dir, was ihm guttut.</p>' +
             '<div class="r7-chips" role="group" aria-label="Wetter heute">' + Object.keys(W).map(function (k) { return '<button type="button" data-w="' + k + '" aria-pressed="false">' + W[k][0] + '</button>'; }).join('') + '</div>' +
             '<div class="r7-tipp" aria-live="polite"></div>');
           var tipp = n.querySelector('.r7-tipp'), tt = 0;
@@ -72,7 +72,7 @@
             n.querySelectorAll('[data-w]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-w') === heut)); });
             if (!heut) { tipp.innerHTML = ''; return; }
             var w = W[heut];
-            tipp.innerHTML = '<div class="r7-kopf" style="margin-top:16px"><img alt="" loading="lazy" src="posen/' + (heut === 'knall' || heut === 'regen' ? 'schlaeft' : 'rennt') + '.jpg"><p style="margin:0">' + H.esc(w[1]) + '</p></div>' +
+            tipp.innerHTML = '<div class="r7-kopf" style="margin-top:16px"><img alt="" loading="lazy" src="posen/' + (heut === 'regen' ? 'schnueffelt' : heut === 'knall' ? 'schlaeft' : 'rennt') + '.jpg"><p style="margin:0">' + H.esc(w[1]) + '</p></div>' +
               (w[2] ? '<h3>Asphalt-Test</h3><p>Leg deinen Handrücken sieben Sekunden auf den Boden. Ist es dir zu heiss, ist es auch für die Pfoten zu heiss.</p><div class="r7-reihe"><button type="button" class="r7-btn voll" data-a="test">✋ 7 Sekunden zählen</button></div><p class="r7-gross r7-z" aria-live="assertive" hidden></p>' : '');
           }
           n.addEventListener('click', function (e) {
@@ -88,14 +88,14 @@
         id: 'ruhe', emo: '💤', titel: 'Pssst, Wäf Wäf schläft', kurz: 'Ein Ruhe-Schild für die ganze Familie, auch für die Kinder.',
         bau: function (H) {
           var n = H.karte('ruhe', '💤 Pssst, Wäf Wäf schläft',
-            '<p>Hunde brauchen viel Schlaf, junge Hunde oft 18 Stunden und mehr. Wenn Wäf Wäf sich hinlegt, stell das Ruhe-Schild auf. Dann wissen alle: jetzt nicht streicheln, nicht rufen.</p>' +
+            '<img class="r7-bild" alt="Wäf Wäf schläft im Körbchen, daneben ein Schild «Pssst»" loading="lazy" decoding="async" width="768" height="480" src="posen/pssst.jpg" style="object-position:50% 55%"><p>Hunde brauchen viel Schlaf, junge Hunde oft 18 Stunden und mehr. Wenn Wäf Wäf sich hinlegt, stell das Ruhe-Schild auf. Dann wissen alle: jetzt nicht streicheln, nicht rufen.</p>' +
             '<p class="r7-leise r7-st"></p>' +
             '<div class="r7-reihe"><button type="button" class="r7-btn voll" data-a="los">💤 Ruhe-Schild aufstellen</button></div>');
           var st = n.querySelector('.r7-st');
           function zeig() { var z = H.hol('ruheTag', '') === H.heute ? H.hol('ruheZahl', 0) : 0; st.textContent = z ? 'Heute schon ' + z + ' Mal Ruhe geschenkt. Danke!' : 'Heute noch kein Ruhe-Schild.'; }
           n.querySelector('[data-a=los]').onclick = function () {
             var t0 = Date.now(), iv = 0;
-            var v = H.voll('<img alt="" src="posen/schlaeft.jpg"><p>Pssst! Wäf Wäf schläft.</p><small>Bitte leise sein, nicht streicheln, nicht rufen. Er kommt zu dir, wenn er ausgeschlafen hat.</small><p class="r7-zahl" aria-live="off">0:00</p><button type="button" class="r7-btn">Er ist wach</button>', function () { clearInterval(iv); });
+            var v = H.voll('<img alt="" src="posen/pssst.jpg"><p>Pssst! Wäf Wäf schläft.</p><small>Bitte leise sein, nicht streicheln, nicht rufen. Er kommt zu dir, wenn er ausgeschlafen hat.</small><p class="r7-zahl" aria-live="off">0:00</p><button type="button" class="r7-btn">Er ist wach</button>', function () { clearInterval(iv); });
             iv = setInterval(function () { v.el.querySelector('.r7-zahl').textContent = H.zeit((Date.now() - t0) / 1000); }, 1000);
             v.el.querySelector('button').onclick = function () {
               var z = H.hol('ruheTag', '') === H.heute ? H.hol('ruheZahl', 0) : 0; H.leg('ruheTag', H.heute); H.leg('ruheZahl', z + 1);
@@ -196,6 +196,8 @@
     '.r7-feld input,.r7-feld textarea,.r7-feld select{width:100%;box-sizing:border-box;min-height:44px;padding:10px 12px;border-radius:var(--r7-rad-s);border:1px solid rgba(242,193,78,.5);background:rgba(8,14,36,.7);color:var(--r7-text);font:inherit;font-size:16px;font-weight:400}',
     '.r7-feld textarea{min-height:88px;resize:vertical}',
     '.r7-kopf{display:flex;gap:var(--r7-2);align-items:center}',
+    /* Runde 7d: Tinko-Bilder in den Karten */
+    '.r7-bild{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:50% 40%;border-radius:var(--r7-rad-s);margin:var(--r7-1) 0 var(--r7-2);border:1px solid rgba(242,193,78,.35);background:#0e1838}',
     '.r7-kopf img{flex:none;width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--r7-gold);background:#0e1838}',
     '.r7-gross{font-size:22px;line-height:1.4;font-weight:700;color:var(--r7-text);margin:var(--r7-1) 0}',
     '.r7-leer{display:flex;gap:var(--r7-2);align-items:center;padding:var(--r7-2);border-radius:var(--r7-rad);border:1px dashed rgba(242,193,78,.45);background:rgba(242,193,78,.06);color:var(--r7-leise);margin-top:var(--r7-1)}',
