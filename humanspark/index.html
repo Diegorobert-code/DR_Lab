@@ -2034,10 +2034,12 @@ function stimmePulsHtml(e){
   return h;
 }
 function novaGet(k){ try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch(x){ return null; } }
-function novaBereit(){ var a = String(novaGet('drlab-hermes-adresse') || ''); return /^https:\/\//.test(a) && !!novaGet('drlab-hermes-passwort'); }
+// Senden erst freischalten, wenn die Sprech-Nova Puls-Einträge nicht an ElevenLabs weitergibt
+var NOVA_SENDEN = false;
+function novaBereit(){ if (!NOVA_SENDEN) return false; var a = String(novaGet('drlab-hermes-adresse') || ''); return /^https:\/\//.test(a) && !!novaGet('drlab-hermes-passwort'); }
 function novaText(e){
   var l = stimmePuls(e);
-  return 'HumanSpark · Stimme und Puls · Kürzel ' + e.kuerzel + ' · ' + fmtTime(e.t) + ' · ' + Math.round(e.dur / 60) + ' Min · Quelle ' + e.source +
+  return '[stimme-puls] HumanSpark · Stimme und Puls · Kürzel ' + e.kuerzel + ' · ' + fmtTime(e.t) + ' · ' + Math.round(e.dur / 60) + ' Min · Quelle ' + e.source +
     '\nRuhepuls Start ' + (e.start.bpm || '–') + ', Ende ' + (e.end.bpm || '–') + ' · Befinden ' + e.befVor + ' → ' + e.befNach +
     '\n' + l.map(function(x){ return '[' + fmtClock(x.t) + '] «' + x.text + '» Puls ' + (x.bpm == null ? '–' : x.bpm) + (x.diff == null ? '' : ' (' + (x.diff > 0 ? '+' : '') + x.diff + ')'); }).join('\n') +
     (e.schluss ? '\nSchlusssatz: «' + e.schluss + '»' : '') + '\nSchätzwerte, keine Diagnose.';
@@ -3061,6 +3063,15 @@ textarea::placeholder,.inp::placeholder{color:#7f89a8}
 .chk input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:#F2C14E}
 </style>
 <script>
+// Direktlink für Nova: ?tab=sitzung&k=DR öffnet die Sitzung mit Kürzel (auch messen, reden, verlauf)
+(function(){
+  var q = new URLSearchParams(location.search), t = q.get('tab'), k = q.get('k');
+  if (t && document.querySelector('.tab[data-tab="' + t.replace(/[^a-z]/g, '') + '"]')){
+    if (k && t === 'sitzung'){ var i = document.getElementById('sKuerzel'); i.value = k; i.dispatchEvent(new Event('input')); }
+    var tb = document.querySelector('.tab[data-tab="' + t + '"]');
+    setTimeout(function(){ tb.click(); }, 50);
+  }
+})();
 // Tab antippen: Inhalt sofort zeigen, nicht oben bei Sparky stehen bleiben
 document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click', function(){
   var nav = document.querySelector('.tabs'), y = nav.getBoundingClientRect().top + scrollY - 8;
