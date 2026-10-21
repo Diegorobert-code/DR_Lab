@@ -833,6 +833,9 @@ function spikes(){
 // Tinkos Otti-Posen: posen/<pose>.jpg, Liste in posen/index.json (z. B. ["hallo","lacht","schlaeft","winkt"]).
 // Fehlt eine Pose, nimmt Otti das Filmbild und wippt sanft (CSS).
 const OTTI_POSEN = {};
+// Runde 5: Tinkos Winkebild (figur-gross.jpg = posen/winkt.jpg) – Augen, Mund und der freie Arm, der beim Gruss echt winkt
+const OTTI_WINK = { arm:false, augen:[[0.391,0.425,0.048,0.05],[0.616,0.42,0.048,0.05]], mund:{ l:[0.414,0.518], r:[0.592,0.52], oben:0.012, unten:0.058, kinn:0.05, offen:true },
+  kopf:[0.51,0.40,0.30], hals:[0.5,0.64], winkArm:{ x:0.84, y:0.53, r:0.10, dx:0.77, dy:0.66, seite:'rechts', winkel:16 } };
 function sunnySVG(o={}){
   // Otti im gültigen Look (runder, flauschiger Comic-Igel mit gelbem Halstuch, Referenz 18.10.).
   // Bis Tinkos Posen da sind: ein Bild für alle Posen; Schlafen und Winken macht CSS.
@@ -998,7 +1001,8 @@ function bockSVG(o={}){
 }
 const FIG = {sunny:sunnySVG, nova:novaSVG, kiki:kikiSVG, moon:moonSVG, mush:mushSVG, fly:flySVG,
   hase:filmFig('hase.jpg','Hoppel, der Hase'), fuchs:filmFig('fuchs.jpg','Flori, der Fuchs'), fompa:fompaSVG, prinz:prinzSVG,
-  affe:filmFig('fompa-affe.jpg','Fompa, das Löwenäffchen mit der runden Brille'), koala:filmFig('kiki-koala.jpg','Kiki, der Koala mit dem goldenen Mikrofon'), bock:filmFig('zahnboecklein.jpg','Das Zahnböcklein, die kleine Geiss mit Feenflügeln und blauer Zahnbürste')};
+  affe:filmFig('fompa-affe.jpg','Fompa, das Löwenäffchen mit der runden Brille'), koala:filmFig('kiki-koala.jpg','Kiki, der Koala mit dem goldenen Mikrofon'), bock:filmFig('zahnboecklein.jpg','Das Zahnböcklein, die kleine Geiss mit Feenflügeln und blauer Zahnbürste'),
+  eule:filmFig('eule.jpg','Frau Eule mit Schlafmütze und Schal'), wolke:filmFig('kissenwolke.jpg','Die Kissenwolke')};
 
 /* ---------- Nachtmodus ---------- */
 function isNight(){ if (S.night==='on') return true; if (S.night==='off') return false; const h=new Date().getHours(); return h>=19 || h<7; }
@@ -1392,7 +1396,7 @@ const STORIES = [
   {q:'Wen soll Otti um Hilfe bitten?', opts:[
     {e:'🤖', l:'Nova', k:['nova','roboter'], v:{helfer:'Nova', how:'Nova, der kleine blaue Roboter, liess aus seinem Helm einen kleinen Propeller wachsen. Surr, surr. «Haltet euch fest!», piepste er fröhlich, und seine runden Augen leuchteten hellblau. Otti hielt sich gut fest, der Mondstrahl kuschelte sich in sein Halstuch. Und ganz sanft schwebten sie los.', hp:'nova'}},
     {e:'✨', l:'Tropfi', k:['kiki'], v:{helfer:'Tropfi', how:'Tropfi blinkte vor Freude. «Ich kann leuchten! Ich zeige euch den Weg!» Tropfi flog voraus, zuerst ein bisschen in die falsche Richtung. «Hoppla», kicherte Tropfi, drehte um und leuchtete den Weg ganz hell.', hp:'kiki'}},
-    {e:'🦉', l:'Frau Eule', k:['eule'], v:{helfer:'Frau Eule', how:'Frau Eule plusterte ihre Federn auf. «Haltet euch gut fest», sagte sie mit ihrer ruhigen, tiefen Stimme. Und leise wie ein fallendes Blatt flog sie mit ihnen los.', hp:'moon'}}],
+    {e:'🦉', l:'Frau Eule', k:['eule'], v:{helfer:'Frau Eule', how:'Frau Eule plusterte ihre Federn auf. «Haltet euch gut fest», sagte sie mit ihrer ruhigen, tiefen Stimme. Und leise wie ein fallendes Blatt flog sie mit ihnen los.', hp:'eule'}}],
    after:'{how}', pic:['sunny','{hp}']},
   {t:'Hinauf ging es, an den schlafenden Bäumen vorbei. Höher und höher. Die Luft war kühl und still. Unten im Gras leuchteten die Glühwürmchen wie kleine Laternen. Und oben funkelten die Sterne, als wollten sie sagen: Gute Reise!', pic:['fly','moon']},
   {q:'Was soll Otti dem Mond mitbringen?', opts:[
@@ -1612,7 +1616,7 @@ const STORIES = [
  { id:'kikimond', neu:1, sz:'wolken', title:'Kiki singt den Mond in den Schlaf', sub:'Der Mond kann nicht schlafen. Kiki hat eine Idee.', pic:['koala','moon'], parts:[
   {t:'Kiki ist ein kleiner grauer Koala mit grossen runden Ohren und einem goldenen Stern im Fell. Kiki hat ein goldenes Mikrofon. Aber Kiki singt nie laut. Kiki singt immer nur ganz leise, so leise wie Watte.', pic:['koala']},
   {t:'Eines Nachts hört Kiki ein Seufzen. Es kommt von oben. Der Mond seufzt! «Was hast du, lieber Mond?», fragt Kiki. «Ich muss die ganze Nacht wach bleiben und leuchten», sagt der Mond. «Und am Morgen bin ich so müde. Niemand singt mir ein Schlaflied.»', pic:['koala','moon']},
-  {t:'Kiki hält das goldene Mikrofon ganz fest. «Ich singe dir eins», sagt Kiki. «Aber dafür muss ich zu dir hinauf.» Da kommt eine weiche Wolke angeschwebt. «Steig auf», brummt die Wolke. «Ich bin die Kissenwolke.»', pic:['koala']},
+  {t:'Kiki hält das goldene Mikrofon ganz fest. «Ich singe dir eins», sagt Kiki. «Aber dafür muss ich zu dir hinauf.» Da kommt eine weiche Wolke angeschwebt. «Steig auf», brummt die Wolke. «Ich bin die Kissenwolke.»', pic:['koala','wolke']},
   {q:'Wovon soll Kikis Schlaflied handeln?', opts:[
     {e:'🌊', l:'Vom Meer', k:['meer'], v:{lied:'vom Meer, das sanft hin und her schaukelt', ton:'Schhh, schhh, macht das Meer im Lied.'}},
     {e:'🐱', l:'Von den Katzen', k:['katze'], v:{lied:'von den Katzen, die sich gemütlich einrollen', ton:'Rrrr, rrrr, schnurren die Katzen im Lied.'}},
@@ -1624,7 +1628,7 @@ const STORIES = [
     {e:'💙', l:'Der kleine blaue', k:['blau','klein'], v:{stern:'der kleine blaue Stern'}},
     {e:'🌟', l:'Kikis Stern im Fell', k:['fell','kiki'], v:{stern:'der goldene Stern in Kikis Fell'}}],
    after:'Und so leuchtet heute {stern} ganz besonders hell, damit der Mond ein bisschen ruhen kann.', pic:['koala','fly']},
-  {t:'Der Mond schliesst die Augen, nur ein ganz kleines bisschen. Die Kissenwolke schwebt mit Kiki wieder hinunter. Kiki kuschelt sich in die Astgabel eines Eukalyptusbaums. Das goldene Mikrofon liegt warm im Arm.', pic:['koala-sleep','moon']},
+  {t:'Der Mond schliesst die Augen, nur ein ganz kleines bisschen. Die Kissenwolke schwebt mit Kiki wieder hinunter. Kiki kuschelt sich in die Astgabel eines Eukalyptusbaums. Das goldene Mikrofon liegt warm im Arm.', pic:['koala-sleep','wolke']},
   {t:'Und weisst du was? Wenn du heute Nacht ganz leise bist, hörst du vielleicht noch das letzte Summen von Kikis Lied. Mmmh, mmmh. Schlaf gut, lieber Mond. Schlaf gut, Kiki. Und schlaf gut, du.', pic:['koala-sleep','sunny-sleep']}
  ]},
  { id:'buerste', neu:1, sz:'zimmer', title:'Wo ist die blaue Zahnbürste?', sub:'Das Zahnböcklein sucht, Tropfi leuchtet mit.', pic:['bock','kiki'], parts:[
@@ -1912,7 +1916,7 @@ $$('.mic-btn').forEach(b => {
 });
 
 /* ---------- Memory ---------- */
-const MEM = [['sunny','Otti'],['kiki','Tropfi'],['nova','Nova'],['moon','Mond'],['mush','Pilz'],['fly','Glühwürmchen']];
+const MEM = [['sunny','Otti'],['kiki','Tropfi'],['nova','Nova'],['moon','Mond'],['eule','Frau Eule'],['fly','Glühwürmchen']];
 const game = { cards:[], open:[], moves:0, pairs:0, lock:false };
 function newGame(){
   const deck = MEM.flatMap(([k,l]) => [{k,l},{k,l}]);
@@ -2326,8 +2330,8 @@ const TK_RATES = [[0.85,'Ruhig'],[1.0,'Normal'],[1.15,'Flink']];
 // Otti grüsst flüssig zurück (Puppe aus #136: winken + Mund), ohne Puppe hüpft er kurz.
 function ottiGruesst(img, satz){
   if (!img) return;
-  if (window.Puppe && Puppe.winkeZurueck && /figur-gross|otti-3d/.test(img.src)){
-    try { Puppe.winkeZurueck(img, { figur:'otti', antippen:false }).gruesse('winken+reden', { satz: satz || 'Hallo!', blase:false, ton:false }); return; } catch(e){}
+  if (window.Puppe && Puppe.winkeZurueck && /figur-gross|otti-3d|posen\/winkt/.test(img.src)){
+    try { Puppe.winkeZurueck(img, Object.assign({ figur:'otti', antippen:false }, /otti-3d/.test(img.src) ? {} : OTTI_WINK)).gruesse('winken+reden', { satz: satz || 'Hallo!', blase:false, ton:false }); return; } catch(e){}
   }
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   img.classList.remove('film-hops'); void img.offsetWidth; img.classList.add('film-hops');

@@ -494,7 +494,7 @@
 </style>
 </head>
 <body>
-<script src="../nova/intro.js" data-art="funken" data-bild="otti-3d.jpg" data-text="Otti wartet im Mondschein-Wald"></script>
+<script src="../nova/intro.js" data-art="funken" data-bild="posen/winkt.jpg" data-text="Otti wartet im Mondschein-Wald"></script>
 <div class="sterne" aria-hidden="true"></div>
 
 <header class="kopf">
@@ -645,7 +645,7 @@
 
 <div class="eltern tour" id="tour" hidden role="dialog" aria-modal="true" aria-label="So geht Otti">
   <div class="karte">
-    <img src="otti-3d.jpg" alt="Otti" loading="lazy">
+    <img src="posen/anruf.jpg" alt="Otti" loading="lazy">
     <h2 id="tourH" style="margin-top:16px"></h2>
     <p id="tourT"></p>
     <div class="punkte" id="tourP" aria-hidden="true"></div>
@@ -681,7 +681,7 @@
   window.NOVA_SEELEN = window.NOVA_SEELEN || {};
   if (!window.NOVA_SEELEN.Otti) window.NOVA_SEELEN.Otti = window.NOVA_SEELEN.Mondschein || '';
 </script>
-<script src="../nova/nova.js" data-nova-app="Otti" data-nova-figur="otti" data-nova-kind="1" data-nova-bild="otti-3d.jpg" data-nova-geraetestimme="0"></script>
+<script src="../nova/nova.js" data-nova-app="Otti" data-nova-figur="otti" data-nova-kind="1" data-nova-bild="freunde/otti.jpg" data-nova-geraetestimme="0"></script>
 <script src="feedback.js" data-app="Otti" defer></script>
 <script>
 (function () {
@@ -755,7 +755,7 @@
   }
   function winken(satz) {
     if (versteckt) return;
-    if (POSEN.winkt) pose('winkt', 2300);
+    if (POSEN.winkt && !(puppe && puppe.gruesse)) pose('winkt', 2300);
     // Flüssig zurückgrüssen (Puppe aus #136): Otti winkt und bewegt den Mund dazu
     if (puppe && puppe.gruesse) { clearTimeout(zustandT); puppe.gruesse('winken+reden', { satz: satz || 'Hallo!', blase: false, ton: false }); }
     else kurzZustand('winkt', 2600);
@@ -809,7 +809,7 @@
       s.addEventListener('pointerdown', function (e) {
         e.stopPropagation(); if (s.classList.contains('gefangen')) return;
         s.classList.add('gefangen'); klang('ueberraschung'); sternDazu(s); kurzZustand('freut', 1600); bewegung('hops3');
-        sagKurz(zufall(['Du hast die Sternschnuppe gefangen! Wünsch dir was!', 'Wow, eine Sternschnuppe! Die gehört dir.', 'Gefangen! Ein Wunsch-Stern für dich.']));
+        pose('staunt', 1600); sagKurz(zufall(['Du hast die Sternschnuppe gefangen! Wünsch dir was!', 'Wow, eine Sternschnuppe! Die gehört dir.', 'Gefangen! Ein Wunsch-Stern für dich.']));
       });
       note(1568, 0, 1.2, 'glocke', .05); note(2093, .2, 1.2, 'glocke', .04);
     },
@@ -1537,7 +1537,7 @@
           falsch++; b.disabled = true; b.classList.add('wackeln', 'leer');
           if (Math.random() < .45) { var u = ohneWdh(UEBERRASCHUNG, 'tier'); b.textContent = u[0]; b.classList.add('tier'); klang('ueberraschung'); blase(u[1]); }
           else { b.textContent = '🍂'; klang('rascheln'); ottiTrost(zufall(['Hier nicht! Hihi.', 'Kalt, kalt!', 'Fast! Such weiter.', 'Nur Laub. Wo bin ich wohl?', 'Brrr, hier ist es leer.'])); }
-          if (falsch >= 2) { knoepfe[zielI].classList.add('zittert'); klang('rascheln'); blase('Psst … da drüben hat sich etwas bewegt!'); }
+          if (falsch >= 2) { pose('versteckt', 1500); knoepfe[zielI].classList.add('zittert'); klang('rascheln'); blase('Psst … da drüben hat sich etwas bewegt!'); }
         }
       }
       function oeffnen() {
@@ -2093,7 +2093,9 @@
   var FREUNDE = [['otti', 'Otti', 'Das bin ich! Otti, der kleine Igel mit dem gelben Halstuch.'], ['hoppel', 'Hoppel', 'Das ist Hoppel, der Hase. Er hat die längsten Ohren im ganzen Wald.'],
     ['flori', 'Flori', 'Das ist Flori, der Fuchs. Er singt jeden Abend ein leises Lied.'], ['fompa', 'Fompa', 'Das ist Fompa, das Löwenäffchen mit der runden Brille. Er rechnet alles aus.'],
     ['kiki', 'Kiki', 'Das ist Kiki, der Koala mit dem goldenen Mikrofon. Kiki singt ganz leise.'], ['nova', 'Nova', 'Das ist Nova, der kleine Roboter. Nova weiss viel, aber nicht alles.'],
-    ['zahnboecklein', 'Zahnböcklein', 'Das ist das Zahnböcklein. Mäh! Es putzt mit dir die Zähne.']];
+    ['zahnboecklein', 'Zahnböcklein', 'Das ist das Zahnböcklein. Mäh! Es putzt mit dir die Zähne.'],
+    ['eule', 'Frau Eule', 'Das ist Frau Eule mit ihrer Schlafmütze. Sie fliegt ganz leise durch die Nacht.'], ['schnecki', 'Schnecki', 'Das ist Schnecki. Sie ist langsam, aber sie kommt immer an.'],
+    ['kissenwolke', 'Kissenwolke', 'Das ist die Kissenwolke. Sie ist so weich, dass man auf ihr schlafen kann.']];
   function freundBild(k) { return 'freunde/' + k + '.jpg'; }
 
   /* ================= Ottis Zimmer: Laune, Lieblingsdinge, Sticker, Garten, Freunde ================= */
@@ -2272,7 +2274,7 @@
           if (st === 2) blase(zufall(['Es wächst!', 'Schau, ein Blatt!', 'Noch ein bisschen Wasser …']));
           if (st >= 3) {
             b.disabled = true; b.setAttribute('aria-label', 'Blume ' + blume); fertigN++; blumeDazu(blume); $('feldzahl').textContent = '🌷 ' + fertigN + ' / ' + anz;
-            ottiFreut(zufall(['Wow, eine Blume!', 'Wie schön sie blüht!', 'Die duftet fein!', 'Hihi, die kitzelt meine Nase.']), b);
+            pose('staunt', 1500); ottiFreut(zufall(['Wow, eine Blume!', 'Wie schön sie blüht!', 'Die duftet fein!', 'Hihi, die kitzelt meine Nase.']), b);
             if (fertigN >= anz) { s.ziel = null; sternDazu(b); if (n === 3) nach(1200, schmetterlinge); else nach(1400, fertig); }
           }
         };
