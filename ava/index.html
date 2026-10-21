@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
-  :root { --nacht:#0d1638; --nacht2:#22306e; --gold:#f5c542; --rosa:#ff9ec4; --rosa2:#ffd1e3; --rot:#d6304a; --text:#fbf6ec; --leise:#c3c9e6; }
+  :root { color-scheme:dark; --nacht:#0d1638; --nacht2:#22306e; --gold:#f5c542; --rosa:#ff9ec4; --rosa2:#ffd1e3; --rot:#d6304a; --text:#fbf6ec; --leise:#c3c9e6; }
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html, body { margin:0; min-height:100%; }
   body { background:radial-gradient(120% 70% at 50% 0%, var(--nacht2), var(--nacht) 72%); color:var(--text);
@@ -409,7 +409,7 @@
       $('geschichte').value = (vorher + t).trim();
     };
     erkenner.onend = function () { hoert = false; $('mic').classList.remove('hoert'); $('mic').textContent = '🎙'; };
-    erkenner.onerror = erkenner.onend;
+    erkenner.onerror = function (ev) { erkenner.onend(); if (ev && /not-allowed|service-not-allowed/.test(ev.error)) { $('mic').hidden = true; $('erzaehlInfo').textContent = 'Das Mikrofon geht hier nicht. Erzähl es einem Erwachsenen, er schreibt es kurz auf.'; } };
     try { erkenner.start(); hoert = true; $('mic').classList.add('hoert'); $('mic').textContent = '⏹'; } catch (e) {}
   });
 
