@@ -391,6 +391,10 @@ h1{color:#F2C14E}
     <div class="box">
       <h2>Daten</h2>
       <p class="muted"><span class="web-only">Alles liegt nur in diesem Browser auf deinem Handy: Messungen, Sitzungen, Einwilligungen und Ideen.</span><span class="app-only">Alles liegt nur in dieser App auf deinem iPhone: Messungen, Sitzungen und Einwilligungen.</span> Exportieren kannst du es selbst, z. B. für dich oder deine Therapeutin.</p>
+      <div id="autoBox" class="hidden">
+        <label class="chk"><input type="checkbox" id="autoNova"> Alle meine Messungen, Sätze und Gefühle laufend an Nova auf unserem Server (nur Kürzel, nie an Dritte)</label>
+        <div class="muted" id="autoInfo"></div>
+      </div>
       <button class="btn primary" id="btnExport">Export (JSON teilen)</button>
       <button class="btn danger" id="btnClear">Alles löschen</button>
     </div>
@@ -435,7 +439,7 @@ var MIC_SETTINGS = IS_APP ? 'in den iPhone-Einstellungen unter HumanSpark' : 'in
 /* ---------- Speicher ---------- */
 function load(){ try { return JSON.parse(localStorage.getItem(KEY) || '[]') || []; } catch(e){ return []; } }
 function save(list){ try { localStorage.setItem(KEY, JSON.stringify(list)); return true; } catch(e){ return false; } }
-function addEntry(e){ var l = load(); l.push(e); save(l); return e; }
+function addEntry(e){ var l = load(); l.push(e); save(l); if (window.novaAuto) novaAuto(e); return e; }
 function loadObj(k, d){ try { return JSON.parse(localStorage.getItem(k) || 'null') || d; } catch(e){ return d; } }
 function saveObj(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e){ return false; } }
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
@@ -1590,11 +1594,40 @@ function novaGet(k){ try { return JSON.parse(localStorage.getItem(k) || 'null');
 // Senden erst freischalten, wenn die Sprech-Nova Puls-Einträge nicht an ElevenLabs weitergibt
 var NOVA_SENDEN = false;
 function novaBereit(){ if (!NOVA_SENDEN) return false; var a = String(novaGet('drlab-hermes-adresse') || ''); return /^https:\/\//.test(a) && !!novaGet('drlab-hermes-passwort'); }
+// Laufend an Nova: jede neue Messung, jeder Eintrag, jede Sitzung (nach Einwilligung im Verlauf)
+var AUTO_K = 'hs-nova-auto';
+function novaAusEintrag(e){
+  if (e.type === 'sitzung') return novaText(e);
+  var t = '[stimme-puls] HumanSpark · ' + (e.type === 'messung' ? 'Messung' : 'Eintrag') + ' · ' + fmtTime(e.t) + (e.demo ? ' · Demo' : '');
+  if (e.text) t += '\n«' + e.text + '»';
+  if (e.bpm) t += '\nPuls ' + e.bpm + (e.rmssd != null ? ' · HRV ' + e.rmssd + ' ms' : '') + (e.stage ? ' · Stufe ' + e.stage + ' ' + STAGES[e.stage - 1].name : '');
+  if (e.gefuehl) t += '\nGefühl ' + e.gefuehl + '/5' + (e.abweichung ? ' (Abweichung ' + (e.abweichung > 0 ? '+' : '') + e.abweichung + ')' : '');
+  if (e.worte) t += ' · ' + e.worte.join(', ');
+  if (e.kontext) t += '\nKontext: ' + e.kontext.join(', ');
+  return t + '\nSchätzwerte, keine Diagnose.';
+}
+function novaPost(text){
+  return fetch(String(novaGet('drlab-hermes-adresse')).replace(/\/+$/, '') + '/erfahrung', {method:'POST', keepalive:true,
+    headers:{'Content-Type':'application/json', 'Authorization':'Bearer ' + novaGet('drlab-hermes-passwort')},
+    body:JSON.stringify({app:'HumanSpark', art:'nutzung', thema:'stimme-puls', frage:text, antwort:''})});
+}
+window.novaAuto = function(e){
+  if (!novaBereit() || !loadObj(AUTO_K, false) || e.type === 'idee' || e.type === 'einwilligung') return;
+  novaPost(novaAusEintrag(e)).catch(function(){});
+};
+function autoUi(){
+  $('autoBox').classList.toggle('hidden', !novaBereit());
+  $('autoNova').checked = !!loadObj(AUTO_K, false);
+  $('autoInfo').textContent = $('autoNova').checked ? 'Läuft: Neues geht automatisch an Nova.' : '';
+}
+$('autoNova').addEventListener('change', function(){ saveObj(AUTO_K, $('autoNova').checked); autoUi(); });
+autoUi();
 function novaText(e){
   var l = stimmePuls(e);
   return '[stimme-puls] HumanSpark · Stimme und Puls · Kürzel ' + e.kuerzel + ' · ' + fmtTime(e.t) + ' · ' + Math.round(e.dur / 60) + ' Min · Quelle ' + e.source +
-    '\nRuhepuls Start ' + (e.start.bpm || '–') + ', Ende ' + (e.end.bpm || '–') + ' · Befinden ' + e.befVor + ' → ' + e.befNach +
-    '\n' + l.map(function(x){ return '[' + fmtClock(x.t) + '] «' + x.text + '» Puls ' + (x.bpm == null ? '–' : x.bpm) + (x.diff == null ? '' : ' (' + (x.diff > 0 ? '+' : '') + x.diff + ')'); }).join('\n') +
+    '\nRuhepuls Start ' + ((e.start && e.start.bpm) || '–') + ', Ende ' + ((e.end && e.end.bpm) || '–') + ' · Befinden ' + e.befVor + ' → ' + e.befNach +
+    e.events.filter(function(x){ return x.k === 'marker'; }).map(function(x){ return '\n[' + fmtClock(x.t) + '] Marker: ' + evLabel(x); }).join('') +
+    '\n' + l.map(function(x){ return '[' + fmtClock(x.t) + '] «' + x.text + '» Puls ' + (x.bpm == null ? '–' : x.bpm) + (x.rm != null ? ' HRV ' + x.rm : '') + (x.diff == null ? '' : ' (' + (x.diff > 0 ? '+' : '') + x.diff + ')'); }).join('\n') +
     (e.schluss ? '\nSchlusssatz: «' + e.schluss + '»' : '') + '\nSchätzwerte, keine Diagnose.';
 }
 document.addEventListener('click', function(ev){
@@ -1608,9 +1641,7 @@ document.addEventListener('change', function(ev){ if (ev.target && ev.target.id 
 document.addEventListener('click', function(ev){
   if (!ev.target || ev.target.id !== 'novaSend' || !sLastOut) return;
   var b = ev.target, m = $('novaMsg'); b.disabled = true; b.textContent = 'Wird geschickt …';
-  fetch(String(novaGet('drlab-hermes-adresse')).replace(/\/+$/, '') + '/erfahrung', {method:'POST',
-    headers:{'Content-Type':'application/json', 'Authorization':'Bearer ' + novaGet('drlab-hermes-passwort')},
-    body:JSON.stringify({app:'HumanSpark', art:'nutzung', thema:'stimme-puls', frage:novaText(sLastOut), antwort:''})})
+  novaPost(novaText(sLastOut))
   .then(function(r){ if (!r.ok) throw new Error(r.status); m.className = 'notice'; m.textContent = 'Angekommen. Nova hat die Sätze mit deinem Puls.'; b.textContent = 'Geschickt ✓'; })
   .catch(function(x){ m.className = 'notice warn'; m.textContent = 'Ging nicht (' + x.message + '). Server erreichbar? Nochmals versuchen.'; b.disabled = false; b.textContent = 'An Nova schicken'; });
 });
