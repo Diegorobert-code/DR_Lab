@@ -410,6 +410,11 @@ window.R7 = {
     rb.addEventListener('click', function () { var an = !hol('ruhig', false); leg('ruhig', an); rb.setAttribute('aria-pressed', an); H.classList.toggle('r7-ruhig', an); });
   }
 
+  d.addEventListener('submit', function (e) {
+    var f = e.target; if (!f || f.id !== 'r6Name') return;
+    var i = f.querySelector('input'); if (!i || i.value.trim()) return;
+    i.setAttribute('aria-invalid', 'true'); i.placeholder = 'Bitte einen Vornamen eintragen'; try { i.focus(); } catch (x) {}
+  }, true);
   window.R7K = { hol: hol, leg: leg, esc: esc, blatt: blatt, zu: zu, feier: feier, leer: leer, summ: summ, phase: phase, stunde: stunde, heute: heute, param: param, ruhig: ruhig };
   function start() {
     try { himmel(); } catch (e) { console.warn('r7 himmel', e); }
