@@ -594,7 +594,8 @@
       self.zeiger.aktiv = 2.5;
     });
     w.addEventListener('pointerleave', function () { self.zeiger.aktiv = Math.min(self.zeiger.aktiv, 0.3); });
-    ['pointerdown', 'keydown', 'touchstart'].forEach(function (n) { document.addEventListener(n, function () { self.letzteAktivitaet = performance.now(); }, { passive: true }); });
+    this._aktivFn = function () { self.letzteAktivitaet = performance.now(); };
+    ['pointerdown', 'keydown', 'touchstart'].forEach(function (n) { document.addEventListener(n, self._aktivFn, { passive: true }); });
 
     if (window.DeviceOrientationEvent && !this.inline) {
       if (typeof DeviceOrientationEvent.requestPermission === 'function') this.knopf.hidden = this.opt.neigenKnopf === false;
@@ -602,24 +603,43 @@
     }
 
     this.groesse();
-    if (window.ResizeObserver) new ResizeObserver(function () { self.groesse(); }).observe(w);
-    else window.addEventListener('resize', function () { self.groesse(); });
+    this._groesseFn = function () { self.groesse(); };
+    if (window.ResizeObserver) (this._ro = new ResizeObserver(this._groesseFn)).observe(w);
+    else window.addEventListener('resize', this._groesseFn);
     this.sichtbar = true;
-    if (window.IntersectionObserver) new IntersectionObserver(function (e) { self.sichtbar = e[0].isIntersecting; }).observe(w);
+    if (window.IntersectionObserver) (this._io = new IntersectionObserver(function (e) { self.sichtbar = e[e.length - 1].isIntersecting; if (self.sichtbar) self._weck(); })).observe(w);
 
     this._ladeModus().then(function () {
       w.classList.add('pp-bereit');
       w.setAttribute('data-modus', self.modus);
       self._event('puppe-bereit', { modus: self.modus });
     });
-    var letzte = performance.now();
-    function schleife(jetzt) {
-      var dt = Math.min(0.05, (jetzt - letzte) / 1000); letzte = jetzt;
-      if (self.sichtbar && !self.weg && !self.pausiert) self._tick(dt);
-      if (!self.weg) self.raf = requestAnimationFrame(schleife);
-    }
-    this.raf = requestAnimationFrame(schleife);
+    // Bildschleife: läuft nur, solange die Figur sichtbar und nicht pausiert ist (sonst schläft sie ganz, spart Akku).
+    // Nach 20 s ohne Berührung im Ruhezustand reichen 30 Bilder pro Sekunde für Atmen und Blinzeln.
+    var halb = false;
+    this._letzte = performance.now();
+    this._schleife = function (jetzt) {
+      self.raf = 0;
+      if (self.weg || !self.sichtbar || self._pausiert) return;
+      var dt = Math.min(0.05, (jetzt - self._letzte) / 1000);
+      var leise = self._zustand === 'ruhig' && !self.effekte.length && !self.timeline && !self._aktiv && jetzt - self.letzteAktivitaet > 20000;
+      if (leise && (halb = !halb)) { self.raf = requestAnimationFrame(self._schleife); return; }
+      self._letzte = jetzt;
+      self._tick(dt);
+      self.raf = requestAnimationFrame(self._schleife);
+    };
+    this._weck();
   };
+  Puppe.prototype._weck = function () {
+    if (this.raf || this.weg || !this._schleife) return;
+    this._letzte = performance.now();
+    this.raf = requestAnimationFrame(this._schleife);
+  };
+  // pausiert = true hält die Schleife ganz an; false weckt sie wieder
+  Object.defineProperty(Puppe.prototype, 'pausiert', {
+    get: function () { return !!this._pausiert; },
+    set: function (v) { this._pausiert = !!v; if (!v) this._weck(); }
+  });
 
   Puppe.prototype._event = function (n, d) { try { this.el.dispatchEvent(new CustomEvent(n, { detail: d })); } catch (e) {} };
 
@@ -816,7 +836,9 @@
     this.boden.style.top = (H * 0.84) + 'px';
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     if (this.cv) { var pw = Math.round(fw * dpr), ph = Math.round(fh * dpr); if (this.cv.width !== pw || this.cv.height !== ph) { this.cv.width = pw; this.cv.height = ph; } }
-    [this.staub, this.funken].forEach(function (c) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); });
+    var cw = Math.round(W * dpr), ch = Math.round(H * dpr);
+    if (!this.inline) [this.staub, this.funken].forEach(function (c) { if (c.width !== cw || c.height !== ch) { c.width = cw; c.height = ch; } });
+    else [this.staub, this.funken].forEach(function (c) { if (c.width !== 1) { c.width = 1; c.height = 1; } });
     this.dpr = dpr;
   };
 
@@ -864,7 +886,7 @@
     setTimeout(function () { self.hop.v = -Math.sqrt(2 * 9.8 * h * 1.0) * 1.0; }, 90);
   };
 
-  Puppe.prototype._effekt = function (dauer, fn) { this.effekte.push({ start: this.t, dauer: dauer, fn: fn }); };
+  Puppe.prototype._effekt = function (dauer, fn) { this.effekte.push({ start: this.t, dauer: dauer, fn: fn }); this.letzteAktivitaet = performance.now(); };
 
   Puppe.prototype.reagiere = function (was, wo) {
     var self = this;
@@ -1370,14 +1392,23 @@
   };
 
   Puppe.prototype.zerstoere = function () {
-    this.weg = true; cancelAnimationFrame(this.raf);
+    if (this.weg) return;
+    this.weg = true; if (this.raf) cancelAnimationFrame(this.raf); this.raf = 0;
     var i = alle.indexOf(this); if (i >= 0) alle.splice(i, 1);
+    var self = this;
+    if (this._aktivFn) ['pointerdown', 'keydown', 'touchstart'].forEach(function (n) { document.removeEventListener(n, self._aktivFn, { passive: true }); });
+    if (this._ro) this._ro.disconnect(); else if (this._groesseFn) window.removeEventListener('resize', this._groesseFn);
+    if (this._io) this._io.disconnect();
+    [this._pauseZeit, this._winkZeit, this._sprichZeit, this._blaseZeit].forEach(function (t) { if (t) clearTimeout(t); });
+    if (this.gl && this.gl.gl) { try { var ext = this.gl.gl.getExtension('WEBGL_lose_context'); if (ext) ext.loseContext(); } catch (e) {} }
+    this.gl = null;
     this.el.innerHTML = ''; this.el.classList.remove('pp-bereit');
   };
 
   // ---------- Puppe.winkeZurueck: aus jedem vorhandenen Figurenbild eine Puppe, die beim Antippen zurückgrüsst ----------
   // Das <img> bleibt, wo es ist (Layout, Klicks und Links bleiben gleich). Nur während des Grusses liegt die lebendige
   // Figur deckungsgleich darüber; danach ist wieder das ruhige Standbild zu sehen (keine Dauerbewegung, spart Akku).
+  var vorbereitet = 0;
   function einWinker(e, o) {
     var img = e && e.tagName === 'IMG' ? e : e && e.querySelector ? e.querySelector('img') : null;
     if (!img) return null;
@@ -1407,8 +1438,17 @@
       host.style.transform = cs.transform === 'none' ? '' : cs.transform; host.style.transformOrigin = cs.transformOrigin;
     }
     lage();
-    var puppe = new Puppe(buehne, opt);
-    puppe.pausiert = true;
+    // Die lebendige Figur entsteht erst beim ersten Gruss (schneller Start, nur so viele WebGL-Leinwände wie nötig)
+    // und wird nach einer Minute Ruhe wieder freigegeben. Browser erlauben nur etwa 16 WebGL-Leinwände pro Seite.
+    var puppe = null, frei = null;
+    function hol() {
+      if (!puppe || puppe.weg) {
+        puppe = new Puppe(buehne, opt); puppe.pausiert = true;
+        buehne.addEventListener('webglcontextlost', function (ev) { ev.preventDefault(); if (puppe && !an) { puppe.zerstoere(); puppe = null; } }, true);
+      }
+      return puppe;
+    }
+    function spaeterFrei() { clearTimeout(frei); frei = setTimeout(function () { if (!an && puppe) { puppe.zerstoere(); puppe = null; } }, 60000); }
     var bisZeit = null, an = false, alteOpazitaet = img.style.opacity, durchsichtig = null;
     // Hat das Bild durchsichtige Stellen (PNG)? Dann wird das Original während des Grusses ausgeblendet,
     // sonst bleibt es sichtbar (Rahmen und Schatten des Bilds bleiben so erhalten) und die Figur deckt es genau ab.
@@ -1423,7 +1463,7 @@
       return durchsichtig;
     }
     function zeigen() {
-      lage(); if (puppe.groesse) puppe.groesse();
+      lage(); hol(); clearTimeout(frei); if (puppe.groesse) puppe.groesse();
       puppe.pausiert = false; puppe._aktiv = true;
       if (!an) {
         an = true; host.classList.add('pp-winker-an');
@@ -1432,14 +1472,16 @@
       }
     }
     function verstecken() {
-      an = false; puppe._aktiv = false;
+      an = false; if (puppe) puppe._aktiv = false;
       img.style.opacity = alteOpazitaet;
       host.classList.remove('pp-winker-an');
-      setTimeout(function () { if (!an) puppe.pausiert = true; }, 400);
+      setTimeout(function () { if (!an && puppe) puppe.pausiert = true; }, 400);
+      spaeterFrei();
     }
     var w = {
-      puppe: puppe, bild: img, figur: figur,
+      bild: img, figur: figur,
       gruesse: function (art, oo) {
+        hol();
         var los = function () {
           zeigen(); puppe.gruesse(art, oo);
           clearTimeout(bisZeit);
@@ -1453,11 +1495,18 @@
         return w;
       },
       winke: function (oo) { return w.gruesse(oo && oo.gruss ? oo.gruss : null, oo); },
-      loese: function () { clearTimeout(bisZeit); img.removeEventListener('click', tipp); puppe.zerstoere(); host.remove(); img.style.opacity = alteOpazitaet; delete img._puppeWinker; }
+      loese: function () { clearTimeout(bisZeit); clearTimeout(frei); img.removeEventListener('click', tipp); if (ro) ro.disconnect(); if (puppe) puppe.zerstoere(); puppe = null; host.remove(); img.style.opacity = alteOpazitaet; delete img._puppeWinker; }
     };
+    // w.puppe wie bisher: holt die Figur bei Bedarf
+    Object.defineProperty(w, 'puppe', { get: hol, enumerable: true });
     function tipp() { w.gruesse(); }
     if (o.antippen !== false) img.addEventListener('click', tipp);
-    if (window.ResizeObserver) new ResizeObserver(function () { if (an) lage(); }).observe(img);
+    // Finger auf dem Bild: Figur schon vorbereiten, damit der Gruss beim Loslassen sofort kommt
+    img.addEventListener('pointerdown', function () { if (!puppe && img.complete) hol(); }, { passive: true });
+    // die ersten zwei Figuren der Seite in einer ruhigen Sekunde vorbereiten
+    if (++vorbereitet <= 2) (window.requestIdleCallback || function (f) { return setTimeout(f, 1200); })(function () { if (!puppe && img.isConnected) { if (img.complete) hol(); else img.addEventListener('load', function () { if (!puppe) hol(); }, { once: true }); } }, { timeout: 3000 });
+    var ro = window.ResizeObserver ? new ResizeObserver(function () { if (an) lage(); }) : null;
+    if (ro) ro.observe(img);
     img._puppeWinker = w;
     return w;
   }
