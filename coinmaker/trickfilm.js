@@ -119,11 +119,18 @@
 
   /* ---------- Antippen: winkt zurück ---------- */
   var GRUSS = ['Grüss dich! Schön, dass du da bist.', 'Hallo! Hast du eine Idee für meinen Automaten?', 'Jede Idee hat ihren Wert. Zeig mir deine.', 'Ich poliere gerade eine Münze. Für dich.'], gi = 0;
+  // Puppe aus nova/puppe.js (#136): wenn geladen, grüsst der Coin Maker lebendig mit «winken». Sonst CSS-Winken (Fallback).
+  var pp = null;
+  function puppeGruss() {
+    if (!(window.Puppe && typeof window.Puppe.winkeZurueck === 'function')) return false;
+    try { pp = pp || window.Puppe.winkeZurueck(a, { figur: 'coinmaker', gruss: 'winken', antippen: false, blase: false }); if (pp && typeof pp.gruesse === 'function') { pp.gruesse('winken'); return true; } } catch (e) {}
+    return false;
+  }
   function winke(ev) {
     if (ev) { ev.stopPropagation(); ev.preventDefault(); }
-    if (window.Puppe && typeof window.Puppe.winkeZurueck === 'function') { try { window.Puppe.winkeZurueck(a, { figur: 'coinmaker' }); } catch (e) {} }
-    if (window.CMPlus) { CMPlus.pose('winken', 1800); CMPlus.sag(GRUSS[gi++ % GRUSS.length], 'Leg etwas in den Automaten und zieh am Hebel.'); }
-    if (!ruhig) { hand.classList.remove('an'); void hand.offsetWidth; hand.classList.add('an'); }
+    var lebendig = puppeGruss();
+    if (window.CMPlus) { if (!lebendig) CMPlus.pose('winken', 1800); CMPlus.sag(GRUSS[gi++ % GRUSS.length], 'Leg etwas in den Automaten und zieh am Hebel.'); }
+    if (!lebendig && !ruhig) { hand.classList.remove('an'); void hand.offsetWidth; hand.classList.add('an'); }
     try { navigator.vibrate && navigator.vibrate(12); } catch (e) {}
   }
   fig.addEventListener('click', winke, true);
