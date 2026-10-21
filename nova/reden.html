@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-21-6">
+<meta name="stand" content="2026-10-21-10">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -46,6 +46,25 @@
   @keyframes hopsen { 30% { transform:translateY(-14px) scale(1.1); } 60% { transform:translateY(2px) scale(1.06); } }
   .atmen { animation:atmen 3.6s ease-in-out infinite; }
   @keyframes atmen { 50% { transform:scale(1.012) translateY(-2px); } }
+  .buehne.winken { animation:winken .9s ease-in-out 2; transform-origin:50% 100%; }
+  @keyframes winken { 25% { transform:rotate(-6deg); } 75% { transform:rotate(6deg); } }
+  .buehne.huepfen { animation:huepfen .5s cubic-bezier(.3,1.6,.5,1) 3; }
+  @keyframes huepfen { 40% { transform:translateY(-22px) scale(1.03); } 70% { transform:translateY(3px) scale(.99,1.02); } }
+  .buehne.drehen { animation:drehen 1.1s ease-in-out; }
+  @keyframes drehen { 50% { transform:perspective(700px) rotateY(180deg) scale(.92); } 100% { transform:perspective(700px) rotateY(360deg); } }
+  .buehne.staunen { animation:staunen 1.2s ease-out; }
+  @keyframes staunen { 20% { transform:scale(1.1); } 60% { transform:scale(1.06); } }
+  .buehne.nicken { animation:nicken .45s ease-in-out 3; transform-origin:50% 100%; }
+  @keyframes nicken { 50% { transform:translateY(8px) rotateX(10deg); } }
+  .buehne.kopfschuetteln { animation:kopfsch .4s ease-in-out 3; }
+  @keyframes kopfsch { 25% { transform:translateX(-10px) rotate(-2deg); } 75% { transform:translateX(10px) rotate(2deg); } }
+  .chips { width:min(92vw, 460px); display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:8px; }
+  .chips:empty { display:none; }
+  .chip { border:0; border-radius:999px; padding:10px 16px; font:inherit; font-size:15px; cursor:pointer; background:#7fd4ff; color:#0b1f45;
+    box-shadow:0 6px 16px #0006; animation:chipRein .35s cubic-bezier(.3,1.6,.5,1) both; }
+  .chip:nth-child(2) { animation-delay:.08s; } .chip:nth-child(3) { animation-delay:.16s; }
+  .chip:active { transform:scale(.94); }
+  @keyframes chipRein { from { transform:translateY(12px) scale(.6); opacity:0; } }
   .text { width:min(92vw, 460px); flex:1; min-height:110px; overflow-y:auto; margin-top:14px; display:flex; flex-direction:column; gap:8px;
     mask-image:linear-gradient(transparent, #000 18px); -webkit-mask-image:linear-gradient(transparent, #000 18px); padding-top:14px; }
   .z { padding:8px 12px; border-radius:14px; max-width:86%; white-space:pre-wrap; }
@@ -82,6 +101,7 @@
 </div>
 
 <div class="text" id="text" aria-live="polite"></div>
+<div class="chips" id="chips"></div>
 
 <form class="schreiben" id="schreiben" autocomplete="off"><input id="eingabe" type="text" enterkeyhint="send" placeholder="Schreiben …" aria-label="Nachricht schreiben"><button type="button" class="malen" id="malen" aria-label="Nova zeichnet">🎨</button><button type="submit" aria-label="Senden">➤</button></form>
 <button class="knopf" id="knopf" type="button" aria-label="Gespräch starten">🎙</button>
@@ -103,8 +123,7 @@
       mund: { linie: [[420, 662], [440, 702], [470, 720], [510, 736], [550, 746], [590, 746], [624, 731]], lippe: 774, kinn: 835, max: 26 } },
     'mr. ping': { name: 'Mr. Ping', agent: 'agent_5601m55s9kdcebzrh23262ytezm2', bild: '../tradeping/ping-3d.jpg', positionen: true,
       mund: { linie: [[318, 388], [335, 402], [360, 410], [400, 412], [430, 408], [448, 400]], lippe: 426, kinn: 500, max: 22 } },
-    nova: { name: 'Nova', agent: 'agent_4201m55seyhdexd96tkaxt72hmaq', bild: 'nova-3d.jpg', gedaechtnis: true, welt: true,
-      mund: { linie: [[520, 684], [545, 694], [580, 700], [620, 700], [660, 690], [690, 668], [705, 636]], lippe: 738, kinn: 792, max: 22 } },
+    nova: { name: 'Nova', agent: 'agent_4201m55seyhdexd96tkaxt72hmaq', bild: 'nova-stadt.jpg', gedaechtnis: true, welt: true },
     sparky: { name: 'Sparky', agent: 'agent_7401m55j20jwek69gsh3gkfhaa77', bild: 'figuren/sparky.jpg',
       mund: { linie: [[440, 790], [470, 808], [500, 820], [560, 832], [600, 824], [640, 804], [690, 780]], lippe: 852, kinn: 905, max: 18, innen: [90, 28, 34] } },
     'coin maker': { name: 'Coin Maker', agent: 'agent_2001m55ss61fe5wb1qct4b8bqkz3', bild: 'figuren/coinmaker.jpg',
@@ -120,7 +139,7 @@
     tropfi: { name: 'Tropfi', agent: 'agent_0201m5e5qk98fwf9akjpcfjtn73c', bild: 'figuren/tropfi.jpg', gedaechtnis: true,
       mund: { linie: [[438, 648], [460, 660], [490, 666], [520, 660], [540, 648]], lippe: 684, kinn: 724, max: 16, innen: [24, 40, 96] } }
   };
-  var BILDCHEN = { nova: 'nova-3d.jpg', tropfi: 'figuren/tropfi-klein.jpg', otti: '../otti/icon-180.png', kiki: '../kiki/icon-180.png', jackie: '../jackie/icon-180.png', 'mr. ping': '../tradeping/icon-180.png',
+  var BILDCHEN = { nova: 'nova.jpg', tropfi: 'figuren/tropfi-klein.jpg', otti: '../otti/icon-180.png', kiki: '../kiki/icon-180.png', jackie: '../jackie/icon-180.png', 'mr. ping': '../tradeping/icon-180.png',
     sparky: 'figuren/sparky-klein.jpg', 'coin maker': 'figuren/coinmaker-klein.jpg', flo: 'figuren/flo-klein.jpg', fompa: 'figuren/fompa-klein.jpg', sunny: 'figuren/sunny-klein.jpg' };
   var KEY = (new URLSearchParams(location.search).get('f') || 'otti').toLowerCase();
   var F = FIGUREN[KEY] || FIGUREN.otti, NAME = F.name, AGENT = F.agent, RUHE = F.ruhe || 0;
@@ -414,13 +433,14 @@
         agentId: AGENT,
         connectionType: 'websocket',
         textOnly: !!nurText,
-        clientTools: { zeige_bild: function (p) { bildZeigen(p); return 'gezeigt'; } },
+        clientTools: { zeige_bild: function (p) { bildZeigen(p); return 'gezeigt'; }, bewegen: bewegen, knoepfe: knoepfe },
         dynamicVariables: variablen(),
         onConnect: function () { status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); hopsen(); },
         onDisconnect: function () { if (nr === sitzung && maltSeit) { maltSeit = 0; ende('Verbindung weg, das Bild kam nicht an. Nochmal 🎨'); return; } if (nr === sitzung) ende(nurText ? 'Schreib einfach weiter, ich bin gleich wieder da.' : 'Bis bald! Tipp auf den Knopf, dann bin ich wieder da.'); },
         onError: function (m) { hinweis.textContent = 'Fehler: ' + (m || 'unbekannt'); },
         onMessage: function (m) {
           if (m && m.source === 'user' && eigene.indexOf(m.message) >= 0) { eigene.splice(eigene.indexOf(m.message), 1); return; }
+          if (m && m.source === 'user') $('chips').innerHTML = '';
           if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message); },
         onModeChange: function (m) {
           var sp = m && m.mode === 'speaking';
@@ -447,7 +467,37 @@
     if (t) status.textContent = t;
   }
 
+  // Nova bewegt sich, wenn sie es will (Agent-Werkzeug «bewegen»), und bietet Antworten zum Antippen an («knoepfe»).
+  var BEWEGUNGEN = ['winken', 'huepfen', 'drehen', 'staunen', 'nicken', 'kopfschuetteln'];
+  function bewegen(p) {
+    var art = String((p && p.art) || '').toLowerCase();
+    if (art === 'funkeln') { funken(24); return 'ok'; }
+    if (BEWEGUNGEN.indexOf(art) < 0) { hopsen(); return 'ok'; }
+    BEWEGUNGEN.forEach(function (b) { buehne.classList.remove(b); });
+    void buehne.offsetWidth; buehne.classList.add(art);
+    if (art === 'huepfen' || art === 'staunen') funken(art === 'staunen' ? 8 : 14);
+    buehne.addEventListener('animationend', function weg(e) {
+      if (e.target !== buehne) return; buehne.classList.remove(art); buehne.removeEventListener('animationend', weg); });
+    return 'ok';
+  }
+  function knoepfe(p) {
+    var liste = (p && p.optionen) || [];
+    if (typeof liste === 'string') { try { liste = JSON.parse(liste); } catch (e) { liste = liste.split(/[|,\n]/); } }
+    var box = $('chips'); box.innerHTML = '';
+    liste.map(function (t) { return String(t).trim(); }).filter(Boolean).slice(0, 3).forEach(function (t) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = t;
+      b.addEventListener('click', function () {
+        box.innerHTML = '';
+        if (conv && !conv.__text) { zeile('du', t); eigene.push(t); try { conv.sendUserMessage(t); } catch (err) {} }
+        else senden(t);
+      });
+      box.appendChild(b);
+    });
+    return 'gezeigt';
+  }
+
   async function senden(t) {
+    $('chips').innerHTML = '';
     zeile('du', t); eigene.push(t);
     if (!conv) await starten(true);
     if (!conv) { hinweis.textContent = 'Nicht gesendet. Internet prüfen und nochmal.'; return; }
