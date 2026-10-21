@@ -215,11 +215,13 @@ window.R7_CFG = {
   function teil(h) { return h < 5 ? 'Nacht' : h < 11 ? 'Morgen' : h < 14 ? 'Mittag' : h < 18 ? 'Nachmittag' : h < 22 ? 'Abend' : 'Nacht'; }
   var ck = el('<section class="r7 r7-karte" aria-labelledby="r7u-t">' +
     '<p class="r7-eb">Für den Nachttisch</p><h2 id="r7u-t">🌙 Grosse Uhr</h2>' +
-    '<div style="display:flex;gap:16px;align-items:center"><img class="r7-figur" src="figur.jpg" alt="Granny" loading="lazy" width="72" height="72">' +
+    '<div style="display:flex;gap:16px;align-items:center"><img class="r7-figur r7-uhr-fig" src="figur.jpg" alt="Granny" loading="lazy" width="72" height="72">' +
     '<p class="r7-p" style="margin:0">Eine ruhige, grosse Uhr mit Tag und Datum. Gut für die Nacht, wenn das Handy am Ladekabel steht.</p></div>' +
     '<button type="button" class="r7-btn voll gross r7-uhr-los" style="margin-top:16px">🕰 Uhr zeigen</button></section>');
+  (function () { var h = new Date().getHours(); if (h >= 21 || h < 6) { var f = ck.querySelector('.r7-uhr-fig'); f.src = 'posen/kerze.jpg'; f.alt = 'Granny mit Kerze am Nachttisch'; } })();
   ck.querySelector('.r7-uhr-los').addEventListener('click', function () {
     var o = el('<div class="r7 r7-dia r7-uhr" role="dialog" aria-modal="true" aria-label="Grosse Uhr" style="background:#05070f;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;padding:24px">' +
+      '<img class="r7-uhr-kerze" src="posen/kerze.jpg" alt="Granny sitzt mit einer Kerze am Nachttisch" width="132" height="132" hidden style="width:132px;height:132px;border-radius:50%;object-fit:cover;border:2px solid #4a3d22;box-shadow:0 0 40px rgba(242,193,78,.25);margin-bottom:8px">' +
       '<p class="r7-uhr-teil" style="margin:0;font-size:22px;color:#c9a54a"></p>' +
       '<p class="r7-uhr-zeit" style="margin:0;font-size:min(30vw,40vh);line-height:1;font-weight:700;color:#e8c56a;font-variant-numeric:tabular-nums;letter-spacing:-.02em"></p>' +
       '<p class="r7-uhr-tag" style="margin:0;font-size:28px;color:#d8cfb8"></p>' +
@@ -232,7 +234,9 @@ window.R7_CFG = {
       o.querySelector('.r7-uhr-zeit').textContent = zeit(d);
       o.querySelector('.r7-uhr-tag').textContent = TAGE[d.getDay()] + ', ' + d.getDate() + '. ' + MON7[d.getMonth()];
       o.querySelector('.r7-uhr-teil').textContent = 'Es ist ' + teil(d.getHours());
+      var nacht = d.getHours() >= 21 || d.getHours() < 6;
       o.style.filter = (d.getHours() >= 22 || d.getHours() < 6) ? 'brightness(.6)' : '';
+      o.querySelector('.r7-uhr-kerze').hidden = !nacht;
     }
     tick(); var t = setInterval(tick, 15000);
     function zu() { clearInterval(t); try { if (wl) wl.release(); } catch (e) {} o.remove(); document.removeEventListener('keydown', esc1); }

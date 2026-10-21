@@ -60,7 +60,7 @@
     // Runde 5: Tinkos «Granny winkt» (Hand frei) – erst das Bild zeigen, dann schwingt genau diese Hand
     if (img && window.Puppe && window.FigurPosen) {
       FigurPosen.zeige(img, 'winken', 3600, ['lachen']).then(function (da) {
-        if (!da || !puppeGruss(img, { figur: 'granny', gruss: 'lachen+winken', bild: 'posen/winken.jpg', augen: [[9, 9, 0.01, 0.01]], mund: { l: [9, 9], r: [9.1, 9], oben: 0, unten: 0, kinn: 0.01 }, arm: false, kopf: [0.53, 0.4, 0.3], gesicht: [0.53, 0.45, 0.2], winkArm: { x: 0.12, y: 0.66, r: 0.11, dx: 0.15, dy: 0.92, seite: 'links' } })) puppeGruss(img, { figur: 'granny', gruss: 'lachen+winken' });
+        if (!da || !puppeGruss(img, { figur: 'granny', gruss: 'lachen+winken', bild: 'posen/winken.jpg', augen: [[9, 9, 0.01, 0.01]], mund: { l: [9, 9], r: [9.1, 9], oben: 0, unten: 0, kinn: 0.01 }, arm: false, kopf: [0.52, 0.4, 0.3], gesicht: [0.52, 0.44, 0.2], winkArm: { x: 0.14, y: 0.64, r: 0.11, dx: 0.15, dy: 0.92, seite: 'links' } })) puppeGruss(img, { figur: 'granny', gruss: 'lachen+winken' });
       });
       return;
     }
