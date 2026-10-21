@@ -50,9 +50,14 @@
     var zuletzt = 0;
     function winke() {
       var f = $('hasi');
-      H.hasi('huepfen', 'Hallo!', 'Hasi hüpft vor Freude und winkt dir mit der Pfote zurück.', 2000);
-      var bild = $('hasiBild');
-      if (bild && !bild.hidden && window.Puppe && typeof Puppe.winkeZurueck === 'function') { try { var w = bild._puppeWinker || Puppe.winkeZurueck(bild, { figur: 'hasi', gruss: 'huepfen', antippen: false, ton: false, blase: false }); if (w && w.winke) w.winke(); } catch (e) {} }
+      // Runde 5: Tinkos Bild «Hasi winkt» (Pfote frei) – die Puppe lässt genau diese Pfote schwingen
+      H.hasi('winken', 'Hallo!', 'Hasi winkt dir mit der Pfote zurück.', 3200);
+      var bild = $('hasiBild'), n = 0;
+      (function warte() {
+        if (!bild || !window.Puppe || typeof Puppe.winkeZurueck !== 'function') return;
+        if (bild.hidden || !/posen\/winken\.jpg/.test(bild.src) || !bild.complete) { if (n++ < 15) setTimeout(warte, 80); return; }
+        try { var w = bild._puppeWinker || Puppe.winkeZurueck(bild, { figur: 'hasi', gruss: 'winken+huepfen', antippen: false, ton: false, blase: false, augen: [[9, 9, 0.01, 0.01]], mund: { l: [9, 9], r: [9.1, 9], oben: 0, unten: 0, kinn: 0.01 }, arm: false, kopf: [0.55, 0.38, 0.2], gesicht: [0.55, 0.4, 0.15], winkArm: { x: 0.27, y: 0.53, r: 0.09, dx: 0.35, dy: 0.63, seite: 'links' } }); if (w && w.winke) w.winke(); } catch (e) {}
+      })();
       if (!ruhig && f) { f.classList.remove('r4-hallo'); void f.offsetWidth; f.classList.add('r4-hallo'); }
       summ(10);
     }
