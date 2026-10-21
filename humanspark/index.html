@@ -192,6 +192,16 @@ h1{color:#F2C14E}
         <p>Finger sanft auf die Rückkamera, 60 Sekunden still halten. Am besten bei hellem Licht. Reden geht dabei.</p>
       </div>
       <div class="notice hidden" id="polarNote"></div>
+      <div id="gfBox">
+        <label class="lbl">Zuerst: Wie fühlst du dich gerade? <span class="muted">(vor der Messung, damit sie dich nicht beeinflusst)</span></label>
+        <div class="chips" id="gfStufe">
+          <button class="chip" data-s="1" aria-pressed="false">1<small>sehr ruhig</small></button><button class="chip" data-s="2" aria-pressed="false">2<small>ruhig</small></button><button class="chip" data-s="3" aria-pressed="false">3<small>wach</small></button><button class="chip" data-s="4" aria-pressed="false">4<small>angespannt</small></button><button class="chip" data-s="5" aria-pressed="false">5<small>stark geladen</small></button>
+        </div>
+        <label class="lbl">Was ist da? <span class="muted">(mehrere möglich)</span></label>
+        <div class="chips" id="gfWorte"></div>
+        <label class="lbl">Was könnte die Messung verändern?</label>
+        <div class="chips" id="gfKontext"></div>
+      </div>
       <button class="btn primary" id="btnStart">Messung starten</button>
       <button class="btn ghost" id="btnDemo">Demo ohne Kamera</button>
       <div class="notice hidden" id="camErr"></div>
@@ -223,6 +233,7 @@ h1{color:#F2C14E}
         <div><b id="resBpm">–</b><span>Puls (Schläge/Min)</span></div>
         <div><b id="resRmssd">–</b><span>RMSSD (ms, Schätzung)</span></div>
       </div>
+      <div class="notice hidden" id="gfVergleich"></div>
       <p class="muted" id="resNote"></p>
       <div id="cmpWrap" class="hidden">
         <h2 style="margin-top:12px">Vorher / Nachher</h2>
@@ -464,11 +475,43 @@ var STAGES = [
    desc:'Viel Ladung im Körper. Das ist kein Fehler, sondern eine Information. Gönn dir einen langen Ausatem.', ex:['atem46','kreuzLangsam','fuesse']}
 ];
 
-function stageFrom(bpm, rmssd){
+function stageFrom(bpm, rmssd, kamera){
   var h = bpm < 60 ? 0 : bpm < 70 ? 1 : bpm < 80 ? 2 : bpm < 92 ? 3 : 4;
   if (rmssd == null) return h + 1;
   var r = rmssd > 60 ? 0 : rmssd > 40 ? 1 : rmssd > 25 ? 2 : rmssd > 15 ? 3 : 4;
-  return Math.min(5, Math.max(1, Math.round((h + r) / 2) + 1));
+  var st = Math.min(5, Math.max(1, Math.round((h + r) / 2) + 1));
+  // Kamera-Rauschen lässt die Variabilität zu hoch aussehen: höchstens eine Stufe ruhiger als der Puls allein
+  return kamera ? Math.max(st, h) : st;
+}
+
+/* ---------- Gefühl neben der Messung ---------- */
+var GF_WORTE = ['angespannt','unruhig','müde','traurig','ärgerlich','ängstlich','leer','überfordert','ruhig','froh','klar','verbunden'];
+var GF_KONTEXT = ['Kaffee','Bewegung','wenig Schlaf','Alkohol','gerade gegessen','Medikament','Streit / Stress'];
+var gf = {stufe:null, worte:[], kontext:[]};
+function gfChips(id, list, key){
+  $(id).innerHTML = list.map(function(w){ return '<button class="chip" aria-pressed="false">' + esc(w) + '</button>'; }).join('');
+  $(id).querySelectorAll('.chip').forEach(function(b, i){
+    b.addEventListener('click', function(){
+      var w = list[i], a = gf[key], on = a.indexOf(w) < 0;
+      if (on) a.push(w); else a.splice(a.indexOf(w), 1);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  });
+}
+function gfReset(){
+  gf = {stufe:null, worte:[], kontext:[]};
+  document.querySelectorAll('#gfBox .chip').forEach(function(b){ b.setAttribute('aria-pressed', 'false'); });
+}
+function gfVergleich(e){
+  if (!e.gefuehl) return '';
+  var d = e.gefuehl - e.stage, st = STAGES[e.stage - 1];
+  var t = 'Dein Gefühl: <b>' + e.gefuehl + '</b> · Messung: <b>' + e.stage + ' ' + st.name + '</b>';
+  if (e.worte && e.worte.length) t += '<br>Da ist: ' + esc(e.worte.join(', '));
+  if (d >= 2) t += '<br><b>Du fühlst dich unruhiger, als der Körper misst.</b> Die Kamera sieht nur Puls und Rhythmus, keine Gedanken und Gefühle. Dein Gefühl zählt. Diese Abweichung wird gespeichert, damit du über die Zeit ein Muster siehst.';
+  else if (d <= -2) t += '<br><b>Der Körper wirkt angeregter, als du dich fühlst.</b> Vielleicht spürst du die Ladung noch nicht' + (e.kontext && e.kontext.length ? ', oder ' + esc(e.kontext.join(', ')) + ' wirkt mit' : '') + '.';
+  else t += '<br>Gefühl und Messung passen zusammen.';
+  if (e.kontext && e.kontext.length && d > -2) t += '<br><span class="muted">Kann mitwirken: ' + esc(e.kontext.join(', ')) + '</span>';
+  return t;
 }
 
 /* ---------- Tabs ---------- */
@@ -845,8 +888,12 @@ function finishMeasure(){
     $('btnStart').textContent = 'Nochmals messen';
     return;
   }
-  var stage = stageFrom(res.bpm, res.rmssd);
+  var stage = stageFrom(res.bpm, res.rmssd, !isPolar && !demo);
   var e = {id:uid(), t:Date.now(), type:'messung', bpm:res.bpm, rmssd:res.rmssd, stage:stage, quality:res.quality, demo:demo, source: isPolar ? 'polar' : demo ? 'demo' : 'kamera', pairOf:pendingPairOf};
+  if (gf.stufe){ e.gefuehl = gf.stufe; e.abweichung = gf.stufe - stage; }
+  if (gf.worte.length) e.worte = gf.worte.slice();
+  if (gf.kontext.length) e.kontext = gf.kontext.slice();
+  gfReset();
   addEntry(e);
   var before = pendingPairOf ? load().filter(function(x){ return x.id === pendingPairOf; })[0] : null;
   pendingPairOf = null;
@@ -879,6 +926,7 @@ function showResult(e, before){
   $('stageName').textContent = 'Stufe ' + e.stage + ' · ' + st.name + (e.demo ? ' (Demo)' : '');
   $('stageName').style.color = st.hex;
   $('stageDesc').textContent = st.desc;
+  var gv = gfVergleich(e); $('gfVergleich').innerHTML = gv; $('gfVergleich').classList.toggle('hidden', !gv);
   $('resBpm').textContent = e.bpm;
   $('resRmssd').textContent = e.rmssd == null ? '–' : e.rmssd;
   $('resNote').textContent = (e.rmssd == null ? 'Für die Herzraten-Variabilität war das Signal nicht ruhig genug – die Stufe stützt sich auf den Puls. ' : '') +
@@ -981,6 +1029,13 @@ function speak(text){
 }
 
 /* ---------- Knöpfe Messen ---------- */
+gfChips('gfWorte', GF_WORTE, 'worte'); gfChips('gfKontext', GF_KONTEXT, 'kontext');
+document.querySelectorAll('#gfStufe .chip').forEach(function(b){
+  b.addEventListener('click', function(){
+    gf.stufe = +b.dataset.s;
+    document.querySelectorAll('#gfStufe .chip').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+  });
+});
 $('btnStart').addEventListener('click', function(){ pendingPairOf = null; startMeasure(false); });
 $('btnDemo').addEventListener('click', function(){ pendingPairOf = null; startMeasure(true); });
 $('btnStop').addEventListener('click', function(){ stopMeasure(); pendingPairOf = null; showBox(resultShown ? 'resultBox' : 'startBox'); });
@@ -1620,7 +1675,7 @@ function renderHistory(){
   $('hStagesBox').classList.toggle('hidden', !!K); $('hWeekBox').classList.toggle('hidden', !!K); $('hKBox').classList.toggle('hidden', !K);
   var l = all.filter(function(e){ return K ? e.type === 'sitzung' && e.kuerzel === K : hFilter === 'mine' ? e.type !== 'sitzung' : true; });
   var meas = all.filter(function(e){ return e.type === 'messung'; });
-  if (!K){ renderStages(meas.slice(-30)); renderWeeks(meas); }
+  if (!K){ renderStages(meas.slice(-30)); renderWeeks(meas); gfMuster(meas); }
   else renderK(K, l);
   // Liste
   var list = $('list');
@@ -1635,6 +1690,7 @@ function renderHistory(){
     var st = e.stage ? STAGES[e.stage-1] : null;
     var head = e.type === 'messung' ? (e.pairOf ? 'Nachmessung' : 'Messung') + (e.source === 'polar' ? ' (Polar)' : '') : 'Reinreden';
     var vals = e.bpm ? 'Puls ' + e.bpm + (e.rmssd != null ? ' · RMSSD ' + e.rmssd + ' ms' : '') : '';
+    if (e.gefuehl) vals += ' · Gefühl ' + e.gefuehl + (Math.abs(e.abweichung) >= 2 ? (e.abweichung > 0 ? ' (unruhiger als gemessen)' : ' (ruhiger als gemessen)') : '') + (e.worte ? ' · ' + e.worte.join(', ') : '');
     return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · ' + head + (e.demo ? ' · Demo' : '') + '</span>' +
       (st ? '<span class="pill" style="background:' + st.hex + '">' + e.stage + ' ' + st.name + '</span>' : '') + '</div>' +
       (e.text ? '<div class="txt">' + esc(e.text) + '</div>' : '') +
@@ -1651,6 +1707,13 @@ function renderHistory(){
   });
 }
 
+function gfMuster(meas){
+  var m = meas.filter(function(e){ return e.gefuehl; }), u = m.filter(function(e){ return e.abweichung >= 2; }).length;
+  var el = $('gfMuster');
+  if (!el){ el = document.createElement('div'); el.id = 'gfMuster'; el.className = 'notice'; $('chartWrap').parentNode.insertBefore(el, $('chartWrap')); }
+  el.classList.toggle('hidden', m.length < 2);
+  el.innerHTML = 'Gefühl neben Messung: ' + m.length + '× eingeschätzt' + (u ? ', davon <b>' + u + '× unruhiger gefühlt als gemessen</b>.' : ', Gefühl und Messung meist nah beieinander.');
+}
 function renderStages(pts){
   var cw = $('chartWrap');
   if (pts.length < 2){ cw.innerHTML = '<p class="muted">Ab zwei Messungen siehst du hier deine Linie.</p>'; return; }
