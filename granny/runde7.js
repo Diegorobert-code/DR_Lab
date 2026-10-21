@@ -187,7 +187,7 @@ window.R7_CFG = {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
 
-/* Granny Runde 7: Zeichen für die Familie, Erinnerungs-Diashow, Geburtstage. Alles bleibt auf dem Gerät. */
+/* Granny Runde 7: Nachttisch-Uhr, Erinnerungs-Diashow, Geburtstage. Alles bleibt auf dem Gerät. */
 (function () {
   'use strict';
   var R = window.R7; if (!R) return;
@@ -209,33 +209,39 @@ window.R7_CFG = {
   var istIOS = /iP(hone|ad|od)/.test(navigator.userAgent);
   function zeit(d) { return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
 
-  /* ---------- 1) «Mir geht es gut» – ein Zeichen für die Familie (Vorbild: Apple «Check-in») ---------- */
-  var ck = el('<section class="r7 r7-karte r7-gut" aria-labelledby="r7g-t">' +
-    '<p class="r7-eb">Jeden Tag</p><h2 id="r7g-t">💛 Ein Zeichen für die Familie</h2>' +
-    '<div class="r7-gut-in" style="display:flex;gap:16px;align-items:center"><img class="r7-figur" src="posen/herz.jpg" alt="Granny formt ein Herz mit den Händen" loading="lazy" width="72" height="72">' +
-    '<p class="r7-p r7-gut-tx" style="margin:0">Ein Tipp, und deine Familie weiss: Dir geht es gut.</p></div>' +
-    '<button type="button" class="r7-btn voll gross r7-gut-knopf" style="margin-top:16px;font-size:22px;min-height:72px">👍 Mir geht es gut</button>' +
-    '<p class="r7-leise r7-gut-stand" aria-live="polite"></p></section>');
-  function gutStand() {
-    var g = R.hol('gut', null), heute = R.heuteK();
-    var stand = ck.querySelector('.r7-gut-stand'), k = ck.querySelector('.r7-gut-knopf');
-    if (g && g.tag === heute) { stand.textContent = '✓ Heute schon gesendet um ' + g.zeit + '. Granny freut sich mit dir.'; k.textContent = '👍 Nochmals senden'; k.classList.remove('voll'); k.style.fontSize = '18px'; k.style.minHeight = '56px'; }
-    else { var p = leute().filter(nummer)[0]; stand.textContent = p ? 'Geht als Nachricht an ' + p.n + '.' : 'Du wählst selbst, wem du es schickst.'; }
-  }
-  ck.querySelector('.r7-gut-knopf').addEventListener('click', function () {
-    var jetzt = new Date(), n = meinName();
-    var p = leute().filter(nummer)[0];
-    var text = (p ? 'Hoi ' + p.n + ', ' : 'Hoi, ') + 'mir geht es gut 💛' + (n ? ' Liebe Grüsse, ' + n : '') + ' (' + zeit(jetzt) + ')';
-    R.leg('gut', { tag: R.heuteK(), zeit: zeit(jetzt) });
-    R.feier(ck.querySelector('.r7-gut-knopf'), 10);
-    sag('Wie schön. Ich sage es deiner Familie.');
-    gutStand();
-    setTimeout(function () {
-      if (p) location.href = 'sms:' + nummer(p) + (istIOS ? '&' : '?') + 'body=' + encodeURIComponent(text);
-      else if (navigator.share) navigator.share({ text: text }).catch(function () {});
-      else if (navigator.clipboard) navigator.clipboard.writeText(text).then(function () { ck.querySelector('.r7-gut-stand').textContent = 'Text kopiert. Du kannst ihn jetzt einfügen und senden.'; }).catch(function () {});
-    }, 700);
+  /* ---------- 1) Nachttisch-Uhr – grosse ruhige Uhr für die Nacht (Vorbild: iPhone «StandBy») ---------- */
+  var TAGE = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+  var MON7 = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+  function teil(h) { return h < 5 ? 'Nacht' : h < 11 ? 'Morgen' : h < 14 ? 'Mittag' : h < 18 ? 'Nachmittag' : h < 22 ? 'Abend' : 'Nacht'; }
+  var ck = el('<section class="r7 r7-karte" aria-labelledby="r7u-t">' +
+    '<p class="r7-eb">Für den Nachttisch</p><h2 id="r7u-t">🌙 Grosse Uhr</h2>' +
+    '<div style="display:flex;gap:16px;align-items:center"><img class="r7-figur" src="figur.jpg" alt="Granny" loading="lazy" width="72" height="72">' +
+    '<p class="r7-p" style="margin:0">Eine ruhige, grosse Uhr mit Tag und Datum. Gut für die Nacht, wenn das Handy am Ladekabel steht.</p></div>' +
+    '<button type="button" class="r7-btn voll gross r7-uhr-los" style="margin-top:16px">🕰 Uhr zeigen</button></section>');
+  ck.querySelector('.r7-uhr-los').addEventListener('click', function () {
+    var o = el('<div class="r7 r7-dia r7-uhr" role="dialog" aria-modal="true" aria-label="Grosse Uhr" style="background:#05070f;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;padding:24px">' +
+      '<p class="r7-uhr-teil" style="margin:0;font-size:22px;color:#c9a54a"></p>' +
+      '<p class="r7-uhr-zeit" style="margin:0;font-size:min(30vw,40vh);line-height:1;font-weight:700;color:#e8c56a;font-variant-numeric:tabular-nums;letter-spacing:-.02em"></p>' +
+      '<p class="r7-uhr-tag" style="margin:0;font-size:28px;color:#d8cfb8"></p>' +
+      '<button type="button" class="r7-btn r7-uhr-zu" style="margin-top:24px;background:transparent;color:#9a8f78;border:1px solid #3a3426">Zurück zu Granny</button></div>');
+    document.body.appendChild(o);
+    var wl = null;
+    try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function (w) { wl = w; }).catch(function () {}); } catch (e) {}
+    function tick() {
+      var d = new Date();
+      o.querySelector('.r7-uhr-zeit').textContent = zeit(d);
+      o.querySelector('.r7-uhr-tag').textContent = TAGE[d.getDay()] + ', ' + d.getDate() + '. ' + MON7[d.getMonth()];
+      o.querySelector('.r7-uhr-teil').textContent = 'Es ist ' + teil(d.getHours());
+      o.style.filter = (d.getHours() >= 22 || d.getHours() < 6) ? 'brightness(.6)' : '';
+    }
+    tick(); var t = setInterval(tick, 15000);
+    function zu() { clearInterval(t); try { if (wl) wl.release(); } catch (e) {} o.remove(); document.removeEventListener('keydown', esc1); }
+    function esc1(e) { if (e.key === 'Escape') zu(); }
+    document.addEventListener('keydown', esc1);
+    o.querySelector('.r7-uhr-zu').onclick = zu;
+    o.querySelector('.r7-uhr-zu').focus();
   });
+  function gutStand() {}
 
   /* ---------- 2) Erinnerungen – Diashow mit der Familie (Vorbild: Apple Fotos «Rückblicke», digitaler Bilderrahmen) ---------- */
   var dk = el('<section class="r7 r7-karte" aria-labelledby="r7d-t"><p class="r7-eb">Schauen und lächeln</p><h2 id="r7d-t">📷 Erinnerungen</h2>' +
@@ -335,7 +341,7 @@ window.R7_CFG = {
   document.head.appendChild(css);
 
   function los() {
-    R.einsetzen(ck, '#hilfe'); R.einsetzen(dk); R.einsetzen(bk);
+    R.einsetzen(ck); R.einsetzen(dk); R.einsetzen(bk);
     gutStand(); gebZeigen();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(los, 0); }); else setTimeout(los, 0);
