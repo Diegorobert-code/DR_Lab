@@ -70,10 +70,16 @@
     var hand = document.createElement('span'); hand.className = 'r4-hand'; hand.setAttribute('aria-hidden', 'true'); hand.textContent = '👋'; ava.appendChild(hand);
     ava.setAttribute('role', 'button'); ava.setAttribute('tabindex', '0'); ava.setAttribute('aria-label', 'Mr. Ping antippen, er winkt zurück');
     var GRUESSE = ['Guten Tag! Schön, dass du vorbeischaust.', 'Ich halte Wache. Wenn ich still bin, ist alles ruhig.', 'Geduld ist die feinste Strategie.', 'Ein Ping nur, wenn es zählt.'], gi = 0;
+    // Puppe aus nova/puppe.js (#136): Mr. Ping grüsst lebendig mit der Glocke. Ohne Puppe: CSS-Winken (Fallback).
+    var pp = null;
+    var puppeGruss = function (img) {
+      if (!(window.Puppe && typeof window.Puppe.winkeZurueck === 'function')) return false;
+      try { pp = pp || window.Puppe.winkeZurueck(img, { figur: 'mrping', gruss: 'glocke', antippen: false, blase: false }); if (pp && typeof pp.gruesse === 'function') { pp.gruesse('glocke'); return true; } } catch (e) {}
+      return false;
+    };
     var winke = function () {
-      if (window.Puppe && typeof window.Puppe.winkeZurueck === 'function') { try { window.Puppe.winkeZurueck(ava.querySelector('img'), { figur: 'mrping' }); } catch (e) {} }
       var img = ava.querySelector('img');
-      if (!ruhig) { img.classList.remove('r4-wink'); hand.classList.remove('an'); void img.offsetWidth; img.classList.add('r4-wink'); hand.classList.add('an'); }
+      if (!puppeGruss(img) && !ruhig) { img.classList.remove('r4-wink'); hand.classList.remove('an'); void img.offsetWidth; img.classList.add('r4-wink'); hand.classList.add('an'); }
       brr(12);
       setTimeout(function () { M.pose('ping', GRUESSE[gi++ % GRUESSE.length]); }, 30);
     };
