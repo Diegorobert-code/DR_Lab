@@ -1,6 +1,6 @@
 /* Fias Nest offline: zuerst Netz, sonst Kopie aus dem Cache. Nur eigene Dateien, nie Server-Anfragen. */
-const CACHE = 'fiasnest-v11';
-const KERN = ['runde6.js', 'saison/halloween.jpg', 'besuch/otti.jpg', 'besuch/granny.jpg', 'besuch/waefwaef.jpg', 'besuch/hasi.jpg', 'besuch/mama-affe.jpg', 'saison/advent.jpg', './', 'index.html', 'manifest.webmanifest', 'cover.jpg', 'icon-192.png', 'icon-180.png',
+const CACHE = 'fiasnest-v12';
+const KERN = ['runde6.js', 'runde7.js', 'saison/halloween.jpg', 'besuch/otti.jpg', 'besuch/granny.jpg', 'besuch/waefwaef.jpg', 'besuch/hasi.jpg', 'besuch/mama-affe.jpg', 'saison/advent.jpg', './', 'index.html', 'manifest.webmanifest', 'cover.jpg', 'icon-192.png', 'icon-180.png',
   'posen/wach.jpg', 'posen/schlaeft.jpg', 'posen/atmet.jpg', 'posen/muede.jpg', 'posen/fliegt.jpg',
   'posen/freut.jpg', 'posen/hoert.jpg', 'posen/staedtchen-nacht.jpg', 'posen/winkt.jpg', 'posen/zeigt.jpg', 'posen/liegt.jpg', 'posen/geschichte.jpg',
   'figuren/fia.jpg', 'figuren/otti.jpg', 'figuren/sunny.jpg', 'figuren/waef.jpg', 'feedback.js',

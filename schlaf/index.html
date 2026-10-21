@@ -137,8 +137,8 @@ input[type=time]{max-width:150px}
 .dim{position:fixed;inset:0;z-index:5;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:24px;text-align:center}
 .dim[hidden]{display:none}
 .dim .orb{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(255,110,50,.55),rgba(120,30,10,.25) 55%,transparent 72%);transition:transform 4s ease-in-out}
-.dim p{font-family:var(--display);font-style:italic;font-size:1.25rem;color:#C9785A;max-width:320px;min-height:3em}
-.dim button{background:transparent;color:#8A4A35;border:1px solid #3A1A10;box-shadow:none}
+.dim p{font-family:var(--display);font-style:italic;font-size:1.25rem;color:#D98A6C;max-width:320px;min-height:3em}
+.dim button{background:transparent;color:#C27A5E;border:1px solid #3A1A10;box-shadow:none}
 body[data-stage="glut"] .aurora,body[data-stage="glut"] #sparks{opacity:0}
 
 /* Farbe + Bewegung */
@@ -243,9 +243,9 @@ body[data-stage="glut"] .zeitlicht{opacity:0}
 .nachtlicht button{background:rgba(0,0,0,.25);color:#2a0600;border:1px solid rgba(0,0,0,.3);box-shadow:none}
 .wecker{position:fixed;inset:0;z-index:13;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center;padding:24px;background:#000;transition:background 4s linear}
 .wecker[hidden]{display:none}
-.wecker p{font-family:var(--display);font-style:italic;font-size:1.25rem;color:#8A4A35;max-width:320px}
+.wecker p{font-family:var(--display);font-style:italic;font-size:1.25rem;color:#C27A5E;max-width:320px}
 .wecker img{width:150px;height:150px;border-radius:22%;object-fit:cover;border:3px solid var(--gold);opacity:0;transition:opacity 4s}
-.wecker button{background:transparent;color:#8A4A35;border:1px solid #3A1A10;box-shadow:none}
+.wecker button{background:transparent;color:#C27A5E;border:1px solid #3A1A10;box-shadow:none}
 .wecker.hell button{background:linear-gradient(180deg,#F7D27A,var(--gold));color:var(--night);border:0}
 .wecker.hell p{color:var(--night)}
 body.dimmed .nova-btn,body.dimmed .fb-btn.float{display:none!important}
@@ -303,7 +303,10 @@ button{min-height:44px}
 .kugel .t button{font-size:.9375rem;padding:8px 16px}
 .scene .cap{font-size:.8125rem}
 .band .mk{overflow:visible}
-.band .mk::before{content:"";position:absolute;inset:-12px}
+/* Runde 7: Tippfläche 44 px, der sichtbare Punkt bleibt klein */
+.band .mk{width:44px;height:44px;margin-left:-22px;top:12px;padding:12px;background-clip:content-box!important;line-height:20px}
+.band .mk.next{box-shadow:none;filter:drop-shadow(0 0 6px var(--ember))}
+.band .mk::before{content:"";position:absolute;inset:0}
 .tile,.story,.chip,.welt,.jetzt{transition:transform .18s var(--ease),border-color .3s,box-shadow .3s,background-color .2s}
 .tile:active,.story:active,.chip:active,.welt:active,.jetzt:active{transform:scale(.97)}
 @media (hover:hover){.tile:hover,.welt:hover{border-color:rgba(242,193,78,.5)}}
@@ -388,7 +391,7 @@ label.nurhoeren{flex-direction:row;color:var(--cream);cursor:pointer}
 label.nurhoeren input{width:22px;height:22px;margin:0 4px 0 0;accent-color:var(--gold);transform:scale(1.3);flex:none}
 .dim.hoeren p,.dim.hoeren .dimfig{opacity:0!important;transition:opacity 2s}
 .dim.hoeren .orb{opacity:.35;transition:opacity 2s}
-.dim .hoerlabel{display:none;font-size:.875rem;letter-spacing:.08em;color:#5A2A1C}
+.dim .hoerlabel{display:none;font-size:.875rem;letter-spacing:.08em;color:#B0674C}
 .dim.hoeren .hoerlabel{display:block}
 .mix{display:grid;gap:12px}
 .mix label{display:grid;grid-template-columns:7.5em 1fr 2.5em;align-items:center;gap:10px;font-size:1rem;color:var(--cream)}
@@ -581,7 +584,7 @@ label.nurhoeren input{width:22px;height:22px;margin:0 4px 0 0;accent-color:var(-
 <section class="screen" id="ausgluehen" hidden>
   <button class="ghost back" data-go="home">‹ Fias Nest</button>
   <header><h1>Ausglühen mit Fia</h1><p>Drei kleine Schritte. Du musst heute nichts mehr lösen.</p></header>
-  <div class="nest" aria-hidden="true"><div class="glow" id="aGlow"></div><img class="fia" id="aFia" src="cover.jpg" data-basis="cover.jpg" data-pose="atmet" alt=""><img class="begleiter" id="aBegl" alt="" hidden></div>
+  <div class="nest" aria-hidden="true"><div class="glow" id="aGlow"></div><img loading="lazy" decoding="async" class="fia" id="aFia" src="cover.jpg" data-basis="cover.jpg" data-pose="atmet" alt=""><img class="begleiter" id="aBegl" alt="" hidden></div>
   <p class="say" id="aSay">Schön, dass du da bist. Wir glühen jetzt langsam aus.</p>
   <ol>
     <li class="step active" id="a1"><span class="dot"></span><div class="text"><h2>Licht runter</h2><p>Deckenlicht aus, eine kleine warme Lampe an. Zimmer lüften, kühl ist gut.</p><button id="ab1">Erledigt</button></div></li>
@@ -799,7 +802,7 @@ label.nurhoeren input{width:22px;height:22px;margin:0 4px 0 0;accent-color:var(-
   <div class="card">
     <h2>Wer ist im Nest?</h2>
     <div class="chips" id="leute"></div>
-    <div class="row"><input id="person" placeholder="Name oder Kürzel" style="flex:1;min-width:0"><button class="ghost" id="personAdd">Dazu</button></div>
+    <div class="row" style="flex-wrap:wrap"><input id="person" placeholder="Name oder Kürzel" style="flex:1 1 140px;min-width:140px"><button class="ghost" id="personAdd">Dazu</button></div>
     <p class="muted" style="font-size:.9375rem">Tipp auf einen Namen, wenn die Person heute beim Ritual war. Lang drücken entfernt sie.</p>
   </div>
   <div class="card">
@@ -868,7 +871,7 @@ label.nurhoeren input{width:22px;height:22px;margin:0 4px 0 0;accent-color:var(-
 <section class="screen" id="zuhoeren" hidden>
   <button class="ghost back" data-go="home">‹ Fias Nest</button>
   <header><h1>Fia hört zu</h1><p>Erzähl, was dich gerade beschäftigt. Fia antwortet kurz und sanft. Gespeichert wird nichts.</p></header>
-  <div class="nest" aria-hidden="true"><div class="glow"></div><img class="fia p-hoert" id="zFia" src="cover.jpg" data-basis="cover.jpg" data-pose="hoert" alt=""></div>
+  <div class="nest" aria-hidden="true"><div class="glow"></div><img loading="lazy" decoding="async" class="fia p-hoert" id="zFia" src="cover.jpg" data-basis="cover.jpg" data-pose="hoert" alt=""></div>
   <div class="card">
     <label>Was ist gerade da?<textarea id="zText" maxlength="1200" placeholder="z. B. Ich kann nicht abschalten, morgen ist viel los."></textarea></label>
     <div class="row"><button id="zGo">Fia erzählen</button><button class="mic" id="zMic" data-ziel="zText" hidden>🎙 Einsprechen</button></div>
@@ -924,7 +927,7 @@ label.nurhoeren input{width:22px;height:22px;margin:0 4px 0 0;accent-color:var(-
 </div>
 <!-- Sanfter Wecker -->
 <div class="wecker" id="wecker" hidden>
-  <img src="figuren/fia.jpg" data-basis="figuren/fia.jpg" data-pose="wach" alt="" id="weckerFia">
+  <img loading="lazy" decoding="async" src="figuren/fia.jpg" data-basis="figuren/fia.jpg" data-pose="wach" alt="" id="weckerFia">
   <p id="weckerSay">Gute Nacht. Fia weckt dich sanft zu deiner Aufstehzeit.</p>
   <div class="row" style="justify-content:center"><button id="weckerWach">Wecker aus</button><button id="weckerSnooze" hidden>Noch 5 Minuten liegen</button></div>
 </div>
@@ -997,7 +1000,7 @@ function renderMorgen(){
 }
 const FACE={schwer:'Danke, dass du es sagst. Heute darf alles etwas langsamer gehen.',okay:'Okay ist gut genug. Schritt für Schritt.',gut:'Wie schön. Nimm das Licht mit in den Tag.'};
 document.querySelectorAll('#faces button').forEach(b=>b.onclick=()=>{tag().gefuehl=b.dataset.f;tag().morgen=tag().morgen||'da';save();renderMorgen();$('faceSay').textContent=FACE[b.dataset.f]});
-$('traumSave').onclick=()=>{const t=$('traum').value.trim();if(!t)return;S.traeume.push({d:heute(),t});save();$('traum').value='';flash('Im Traum-Nest. Nur für dich.')};
+$('traumSave').onclick=()=>{const t=$('traum').value.trim();if(!t){$('traum').focus();flash('Schreib zuerst deine Frage für die Nacht.');return;}S.traeume.push({d:heute(),t});save();$('traum').value='';flash('Im Traum-Nest. Nur für dich.')};
 
 /* Tag */
 function renderTag(){['aufstehen','aufstehen2'].forEach(i=>$(i).value=S.zeiten.auf);['bettzeit','bettzeit2'].forEach(i=>$(i).value=S.zeiten.bett);kaffee();renderPlan()}
@@ -1183,13 +1186,17 @@ function szene(st,film){const morgen=st===0&&new Date().getHours()<11;let r=7;co
   <circle class="lantern" cx="141" cy="80" r="5" fill="#FFD27A"/><circle class="lantern" cx="141" cy="80" r="13" fill="#FF8A3D" opacity=".25"/>
   <polygon points="236,150 244,122 252,150" fill="#0a2a24"/><polygon points="250,150 259,116 268,150" fill="#0c3029"/><polygon points="114,150 121,128 128,150" fill="#0a2a24"/>
   <text x="96" y="94" font-size="7" fill="#AEB8DA" opacity=".8" font-family="Georgia">z z</text>
-  </svg><img class="sun" src="figuren/sunny.jpg" alt=""><img class="nestfia" data-pose="schlaeft" data-basis="figuren/fia.jpg" src="${poseBild('schlaeft')||'figuren/fia.jpg'}" alt="">${film?'':`<span class="cap">${st>=2?'Das Städtchen schläft ein. Brix hält Nachtwache.':morgen?'Über dem Meer wird es hell.':'Nova schläft schon. Sunny fliegt über die Dächer.'}</span>`}`}
+  </svg><img loading="lazy" decoding="async" class="sun" src="figuren/sunny.jpg" alt=""><img loading="lazy" decoding="async" class="nestfia" data-pose="schlaeft" data-basis="figuren/fia.jpg" src="${poseBild('schlaeft')||'figuren/fia.jpg'}" alt="">${film?'':`<span class="cap">${st>=2?'Das Städtchen schläft ein. Brix hält Nachtwache.':morgen?'Über dem Meer wird es hell.':'Nova schläft schon. Sunny fliegt über die Dächer.'}</span>`}`}
 
 /* Tagesband: Fia fliegt mit der Uhrzeit, das nächste Ritual leuchtet. Nachts keine Uhr. */
 function renderBand(){const{A,B,N,nacht}=tagLage();const L=planListe().filter(x=>!x.nb);const pos=m=>Math.max(2,Math.min(98,(m-A)/(B-A)*100));
   const next=nacht?null:L.find(x=>x.m>N);
-  $('band').innerHTML='<div class="bar"></div>'+L.map(x=>`<button class="mk ${x===next?'next':(!nacht&&x.m<=N)||nacht?'past':''}" style="left:${pos(x.m)}%" data-go="${x.go}" aria-label="${x.t}">${x.ic}</button>`).join('')+
-    `<img class="fly" data-pose="fliegt" data-basis="figuren/fia.jpg" src="${poseBild('fliegt')||'figuren/fia.jpg'}" alt="" style="left:${nacht?98:pos(N)}%">`;
+  /* Runde 7: Punkte nie übereinander, jede 44-px-Tippfläche bleibt frei */
+  const bw=$('band').clientWidth||300,gap=Math.min(96/Math.max(1,L.length-1),46/bw*100),O=L.map((x,i)=>i).sort((i,j)=>L[i].m-L[j].m),P=L.map(x=>pos(x.m));
+  for(let k=1;k<O.length;k++)P[O[k]]=Math.max(P[O[k]],P[O[k-1]]+gap);
+  for(let k=O.length-1;k>=0;k--)P[O[k]]=Math.max(2,Math.min(P[O[k]],k===O.length-1?98:P[O[k+1]]-gap));
+  $('band').innerHTML='<div class="bar"></div>'+L.map((x,i)=>`<button class="mk ${x===next?'next':(!nacht&&x.m<=N)||nacht?'past':''}" style="left:${P[i]}%" data-go="${x.go}" aria-label="${x.t}">${x.ic}</button>`).join('')+
+    `<img loading="lazy" decoding="async" class="fly" data-pose="fliegt" data-basis="figuren/fia.jpg" src="${poseBild('fliegt')||'figuren/fia.jpg'}" alt="" style="left:${nacht?98:pos(N)}%">`;
   $('bandSay').textContent=nacht?'Nacht. Fia schläft, die Zeit darf ruhen.':next?'Als Nächstes: '+next.t+' um '+hhmm(next.m)+'.':'Bald geht es ins Nest.'}
 
 /* Start: Szene, Tagesband, Fia glüht mit, Sonntags-Rückblick, eigenes Ritual */
@@ -1381,7 +1388,7 @@ if(!KANN_MT)$('mitteilungText').textContent=NATIV?'In der iPhone-App schickt Fia
 
 /* Dein Nest: Begleiter, Lernen, Export */
 NEU.nest=()=>{renderTag();const f=$('figs');f.innerHTML='';
-  Object.entries(FIGS).forEach(([k,v])=>{const b=document.createElement('button');b.className=S.begleiter===k?'sel':'';b.innerHTML=`<img src="${v.b}" alt=""><span>${v.n}</span><small style="color:var(--muted)">${v.a}</small>`;
+  Object.entries(FIGS).forEach(([k,v])=>{const b=document.createElement('button');b.className=S.begleiter===k?'sel':'';b.innerHTML=`<img loading="lazy" decoding="async" src="${v.b}" alt=""><span>${v.n}</span><small style="color:var(--muted)">${v.a}</small>`;
     b.onclick=()=>{S.begleiter=k;save();NEU.nest();flash(k==='fia'?'Fia ist bei dir.':v.n+' wacht jetzt mit Fia bei dir.')};f.appendChild(b)});
   const ul=$('merkt');ul.innerHTML='';const E=Object.entries(S.lern).sort((a,b)=>b[1]-a[1]).slice(0,6);
   if(!E.length)ul.innerHTML='<li>Noch nichts. Fia schaut einfach zu.</li>';
@@ -1580,7 +1587,7 @@ function onbSchritt(n){ONB=n;document.querySelectorAll('[data-onb]').forEach(d=>
   $('onbZurueck').hidden=n===0;$('onbWeiter').textContent=n===2?'Los geht’s':'Weiter';
   setPose($('onbFia'),['winkt','zeigt','atmet'][n]);
   if(n===1){$('onbAuf').value=S.zeiten.auf;$('onbBett').value=S.zeiten.bett;const f=$('onbFigs');f.innerHTML='';
-    Object.entries(FIGS).forEach(([k,v])=>{const b=document.createElement('button');b.className=S.begleiter===k?'sel':'';b.innerHTML=`<img src="${v.b}" alt=""><span>${v.n}</span>`;
+    Object.entries(FIGS).forEach(([k,v])=>{const b=document.createElement('button');b.className=S.begleiter===k?'sel':'';b.innerHTML=`<img loading="lazy" decoding="async" src="${v.b}" alt=""><span>${v.n}</span>`;
       b.onclick=()=>{S.begleiter=k;save();f.querySelectorAll('button').forEach(x=>x.classList.toggle('sel',x===b))};f.appendChild(b)})}}
 function onbZeigen(){$('onb').hidden=false;onbSchritt(0);setTimeout(()=>$('onbWeiter').focus(),100)}
 function onbFertig(){$('onb').hidden=true;S.onb=heute();save();if(AKTUELL==='home'){NEU.home();sag('Schön, dass du da bist. Tipp mich an, wenn du magst.')}film()}
@@ -1770,6 +1777,7 @@ nachGo(AKTUELL||'home');
 <script src="../nova/seelen.js" defer></script>
 <script src="../nova/nova.js" data-nova-bild="figuren/fia.jpg" data-nova-app="Fias Nest" defer></script>
 <script src="runde6.js" defer></script>
+<script src="runde7.js" defer></script>
 <script>/* Gesprächsfenster an Claude nur im Web, nicht in der iPhone-App */
 if(!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform())){const f=document.createElement('script');f.src='feedback.js';f.dataset.app='Fias Nest';f.defer=true;document.body.appendChild(f)}</script>
 </body>
