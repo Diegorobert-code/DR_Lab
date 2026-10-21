@@ -9,15 +9,15 @@
 <meta name="apple-mobile-web-app-title" content="Kiki singt">
 <meta name="theme-color" content="#0f1b3d">
 <meta name="color-scheme" content="dark">
-<meta name="description" content="Kiki, der singende Koala: Töne treffen, Tonleitern, Lieder und dein Stimmraum.">
+<meta name="description" content="Kiki, das singende Koala-Mädchen: Kinder und Eltern singen zusammen. Töne treffen, Lieder, Echo-Spiel und Duett.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
-<meta property="og:title" content="Kiki – der singende Koala"><meta property="og:description" content="Kiki, der singende Koala: Töne treffen, Tonleitern, Lieder und dein Stimmraum."><meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/kiki/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://diegorobert-code.github.io/DR_Lab/kiki/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:title" content="Kiki – Kinder und Eltern singen zusammen"><meta property="og:description" content="Kiki, das singende Koala-Mädchen: Kinder und Eltern singen zusammen. Töne treffen, Lieder, Echo-Spiel und Duett."><meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/kiki/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://diegorobert-code.github.io/DR_Lab/kiki/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
-<title>Kiki – der singende Koala</title>
+<title>Kiki – Kinder und Eltern singen zusammen</title>
 <style>
 :root{
   --night:#0f1b3d; --night2:#18295a; --night3:#22397a; --card:rgba(255,255,255,.07); --line:rgba(255,255,255,.13);
@@ -277,6 +277,7 @@ a.card{color:inherit;text-decoration:none}
 .bubble.links{flex:1;margin:0;text-align:left;font-size:18px;min-height:0;padding:12px 16px}
 .bubble.links:before{top:50%;left:-10px;margin:-11px 0 0;border:11px solid transparent;border-left:0;border-right-color:#fffaf0}
 .card.heute{width:100%;min-height:112px;padding:16px;gap:16px;border-width:2px;box-shadow:0 12px 32px -14px rgba(242,193,78,.55)}
+.card.zusammen{width:100%;margin-top:10px;background:linear-gradient(135deg,rgba(229,143,168,.24),rgba(143,211,168,.2));border-color:rgba(229,143,168,.5)}
 .card.heute .ic{font-size:40px}
 .card.heute .los{flex:none;margin-left:auto;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:#2a1f05;font-size:18px;box-shadow:0 6px 18px -6px rgba(242,193,78,.8)}
 #s-menu .cat-h{font-size:20px;font-weight:600;margin:24px 4px 8px}
@@ -305,7 +306,7 @@ details.mehr[open] .grid{animation:fade .35s var(--ease)}
 
 <!-- Kiki als Vorlage -->
 <template id="kikiTpl">
-<svg class="kiki" viewBox="0 0 200 210" role="img" aria-label="Kiki, der Koala">
+<svg class="kiki" viewBox="0 0 200 210" role="img" aria-label="Kiki, das Koala-Mädchen">
   <defs>
     <radialGradient id="fur" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#c3cad8"/><stop offset=".6" stop-color="#9aa3b8"/><stop offset="1" stop-color="#737d95"/></radialGradient>
     <radialGradient id="earIn" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#ffd7dc"/><stop offset="1" stop-color="#eaa4b0"/></radialGradient>
@@ -370,12 +371,12 @@ details.mehr[open] .grid{animation:fade .35s var(--ease)}
 
   <!-- Start -->
   <section class="screen on" id="s-home">
-    <h1 class="sr">Kiki, der singende Koala</h1>
+    <h1 class="sr">Kiki, das singende Koala-Mädchen. Kinder und Eltern singen zusammen.</h1>
     <div class="hero" aria-hidden="false">
       <span class="hero-note n1" aria-hidden="true">♪</span><span class="hero-note n2" aria-hidden="true">♫</span><span class="hero-note n3" aria-hidden="true">♪</span>
-      <img class="kiki-foto" src="figur-gross.jpg" alt="Kiki, der singende Koala. Tipp auf Kiki." width="250" height="250" fetchpriority="high" decoding="async" data-sag="homeBubble" id="homeKiki">
+      <img class="kiki-foto" src="figur-gross.jpg" alt="Kiki, das singende Koala-Mädchen. Tipp auf Kiki." width="250" height="250" fetchpriority="high" decoding="async" data-sag="homeBubble" id="homeKiki">
     </div>
-    <div class="bubble pop" id="homeBubble" aria-live="polite">Hallo! Ich bin Kiki. Singst du mit mir?</div>
+    <div class="bubble pop" id="homeBubble" aria-live="polite">Hallo! Ich bin Kiki. Singt ihr mit mir, Gross und Klein?</div>
     <button class="btn gold big" id="startBtn">🎤 Los, wir singen!</button>
     <div class="err" id="micErr" hidden></div>
     <p class="mini trust">🔒 Kiki hört nur zu. Nichts wird aufgenommen.</p>
@@ -389,6 +390,7 @@ details.mehr[open] .grid{animation:fade .35s var(--ease)}
       <div class="bubble links" id="menuBubble">Juhu! Was wollen wir heute singen?</div>
     </div>
     <button class="card wide heute" data-go="heute"><span class="ic">🌞</span><span><b>Heute mit Kiki</b><small id="planSub">Aufwärmen, 3 Töne, Lied des Tages</small><span class="plan" id="planDots"></span></span><span class="los" aria-hidden="true">▶</span></button>
+    <button class="card wide zusammen" data-go="duo"><span class="ic">👨‍👩‍👧</span><span><b>Zusammen singen</b><small>Kind und Mama oder Papa, abwechselnd im Duett</small></span></button>
     <h2 class="cat-h">Spielen</h2>
     <div class="grid">
       <button class="card" data-go="tone"><span class="ic">🎯</span><span><b>Ton treffen</b><small>Kiki singt vor, du singst nach</small></span></button>
@@ -406,7 +408,6 @@ details.mehr[open] .grid{animation:fade .35s var(--ease)}
         <button class="card" data-go="room"><span class="ic">🏠</span><span><b>Mein Stimmraum</b><small>Wie tief, wie hoch?</small></span></button>
         <button class="card" data-go="scale"><span class="ic">🪜</span><span><b>Tonleitern</b><small>Do-Re-Mi, Dur, Moll</small></span></button>
         <button class="card" data-go="pitch"><span class="ic">🎹</span><span><b>Ton vorgeben</b><small>Kiki spielt den Ton</small></span></button>
-        <button class="card" data-go="duo"><span class="ic">👨‍👧</span><span><b>Zu zweit</b><small>Duett, abwechselnd</small></span></button>
         <a class="card" href="../mondschein/"><span class="ic">🦔</span><span><b>Kiki besucht Otti</b><small>Gutenacht-Geschichten</small></span></a>
       </div>
     </details>
@@ -581,8 +582,8 @@ details.mehr[open] .grid{animation:fade .35s var(--ease)}
       <h2 style="font-size:19px">Name des Kindes (freiwillig)</h2>
       <div class="row"><input id="kidName" maxlength="24" autocomplete="off" placeholder="z. B. Lena" style="flex:2;min-height:52px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font:inherit;font-size:18px;padding:0 14px"><button class="btn soft small" id="kidSave" style="flex:1">Speichern</button></div>
       <p class="mini" style="text-align:left;margin:8px 0 0">Kiki begrüsst dann mit Namen. Der Name bleibt nur auf diesem Handy.</p>
-      <div class="row" style="margin-top:10px"><input id="duoName" maxlength="24" autocomplete="off" placeholder="Papa" style="flex:2;min-height:52px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font:inherit;font-size:18px;padding:0 14px"><button class="btn soft small" id="duoSave" style="flex:1">Speichern</button></div>
-      <p class="mini" style="text-align:left;margin:8px 0 0">Zweite Stimme für «Zu zweit» (z. B. Papa, Mama). Eine Oktave tiefer zählt auch.</p>
+      <div class="row" style="margin-top:10px"><input id="duoName" maxlength="24" autocomplete="off" placeholder="Mama oder Papa" style="flex:2;min-height:52px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font:inherit;font-size:18px;padding:0 14px"><button class="btn soft small" id="duoSave" style="flex:1">Speichern</button></div>
+      <p class="mini" style="text-align:left;margin:8px 0 0">Zweite Stimme für «Zusammen singen» (z. B. Papa, Mama). Eine Oktave tiefer zählt auch.</p>
     </div>
     <div class="panel">
       <h2 style="font-size:19px">🎬 Einführung</h2>
@@ -1055,10 +1056,10 @@ function setupTrainUI(title, withLyrics){
   ladderShow(trainer.target);
 }
 const FOOT0 = 'Tipp: Handy auf Armlänge halten. Kein Ton? Seitenschalter am iPhone auf laut stellen.';
-function duoNames(){ return [store.get('name', '') || 'Kind', store.get('duo', '') || 'Papa']; }
+function duoNames(){ return [store.get('name', '') || 'Kind', store.get('duo', '') || 'Mama / Papa']; }
 function duoShow(){
   const d = toneState.duo; if (!d) return;
-  $('trainTitle').textContent = `Zu zweit · ${d.names[d.turn]} ist dran`;
+  $('trainTitle').textContent = `Zusammen · ${d.names[d.turn]} ist dran`;
   $('trainFoot').textContent = `⭐ ${d.names[0]} ${d.score[0]} · ${d.names[1]} ${d.score[1]} · Eine Oktave höher oder tiefer zählt auch.`;
 }
 function startTone(opts){
@@ -1619,7 +1620,7 @@ const BADGES = [
   {id:'lied1', em:'🦆', t:'Erstes Lied',      s:'Ein ganzes Lied gesungen',          ok: () => songsDone() >= 1},
   {id:'echo',  em:'🦜', t:'Echo-Kind',        s:'3 Melodien nachgesungen',           ok: () => (mem.echoN || 0) >= 3},
   {id:'takt',  em:'🥁', t:'Klatsch-Profi',    s:'3 Rhythmen nachgeklatscht',         ok: () => (mem.rhyN || 0) >= 3},
-  {id:'duo',   em:'👨‍👧', t:'Duett',            s:'Zu zweit gesungen',                 ok: () => (mem.duet || 0) >= 2},
+  {id:'duo',   em:'👨‍👧', t:'Duett',            s:'Zusammen gesungen',                 ok: () => (mem.duet || 0) >= 2},
   {id:'dicht', em:'✨', t:'Liederfinder',     s:'Mit Kiki ein Lied erfunden',        ok: () => (mem.made || 0) >= 1},
   {id:'heute', em:'🌞', t:'Tagesziel',        s:'«Heute mit Kiki» ganz geschafft',   ok: () => (mem.planDays || 0) >= 1},
   {id:'lied3', em:'🎶', t:'Liedersammler',    s:'3 verschiedene Lieder geschafft',   ok: () => songsDone() >= 3},
@@ -1841,7 +1842,7 @@ const LIEDERBUCH = {
   'Tiere im Wald': ['Fuchs und Ha-se, Reh und Bär', 'kom-men aus dem Wald da-her.', 'Al-le sin-gen mit im Chor,', 'Ki-ki singt es ih-nen vor.'],
   'Geburtstag': ['Heu-te ist dein gros-ser Tag,', 'Ki-ki singt, weil sie dich mag.', 'Ker-zen leuch-ten, eins, zwei, drei,', 'al-le Freun-de sind da-bei.']
 };
-const VERS_SYS = 'Du bist Kiki, ein fröhlicher singender Koala, und dichtest kurze Kinderlied-Strophen auf Deutsch (Schweiz, schreibe ss statt ß). ' +
+const VERS_SYS = 'Du bist Kiki, ein fröhliches singendes Koala-Mädchen, und dichtest kurze Kinderlied-Strophen auf Deutsch (Schweiz, schreibe ss statt ß). ' +
   'Antworte NUR mit genau 4 Zeilen, ohne Titel, ohne Nummern, ohne Anführungszeichen. Jede Zeile hat genau 7 Silben. Trenne die Silben mit Bindestrich, Wörter mit Leerzeichen ' +
   '(Beispiel: «Ki-ki singt im Mon-den-schein,»). Reim: Zeile 1 auf 2, Zeile 3 auf 4. Fröhlich, warm, für Kinder ab 4, nichts Gruseliges, keine Namen, keine Marken.';
 let makeTheme = 'Mond';
@@ -1929,7 +1930,7 @@ function renderMem(){
     x.songs.length ? `<b>Lieder:</b> ${x.songs.join(' · ')}` : '',
     mem.echoN ? `<b>Echo-Spiel:</b> ${mem.echoN} Melodien nachgesungen` : '',
     mem.rhyN ? `<b>Rhythmus:</b> ${mem.rhyN} Rhythmen nachgeklatscht` : '',
-    mem.duet ? `<b>Zu zweit:</b> ${mem.duet} Töne im Duett` : '',
+    mem.duet ? `<b>Zusammen gesungen:</b> ${mem.duet} Töne im Duett` : '',
     mem.made ? `<b>Lieder erfunden:</b> ${mem.made}` : '',
     mem.planDays ? `<b>Tagesziel geschafft:</b> ${mem.planDays}×` : '',
     mem.badges && Object.keys(mem.badges).length ? `<b>Abzeichen:</b> ${BADGES.filter(b => mem.badges[b.id]).map(b => b.em + ' ' + b.t).join(' · ')}` : ''
@@ -1947,7 +1948,7 @@ $('memShare').onclick = async () => {
 };
 $('kidName').value = store.get('name', '');
 $('kidSave').onclick = () => { const n = $('kidName').value.trim().slice(0, 24); store.set('name', n); $('kidSave').textContent = 'Gespeichert ✓'; setTimeout(() => $('kidSave').textContent = 'Speichern', 1500); homeGreet(); };
-function homeGreet(){ const n = store.get('name', ''); $('homeBubble').textContent = n ? `Hallo ${n}! Ich bin Kiki. Singst du mit mir?` : 'Hallo! Ich bin Kiki. Singst du mit mir?'; }
+function homeGreet(){ const n = store.get('name', ''); $('homeBubble').textContent = n ? `Hallo ${n}! Ich bin Kiki. Singst du mit mir? Mama oder Papa dürfen mitsingen!` : 'Hallo! Ich bin Kiki. Singt ihr mit mir, Gross und Klein?'; }
 homeGreet();
 $('duoName').value = store.get('duo', '');
 $('duoSave').onclick = () => { store.set('duo', $('duoName').value.trim().slice(0, 24)); $('duoSave').textContent = 'Gespeichert ✓'; setTimeout(() => $('duoSave').textContent = 'Speichern', 1500); };
@@ -1990,6 +1991,7 @@ $('gateIn').addEventListener('keydown', e => { if (e.key === 'Enter') gatePruefe
 /* ---------- Einführung beim ersten Mal im Menü ---------- */
 const TOUR = [
   ['Hallo, ich bin Kiki!', 'Ich singe vor, du singst nach. Ich höre dir zu.'],
+  ['Zusammen singen', 'Kinder und Eltern singen mit mir. Bei «Zusammen singen» seid ihr abwechselnd dran.'],
   ['Jeden Tag ein bisschen', 'Tipp oben auf «Heute mit Kiki». Für jedes Spiel gibt es Sterne ★'],
   ['Für Eltern', 'Ganz unten «Für Eltern» 3 Sekunden halten: Einstellungen und was Kiki sich merkt.']
 ];
