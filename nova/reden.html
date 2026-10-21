@@ -2,9 +2,11 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
+<meta name="stand" content="2026-10-21-13">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
+<link rel="apple-touch-icon" id="symbol" href="icon-nova-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="stylesheet" href="puppe.css">
@@ -28,7 +30,7 @@
     color:var(--gold); font-size:34px; text-decoration:none; z-index:2; }
   h1 { margin:4px 0 0; font-size:22px; letter-spacing:.5px; color:var(--gold); }
   .status { min-height:22px; color:var(--leise); font-size:15px; margin:2px 0 10px; text-align:center; }
-  .buehne { position:relative; width:min(86vw, 420px); aspect-ratio:1/1; border-radius:28px; overflow:hidden;
+  .buehne { position:relative; flex:none; width:min(86vw, 420px, 40vh); aspect-ratio:1/1; border-radius:28px; overflow:hidden;
     box-shadow:0 18px 50px #0008, 0 0 0 3px #f5c54233; transform-origin:50% 90%; transition:box-shadow .3s; }
   .buehne.hoert { box-shadow:0 18px 50px #0008, 0 0 0 4px #7fd4ff, 0 0 40px #7fd4ff66; }
   .buehne.spricht { box-shadow:0 18px 50px #0008, 0 0 0 4px var(--gold), 0 0 44px #f5c54277; }
@@ -45,7 +47,26 @@
   @keyframes hopsen { 30% { transform:translateY(-14px) scale(1.1); } 60% { transform:translateY(2px) scale(1.06); } }
   .atmen { animation:atmen 3.6s ease-in-out infinite; }
   @keyframes atmen { 50% { transform:scale(1.012) translateY(-2px); } }
-  .text { width:min(92vw, 460px); flex:1; min-height:0; overflow-y:auto; margin-top:14px; display:flex; flex-direction:column; gap:8px;
+  .buehne.winken { animation:winken .9s ease-in-out 2; transform-origin:50% 100%; }
+  @keyframes winken { 25% { transform:rotate(-6deg); } 75% { transform:rotate(6deg); } }
+  .buehne.huepfen { animation:huepfen .5s cubic-bezier(.3,1.6,.5,1) 3; }
+  @keyframes huepfen { 40% { transform:translateY(-22px) scale(1.03); } 70% { transform:translateY(3px) scale(.99,1.02); } }
+  .buehne.drehen { animation:drehen 1.1s ease-in-out; }
+  @keyframes drehen { 50% { transform:perspective(700px) rotateY(180deg) scale(.92); } 100% { transform:perspective(700px) rotateY(360deg); } }
+  .buehne.staunen { animation:staunen 1.2s ease-out; }
+  @keyframes staunen { 20% { transform:scale(1.1); } 60% { transform:scale(1.06); } }
+  .buehne.nicken { animation:nicken .45s ease-in-out 3; transform-origin:50% 100%; }
+  @keyframes nicken { 50% { transform:translateY(8px) rotateX(10deg); } }
+  .buehne.kopfschuetteln { animation:kopfsch .4s ease-in-out 3; }
+  @keyframes kopfsch { 25% { transform:translateX(-10px) rotate(-2deg); } 75% { transform:translateX(10px) rotate(2deg); } }
+  .chips { width:min(92vw, 460px); display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:8px; }
+  .chips:empty { display:none; }
+  .chip { border:0; border-radius:999px; padding:10px 16px; font:inherit; font-size:15px; cursor:pointer; background:#7fd4ff; color:#0b1f45;
+    box-shadow:0 6px 16px #0006; animation:chipRein .35s cubic-bezier(.3,1.6,.5,1) both; }
+  .chip:nth-child(2) { animation-delay:.08s; } .chip:nth-child(3) { animation-delay:.16s; }
+  .chip:active { transform:scale(.94); }
+  @keyframes chipRein { from { transform:translateY(12px) scale(.6); opacity:0; } }
+  .text { width:min(92vw, 460px); flex:1; min-height:110px; overflow-y:auto; margin-top:14px; display:flex; flex-direction:column; gap:8px;
     mask-image:linear-gradient(transparent, #000 18px); -webkit-mask-image:linear-gradient(transparent, #000 18px); padding-top:14px; }
   .z { padding:8px 12px; border-radius:14px; max-width:86%; white-space:pre-wrap; }
   .z.du { align-self:flex-end; background:#24386e; }
@@ -76,6 +97,11 @@
   .ottiok button { position:relative; overflow:hidden; width:100%; min-height:48px; margin-top:8px; border:0; border-radius:14px; background:var(--gold); color:#2a1d00; font:inherit; font-weight:800; font-size:16px; touch-action:none; -webkit-user-select:none; user-select:none; }
   .ottiok button::before { content:''; position:absolute; inset:0; transform-origin:0 50%; transform:scaleX(var(--p, 0)); background:#ffffff66; }
   .ottiok button span { position:relative; }
+.buehne .leinwand{position:absolute;inset:0;width:100%;height:100%;display:none;z-index:2;background:#f6efe0}.buehne.malt .leinwand{display:block}.buehne .gemalt{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:1}.buehne.zeigt .gemalt{display:block}
+.schreiben{display:flex;gap:8px;width:min(92vw,460px);margin-top:10px;flex:none}.schreiben input{flex:1;min-width:0;border:0;border-radius:22px;padding:11px 16px;font:16px system-ui,sans-serif;background:#f4f1e8;color:#22201a}.z.bild{padding:4px;background:#f4f1e8;max-width:78%}.z.bild img{display:block;width:100%;border-radius:11px}.z.bild small{display:block;color:#22201a;font-size:12px;padding:4px 6px 2px}
+.schreiben button.malen{background:#f4f1e8;font-size:19px}
+.schreiben button{width:44px;height:44px;border-radius:50%;border:0;background:var(--gold);color:#2a1d00;font-size:20px;cursor:pointer;flex:none}
+  body.otti .schreiben { display:none; } /* Kinder 3–7: reden statt tippen */
 .lernen{display:block;margin:10px auto 0;max-width:340px;font-size:13px;line-height:1.35;color:#d9d2c3;text-align:center}.lernen input{width:18px;height:18px;vertical-align:-3px;accent-color:#f2c14e}.lernen small{display:block;color:#a9a294}
 </style>
 </head>
@@ -89,14 +115,18 @@
 <div class="buehne atmen" id="buehne" role="img" aria-label="Figur">
   <canvas id="figur"></canvas>
   <div class="glanz"></div>
+  <img class="gemalt" id="gemalt" alt="">
+  <canvas class="leinwand" id="leinwand"></canvas>
 </div>
 
 <div class="text" id="text" aria-live="polite"></div>
+<div class="chips" id="chips"></div>
 
 <div class="ottiok" id="ottiOk" hidden role="dialog" aria-label="Für Eltern">
   <b>Für Eltern, einmal kurz:</b> Im Live-Gespräch geht die Stimme deines Kindes über das Internet an den Sprachdienst ElevenLabs (USA). Bitte sei dabei.
   <button type="button" id="ottiOkHalten"><span>Einverstanden: 3 Sekunden halten</span></button>
 </div>
+<form class="schreiben" id="schreiben" autocomplete="off"><input id="eingabe" type="text" enterkeyhint="send" placeholder="Schreiben …" aria-label="Nachricht schreiben"><button type="button" class="malen" id="malen" aria-label="Nova zeichnet">🎨</button><button type="submit" aria-label="Senden">➤</button></form>
 <button class="knopf" id="knopf" type="button" aria-label="Gespräch starten">🎙</button>
 <div class="hinweis" id="hinweis"></div>
 <label class="lernen" id="lernenBox"><input type="checkbox" id="lernen"> Nova darf aus diesem Gespräch lernen <small>(nur Diego und Team, auf unserem Server in der Schweiz)</small></label>
@@ -136,17 +166,26 @@
     sunny: { name: 'Sunny', agent: 'agent_4201m55ssdr3fksaey0x2yh1vpmh', bild: 'figuren/sunny.jpg',
       mund: { linie: [[416, 488], [440, 523], [480, 532], [520, 546], [560, 559], [592, 562], [646, 540]], lippe: 586, kinn: 640, max: 22 } },
     kiki: { name: 'Kiki', agent: 'agent_0401m55r02rvf96a1xrxv1njqbh3', bild: '../kiki/kiki-3d.jpg', ruhe: -0.4,
-      mund: { linie: [[372, 652], [400, 700], [440, 708], [480, 718], [520, 722], [560, 722], [600, 722], [614, 724]], lippe: 795, kinn: 865, max: 22 } }
+      mund: { linie: [[372, 652], [400, 700], [440, 708], [480, 718], [520, 722], [560, 722], [600, 722], [614, 724]], lippe: 795, kinn: 865, max: 22 } },
+    tropfi: { name: 'Tropfi', agent: 'agent_0201m5e5qk98fwf9akjpcfjtn73c', bild: 'figuren/tropfi.jpg', gedaechtnis: true,
+      mund: { linie: [[438, 648], [460, 660], [490, 666], [520, 660], [540, 648]], lippe: 684, kinn: 724, max: 16, innen: [24, 40, 96] } },
+    carmencita: { name: 'Carmencita', agent: 'agent_7001m5ez7r31e4v9jq4ah3367wbq', bild: 'figuren/carmencita.jpg',
+      mund: { linie: [[528, 516], [552, 542], [576, 564], [602, 582], [630, 592], [656, 590]], lippe: 616, kinn: 652, max: 18 } },
+    ava: { name: 'Ava', agent: 'agent_6301m5ez7tqkf8fre9vvprktpzby', bild: 'figuren/ava.jpg',
+      mund: { linie: [[394, 578], [420, 587], [450, 591], [480, 587], [504, 578]], lippe: 606, kinn: 640, max: 14, innen: [92, 36, 40] } }
   };
-  var BILDCHEN = { nova: 'nova-3d.jpg', otti: '../otti/icon-180.png', kiki: '../kiki/icon-180.png', jackie: '../jackie/icon-180.png', 'mr. ping': '../tradeping/icon-180.png',
-    sparky: 'figuren/sparky-klein.jpg', 'coin maker': 'figuren/coinmaker-klein.jpg', flo: 'figuren/flo-klein.jpg', fompa: 'figuren/fompa-klein.jpg', sunny: 'figuren/sunny-klein.jpg' };
+  var BILDCHEN = { nova: 'nova-3d.jpg', tropfi: 'figuren/tropfi-klein.jpg', otti: '../otti/icon-180.png', kiki: '../kiki/icon-180.png', jackie: '../jackie/icon-180.png', 'mr. ping': '../tradeping/icon-180.png',
+    sparky: 'figuren/sparky-klein.jpg', 'coin maker': 'figuren/coinmaker-klein.jpg', flo: 'figuren/flo-klein.jpg', fompa: 'figuren/fompa-klein.jpg', sunny: 'figuren/sunny-klein.jpg',
+    carmencita: 'figuren/carmencita-klein.jpg', ava: 'figuren/ava-klein.jpg' };
   var KEY = (new URLSearchParams(location.search).get('f') || 'otti').toLowerCase();
   var F = FIGUREN[KEY] || FIGUREN.otti, NAME = F.name, AGENT = F.agent, RUHE = F.ruhe || 0;
   document.title = NAME;
+  // Home-Bildschirm-Symbol: das Gesicht der Figur, die gerade spricht.
+  if (KEY !== 'nova' && BILDCHEN[KEY]) document.getElementById('symbol').href = BILDCHEN[KEY];
   var $ = function (id) { return document.getElementById(id); };
   var buehne = $('buehne'), figur = $('figur');
   var knopf = $('knopf'), status = $('status'), text = $('text'), hinweis = $('hinweis');
-  var conv = null, startet = false, mund = null, offen = RUHE, spitze = 0.15;
+  var conv = null, startet = false, sitzung = 0, eigene = [], mund = null, offen = RUHE, spitze = 0.15;
   // Alle Figuren in einer App: so teilen sie dasselbe Gedächtnis, und Nova sieht alles.
   Object.keys(BILDCHEN).forEach(function (k) {
     var a = document.createElement('a'); a.href = '?f=' + encodeURIComponent(k); a.setAttribute('aria-label', 'Mit ' + FIGUREN[k].name + ' reden');
@@ -156,6 +195,8 @@
     $('wahl').appendChild(a);
   });
   $('name').textContent = NAME; $('vname').textContent = NAME;
+  // Bei Nova keine Figurenreihe: sonst landet man aus Versehen bei Otti und findet nicht zurück.
+  if (KEY === 'nova') $('wahl').style.display = 'none';
   $('zurueck').addEventListener('click', function (e) { e.preventDefault(); if (history.length > 1) history.back(); else location.href = '../apps/'; });
 
   // Otti (Kinder-Figur) lebt als Puppe (nova/puppe.js): atmet, blinzelt, winkt beim Antippen zurück,
@@ -200,9 +241,9 @@
   function gedaechtnis() { try { return JSON.parse(localStorage.getItem(GED)) || []; } catch (e) { return []; } }
   function merken() {
     if (jetztGesagt.length < 2) { jetztGesagt = []; return; }
-    var t = jetztGesagt.join('\n'); if (t.length > 900) t = t.slice(-900);
+    var t = jetztGesagt.join('\n'); var gross = KEY === 'nova' || KEY === 'tropfi'; var max = gross ? 2500 : 900; if (t.length > max) t = t.slice(-max);
     var g = gedaechtnis(); g.push({ d: new Date().toLocaleDateString('de-CH'), t: t });
-    try { localStorage.setItem(GED, JSON.stringify(g.slice(-4))); } catch (e) {}
+    try { localStorage.setItem(GED, JSON.stringify(g.slice(gross ? -12 : -4))); } catch (e) {}
     if (lernenAn() && !OTTI) zuNova(t); // Kinder-Figur: Gespräche verlassen das Handy nie als Text
     jetztGesagt = []; vergessenZeigen();
   }
@@ -262,12 +303,37 @@
   // Nova verbindet: sie bekommt, was die anderen Figuren auf diesem Handy erlebt haben.
   function welt() {
     var teile = [];
-    ['otti', 'kiki', 'jackie', 'mr. ping', 'sparky', 'coin maker', 'flo', 'fompa', 'sunny'].forEach(function (k) {
+    ['tropfi', 'otti', 'kiki', 'jackie', 'mr. ping', 'sparky', 'coin maker', 'flo', 'fompa', 'sunny'].forEach(function (k) {
       var g = []; try { g = JSON.parse(localStorage.getItem(k === 'otti' ? 'otti_gedaechtnis' : 'gedaechtnis_' + k)) || []; } catch (e) {}
       g.slice(-2).forEach(function (x) { teile.push(FIGUREN[k].name + ' am ' + x.d + ':\n' + String(x.t).slice(-450)); });
     });
     var p = positionen(); if (p.indexOf('Noch nicht') !== 0) teile.push('Mr. Pings Titel: ' + p);
+    if (serverWelt) teile.push('Aus der Sense Engine (andere Apps, KI-Verse):\n' + serverWelt);
     return teile.length ? teile.join('\n\n') : 'Noch nichts gespeichert.';
+  }
+  // Novas Rückweg: was andere Figuren, Apps und das KI-Verse ihr über die Sense Engine erzählt haben.
+  // Nur mit «Handy verbinden»; antwortet der Server nicht schnell, startet das Gespräch ohne.
+  var serverWelt = '';
+  function serverHolen() {
+    var a = String(hol('drlab-hermes-adresse') || '').trim().replace(/\/+$/, ''), k = hol('drlab-hermes-passwort');
+    if (!a || !k || !window.fetch) return Promise.resolve();
+    var ab = window.AbortController ? new AbortController() : null;
+    var uhr = setTimeout(function () { if (ab) ab.abort(); }, 2500);
+    return fetch(a + '/erfahrung', { headers: { 'Authorization': 'Bearer ' + k }, signal: ab ? ab.signal : undefined })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        var l = Array.isArray(d) ? d : null;
+        if (!l && d && typeof d === 'object') for (var x in d) if (Array.isArray(d[x])) { l = d[x]; break; }
+        // Puls und Stimme (HumanSpark) bleiben auf unserem Server und gehen nie an den Sprach-Agenten.
+        if (l) l = l.filter(function (e) { return !/humanspark/i.test(String(e.app || '')) && String(e.frage || '').indexOf('[stimme-puls]') !== 0; });
+        if (!l || !l.length) return;
+        serverWelt = l.slice(-8).map(function (e) {
+          var t = String(e.frage || e.text || '').slice(-350), an = String(e.antwort || '').slice(0, 200);
+          return (e.app || 'Unbekannt') + (e.art ? ' (' + e.art + ')' : '') + ':\n' + t + (an ? '\nAntwort: ' + an : '');
+        }).join('\n\n');
+      })
+      .catch(function () {})
+      .then(function () { clearTimeout(uhr); });
   }
   function variablen() {
     var v = {};
@@ -284,6 +350,88 @@
     while (text.children.length > 30) text.removeChild(text.firstChild);
   }
 
+  // Nova malt sichtbar: zuerst stellt sie sich das Bild vor (weiche Farbtupfer, der Pinsel tanzt),
+  // dann trägt der Pinsel das fertige Bild Strich für Strich auf die Leinwand auf.
+  var leinwand = (function () {
+    var cv = $('leinwand'), ctx = cv.getContext('2d'), maske = document.createElement('canvas'), mk = maske.getContext('2d');
+    var lauf = 0, FARBEN = ['#f5c542', '#7fd4ff', '#ff9f80', '#9be37a', '#c9a2ff', '#16306b'];
+    function groesse() { var r = cv.getBoundingClientRect(), d = Math.min(2, window.devicePixelRatio || 1);
+      cv.width = maske.width = Math.round(r.width * d) || 600; cv.height = maske.height = Math.round(r.height * d) || 600; }
+    function pinsel(x, y, w) { // Pinselspitze mit Stiel
+      ctx.save(); ctx.translate(x, y); ctx.rotate(-0.7);
+      ctx.fillStyle = '#8a5a2b'; ctx.fillRect(-w * 0.09, -w * 1.25, w * 0.18, w * 0.95);
+      ctx.fillStyle = '#c0c4cc'; ctx.fillRect(-w * 0.12, -w * 0.34, w * 0.24, w * 0.16);
+      ctx.fillStyle = '#2a2016'; ctx.beginPath(); ctx.moveTo(-w * 0.12, -w * 0.18); ctx.quadraticCurveTo(0, w * 0.12, w * 0.12, -w * 0.18); ctx.fill();
+      ctx.restore(); }
+    function vorstellen() {
+      var nr = ++lauf; groesse(); buehne.classList.add('malt'); buehne.classList.remove('zeigt');
+      status.textContent = '🎨 ' + NAME + ' stellt es sich vor …';
+      var W = cv.width, H = cv.height, t0 = performance.now(), tupfer = [];
+      (function schritt(t) {
+        if (nr !== lauf) return;
+        var k = (t - t0) / 1000, x = W * (0.5 + 0.32 * Math.sin(k * 1.3) * Math.cos(k * 0.7)), y = H * (0.5 + 0.3 * Math.sin(k * 0.9 + 1));
+        if (tupfer.length < 260 && Math.random() < 0.5) tupfer.push([x, y, (0.03 + Math.random() * 0.06) * W, FARBEN[tupfer.length % FARBEN.length]]);
+        ctx.fillStyle = '#f6efe0'; ctx.fillRect(0, 0, W, H);
+        tupfer.forEach(function (p) { ctx.globalAlpha = 0.28; ctx.fillStyle = p[3]; ctx.beginPath(); ctx.arc(p[0], p[1], p[2], 0, 7); ctx.fill(); });
+        ctx.globalAlpha = 1; pinsel(x, y, W * 0.16);
+        if (k > 4) status.textContent = '🎨 ' + NAME + ' malt …';
+        requestAnimationFrame(schritt);
+      })(t0);
+    }
+    function malen(img, fertig) {
+      var nr = ++lauf; if (!buehne.classList.contains('malt')) { groesse(); buehne.classList.add('malt'); }
+      status.textContent = '🎨 ' + NAME + ' malt …';
+      var W = cv.width, H = cv.height, reihen = 7, dauer = 2600, t0 = performance.now(), breit = H / reihen * 1.5;
+      mk.clearRect(0, 0, W, H); mk.lineCap = 'round'; mk.lineJoin = 'round'; mk.strokeStyle = '#000';
+      var vorher = 0, px = 0, py = breit / 3;
+      function punkt(f) { // Zickzack über die Leinwand, Reihe für Reihe, mit leichtem Wackeln
+        var r = Math.min(reihen - 1, Math.floor(f * reihen)), g = f * reihen - r, hin = r % 2 === 0;
+        var x = (hin ? g : 1 - g) * (W + breit) - breit / 2, y = (r + 0.5) * H / reihen + Math.sin(g * 9 + r) * breit * 0.12;
+        return [x, y]; }
+      (function schritt(t) {
+        if (nr !== lauf) return;
+        var f = Math.min(1, (t - t0) / dauer);
+        for (var i = 1; i <= 6; i++) { var q = punkt(vorher + (f - vorher) * i / 6); mk.lineWidth = breit * (0.8 + Math.random() * 0.4);
+          mk.beginPath(); mk.moveTo(px, py); mk.lineTo(q[0], q[1]); mk.stroke(); px = q[0]; py = q[1]; }
+        vorher = f;
+        ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = '#f6efe0'; ctx.fillRect(0, 0, W, H);
+        var bild = document.createElement('canvas'); bild.width = W; bild.height = H; var bc = bild.getContext('2d');
+        var s = Math.max(W / img.naturalWidth, H / img.naturalHeight), iw = img.naturalWidth * s, ih = img.naturalHeight * s;
+        bc.drawImage(img, (W - iw) / 2, (H - ih) / 2, iw, ih); bc.globalCompositeOperation = 'destination-in'; bc.drawImage(maske, 0, 0);
+        ctx.drawImage(bild, 0, 0); pinsel(px, py, W * 0.16);
+        if (f < 1) requestAnimationFrame(schritt);
+        else setTimeout(function () { if (nr !== lauf) return; buehne.classList.remove('malt'); fertig(); }, 350);
+      })(t0);
+    }
+    function stopp() { lauf++; buehne.classList.remove('malt'); }
+    return { vorstellen: vorstellen, malen: malen, stopp: stopp };
+  })();
+
+  // Novas Zeichnungen: das Bild erscheint im Gespräch, Tippen öffnet es gross.
+  function bildZeigen(p) {
+    var url = String(p && p.bild || '');
+    if (!/^https:\/\//.test(url)) return;
+    var d = document.createElement('div'); d.className = 'z otti bild';
+    var a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener';
+    var im = document.createElement('img'); im.src = url; im.alt = p.titel || 'Zeichnung von ' + NAME; im.style.display = 'none';
+    // Malt Nova noch, gibt es das Bild erst nach 15–40 s: bis dahin alle 4 s nachschauen.
+    var versuche = 0, warte = document.createElement('small'); warte.textContent = NAME + ' malt …';
+    // Das fertige Bild erscheint gross auf der Bühne statt Nova; Tippen auf die Bühne zeigt Nova wieder.
+    leinwand.vorstellen();
+    im.onload = function () { if (warte.parentNode) warte.remove(); text.scrollTop = text.scrollHeight;
+      leinwand.malen(im, function () { im.style.display = ''; text.scrollTop = text.scrollHeight; $('gemalt').src = im.src; $('gemalt').alt = im.alt; buehne.classList.add('zeigt'); status.textContent = '🎨 Fertig gemalt.'; }); };
+    im.onerror = function () {
+      if (++versuche > 40) { warte.textContent = 'Das Bild kam nicht an.'; leinwand.stopp(); return; }
+      if (!warte.parentNode) d.insertBefore(warte, d.firstChild);
+      setTimeout(function () { im.src = url + (url.indexOf('?') < 0 ? '?' : '&') + 'v=' + versuche; }, 2500);
+    };
+    a.appendChild(im); d.appendChild(a);
+    if (p.titel) { var t = document.createElement('small'); t.textContent = p.titel; d.appendChild(t); }
+    text.appendChild(d); text.scrollTop = text.scrollHeight; hopsen();
+    maltSeit = 0;
+    jetztGesagt.push(NAME + ': [Bild: ' + (p.titel || 'Zeichnung') + ']');
+  }
+
   // Mund und Kopf folgen der Stimme; beim Zuhören neigt Otti den Kopf.
   var neigung = 0;
   function takt() {
@@ -291,6 +439,8 @@
     if (conv) {
       var v = 0, iv = 0;
       try { v = conv.getOutputVolume() || 0; } catch (e) {}
+      // iPhone liefert manchmal keine Lautstärke: dann spricht der Mund im Silbentakt, solange sie redet.
+      if (conv.__spricht && v < 0.01) { var t = performance.now(); v = Math.max(0, 0.25 + 0.35 * Math.sin(t / 95) * Math.sin(t / 37 + 1)); }
       try { iv = conv.getInputVolume() || 0; } catch (e) {}
       spitze = Math.max(spitze * 0.997, v, 0.08);
       if (conv.__spricht) ziel = Math.min(1, Math.max(-1, RUHE + (v / spitze) * 1.25 - 0.12 + (RUHE < 0 ? -0.6 : 0)));
@@ -307,16 +457,19 @@
 
   function knopfZeigen() {
     var an = !!conv || startet;
+    if (conv && conv.__text) an = false;
     knopf.classList.toggle('aktiv', an);
     knopf.textContent = an ? '■' : '🎙';
     knopf.setAttribute('aria-label', an ? 'Gespräch beenden' : 'Gespräch starten');
   }
 
-  async function starten() {
+  // Schreiben kostet fast nichts: ohne Mikrofon, ohne Stimme, gleiches Wissen und gleicher Server-Zugang.
+  async function starten(nurText) {
     if (startet || conv) return;
     startet = true; knopfZeigen(); pz('hoert');
+    var nr = ++sitzung;
     status.textContent = NAME + ' wacht auf …'; hinweis.textContent = '';
-    try {
+    if (!nurText) try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (e) {
       startet = false; knopfZeigen();
@@ -324,15 +477,22 @@
       hinweis.textContent = 'Einstellungen › Safari › Mikrofon erlauben, dann nochmal tippen.';
       return;
     }
+    if (F.welt) await serverHolen();
     try {
       var c = await ElevenLabsClient.Conversation.startSession({
         agentId: AGENT,
         connectionType: 'websocket',
+        textOnly: !!nurText,
+        clientTools: { zeige_bild: function (p) { bildZeigen(p); return 'gezeigt'; }, bewegen: bewegen, knoepfe: knoepfe },
         dynamicVariables: variablen(),
-        onConnect: function () { status.textContent = NAME + ' hört zu.'; if (puppe) { if (puppe.gruesse) puppe.gruesse('winken', { blase: false, ton: false }); else pz('winkt'); setTimeout(function () { if (conv && !conv.__spricht) pz('hoert'); }, 2200); } else hopsen(); },
-        onDisconnect: function () { ende('Bis bald! Tipp auf den Knopf, dann bin ich wieder da.'); },
+        onConnect: function () { status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); if (puppe) { if (puppe.gruesse) puppe.gruesse('winken', { blase: false, ton: false }); else pz('winkt'); setTimeout(function () { if (conv && !conv.__spricht) pz('hoert'); }, 2200); } else hopsen(); },
+        onDisconnect: function () { if (nr === sitzung && maltSeit) { maltSeit = 0; ende('Verbindung weg, das Bild kam nicht an. Nochmal 🎨'); return; } if (nr === sitzung) ende(nurText ? 'Schreib einfach weiter, ich bin gleich wieder da.' : 'Bis bald! Tipp auf den Knopf, dann bin ich wieder da.'); },
         onError: function (m) { hinweis.textContent = 'Fehler: ' + (m || 'unbekannt'); },
-        onMessage: function (m) { if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message); if (puppe && m && m.message && m.source !== 'user' && !puppe.audio) puppe.sprich(m.message); },
+        onMessage: function (m) {
+          if (m && m.source === 'user' && eigene.indexOf(m.message) >= 0) { eigene.splice(eigene.indexOf(m.message), 1); return; }
+          if (m && m.source === 'user') $('chips').innerHTML = '';
+          if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message);
+          if (puppe && m && m.message && m.source !== 'user' && !puppe.audio) puppe.sprich(m.message); },
         onModeChange: function (m) {
           var sp = m && m.mode === 'speaking';
           if (conv) conv.__spricht = sp;
@@ -341,8 +501,9 @@
           status.textContent = NAME + (sp ? ' spricht …' : ' hört zu.');
         }
       });
+      c.__text = !!nurText;
       conv = c; startet = false; knopfZeigen();
-      buehne.classList.add('hoert'); pz('hoert');
+      if (!nurText) buehne.classList.add('hoert'); pz('hoert');
     } catch (e) {
       startet = false; knopfZeigen();
       status.textContent = NAME + ' schläft gerade.';
@@ -359,7 +520,77 @@
     if (t) status.textContent = t;
   }
 
+  // Nova bewegt sich, wenn sie es will (Agent-Werkzeug «bewegen»), und bietet Antworten zum Antippen an («knoepfe»).
+  var BEWEGUNGEN = ['winken', 'huepfen', 'drehen', 'staunen', 'nicken', 'kopfschuetteln'];
+  function bewegen(p) {
+    var art = String((p && p.art) || '').toLowerCase();
+    if (art === 'funkeln') { funken(24); return 'ok'; }
+    if (BEWEGUNGEN.indexOf(art) < 0) { hopsen(); return 'ok'; }
+    BEWEGUNGEN.forEach(function (b) { buehne.classList.remove(b); });
+    void buehne.offsetWidth; buehne.classList.add(art);
+    if (art === 'huepfen' || art === 'staunen') funken(art === 'staunen' ? 8 : 14);
+    buehne.addEventListener('animationend', function weg(e) {
+      if (e.target !== buehne) return; buehne.classList.remove(art); buehne.removeEventListener('animationend', weg); });
+    return 'ok';
+  }
+  function knoepfe(p) {
+    var liste = (p && p.optionen) || [];
+    if (typeof liste === 'string') { try { liste = JSON.parse(liste); } catch (e) { liste = liste.split(/[|,\n]/); } }
+    var box = $('chips'); box.innerHTML = '';
+    liste.map(function (t) { return String(t).trim(); }).filter(Boolean).slice(0, 3).forEach(function (t) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = t;
+      b.addEventListener('click', function () {
+        box.innerHTML = '';
+        if (conv && !conv.__text) { zeile('du', t); eigene.push(t); try { conv.sendUserMessage(t); } catch (err) {} }
+        else senden(t);
+      });
+      box.appendChild(b);
+    });
+    return 'gezeigt';
+  }
+
+  async function senden(t) {
+    $('chips').innerHTML = '';
+    zeile('du', t); eigene.push(t);
+    if (!conv) await starten(true);
+    if (!conv) { hinweis.textContent = 'Nicht gesendet. Internet prüfen und nochmal.'; return; }
+    try { conv.sendUserMessage(t); } catch (err) { hinweis.textContent = 'Nicht gesendet. Nochmal versuchen.'; }
+  }
+  $('schreiben').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var feld = $('eingabe'), t = feld.value.trim();
+    if (!t) return;
+    feld.value = ''; senden(t);
+  });
+  // 🎨: Nova zeichnet, was im Feld steht, sonst das, worüber ihr gerade redet.
+  // Mehrfach tippen schickt sonst mehrere Aufträge: bis das Bild da ist (max. 40 s) zählt nur der erste.
+  var maltSeit = 0;
+  $('malen').addEventListener('click', function () {
+    if (Date.now() - maltSeit < 40000) { status.textContent = '🎨 ' + NAME + ' malt schon …'; return; }
+    maltSeit = Date.now(); status.textContent = '🎨 ' + NAME + ' malt … App offen lassen.';
+    var feld = $('eingabe'), t = feld.value.trim(); feld.value = '';
+    var bitte = t ? 'Zeichne mir bitte: ' + t : 'Zeichne mir bitte, worüber wir gerade reden.';
+    if (conv && !conv.__text) { zeile('du', bitte); eigene.push(bitte); try { conv.sendUserMessage(bitte); } catch (err) {} }
+    else senden(bitte);
+  });
+
+  // Wie eine Store-App: beim Öffnen holt sich die App still die neueste Fassung, nie mitten im Gespräch.
+  var stand = (document.querySelector('meta[name=stand]') || {}).content;
+  function frisch() {
+    if (document.hidden || conv || startet || !stand) return;
+    fetch(location.pathname + '?s=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (h) {
+      var m = h.match(/<meta name="stand" content="([^"]+)"/);
+      if (!m || m[1] === stand || conv || startet) return;
+      try { if (sessionStorage.getItem('stand.neu') === m[1]) return; sessionStorage.setItem('stand.neu', m[1]); } catch (e) {}
+      var u = new URL(location.href); u.searchParams.set('v', m[1]); location.replace(u.toString());
+    }).catch(function () {});
+  }
+  document.addEventListener('visibilitychange', frisch);
+  window.addEventListener('pageshow', frisch);
+
   knopf.addEventListener('click', function () {
+    // Vom Schreiben zur Stimme: Text-Gespräch schliessen, dann mit Mikrofon neu starten.
+    if (conv && conv.__text) { var t = conv; ende(); t.endSession().catch(function () {}); starten(false); return; }
     if (conv) { var c = conv; ende('Bis bald!'); c.endSession().catch(function () {}); }
     else if (OTTI && !elternJa()) { $('ottiOk').hidden = false; status.textContent = 'Zuerst einmal kurz die Eltern fragen.'; }
     else starten();
@@ -375,6 +606,7 @@
   })();
   // Auf die Figur tippen: Otti winkt zurück (Puppe), die anderen hüpfen vor Freude.
   buehne.addEventListener('click', function () {
+    if (buehne.classList.contains('zeigt')) { buehne.classList.remove('zeigt'); return; }
     if (!puppe) { hopsen(); return; }
     if (conv) return; // im Gespräch hört Otti zu
     var gs = ['Hallo! Ich winke dir zurück!', 'Huhu! Schön, dass du da bist.', 'Winke, winke!'][Math.floor(Math.random() * 3)];

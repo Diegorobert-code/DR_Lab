@@ -22,6 +22,10 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.45 var(--font);overflow-x:hidden}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top);background:var(--bg);z-index:50;pointer-events:none}
+.dlg{position:fixed;inset:0;background:rgba(20,30,40,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:60}
+.dlg>div{background:var(--card);border-radius:18px;padding:20px;max-width:360px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.dlg p{margin:0 0 6px}
 body{padding:calc(env(safe-area-inset-top) + 12px) calc(env(safe-area-inset-right) + 16px) calc(env(safe-area-inset-bottom) + 16px) calc(env(safe-area-inset-left) + 16px)}
 .wrap{max-width:560px;margin:0 auto}
 header{display:flex;align-items:center;gap:12px;margin:4px 0 12px}
@@ -107,7 +111,7 @@ svg.chart{width:100%;height:auto;display:block}
 .seg button[aria-pressed="true"]{background:var(--card);color:var(--navy);box-shadow:0 1px 4px rgba(20,40,60,.12)}
 input[type=range]{width:100%;height:36px;accent-color:var(--navy)}
 .rangelbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
-#sig{width:100%;height:auto;aspect-ratio:600/220;display:block;background:#fff;border:1px dashed #b9b0a3;border-radius:12px;touch-action:none;cursor:crosshair}
+#sig{width:100%;height:auto;aspect-ratio:600/220;display:block;background:#fff;border:1px dashed #b9b0a3;border-radius:12px;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:crosshair}
 .phase{font-size:14px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--coral2)}
 .clock{font-size:44px;font-weight:700;color:var(--navy);line-height:1.1;font-variant-numeric:tabular-nums}
 .sub{font-size:15px;color:var(--navy);margin:14px 0 4px}
@@ -143,25 +147,16 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 6px}
 .figur-hero b{display:block;color:#e8be5c;font-size:18px;line-height:1.25}
 .figur-hero span{display:block;font-size:14px;line-height:1.4;color:#e9e3d6;margin-top:2px}
 .figur-logo{width:40px;height:40px;border-radius:50%;border:2px solid #e8be5c;object-fit:cover}
-#figurStart{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:max(28px,env(safe-area-inset-top,0px)) 24px max(28px,env(safe-area-inset-bottom,0px));text-align:center;color:#f6efe0;background:radial-gradient(1.5px 1.5px at 12% 18%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 82% 12%,#ffe9a8,transparent),radial-gradient(1px 1px at 70% 30%,#ffe9a8,transparent),radial-gradient(1px 1px at 22% 72%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 88% 80%,#ffe9a8,transparent),radial-gradient(120% 80% at 50% 0%,#1B2C6B 0%,#0E1838 60%,#060A1C 100%);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
-#figurStart[hidden]{display:none!important}
-#figurStart img{width:min(64vw,260px);height:min(64vw,260px);border-radius:32px;border:3px solid #F2C14E;object-fit:cover;box-shadow:0 0 0 6px rgba(242,193,78,.08),0 18px 60px rgba(242,193,78,.25);animation:figurAtmen 5s ease-in-out infinite}
 @keyframes figurAtmen{50%{transform:scale(1.02);box-shadow:0 0 0 6px rgba(242,193,78,.14),0 18px 70px rgba(242,193,78,.38)}}
 @media (prefers-reduced-motion:reduce){#figurStart img{animation:none}}
-#figurStart h1{margin:4px 0 0;font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:2.6rem;line-height:1;color:#F2C14E}
-#figurStart p{margin:0;max-width:300px;font-size:1.05rem;line-height:1.45;color:#e9e3d6}
-#figurStart button{margin-top:6px;min-height:52px;padding:0 34px;border:0;border-radius:999px;background:#F2C14E;color:#0E1838;font:700 1.05rem system-ui,-apple-system,sans-serif;box-shadow:0 8px 24px rgba(242,193,78,.3);cursor:pointer}
 /* Figuren-Look */
 :root{--bg:#0E1838;--card:#16234f;--ink:#f3ecdf;--muted:#aab3cf;--line:#2a3a70;--navy:#E07B2E;--navy2:#B85F1E;--coral:#F2C14E;--coral2:#F29A4A;--soft:#1b2a5c;color-scheme:dark}
 html,body{background:radial-gradient(1.5px 1.5px at 12% 8%,rgba(255,233,168,.7),transparent),radial-gradient(1px 1px at 84% 14%,rgba(255,233,168,.6),transparent),radial-gradient(1.5px 1.5px at 66% 40%,rgba(255,233,168,.35),transparent),radial-gradient(1px 1px at 30% 62%,rgba(255,233,168,.4),transparent),radial-gradient(120% 60% at 50% 0%,#1B2C6B 0%,#0E1838 55%,#0a1230 100%) fixed #0E1838}
 h1{color:#F2C14E}
-#figurStart{background:radial-gradient(60% 40% at 50% 38%,rgba(242,154,74,.28),transparent 70%),radial-gradient(1.5px 1.5px at 12% 8%,rgba(255,233,168,.7),transparent),radial-gradient(1px 1px at 84% 14%,rgba(255,233,168,.6),transparent),radial-gradient(1.5px 1.5px at 66% 40%,rgba(255,233,168,.35),transparent),radial-gradient(1px 1px at 30% 62%,rgba(255,233,168,.4),transparent),radial-gradient(120% 80% at 50% 0%,#1B2C6B 0%,#0E1838 60%,#060A1C 100%)}
-#figurStart img{border-color:#F29A4A}
 </style>
 </head>
 <body>
-<div id="figurStart" role="dialog" aria-label="Sparky"><img src="figur-gross.jpg" alt="Sparky"><h1>Sparky</h1><p>Kleine Körperübungen, ruhig und Schritt für Schritt.</p><button type="button" id="figurStartGo">Los geht's</button></div>
-<script>(function(){var s=document.getElementById('figurStart');try{if(sessionStorage.getItem('figurStart'))s.hidden=true;}catch(e){}document.getElementById('figurStartGo').onclick=function(){s.hidden=true;try{sessionStorage.setItem('figurStart','1');}catch(e){}};})();</script>
+<script src="../nova/intro.js" data-art="funken" data-bild="../nova/figuren/sparky.jpg" data-text="Sparky ist da"></script>
 
 <div class="wrap">
   <header>
@@ -169,7 +164,7 @@ h1{color:#F2C14E}
     <div><h1>HumanSpark</h1><p>Körper und Kosmos · DR Lab</p></div>
   </header>
 
-  <div class="figur-hero"><img src="figur.jpg" alt=""><div><b>Hallo, ich bin Sparky.</b><span>Ich begleite dich durch kleine Körperübungen. Ruhig, Schritt für Schritt.</span></div></div>
+  <div id="nbHier"></div>
   <div class="intro">
     <span class="vision web-only">Entwicklungsvision von DR Lab</span>
     <p class="web-only">HumanSpark liest deinen Körper und übersetzt ihn in eine kurze Sprache für die KI.</p>
@@ -189,15 +184,53 @@ h1{color:#F2C14E}
   <section class="panel on" id="p-messen">
     <div class="box" id="startBox">
       <h2 id="startTitle">Puls und Ruhe messen</h2>
+      <div class="seg" id="modSeg">
+        <button data-mod="hrv" aria-pressed="true">Ruhe (HRV)</button>
+        <button data-mod="pulsbild" aria-pressed="false">Pulsbild</button>
+        <button data-mod="sensor" aria-pressed="false">Sensor</button>
+      </div>
+      <div id="snBox" class="hidden">
+        <p class="muted">Drei-Finger-Sensor: beschreibt nur Pulswelle und Kraft, keine Diagnose. Zuerst nur für dich.</p>
+        <label class="lbl" for="snModus">Modus</label>
+        <select id="snModus" class="inp">
+          <option value="puls">Puls (3 Finger)</option><option value="druck">Druck (Kraft pro Finger)</option>
+          <option value="muskeltest">Muskeltest (kg)</option><option value="behandlung">Behandlungsdruck (neben HRV)</option>
+        </select>
+        <label class="lbl" for="snOrt">Wo liegen die Kissen?</label>
+        <select id="snOrt" class="inp">
+          <option>Finger (Zeige-, Mittel-, Ringfinger)</option><option>Fusssohle Ferse</option><option>Fusssohle Ballen</option>
+          <option>Kiefer links</option><option>Kiefer rechts</option><option>Atmung (Bauch)</option>
+        </select>
+        <ol class="muted" style="padding-left:20px;margin:10px 0">
+          <li>iPhone mit dem WLAN «HumanSpark-Puls» verbinden.</li>
+          <li>«Sensor öffnen», dort messen und «An Human Sparks übergeben» tippen.</li>
+          <li>Zurück hier: «Datei vom Sensor laden».</li>
+        </ol>
+        <a class="btn ghost" id="snOeffnen" href="http://192.168.4.1" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;text-decoration:none">Sensor öffnen</a>
+        <label class="btn primary" for="snDatei" style="display:flex;align-items:center;justify-content:center">Datei vom Sensor laden</label>
+        <input type="file" id="snDatei" accept=".json,application/json" style="display:none">
+        <div class="notice hidden" id="snMsg"></div>
+        <div id="snOut"></div>
+      </div>
+      <p class="muted hidden" id="pbHelp">Pulsbild: Tempo, Rhythmus, Welle und Stärke deines Pulses, angelehnt an die Pulsbeobachtung. Beschreibung, keine Diagnose.</p>
       <div class="seg web-only" id="srcSeg">
         <button data-src="kamera" aria-pressed="true">Finger (Kamera)</button>
         <button data-src="polar" aria-pressed="false">Polar H10</button>
       </div>
       <div id="camHelp">
-        <p>Lege die Fingerkuppe sanft auf die Rückkamera und halte still. Die Messung dauert etwa 60 Sekunden.</p>
-        <p class="muted">Das Licht der Kamera lässt sich auf dem iPhone hier nicht einschalten. Miss deshalb bei hellem Licht (z.&nbsp;B. am Fenster oder unter einer Lampe), damit der Finger rot durchleuchtet wird.</p>
+        <p>Finger sanft auf die Rückkamera, 60 Sekunden still halten. Am besten bei hellem Licht. Reden geht dabei.</p>
       </div>
       <div class="notice hidden" id="polarNote"></div>
+      <div id="gfBox">
+        <label class="lbl">Zuerst: Wie fühlst du dich gerade? <span class="muted">(vor der Messung, damit sie dich nicht beeinflusst)</span></label>
+        <div class="chips" id="gfStufe">
+          <button class="chip" data-s="1" aria-pressed="false">1<small>sehr ruhig</small></button><button class="chip" data-s="2" aria-pressed="false">2<small>ruhig</small></button><button class="chip" data-s="3" aria-pressed="false">3<small>wach</small></button><button class="chip" data-s="4" aria-pressed="false">4<small>angespannt</small></button><button class="chip" data-s="5" aria-pressed="false">5<small>stark geladen</small></button>
+        </div>
+        <label class="lbl">Was ist da? <span class="muted">(mehrere möglich)</span></label>
+        <div class="chips" id="gfWorte"></div>
+        <label class="lbl">Was könnte die Messung verändern?</label>
+        <div class="chips" id="gfKontext"></div>
+      </div>
       <button class="btn primary" id="btnStart">Messung starten</button>
       <button class="btn ghost" id="btnDemo">Demo ohne Kamera</button>
       <div class="notice hidden" id="camErr"></div>
@@ -213,7 +246,22 @@ h1{color:#F2C14E}
       <canvas id="wave" width="600" height="140"></canvas>
       <div class="prog"><i id="progBar"></i></div>
       <div class="progline"><b id="progPct">0 %</b><span id="progInfo">noch ca. 62 s</span></div>
+      <button class="btn mic" id="mDict">🎙 Reinreden – Messung läuft weiter</button>
+      <div class="muted" id="mText"></div>
+      <div class="notice hidden" id="mDictNote"></div>
       <button class="btn ghost" id="btnStop">Abbrechen</button>
+    </div>
+
+    <div class="box hidden" id="pbBox">
+      <h2>Dein Pulsbild</h2>
+      <p class="muted">Das Pulsbild beschreibt nur, was die Kamera sieht. Es stellt keine Diagnose.</p>
+      <div id="pbOut"></div>
+      <label class="lbl">Mein Tastbefund <span class="muted">(was du selbst am Handgelenk spürst)</span></label>
+      <div class="chips" id="pbTast"></div>
+      <input id="pbTastText" class="inp" placeholder="Eigene Worte …" autocomplete="off">
+      <button class="btn primary" id="pbSave">Pulsbild speichern</button>
+      <div class="notice hidden" id="pbSaved"></div>
+      <button class="btn ghost" id="pbNew">Neue Messung</button>
     </div>
 
     <div class="box hidden" id="resultBox">
@@ -226,6 +274,7 @@ h1{color:#F2C14E}
         <div><b id="resBpm">–</b><span>Puls (Schläge/Min)</span></div>
         <div><b id="resRmssd">–</b><span>RMSSD (ms, Schätzung)</span></div>
       </div>
+      <div class="notice hidden" id="gfVergleich"></div>
       <p class="muted" id="resNote"></p>
       <div id="cmpWrap" class="hidden">
         <h2 style="margin-top:12px">Vorher / Nachher</h2>
@@ -256,7 +305,7 @@ h1{color:#F2C14E}
   <section class="panel" id="p-sitzung">
     <div class="box" id="sStartBox">
       <h2>Sitzung begleiten</h2>
-      <p>Für Therapeutinnen und Therapeuten: Ruhemessung am Anfang und am Ende, laufende Messung während der Behandlung, Diktat und Marker mit Zeitstempel.</p>
+      <p>Ruhe am Anfang und am Ende, Messung während der Behandlung, Diktat und Marker.</p>
       <label class="lbl" for="sKuerzel">Klienten-Kürzel (nur Initialen, keine Namen)</label>
       <input id="sKuerzel" class="inp" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="z. B. AB">
       <div class="muted" id="sConsentInfo" style="margin-top:4px"></div>
@@ -285,7 +334,7 @@ h1{color:#F2C14E}
       <canvas id="sig" width="600" height="220" aria-label="Unterschriftsfeld"></canvas>
       <div class="row">
         <button class="btn ghost" id="sigClear">Löschen</button>
-        <button class="btn primary" id="sigOk">OK, einverstanden</button>
+        <button class="btn primary" id="sigOk" disabled>OK, einverstanden</button>
       </div>
       <button class="btn ghost" id="sigCancel">Zurück</button>
       <div class="notice warn hidden" id="sigErr"></div>
@@ -303,7 +352,7 @@ h1{color:#F2C14E}
           <div><b id="sRm">–</b><span>RMSSD (letzte stille Minute)</span></div>
         </div>
       </div>
-      <button class="btn mic" id="sDict">🎙 Diktat</button>
+      <button class="btn mic" id="sDict">🎙 Einfach reinreden – nimmt alles auf</button>
       <div class="muted" id="sInterim"></div>
       <div class="notice hidden" id="sDictNote"></div>
       <div class="noteline"><input id="sNote" class="inp" placeholder="Oder Notiz tippen …" autocomplete="off"><button class="btn ghost" id="sNoteAdd" aria-label="Notiz hinzufügen">+</button></div>
@@ -345,7 +394,7 @@ h1{color:#F2C14E}
   <section class="panel" id="p-reden">
     <div class="box">
       <h2>Wie geht es dir?</h2>
-      <p>Sprich ein paar Sätze, so wie es gerade ist. HumanSpark macht daraus einen Eintrag und eine kurze Kodierung.</p>
+      <p>Sprich ein paar Sätze. HumanSpark macht daraus einen Eintrag.</p>
       <button class="btn mic" id="btnMic">🎙 Reinreden</button>
       <div class="notice hidden" id="micNote"></div>
       <textarea id="talkText" placeholder="Oder hier schreiben – auch das Diktat der iPhone-Tastatur funktioniert."></textarea>
@@ -383,6 +432,10 @@ h1{color:#F2C14E}
     <div class="box">
       <h2>Daten</h2>
       <p class="muted"><span class="web-only">Alles liegt nur in diesem Browser auf deinem Handy: Messungen, Sitzungen, Einwilligungen und Ideen.</span><span class="app-only">Alles liegt nur in dieser App auf deinem iPhone: Messungen, Sitzungen und Einwilligungen.</span> Exportieren kannst du es selbst, z. B. für dich oder deine Therapeutin.</p>
+      <div id="autoBox" class="hidden">
+        <label class="chk"><input type="checkbox" id="autoNova"> Alle meine Messungen, Sätze und Gefühle laufend an Nova auf unserem Server (nur Kürzel, nie an Dritte)</label>
+        <div class="muted" id="autoInfo"></div>
+      </div>
       <button class="btn primary" id="btnExport">Export (JSON teilen)</button>
       <button class="btn danger" id="btnClear">Alles löschen</button>
     </div>
@@ -427,7 +480,7 @@ var MIC_SETTINGS = IS_APP ? 'in den iPhone-Einstellungen unter HumanSpark' : 'in
 /* ---------- Speicher ---------- */
 function load(){ try { return JSON.parse(localStorage.getItem(KEY) || '[]') || []; } catch(e){ return []; } }
 function save(list){ try { localStorage.setItem(KEY, JSON.stringify(list)); return true; } catch(e){ return false; } }
-function addEntry(e){ var l = load(); l.push(e); save(l); return e; }
+function addEntry(e){ var l = load(); l.push(e); save(l); if (window.novaAuto) novaAuto(e); return e; }
 function loadObj(k, d){ try { return JSON.parse(localStorage.getItem(k) || 'null') || d; } catch(e){ return d; } }
 function saveObj(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e){ return false; } }
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
@@ -467,11 +520,43 @@ var STAGES = [
    desc:'Viel Ladung im Körper. Das ist kein Fehler, sondern eine Information. Gönn dir einen langen Ausatem.', ex:['atem46','kreuzLangsam','fuesse']}
 ];
 
-function stageFrom(bpm, rmssd){
+function stageFrom(bpm, rmssd, kamera){
   var h = bpm < 60 ? 0 : bpm < 70 ? 1 : bpm < 80 ? 2 : bpm < 92 ? 3 : 4;
   if (rmssd == null) return h + 1;
   var r = rmssd > 60 ? 0 : rmssd > 40 ? 1 : rmssd > 25 ? 2 : rmssd > 15 ? 3 : 4;
-  return Math.min(5, Math.max(1, Math.round((h + r) / 2) + 1));
+  var st = Math.min(5, Math.max(1, Math.round((h + r) / 2) + 1));
+  // Kamera-Rauschen lässt die Variabilität zu hoch aussehen: höchstens eine Stufe ruhiger als der Puls allein
+  return kamera ? Math.max(st, h) : st;
+}
+
+/* ---------- Gefühl neben der Messung ---------- */
+var GF_WORTE = ['angespannt','unruhig','müde','traurig','ärgerlich','ängstlich','leer','überfordert','ruhig','froh','klar','verbunden'];
+var GF_KONTEXT = ['Kaffee','Bewegung','wenig Schlaf','Alkohol','gerade gegessen','Medikament','Streit / Stress'];
+var gf = {stufe:null, worte:[], kontext:[]};
+function gfChips(id, list, key){
+  $(id).innerHTML = list.map(function(w){ return '<button class="chip" aria-pressed="false">' + esc(w) + '</button>'; }).join('');
+  $(id).querySelectorAll('.chip').forEach(function(b, i){
+    b.addEventListener('click', function(){
+      var w = list[i], a = gf[key], on = a.indexOf(w) < 0;
+      if (on) a.push(w); else a.splice(a.indexOf(w), 1);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  });
+}
+function gfReset(){
+  gf = {stufe:null, worte:[], kontext:[]};
+  document.querySelectorAll('#gfBox .chip').forEach(function(b){ b.setAttribute('aria-pressed', 'false'); });
+}
+function gfVergleich(e){
+  if (!e.gefuehl) return '';
+  var d = e.gefuehl - e.stage, st = STAGES[e.stage - 1];
+  var t = 'Dein Gefühl: <b>' + e.gefuehl + '</b> · Messung: <b>' + e.stage + ' ' + st.name + '</b>';
+  if (e.worte && e.worte.length) t += '<br>Da ist: ' + esc(e.worte.join(', '));
+  if (d >= 2) t += '<br><b>Du fühlst dich unruhiger, als der Körper misst.</b> Die Kamera sieht nur Puls und Rhythmus, keine Gedanken und Gefühle. Dein Gefühl zählt. Diese Abweichung wird gespeichert, damit du über die Zeit ein Muster siehst.';
+  else if (d <= -2) t += '<br><b>Der Körper wirkt angeregter, als du dich fühlst.</b> Vielleicht spürst du die Ladung noch nicht' + (e.kontext && e.kontext.length ? ', oder ' + esc(e.kontext.join(', ')) + ' wirkt mit' : '') + '.';
+  else t += '<br>Gefühl und Messung passen zusammen.';
+  if (e.kontext && e.kontext.length && d > -2) t += '<br><span class="muted">Kann mitwirken: ' + esc(e.kontext.join(', ')) + '</span>';
+  return t;
 }
 
 /* ---------- Tabs ---------- */
@@ -532,6 +617,18 @@ var video = $('video'), cv = document.createElement('canvas'); cv.width = 40; cv
 var cx = cv.getContext('2d', {willReadFrequently:true});
 var wave = $('wave'), wx = wave.getContext('2d');
 
+function uiDialog(msg, okLabel, cancelLabel, onOk){
+  var d = document.createElement('div'); d.className = 'dlg'; d.setAttribute('role', 'dialog');
+  d.innerHTML = '<div><p></p><div class="row"' + (cancelLabel ? '' : ' style="grid-template-columns:1fr"') + '>' + (cancelLabel ? '<button class="btn ghost" data-a="0"></button>' : '') + '<button class="btn primary" data-a="1"></button></div></div>';
+  d.querySelector('p').textContent = msg;
+  if (cancelLabel) d.querySelector('[data-a="0"]').textContent = cancelLabel;
+  d.querySelector('[data-a="1"]').textContent = okLabel;
+  d.addEventListener('click', function(ev){ var a = ev.target.dataset && ev.target.dataset.a; if (a == null) return; d.remove(); if (a === '1' && onOk) onOk(); });
+  document.body.appendChild(d);
+}
+function uiConfirm(msg, okLabel, onOk){ uiDialog(msg, okLabel, 'Abbrechen', onOk); }
+function uiAlert(msg){ uiDialog(msg, 'OK'); }
+
 function setStatus(t){ $('status').textContent = t; }
 function setProgress(sec){
   var p = Math.max(0, Math.min(100, Math.round(sec / TOTAL * 100)));
@@ -540,7 +637,9 @@ function setProgress(sec){
   $('progInfo').textContent = p >= 100 ? 'wird ausgewertet …' : 'noch ca. ' + Math.max(0, Math.ceil(TOTAL - sec)) + ' s';
 }
 function showBox(which){
-  ['startBox','measureBox','resultBox'].forEach(function(id){ $(id).classList.toggle('hidden', id !== which); });
+  ['startBox','measureBox','resultBox','pbBox'].forEach(function(id){ $(id).classList.toggle('hidden', id !== which); });
+  // Messung und Ergebnis sofort im Blick, ohne selbst zu scrollen
+  if (which !== 'startBox'){ var r = $(which).getBoundingClientRect(); if (r.top < 0 || r.top > innerHeight * 0.6) scrollTo({top:r.top + scrollY - 90, behavior:'smooth'}); }
 }
 
 function polarUi(){
@@ -563,7 +662,7 @@ document.querySelectorAll('#srcSeg button').forEach(function(b){ b.addEventListe
 function startMeasure(demo){
   $('camErr').classList.add('hidden');
   if (sess){ camFail('Während einer laufenden Sitzung ist die Einzelmessung gesperrt.'); return; }
-  if (!demo && src === 'polar'){
+  if (!demo && src === 'polar' && modus !== 'pulsbild'){
     if (!HAS_BT){ camFail(POLAR_NO_BT); return; }
     polarConnect().then(startPolarMeasure).catch(function(err){
       camFail('Polar H10 konnte nicht verbunden werden' + (err && err.name === 'NotFoundError' ? ' (keine Auswahl getroffen)' : '') + '. Gurt anfeuchten, anlegen und nochmals versuchen.');
@@ -571,6 +670,7 @@ function startMeasure(demo){
     return;
   }
   state = {demo:demo, t0:null, samples:[], lostSince:null, timer:null, stream:null, demoT:0, demoGen:null, covered:0};
+  mRede = []; $('mText').textContent = ''; $('mDictNote').classList.add('hidden');
   showBox('measureBox');
   $('measureTitle').textContent = (pendingPairOf ? 'Nachmessung' : 'Messung') + (demo ? ' (Demo)' : '') + ' läuft';
   setProgress(0); drawWave([]);
@@ -642,6 +742,7 @@ function camFail(msg){
 
 function stopMeasure(){
   if (!state) return;
+  mDict.stop();
   clearInterval(state.timer);
   if (state.stream) state.stream.getTracks().forEach(function(t){ t.stop(); });
   if (state.polar) polar.onData = null;
@@ -650,15 +751,34 @@ function stopMeasure(){
 }
 
 function readRed(v){
-  cx.drawImage(v, 0, 0, cv.width, cv.height);
+  var vw = v.videoWidth || cv.width, vh = v.videoHeight || cv.height; // nur die Bildmitte, Ränder sind oft dunkel
+  cx.drawImage(v, vw * 0.25, vh * 0.25, vw * 0.5, vh * 0.5, 0, 0, cv.width, cv.height);
   var d = cx.getImageData(0, 0, cv.width, cv.height).data, r = 0, g = 0, b = 0, n = d.length / 4;
   for (var i = 0; i < d.length; i += 4){ r += d[i]; g += d[i+1]; b += d[i+2]; }
   r /= n; g /= n; b /= n;
-  return {r:r, covered: r > 40 && r > g * 1.5 && r > b * 1.5};
+  // Ohne Licht (iPhone) ist der Finger nur dunkelrot: Rot muss klar überwiegen, darf aber dunkel sein
+  return {r:r, covered: r >= 8 && r - Math.max(g, b) >= 5 && r > g * 1.4 && r > b * 1.4};
 }
 
+// Wenn das iPhone beim Einschalten des Mikrofons das Kamerabild kurz anhält: neu anstossen statt abbrechen
+function camWache(v, h, neu){
+  var ct = v.currentTime, now = performance.now();
+  if (ct !== h.vt || h.vtAt == null){ h.vt = ct; h.vtAt = now; return false; }
+  if (now - h.vtAt < 1200) return false;
+  if (now - (h.kick || 0) > 1500){
+    h.kick = now;
+    var tr = h.stream && h.stream.getVideoTracks()[0];
+    if (tr && tr.readyState === 'ended' && !h.neu){
+      h.neu = true;
+      openCam().then(function(st){ h.neu = false; if (!neu(st)) st.getTracks().forEach(function(t){ t.stop(); }); }).catch(function(){ h.neu = false; });
+    } else { var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+  }
+  return true;
+}
 function tickCam(){
   if (!state || video.readyState < 2) return;
+  var h = state;
+  if (camWache(video, h, function(st){ if (state !== h) return false; h.stream.getTracks().forEach(function(t){ t.stop(); }); h.stream = st; video.srcObject = st; video.play().catch(function(){}); return true; })){ setStatus('Kamera kurz angehalten – Finger liegen lassen'); return; }
   var x = readRed(video);
   pushSample(performance.now() / 1000, x.r, x.covered);
 }
@@ -776,7 +896,8 @@ function analyse(samples, skip){
     rmssd = Math.sqrt(diffs.reduce(function(s,v){return s+v*v;},0) / diffs.length);
     if (rmssd > 200) rmssd = null; // unplausibel
   }
-  return {ok:true, bpm:Math.round(bpm), rmssd: rmssd == null ? null : Math.round(rmssd), quality:Math.round(nGood / ibis.length * 100)};
+  return {ok:true, bpm:Math.round(bpm), rmssd: rmssd == null ? null : Math.round(rmssd), quality:Math.round(nGood / ibis.length * 100),
+    roh:{x:x, fs:FS, pt:pt, ibis:ibis, good:good, med:med}};
 }
 
 // Auswertung aus RR-Abständen (Polar H10 oder Demo), Sekunden
@@ -813,14 +934,186 @@ function finishMeasure(){
     $('btnStart').textContent = 'Nochmals messen';
     return;
   }
-  var stage = stageFrom(res.bpm, res.rmssd);
+  if (modus === 'pulsbild' && res.roh){ pbZeigen(res, demo); return; }
+  var stage = stageFrom(res.bpm, res.rmssd, !isPolar && !demo);
   var e = {id:uid(), t:Date.now(), type:'messung', bpm:res.bpm, rmssd:res.rmssd, stage:stage, quality:res.quality, demo:demo, source: isPolar ? 'polar' : demo ? 'demo' : 'kamera', pairOf:pendingPairOf};
+  if (gf.stufe){ e.gefuehl = gf.stufe; e.abweichung = gf.stufe - stage; }
+  if (gf.worte.length) e.worte = gf.worte.slice();
+  if (gf.kontext.length) e.kontext = gf.kontext.slice();
+  gfReset();
   addEntry(e);
   var before = pendingPairOf ? load().filter(function(x){ return x.id === pendingPairOf; })[0] : null;
   pendingPairOf = null;
   lastResult = e;
   showResult(e, before);
+  // Was während der Messung gesagt wurde, kommt als Eintrag mit dieser Messung dazu (kurz warten auf die letzten Wörter)
+  setTimeout(function(){
+    var text = mRede.join(' ').trim(); mRede = [];
+    if (!text) return;
+    var kw = keywords(text);
+    addEntry({id:uid(), t:Date.now(), type:'eintrag', text:text, keywords:kw, code:makeCode(e.stage, kw), stage:e.stage, bpm:e.bpm, rmssd:e.rmssd, measurementId:e.id, demo:e.demo});
+    $('resNote').textContent += ' Gesagt während der Messung: «' + text + '» – als Eintrag gespeichert.';
+  }, 800);
 }
+var mRede = [];
+var mDict = Dictation({
+  final:function(t){ mRede.push(t); $('mText').textContent = '«' + mRede.join(' ') + '»'; },
+  interim:function(t){ if (t) $('mText').textContent = '«' + mRede.concat([t]).join(' ') + ' …»'; },
+  state:function(on){ $('mDict').classList.toggle('on', on); $('mDict').textContent = on ? '■ Reinreden stoppen' : '🎙 Reinreden – Messung läuft weiter'; },
+  err:function(t){ var n = $('mDictNote'); n.textContent = t; n.classList.toggle('hidden', !t); }
+});
+$('mDict').addEventListener('click', function(){ mDict.toggle(); });
+
+/* ---------- Pulsbild (angelehnt an die Pulsbeobachtung, keine Diagnose) ---------- */
+var modus = 'hrv', pbLetztes = null;
+var PB_TAST = ['oberflächlich','tief','saitenförmig','schlüpfrig','dünn','kräftig','schwach','rau'];
+var pbTast = [];
+document.querySelectorAll('#modSeg button').forEach(function(b){
+  b.addEventListener('click', function(){
+    modus = b.dataset.mod;
+    document.querySelectorAll('#modSeg button').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    $('pbHelp').classList.toggle('hidden', modus !== 'pulsbild');
+    $('gfBox').classList.toggle('hidden', modus === 'pulsbild');
+    $('srcSeg').classList.toggle('hidden', modus !== 'hrv');
+    var sn = modus === 'sensor';
+    $('snBox').classList.toggle('hidden', !sn);
+    ['camHelp','btnStart','btnDemo'].forEach(function(id){ $(id).classList.toggle('hidden', sn); });
+    if (sn) $('gfBox').classList.add('hidden');
+  });
+});
+$('pbTast').innerHTML = PB_TAST.map(function(w){ return '<button class="chip" aria-pressed="false">' + w + '</button>'; }).join('');
+$('pbTast').querySelectorAll('.chip').forEach(function(b, i){
+  b.addEventListener('click', function(){
+    var w = PB_TAST[i], on = pbTast.indexOf(w) < 0;
+    if (on) pbTast.push(w); else pbTast.splice(pbTast.indexOf(w), 1);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+});
+function pbAuswerten(res){
+  var r = res.roh, x = r.x, fs = r.fs, pt = r.pt, ibis = r.ibis, good = r.good, med = r.med;
+  // Atmung aus der Schwankung der Schlagabstände (Nulldurchgänge der geglätteten Kurve)
+  var gv = ibis.filter(function(v, i){ return good[i]; }), atem = null;
+  if (gv.length >= 20){
+    var m = gv.reduce(function(a, v){ return a + v; }, 0) / gv.length, d = movAvg(gv.map(function(v){ return v - m; }), 3), z = 0;
+    for (var i = 1; i < d.length; i++) if ((d[i-1] < 0) !== (d[i] < 0)) z++;
+    var dauer = gv.reduce(function(a, v){ return a + v; }, 0) / 60;
+    atem = z / 2 / dauer;
+    if (atem < 4 || atem > 30) atem = null;
+  }
+  var proAtem = atem ? res.bpm / atem : null;
+  // Rhythmus: Aussetzer = Abstände ausserhalb ±25 % vom Median
+  var aus = good.filter(function(g){ return !g; }).length;
+  // Welle: vom Fusspunkt bis zum nächsten Fusspunkt, auf 40 Punkte, gemittelt
+  var N = 40, sum = new Array(N).fill(0), n = 0, amps = [], anst = [], breit = [];
+  for (i = 1; i < pt.length - 1; i++){
+    if (!good[i - 1] || !good[i]) continue;
+    var pk = Math.round(pt[i] * fs), lo = Math.max(0, pk - Math.round(0.4 * med * fs)), fuss = lo;
+    for (var k = lo; k < pk; k++) if (x[k] < x[fuss]) fuss = k;
+    var len = Math.round(med * fs); if (fuss + len >= x.length) continue;
+    var seg = [], mn = Infinity, mx = -Infinity;
+    for (k = 0; k < N; k++){ var v = x[fuss + Math.round(k / (N - 1) * len)]; seg.push(v); if (v < mn) mn = v; if (v > mx) mx = v; }
+    if (mx - mn <= 0) continue;
+    amps.push(mx - mn); anst.push((pk - fuss) / len);
+    var halb = mn + (mx - mn) / 2; breit.push(seg.filter(function(v){ return v >= halb; }).length / N);
+    seg.forEach(function(v, j){ sum[j] += (v - mn) / (mx - mn); }); n++;
+  }
+  if (n < 8) return null;
+  function mittel(a){ return a.reduce(function(s, v){ return s + v; }, 0) / a.length; }
+  var e = {id:uid(), t:Date.now(), type:'pulsbild', bpm:res.bpm, atem: atem ? Math.round(atem * 10) / 10 : null, proAtem: proAtem ? Math.round(proAtem * 10) / 10 : null,
+    aussetzer:aus, schlaege:ibis.length + 1, welle:sum.map(function(v){ return Math.round(v / n * 100) / 100; }),
+    anstieg:Math.round(mittel(anst) * 100) / 100, breite:Math.round(mittel(breit) * 100) / 100, amp:Math.round(mittel(amps) * 100) / 100, quality:res.quality};
+  e.tempo = !proAtem ? null : proAtem < 4 ? 'langsam' : proAtem <= 5.5 ? 'ruhig' : 'schnell';
+  e.rhythmus = aus <= 2 && res.quality >= 90 ? 'regelmässig' : 'unregelmässig';
+  e.anstiegW = e.anstieg < 0.2 ? 'steil' : 'weich';
+  e.breiteW = e.breite < 0.4 ? 'schmal' : 'breit';
+  var vor = load().filter(function(x){ return x.type === 'pulsbild' && !!x.demo === !!res.demo; }).pop();
+  e.staerke = !vor || !vor.amp ? 'erste Messung' : e.amp > vor.amp * 1.15 ? 'stärker' : e.amp < vor.amp * 0.87 ? 'schwächer' : 'gleich';
+  return e;
+}
+function pbZeile(e){
+  return 'Tempo ' + e.bpm + '/Min' + (e.proAtem ? ', ' + e.proAtem + ' Schläge pro Atemzug (' + e.tempo + ')' : '') +
+    ' · Rhythmus ' + e.rhythmus + (e.aussetzer ? ' (' + e.aussetzer + ' Aussetzer)' : '') +
+    ' · Welle ' + e.anstiegW + ', ' + e.breiteW + ' · Stärke ' + e.staerke;
+}
+function pbSvg(w, W, H){
+  if (!w || !w.length) return '';
+  var pts = w.map(function(v, i){ return (4 + i / (w.length - 1) * (W - 8)).toFixed(1) + ',' + (H - 4 - v * (H - 8)).toFixed(1); }).join(' ');
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;max-width:' + W + 'px;height:auto;display:block;margin:6px 0"><polyline points="' + pts + '" fill="none" stroke="var(--navy)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+}
+function pbZeigen(res, demo){
+  res.demo = demo;
+  var e = pbAuswerten(res);
+  showBox('pbBox');
+  pbTast = []; $('pbTast').querySelectorAll('.chip').forEach(function(b){ b.setAttribute('aria-pressed', 'false'); });
+  $('pbTastText').value = ''; $('pbSaved').classList.add('hidden');
+  if (!e){ pbLetztes = null; $('pbOut').innerHTML = '<p><b>Die Welle war nicht sauber genug.</b> Finger ohne Druck auflegen, warme Hände, helles Licht, nochmals messen.</p>'; $('pbSave').classList.add('hidden'); return; }
+  if (demo) e.demo = true;
+  pbLetztes = e; $('pbSave').classList.remove('hidden');
+  $('pbOut').innerHTML = pbSvg(e.welle, 520, 140) +
+    '<div class="tl">' +
+    '<div><b>Tempo</b>' + e.bpm + ' Schläge/Min' + (e.proAtem ? ' · ' + e.proAtem + ' pro Atemzug · <b>' + e.tempo + '</b>' : ' · Atmung nicht erkennbar') + '</div>' +
+    '<div><b>Rhythmus</b><b>' + e.rhythmus + '</b>' + (e.aussetzer ? ' · ' + e.aussetzer + ' Aussetzer von ' + e.schlaege + ' Schlägen' : '') + '</div>' +
+    '<div><b>Welle</b>Anstieg <b>' + e.anstiegW + '</b>, Breite <b>' + e.breiteW + '</b></div>' +
+    '<div><b>Stärke</b><b>' + e.staerke + '</b>' + (e.staerke === 'erste Messung' ? ' · ab der zweiten Messung im Vergleich' : ' als bei deiner letzten Messung') + '</div>' +
+    '</div><p class="muted">Welle und Stärke hängen von Fingerdruck, Licht und Kälte ab. Vergleiche nur deine eigenen Messungen.</p>';
+}
+$('pbSave').addEventListener('click', function(){
+  if (!pbLetztes) return;
+  var t = pbTast.slice(), frei = $('pbTastText').value.trim(); if (frei) t.push(frei);
+  if (t.length) pbLetztes.tast = t;
+  addEntry(pbLetztes); pbLetztes = null;
+  $('pbSave').classList.add('hidden');
+  var n = $('pbSaved'); n.textContent = 'Gespeichert. Im Verlauf siehst du Messung und Tastbefund nebeneinander.'; n.className = 'notice';
+});
+$('pbNew').addEventListener('click', function(){ showBox('startBox'); });
+
+/* ---------- Drei-Finger-Sensor (ESP32 im eigenen WLAN, Übergabe per Datei) ---------- */
+var SN_MODI = {puls:'Puls', druck:'Druck', muskeltest:'Muskeltest', behandlung:'Behandlungsdruck'};
+var SN_FARBEN = ['#e4572e', '#2e86ab', '#6a994e'];
+function snKurz(a, n){ if (a.length <= n) return a.slice(); var o = []; for (var i = 0; i < n; i++) o.push(a[Math.floor(i * a.length / n)]); return o; }
+function snSvg(e){
+  if (!e.kurven || !e.kurven.length) return '';
+  var W = 520, H = 50, g = '';
+  e.kurven.forEach(function(k, c){
+    if (!k.length) return;
+    var mn = Math.min.apply(null, k), mx = Math.max.apply(null, k), r = mx - mn || 1;
+    g += '<polyline transform="translate(0,' + (c * H) + ')" points="' + k.map(function(v, i){ return (4 + i / (k.length - 1) * (W - 8)).toFixed(1) + ',' + (H - 6 - (v - mn) / r * (H - 12)).toFixed(1); }).join(' ') + '" fill="none" stroke="' + SN_FARBEN[c % 3] + '" stroke-width="2"/>';
+  });
+  return '<svg viewBox="0 0 ' + W + ' ' + (H * e.kurven.length) + '" style="width:100%;height:auto;display:block;margin:6px 0">' + g + '</svg>';
+}
+function snZeile(e){
+  var t = (e.kanaele || []).map(function(k){ return k.name + ': ' + (e.modus === 'puls' && k.bpm ? k.bpm + '/Min, ' : '') + 'Mittel ' + k.mittel + ', höchste ' + k.max; }).join(' · ');
+  if (e.kg != null) t += (t ? ' · ' : '') + 'Muskeltest höchste ' + e.kg + ' kg';
+  return t + ' · ' + e.dauer + ' s';
+}
+$('snDatei').addEventListener('change', function(){
+  var f = this.files && this.files[0], msg = $('snMsg'); this.value = '';
+  if (!f) return;
+  var rd = new FileReader();
+  rd.onload = function(){
+    var d; try { d = JSON.parse(rd.result); } catch(x){ d = null; }
+    if (!d || d.app !== 'HumanSpark-Sensor' || !Array.isArray(d.t) || !Array.isArray(d.f)){ msg.textContent = 'Das ist keine Datei vom HumanSpark-Sensor.'; msg.className = 'notice warn'; return; }
+    var t = d.t.map(Number), t0 = t[0] || 0, ts = t.map(function(v){ return (v - t0) / 1000; });
+    var modus = $('snModus').value;
+    var e = {id:uid(), t:Date.now(), type:'sensor', modus:modus, ort:$('snOrt').value, sensorZeit:d.datum || null,
+      dauer: Math.round(ts[ts.length - 1] || 0), kanaele:[], kurven:[], kg: modus === 'muskeltest' || d.muskeltest_hoechste_kg ? (Math.round((+d.muskeltest_hoechste_kg || 0) * 10) / 10) : null};
+    d.f.forEach(function(k, c){
+      var v = (k || []).map(Number); if (!v.length) return;
+      var m = v.reduce(function(a, x){ return a + x; }, 0) / v.length, kn = {name:(d.finger && d.finger[c]) || ('Kanal ' + (c + 1)), mittel:Math.round(m), max:Math.round(Math.max.apply(null, v))};
+      if (modus === 'puls' || modus === 'behandlung'){
+        var r = analyse(ts.map(function(x, i){ return [x, -v[i]]; }), 0);
+        if (r.ok){ kn.bpm = r.bpm; kn.qualitaet = r.quality; }
+      }
+      e.kanaele.push(kn);
+      e.kurven.push(snKurz(v.slice(-Math.min(v.length, 600)), 150).map(Math.round));
+    });
+    if (!e.kanaele.length && e.kg == null){ msg.textContent = 'Die Datei enthält keine Messwerte.'; msg.className = 'notice warn'; return; }
+    addEntry(e);
+    msg.textContent = 'Gespeichert (' + SN_MODI[modus] + ', ' + e.ort + '). Im Verlauf neben Pulsbild und Tastbefund.'; msg.className = 'notice';
+    $('snOut').innerHTML = snSvg(e) + '<p class="muted">' + esc(snZeile(e)) + '</p>';
+  };
+  rd.readAsText(f);
+});
 
 var curEx = null;
 function showResult(e, before){
@@ -831,6 +1124,7 @@ function showResult(e, before){
   $('stageName').textContent = 'Stufe ' + e.stage + ' · ' + st.name + (e.demo ? ' (Demo)' : '');
   $('stageName').style.color = st.hex;
   $('stageDesc').textContent = st.desc;
+  var gv = gfVergleich(e); $('gfVergleich').innerHTML = gv; $('gfVergleich').classList.toggle('hidden', !gv);
   $('resBpm').textContent = e.bpm;
   $('resRmssd').textContent = e.rmssd == null ? '–' : e.rmssd;
   $('resNote').textContent = (e.rmssd == null ? 'Für die Herzraten-Variabilität war das Signal nicht ruhig genug – die Stufe stützt sich auf den Puls. ' : '') +
@@ -909,20 +1203,37 @@ function startExercise(){
 }
 
 /* ---------- Vorlesen ---------- */
+// Reinreden unterbricht die Stimme sofort; «Vorlesen» wird während des Sprechens zu «Stopp»
+function spricht(){ try { return (window.NovaStimme && NovaStimme.spricht()) || ('speechSynthesis' in window && speechSynthesis.speaking); } catch(e){ return false; } }
+function stimmeStopp(){
+  try { if (window.NovaStimme) NovaStimme.stopp(); } catch(e){}
+  try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch(e){}
+  $('btnSpeak').textContent = 'Vorlesen';
+}
 function speak(text){
+  $('btnSpeak').textContent = '■ Stopp';
+  function fertig(){ $('btnSpeak').textContent = 'Vorlesen'; }
   // Mit Server: Sparkys eigene Stimme (nova/nova.js). Sonst die Gerätestimme.
-  if (window.NovaStimme && NovaStimme.aktiv()){ NovaStimme.sprich(text); return; }
-  if (!('speechSynthesis' in window)){ alert('Vorlesen wird von diesem Browser nicht unterstützt.'); return; }
+  if (window.NovaStimme && NovaStimme.aktiv()){ NovaStimme.sprich(text, {onEnd:fertig}); return; }
+  if (!('speechSynthesis' in window)){ uiAlert('Vorlesen wird von diesem Browser nicht unterstützt.'); return; }
   speechSynthesis.cancel();
   var u = new SpeechSynthesisUtterance(text);
   u.lang = 'de-CH';
   var v = speechSynthesis.getVoices().filter(function(x){ return /^de/i.test(x.lang); });
   if (v.length){ u.voice = v.filter(function(x){ return /CH/i.test(x.lang); })[0] || v[0]; u.lang = u.voice.lang; }
   u.rate = 0.95;
+  u.onend = u.onerror = fertig;
   speechSynthesis.speak(u);
 }
 
 /* ---------- Knöpfe Messen ---------- */
+gfChips('gfWorte', GF_WORTE, 'worte'); gfChips('gfKontext', GF_KONTEXT, 'kontext');
+document.querySelectorAll('#gfStufe .chip').forEach(function(b){
+  b.addEventListener('click', function(){
+    gf.stufe = +b.dataset.s;
+    document.querySelectorAll('#gfStufe .chip').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+  });
+});
 $('btnStart').addEventListener('click', function(){ pendingPairOf = null; startMeasure(false); });
 $('btnDemo').addEventListener('click', function(){ pendingPairOf = null; startMeasure(true); });
 $('btnStop').addEventListener('click', function(){ stopMeasure(); pendingPairOf = null; showBox(resultShown ? 'resultBox' : 'startBox'); });
@@ -931,6 +1242,7 @@ $('btnNew').addEventListener('click', function(){ stopExercise(); resultShown = 
 $('btnExercise').addEventListener('click', startExercise);
 $('btnSpeak').addEventListener('click', function(){
   if (!lastResult) return;
+  if (spricht()){ stimmeStopp(); return; }
   var st = STAGES[lastResult.stage - 1], x = EX[curEx || st.ex[0]];
   speak('Stufe ' + lastResult.stage + ', ' + st.name + '. ' + st.desc + ' Übung: ' + x.t + '. ' + x.p);
 });
@@ -989,6 +1301,7 @@ var SR = window.SpeechRecognition || window.webkitSpeechRecognition, recog = nul
 function micNote(t){ var n = $('micNote'); n.textContent = t; n.classList.toggle('hidden', !t); }
 function setMic(on){ listening = on; $('btnMic').classList.toggle('on', on); $('btnMic').textContent = on ? '■ Stopp' : '🎙 Reinreden'; }
 function startRecog(){
+  stimmeStopp();
   recog = new SR();
   recog.lang = langTry; recog.continuous = true; recog.interimResults = true;
   baseText = $('talkText').value ? $('talkText').value.replace(/\s*$/, ' ') : '';
@@ -1014,10 +1327,11 @@ $('btnMic').addEventListener('click', function(){
 
 // Allgemeines Diktat (Sitzung, Schlusssatz)
 function Dictation(o){
-  var r = null, on = false, lang = 'de-CH';
+  var r = null, on = false, lang = 'de-CH', gewollt = false;
   function start(){
     if (!SR){ o.err('Spracherkennung ist hier nicht verfügbar. Tipp ins Textfeld und nutz das Mikrofon der Tastatur.'); return; }
     if (recog && listening) recog.stop();
+    stimmeStopp();
     r = new SR(); r.lang = lang; r.continuous = true; r.interimResults = true;
     r.onresult = function(ev){
       var interim = '';
@@ -1026,15 +1340,20 @@ function Dictation(o){
     };
     r.onerror = function(ev){
       if (ev.error === 'language-not-supported' && lang === 'de-CH'){ lang = 'de-DE'; setTimeout(start, 50); return; }
-      if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') o.err('Mikrofon nicht erlaubt. Gib die Freigabe ' + MIC_SETTINGS + ' – oder tipp die Notiz.');
+      if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed'){ gewollt = false; o.err('Mikrofon nicht erlaubt. Gib die Freigabe ' + MIC_SETTINGS + ' – oder tipp die Notiz.'); }
       else if (ev.error !== 'no-speech' && ev.error !== 'aborted') o.err('Spracherkennung unterbrochen (' + ev.error + '). Tipp nochmals auf den Knopf oder tipp die Notiz.');
     };
-    r.onend = function(){ on = false; o.state(false); if (o.interim) o.interim(''); };
+    r.onend = function(){
+      on = false; if (o.interim) o.interim('');
+      // Das iPhone beendet die Erkennung nach Pausen: bei Daueraufnahme still neu starten
+      if (o.weiter && gewollt){ setTimeout(function(){ if (gewollt && !on) start(); }, 250); return; }
+      o.state(false);
+    };
     try { r.start(); on = true; o.state(true); o.err(''); } catch(e){ o.err('Spracherkennung konnte nicht starten. Tipp die Notiz ins Feld.'); }
   }
   return {
-    toggle:function(){ if (on){ try { r.stop(); } catch(e){} } else start(); },
-    stop:function(){ if (on){ try { r.stop(); } catch(e){} } }
+    toggle:function(){ if (on || gewollt){ gewollt = false; o.state(false); try { r.stop(); } catch(e){} } else { gewollt = true; start(); } },
+    stop:function(){ gewollt = false; if (on){ try { r.stop(); } catch(e){} } }
   };
 }
 
@@ -1044,7 +1363,9 @@ var MARKERS = [
   {k:'tuer', l:'Tür geht auf', c:'#c96a4e'},
   {k:'offen', l:'Gewebe offen', c:'#4f8a8b'},
   {k:'regul', l:'Gewebe regulierend', c:'#6f9e86'},
-  {k:'beweg', l:'Gewebe bewegend', c:'#b9a256'}
+  {k:'beweg', l:'Gewebe bewegend', c:'#b9a256'},
+  {k:'faszie', l:'Faszie geöffnet', c:'#7a6aa8'},
+  {k:'beruehr', l:'Berührung', c:'#a8607a'}
 ];
 function markerOf(k){ return MARKERS.filter(function(m){ return m.k === k; })[0]; }
 var sess = null, sMode = 'messung', sPending = null, sLastOut = null;
@@ -1088,28 +1409,54 @@ function sRequestStart(demo){
 $('sStart').addEventListener('click', function(){ sRequestStart(false); });
 $('sDemo').addEventListener('click', function(){ sRequestStart(true); });
 
-// Unterschrift
-var sig = $('sig'), sgx = sig.getContext('2d'), sigDrawing = false, sigLen = 0, sigLast = null;
-function sigReset(){ sgx.clearRect(0, 0, sig.width, sig.height); sgx.fillStyle = '#fff'; sgx.fillRect(0, 0, sig.width, sig.height); sigLen = 0; }
-function sigPos(ev){ var r = sig.getBoundingClientRect(); return [(ev.clientX - r.left) * sig.width / r.width, (ev.clientY - r.top) * sig.height / r.height]; }
-sig.addEventListener('pointerdown', function(ev){ ev.preventDefault(); sigDrawing = true; sigLast = sigPos(ev); try { sig.setPointerCapture(ev.pointerId); } catch(e){} });
-sig.addEventListener('pointermove', function(ev){
-  if (!sigDrawing) return; ev.preventDefault();
-  var p = sigPos(ev);
-  sgx.strokeStyle = '#1f3a4d'; sgx.lineWidth = 3.5; sgx.lineCap = 'round'; sgx.lineJoin = 'round';
+// Unterschrift: Touch (iPhone) mit eigenem Scroll-Stopp, sonst Maus/Stift
+var sig = $('sig'), sgx = sig.getContext('2d'), sigDrawing = false, sigInk = false, sigLast = null, sigPid = null;
+function sigScale(){ var r = sig.getBoundingClientRect(); return r.width ? sig.width / r.width : 1; }
+function sigReset(){
+  sgx.clearRect(0, 0, sig.width, sig.height); sgx.fillStyle = '#fff'; sgx.fillRect(0, 0, sig.width, sig.height);
+  sigInk = false; sigDrawing = false; sigLast = null; $('sigOk').disabled = true; $('sigErr').classList.add('hidden');
+}
+function sigPos(x, y){ var r = sig.getBoundingClientRect(); return [(x - r.left) * sig.width / r.width, (y - r.top) * sig.height / r.height]; }
+function sigPen(){ sgx.strokeStyle = sgx.fillStyle = '#1f3a4d'; sgx.lineWidth = 3 * sigScale(); sgx.lineCap = 'round'; sgx.lineJoin = 'round'; }
+function sigStart(x, y){
+  sigDrawing = true; sigLast = sigPos(x, y); sigPen();
+  sgx.beginPath(); sgx.arc(sigLast[0], sigLast[1], sgx.lineWidth / 2, 0, Math.PI * 2); sgx.fill(); // auch ein Punkt zählt
+  if (!sigInk){ sigInk = true; $('sigOk').disabled = false; $('sigErr').classList.add('hidden'); }
+}
+function sigMove(x, y){
+  if (!sigDrawing) return;
+  var p = sigPos(x, y); sigPen();
   sgx.beginPath(); sgx.moveTo(sigLast[0], sigLast[1]); sgx.lineTo(p[0], p[1]); sgx.stroke();
-  sigLen += Math.hypot(p[0] - sigLast[0], p[1] - sigLast[1]); sigLast = p;
+  sigLast = p;
+}
+function sigEnd(){ sigDrawing = false; sigPid = null; }
+sig.addEventListener('touchstart', function(ev){ ev.preventDefault(); var t = ev.changedTouches[0]; sigStart(t.clientX, t.clientY); }, {passive:false});
+sig.addEventListener('touchmove', function(ev){ ev.preventDefault(); for (var i = 0; i < ev.touches.length; i++){ sigMove(ev.touches[i].clientX, ev.touches[i].clientY); break; } }, {passive:false});
+sig.addEventListener('touchend', function(ev){ ev.preventDefault(); sigEnd(); }, {passive:false});
+sig.addEventListener('touchcancel', sigEnd);
+sig.addEventListener('pointerdown', function(ev){
+  if (ev.pointerType === 'touch') return; // Touch läuft über touchstart
+  ev.preventDefault(); sigPid = ev.pointerId; sigStart(ev.clientX, ev.clientY);
+  try { sig.setPointerCapture(ev.pointerId); } catch(e){}
 });
-['pointerup','pointercancel','pointerleave'].forEach(function(n){ sig.addEventListener(n, function(){ sigDrawing = false; }); });
+sig.addEventListener('pointermove', function(ev){ if (ev.pointerType === 'touch' || ev.pointerId !== sigPid) return; ev.preventDefault(); sigMove(ev.clientX, ev.clientY); });
+['pointerup','pointercancel'].forEach(function(n){ sig.addEventListener(n, function(ev){ if (ev.pointerType !== 'touch') sigEnd(); }); });
 $('sigClear').addEventListener('click', sigReset);
 $('sigCancel').addEventListener('click', function(){ sPending = null; sShow('sStartBox'); });
+function sigImage(k, t){ // Unterschrift + Kürzel, Datum, Uhrzeit als ein Bild
+  var c = document.createElement('canvas'); c.width = sig.width; c.height = sig.height + 44;
+  var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(sig, 0, 0);
+  x.fillStyle = '#5b6670'; x.font = '600 22px -apple-system,system-ui,sans-serif'; x.fillText(k + ' · ' + new Date(t).toLocaleString('de-CH', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'}), 14, c.height - 14);
+  return c.toDataURL('image/png');
+}
 $('sigOk').addEventListener('click', function(){
   if (!sPending) { sShow('sStartBox'); return; }
-  if (sigLen < 60){ var n = $('sigErr'); n.textContent = 'Bitte zuerst im Feld unterschreiben.'; n.classList.remove('hidden'); return; }
-  var c = consents(); c[sPending.k] = {t:Date.now(), sig:sig.toDataURL('image/png')};
+  if (!sigInk){ var n = $('sigErr'); n.textContent = 'Bitte zuerst im Feld unterschreiben.'; n.classList.remove('hidden'); return; }
+  var t = Date.now(), c = consents(); c[sPending.k] = {t:t, k:sPending.k, sig:sigImage(sPending.k, t)};
   if (!saveObj(CKEY, c)){ var m = $('sigErr'); m.textContent = 'Speichern nicht möglich (Speicher voll oder blockiert).'; m.classList.remove('hidden'); return; }
   sBegin(sPending);
 });
+sigReset();
 
 // Marker-Knöpfe
 $('sMarkers').innerHTML = MARKERS.map(function(m){ return '<button class="mbtn" data-m="' + m.k + '" style="background:' + m.c + '">' + m.l + '</button>'; }).join('');
@@ -1124,13 +1471,27 @@ $('sMarkers').querySelectorAll('.mbtn').forEach(function(b){
 function sEvent(k, v){
   if (!sess) return;
   var ev = {t:Math.round(sess.clock * 10) / 10, k:k, v:v};
+  if (k === 'diktat'){ var pj = sPulsJetzt(sess); if (pj){ ev.bpm = pj.bpm; if (pj.rmssd != null) ev.rm = pj.rmssd; } } // Stimme und Puls: Puls der letzten 20 s zum gesagten Satz
   sess.events.push(ev);
   sFeed(); sUpdate();
   return ev;
 }
+function sPulsJetzt(s){
+  if (s.source === 'keine') return null;
+  var t0 = s.clock - 20, res;
+  if (s.source === 'kamera'){
+    var smp = s.camRoll.filter(function(p){ return p[0] >= t0; });
+    if (smp.length < 200) return null;
+    res = analyse(smp.map(function(p){ return [p[0] - smp[0][0], p[1]]; }), 0);
+  } else {
+    while (s.rrRoll.length && s.rrRoll[0][0] < s.clock - 25) s.rrRoll.shift();
+    res = analyseRR(s.rrRoll.filter(function(p){ return p[0] >= t0; }).map(function(p){ return p[1]; }), 8);
+  }
+  return res && res.ok ? {bpm:res.bpm, rmssd:res.rmssd} : null;
+}
 function evLabel(e){
   if (e.k === 'marker') return markerOf(e.v) ? markerOf(e.v).l : e.v;
-  if (e.k === 'diktat') return '«' + e.v + '»';
+  if (e.k === 'diktat') return '«' + e.v + '»' + (e.bpm ? ' · Puls ' + e.bpm + (e.rm != null ? ' · HRV ' + e.rm + ' ms' : '') : '');
   if (e.k === 'sprechen') return 'Klient spricht';
   if (e.k === 'stille') return 'Stille';
   if (e.k === 'lage') return 'Lage: ' + e.v;
@@ -1147,7 +1508,8 @@ function sFeed(){
 var sDict = Dictation({
   final:function(t){ if (sess) sEvent('diktat', t); },
   interim:function(t){ $('sInterim').textContent = t ? '… ' + t : ''; },
-  state:function(on){ $('sDict').classList.toggle('on', on); $('sDict').textContent = on ? '■ Diktat stoppen' : '🎙 Diktat'; },
+  weiter:true,
+  state:function(on){ $('sDict').classList.toggle('on', on); $('sDict').textContent = on ? '■ Aufnahme stoppen' : '🎙 Einfach reinreden – nimmt alles auf'; },
   err:function(t){ var n = $('sDictNote'); n.textContent = t; n.classList.toggle('hidden', !t); if (t && !SR) $('sNote').focus(); }
 });
 $('sDict').addEventListener('click', function(){ sDict.toggle(); });
@@ -1179,7 +1541,7 @@ function sBegin(p){
   sess = {id:uid(), t:Date.now(), kuerzel:p.k, mode:p.mode, demo:p.demo, befVor:p.befVor,
     source: !measuring ? 'keine' : p.demo ? 'demo' : polar.connected ? 'polar' : 'kamera',
     events:[], windows:[], minutes:{}, speaking:false, winSpeak:false,
-    phase:null, phaseStart:0, clock:0, winStart:0, cam:[], rr:[], lastHr:null, lostSince:null,
+    phase:null, phaseStart:0, clock:0, winStart:0, cam:[], rr:[], camRoll:[], rrRoll:[], lastHr:null, lostSince:null,
     real0:performance.now(), speed: p.demo ? (FAST ? 150 : 20) : 1, timer:null, stream:null, wl:null, uiN:0,
     demoNext:0.4, demoDone:{}};
   $('sLage').value = ''; $('sNote').value = ''; $('sInterim').textContent = ''; $('sDictNote').classList.add('hidden');
@@ -1192,7 +1554,7 @@ function sBegin(p){
   sShow('sRunBox');
   try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function(l){ if (sess) sess.wl = l; else l.release(); }).catch(function(){}); } catch(e){}
   if (sess.source === 'polar'){
-    polar.onData = function(hr, rrs){ if (!sess) return; sess.lastHr = hr; rrs.forEach(function(r){ sess.rr.push([sess.clock, r]); }); };
+    polar.onData = function(hr, rrs){ if (!sess) return; sess.lastHr = hr; rrs.forEach(function(r){ sess.rr.push([sess.clock, r]); sess.rrRoll.push([sess.clock, r]); }); };
   }
   if (sess.source === 'kamera'){
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ sCamFallback('Dieser Browser gibt keinen Kamerazugriff.'); }
@@ -1227,9 +1589,10 @@ function sTick(){
   if (s.source === 'demo'){ demoRR(s); demoAuto(s); }
   if (s.source === 'kamera'){
     var v = $('sVideo');
-    if (v.readyState >= 2){
+    if (v.readyState >= 2 && camWache(v, s, function(st){ if (sess !== s) return false; if (s.stream) s.stream.getTracks().forEach(function(t){ t.stop(); }); s.stream = st; v.srcObject = st; v.play().catch(function(){}); return true; })){ s.sigTxt = 'Kamera kurz angehalten – Finger liegen lassen'; }
+    else if (v.readyState >= 2){
       var x = readRed(v);
-      if (x.covered){ s.cam.push([s.clock, x.r]); s.lostSince = null; s.sigTxt = 'Finger erkannt – ruhig liegen lassen'; }
+      if (x.covered){ s.cam.push([s.clock, x.r]); s.camRoll.push([s.clock, x.r]); while (s.camRoll.length && s.camRoll[0][0] < s.clock - 25) s.camRoll.shift(); s.lostSince = null; s.sigTxt = 'Finger erkannt – ruhig liegen lassen'; }
       else { if (s.lostSince == null) s.lostSince = s.clock; s.sigTxt = s.cam.length ? 'Finger ruhig halten – wieder auflegen' : 'Finger auf die Kamera legen'; }
     }
   }
@@ -1265,7 +1628,7 @@ function demoRR(s){
     var hr = 76 - 9 * prog + (s.speaking ? 7 : 0) + (s.phase === 'ruhe2' ? -2 : 0);
     var amp = s.speaking ? 0.015 : 0.035 + 0.03 * prog;
     var rr = 60 / hr * (1 + amp * Math.sin(2 * Math.PI * tt / 5) + (Math.random() - 0.5) * 0.02);
-    s.rr.push([tt, rr]); s.demoNext += rr; s.lastHr = Math.round(60 / rr);
+    s.rr.push([tt, rr]); s.rrRoll.push([tt, rr]); s.demoNext += rr; s.lastHr = Math.round(60 / rr);
   }
 }
 function demoAuto(s){
@@ -1317,8 +1680,9 @@ $('sSkip').addEventListener('click', function(){
 });
 $('sAbort').addEventListener('click', function(){
   if (!sess) return;
-  if (!confirm('Sitzung abbrechen? Die Daten dieser Sitzung werden nicht gespeichert.')) return;
-  sStop(); sess = null; sShow('sStartBox'); sRefreshStart();
+  uiConfirm('Sitzung abbrechen? Die Daten dieser Sitzung werden nicht gespeichert.', 'Sitzung abbrechen', function(){
+    if (!sess) return; sStop(); sess = null; sShow('sStartBox'); sRefreshStart();
+  });
 });
 
 function sStop(){
@@ -1389,6 +1753,7 @@ function renderOutcome(e){
     var nO = e.minutes.filter(function(x){ return x[1] === 'offen'; }).length, nZ = e.minutes.filter(function(x){ return x[1] === 'zu'; }).length;
     h += '<h3 class="sub">Pro Minute offen / zu</h3><div class="strip">' + cells + '</div><div class="muted">' + nO + ' Min offen · ' + nZ + ' Min zu</div>';
   }
+  h += stimmePulsHtml(e);
   h += '<h3 class="sub">Schlusssatz</h3><p>' + (e.schluss ? '«' + esc(e.schluss) + '»' : '<span class="muted">–</span>') + '</p>';
   var tl = e.events.filter(function(x){ return x.k !== 'phase' || x.v !== 'sitzung' || x.t > 0; });
   h += '<h3 class="sub">Zeitleiste</h3><div class="tl">' + (tl.length ? tl.map(function(x){ return '<div><b>' + fmtClock(x.t) + '</b>' + (x.k === 'diktat' ? esc(evLabel(x)) : '<span class="muted">' + esc(evLabel(x)) + '</span>') + '</div>'; }).join('') : '<p class="muted">Keine Einträge.</p>') + '</div>';
@@ -1396,6 +1761,125 @@ function renderOutcome(e){
   $('sOut').innerHTML = h;
   sShow('sOutBox');
 }
+
+// Stimme und Puls: jeder gesagte Satz mit dem Puls in diesem Moment, verglichen mit dem Ruhewert am Anfang
+function stimmePuls(e){
+  var ref = e.start && e.start.bpm;
+  return e.events.filter(function(x){ return x.k === 'diktat'; }).map(function(x){
+    return {t:x.t, text:x.v, bpm:x.bpm == null ? null : x.bpm, rm:x.rm == null ? null : x.rm, diff: x.bpm != null && ref ? x.bpm - ref : null};
+  });
+}
+function stimmePulsHtml(e){
+  if (e.source === 'keine') return '';
+  var l = stimmePuls(e);
+  var h = '<h3 class="sub">Stimme und Puls</h3>';
+  if (!l.length) return h + '<p class="muted">Kein Diktat in dieser Sitzung. Tipp während der Messung auf «🎙 Diktat» und sprich, dann steht hier jeder Satz mit deinem Puls.</p>';
+  h += '<div class="tl">' + l.map(function(x){
+    var d = x.diff == null ? '' : ' <span class="badge">' + (x.diff > 0 ? '+' : '') + x.diff + '</span>';
+    return '<div><b>' + fmtClock(x.t) + '</b>«' + esc(x.text) + '»<br><span class="muted">Puls ' + (x.bpm == null ? '– (Finger ruhig halten)' : x.bpm) + (x.rm != null ? ' · HRV ' + x.rm + ' ms' : '') + '</span>' + d + '</div>';
+  }).join('') + '</div>';
+  h += '<p class="muted" style="margin-top:6px">Zahl im Kästchen: Unterschied zum Ruhepuls am Anfang' + (e.start && e.start.bpm ? ' (' + e.start.bpm + ')' : '') + '. Beim Sprechen steigt der Puls oft leicht, das ist normal.</p>';
+  var verb = novaBereit();
+  h += '<div class="ex" id="novaBox"><b>An Nova schicken</b><p class="muted" style="margin:4px 0 8px">' + (verb ? 'Geht verschlüsselt an euren DR-Lab-Server (Sense Engine), nur mit Kürzel, ohne Namen. Nicht an Apple oder andere.' : 'Nova ist auf diesem Handy noch nicht verbunden. Öffne einmal die Seite «Handy verbinden», dann geht es hier mit einem Tipp.') + '</p>' +
+    (verb ? '<label class="chk"><input type="checkbox" id="novaOk"> Ich bin einverstanden, dass diese Sätze mit Puls an Nova gehen.</label><button class="btn primary" id="novaSend" disabled>An Nova schicken</button><div class="notice hidden" id="novaMsg"></div>' : '') + '<button class="btn ghost" id="spCopy">Als Text kopieren (für Claude)</button>' +
+    '<button class="btn primary" id="spSparky">🦊 Mit Sparky besprechen</button><div class="muted" id="spSparkyNote">Nur beim Tippen: Diese Auswertung geht an Sparkys Stimme (ElevenLabs, USA).</div>' +
+    '<button class="btn ghost hidden" id="spAbschrift">Gespräch als Text kopieren (für Claude)</button></div>';
+  return h;
+}
+function novaGet(k){ try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch(x){ return null; } }
+// Senden erst freischalten, wenn die Sprech-Nova Puls-Einträge nicht an ElevenLabs weitergibt
+var NOVA_SENDEN = false;
+function novaBereit(){ if (!NOVA_SENDEN) return false; var a = String(novaGet('drlab-hermes-adresse') || ''); return /^https:\/\//.test(a) && !!novaGet('drlab-hermes-passwort'); }
+// Laufend an Nova: jede neue Messung, jeder Eintrag, jede Sitzung (nach Einwilligung im Verlauf)
+var AUTO_K = 'hs-nova-auto';
+function novaAusEintrag(e){
+  if (e.type === 'sitzung') return novaText(e);
+  var t = '[stimme-puls] HumanSpark · ' + (e.type === 'messung' ? 'Messung' : 'Eintrag') + ' · ' + fmtTime(e.t) + (e.demo ? ' · Demo' : '');
+  if (e.text) t += '\n«' + e.text + '»';
+  if (e.bpm) t += '\nPuls ' + e.bpm + (e.rmssd != null ? ' · HRV ' + e.rmssd + ' ms' : '') + (e.stage ? ' · Stufe ' + e.stage + ' ' + STAGES[e.stage - 1].name : '');
+  if (e.gefuehl) t += '\nGefühl ' + e.gefuehl + '/5' + (e.abweichung ? ' (Abweichung ' + (e.abweichung > 0 ? '+' : '') + e.abweichung + ')' : '');
+  if (e.worte) t += ' · ' + e.worte.join(', ');
+  if (e.kontext) t += '\nKontext: ' + e.kontext.join(', ');
+  return t + '\nSchätzwerte, keine Diagnose.';
+}
+function novaPost(text){
+  return fetch(String(novaGet('drlab-hermes-adresse')).replace(/\/+$/, '') + '/erfahrung', {method:'POST', keepalive:true,
+    headers:{'Content-Type':'application/json', 'Authorization':'Bearer ' + novaGet('drlab-hermes-passwort')},
+    body:JSON.stringify({app:'HumanSpark', art:'nutzung', thema:'stimme-puls', frage:text, antwort:''})});
+}
+window.novaAuto = function(e){
+  if (!novaBereit() || !loadObj(AUTO_K, false) || e.type === 'idee' || e.type === 'einwilligung') return;
+  novaPost(novaAusEintrag(e)).catch(function(){});
+};
+function autoUi(){
+  $('autoBox').classList.toggle('hidden', !novaBereit());
+  $('autoNova').checked = !!loadObj(AUTO_K, false);
+  $('autoInfo').textContent = $('autoNova').checked ? 'Läuft: Neues geht automatisch an Nova.' : '';
+}
+$('autoNova').addEventListener('change', function(){ saveObj(AUTO_K, $('autoNova').checked); autoUi(); });
+autoUi();
+function novaText(e){
+  var l = stimmePuls(e);
+  return '[stimme-puls] HumanSpark · Stimme und Puls · Kürzel ' + e.kuerzel + ' · ' + fmtTime(e.t) + ' · ' + Math.round(e.dur / 60) + ' Min · Quelle ' + e.source +
+    '\nRuhepuls Start ' + ((e.start && e.start.bpm) || '–') + ', Ende ' + ((e.end && e.end.bpm) || '–') + ' · Befinden ' + e.befVor + ' → ' + e.befNach +
+    e.events.filter(function(x){ return x.k === 'marker'; }).map(function(x){ return '\n[' + fmtClock(x.t) + '] Marker: ' + evLabel(x); }).join('') +
+    '\n' + l.map(function(x){ return '[' + fmtClock(x.t) + '] «' + x.text + '» Puls ' + (x.bpm == null ? '–' : x.bpm) + (x.rm != null ? ' HRV ' + x.rm : '') + (x.diff == null ? '' : ' (' + (x.diff > 0 ? '+' : '') + x.diff + ')'); }).join('\n') +
+    (e.schluss ? '\nSchlusssatz: «' + e.schluss + '»' : '') + '\nSchätzwerte, keine Diagnose.';
+}
+document.addEventListener('click', function(ev){
+  if (!ev.target || ev.target.id !== 'spCopy' || !sLastOut) return;
+  var t = novaText(sLastOut), b = ev.target;
+  var ok = function(){ b.textContent = 'Kopiert ✓ – jetzt im Chat einfügen'; };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function(){ uiAlert(t); });
+  else uiAlert(t);
+});
+// Auswertung mit Sparky besprechen (Diegos Entscheid 21.10.: nur auf Tipp, Werte gehen an ElevenLabs)
+var SPARKY_AGENT = 'agent_7401m55j20jwek69gsh3gkfhaa77', spGespraech = null, spStartet = false, spAbschrift = [];
+function spKnopf(t){ var b = $('spSparky'); if (b) b.textContent = t || (spGespraech ? '■ Gespräch mit Sparky beenden' : '🦊 Mit Sparky besprechen'); }
+function spSdk(){
+  if (window.ElevenLabsClient) return Promise.resolve();
+  return new Promise(function(ok, nein){
+    var sc = document.createElement('script'); sc.src = '../nova/elevenlabs-client-1.26.0.js';
+    sc.onload = ok; sc.onerror = nein; document.head.appendChild(sc);
+  });
+}
+function spEnde(){ var c = spGespraech; spGespraech = null; spStartet = false; spKnopf(); if (c) try { c.endSession(); } catch(e){} }
+document.addEventListener('click', function(ev){
+  if (!ev.target || ev.target.id !== 'spSparky' || !sLastOut) return;
+  if (spGespraech || spStartet){ spEnde(); return; }
+  var text = novaText(sLastOut).replace(/^\[stimme-puls\] /, '');
+  spStartet = true; spAbschrift = []; stimmeStopp(); spKnopf('🦊 Sparky wacht auf …');
+  spSdk().then(function(){
+    return ElevenLabsClient.Conversation.startSession({
+      agentId: SPARKY_AGENT, connectionType: 'websocket',
+      onMessage: function(m){
+        if (!m || !m.message || /^Hier ist meine Sitzung von HumanSpark/.test(m.message)) return;
+        spAbschrift.push((m.source === 'user' ? 'Diego: ' : 'Sparky: ') + m.message);
+        $('spAbschrift').classList.remove('hidden');
+      },
+      onDisconnect: function(){ spGespraech = null; spStartet = false; spKnopf(); },
+      onError: function(){}
+    });
+  }).then(function(c){
+    spGespraech = c; spStartet = false; spKnopf();
+    try { c.sendUserMessage('Hier ist meine Sitzung von HumanSpark. Bitte besprich sie kurz mit mir: Was fällt dir auf, wo ging der Puls hoch oder runter, bei welchen Sätzen? Keine Diagnose.\n\n' + text); } catch(e){}
+  }).catch(function(){ spStartet = false; spKnopf(); $('spSparkyNote').textContent = 'Sparky ist gerade nicht erreichbar. Internet prüfen und nochmals tippen.'; });
+});
+document.addEventListener('click', function(ev){
+  if (!ev.target || ev.target.id !== 'spAbschrift' || !sLastOut) return;
+  var t = novaText(sLastOut).replace(/^\[stimme-puls\] /, '') + '\n\nGespräch mit Sparky:\n' + spAbschrift.join('\n'), b = ev.target;
+  var ok = function(){ b.textContent = 'Kopiert ✓ – jetzt im Chat einfügen'; };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function(){ uiAlert(t); });
+  else uiAlert(t);
+});
+document.addEventListener('change', function(ev){ if (ev.target && ev.target.id === 'novaOk') $('novaSend').disabled = !ev.target.checked; });
+document.addEventListener('click', function(ev){
+  if (!ev.target || ev.target.id !== 'novaSend' || !sLastOut) return;
+  var b = ev.target, m = $('novaMsg'); b.disabled = true; b.textContent = 'Wird geschickt …';
+  novaPost(novaText(sLastOut))
+  .then(function(r){ if (!r.ok) throw new Error(r.status); m.className = 'notice'; m.textContent = 'Angekommen. Nova hat die Sätze mit deinem Puls.'; b.textContent = 'Geschickt ✓'; })
+  .catch(function(x){ m.className = 'notice warn'; m.textContent = 'Ging nicht (' + x.message + '). Server erreichbar? Nochmals versuchen.'; b.disabled = false; b.textContent = 'An Nova schicken'; });
+});
 
 function sessionSvg(e){
   var W = 520, H = 220, L = 40, R = 40, T = 22, B = 26, dur = Math.max(60, e.dur || 60);
@@ -1465,7 +1949,7 @@ function renderHistory(){
   $('hStagesBox').classList.toggle('hidden', !!K); $('hWeekBox').classList.toggle('hidden', !!K); $('hKBox').classList.toggle('hidden', !K);
   var l = all.filter(function(e){ return K ? e.type === 'sitzung' && e.kuerzel === K : hFilter === 'mine' ? e.type !== 'sitzung' : true; });
   var meas = all.filter(function(e){ return e.type === 'messung'; });
-  if (!K){ renderStages(meas.slice(-30)); renderWeeks(meas); }
+  if (!K){ renderStages(meas.slice(-30)); renderWeeks(meas); gfMuster(meas); }
   else renderK(K, l);
   // Liste
   var list = $('list');
@@ -1478,8 +1962,13 @@ function renderHistory(){
         '<button class="btn ghost" data-open="' + e.id + '" style="min-height:44px;margin-top:6px">Auswertung öffnen</button></div>';
     }
     var st = e.stage ? STAGES[e.stage-1] : null;
+    if (e.type === 'sensor') return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · Sensor · ' + esc(SN_MODI[e.modus] || e.modus) + '</span></div>' + snSvg(e) +
+      '<div class="muted">' + esc(e.ort) + ' · ' + esc(snZeile(e)) + '</div></div>';
+    if (e.type === 'pulsbild') return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · Pulsbild' + (e.demo ? ' · Demo' : '') + '</span></div>' + pbSvg(e.welle, 260, 70) +
+      '<div class="muted">' + esc(pbZeile(e)) + '</div>' + (e.tast && e.tast.length ? '<div class="txt">Tastbefund: ' + esc(e.tast.join(', ')) + '</div>' : '') + '</div>';
     var head = e.type === 'messung' ? (e.pairOf ? 'Nachmessung' : 'Messung') + (e.source === 'polar' ? ' (Polar)' : '') : 'Reinreden';
     var vals = e.bpm ? 'Puls ' + e.bpm + (e.rmssd != null ? ' · RMSSD ' + e.rmssd + ' ms' : '') : '';
+    if (e.gefuehl) vals += ' · Gefühl ' + e.gefuehl + (Math.abs(e.abweichung) >= 2 ? (e.abweichung > 0 ? ' (unruhiger als gemessen)' : ' (ruhiger als gemessen)') : '') + (e.worte ? ' · ' + e.worte.join(', ') : '');
     return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · ' + head + (e.demo ? ' · Demo' : '') + '</span>' +
       (st ? '<span class="pill" style="background:' + st.hex + '">' + e.stage + ' ' + st.name + '</span>' : '') + '</div>' +
       (e.text ? '<div class="txt">' + esc(e.text) + '</div>' : '') +
@@ -1490,12 +1979,19 @@ function renderHistory(){
     b.addEventListener('click', function(){
       var e = load().filter(function(x){ return x.id === b.dataset.open; })[0];
       if (!e) return;
-      if (sess){ alert('Während einer laufenden Sitzung kann keine andere Auswertung geöffnet werden.'); return; }
+      if (sess){ uiAlert('Während einer laufenden Sitzung kann keine andere Auswertung geöffnet werden.'); return; }
       showTab('sitzung'); renderOutcome(e);
     });
   });
 }
 
+function gfMuster(meas){
+  var m = meas.filter(function(e){ return e.gefuehl; }), u = m.filter(function(e){ return e.abweichung >= 2; }).length;
+  var el = $('gfMuster');
+  if (!el){ el = document.createElement('div'); el.id = 'gfMuster'; el.className = 'notice'; $('chartWrap').parentNode.insertBefore(el, $('chartWrap')); }
+  el.classList.toggle('hidden', m.length < 2);
+  el.innerHTML = 'Gefühl neben Messung: ' + m.length + '× eingeschätzt' + (u ? ', davon <b>' + u + '× unruhiger gefühlt als gemessen</b>.' : ', Gefühl und Messung meist nah beieinander.');
+}
 function renderStages(pts){
   var cw = $('chartWrap');
   if (pts.length < 2){ cw.innerHTML = '<p class="muted">Ab zwei Messungen siehst du hier deine Linie.</p>'; return; }
@@ -1548,10 +2044,11 @@ function renderK(K, l){
 }
 $('hKDel').addEventListener('click', function(){
   var K = hFilter.slice(2); if (!K) return;
-  if (!confirm('Einwilligung von ' + K + ' widerrufen und alle Sitzungen von ' + K + ' löschen?')) return;
-  save(load().filter(function(e){ return !(e.type === 'sitzung' && e.kuerzel === K); }));
-  var c = consents(); delete c[K]; saveObj(CKEY, c);
-  hFilter = 'alle'; renderHistory();
+  uiConfirm('Einwilligung von ' + K + ' widerrufen und alle Sitzungen von ' + K + ' löschen?', 'Widerrufen und löschen', function(){
+    save(load().filter(function(e){ return !(e.type === 'sitzung' && e.kuerzel === K); }));
+    var c = consents(); delete c[K]; saveObj(CKEY, c);
+    hFilter = 'alle'; renderHistory();
+  });
 });
 
 $('btnExport').addEventListener('click', function(){
@@ -1569,9 +2066,9 @@ $('btnExport').addEventListener('click', function(){
   } catch(e){}
   // In der iPhone-App gibt es keine Downloads: dann in die Zwischenablage kopieren.
   if (document.documentElement.classList.contains('native-app')){
-    var done = function(){ alert('Export in die Zwischenablage kopiert. Du kannst ihn jetzt in eine Notiz oder Mail einfügen.'); };
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(json).then(done, function(){ alert('Export ging leider nicht.'); });
-    else alert('Export ging leider nicht.');
+    var done = function(){ uiAlert('Export in die Zwischenablage kopiert. Du kannst ihn jetzt in eine Notiz oder Mail einfügen.'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(json).then(done, function(){ uiAlert('Export ging leider nicht.'); });
+    else uiAlert('Export ging leider nicht.');
     return;
   }
   var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
@@ -1579,12 +2076,13 @@ $('btnExport').addEventListener('click', function(){
 });
 
 $('btnClear').addEventListener('click', function(){
-  if (!load().length && !Object.keys(consents()).length && !loadObj(IKEY, []).length){ alert('Es gibt noch nichts zu löschen.'); return; }
-  if (!confirm('Wirklich alle Messungen, Sitzungen, Einwilligungen' + (IS_APP ? ' und Einträge' : ', Einträge und Ideen') + ' auf diesem Handy löschen? Das lässt sich nicht rückgängig machen.')) return;
-  try { localStorage.removeItem(KEY); localStorage.removeItem(CKEY); localStorage.removeItem(IKEY); } catch(e){}
-  lastResult = null; resultShown = false; hFilter = 'alle';
-  showBox('startBox');
-  renderHistory();
+  if (!load().length && !Object.keys(consents()).length && !loadObj(IKEY, []).length){ uiAlert('Es gibt noch nichts zu löschen.'); return; }
+  uiConfirm('Wirklich alle Messungen, Sitzungen, Einwilligungen' + (IS_APP ? ' und Einträge' : ', Einträge und Ideen') + ' auf diesem Handy löschen? Das lässt sich nicht rückgängig machen.', 'Löschen', function(){
+    try { localStorage.removeItem(KEY); localStorage.removeItem(CKEY); localStorage.removeItem(IKEY); } catch(e){}
+    lastResult = null; resultShown = false; hFilter = 'alle';
+    showBox('startBox');
+    renderHistory();
+  });
 });
 
 /* ---------- Ideen ---------- */
@@ -1614,6 +2112,7 @@ sRefreshStart();
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>
+<script src="../nova/buehne.js" data-figur="sparky" data-name="Sparky" data-bild="../nova/figuren/sparky.jpg" data-satz="Kleine Körperübungen, ruhig und Schritt für Schritt." data-vor="#nbHier" defer></script>
 <script src="../nova/nova.js" data-nova-app="HumanSpark" data-nova-bild="figur.jpg" defer></script>
 <!-- Figuren-Film (Trickfilm-Look): Farben, Funken, Atmen, Tipp-Reaktion, Szenenwechsel. Nur Optik. -->
 <style id="figurFilmCss">
@@ -1626,15 +2125,6 @@ sRefreshStart();
 @keyframes filmDrift{to{transform:translate(8%,-6%) scale(1.12)}}
 button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.96)}
 :root{--fa1:#E07B2E;--fa2:#F25C54;--fgold:#F2C14E}
-#figurStart{overflow:hidden;isolation:isolate}
-#figurStart::before{content:"";position:absolute;inset:-40px;z-index:-1;background:url(figur-gross.jpg) center/cover;filter:blur(28px) saturate(1.5);opacity:.45;transform:scale(1.15)}
-#figurStart::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 45% at 18% 85%,color-mix(in srgb,var(--fa1) 55%,transparent),transparent),radial-gradient(55% 40% at 85% 20%,color-mix(in srgb,var(--fa2) 50%,transparent),transparent),linear-gradient(180deg,rgba(14,24,56,.35),rgba(6,10,28,.85))}
-#figurStart img{border-color:var(--fgold);box-shadow:0 0 0 6px rgba(242,193,78,.1),0 0 60px color-mix(in srgb,var(--fa1) 60%,transparent),0 18px 60px rgba(0,0,0,.4);animation:filmSchweben 4.6s ease-in-out infinite;cursor:pointer}
-#figurStart h1{background:linear-gradient(90deg,var(--fgold),var(--fa1),var(--fa2),var(--fgold));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:filmGlanz 6s linear infinite}
-#figurStart h1,#figurStart p,#figurStart button{animation-fill-mode:both}
-#figurStart p{animation:filmAuf .8s .25s ease-out both}
-#figurStart button{background:linear-gradient(135deg,var(--fgold),color-mix(in srgb,var(--fgold) 60%,var(--fa1)));box-shadow:0 8px 24px color-mix(in srgb,var(--fa1) 45%,transparent);animation:filmAuf .8s .45s ease-out both,filmPuls 2.6s 1.4s ease-in-out infinite}
-#figurStart.geht{animation:filmIris .7s ease-in forwards}
 .film-funke{position:absolute;width:6px;height:6px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#fff 0,var(--c,#F2C14E) 45%,transparent 70%);opacity:0;animation:filmFunkeln var(--d,5s) var(--v,0s) ease-in-out infinite}
 .figur-hero{background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--fa1) 45%,#1d2c66) 0%,#0f1b3d 60%,color-mix(in srgb,var(--fa2) 35%,#0f1b3d) 100%)!important;isolation:isolate;animation:filmAuf .7s ease-out both}
 .figur-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:url(figur-gross.jpg) right center/60% auto no-repeat;opacity:.18;filter:blur(2px) saturate(1.4);mask-image:linear-gradient(90deg,transparent 20%,#000)}
@@ -1655,6 +2145,47 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 @keyframes filmStern{0%{opacity:1;transform:translate(0,0) scale(.4) rotate(0)}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(1.1) rotate(160deg)}}
 @media (prefers-reduced-motion:reduce){#figurStart *,#figurStart,.figur-hero,.figur-hero img,.figur-logo,.film-auf,.film-funke,#figurStart h1{animation:none!important}.film-funke{opacity:.6}.film-aurora i{animation:none!important}}
 </style>
+<style id="hsFeinschliff">
+/* HumanSpark: ruhige Bedienung. Ein Gesprächsknopf statt drei, Inhalt nie verdeckt. */
+.sp-knopf,.sp-blase,.nova-pille{display:none!important}
+body{padding-bottom:calc(env(safe-area-inset-bottom) + 96px)!important}
+.intro{background:rgba(22,35,79,.82)!important;border:1px solid rgba(242,193,78,.28);color:var(--ink)!important}
+.intro .vision{background:rgba(242,193,78,.14)!important;color:#F2C14E}
+.intro .safe{color:var(--muted);opacity:1}
+/* Dunkles Design durchgehend: keine hellen Kästen mit heller Schrift */
+#wave,.big div,.ex,.minrow button{background:rgba(255,255,255,.05)!important;border-color:var(--line)!important}
+.big div span,.ex p{color:var(--muted)}
+.ex{color:var(--ink)}
+.notice{background:rgba(242,193,78,.10)!important;border-color:rgba(242,193,78,.35)!important;color:var(--ink)}
+.notice.warn{background:rgba(242,92,84,.12)!important;border-color:rgba(242,92,84,.4)!important}
+.chip{background:transparent!important;border-color:var(--line)!important;color:var(--ink)!important}
+.chip[aria-pressed="true"],.chip.on{background:var(--navy)!important;border-color:var(--navy)!important;color:#fff!important}
+textarea,.inp,select{background:#0f1a3d!important;color:var(--ink)!important;border-color:var(--line)!important}
+textarea::placeholder,.inp::placeholder{color:#7f89a8}
+.talk{background:rgba(255,255,255,.08)!important;color:var(--ink)!important}
+.minrow button{color:var(--ink)!important}
+.badge{background:rgba(242,193,78,.16)!important;color:#F2C14E!important}
+.btn.danger{background:rgba(242,92,84,.14)!important;color:#ff9b8f!important}
+.dlg>div{color:var(--ink)}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:15px;margin:4px 0}
+.chk input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:#F2C14E}
+</style>
+<script>
+// Direktlink für Nova: ?tab=sitzung&k=DR öffnet die Sitzung mit Kürzel (auch messen, reden, verlauf)
+(function(){
+  var q = new URLSearchParams(location.search), t = q.get('tab'), k = q.get('k');
+  if (t && document.querySelector('.tab[data-tab="' + t.replace(/[^a-z]/g, '') + '"]')){
+    if (k && t === 'sitzung'){ var i = document.getElementById('sKuerzel'); i.value = k; i.dispatchEvent(new Event('input')); }
+    var tb = document.querySelector('.tab[data-tab="' + t + '"]');
+    setTimeout(function(){ tb.click(); }, 50);
+  }
+})();
+// Tab antippen: Inhalt sofort zeigen, nicht oben bei Sparky stehen bleiben
+document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click', function(){
+  var nav = document.querySelector('.tabs'), y = nav.getBoundingClientRect().top + scrollY - 8;
+  if (scrollY < y) scrollTo({top:y, behavior:'smooth'});
+}); });
+</script>
 <script>
 (function(){
   var ruhig=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
