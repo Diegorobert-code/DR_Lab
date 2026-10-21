@@ -21,6 +21,7 @@
     '@keyframes r4Wink{20%{transform:rotate(-6deg) translateY(-6px)}45%{transform:rotate(5deg) translateY(-6px)}70%{transform:rotate(-3deg)}}',
     '.r4-box{margin-top:14px}',
     '.r4-neu{display:inline-block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--night);background:var(--gold);border-radius:99px;padding:2px 8px;margin-left:6px;vertical-align:middle}',
+    '.r4-tbild{float:right;width:96px;height:96px;object-fit:cover;border-radius:18px;border:2px solid var(--line);margin:0 0 8px 10px}',
     '.r4-tricks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}',
     '.r4-tricks button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;border-radius:18px;background:rgba(255,255,255,.08);color:var(--cream);box-shadow:none;border:1px solid var(--line);font-size:.85rem;min-height:72px}',
     '.r4-tricks button.on{border-color:var(--gold);background:rgba(242,193,78,.16)}',
@@ -52,7 +53,9 @@
   /* ---------- 1) Zurückwinken ---------- */
   function winke() {
     var p = g('pup'); if (!p) return;
-    if (puppeGruss(p, { figur: 'waefwaef', gruss: 'wedeln' })) return;
+    // Runde 5: gegrüsst wird immer mit Tinkos fröhlichem Ganzkörper-Bild (posen/freut.jpg), darunter liegt dasselbe Bild
+    if (window.Puppe && window.FigurPosen) { try { FigurPosen.zeige(p, 'freut', 3400); } catch (e) {} }
+    if (puppeGruss(p, { figur: 'waefwaef', gruss: 'wedeln', bild: 'posen/freut.jpg', augen: [[9, 9, 0.01, 0.01]], mund: { l: [9, 9], r: [9.1, 9], oben: 0, unten: 0, kinn: 0.01 }, arm: false, kopf: [0.5, 0.35, 0.22], gesicht: [0.5, 0.38, 0.15] })) return;
     if (ruhig) return;
     var w = p.parentElement; var pf = h('<span class="r4-pfote" aria-hidden="true">🐾</span>'); w.appendChild(pf); setTimeout(function () { pf.remove(); }, 1300);
     if (g('v-kinder') && !g('v-kinder').hidden) return; // Kinderteil: Bild bleibt still, nur die Pfote winkt
@@ -90,14 +93,14 @@
     { k: 'decke', e: '🧺', n: 'Auf die Decke', s: ['Decke hinlegen, warten.', 'Jede Pfote auf der Decke: klicken.', 'Später nur noch, wenn ich mich hinlege. Gut fürs Ruhigwerden.'] }
   ];
   var trickI = 0;
-  var tb = h('<div class="box r4-box" id="r4tricks"><h3>🎓 Klicker-Trickschule <span class="r4-neu">neu</span></h3><p class="mini">Klick heisst: «Genau das war super!» Danach immer ein Leckerli. Kurz üben, 3–5 Minuten, aufhören, wenn es Spass macht.</p><div class="r4-tricks"></div><div class="r4-tinfo"></div><button class="r4-klick" type="button">Klick! 🦴</button><p class="mini r4-tz" style="text-align:center;margin:8px 0 0"></p></div>');
+  var tb = h('<div class="box r4-box" id="r4tricks"><h3>🎓 Klicker-Trickschule <span class="r4-neu">neu</span></h3><img class="r4-tbild" src="posen/trick.jpg" alt="Wäf Wäf sitzt aufmerksam und wartet auf den nächsten Trick" loading="lazy" width="768" height="768"><p class="mini">Klick heisst: «Genau das war super!» Danach immer ein Leckerli. Kurz üben, 3–5 Minuten, aufhören, wenn es Spass macht.</p><div class="r4-tricks"></div><div class="r4-tinfo"></div><button class="r4-klick" type="button">Klick! 🦴</button><p class="mini r4-tz" style="text-align:center;margin:8px 0 0"></p></div>');
   function sterne(k) { var t = store.get('r4tricks', {}); return t[k] || 0; }
   function trickZeigen() {
     var l = tb.querySelector('.r4-tricks'); l.innerHTML = '';
     TRICKS.forEach(function (x, i) {
       var s = Math.min(3, Math.floor(sterne(x.k) / 10));
       var b = h('<button type="button" class="' + (i === trickI ? 'on' : '') + '"><span>' + x.e + '</span>' + x.n + '<small>' + '★★★'.slice(0, s) + '☆☆☆'.slice(0, 3 - s) + '</small></button>');
-      b.onclick = function () { trickI = i; trickZeigen(); sagW('Üben wir «' + x.n + '»? Ich bin bereit!', 'hop', x.e); };
+      b.onclick = function () { trickI = i; trickZeigen(); sagW('Üben wir «' + x.n + '»? Ich bin bereit!', 'hop', x.e); try { if (window.FigurPosen) FigurPosen.zeige(g('pup'), 'trick', 2600, ['freut']); } catch (e) {} };
       l.appendChild(b);
     });
     var x = TRICKS[trickI];
@@ -114,7 +117,7 @@
 
   /* ---------- 3) Spaziergang-Bingo ---------- */
   var BINGO = [['🐈', 'Katze'], ['⛲', 'Brunnen'], ['🍂', 'Laubhaufen'], ['🚲', 'Velo'], ['🐕', 'anderer Hund'], ['🌳', 'dicker Baum'], ['🪨', 'Stein zum Schnuppern'], ['🐦', 'Vogel'], ['🪵', 'Bank']];
-  var bb = h('<div class="box r4-box" id="r4bingo"><h3>🔍 Spaziergang-Bingo <span class="r4-neu">neu</span></h3><p class="mini">Was entdeckt ihr heute unterwegs? Antippen, wenn ihr es seht. Ich schnuppere mit!</p><div class="r4-bingo"></div><div class="reihe" style="margin-top:10px"><button class="ghost" type="button" data-r4="neu">Neue Runde</button></div></div>');
+  var bb = h('<div class="box r4-box" id="r4bingo"><h3>🔍 Spaziergang-Bingo <span class="r4-neu">neu</span></h3><img class="r4-tbild" src="posen/schnueffelt.jpg" alt="Wäf Wäf schnuppert unterwegs am Boden" loading="lazy" width="768" height="768"><p class="mini">Was entdeckt ihr heute unterwegs? Antippen, wenn ihr es seht. Ich schnuppere mit!</p><div class="r4-bingo"></div><div class="reihe" style="margin-top:10px"><button class="ghost" type="button" data-r4="neu">Neue Runde</button></div></div>');
   function bingoZeigen() {
     var d = store.get('r4bingo', { t: heute(), on: [] }); if (d.t !== heute()) d = { t: heute(), on: [] };
     var l = bb.querySelector('.r4-bingo'); l.innerHTML = '';
