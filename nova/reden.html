@@ -280,7 +280,14 @@
     var d = document.createElement('div'); d.className = 'z otti bild';
     var a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener';
     var im = document.createElement('img'); im.src = url; im.alt = p.titel || 'Zeichnung von ' + NAME;
-    im.onload = function () { text.scrollTop = text.scrollHeight; };
+    // Malt Nova noch, gibt es das Bild erst nach 15–40 s: bis dahin alle 4 s nachschauen.
+    var versuche = 0, warte = document.createElement('small'); warte.textContent = NAME + ' malt …';
+    im.onload = function () { if (warte.parentNode) warte.remove(); text.scrollTop = text.scrollHeight; };
+    im.onerror = function () {
+      if (++versuche > 25) { warte.textContent = 'Das Bild kam nicht an.'; return; }
+      if (!warte.parentNode) d.insertBefore(warte, d.firstChild);
+      setTimeout(function () { im.src = url + (url.indexOf('?') < 0 ? '?' : '&') + 'v=' + versuche; }, 4000);
+    };
     a.appendChild(im); d.appendChild(a);
     if (p.titel) { var t = document.createElement('small'); t.textContent = p.titel; d.appendChild(t); }
     text.appendChild(d); text.scrollTop = text.scrollHeight; hopsen();
