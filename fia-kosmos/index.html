@@ -285,6 +285,7 @@ details.buchbox summary .muted{font-weight:400;margin-left:auto;margin-right:8px
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
+<link rel="stylesheet" href="../nova/puppe.css">
 <script src="../nova/intro.js" data-art="funken" data-bild="figur-gross.jpg" data-text="Fia öffnet den Körperkosmos"></script>
 </head>
 <body>
@@ -1320,7 +1321,9 @@ document.addEventListener('error', function(e){ var i = e.target; if (i && i.tag
 /* Fia winkt zurück, sobald man sie antippt. Kommt nova/puppe.js mit Puppe.winkeZurueck, übernimmt die Puppe. */
 function winke(el){
   var a = el && (el.classList && el.classList.contains('actor') ? el : el.querySelector('.actor')); if (!a) return;
-  try { if (window.Puppe && typeof Puppe.winkeZurueck === 'function'){ Puppe.winkeZurueck(a); return; } } catch(e){}
+  /* Puppe (nova/puppe.js): Fia flattert flüssig zurück. Ohne Puppe: sanfte CSS-Animation wie bisher. */
+  try { var im = a.querySelector('.body img');
+    if (im && window.Puppe && typeof Puppe.winkeZurueck === 'function'){ var w = Puppe.winkeZurueck(im, {figur:'fia', gruss:'flattern', antippen:false, ton:false, blase:false}); if (w && w.winke){ w.winke({gruss:'flattern'}); return; } } } catch(e){}
   var b = a.querySelector('.body'), pr = a.querySelector('.prop'); if (!b) return;
   b.classList.remove('winkzurueck'); void b.offsetWidth; b.classList.add('winkzurueck');
   if (pr){ var alt = pr.textContent; pr.textContent = '👋'; pr.classList.remove('wink'); void pr.offsetWidth; pr.classList.add('wink');
@@ -1474,6 +1477,7 @@ if (!store.get('intro', 0)) einfStart();
 (function(){ var m = memLaden(); memTag(m); store.set('mem', m); ketteRender(); })();
 })();
 </script>
+<script src="../nova/puppe.js" defer></script>
 <script src="../nova/seelen.js" defer></script>
 <script src="../nova/nova.js" data-nova-app="fia-kosmos" data-nova-figur="fia" data-nova-bild="figur.jpg" data-nova-unten="84" defer></script>
 <script src="feedback.js" data-app="Fia Körperkosmos" defer></script>
