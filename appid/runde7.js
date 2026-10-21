@@ -216,6 +216,7 @@ window.R7_CFG = {
   /* ---------- 1) Kochtimer mit Flo (Vorbild: Timer der Apple-Uhr-App, Kitchen Stories) ---------- */
   var VOR = [['🥚', 'Ei weich', 6], ['🥚', 'Ei hart', 9], ['🍝', 'Pasta', 10], ['🍚', 'Reis', 18], ['🍵', 'Tee', 4], ['🥔', 'Kartoffeln', 20]];
   var tk = el('<section class="r7 r7-karte" aria-labelledby="r7k-t"><p class="r7-eb">Flo kocht mit</p><h2 id="r7k-t">⏲️ Kochtimer</h2>' +
+    '<div style="display:flex;gap:16px;align-items:center;margin-bottom:16px"><img class="r7-figur r7-tm-flo" src="posen/wecker.jpg" alt="Flo hält eine Küchenuhr" loading="lazy" width="72" height="72"><p class="r7-p" style="margin:0">Flo hält die Küchenuhr bereit und sagt dir, wenn es so weit ist.</p></div>' +
     '<div class="r7-tm" style="display:flex;gap:16px;align-items:center"><svg class="r7-ring" viewBox="0 0 120 120" width="120" height="120" aria-hidden="true"><circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="10"/><circle class="r7-ring-v" cx="60" cy="60" r="52" fill="none" stroke="#f2c14e" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="0" transform="rotate(-90 60 60)"/></svg>' +
     '<div style="flex:1"><p class="r7-tm-zeit" style="margin:0;font-size:40px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1" role="timer" aria-live="off">10:00</p><p class="r7-tm-was r7-leise" style="margin-top:4px">Wähle, was du kochst.</p></div></div>' +
     '<div class="r7-reihe r7-tm-vor"></div>' +
@@ -256,7 +257,7 @@ window.R7_CFG = {
   /* ---------- 2) Hunger-Kompass (Vorbild: Achtsamkeits-Apps wie «Am I Hungry?») ---------- */
   var STUFEN = [['😩', 'Sehr hungrig'], ['🙂', 'Hungrig'], ['😌', 'Angenehm'], ['😊', 'Satt'], ['😮‍💨', 'Sehr satt']];
   var hk = el('<section class="r7 r7-karte" aria-labelledby="r7h-t"><p class="r7-eb">Kurz hineinspüren</p><h2 id="r7h-t">🧭 Hunger-Kompass</h2>' +
-    '<p class="r7-p">Wie fühlt sich dein Bauch gerade an? Vor oder nach dem Essen, ganz ohne richtig oder falsch.</p>' +
+    '<div style="display:flex;gap:16px;align-items:center;margin-bottom:16px"><img class="r7-figur" src="posen/horcht.jpg" alt="Flo horcht mit geschlossenen Augen in den Bauch" loading="lazy" width="72" height="72"><p class="r7-p" style="margin:0">Wie fühlt sich dein Bauch gerade an? Vor oder nach dem Essen, ganz ohne richtig oder falsch.</p></div>' +
     '<div class="r7-reihe r7-hk-wann" role="radiogroup" aria-label="Wann"><button type="button" class="r7-btn" role="radio" aria-checked="true" data-w="vor">Vor dem Essen</button><button type="button" class="r7-btn" role="radio" aria-checked="false" data-w="nach">Nach dem Essen</button></div>' +
     '<div class="r7-hk-skala" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(56px,1fr));gap:8px;margin-top:16px"></div>' +
     '<div class="r7-hk-heute" style="margin-top:16px"></div>' +
@@ -317,7 +318,7 @@ window.R7_CFG = {
       urls.forEach(function (u) { URL.revokeObjectURL(u); }); urls = [];
       var heute = R.heuteK(), H = L.filter(function (x) { return R.heuteK(new Date(x.t)) === heute; });
       var z = fk.querySelector('.r7-ft-heute');
-      if (!H.length) z.innerHTML = '<div class="r7-leer"><img class="r7-figur" src="posen/winkt.jpg" alt="" loading="lazy" width="72" height="72"><p>Dein Teller-Streifen ist heute noch leer. Flo freut sich auf das erste Bild.</p></div>';
+      if (!H.length) z.innerHTML = '<div class="r7-leer"><img class="r7-figur" src="posen/teller.jpg" alt="Flo hält einen leeren Teller" loading="lazy" width="96" height="96" style="width:96px;height:96px"><p>Dein Teller-Streifen ist heute noch leer. Flo freut sich auf das erste Bild.</p></div>';
       else {
         z.innerHTML = '<div class="r7-ft-streifen" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x mandatory"></div>';
         H.sort(function (a, b) { return a.t - b.t; }).forEach(function (x) {
