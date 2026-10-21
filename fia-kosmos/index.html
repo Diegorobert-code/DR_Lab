@@ -91,6 +91,7 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-tem
 .actor.freut .body{animation:hupfen 1.1s ease-in-out infinite}
 .actor.denkt .body,.actor.lauscht .body{animation:neigen 3s ease-in-out infinite}
 .actor.zeigt .body{animation:schweben 2.4s ease-in-out infinite}
+.actor.winkt .body{animation:schweben 3.2s ease-in-out infinite}
 .actor.tanzt .body{animation:tanzen 1.8s ease-in-out infinite}
 .actor.schlaeft .body{animation:schlafen 5s ease-in-out infinite;filter:saturate(.85)}
 .actor.ruht .body{animation:schweben 6s ease-in-out infinite}
@@ -744,8 +745,10 @@ var PROPS = {winkt:'👋', atmet:'🌬️', denkt:'💭', freut:'✨', zeigt:'�
 var POSEN_BILD = {};
 /* Posen: Nur Bilder aus dieser Liste werden geladen, sofort und ohne Anfragen ins Leere (keine 404).
    Neues Fia-Bild: posen/<pose>.jpg ablegen (zeigt wirklich Fia, max. 120 KB), Namen hier und in posen/posen.json eintragen. */
-var POSEN_DA = ['fliegt', 'wacht', 'atmet', 'freut', 'schlaeft', 'lauscht', 'ruht'];
+var POSEN_DA = ['fliegt', 'wacht', 'atmet', 'freut', 'schlaeft', 'lauscht', 'ruht', 'winkt', 'zeigt'];
 POSEN_DA.forEach(function(n){ if (n in PROPS) POSEN_BILD[n] = 'posen/' + n + '.jpg'; });
+/* Runde 5: echte Bilder für winkt und zeigt – kein Zusatz-Emoji, nur sanftes Schweben (Fia winkt im Bild selbst) */
+['winkt', 'zeigt'].forEach(function(n){ if (POSEN_BILD[n]) PROPS[n] = ''; });
 function bildFuer(p){ return POSEN_BILD[p] || FIG; }
 var tippTimer = null;
 function stage(pose, text, sz){
@@ -1214,7 +1217,7 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !$('
 
 /* ================= Einführung beim ersten Start ================= */
 var EINF = [
-  ['fliegt', 'Willkommen', 'Ich bin Fia, das kleine Phönix-Küken. Ich zeige dir den Körperkosmos: Atem, Körper und die fünf Spiegel.'],
+  ['winkt', 'Willkommen', 'Ich bin Fia, das kleine Phönix-Küken. Ich zeige dir den Körperkosmos: Atem, Körper und die fünf Spiegel.'],
   ['atmet', 'Der Atem liest den Körper', 'In welcher Phase des Atems wird es bei dir weich? Unter «Atem» probierst du es selbst aus.'],
   ['zeigt', 'Körper und Spiegel', 'Tipp eine Stelle am Körper an, wähl ein Element oder dein Zeichen. Jede Karte hat eine Frage und eine Reihe von zwei Minuten.'],
   ['lauscht', 'Ruhig und ehrlich', 'Ich bin keine Ärztin und stelle keine Diagnose. Alles bleibt auf deinem Handy. Unten rechts kannst du mit mir reden.']
@@ -1322,15 +1325,34 @@ document.addEventListener('error', function(e){ var i = e.target; if (i && i.tag
 function winke(el){
   var a = el && (el.classList && el.classList.contains('actor') ? el : el.querySelector('.actor')); if (!a) return;
   /* Puppe (nova/puppe.js): Fia flattert flüssig zurück. Ohne Puppe: sanfte CSS-Animation wie bisher. */
+  /* Runde 5: Tinkos Winkebild (posen/winkt.jpg) – der Flügel im Bild schwingt echt, danach zurück zur Pose */
   try { var im = a.querySelector('.body img');
-    if (im && window.Puppe && typeof Puppe.winkeZurueck === 'function'){ var w = Puppe.winkeZurueck(im, {figur:'fia', gruss:'flattern', antippen:false, ton:false, blase:false}); if (w && w.winke){ w.winke({gruss:'flattern'}); return; } } } catch(e){}
+    if (im && window.Puppe && typeof Puppe.winkeZurueck === 'function'){ fiaWinktEcht(im); return; } } catch(e){}
   var b = a.querySelector('.body'), pr = a.querySelector('.prop'); if (!b) return;
+  var im2 = a.querySelector('.body img'); if (im2 && POSEN_BILD.winkt){ var alt2 = im2.getAttribute('src'); im2.setAttribute('src', POSEN_BILD.winkt); setTimeout(function(){ if (im2.getAttribute('src') === POSEN_BILD.winkt && alt2 !== POSEN_BILD.winkt) im2.setAttribute('src', alt2); }, 1500); }
   b.classList.remove('winkzurueck'); void b.offsetWidth; b.classList.add('winkzurueck');
   if (pr){ var alt = pr.textContent; pr.textContent = '👋'; pr.classList.remove('wink'); void pr.offsetWidth; pr.classList.add('wink');
     setTimeout(function(){ pr.classList.remove('wink'); if (pr.textContent === '👋') pr.textContent = alt; }, 1350); }
   setTimeout(function(){ b.classList.remove('winkzurueck'); }, 1350);
 }
 window.winke = winke;
+/* Augen, Schnabel und Flügel an posen/winkt.jpg gemessen (Anteile 0..1) */
+var FIA_WINK = { arm:false, augenZu:false, augen:[[0.39,0.428,0.045,0.05],[0.578,0.443,0.055,0.058]],
+  mund:{ l:[0.43,0.527], r:[0.515,0.53], oben:0, unten:0, kinn:0.03, max:0.03 }, kopf:[0.51,0.40,0.22], hals:[0.52,0.62],
+  winkArm:{ x:0.29, y:0.55, r:0.16, dx:0.40, dy:0.62, seite:'links', winkel:20 } };
+function fiaWinktEcht(im){
+  var WB = POSEN_BILD.winkt; if (!WB){ var w0 = Puppe.winkeZurueck(im, {figur:'fia', gruss:'flattern', antippen:false, ton:false, blase:false}); if (w0 && w0.winke) w0.winke({gruss:'flattern'}); return; }
+  var vorher = im.getAttribute('src');
+  function los(){
+    if (im._puppeWinker && !im._fiaWink) im._puppeWinker.loese();
+    var w = Puppe.winkeZurueck(im, Object.assign({figur:'fia', gruss:'flattern', antippen:false, ton:false, blase:false}, FIA_WINK)); im._fiaWink = 1;
+    if (w && w.winke) w.winke({gruss:'flattern'});
+    clearTimeout(im._fiaZurueck);
+    if (vorher !== WB) im._fiaZurueck = setTimeout(function(){ if (im.isConnected && im.getAttribute('src') === WB) im.setAttribute('src', vorher); }, 2600);
+  }
+  if (vorher === WB && im.complete) los();
+  else { im.addEventListener('load', los, {once:true}); im.setAttribute('src', WB); }
+}
 $('buehneHeute').addEventListener('click', function(ev){ var a = ev.target.closest('.actor'); if (a) setTimeout(function(){ winke(a); }, 30); });
 $('buehneHeute').addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') setTimeout(function(){ winke($('buehneHeute')); }, 30); });
 /* Auch im Kopf und in der Einführung: Fia antippen, sie winkt */
