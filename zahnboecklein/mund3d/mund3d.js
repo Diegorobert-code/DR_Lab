@@ -112,7 +112,8 @@ export function create(canvas, hintEl) {
     for (const [m, sp] of msprites) if (!list.includes(m)) { sp.parent && sp.parent.remove(sp); msprites.delete(m); }
   }
 
-  // Ziel je Phase: Zahnbürste, Kamera, sichtbare Bögen
+  // Ziel je Phase: Zahnbürste, Kamera, sichtbare Bögen (DK: schmale Bildschirme etwas weiter weg)
+  let DK = 1;
   const camPos = new THREE.Vector3(0, 0.6, 9), camLook = new THREE.Vector3(0, 0, -0.5), tPos = camPos.clone(), tLook = camLook.clone();
   const bPos = new THREE.Vector3(1, 0, 3), bQ = new THREE.Quaternion(), tB = { p: new THREE.Vector3(1.4, -1.6, 3), n: new THREE.Vector3(0, 1, 0), h: new THREE.Vector3(1, 0, 0.3), on: false };
   function orient(n, h) {
@@ -126,13 +127,13 @@ export function create(canvas, hintEl) {
     let pt, n, h, cp, look, vis = { up: true, lo: true, lips: false };
     if (part === "aussen") {
       pt = p.clone().add(o.clone().multiplyScalar(d.d / 2)).setY(sy * (GAP + d.h * 0.5)); n = o.clone(); h = toFront(th);
-      cp = pt.clone().add(o.clone().multiplyScalar(3.3)).add(new THREE.Vector3(0, sy * 0.45, 1.4)); look = pt.clone(); vis.lips = Math.abs(th) < 0.5;
+      cp = pt.clone().add(o.clone().multiplyScalar(4.6 * DK)).add(new THREE.Vector3(0, -sy * 0.25, 2.2)); look = pt.clone().lerp(new THREE.Vector3(0, sy * GAP, 0.4), 0.35); vis.lips = Math.abs(th) < 0.5;
     } else if (part === "kau") {
       pt = p.clone().setY(sy * GAP); n = new THREE.Vector3(0, -sy, 0); h = new THREE.Vector3(-p.x * 0.25, 0, 1);
-      cp = pt.clone().add(new THREE.Vector3(-side * 0.5, -sy * 3.8, 1.1)); look = pt.clone(); if (upper) vis.lo = false; else vis.up = false;
+      cp = pt.clone().add(new THREE.Vector3(-side * 0.6, -sy * 4.4 * DK, 3.0 * DK)); look = pt.clone().lerp(new THREE.Vector3(0, sy * GAP, 0), 0.3); if (upper) vis.lo = false; else vis.up = false;
     } else {
       pt = p.clone().add(o.clone().multiplyScalar(-d.d / 2)).setY(sy * (GAP + d.h * 0.5)); n = o.clone().negate(); h = new THREE.Vector3(0, -sy * 0.4, 1);
-      cp = upper ? pt.clone().add(o.clone().multiplyScalar(-3.0)).add(new THREE.Vector3(0, -0.5, 0.9)) : pt.clone().add(o.clone().multiplyScalar(-2.0)).add(new THREE.Vector3(0, 2.6, 0.5)); look = pt.clone(); if (upper) vis.lo = false; else vis.up = false;
+      cp = upper ? pt.clone().add(o.clone().multiplyScalar(-2.4 * DK)).add(new THREE.Vector3(0, -4.2 * DK, 3.2)) : pt.clone().add(o.clone().multiplyScalar(-1.8 * DK)).add(new THREE.Vector3(0, 4.6 * DK, 3.2)); look = pt.clone().lerp(new THREE.Vector3(0, sy * GAP, 0.3), 0.3); if (upper) vis.lo = false; else vis.up = false;
     }
     return { pt, n, h, cp, look, vis, part };
   }
@@ -141,7 +142,7 @@ export function create(canvas, hintEl) {
     const front = { cp: new THREE.Vector3(0, 0.4, 6.4), look: new THREE.Vector3(0, 0, -0.7), vis: { up: true, lo: true, lips: true } };
     if (key === "kau") { // erst unten, dann oben, von links nach rechts über die Backenzähne
       const upper = s >= 0.5, u = (s * 2) % 1, sy = upper ? 1 : -1, th = (u < 0.5 ? -1 : 1) * (thK(6) - (thK(6) - thK(3)) * ((u * 2) % 1)), p = arch(th);
-      return { pt: p.clone().setY(sy * GAP), n: new THREE.Vector3(0, -sy, 0), h: new THREE.Vector3(-p.x * 0.25, 0, 1), cp: new THREE.Vector3(p.x * 0.4, -sy * 4.2, p.z + 2.6), look: p.clone().setY(sy * GAP), vis: { up: upper, lo: !upper, lips: false }, part: "kau" };
+      return { pt: p.clone().setY(sy * GAP), n: new THREE.Vector3(0, -sy, 0), h: new THREE.Vector3(-p.x * 0.25, 0, 1), cp: new THREE.Vector3(p.x * 0.5, -sy * 4.8 * DK, p.z + 3.4 * DK), look: p.clone().setY(sy * GAP), vis: { up: upper, lo: !upper, lips: false }, part: "kau" };
     }
     if (key === "zf") { const th = -thK(4) + 2 * thK(4) * s, sy = Math.sin(s * Math.PI * 4) > 0 ? 1 : -1, p = arch(th), o = outN(th), d = dims(th);
       return { pt: p.clone().add(o.clone().multiplyScalar(d.d / 2 + 0.05)).setY(sy * (GAP + d.h - 0.02)), n: o, h: new THREE.Vector3(1, 0, 0.6), ...front, part: "zf" }; }
@@ -154,11 +155,11 @@ export function create(canvas, hintEl) {
   function frame(info, monsters) {
     const now = performance.now(), dt = Math.min(0.05, (now - last) / 1000); last = now; T += dt;
     const w = canvas.clientWidth | 0, h = canvas.clientHeight | 0;
-    if (w && h && (canvas.width !== Math.round(w * R.getPixelRatio()) || canvas.height !== Math.round(h * R.getPixelRatio()))) { R.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); }
+    if (w && h && (canvas.width !== Math.round(w * R.getPixelRatio()) || canvas.height !== Math.round(h * R.getPixelRatio()))) { R.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); DK = Math.min(1.45, Math.max(1, 1.7 / cam.aspect)); }
     const tg = info ? target(info.key, info.s, T) : (() => { const a = T * 0.25; return { pt: new THREE.Vector3(1.8, -2.6, 2.8), n: new THREE.Vector3(0, 1, 0), h: new THREE.Vector3(1, 0, 0.3), cp: new THREE.Vector3(Math.sin(a) * 1.8, 0.6 + Math.sin(a * 0.7) * 0.4, 6.8), look: new THREE.Vector3(0, 0, -0.8), vis: { up: true, lo: true, lips: true }, off: true, part: "" }; })();
     tPos.copy(tg.cp); tLook.copy(tg.look); const k = 1 - Math.exp(-dt * 2.6); camPos.lerp(tPos, k); camLook.lerp(tLook, k);
     cam.position.copy(camPos); cam.lookAt(camLook);
-    up.visible = tg.vis.up; lo.visible = tg.vis.lo; lips.visible = tg.vis.lips;
+    up.visible = tg.vis.up; lo.visible = tg.vis.lo; lips.visible = tg.vis.lips; tongue.visible = !(tg.vis.up === false && (tg.part === "kau" || tg.part === "innen"));
     // Zahnbürste: kleine Kreise auf der Zahnfläche, sonst sanft schweben
     const q = orient(tg.n, tg.h), X = new THREE.Vector3(1, 0, 0).applyQuaternion(q), Z = new THREE.Vector3(0, 0, 1).applyQuaternion(q);
     const circ = tg.off ? new THREE.Vector3(0, Math.sin(T * 2) * 0.12, 0) : X.multiplyScalar(Math.cos(T * 11) * 0.09).add(Z.multiplyScalar(Math.sin(T * 11) * 0.07));

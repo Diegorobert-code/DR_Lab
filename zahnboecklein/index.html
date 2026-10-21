@@ -56,6 +56,7 @@ button.alt:active{box-shadow:0 2px 0 #58b597}
 .lyric{min-height:3.2em;font-family:var(--display);font-weight:600;font-size:clamp(1.25rem,5.4vw,1.6rem);line-height:1.25;color:var(--ink);max-width:22ch;text-wrap:balance}
 .lyric .next{display:block;font-size:.75em;color:var(--muted);font-weight:600}
 .bar{width:min(86vw,380px);height:14px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}
+.dots{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}.dots b{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.18);transition:all .4s}.dots b.on{background:var(--mint);transform:scale(1.35);box-shadow:0 0 10px var(--mint)}.dots b.ok{background:var(--gold)}
 .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--mint),var(--gold));border-radius:99px}
 .time{font-family:var(--display);font-weight:800;font-size:1.3rem;color:var(--gold);font-variant-numeric:tabular-nums}
 label.toggle{display:flex;align-items:center;gap:8px;color:var(--muted);font-weight:700;font-size:.95rem;cursor:pointer}
@@ -189,7 +190,7 @@ button.big{font-size:2rem;padding:.6em 1.8em}
   <canvas id="mouth" width="840" height="560" aria-label="Mund mit Zuckermonstern"></canvas>
   <canvas id="mouth3d" hidden aria-label="3D-Mund: die Zahnbürste zeigt, wo geputzt wird"></canvas><div class="zonehint" id="zoneHint" hidden></div>
   <div class="lyric" id="lyric" aria-live="polite"></div>
-  <div class="bar"><i id="prog"></i></div>
+  <div class="bar"><i id="prog"></i></div><div class="dots" id="dots" aria-hidden="true"></div>
   <div class="row">
     <span class="time" id="time">2:00</span>
     <button class="ghost" id="pause" type="button">Pause</button>
@@ -285,7 +286,7 @@ function drawSongs(){const box=$("songs");box.querySelectorAll("button").forEach
 drawSongs();
 function duck(on){if(master)master.gain.setTargetAtTime(on?0.32:0.7,ac.currentTime,0.08)}
 function fanfare(){if(!ac)return;const t=ac.currentTime+0.05;["C5","E5","G5","C5"].forEach((n,i)=>bell(N[n]*(i===3?2:1),t+i*0.14))}
-function pop(){if(!ac)return;const t=ac.currentTime;tone(900,t,0.12,0.15,"sine");tone(1400,t+0.05,0.15,0.1,"sine")}
+function pop(){try{navigator.vibrate&&navigator.vibrate(25)}catch(e){}if(!ac)return;const t=ac.currentTime;tone(900,t,0.12,0.15,"sine");tone(1400,t+0.05,0.15,0.1,"sine")}
 
 /* Stimme: echte Zahnböcklein-Aufnahmen (audio/*.mp3), über WebAudio, Musik wird leiser */
 const BUF={},vq=[];let vBusy=false,vSrc=null,vGain=null;
@@ -355,7 +356,7 @@ function begin(m){if(m)setMode(m);ensureAC();preload(PH.map(p=>p.clip).concat(PH
 function finish(){running=false;musicStop();const tipp=camOn?putzTipp():"";if(camOn)merkeZeiten();camStop();fanfare();const n=getStars()+(MODE==="party"?2:1);setStars(n);showStars();$("doneText").textContent=MODE==="party"?"Glitzer-Putzparty geschafft! Zähne, Zahnfleisch und Zunge glänzen. Dafür gibt es zwei Sterne!":(n===1?"Alle Zuckermonster sind weg. Hier ist dein erster Stern!":"Alle Zuckermonster sind weg. Das ist Stern Nummer "+n+".");if(tipp)$("doneText").textContent+=" "+tipp;showTrip(n);show("done");say(MODE==="party"?"party_fertig":"fertig",true);say(TRIPKEY(((n-1)%30)+1))}
 let curP=null,curIn=0;
 function tick(dt){elapsed+=dt;let ph=0;while(ph<PH.length-1&&elapsed>=STARTS[ph+1])ph++;const P=PH[ph],inPh=elapsed-STARTS[ph];curP=P;curIn=inPh;const LS=P.dur/P.lines.length,li=Math.min(P.lines.length-1,Math.floor(inPh/LS));
- if(ph!==lastPhase){monsters.forEach(m=>{if(!m.gone&&PH.slice(0,ph).some(pp=>pp.q===m.q)){m.gone=true;m.burst=1}});lastPhase=ph;$("phaseNo").textContent=MODES[MODE].title+" · "+(ph+1)+" von "+PH.length;$("phaseName").textContent=P.name;say(P.clip,true);if(P.move){$("move").textContent=P.move;setDance(P.img)}}
+ if(ph!==lastPhase){monsters.forEach(m=>{if(!m.gone&&PH.slice(0,ph).some(pp=>pp.q===m.q)){m.gone=true;m.burst=1}});lastPhase=ph;$("dots").innerHTML=PH.map((_,i)=>"<b class=\""+(i<ph?"ok":i===ph?"on":"")+"\"></b>").join("");$("phaseNo").textContent=MODES[MODE].title+" · "+(ph+1)+" von "+PH.length;$("phaseName").textContent=P.name;say(P.clip,true);if(P.move){$("move").textContent=P.move;setDance(P.img)}}
  if(P.mid&&!midDone[ph]&&inPh>=P.dur*0.55){midDone[ph]=1;say(P.mid)}
  coachTick(ph,P,inPh);camTick(dt,ph,P,inPh);
  const key=ph*100+li;if(key!==lastLine){lastLine=key;const nx=li<P.lines.length-1?P.lines[li+1]:(ph<PH.length-1?PH[ph+1].lines[0]:"");$("lyric").innerHTML="";const a=document.createElement("span");a.textContent=P.lines[li];$("lyric").appendChild(a);if(nx){const b=document.createElement("span");b.className="next";b.textContent=nx;$("lyric").appendChild(b)}}
