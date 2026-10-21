@@ -6,18 +6,18 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Milulu">
+<meta name="apple-mobile-web-app-title" content="Carmencita">
 <meta name="theme-color" content="#0f1b3d">
 <meta name="color-scheme" content="dark">
-<meta name="description" content="Salsa lernen mit Milulu: Takt hören, Grundschritt, Feedback im Takt. Alles bleibt auf deinem Handy.">
+<meta name="description" content="Tanzen mit Carmencita: Ballett, Hip-Hop, Latin, für Kinder und Eltern zusammen. Alles bleibt auf deinem Handy.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
-<title>Milulu – Salsa lernen</title>
-<meta property="og:title" content="Milulu – Salsa lernen"><meta property="og:description" content="Salsa lernen mit Milulu, Schritt für Schritt."><meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/carmen/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://diegorobert-code.github.io/DR_Lab/carmen/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
+<title>Carmencita – Tanzen für Gross und Klein</title>
+<meta property="og:title" content="Carmencita – Salsa lernen"><meta property="og:description" content="Salsa lernen mit Carmencita, Schritt für Schritt."><meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/carmen/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://diegorobert-code.github.io/DR_Lab/carmen/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <style>
 :root{
   --night:#0f1b3d; --night2:#18295a; --night3:#22397a; --card:rgba(255,255,255,.07); --line:rgba(255,255,255,.13);
@@ -46,7 +46,7 @@ button:focus-visible,input:focus-visible{outline:3px solid #ffe08a;outline-offse
 .screen.on{animation:glSzene .35s cubic-bezier(.2,.8,.2,1) both}
 @keyframes glSzene{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 body:has(#figurStart:not([hidden])) .nova-btn,body:has(#figurStart:not([hidden])) .sp-knopf{opacity:0;pointer-events:none}
-/* Unten rechts nur ein runder Knopf (Nova). Mit Milulu reden sitzt oben im Kopf (🎙). */
+/* Unten rechts nur ein runder Knopf (Nova). Mit Carmencita reden sitzt oben im Kopf (🎙). */
 .sp-knopf,.nova-pille{display:none!important}
 .kopf-mic{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font-size:20px;display:grid;place-items:center;padding:0;cursor:pointer;transition:transform .14s cubic-bezier(.3,.7,.4,1),background-color .2s}
 .kopf-mic:active{transform:scale(.94)}
@@ -75,7 +75,7 @@ p{margin:0 0 10px}
 .carmen.small{width:96px;height:115px}
 .carmen.dance #c-body{animation:sway .9s ease-in-out infinite alternate;transform-origin:100px 200px}
 @keyframes sway{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
-/* Trickfilm-Bühne Milulu */
+/* Trickfilm-Bühne Carmencita */
 .milu-platz{position:relative;height:300px;margin:6px 0 0;border-radius:28px;overflow:hidden;border:1px solid rgba(242,193,78,.45);background:radial-gradient(120% 90% at 50% 0%,#24398a 0%,#122059 55%,#0b1430 100%);box-shadow:0 18px 44px -14px rgba(0,0,0,.6),0 0 40px rgba(229,72,77,.18);isolation:isolate}
 .milu-strasse{position:absolute;inset:0;width:100%;height:100%;z-index:0}
 .milu-strasse .lichter circle{fill:#ffd36e;filter:drop-shadow(0 0 5px #ffd36e);animation:lichtBlink 2.4s ease-in-out infinite}
@@ -236,13 +236,13 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 </style>
 </head>
 <body>
-<div id="figurStart" role="dialog" aria-label="Milulu"><img src="figur-gross.jpg" alt="Milulu"><h1>Milulu</h1><p>¡Hola! Tipp auf «¡Vamos!», dann spielt die Band für dich.</p><button type="button" id="figurStartGo">¡Vamos! 💃</button></div>
+<div id="figurStart" role="dialog" aria-label="Carmencita"><img src="figur-gross.jpg" alt="Carmencita"><h1>Carmencita</h1><p>¡Hola! Tipp auf «¡Vamos!», dann spielt die Band für dich.</p><button type="button" id="figurStartGo">¡Vamos! 💃</button></div>
 <script>(function(){var s=document.getElementById('figurStart');try{if(sessionStorage.getItem('figurStart'))s.hidden=true;}catch(e){}document.getElementById('figurStartGo').onclick=function(){s.hidden=true;try{sessionStorage.setItem('figurStart','1');}catch(e){}};})();</script>
 <div class="wrap">
   <header class="top">
     <button class="back" id="back" hidden>‹ Zurück</button>
-    <div class="brand" id="brand">Milulu <span>·</span> Salsa</div>
-    <div style="display:flex;gap:8px;align-items:center"><button type="button" class="kopf-mic" id="kopfSprechen" aria-label="Mit Milulu reden" title="Mit Milulu reden">🎙</button><span data-feedback-slot></span><div class="pill" id="streak" title="Geübte Runden">★ <span id="rounds">0</span></div></div>
+    <div class="brand" id="brand">Carmencita</div>
+    <div style="display:flex;gap:8px;align-items:center"><button type="button" class="kopf-mic" id="kopfSprechen" aria-label="Mit Carmencita reden" title="Mit Carmencita reden">🎙</button><span data-feedback-slot></span><div class="pill" id="streak" title="Geübte Runden">★ <span id="rounds">0</span></div></div>
   </header>
 
   <!-- START -->
@@ -262,22 +262,27 @@ input[type=range]{width:100%;accent-color:var(--gold)}
         <g class="lichter"><circle cx="20" cy="66" r="4"/><circle cx="55" cy="76" r="4"/><circle cx="90" cy="84" r="4"/><circle cx="125" cy="84" r="4"/><circle cx="160" cy="76" r="4"/><circle cx="200" cy="66" r="4"/><circle cx="240" cy="64" r="4"/><circle cx="280" cy="64" r="4"/><circle cx="320" cy="62" r="4"/><circle cx="360" cy="60" r="4"/><circle cx="392" cy="58" r="4"/></g>
         <path d="M0 214 H400 V230 H0Z" fill="#c9774a"/><path d="M0 204 H400 V216 H0Z" fill="#e2a06b"/>
       </svg>
-      <div class="milu-tanz" data-sag="home-say"><img class="carmen milu" id="carmen-home" src="figur-gross.jpg" alt="Milulu" width="520" height="520"><span class="milu-req" id="milu-req" aria-hidden="true"></span></div>
+      <div class="milu-tanz" data-sag="home-say"><img class="carmen milu" id="carmen-home" src="figur-gross.jpg" alt="Carmencita" width="520" height="520"><span class="milu-req" id="milu-req" aria-hidden="true"></span></div>
       <div class="noten" aria-hidden="true"><i>♪</i><i>♫</i><i>♪</i></div>
     </div>
-    <div class="bubble" id="home-say">¡Hola! Ich bin Milulu. Hör zuerst die Musik, deine Füsse kommen von allein.</div>
+    <div class="bubble" id="home-say">¡Hola! Ich bin Carmencita. Hör zuerst die Musik, deine Füsse kommen von allein.</div>
     <button class="btn gold" id="go-next">Weiter üben</button>
     <div class="sticker-reihe" id="sticker-home" aria-label="Fiesta-Sticker"></div>
     <div class="tipp-karte" id="tipp-karte"></div>
+    <div class="sec">Tanzklassen für Gross und Klein</div>
+    <div class="list">
+      <button class="item" data-go="ws" data-klassen="kinder"><div class="ic">🧒</div><div class="tx"><b>Für Kinder</b><span>Ballett, Hip-Hop, Latin. Je 10 Minuten, ganz einfach erklärt</span></div><div class="badge" id="kl-badge-kinder"></div></button>
+      <button class="item" data-go="ws" data-klassen="familie"><div class="ic">👨‍👧</div><div class="tx"><b>Eltern und Kind zusammen</b><span>Hand in Hand, Spiegeln, Drehen. Je 12 Minuten</span></div><div class="badge" id="kl-badge-familie"></div></button>
+    </div>
     <div class="sec">Stufen</div>
     <div class="list" id="levels"></div>
-    <div class="sec">Milulu Workshop</div>
+    <div class="sec">Carmencita Workshop</div>
     <div class="list">
-      <button class="item" data-go="ws"><div class="ic">✦</div><div class="tx"><b>Tanz-Fitness 30 Min.</b><span>4 Wochen, 2× pro Woche: Merengue, Salsa, Cumbia, Reggaeton, Samba</span></div><div class="badge" id="ws-badge"></div></button>
+      <button class="item" data-go="ws"><div class="ic">✦</div><div class="tx"><b>Latin Dance Fitness 30 Min.</b><span>4 Wochen, 2× pro Woche: Merengue, Salsa, Cumbia, Reggaeton, Samba</span></div><div class="badge" id="ws-badge"></div></button>
     </div>
     <div class="sec">Spielen</div>
     <div class="list">
-      <button class="item" data-go="freeze"><div class="ic">❄</div><div class="tx"><b>Stopptanz mit Milulu</b><span>Tanzen, bis die Musik stoppt, dann einfrieren wie eine Statue. Auch für Kinder.</span></div><div class="badge" id="freeze-badge"></div></button>
+      <button class="item" data-go="freeze"><div class="ic">❄</div><div class="tx"><b>Stopptanz mit Carmencita</b><span>Tanzen, bis die Musik stoppt, dann einfrieren wie eine Statue. Auch für Kinder.</span></div><div class="badge" id="freeze-badge"></div></button>
       <button class="item" data-go="sticker"><div class="ic">★</div><div class="tx"><b>Fiesta-Sticker</b><span>Sammle Sticker fürs Üben, nicht fürs Perfektsein</span></div><div class="badge" id="sticker-badge"></div></button>
     </div>
     <div class="sec">Weitere Tänze</div>
@@ -285,8 +290,8 @@ input[type=range]{width:100%;accent-color:var(--gold)}
     <div class="sec">Mehr</div>
     <div class="list kacheln">
       <button class="item" data-go="band"><div class="ic">♫</div><div class="tx"><b>Band &amp; Metronom</b><span>Instrumente einzeln, Tempo frei, Clave 2-3 oder 3-2</span></div></button>
-      <button class="item" data-go="cam"><div class="ic">◉</div><div class="tx"><b>Kamera-Coach (Beta)</b><span>Milulu schaut auf deine Füsse. Bild bleibt auf dem Handy.</span></div></button>
-      <button class="item" data-go="mem"><div class="ic">♥</div><div class="tx"><b>Was Milulu sich merkt</b><span>Dein Fortschritt, nur auf diesem Gerät</span></div></button>
+      <button class="item" data-go="cam"><div class="ic">◉</div><div class="tx"><b>Kamera-Coach (Beta)</b><span>Carmencita schaut auf deine Füsse. Bild bleibt auf dem Handy.</span></div></button>
+      <button class="item" data-go="mem"><div class="ic">♥</div><div class="tx"><b>Was Carmencita sich merkt</b><span>Dein Fortschritt, nur auf diesem Gerät</span></div></button>
       <button class="item" data-go="set"><div class="ic">⚙</div><div class="tx"><b>Einstellungen</b><span>Führen/Folgen, Clave, Stimme, Kopfhörer ausgleichen</span></div></button>
     </div>
     <p class="foot-note">Musik entsteht im Handy. Nichts wird aufgenommen oder gesendet.<br>Bei Knie- oder Rückenschmerzen langsamer tanzen. Platz frei räumen. · DR Lab</p>
@@ -326,7 +331,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 
   <!-- ERGEBNIS -->
   <section class="screen" id="s-result">
-    <div class="stage"><img class="carmen small dance milu-klein" src="figur.jpg" alt="Milulu" width="240" height="240"></div>
+    <div class="stage"><img class="carmen small dance milu-klein" src="figur.jpg" alt="Carmencita" width="240" height="240"></div>
     <div class="result">
       <div class="score" id="r-score">0 %</div>
       <p class="muted" id="r-line">im Takt</p>
@@ -342,8 +347,8 @@ input[type=range]{width:100%;accent-color:var(--gold)}
   <!-- WORKSHOP -->
   <section class="screen" id="s-ws">
     <div id="ws-pick">
-      <h2 class="center">Milulu Workshop</h2>
-      <p class="muted center small">30 Minuten: Aufwärmen, vier Tanzblöcke, Cool-down. Zweimal pro Woche, vier Wochen. Die Musik wird im Handy erzeugt.</p>
+      <h2 class="center" id="ws-h">Carmencita Workshop</h2>
+      <p class="muted center small" id="ws-p">30 Minuten: Aufwärmen, vier Tanzblöcke, Cool-down. Zweimal pro Woche, vier Wochen. Die Musik wird im Handy erzeugt.</p>
       <div class="list" id="ws-list"></div>
       <p class="foot-note">Kein Gesundheitsversprechen. Bei Schmerzen kleiner und langsamer tanzen. Wasser bereit, Platz frei, glatte Sohlen.</p>
     </div>
@@ -358,17 +363,17 @@ input[type=range]{width:100%;accent-color:var(--gold)}
       <div class="row"><button class="btn soft" id="ws-skip">Nächster Block ››</button></div>
     </div>
     <div id="ws-done" hidden class="center">
-      <div class="stage"><img class="carmen small dance milu-klein" src="figur.jpg" alt="Milulu" width="240" height="240"></div>
+      <div class="stage"><img class="carmen small dance milu-klein" src="figur.jpg" alt="Carmencita" width="240" height="240"></div>
       <div class="bubble" id="ws-done-say">¡Eso! Einheit geschafft.</div>
-      <button class="btn gold" id="ws-back">Zur Workshop-Übersicht</button>
+      <button class="btn gold" id="ws-back">Zur Übersicht</button>
     </div>
   </section>
 
   <!-- STOPPTANZ -->
   <section class="screen" id="s-freeze">
     <h2 class="center">Stopptanz</h2>
-    <p class="muted center small">Tanz, solange die Musik spielt. Stoppt sie, frierst du ein, und Milulu sagt dir eine Pose. Jede Runde ein anderer Tanz.</p>
-    <div class="stage freeze-stage"><img class="carmen milu-freeze" id="milu-freeze" src="figur-gross.jpg" alt="Milulu" width="520" height="520"></div>
+    <p class="muted center small">Tanz, solange die Musik spielt. Stoppt sie, frierst du ein, und Carmencita sagt dir eine Pose. Jede Runde ein anderer Tanz.</p>
+    <div class="stage freeze-stage"><img class="carmen milu-freeze" id="milu-freeze" src="figur-gross.jpg" alt="Carmencita" width="520" height="520"></div>
     <div class="say"><div class="big" id="fz-big">¿Listo?</div><div class="sub" id="fz-sub">Platz frei machen, dann «Los».</div></div>
     <div class="result"><div class="score" id="fz-runde">0 / 6</div><p class="muted" id="fz-tanz">Runde</p></div>
     <div class="row" style="margin:10px 0"><button class="btn gold" id="fz-go">▶ Los</button></div>
@@ -378,7 +383,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
   <!-- STICKER -->
   <section class="screen" id="s-sticker">
     <h2 class="center">Fiesta-Sticker</h2>
-    <p class="muted center small">Milulu verteilt Sticker fürs Dranbleiben. Gespeichert nur auf diesem Gerät.</p>
+    <p class="muted center small">Carmencita verteilt Sticker fürs Dranbleiben. Gespeichert nur auf diesem Gerät.</p>
     <div class="sticker-gross" id="sticker-all"></div>
   </section>
 
@@ -391,17 +396,17 @@ input[type=range]{width:100%;accent-color:var(--gold)}
     <div class="fb" id="fb-cam"></div>
     <div class="row" style="margin:10px 0"><button class="btn gold" id="cam-go">Kamera + Musik starten</button></div>
     <div class="chips" id="cam-steps"></div>
-    <p class="muted small center">Milulu erkennt, wann ein Fuss aufsetzt, und vergleicht mit dem Takt. Gewicht verlagern ohne Schritt (2 und 6) sieht sie noch nicht. Für genaues Messen: Tippen-Übungen.</p>
+    <p class="muted small center">Carmencita erkennt, wann ein Fuss aufsetzt, und vergleicht mit dem Takt. Gewicht verlagern ohne Schritt (2 und 6) sieht sie noch nicht. Für genaues Messen: Tippen-Übungen.</p>
   </section>
 
   <!-- MERKT SICH -->
   <section class="screen" id="s-mem">
-    <h2 class="center">Was Milulu sich merkt</h2>
+    <h2 class="center">Was Carmencita sich merkt</h2>
     <p class="muted center small">Nur auf diesem Gerät. Keine Bilder, keine Stimme.</p>
     <div class="card"><div class="mem" id="mem-list"></div></div>
     <div class="card">
       <h3>Erfahrung teilen</h3>
-      <p class="small muted">Hilft Milulu und der Sense Engine, besser zu werden. Es gehen nur diese Zahlen raus, nichts anderes.</p>
+      <p class="small muted">Hilft Carmencita und der Sense Engine, besser zu werden. Es gehen nur diese Zahlen raus, nichts anderes.</p>
       <label class="check"><input type="checkbox" id="consent"> <span>Ich bin einverstanden, dass diese Übungszahlen (ohne Bild, ohne Stimme, ohne Namen) geteilt werden.</span></label>
       <button class="btn soft" id="share" disabled>Erfahrung teilen</button>
       <p class="small muted" id="share-ok"></p>
@@ -415,19 +420,19 @@ input[type=range]{width:100%;accent-color:var(--gold)}
     <div class="card">
       <div class="toggle"><span>Ich tanze</span><div class="seg" id="seg-role"><button data-v="lead">Führen</button><button data-v="follow">Folgen</button></div></div>
       <div class="toggle"><span>Clave</span><div class="seg" id="seg-clave"><button data-v="23">2-3</button><button data-v="32">3-2</button></div></div>
-      <div class="toggle"><span>Milulu zählt mit<br><small class="muted">uno, dos, tres … (bis 110 Schläge)</small></span><div class="seg" id="seg-voice"><button data-v="1">Ja</button><button data-v="0">Nein</button></div></div>
+      <div class="toggle"><span>Carmencita zählt mit<br><small class="muted">uno, dos, tres … (bis 110 Schläge)</small></span><div class="seg" id="seg-voice"><button data-v="1">Ja</button><button data-v="0">Nein</button></div></div>
       <div class="toggle"><span>Ausgleich Kopfhörer<br><small class="muted" id="cal-val">0 ms</small></span><button class="chip on" id="cal-go">Messen</button></div>
     </div>
     <div class="card" id="cal-box" hidden>
       <h3>Ausgleich messen</h3>
-      <p class="small">Tippe 16 Mal genau auf den Klick. Milulu merkt sich, wie viel dein Handy oder Kopfhörer verzögert.</p>
+      <p class="small">Tippe 16 Mal genau auf den Klick. Carmencita merkt sich, wie viel dein Handy oder Kopfhörer verzögert.</p>
       <div class="tap" id="cal-tap"><div>Tippen<small id="cal-n">0 / 16</small></div></div>
     </div>
     <p class="foot-note">Führen = klassisch Mann, Folgen = klassisch Frau. Jede und jeder darf beides lernen.</p>
   </section>
 </div>
 
-<!-- Milulu (Platzhalter bis Tinko-Bild) -->
+<!-- Carmencita (Platzhalter bis Tinko-Bild) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <linearGradient id="dress" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a4290"/><stop offset="1" stop-color="#16245a"/></linearGradient>
@@ -644,6 +649,9 @@ const STYLE={
     if(s%16===12)SND.kick(t,.55);                                     // Betonung auf 4 und 8
     if(s%16===0)SND.bajo(t,c.b,e*5); if(s%16===6)SND.bajo(t,c.b+7,e*2); if(s%16===8)SND.bajo(t,c.b+12,e*3);
     if(s%2===0)SND.piano(t,[c.n[(s/2)%3]]); },                        // Gitarren-Arpeggio
+  ballett:(s,t,e,ch)=>{ if(s%16===0)SND.pad(t,ch.n,e*15); if(s%4===0)SND.piano(t,[ch.n[(s/4)%3]+12]); if(s%8===6)SND.piano(t,[ch.n[2]+24]); if(s%16===0)SND.bajo(t,ch.b+12,e*8); },
+  hiphop:(s,t,e,ch)=>{ if(s%16===0||s%16===10)SND.kick(t,.8); if(s%8===4)SND.snare(t,.45); if(s%2===0)SND.shaker(t,s%4===2?.12:.06,.03);
+    if(s%16===0)SND.bajo(t,ch.b,e*6); if(s%16===12)SND.piano(t,ch.n); },
   warm:(s,t,e,ch)=>{ if(s%4===0)SND.kick(t,.5); if(s%4===2)SND.shaker(t,.15,.06); if(s%16===0)SND.bajo(t,ch.b,e*7); if(s%8===4)SND.snare(t,.18); },
   cool:(s,t,e,ch)=>{ if(s%16===0)SND.pad(t,ch.n,e*15); if(s%8===0)SND.shaker(t,.05,.2); }
 };
@@ -780,7 +788,7 @@ function finish(){
   show("result"); if(window.FigurPosen) FigurPosen.zeige($("#s-result .milu-klein"),score>=80?"jubelt":"tanzt",0,score>=80?["verbeugt","tanzt"]:["tanzt"]);
 }
 function suggestion(){
-  // Was als Nächstes? Milulu lernt aus den gespeicherten Zahlen.
+  // Was als Nächstes? Carmencita lernt aus den gespeicherten Zahlen.
   for(const id of ORDER){ const s=mem.steps[id]; const bpm=mem.bpm[id]||90;
     if(!s||s.best<80) return {id,bpm:s&&s.last<50?Math.max(70,bpm-10):bpm};
     if(s.bestBpm<110) return {id,bpm:Math.min(110,s.bestBpm+10)};
@@ -798,6 +806,7 @@ $$("[data-go]").forEach(b=>b.onclick=()=>{const g=b.dataset.go; if(g==="band")op
 function renderHome(){
   if(typeof renderSticker==="function"&&$("#sticker-home")) try{renderSticker()}catch(e){}
   $("#rounds").textContent=mem.rounds; $("#ws-badge").textContent=Object.keys(mem.ws||{}).length+" / 8";
+  ["kinder","familie"].forEach(k=>{const e=$("#kl-badge-"+k); if(e) e.textContent=Object.keys(mem.kl||{}).filter(x=>x.startsWith(k+":")).length+" / 3";});
   const L=$("#levels"); L.innerHTML="";
   ORDER.forEach((id,k)=>{const s=STEPS[id],m=mem.steps[id];const b=document.createElement("button");b.className="item";
     b.innerHTML=`<div class="ic">${s.ic}</div><div class="tx"><b>${k}. ${s.title}</b><span>${s.short}</span></div><div class="badge">${m?m.best+" %":""}</div>`;
@@ -809,7 +818,7 @@ function renderHome(){
   const sg=suggestion(); $("#go-next").textContent=`Weiter: ${STEPS[sg.id].title} · ${sg.bpm}`;
   $("#go-next").onclick=()=>openPractice(sg.id,"step",sg.bpm);
   const days=mem.days.length;
-  $("#home-say").textContent=mem.rounds===0?"¡Hola! Ich bin Milulu. Hör zuerst die Musik, deine Füsse kommen von allein."
+  $("#home-say").textContent=mem.rounds===0?"¡Hola! Ich bin Carmencita. Hör zuerst die Musik, deine Füsse kommen von allein."
     :`¡Hola otra vez! ${mem.rounds} Runden an ${days} ${days===1?"Tag":"Tagen"}. Heute schlage ich vor: ${STEPS[sg.id].title}.`;
 }
 function tempoName(b){return b<100?"langsam":b<140?"mittel":b<170?"langsame Salsa":"Club-Tempo"}
@@ -856,14 +865,14 @@ $("#cal-tap").addEventListener("pointerdown",e=>{ e.preventDefault(); if(!cal) r
     $("#cal-val").textContent=mem.calib+" ms"; $("#cal-n").textContent="Fertig: "+mem.calib+" ms gespeichert"; }
 });
 
-/* ---------- Was Milulu sich merkt ---------- */
+/* ---------- Was Carmencita sich merkt ---------- */
 function renderMem(){
   const L=$("#mem-list"); const rows=[];
   rows.push(["Geübte Runden",mem.rounds]); rows.push(["Übungstage",mem.days.length]);
   rows.push(["Rolle",mem.role==="lead"?"Führen":"Folgen"]); rows.push(["Kopfhörer-Ausgleich",mem.calib+" ms"]);
   for(const id of ORDER.concat(DANCES)){const s=mem.steps[id]; if(!s)continue;
     rows.push([STEPS[id].title,`beste ${s.best} % · zuletzt ${s.last} % · ${s.avg<0?"eher früh":"eher spät"} (${Math.abs(s.avg)} ms) · sicher bis ${s.bestBpm||"–"}`]);}
-  const sg=suggestion(); rows.push(["Milulus Vorschlag",`${STEPS[sg.id].title} bei ${sg.bpm}`]);
+  const sg=suggestion(); rows.push(["Carmencitas Vorschlag",`${STEPS[sg.id].title} bei ${sg.bpm}`]);
   L.innerHTML=(mem.rounds?"":`<div class="mem-leer"><img src="figur.jpg" alt="" width="56" height="56"><span>Noch ist mein Heft leer. Tanz eine Runde, dann schreibe ich hier mit, was du schon kannst.</span></div>`)
     +rows.map(r=>`<div class="m"><span>${r[0]}</span><span class="muted" style="text-align:right">${r[1]}</span></div>`).join("");
 }
@@ -874,9 +883,9 @@ $("#share").onclick=async()=>{
     hinweis:"Nur Zahlen. Kein Bild, keine Stimme, kein Name."};
   const txt=JSON.stringify(data,null,1);
   try{ const a=String(JSON.parse(localStorage.getItem("drlab-hermes-adresse")||'""')||"").trim().replace(/\/+$/,""), k=JSON.parse(localStorage.getItem("drlab-hermes-passwort")||'""');
-    if(/^https:\/\//.test(a)&&k){ const r=await fetch(a+"/erfahrung",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+k},body:JSON.stringify({app:"Milulu",art:"lernzahlen",frage:JSON.stringify(data.inhalt),antwort:""})});
+    if(/^https:\/\//.test(a)&&k){ const r=await fetch(a+"/erfahrung",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+k},body:JSON.stringify({app:"Carmencita",art:"lernzahlen",frage:JSON.stringify(data.inhalt),antwort:""})});
       if(r.ok){ $("#share-ok").textContent="Danke! Die Zahlen sind bei der Sense Engine angekommen."; return; } } }catch(e){}
-  try{ if(navigator.share){await navigator.share({title:"Milulu Erfahrung",text:txt});} else {await navigator.clipboard.writeText(txt);} $("#share-ok").textContent="Bereit zum Einfügen in die Sense Engine."; }
+  try{ if(navigator.share){await navigator.share({title:"Carmencita Erfahrung",text:txt});} else {await navigator.clipboard.writeText(txt);} $("#share-ok").textContent="Bereit zum Einfügen in die Sense Engine."; }
   catch(e){ try{await navigator.clipboard.writeText(txt);$("#share-ok").textContent="Kopiert.";}catch(_){ $("#share-ok").textContent="Teilen nicht möglich."; } }
 };
 $("#mem-reset").onclick=()=>{ if(confirm("Wirklich alles vergessen?")){ mem=Object.assign({},defMem,{steps:{},bpm:{},days:[]}); save(); renderMem(); } };
@@ -889,7 +898,7 @@ function camChips(){ const el=$("#cam-steps"); el.innerHTML="";
     c.onclick=()=>{camStep=id;camChips();}; el.appendChild(c);}); }
 $("[data-go=cam]").addEventListener("click",()=>{camChips();buildCounts($("#counts-cam"));});
 async function camStart(){
-  audio(); $("#cam-ov").textContent="Milulu lädt die Bewegungserkennung …";
+  audio(); $("#cam-ov").textContent="Carmencita lädt die Bewegungserkennung …";
   try{
     stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:{ideal:640},height:{ideal:480}},audio:false});
     const v=$("#video"); v.srcObject=stream; await v.play();
@@ -927,7 +936,7 @@ function camLoop(){
   }; loop();
 }
 
-/* ---------- Milulu Workshop (30 Min.) ---------- */
+/* ---------- Carmencita Workshop (30 Min.) ---------- */
 const WARM={name:"Aufwärmen",style:"warm",bpm:122,every:32,moves:["Auf der Stelle marschieren","Schultern kreisen","Hüfte kreisen","Seit-Tap rechts und links"]};
 const COOL={name:"Cool-down",style:"cool",bpm:70,every:32,moves:["Langsam gehen","Tief atmen","Waden dehnen","Oberschenkel dehnen","Hüfte und Schultern lösen"]};
 const CH_A=["Merengue-Marsch vor","Merengue mit Drehung","Salsa-Grundschritt","Salsa-Seitschritt mit Armen"];
@@ -943,9 +952,34 @@ const WS={
  "4A":{t:"Woche 4 · Choreo B",b:[B("Merengue","merengue",130,["Merengue-Hüfte mit Armen"]),B("Choreo A","salsa",140,CH_A,8),B("Choreo B lernen","cumbia",120,CH_B,8),B("Samba","samba",100,["Samba-Hüfte"])]},
  "4B":{t:"Woche 4 · Ganze Choreo",b:[B("Choreo A","salsa",140,CH_A,8),B("Choreo B","cumbia",122,CH_B,8),B("Ganze Choreo","salsa",140,CH_A.concat(CH_B),8),B("Choreo + frei tanzen","merengue",128,CH_A.concat(CH_B,["Frei tanzen!"]),8)]}
 };
-const BLOCK_S=300; let W=null,wake=null;
-function wsBlocks(k){return [WARM,...WS[k].b,COOL]}
+let W=null,wake=null,KLW=null;
+/* ---------- Tanzklassen für Gross und Klein (21.10.) ---------- */
+const KWARM={name:"Aufwärmen",style:"warm",bpm:110,every:16,moves:["Wie ein Baum wachsen, ganz gross","Arme schwingen wie Flügel","Auf der Stelle hüpfen","Schultern hoch und runter"]};
+const KCOOL={name:"Ausruhen",style:"cool",bpm:66,every:16,moves:["Ganz langsam gehen","Tief einatmen, wie ein Ballon","Ausatmen und schütteln","Verbeugen. ¡Gracias!"]};
+const FWARM={name:"Aufwärmen zusammen",style:"warm",bpm:110,every:16,moves:["Hände halten und zusammen marschieren","Abwechselnd Hände klatschen","Zusammen in die Knie und hoch","Rücken an Rücken wippen"]};
+const FCOOL={name:"Ausruhen zusammen",style:"cool",bpm:66,every:16,moves:["Hand in Hand langsam gehen","Zusammen tief atmen","Einander die Schultern ausschütteln","Zusammen verbeugen. ¡Gracias!"]};
+const KL={
+ kinder:{h:"Tanzklassen für Kinder",p:"Je 10 Minuten: Aufwärmen, drei Tanzblöcke, Ausruhen. Ein Erwachsener ist in der Nähe.",s:120,warm:KWARM,cool:KCOOL,k:{
+  "Ballett":{t:"Ballett · Kleine Tänzer",b:[B("Plié","ballett",72,["Fersen zusammen, Füsse wie ein V","Knie auf und zu, weich wie eine Feder"],16),B("Relevé","ballett",72,["Auf die Zehenspitzen, ganz gross","Langsam wieder runter"],16),B("Arme und Drehung","ballett",76,["Arme rund wie ein grosser Ball","Kleine vorsichtige Drehung, dann verbeugen"],16)]},
+  "Hip-Hop":{t:"Hip-Hop · Coole Kids",b:[B("Bounce","hiphop",90,["Knie locker, auf und ab wippen","Mit den Schultern mitwippen"],16),B("Step-Touch","hiphop",92,["Schritt zur Seite, Fuss tippen","Arme kreuzen beim Tippen"],16),B("Roboter und Freeze","hiphop",94,["Bewege dich wie ein Roboter: piep, piep","Coole Pose! Einfrieren"],16)]},
+  "Latin":{t:"Latin Dance Fitness · Kids",b:[B("Merengue-Marsch","merengue",120,["Marschieren im Takt","Marschieren und Hüfte wackeln"],16),B("Cumbia","cumbia",110,["Ein Fuss nach hinten, wiegen, ran","Mit Fächer-Hand"],16),B("Salsa einfach","salsa",130,["Vor, zurück, Pause","Mit den Armen mitschwingen"],16)]}}},
+ familie:{h:"Eltern und Kind zusammen",p:"Je 12 Minuten. Zusammen tanzen, Hand in Hand, sich spiegeln. Das Kind gibt auch mal den Takt an.",s:144,warm:FWARM,cool:FCOOL,k:{
+  "Salsa":{t:"Familien-Salsa · Hand in Hand",b:[B("Grundschritt gegenüber","salsa",130,["Hände halten, einer vor, einer zurück","Jetzt tauschen"],16),B("Drehen unter dem Arm","salsa",130,["Kind dreht sich unter dem Arm des Erwachsenen","Und jetzt in die andere Richtung"],16),B("Frei zusammen","merengue",120,["Zusammen frei tanzen","Auf 8: gemeinsame Pose"],16)]},
+  "Ballett":{t:"Familien-Ballett · Spiegel",b:[B("Spiegel","ballett",72,["Das Kind macht vor, der Erwachsene spiegelt","Jetzt umgekehrt"],16),B("Plié zusammen","ballett",72,["Hände halten, zusammen in die Knie","Zusammen auf die Zehen"],16),B("Grosse Drehung","ballett",76,["Erwachsener hält die Hand, Kind dreht wie eine Ballerina","Zusammen verbeugen"],16)]},
+  "Hip-Hop":{t:"Familien-Hip-Hop · Battle",b:[B("Bounce zusammen","hiphop",90,["Zusammen wippen, Blick zueinander","High Five auf 1"],16),B("Du und ich","hiphop",92,["8 Schläge tanzt das Kind, der Erwachsene klatscht","8 Schläge tanzt der Erwachsene, das Kind klatscht"],16),B("Gemeinsame Pose","hiphop",94,["Erfindet zusammen eine Bewegung","Auf 8: Freeze zusammen!"],16)]}}}
+};
+function wsSrc(k){ return W&&W.set ? KL[W.set].k[k] : WS[k]; }
+function wsBlocks(k){ if(W&&W.set){const c=KL[W.set]; return [c.warm,...c.k[k].b,c.cool];} return [WARM,...WS[k].b,COOL]; }
+const blockS=()=>W&&W.set?KL[W.set].s:300;
+function renderKl(set){
+  KLW=set; const c=KL[set]; $("#ws-pick").hidden=false;$("#ws-run").hidden=true;$("#ws-done").hidden=true;
+  $("#ws-h").textContent=c.h; $("#ws-p").textContent=c.p; const done=(mem.kl||{}); const L=$("#ws-list"); L.innerHTML="";
+  Object.keys(c.k).forEach(k=>{const b=document.createElement("button");b.className="item";const id=set+":"+k;
+    b.innerHTML=`<div class="ic">${done[id]?"✓":({"Ballett":"🩰","Hip-Hop":"🎧","Latin":"💃","Salsa":"💃"})[k]||"✦"}</div><div class="tx"><b>${c.k[k].t}</b><span>${c.k[k].b.map(x=>x.name).join(", ")}</span></div><div class="badge">${done[id]?"★":""}</div>`;
+    b.onclick=()=>wsOpen(k,set); L.appendChild(b);});
+}
 function renderWs(){
+  KLW=null; $("#ws-h").textContent="Carmencita Workshop"; $("#ws-p").textContent="30 Minuten: Aufwärmen, vier Tanzblöcke, Cool-down. Zweimal pro Woche, vier Wochen. Die Musik wird im Handy erzeugt.";
   $("#ws-pick").hidden=false;$("#ws-run").hidden=true;$("#ws-done").hidden=true;
   const done=(mem.ws||{}); const L=$("#ws-list"); L.innerHTML="";
   let next=Object.keys(WS).find(k=>!done[k])||"4B";
@@ -953,15 +987,15 @@ function renderWs(){
     b.innerHTML=`<div class="ic">${done[k]?"✓":k}</div><div class="tx"><b>Einheit ${k}${k===next?" · als Nächstes":""}</b><span>${WS[k].t}: ${WS[k].b.map(x=>x.name).join(", ")}</span></div><div class="badge">${done[k]?done[k].slice(5).split("-").reverse().join("."):""}</div>`;
     b.onclick=()=>wsOpen(k); L.appendChild(b);});
 }
-function wsOpen(k){ W={k,idx:0,el:0,run:false,lastMove:-1}; $("#ws-pick").hidden=true;$("#ws-run").hidden=false;$("#ws-done").hidden=true;
-  $("#ws-title").textContent="Einheit "+k+" · "+WS[k].t.split(" · ")[1]; buildCounts($("#counts-ws"),[1,2,3,4,5,6,7,8]); wsShow(); $("#ws-play").textContent="▶ Los"; }
-function sayDe(txt){ try{ if(window.NovaStimme&&NovaStimme.aktiv()){ NovaStimme.sprich(txt); return; } // Milulus eigene Stimme (Sense Engine)
+function wsOpen(k,set){ W={k,set:set||null,idx:0,el:0,run:false,lastMove:-1}; $("#ws-pick").hidden=true;$("#ws-run").hidden=false;$("#ws-done").hidden=true;
+  $("#ws-title").textContent=W.set?wsSrc(k).t:"Einheit "+k+" · "+WS[k].t.split(" · ")[1]; buildCounts($("#counts-ws"),[1,2,3,4,5,6,7,8]); wsShow(); $("#ws-play").textContent="▶ Los"; }
+function sayDe(txt){ try{ if(window.NovaStimme&&NovaStimme.aktiv()){ NovaStimme.sprich(txt); return; } // Carmencitas eigene Stimme (Sense Engine)
   if(!("speechSynthesis" in window))return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(txt); u.lang="de-DE"; u.rate=1.05;
   const v=(voices||speechSynthesis.getVoices()).find(v=>/^de/i.test(v.lang)); if(v)u.voice=v; speechSynthesis.speak(u);}catch(e){} }
 const mmss=x=>{x=Math.max(0,Math.ceil(x));return Math.floor(x/60)+":"+String(x%60).padStart(2,"0")};
-function wsShow(){ const bl=wsBlocks(W.k), b=bl[W.idx], rest=BLOCK_S-W.el;
-  $("#ws-block").textContent=b.name; $("#ws-time").textContent=mmss(rest); $("#ws-total").textContent="noch "+mmss(rest+(bl.length-1-W.idx)*BLOCK_S)+" gesamt";
-  $("#ws-bar").style.width=((W.idx*BLOCK_S+W.el)/(bl.length*BLOCK_S)*100)+"%";
+function wsShow(){ const bl=wsBlocks(W.k), b=bl[W.idx], rest=blockS()-W.el;
+  $("#ws-block").textContent=b.name; $("#ws-time").textContent=mmss(rest); $("#ws-total").textContent="noch "+mmss(rest+(bl.length-1-W.idx)*blockS())+" gesamt";
+  $("#ws-bar").style.width=((W.idx*blockS()+W.el)/(bl.length*blockS())*100)+"%";
   const beats=Math.floor(W.el*b.bpm/60), mi=Math.floor(beats/b.every)%b.moves.length;
   $("#ws-move").textContent=b.moves[mi]+" · "+b.bpm+" Schläge";
   if(W.run&&mi!==W.lastMove){ if(W.lastMove!==-1&&b.moves.length>1) sayDe(b.moves[mi]); W.lastMove=mi; }
@@ -969,12 +1003,12 @@ function wsShow(){ const bl=wsBlocks(W.k), b=bl[W.idx], rest=BLOCK_S-W.el;
 }
 function wsStartBlock(announce){ const b=wsBlocks(W.k)[W.idx]; P.style=b.style; P.mode="workshop"; P.cam=false; setBpm(b.bpm);
   on={klick:0,clave:1,campana:1,conga:1,bajo:1,piano:1}; start(); P.style=b.style; W.t0=ctx.currentTime-W.el; W.run=true; W.lastMove=-1;
-  if(announce) sayDe(W.idx===0?"Willkommen. Wir wärmen uns auf. "+b.moves[0]:"Jetzt "+b.name+". "+b.moves[0]);
+  if(announce) sayDe(W.idx===0?(W.set==="familie"?"¡Hola familia! Wir wärmen uns zusammen auf. ":W.set?"¡Hola! Wir wärmen uns auf. ":"Willkommen. Wir wärmen uns auf. ")+b.moves[0]:"Jetzt "+b.name+". "+b.moves[0]);
   $("#ws-play").textContent="❚❚ Pause"; wsLoop(); }
 function wsLoop(){ if(!W||!W.run)return; W.el=ctx.currentTime-W.t0;
   const b=currentBeat(); if(b) $("#counts-ws").querySelectorAll(".cnt").forEach(x=>x.classList.toggle("now",+x.dataset.c===b.count));
-  if(W.el>=BLOCK_S-10&&!W.warned){W.warned=true;sayDe("Noch zehn Sekunden");}
-  if(W.el>=BLOCK_S) return wsNext();
+  if(W.el>=blockS()-10&&!W.warned){W.warned=true;sayDe("Noch zehn Sekunden");}
+  if(W.el>=blockS()) return wsNext();
   wsShow(); requestAnimationFrame(wsLoop); }
 function wsNext(){ const bl=wsBlocks(W.k); stop(true); W.warned=false; W.el=0;
   if(W.idx>=bl.length-1) return wsFinish(); W.idx++; wsStartBlock(true); }
@@ -982,14 +1016,18 @@ async function wsLock(on_){ try{ if(on_&&navigator.wakeLock) wake=await navigato
 $("#ws-play").onclick=()=>{ if(!W)return; audio(); if(W.run){ W.run=false; stop(); wsLock(false); $("#ws-play").textContent="▶ Weiter"; } else { wsLock(true); wsStartBlock(W.el===0); } };
 $("#ws-skip").onclick=()=>{ if(!W)return; const was=W.run; W.run=false; stop(true); W.el=0; W.warned=false;
   if(W.idx>=wsBlocks(W.k).length-1) return wsFinish(); W.idx++; if(was){audio();wsStartBlock(true);} else wsShow(); };
-function wsFinish(){ W.run=false; stop(); wsLock(false); mem.ws=mem.ws||{}; mem.ws[W.k]=new Date().toISOString().slice(0,10); save(); setTimeout(stickerPruefen,800);
+function wsFinish(){ W.run=false; stop(); wsLock(false);
+  if(W.set){ mem.kl=mem.kl||{}; mem.kl[W.set+":"+W.k]=new Date().toISOString().slice(0,10); save(); setTimeout(stickerPruefen,800);
+    const m=W.set==="familie"?"¡Eso, familia! Ihr habt zusammen getanzt. Gebt euch ein High Five.":"¡Muy bien! Du hast ganz toll getanzt. Trink etwas Wasser.";
+    sayDe(m); $("#ws-run").hidden=true; $("#ws-done").hidden=false; $("#ws-done-say").textContent=m; return; }
+  mem.ws=mem.ws||{}; mem.ws[W.k]=new Date().toISOString().slice(0,10); save(); setTimeout(stickerPruefen,800);
   sayDe("Eso! Einheit geschafft. Trink etwas Wasser.");
   $("#ws-run").hidden=true; $("#ws-done").hidden=false;
   const n=Object.keys(mem.ws).length; $("#ws-done-say").textContent=`¡Eso! Einheit ${W.k} geschafft. ${n} von 8 Einheiten. Trink etwas Wasser.`; }
-$("#ws-back").onclick=()=>renderWs();
-$("[data-go=ws]").addEventListener("click",()=>renderWs());
+$("#ws-back").onclick=()=>KLW?renderKl(KLW):renderWs();
+$$("[data-go=ws]").forEach(b=>b.addEventListener("click",()=>b.dataset.klassen?renderKl(b.dataset.klassen):renderWs()));
 
-/* ---------- Trickfilm: Milulu tanzt im Takt ---------- */
+/* ---------- Trickfilm: Carmencita tanzt im Takt ---------- */
 const ruhigM=matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
 function miluBeat(c){ if(ruhigM) return;
   $$(".milu-takt,.milu,.milu-freeze").forEach(im=>{ if(P.mode==="freeze"&&FZ&&FZ.frozen) return; im.classList.remove("b1","b2"); void im.offsetWidth; im.classList.add(c===1||c===5?"b1":"b2"); });
@@ -1018,7 +1056,7 @@ const TIPPS=[
 ];
 const PALABRAS=[["uno, dos, tres","eins, zwei, drei"],["¡Eso!","Genau so!"],["¡Vamos!","Los geht's!"],["despacio","langsam"],["la vuelta","die Drehung"],["¡Sigue!","Mach weiter!"],["el ritmo","der Rhythmus"],["¡Qué bien!","Wie schön!"]];
 function renderTipp(){ const d=Math.floor(Date.now()/864e5), t=TIPPS[d%TIPPS.length], w=PALABRAS[d%PALABRAS.length];
-  $("#tipp-karte").innerHTML=""; const h=document.createElement("b"); h.textContent="Milulus Tipp: "+t[0];
+  $("#tipp-karte").innerHTML=""; const h=document.createElement("b"); h.textContent="Carmencitas Tipp: "+t[0];
   const p=document.createElement("span"); p.textContent=t[1]; const w2=document.createElement("small"); w2.textContent="Spanisch-Wort des Tages: «"+w[0]+"» = "+w[1];
   $("#tipp-karte").append(h,p,w2); }
 
@@ -1060,7 +1098,7 @@ $("[data-go=sticker]").addEventListener("click",()=>renderSticker());
 /* ---------- Stopptanz ---------- */
 let FZ=null;
 const FZ_TAENZE=[["salsa",95,"Salsa"],["merengue",115,"Merengue"],["cumbia",100,"Cumbia"],["reggaeton",92,"Reggaeton"],["samba",100,"Samba"],["bachata",112,"Bachata"]];
-const FZ_POSEN=["Arme hoch wie Milulu!","Auf einem Bein, wie ein Flamingo!","Hände auf die Hüfte!","Wie eine Blume, ganz gross!","Ganz klein machen, wie eine Maus!","Eine Hand in die Luft, eine auf den Bauch!","Lächeln einfrieren!","Wie eine Statue im Park!"];
+const FZ_POSEN=["Arme hoch wie Carmencita!","Auf einem Bein, wie ein Flamingo!","Hände auf die Hüfte!","Wie eine Blume, ganz gross!","Ganz klein machen, wie eine Maus!","Eine Hand in die Luft, eine auf den Bauch!","Lächeln einfrieren!","Wie eine Statue im Park!"];
 function fzZeigen(){ $("#fz-runde").textContent=(FZ?FZ.runde:0)+" / 6"; }
 function fzTanz(){ if(!FZ||!FZ.run) return; const t=FZ_TAENZE[FZ.runde%FZ_TAENZE.length]; FZ.frozen=false; $("#milu-freeze").classList.remove("eis");
   P.style=t[0]; P.mode="freeze"; P.step="grund"; P.cam=false; on={klick:0,clave:1,campana:1,conga:1,bajo:1,piano:1}; setBpm(t[1]); start(); P.mode="freeze";
@@ -1082,11 +1120,11 @@ $("#back").addEventListener("click",()=>fzAus());
 /* ---------- Erster Start: drei kurze Fragen ---------- */
 function onboarding(){
   if(mem.onboard) return;
-  const o=document.createElement("div"); o.className="ob"; o.setAttribute("role","dialog"); o.setAttribute("aria-label","Willkommen bei Milulu");
+  const o=document.createElement("div"); o.className="ob"; o.setAttribute("role","dialog"); o.setAttribute("aria-label","Willkommen bei Carmencita");
   const SCH=[
     {q:"Wer tanzt heute?",a:[["Ich allein","solo"],["Mit einem Kind","kind"],["Zu zweit","paar"]]},
     {q:"Welche Rolle möchtest du lernen?",a:[["Führen","lead"],["Folgen","follow"],["Weiss noch nicht","lead"]]},
-    {q:"Soll Milulu auf Spanisch mitzählen?",a:[["Ja, uno, dos, tres","1"],["Nein, nur Musik","0"]]}
+    {q:"Soll Carmencita auf Spanisch mitzählen?",a:[["Ja, uno, dos, tres","1"],["Nein, nur Musik","0"]]}
   ];
   let i=0; const wahl={};
   function zeig(){ const x=SCH[i]; o.innerHTML='<div class="ob-box"><img src="figur.jpg" alt="" width="96" height="96"><div class="ob-dots" role="img" aria-label="Frage '+(i+1)+' von 3">'+[0,1,2].map(k=>'<i'+(k<=i?' class="an"':'')+'></i>').join('')+'</div><h3></h3><div class="ob-a"></div><button class="ob-skip">Überspringen</button></div>';
@@ -1094,25 +1132,25 @@ function onboarding(){
     x.a.forEach(([t,v])=>{const b=document.createElement("button"); b.className="btn gold"; b.textContent=t; b.onclick=()=>{wahl[i]=v; i++; if(i<SCH.length) zeig(); else fertig();}; o.querySelector(".ob-a").appendChild(b);});
     o.querySelector(".ob-skip").onclick=fertig; }
   function fertig(){ mem.onboard=1; if(wahl[1]) mem.role=wahl[1]; if(wahl[2]!==undefined) mem.voice=+wahl[2]; mem.wer=wahl[0]||"solo"; save(); o.classList.add("zu"); setTimeout(()=>o.remove(),300); renderHome(); konfetti(); try{navigator.vibrate&&navigator.vibrate([12,60,12])}catch(e){}
-    const t=mem.wer==="kind"?"¡Qué bien! Mit Kindern macht der Stopptanz am meisten Spass. Du findest ihn unter «Spielen».":mem.wer==="paar"?"¡Bienvenidos! Lernt zuerst beide allein den Grundschritt, dann tanzt ihr zusammen.":"¡Bienvenido! Wir starten mit der 1. Hör einfach zu.";
+    const t=mem.wer==="kind"?"¡Qué bien! Ganz oben findest du «Eltern und Kind zusammen». Und der Stopptanz unter «Spielen» macht Kindern viel Spass.":mem.wer==="paar"?"¡Bienvenidos! Lernt zuerst beide allein den Grundschritt, dann tanzt ihr zusammen.":"¡Bienvenido! Wir starten mit der 1. Hör einfach zu.";
     $("#home-say").textContent=t; sayDe(t); }
   zeig(); document.body.appendChild(o);
 }
 
-/* ---------- Runde 3: erster Eindruck. Nach «¡Vamos!» spielt die Band kurz, Milulu tanzt, dann kommen die Fragen ---------- */
+/* ---------- Runde 3: erster Eindruck. Nach «¡Vamos!» spielt die Band kurz, Carmencita tanzt, dann kommen die Fragen ---------- */
 function fiesta(){
   const ob=document.querySelector(".ob"); if(ob) ob.classList.add("wartet");
   let fertig=false;
   const ende=()=>{ if(fertig) return; fertig=true; if(P.mode==="free"&&current==="home") stop(); setBpm(90); if(ob&&ob.isConnected) ob.classList.remove("wartet"); };
   try{ audio(); P.style="salsa"; P.mode="free"; P.step="grund"; P.cam=false; setBpm(104); start(); }catch(e){ ende(); return; }
-  $("#home-say").textContent="¡Hola! Ich bin Milulu. Hörst du die Band? Die spielt nur für dich.";
+  $("#home-say").textContent="¡Hola! Ich bin Carmencita. Hörst du die Band? Die spielt nur für dich.";
   try{navigator.vibrate&&navigator.vibrate([12,60,12])}catch(e){}
   setTimeout(ende,5600);
   document.addEventListener("pointerdown",function f(e){ if(e.target.closest&&e.target.closest("#figurStart")) return; document.removeEventListener("pointerdown",f,true); ende(); },true);
 }
 $("#figurStartGo").addEventListener("click",fiesta);
-// Mit Milulu reden: der Knopf oben im Kopf löst den Sprech-Baustein aus (dessen eigener Knopf ist versteckt)
-$("#kopfSprechen").onclick=()=>{ try{navigator.vibrate&&navigator.vibrate(10)}catch(e){} const k=document.querySelector(".sp-knopf"); if(k) k.click(); else $("#home-say").textContent="Reden geht in diesem Browser nicht. Tipp einfach auf «Weiter üben»."; };
+// Mit Carmencita reden: der Knopf oben im Kopf löst den Sprech-Baustein aus (dessen eigener Knopf ist versteckt)
+$("#kopfSprechen").onclick=()=>{ try{navigator.vibrate&&navigator.vibrate(10)}catch(e){} location.href="../nova/reden.html?f=carmencita"; };
 (function spiegeln(t){ const k=document.querySelector(".sp-knopf"); if(!k){ if(t<300) requestAnimationFrame(()=>spiegeln(t+1)); return; }
   new MutationObserver(()=>{ $("#kopfSprechen").classList.toggle("hoert",k.classList.contains("hoert")); $("#kopfSprechen").classList.toggle("spricht",k.classList.contains("spricht")); }).observe(k,{attributes:true,attributeFilter:["class"]}); })(0);
 
@@ -1205,12 +1243,12 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
   }
 })();
 </script>
-<script src="../apps/sprechen/sprechen.js" data-figur="carmencita" data-name="Milulu" data-bild="figur.jpg" data-audio="audio/carmencita/" data-unten="16" data-saetze='{"gruss": ["¡Hola! Ich bin Milulu. Tanzt du mit mir?"], "lob": ["¡Muy bien! Deine Füsse tanzen schon ganz von allein."], "mut": ["Langsam ist auch schön. Hör auf die Musik, eins, zwei, drei, Pause."], "frage": ["Tipp auf «Weiter üben», dann zeige ich dir den nächsten Schritt."]}' defer></script>
+<script src="../apps/sprechen/sprechen.js" data-figur="carmencita" data-name="Carmencita" data-bild="figur.jpg" data-audio="audio/carmencita/" data-unten="16" data-saetze='{"gruss": ["¡Hola! Ich bin Carmencita. Tanzt du mit mir?"], "lob": ["¡Muy bien! Deine Füsse tanzen schon ganz von allein."], "mut": ["Langsam ist auch schön. Hör auf die Musik, eins, zwei, drei, Pause."], "frage": ["Tipp auf «Weiter üben», dann zeige ich dir den nächsten Schritt."]}' defer></script>
 <script src="posen.js"></script>
-<script src="feedback.js" data-app="Milulu" defer></script>
+<script src="feedback.js" data-app="Carmencita" defer></script>
 <script>if('serviceWorker' in navigator && location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(function(){});</script>
 <script src="../nova/seelen.js" defer></script>
-<script src="../nova/nova.js" data-nova-app="Milulu" data-nova-figur="carmencita" defer></script>
-<script src="../nova/nova.js" data-nova-bild="figur.jpg" data-nova-app="Milulu" data-nova-figur="carmencita" defer></script>
+<script src="../nova/nova.js" data-nova-app="Carmencita" data-nova-figur="carmencita" defer></script>
+<script src="../nova/nova.js" data-nova-bild="figur.jpg" data-nova-app="Carmencita" data-nova-figur="carmencita" defer></script>
 </body>
 </html>
