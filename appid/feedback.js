@@ -18,34 +18,34 @@
   const save = () => store.set('log', log.slice(-200));
 
   const css = `
-  .fb-btn{display:inline-flex;align-items:center;justify-content:center;min-width:48px;min-height:48px;border-radius:99px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:inherit;font-size:22px;cursor:pointer;padding:0 12px;position:relative}
-  .fb-btn.float{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:50;background:#f2c14e;color:#2a1f05;box-shadow:0 8px 22px -8px rgba(0,0,0,.6)}
-  .fb-dot{position:absolute;top:4px;right:4px;width:10px;height:10px;border-radius:50%;background:#f2c14e;display:none}
-  .fb-veil{position:fixed;inset:0;background:rgba(5,8,25,.6);z-index:60;display:none;align-items:flex-end;justify-content:center}
+  .fb-btn{display:inline-flex;align-items:center;justify-content:center;min-width:48px;min-height:48px;border-radius:99px;border:1px solid rgba(31,42,37,.18);background:rgba(31,42,37,.08);color:inherit;font-size:22px;cursor:pointer;padding:0 12px;position:relative}
+  .fb-btn.float{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:50;background:#c2461f;color:#ffffff;box-shadow:0 8px 22px -8px rgba(0,0,0,.6)}
+  .fb-dot{position:absolute;top:4px;right:4px;width:10px;height:10px;border-radius:50%;background:#c2461f;display:none}
+  .fb-veil{position:fixed;inset:0;background:rgba(31,42,37,.6);z-index:60;display:none;align-items:flex-end;justify-content:center}
   .fb-veil.on{display:flex}
-  .fb-sheet{width:100%;max-width:560px;height:92vh;display:flex;flex-direction:column;background:#141c40;color:#f3efe6;border-radius:24px 24px 0 0;padding:16px 16px calc(14px + env(safe-area-inset-bottom));font:16px/1.45 -apple-system,system-ui,sans-serif;box-shadow:0 -10px 40px rgba(0,0,0,.5);box-sizing:border-box}
+  .fb-sheet{width:100%;max-width:560px;height:92vh;display:flex;flex-direction:column;background:#fffdf9;color:#1f2a25;border-radius:24px 24px 0 0;padding:16px 16px calc(14px + env(safe-area-inset-bottom));font:16px/1.45 -apple-system,system-ui,sans-serif;box-shadow:0 -10px 40px rgba(0,0,0,.5);box-sizing:border-box}
   .fb-head{display:flex;align-items:center;gap:10px}
-  .fb-head h3{flex:1;margin:0;font-size:20px;color:#f2c14e}
-  .fb-x{min-width:44px;min-height:44px;border-radius:99px;border:1px solid rgba(255,255,255,.18);background:transparent;color:inherit;font-size:20px;cursor:pointer}
+  .fb-head h3{flex:1;margin:0;font-size:20px;color:#b5401c}
+  .fb-x{min-width:44px;min-height:44px;border-radius:99px;border:1px solid rgba(31,42,37,.18);background:transparent;color:inherit;font-size:20px;cursor:pointer}
   .fb-log{flex:1;overflow:auto;padding:10px 2px;display:flex;flex-direction:column;gap:8px}
   .fb-b{max-width:85%;padding:10px 13px;border-radius:18px;white-space:pre-wrap;word-wrap:break-word;font-size:16px}
-  .fb-b.du{align-self:flex-end;background:#f2c14e;color:#2a1f05;border-bottom-right-radius:6px}
-  .fb-b.claude{align-self:flex-start;background:rgba(255,255,255,.09);border-bottom-left-radius:6px}
-  .fb-b.info{align-self:center;background:transparent;color:#8e93b3;font-size:14px;text-align:center;max-width:95%}
+  .fb-b.du{align-self:flex-end;background:#c2461f;color:#ffffff;border-bottom-right-radius:6px}
+  .fb-b.claude{align-self:flex-start;background:rgba(31,42,37,.09);border-bottom-left-radius:6px}
+  .fb-b.info{align-self:center;background:transparent;color:#5d6a63;font-size:14px;text-align:center;max-width:95%}
   .fb-b small{display:block;font-size:12px;opacity:.7;margin-top:3px}
   .fb-in{display:flex;gap:8px;align-items:flex-end}
-  .fb-in textarea{flex:1;box-sizing:border-box;min-height:52px;max-height:140px;border-radius:18px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:inherit;font:inherit;font-size:17px;padding:13px 14px;resize:none}
-  .fb-round{min-width:52px;min-height:52px;border-radius:50%;border:0;font-size:22px;cursor:pointer;background:rgba(255,255,255,.1);color:inherit}
-  .fb-round.send{background:#f2c14e;color:#2a1f05}
+  .fb-in textarea{flex:1;box-sizing:border-box;min-height:52px;max-height:140px;border-radius:18px;border:1px solid rgba(31,42,37,.18);background:rgba(31,42,37,.06);color:inherit;font:inherit;font-size:17px;padding:13px 14px;resize:none}
+  .fb-round{min-width:52px;min-height:52px;border-radius:50%;border:0;font-size:22px;cursor:pointer;background:rgba(31,42,37,.1);color:inherit}
+  .fb-round.send{background:#c2461f;color:#ffffff}
   .fb-round.rec{background:#d6413b;color:#fff}
-  .fb-out{border-top:1px solid rgba(255,255,255,.12);margin-top:10px;padding-top:8px}
-  .fb-ok{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#b9bdd6}
+  .fb-out{border-top:1px solid rgba(31,42,37,.12);margin-top:10px;padding-top:8px}
+  .fb-ok{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#5d6a63}
   .fb-ok input{width:22px;height:22px;flex:none;margin-top:1px}
   .fb-row{display:flex;gap:8px;margin-top:8px}
-  .fb-row button{flex:1;min-height:48px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:inherit;font:inherit;font-size:15px;font-weight:600;cursor:pointer}
-  .fb-row button.gold{background:#f2c14e;color:#2a1f05;border:0}
+  .fb-row button{flex:1;min-height:48px;border-radius:14px;border:1px solid rgba(31,42,37,.18);background:rgba(31,42,37,.08);color:inherit;font:inherit;font-size:15px;font-weight:600;cursor:pointer}
+  .fb-row button.gold{background:#c2461f;color:#ffffff;border:0}
   .fb-row button:disabled{opacity:.4}
-  .fb-msg{min-height:18px;font-size:14px;color:#7fdca4;margin-top:6px}`;
+  .fb-msg{min-height:18px;font-size:14px;color:#2f6a4f;margin-top:6px}`;
   const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
 
   const btn = document.createElement('button');
@@ -65,7 +65,7 @@
       <button type="button" class="fb-round send" id="fbSend" aria-label="Senden">➤</button>
     </div>
     <div class="fb-out" id="fbOut">
-      <label class="fb-ok"><input type="checkbox" id="fbOk"><span>Einverstanden: Meine Nachrichten (nur Text, kein Ton, kein Bild) gehen an DR Lab, damit Claude die App verbessert.</span></label>
+      <label class="fb-ok"><input type="checkbox" id="fbOk"><span>Einverstanden: Meine Nachrichten (nur Text, kein Ton, kein Bild) gehen an das Team, damit Claude die App verbessert.</span></label>
       <div class="fb-row"><button type="button" class="gold" id="fbCopy">📋 An Claude weitergeben</button><button type="button" id="fbMail">✉️ Mail</button></div>
       <div class="fb-row"><button type="button" id="fbPaste">↩︎ Claudes Antwort einfügen</button></div>
       <div class="fb-msg" id="fbMsg"></div>
@@ -86,7 +86,7 @@
     const info = document.createElement('div'); info.className = 'fb-b info';
     info.textContent = ENDPOINT
       ? 'Claude antwortet hier direkt.'
-      : 'Rede einfach rein. Solange der DR-Lab-Server fehlt, gibst du die Nachrichten mit einem Tipp an Claude weiter. Die Antwort kommt im Projekt, du kannst sie hier einfügen.';
+      : 'Rede einfach rein. Solange der Server fehlt, gibst du die Nachrichten mit einem Tipp an Claude weiter. Die Antwort kommt im Projekt, du kannst sie hier einfügen.';
     L.appendChild(info);
     for (const m of log){
       const b = document.createElement('div'); b.className = 'fb-b ' + m.who;
@@ -169,12 +169,12 @@
     };
 
     $('fbCopy').onclick = async () => {
-      try{ await navigator.clipboard.writeText(packet()); markOut(); $('fbMsg').textContent = 'Kopiert. Jetzt im DR-Lab-Projekt einfügen und senden.'; }
+      try{ await navigator.clipboard.writeText(packet()); markOut(); $('fbMsg').textContent = 'Kopiert. Jetzt im Projekt einfügen und senden.'; }
       catch(e){ $('fbMsg').textContent = 'Kopieren ging nicht. Bitte «Mail» nehmen.'; }
     };
     $('fbMail').onclick = () => {
       const first = pending()[0];
-      const subj = `[DR Lab Feedback] ${APP}: ${(first ? first.t : '').slice(0, 50)}`;
+      const subj = `[Feedback] ${APP}: ${(first ? first.t : '').slice(0, 50)}`;
       location.href = `mailto:${TO}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(packet())}`;
       markOut(); $('fbMsg').textContent = 'Die Mail-App öffnet sich. Dort auf Senden tippen.';
     };

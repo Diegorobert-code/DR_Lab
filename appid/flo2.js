@@ -16,15 +16,15 @@ function zaehl(k){if(F.zaehl)F.zaehl(k)}
 const css=document.createElement("style");
 css.textContent=`
 .alltag{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.alltag button{min-height:56px;border-radius:16px;border:1px solid rgba(242,193,78,.35);background:linear-gradient(135deg,#24486a,#1d2c63);color:#f6efe4;font:600 14px/1.25 inherit;text-align:left;padding:8px 12px;display:flex;gap:8px;align-items:center;cursor:pointer}
+.alltag button{min-height:56px;border-radius:16px;border:1px solid rgba(194,70,31,.35);background:linear-gradient(135deg,#e2ece6,#f1eee6);color:#1f2a25;font:600 14px/1.25 inherit;text-align:left;padding:8px 12px;display:flex;gap:8px;align-items:center;cursor:pointer}
 .alltag button span{font-size:22px;flex:none}
-.alltag button small{display:block;font-weight:400;color:#cfd6ea;font-size:12px}
+.alltag button small{display:block;font-weight:400;color:#4b5852;font-size:12px}
 .kenn-pills{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
-.kenn-pills button{min-height:44px;padding:0 14px;border-radius:99px;border:1px solid #3a4a85;background:#1d2c63;color:#f6efe4;font-size:15px;cursor:pointer}
-.kenn-pills button.on{background:linear-gradient(135deg,#F2C14E,#e0a93a);color:#1a2140;border-color:#F2C14E;font-weight:700}
-.kinder-li{border-top:1px solid rgba(242,193,78,.25);padding:10px 0}
+.kenn-pills button{min-height:44px;padding:0 14px;border-radius:99px;border:1px solid #e0dbd0;background:#f1eee6;color:#1f2a25;font-size:15px;cursor:pointer}
+.kenn-pills button.on{background:linear-gradient(135deg,#c2461f,#b5401c);color:#ffffff;border-color:#c2461f;font-weight:700}
+.kinder-li{border-top:1px solid rgba(194,70,31,.25);padding:10px 0}
 .kinder-li b{display:block}
-.offline-band{position:fixed;left:50%;top:max(10px,env(safe-area-inset-top));transform:translateX(-50%);z-index:9000;background:#2a3566;color:#f6efe4;border:1px solid #F2C14E;border-radius:99px;padding:6px 14px;font-size:13px;max-width:92vw;text-align:center}
+.offline-band{position:fixed;left:50%;top:max(10px,env(safe-area-inset-top));transform:translateX(-50%);z-index:9000;background:#fffdf9;color:#1f2a25;border:1px solid #c2461f;border-radius:99px;padding:6px 14px;font-size:13px;max-width:92vw;text-align:center}
 `;
 document.head.appendChild(css);
 
@@ -74,7 +74,7 @@ const KINDER=[
 function kinder(){
   zaehl("kinder");R2.kinder++;sp2();
   openS2(`<h2 style="font-size:22px">👨‍👩‍👧 Zusammen kochen</h2><p class="small" style="margin:4px 0 6px">Einfache Ideen für Kinder, Familie und Freunde. Jede Aufgabe so, dass Kleine mithelfen können.</p>
-   ${KINDER.map((k,i)=>`<div class="kinder-li"><b>${k[0]} ${k[1]}</b><div class="small">${k[2]}</div><div class="small" style="color:#F2C14E;margin-top:3px">Aufgabe: ${k[3]}</div><button class="flo-chip" data-kz="${i}" style="margin-top:6px">Zur Einkaufsliste kopieren</button></div>`).join("")}
+   ${KINDER.map((k,i)=>`<div class="kinder-li"><b>${k[0]} ${k[1]}</b><div class="small">${k[2]}</div><div class="small" style="color:#b5401c;margin-top:3px">Aufgabe: ${k[3]}</div><button class="flo-chip" data-kz="${i}" style="margin-top:6px">Zur Einkaufsliste kopieren</button></div>`).join("")}
    <p class="small" style="margin-top:10px">Messer und Herd bleiben bei den Erwachsenen.</p>`);
   document.querySelectorAll("[data-kz]").forEach(b=>b.onclick=()=>{const k=KINDER[+b.dataset.kz];const t=k[1]+": "+k[2];
     if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(()=>toast("Kopiert"),()=>toast(t));else toast(t)});

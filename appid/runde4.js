@@ -36,7 +36,7 @@
     '.r4-btn2:active,.r4-farbe:active,.r4-rad-btn:active{transform:scale(.97)}',
     /* achtsam */
     '.r4-atem{position:relative;width:180px;height:180px;margin:18px auto 6px;display:grid;place-items:center}',
-    '.r4-atem i{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(232,190,92,.55),rgba(232,190,92,.08) 70%);transform:scale(.55);transition:transform 4s ease-in-out}',
+    '.r4-atem i{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(194,70,31,.55),rgba(194,70,31,.08) 70%);transform:scale(.55);transition:transform 4s ease-in-out}',
     '.r4-atem.ein i{transform:scale(1)}',
     '.r4-atem b{position:relative;font-size:15px;font-weight:600;text-align:center;max-width:140px;line-height:1.35}',
     '.r4-zeit{height:4px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:10px}.r4-zeit>span{display:block;height:100%;width:0;background:var(--warm);transition:width 1s linear}',
@@ -50,10 +50,10 @@
     '.r4-woche em{display:block;width:100%;height:6px;border-radius:3px;background:var(--line)}',
     /* kochrad */
     '.r4-rad{position:relative;width:220px;height:220px;margin:16px auto 4px}',
-    '.r4-scheibe{width:100%;height:100%;border-radius:50%;border:4px solid #e8be5c;box-shadow:0 10px 30px rgba(0,0,0,.35);transition:transform 3.2s cubic-bezier(.17,.84,.2,1);position:relative;overflow:hidden}',
+    '.r4-scheibe{width:100%;height:100%;border-radius:50%;border:4px solid #c2461f;box-shadow:0 10px 30px rgba(0,0,0,.35);transition:transform 3.2s cubic-bezier(.17,.84,.2,1);position:relative;overflow:hidden}',
     '.r4-scheibe span{position:absolute;left:50%;top:50%;font-size:26px;width:30px;height:30px;margin:-15px;display:grid;place-items:center}',
-    '.r4-zeiger{position:absolute;left:50%;top:-12px;margin-left:-12px;width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:22px solid #e8be5c;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4));z-index:2}',
-    '.r4-rad-btn{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px;border-radius:50%;border:3px solid #e8be5c;background:#0f1b3d;color:#ffe9a8;font:700 15px var(--sans);z-index:3;box-shadow:0 4px 14px rgba(0,0,0,.4)}',
+    '.r4-zeiger{position:absolute;left:50%;top:-12px;margin-left:-12px;width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:22px solid #c2461f;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4));z-index:2}',
+    '.r4-rad-btn{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px;border-radius:50%;border:3px solid #c2461f;background:#f6f4ef;color:#b5401c;font:700 15px var(--sans);z-index:3;box-shadow:0 4px 14px rgba(0,0,0,.4)}',
     '.r4-rezept{margin-top:12px;padding:14px;border-radius:16px;border:1px solid var(--line);display:none}',
     '.r4-rezept.on{display:block;animation:r4Auf .5s var(--ease) both}',
     '.r4-rezept b{font-size:18px;display:block;margin-bottom:4px}',
@@ -193,7 +193,7 @@
     { e: '🥬', n: 'Capuns light im Glas', z: 'Mangold, Spätzliteig, Kräuter, etwas Bündnerfleisch oder Pilze', t: '35 Min.' },
     { e: '🍲', n: 'Gerstensuppe', z: 'Rollgerste, Lauch, Rüebli, Sellerie', t: '45 Min.' }
   ];
-  var FARB = ['#2b3c78', '#3a4a86', '#25356e', '#33447f'];
+  var FARB = ['#e2ece6', '#fbe5dc', '#eef4f0', '#f8ecd9'];
   var rad = h('<div class="card" id="r4rad"><div class="r4-kopf"><h3>🎡 Was koche ich heute?</h3></div><p class="r4-txt">Dreh Flos Kochrad. Herbst-Ideen aus der Schweiz.</p>' +
     '<div class="r4-rad"><div class="r4-zeiger"></div><div class="r4-scheibe"></div><button class="r4-rad-btn" type="button">Drehen</button></div><div class="r4-rezept" aria-live="polite"></div></div>');
   box.appendChild(rad);

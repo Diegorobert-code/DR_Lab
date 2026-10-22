@@ -20,21 +20,21 @@ const WT=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samst
 const css=document.createElement("style");
 css.textContent=`
 .flo-row{display:flex;gap:8px;overflow-x:auto;padding:12px 2px 2px;scrollbar-width:none}.flo-row::-webkit-scrollbar{display:none}
-.flo-lbl{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#F2C14E;font-weight:700;margin:18px 2px 0}
-.flo-chip{flex:none;font-size:14px;background:linear-gradient(135deg,#24486a,#1d2c63);color:#f6efe4;border:1px solid #3a4a85;padding:8px 13px;border-radius:99px;white-space:nowrap}
-.flo-chip.gold{background:linear-gradient(135deg,#F2C14E,#e0a93a);color:#1a2140;border-color:#F2C14E;font-weight:600}
+.flo-lbl{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#b5401c;font-weight:700;margin:18px 2px 0}
+.flo-chip{flex:none;font-size:14px;background:linear-gradient(135deg,#e2ece6,#f1eee6);color:#1f2a25;border:1px solid #e0dbd0;padding:8px 13px;border-radius:99px;white-space:nowrap}
+.flo-chip.gold{background:linear-gradient(135deg,#c2461f,#b5401c);color:#ffffff;border-color:#c2461f;font-weight:600}
 .holo{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
-.holo>*{white-space:nowrap;font-size:12.5px;padding:3px 9px;border-radius:99px;background:rgba(111,207,151,.14);border:1px solid rgba(111,207,151,.45);color:#c9f3dc;box-shadow:0 0 12px rgba(111,207,151,.25) inset;animation:holoGlow 3.2s ease-in-out infinite}
+.holo>*{white-space:nowrap;font-size:12.5px;padding:3px 9px;border-radius:99px;background:rgba(111,207,151,.14);border:1px solid rgba(111,207,151,.45);color:#2f6a4f;box-shadow:0 0 12px rgba(111,207,151,.25) inset;animation:holoGlow 3.2s ease-in-out infinite}
 .holo>button{cursor:pointer}.holo>*:nth-child(2){animation-delay:.6s}.holo>*:nth-child(3){animation-delay:1.2s}
 .holo b{display:inline!important;font-size:inherit!important;font-weight:700;background:none!important;-webkit-text-fill-color:#fff;color:#fff!important}
-.holo>span{display:inline-block!important;margin:0!important;color:#c9f3dc!important}
+.holo>span{display:inline-block!important;margin:0!important;color:#2f6a4f!important}
 @keyframes holoGlow{0%,100%{box-shadow:0 0 8px rgba(111,207,151,.2) inset}50%{box-shadow:0 0 16px rgba(111,207,151,.5) inset,0 0 10px rgba(111,207,151,.35)}}
 .figur-hero .flo-wrap{position:relative;flex:none}
 .flo-prop{position:absolute;right:-6px;top:-8px;font-size:26px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.4));opacity:0;transform:scale(.3);transition:opacity .3s,transform .4s cubic-bezier(.3,1.6,.5,1);pointer-events:none}
 .flo-prop.on{opacity:1;transform:scale(1)}
 .figur-hero img.pose-jubel{animation:poseJubel .9s cubic-bezier(.3,1.5,.5,1) 2!important}
 .figur-hero img.pose-jog{animation:poseJog .42s ease-in-out infinite!important}
-.figur-hero img.pose-hoert{animation:poseHoert 1.4s ease-in-out infinite!important;box-shadow:0 0 0 4px rgba(242,193,78,.5),0 0 30px rgba(242,193,78,.6)!important}
+.figur-hero img.pose-hoert{animation:poseHoert 1.4s ease-in-out infinite!important;box-shadow:0 0 0 4px rgba(194,70,31,.5),0 0 30px rgba(194,70,31,.6)!important}
 .figur-hero img.pose-ruhig{animation:poseRuhig 5s ease-in-out infinite!important}
 .figur-hero img.pose-winkt{animation:poseWinkt 1.1s ease-in-out 2!important}
 .figur-hero img.pose-denkt{animation:poseDenkt 2.4s ease-in-out infinite!important}
@@ -44,48 +44,48 @@ css.textContent=`
 @keyframes poseRuhig{0%,100%{transform:scale(1);filter:brightness(.92)}50%{transform:scale(1.03);filter:brightness(1)}}
 @keyframes poseWinkt{0%,100%{transform:rotate(0)}25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}
 @keyframes poseDenkt{0%,100%{transform:rotate(0) translateX(0)}50%{transform:rotate(-7deg) translateX(-3px)}}
-.sizeq{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:5px;font-size:13px;color:#F2C14E}
-.sizeq button{padding:3px 10px;border-radius:99px;border:1px solid #3a4a85;background:#1d2c63;font-size:13px;color:#f6efe4}
-.sizeq button.on{background:#F2C14E;color:#1a2140;border-color:#F2C14E;font-weight:600}
+.sizeq{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:5px;font-size:13px;color:#b5401c}
+.sizeq button{padding:3px 10px;border-radius:99px;border:1px solid #e0dbd0;background:#f1eee6;font-size:13px;color:#1f2a25}
+.sizeq button.on{background:#c2461f;color:#ffffff;border-color:#c2461f;font-weight:600}
 .teller{display:flex;gap:16px;align-items:center}
 .teller svg{flex:none;width:132px;height:132px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.35))}
 .teller .leg{flex:1;font-size:14px;line-height:1.55}
 .teller .leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
-.wetter{font-size:16px;margin-top:12px;padding:10px 12px;border-radius:14px;background:#1d2c63;display:flex;gap:10px;align-items:center}
+.wetter{font-size:16px;margin-top:12px;padding:10px 12px;border-radius:14px;background:#f1eee6;display:flex;gap:10px;align-items:center}
 .wetter span:first-child{font-size:28px;line-height:1}
-.flo-say{float:right;width:34px;height:34px;border-radius:50%;background:#1d2c63;border:1px solid #3a4a85;display:grid;place-items:center;font-size:16px;margin:-4px -4px 0 8px}
+.flo-say{float:right;width:34px;height:34px;border-radius:50%;background:#f1eee6;border:1px solid #e0dbd0;display:grid;place-items:center;font-size:16px;margin:-4px -4px 0 8px}
 .quiz .q{font-family:var(--serif);font-size:20px;line-height:1.3;margin:4px 0 12px}
 .quiz .ab{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.quiz .ab button{padding:13px;border-radius:16px;font-weight:700;font-size:16px;background:#1d2c63;border:1px solid #3a4a85;color:#f6efe4}
-.quiz .ab button.m{background:linear-gradient(135deg,#4a2630,#2a1d3c)}.quiz .ab button.f{background:linear-gradient(135deg,#1f4a3c,#1d2c63)}
-.quiz .res{margin-top:12px;padding:12px;border-radius:14px;background:#1b2d5e;animation:filmAuf .45s ease-out both}
-.quiz .res b{color:#F2C14E}
+.quiz .ab button{padding:13px;border-radius:16px;font-weight:700;font-size:16px;background:#f1eee6;border:1px solid #e0dbd0;color:#1f2a25}
+.quiz .ab button.m{background:linear-gradient(135deg,#f6e3df,#eae6f2)}.quiz .ab button.f{background:linear-gradient(135deg,#e2ece6,#f1eee6)}
+.quiz .res{margin-top:12px;padding:12px;border-radius:14px;background:#eef4f0;animation:filmAuf .45s ease-out both}
+.quiz .res b{color:#b5401c}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-.tile{border-radius:20px;padding:14px;text-align:left;color:#f6efe4;border:1px solid rgba(242,193,78,.35);min-height:96px;position:relative;overflow:hidden;box-shadow:0 10px 26px -14px rgba(0,0,0,.6)}
+.tile{border-radius:20px;padding:14px;text-align:left;color:#1f2a25;border:1px solid rgba(194,70,31,.35);min-height:96px;position:relative;overflow:hidden;box-shadow:0 10px 26px -14px rgba(0,0,0,.6)}
 .tile .e{font-size:30px;display:block;line-height:1;margin-bottom:6px}
-.tile b{display:block;font-size:15.5px}.tile small{display:block;font-size:12.5px;color:#d9d3e6;line-height:1.35;margin-top:2px}
-.tile:nth-child(1){background:linear-gradient(140deg,#1f5a6e,#17255a)}.tile:nth-child(2){background:linear-gradient(140deg,#7a4a1c,#17255a)}
-.tile:nth-child(3){background:linear-gradient(140deg,#2f5d50,#17255a)}.tile:nth-child(4){background:linear-gradient(140deg,#5a2f6e,#17255a)}
-.tile::after{content:"";position:absolute;right:-20px;bottom:-20px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(242,193,78,.25),transparent 70%)}
-.slist{list-style:none;padding:0;margin:8px 0 0}.slist li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #24346a}.slist li:last-child{border-bottom:0}
+.tile b{display:block;font-size:15.5px}.tile small{display:block;font-size:12.5px;color:#4b5852;line-height:1.35;margin-top:2px}
+.tile:nth-child(1){background:linear-gradient(140deg,#e2edf0,#fffdf9)}.tile:nth-child(2){background:linear-gradient(140deg,#f8ecd9,#fffdf9)}
+.tile:nth-child(3){background:linear-gradient(140deg,#2f5d50,#fffdf9)}.tile:nth-child(4){background:linear-gradient(140deg,#eae6f2,#fffdf9)}
+.tile::after{content:"";position:absolute;right:-20px;bottom:-20px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(194,70,31,.25),transparent 70%)}
+.slist{list-style:none;padding:0;margin:8px 0 0}.slist li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #e6e2d9}.slist li:last-child{border-bottom:0}
 .slist .e{font-size:22px;width:28px;text-align:center;flex:none}
-.einkauf label{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #24346a;font-size:15px}
-.einkauf input{width:20px;height:20px;accent-color:#F2C14E}.einkauf label.ok span{text-decoration:line-through;opacity:.55}
-.flo-check{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #24346a;font-size:14.5px;line-height:1.4}
-.flo-check:last-of-type{border-bottom:0}.flo-check input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:#F2C14E}
-.flofrage{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 92px);max-width:436px;margin:0 auto;z-index:35;background:linear-gradient(140deg,#22356e,#17255a);border:1px solid #F2C14E;border-radius:22px;padding:12px 14px;box-shadow:0 18px 40px -12px rgba(0,0,0,.7);transform:translateY(160%);transition:transform .45s cubic-bezier(.22,.8,.26,1)}
+.einkauf label{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #e6e2d9;font-size:15px}
+.einkauf input{width:20px;height:20px;accent-color:#c2461f}.einkauf label.ok span{text-decoration:line-through;opacity:.55}
+.flo-check{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #e6e2d9;font-size:14.5px;line-height:1.4}
+.flo-check:last-of-type{border-bottom:0}.flo-check input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:#c2461f}
+.flofrage{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 92px);max-width:436px;margin:0 auto;z-index:35;background:linear-gradient(140deg,#f1eee6,#fffdf9);border:1px solid #c2461f;border-radius:22px;padding:12px 14px;box-shadow:0 18px 40px -12px rgba(0,0,0,.7);transform:translateY(160%);transition:transform .45s cubic-bezier(.22,.8,.26,1)}
 .flofrage.on{transform:none}
 .flofrage .k{display:flex;gap:10px;align-items:center;font-size:15px}
-.flofrage img{width:42px;height:42px;border-radius:50%;border:2px solid #F2C14E;object-fit:cover;flex:none}
+.flofrage img{width:42px;height:42px;border-radius:50%;border:2px solid #c2461f;object-fit:cover;flex:none}
 .flofrage .bt{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
-.flofrage .bt button{padding:8px 2px;border-radius:14px;background:#1d2c63;border:1px solid #3a4a85;font-size:12.5px;color:#f6efe4;line-height:1.2}
+.flofrage .bt button{padding:8px 2px;border-radius:14px;background:#f1eee6;border:1px solid #e0dbd0;font-size:12.5px;color:#1f2a25;line-height:1.2}
 .flofrage .bt button span{display:block;font-size:22px}
-.flofrage .weg{position:absolute;right:10px;top:8px;color:#a9b1cc;font-size:18px;width:28px;height:28px}
+.flofrage .weg{position:absolute;right:10px;top:8px;color:#5d6a63;font-size:18px;width:28px;height:28px}
 body.flo-sanft .ring,body.flo-sanft #bal,body.flo-sanft #status,body.flo-sanft .mac .row b{display:none}
-.story p{margin:0 0 8px;font-size:16px;line-height:1.5}.story p:first-letter{font-family:var(--serif);font-size:1.35em;color:#F2C14E}
+.story p{margin:0 0 8px;font-size:16px;line-height:1.5}.story p:first-letter{font-family:var(--serif);font-size:1.35em;color:#b5401c}
 /* Startbild: Nova-Pille und Knöpfe lagen über «Los geht's» und öffneten das Gespräch statt der App */
 body:has(#figurStart:not([hidden])) :is(.nova-btn,.nova-pille,.sp-knopf,.sp-blase){visibility:hidden!important;pointer-events:none!important}
-.story .vor{margin-top:6px;padding:10px 12px;border-radius:14px;background:#1d2c63;font-size:15px}
+.story .vor{margin-top:6px;padding:10px 12px;border-radius:14px;background:#f1eee6;font-size:15px}
 `;
 document.head.appendChild(css);
 
@@ -127,7 +127,7 @@ window.FLO_FRAG=function(it,btn){
   const s=srv();if(!s||!it||!it.unk)return;
   btn.disabled=true;btn.textContent="✨ Flo fragt …";pose("denkt",0,"🤔");zaehl("server");
   const sys="Du schätzt Nährwerte für eine Schweizer Ernährungs-App. Antworte NUR mit JSON, ohne Text: {\"name\":\"Name auf Deutsch (Schweiz)\",\"portion_g\":Zahl,\"einheit\":\"Stück|Portion|Scheibe|Glas|Teller\",\"kcal\":Zahl,\"protein\":Zahl,\"fett\":Zahl,\"kh\":Zahl,\"ballast\":Zahl,\"art\":\"gemuese|frucht|protein|fisch|andere\"}. Nährwerte pro 100 g. Wenn es kein Lebensmittel ist: {\"name\":\"\"}.";
-  fetch(s.a+"/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+s.k,"X-Nova-App":"Food and Flow"},
+  fetch(s.a+"/v1/chat/completions",{signal:(window.AbortSignal&&AbortSignal.timeout)?AbortSignal.timeout(12000):undefined,method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+s.k,"X-Nova-App":"Food and Flow"},
     body:JSON.stringify({model:"sense-engine",messages:[{role:"system",content:sys},{role:"user",content:it.unk}]})})
   .then(r=>{if(!r.ok)throw new Error(r.status);return r.json()})
   .then(j=>{
@@ -176,7 +176,7 @@ document.getElementById("examples")&&document.getElementById("examples").addEven
 
 /* ---------- Nach dem Speichern: Flo jubelt und fragt kurz nach dem Befinden ---------- */
 const MOOD=[["wach","⚡","Wach"],["gut","🙂","Gut"],["muede","😴","Müde"],["voll","🫧","Bauch voll"]];
-const frage=el(`<div class="flofrage" role="dialog" aria-label="Flo fragt"><button class="weg" aria-label="Schliessen">✕</button><div class="k"><img src="figur.jpg" alt=""><div><b>Wie fühlst du dich jetzt?</b><div class="small" style="color:#d9d3e6">Ein Tipp reicht. So lerne ich, was dir guttut.</div></div></div><div class="bt">${MOOD.map(m=>`<button data-m="${m[0]}"><span>${m[1]}</span>${m[2]}</button>`).join("")}</div></div>`);
+const frage=el(`<div class="flofrage" role="dialog" aria-label="Flo fragt"><button class="weg" aria-label="Schliessen">✕</button><div class="k"><img src="figur.jpg" alt=""><div><b>Wie fühlst du dich jetzt?</b><div class="small" style="color:#4b5852">Ein Tipp reicht. So lerne ich, was dir guttut.</div></div></div><div class="bt">${MOOD.map(m=>`<button data-m="${m[0]}"><span>${m[1]}</span>${m[2]}</button>`).join("")}</div></div>`);
 document.body.appendChild(frage);
 let frageFoods=null,frageMeal=null,frageT;
 frage.querySelector(".weg").onclick=()=>frage.classList.remove("on");
@@ -309,7 +309,7 @@ function heute(){
   const tip=document.getElementById("tipcard");if(tip&&!tip.querySelector(".flo-say")){const b=el('<button class="flo-say" aria-label="Flo liest vor">🔊</button>');b.onclick=()=>sag(Array.from(tip.querySelectorAll("p,li")).map(x=>x.textContent).join(" "));tip.prepend(b)}
   const box=document.getElementById("floHeute");if(!box)return;
   const [we,wt]=wetter(list),h=new Date().getHours();
-  let html=`<div class="card"><h3>Dein Teller</h3><div class="teller">${tellerSvg(P)}<div class="leg"><div><i style="background:#6FCF97"></i>Gemüse &amp; Früchte <b>${Math.round(P.v)}</b> von 5</div><div><i style="background:#FF8A5B"></i>Protein <b>${Math.round(P.p)}</b> von 3</div><div><i style="background:#F2C14E"></i>Getreide &amp; Kartoffeln <b>${Math.round(P.s)}</b> von 3</div><div class="small" style="margin-top:4px">Portionen grob geschätzt.</div></div></div><div class="wetter"><span>${we}</span><span>${wt}</span></div></div>`;
+  let html=`<div class="card"><h3>Dein Teller</h3><div class="teller">${tellerSvg(P)}<div class="leg"><div><i style="background:#6FCF97"></i>Gemüse &amp; Früchte <b>${Math.round(P.v)}</b> von 5</div><div><i style="background:#FF8A5B"></i>Protein <b>${Math.round(P.p)}</b> von 3</div><div><i style="background:#c2461f"></i>Getreide &amp; Kartoffeln <b>${Math.round(P.s)}</b> von 3</div><div class="small" style="margin-top:4px">Portionen grob geschätzt.</div></div></div><div class="wetter"><span>${we}</span><span>${wt}</span></div></div>`;
   const foods=list.filter(i=>i.food&&i.food!=="wasser").length;
   if(h>=18&&foods<2)html+=`<div class="card tip"><div class="lbl">🌙 Flo fragt</div><p><b>Was gab es heute?</b> Ein Satz reicht, zum Beispiel «Zmittag Pasta, Znacht Suppe und Brot».</p><button class="btn" id="floErz" style="margin-top:10px">Flo erzählen</button></div>`;
   else if(foods>=2&&h>=17){const ts=tagSatz(list);html+=`<div class="card tip"><button class="flo-say" id="floTsS" aria-label="Vorlesen">🔊</button><div class="lbl">✨ Dein Tag in einem Satz</div><p id="floTs">${esc(ts)}</p></div>`}
@@ -427,7 +427,7 @@ function merkt(){
    <label class="flo-check"><input type="checkbox" data-ok="befinden" ${X.ok.befinden?"checked":""}><span>Nach dem Essen kurz fragen: «Wie fühlst du dich?»</span></label>
    <label class="flo-check"><input type="checkbox" data-ok="sanft" ${X.sanft?"checked":""}><span>Sanfte Ansicht: Teller und Wetter statt Kalorien-Zahlen</span></label>
    <label class="flo-check"><input type="checkbox" data-ok="server" ${X.ok.server?"checked":""}><span>Unbekanntes Essen beim Flo-Server nachfragen. Es geht nur das eine Wort weg, z.B. «Bündnerfleisch». <span class="small">${s?"Verbindung da.":"Noch nicht verbunden: über den runden Knopf unten rechts verbinden."}</span></span></label>
-   <label class="flo-check"><input type="checkbox" data-ok="teilen" ${X.ok.teilen?"checked":""}><span>Lern-Zahlen an DR Lab senden, damit Flo besser wird. Nur Zählwerte wie «Mikrofon 12×», nie dein Essen, nie Stimme oder Bild. Ohne Server-Verbindung teilst du sie unten als Text.</span></label>
+   <label class="flo-check"><input type="checkbox" data-ok="teilen" ${X.ok.teilen?"checked":""}><span>Lern-Zahlen an das Flo-Team senden, damit Flo besser wird. Nur Zählwerte wie «Mikrofon 12×», nie dein Essen, nie Stimme oder Bild. Ohne Server-Verbindung teilst du sie unten als Text.</span></label>
    </div>
    <div class="card"><h3>Sicherung</h3><p class="small" style="margin:0">Deine Daten liegen nur hier. Mit einer Sicherung kannst du sie auf ein neues Handy mitnehmen.</p>
    <button class="btn" id="bkDown">Sicherung herunterladen</button><button class="btn ghost" id="bkUp">Sicherung laden</button><input type="file" id="bkFile" accept="application/json,.json" hidden>
