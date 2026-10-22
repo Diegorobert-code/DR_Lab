@@ -11,7 +11,7 @@
   'use strict';
   if (typeof zettel === 'undefined' || typeof renderMonat !== 'function') return;
   var ruhigM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var FARBE = { Privat: '#f2c14e', Ferien: '#8fb3e8', Praxis: '#86d39a', 'DR Lab': '#c39bff', Unklar: '#ffa36e' };
+  var FARBE = { Privat: '#3b6fd8', Ferien: '#0e8f86', Praxis: '#2f8f4f', 'DR Lab': '#7b4fd6', Unklar: '#c96a14' };
   var css = document.createElement('style');
   css.textContent = [
     '.r4-ring{display:flex;gap:16px;align-items:center}',

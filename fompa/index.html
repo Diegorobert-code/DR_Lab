@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Fompa – Buchhaltung und Steuern</title>
-<meta name="theme-color" content="#0b1636">
+<meta name="theme-color" content="#f5f6f8">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -655,7 +655,7 @@ section{animation:auftauchen .3s ease both}
     <p class="hint" style="margin-top:6px">Fompa merkt sich, wohin ein Zettel gehört, und schlägt es beim nächsten Mal vor. Dazu zählt er, wie du Zettel ablegst. Alles nur auf diesem Handy.</p>
     <div id="lernZahlen" class="liste"></div>
     <ul id="memory" class="hint"></ul>
-    <label class="check" style="margin:8px 0"><input type="checkbox" id="lernOk"> <span>Lern-Zahlen an meinen DR-Lab-Server weitergeben (nur Zählungen, keine Beträge, keine Namen, nie Bild oder Stimme). Ohne Server-Verbindung teilst du sie als Text.</span></label>
+    <label class="check" style="margin:8px 0"><input type="checkbox" id="lernOk"> <span>Lern-Zahlen an meinen App-Server weitergeben (nur Zählungen, keine Beträge, keine Namen, nie Bild oder Stimme). Ohne Server-Verbindung teilst du sie als Text.</span></label>
     <button class="btn small hidden" id="lernTeilen" style="margin-bottom:8px">Lern-Zahlen als Text teilen</button>
     <button class="btn small del" id="forget">Vergessen</button>
   </details>
@@ -1596,6 +1596,14 @@ async function deliver(blob, name){
   if (navigator.canShare && navigator.canShare({files:[file]})){
     try { await navigator.share({files:[file], title:name}); return; } catch(e){ if (e.name === 'AbortError') return; }
   }
+  // Runde 8: im Artefakt/der Vorschau startet oft kein Download – dann Inhalt zum Kopieren zeigen.
+  if (window.R8K){
+    const istText = /csv|text/.test(blob.type || '');
+    const text = istText ? (await blob.text()).replace(/^\uFEFF/, '') : csvText();
+    R8K.datei(blob, name, { text, titel: istText ? 'Tabelle sichern' : 'Paket sichern',
+      hinweis: istText ? 'Kopiere die Tabelle und füge sie in Excel, Numbers oder eine Mail ein.' : 'Das ZIP mit Belegfotos braucht die installierte App oder einen Browser-Tab. Hier ist die Übersicht als Tabelle zum Kopieren.' });
+    return;
+  }
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
 }
@@ -2007,5 +2015,7 @@ async function einstSpeichern(){ await kvSet('einst', einst); renderAll(); }
 <script src="runde4.js" defer></script>
 <script src="runde6.js" defer></script>
 <script src="runde7.js" defer></script>
+<script src="runde8.js" defer></script>
+<link rel="stylesheet" href="markt.css">
 </body>
 </html>
