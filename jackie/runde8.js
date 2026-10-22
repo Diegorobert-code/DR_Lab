@@ -7,7 +7,7 @@
    5. Alle Blätter mit Raststufen und Wischen zum Schliessen (Vorbild: iOS-Sheets).
    Kein Arzt, keine Diagnose, keine Heilversprechen. Nichts geht ins Netz. */
 window.R8 = {
-  bild: 'posen/winkt.jpg',
+  bild: 'wm/maskottchen.jpg',
   offline: 'Offline. Notrufe <a href="tel:117">117</a> · <a href="tel:144">144</a> · <a href="tel:142">142</a> gehen trotzdem übers Telefon.',
   neuText: 'Neu: «Heute für dich» und der Atem-Knopf. Alles bleibt auf deinem Handy.',
   css: [
@@ -25,27 +25,28 @@ window.R8 = {
     '.r8-schritt-ok{margin-top:4px}'
   ].join('\n'),
   start: function (E, R) {
+    E.maskottchen('#jkBild, header .figur-logo, .r7-kopf > img, .r7-leer > img, .r8-ziehen img', 'wm/maskottchen.jpg'); // helles Tinko-Maskottchen statt dunkler Pose
     function notruf() { return '<div class="r7-notruf" role="note"><span>Akute Gefahr?</span><a href="tel:117">117</a><a href="tel:144">144</a><a href="tel:142">142</a></div>'; }
     var TAGE = [
-      { titel: 'Ein Nein ist ein ganzer Satz', karte: 'Du musst dein Nein nicht erklären.', bild: 'posen/mutig.jpg',
+      { titel: 'Ein Nein ist ein ganzer Satz', karte: 'Du musst dein Nein nicht erklären.', bild: 'wm/maskottchen.jpg',
         gedanke: 'Viele Menschen haben gelernt, jedes Nein zu begründen. Dabei reicht ein ruhiges «Nein, danke». Du darfst Grenzen haben, auch bei Menschen, die du gern hast.',
         schritt: 'Probier heute ein kleines Nein, bei etwas Unwichtigem. Dann atme aus und merk dir: Nichts ist passiert. Du bist trotzdem gut.' },
-      { titel: 'Hilfe holen ist stark', karte: 'Fragen ist kein Zeichen von Schwäche.', bild: 'posen/zuhoeren.jpg',
+      { titel: 'Hilfe holen ist stark', karte: 'Fragen ist kein Zeichen von Schwäche.', bild: 'wm/maskottchen.jpg',
         gedanke: 'Wer um Hilfe bittet, kümmert sich um sich selbst. Das ist mutig. Beratungsstellen sind genau dafür da, auch wenn du dir noch nicht sicher bist.',
         schritt: 'Schreib dir heute eine Nummer oder einen Menschen auf, den du anrufen könntest. Nur aufschreiben. Mehr nicht.' },
-      { titel: 'Dein Körper sagt es zuerst', karte: 'Ein enger Hals, ein flaues Gefühl: hör hin.', bild: 'posen/zuhoeren.jpg',
+      { titel: 'Dein Körper sagt es zuerst', karte: 'Ein enger Hals, ein flaues Gefühl: hör hin.', bild: 'wm/maskottchen.jpg',
         gedanke: 'Oft merkt der Körper früher als der Kopf, dass etwas nicht stimmt. Das ist kein Fehler, das ist ein Hinweis. Du darfst ihn ernst nehmen.',
         schritt: 'Leg heute einmal die Hand auf den Bauch und frag dich: Wie geht es mir gerade wirklich? Ein Wort reicht.' },
-      { titel: 'Ein Mensch, dem du vertraust', karte: 'Wer darf es wissen, wenn es schwierig wird?', bild: 'posen/zeigt.jpg',
+      { titel: 'Ein Mensch, dem du vertraust', karte: 'Wer darf es wissen, wenn es schwierig wird?', bild: 'wm/maskottchen.jpg',
         gedanke: 'Es hilft, wenn mindestens ein Mensch weiss, wie es dir geht. Eine Freundin, ein Nachbar, jemand aus der Familie. Du entscheidest, wie viel du erzählst.',
         schritt: 'Denk heute an einen Menschen, bei dem du dich sicher fühlst. Vielleicht schickst du ihm einfach ein «Hoi, wie gehts dir?».' },
-      { titel: 'Wichtiges an einem Ort', karte: 'Ausweis, Schlüssel, Nummern: griffbereit.', bild: 'posen/zeigt.jpg',
+      { titel: 'Wichtiges an einem Ort', karte: 'Ausweis, Schlüssel, Nummern: griffbereit.', bild: 'wm/maskottchen.jpg',
         gedanke: 'Wenn es schnell gehen muss, ist es gut, wenn das Wichtigste beisammen ist. Das gibt Ruhe, auch wenn du es nie brauchst.',
         schritt: 'Leg heute einen Ort fest, wo Ausweis, Ersatzschlüssel und eine Liste mit Nummern liegen. Die Notfallkarte bei «Neu» hilft dabei.' },
-      { titel: 'Du darfst langsam sein', karte: 'Nicht alles muss heute gelöst werden.', bild: 'figur.jpg',
+      { titel: 'Du darfst langsam sein', karte: 'Nicht alles muss heute gelöst werden.', bild: 'wm/maskottchen.jpg',
         gedanke: 'Manche Tage sind schwer. Dann reicht es, den nächsten kleinen Schritt zu sehen. Nicht den ganzen Weg.',
         schritt: 'Such dir heute eine Sache aus, die du einfach lässt. Ohne schlechtes Gewissen. Das ist auch eine Entscheidung.' },
-      { titel: 'Eine kleine Freude', karte: 'Freude ist kein Luxus, sie gibt Kraft.', bild: 'figur.jpg',
+      { titel: 'Eine kleine Freude', karte: 'Freude ist kein Luxus, sie gibt Kraft.', bild: 'wm/maskottchen.jpg',
         gedanke: 'Ein warmer Tee, ein Lied, frische Luft. Kleine Freuden machen Probleme nicht weg, aber sie geben dir Kraft für den nächsten Schritt.',
         schritt: 'Gönn dir heute fünf Minuten nur für dich. Was wäre schön? Schreib es in die Notiz an dich, wenn du magst.' }
     ];
@@ -54,13 +55,13 @@ window.R8 = {
     function heuteStory(held) {
       st = E.story([
         { bild: T.bild, oben: 'Heute für dich', titel: T.titel, text: T.gedanke },
-        { bild: 'posen/winkt.jpg', oben: 'Ein kleiner Schritt', titel: 'Magst du es probieren?', text: T.schritt,
+        { bild: 'wm/maskottchen.jpg', oben: 'Ein kleiner Schritt', titel: 'Magst du es probieren?', text: T.schritt,
           html: '<button type="button" class="r7-knopf r8-schritt-ok" aria-pressed="' + erledigt + '">' + (erledigt ? 'Schon gemacht ✓' : 'Mach ich heute') + '</button>',
           auf: function (s) { var b = s.querySelector('.r8-schritt-ok'); b.addEventListener('click', function () { erledigt = true; E.leg('heuteOk', R.heute()); b.textContent = 'Schön. Ich bin stolz auf dich ✓'; b.setAttribute('aria-pressed', 'true'); E.summ([10, 30, 10]); E.licht('heute'); }); } },
-        { bild: 'posen/mutig.jpg', oben: 'Wenn es zu viel wird', titel: 'Du bist nicht allein', text: 'Bei Gefahr ruf sofort an. Die Nummern sind gratis, rund um die Uhr. Opferhilfe 142 berät nach Gewalt, vertraulich.',
+        { bild: 'wm/maskottchen.jpg', oben: 'Wenn es zu viel wird', titel: 'Du bist nicht allein', text: 'Bei Gefahr ruf sofort an. Die Nummern sind gratis, rund um die Uhr. Opferhilfe 142 berät nach Gewalt, vertraulich.',
           html: '<button type="button" class="r7-knopf leise" data-r8a="atem">Erst einmal atmen</button>',
           auf: function (s) { s.querySelector('[data-r8a=atem]').addEventListener('click', function () { st.zu(); setTimeout(atem, 280); }); } }
-      ], { titel: 'Jackie · Heute für dich', bild: 'posen/winkt.jpg', held: held, zusatz: notruf(), ende: 'Fertig' });
+      ], { titel: 'Jackie · Heute für dich', bild: 'wm/maskottchen.jpg', held: held, zusatz: notruf(), ende: 'Fertig' });
     }
     var st = { zu: function () {} };
     function oeffneHeute(img) { E.wechsel(function () { if (img) img.style.viewTransitionName = ''; heuteStory(true); }); }
@@ -69,7 +70,7 @@ window.R8 = {
     /* Atem-Knopf: halten = einatmen, loslassen = ausatmen */
     function atem() {
       var n = 0, ein = false, t0 = 0;
-      var inh = R.blatt({ titel: 'Atem-Knopf', bild: 'posen/zuhoeren.jpg', html: notruf() +
+      var inh = R.blatt({ titel: 'Atem-Knopf', bild: 'wm/maskottchen.jpg', html: notruf() +
         '<div class="r8-atem"><button type="button" class="kreis" aria-describedby="r8AtemT">Halten</button><div class="r8-zaehler" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><p id="r8AtemT" aria-live="polite">Drück und halte den Kreis, während du langsam einatmest. Lass los zum Ausatmen.</p></div>' +
         '<p class="r7-klein">Mit der Tastatur: Leertaste halten. Kein Muss, kein Falsch. Nur fünf ruhige Atemzüge.</p>' });
       var k = inh.querySelector('.kreis'), txt = inh.querySelector('#r8AtemT'), pk = inh.querySelectorAll('.r8-zaehler i');
@@ -107,7 +108,7 @@ window.R8 = {
 
 
     /* Wächst mit dir (Finch): Mutlichter, 5 Stufen, täglicher Ausflug */
-    E.waechst({ ort: '#jkBuehne', wo: 'nach', figur: 'Jackie', bild: 'posen/winkt.jpg', licht: 'Mutlichter', licht1: 'Mutlicht',
+    E.waechst({ ort: '#jkBuehne', wo: 'nach', figur: 'Jackie', bild: 'wm/maskottchen.jpg', stufenBilder: ['wm/stufe-1.jpg', 'wm/stufe-2.jpg', 'wm/stufe-3.jpg', 'wm/stufe-4.jpg', 'wm/stufe-5.jpg'], ausflugBild: 'wm/ausflug.jpg', licht: 'Mutlichter', licht1: 'Mutlicht',
       stufen: ['Kerzenlicht', 'Laternenlicht', 'Morgenlicht', 'Sonnenlicht', 'Leuchtturm'],
       wie: 'Ein kleiner Schritt für dich: Atem-Knopf, SOS-Minute, «Heute für dich» ausprobiert, eine Übung bei «Neu».',
       extraHtml: notruf(),
@@ -127,7 +128,7 @@ window.R8 = {
       ] });
 
     /* SOS: ein Knopf, sofort 1 Minute ruhig (Headspace SOS). Notruf bleibt im SOS sichtbar. */
-    function sosLos() { E.sos({ figur: 'Jackie', bild: 'posen/zuhoeren.jpg', zusatz: notruf(), ende: 'Gut gemacht. Du bist hier, im Jetzt.' }); }
+    function sosLos() { E.sos({ figur: 'Jackie', bild: 'wm/atem.jpg', zusatz: notruf(), ende: 'Gut gemacht. Du bist hier, im Jetzt.' }); }
     var nr = document.querySelector('.jk-notruf');
     if (nr) {
       var sb = document.createElement('button'); sb.type = 'button'; sb.className = 'r8-sos-knopf'; sb.id = 'r8Sos';
@@ -757,7 +758,7 @@ window.R8 = {
       else if (schonHeute) { knopf = ''; info = 'Heute war ' + esc(o.figur) + ' schon unterwegs. Morgen geht es wieder los.'; }
       else if (heuteN(x) > 0) { knopf = '<button type="button" class="r7-knopf" data-wm="los">🎒 Auf Ausflug schicken</button>'; info = 'Du hast heute schon ' + heuteN(x) + ' ' + esc(heuteN(x) === 1 ? o.licht1 : o.licht) + ' gesammelt. ' + esc(o.figur) + ' möchte etwas entdecken.'; }
       else { knopf = ''; info = esc(o.wie) + ' Dann geht ' + esc(o.figur) + ' auf einen kleinen Ausflug.'; }
-      box.innerHTML = '<div class="fig"><img src="' + esc(o.bild) + '" alt="" width="72" height="72"><span class="st" aria-hidden="true">' + (s + 1) + '</span></div>' +
+      box.innerHTML = '<div class="fig"><img src="' + esc((o.stufenBilder && o.stufenBilder[s]) || o.bild) + '" alt="" width="72" height="72"><span class="st" aria-hidden="true">' + (s + 1) + '</span></div>' +
         '<div><h2 id="r8WmH">Wächst mit dir</h2><span class="name">' + esc(o.figur) + ' · ' + esc(ST[s]) + '</span>' +
         '<div class="bar" role="progressbar" aria-label="Fortschritt zur nächsten Stufe" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + proz + '"><i style="width:' + proz + '%"></i></div>' +
         '<span class="zahl">' + x.n + ' ' + esc(x.n === 1 ? o.licht1 : o.licht) + (naechste == null ? ' · höchste Stufe erreicht' : ' · noch ' + (naechste - x.n) + ' bis «' + esc(ST[s + 1]) + '»') + ' · 🔥 ' + ws.serie + ' Tag' + (ws.serie === 1 ? '' : 'e') + '</span></div>' +
@@ -787,7 +788,7 @@ window.R8 = {
     function vorlesen(t) { try { if (!window.speechSynthesis) return false; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = 'de-CH'; u.rate = .95; speechSynthesis.speak(u); return true; } catch (e) { return false; } }
     function fund(i, neu) {
       var a = o.ausfluege[i]; if (!a) return;
-      var inh = R.blatt({ titel: neu ? esc(o.figur) + ' war unterwegs' : a.n, bild: o.bild, html: (o.extraHtml || '') + '<div class="r8-fund"><span class="e" aria-hidden="true">' + a.f + '</span><h3>' + esc(a.n) + '</h3></div><p>' + esc(a.t) + '</p>' +
+      var inh = R.blatt({ titel: neu ? esc(o.figur) + ' war unterwegs' : a.n, bild: o.bild, html: (o.extraHtml || '') + '<div class="r8-fund">' + (o.ausflugBild ? '<img class="r8-bild" src="' + esc(o.ausflugBild) + '" alt="' + esc(o.figur) + ' unterwegs" loading="lazy">' : '') + '<span class="e" aria-hidden="true">' + a.f + '</span><h3>' + esc(a.n) + '</h3></div><p>' + esc(a.t) + '</p>' +
         '<div class="r7-reihe"><button type="button" class="r7-knopf leise" data-wm="hoer">🔊 Vorlesen</button>' + (neu ? '<button type="button" class="r7-knopf" data-wm="ok">Ins Album legen</button>' : '') + '</div>' });
       inh.querySelector('[data-wm=hoer]').addEventListener('click', function () { if (!vorlesen(a.n + '. ' + a.t)) this.textContent = 'Vorlesen geht hier nicht'; });
       var ok = inh.querySelector('[data-wm=ok]'); if (ok) ok.addEventListener('click', function () { R.zu(); });
@@ -800,7 +801,7 @@ window.R8 = {
     }
     function wie() {
       R.blatt({ titel: 'So wächst ' + o.figur, bild: o.bild, html: (o.extraHtml || '') + '<p>' + esc(o.wie) + ' Jeder kleine Schritt gibt 1 ' + esc(o.licht1) + ' (höchstens ' + MAX_TAG + ' pro Tag).</p><div class="r8-tasten">' +
-        ST.map(function (n, i) { return '<kbd>' + SCHW[i] + '</kbd><span>Stufe ' + (i + 1) + ': ' + esc(n) + '</span>'; }).join('') + '</div>' +
+        ST.map(function (n, i) { return '<kbd>' + SCHW[i] + '</kbd><span style="display:flex;align-items:center;gap:10px">' + (o.stufenBilder && o.stufenBilder[i] ? '<img src="' + esc(o.stufenBilder[i]) + '" alt="" width="44" height="44" loading="lazy" style="flex:none;border-radius:12px;object-fit:cover">' : '') + 'Stufe ' + (i + 1) + ': ' + esc(n) + '</span>'; }).join('') + '</div>' +
         '<p>Nichts geht verloren, nichts geht kaputt. Ein Ruhetag pro Woche zählt bei der Serie mit (🌙).</p>' + W.html({ schutzName: 'Ruhetag', schutzZeichen: '🌙', da: 'mindestens ein ' + o.licht1 }) +
         '<p class="r7-klein">Alles bleibt auf diesem Gerät.</p>' });
     }
@@ -885,8 +886,22 @@ window.R8 = {
     var k = d.querySelector('#r7Neu .r7-neu-kopf small'); if (k && K.neuText) k.textContent = K.neuText;
   }
 
+  /* ---------- 17. Maskottchen: helles Tinko-Bild an festen Stellen, auch wenn alte Skripte die Pose wechseln ---------- */
+  function maskottchen(sel, src) {
+    var get = typeof src === 'function' ? src : function () { return src; };
+    var mo;
+    function fix() {
+      var s = get();
+      [].forEach.call(d.querySelectorAll(sel), function (i) { if (i.getAttribute('src') !== s) { i.removeAttribute('srcset'); i.setAttribute('src', s); } });
+    }
+    function lauf() { if (mo) mo.disconnect(); fix(); if (mo) mo.observe(d.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['src'] }); }
+    if (window.MutationObserver) mo = new MutationObserver(lauf);
+    lauf();
+    return lauf;
+  }
+
   window.R8K = { monat: monat, monatsName: monatsName, sos: sos, waechst: waechst, licht: function (g) { return WM ? WM.licht(g) : false; }, datei: datei, kopiere: kopiere, imRahmen: imRahmen, hol: hol, leg: leg, summ: summ, rueck: rueck, bildKarte: bildKarte, teileBild: teileBild, menue: menue, menueAuf: menueAuf, tasten: tasten, tastenHilfe: tastenHilfe,
-    wechsel: wechsel, ringe: ringe, ringeLos: ringeLos, ringeMalen: ringeMalen, woche: woche, heute: heute, ziehen: ziehen, story: story, ymd: ymd, umbruch: umbruch };
+    wechsel: wechsel, ringe: ringe, ringeLos: ringeLos, ringeMalen: ringeMalen, woche: woche, heute: heute, ziehen: ziehen, story: story, ymd: ymd, umbruch: umbruch, maskottchen: maskottchen };
   function start() {
     try { offline(); } catch (e) { console.warn('r8 offline', e); }
     if (K.start) try { K.start(window.R8K, R); } catch (e) { console.warn('r8 start', e); }
