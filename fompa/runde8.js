@@ -5,6 +5,7 @@
    3. «Monats-Ringe»: Betrag da, Kategorie klar, Beleg dabei – drei Ringe für den laufenden Monat (Vorbild: Apple-Fitness-Ringe).
    4. Tastaturkürzel am Computer: N, 1, 2, 3, ? (Vorbild: Gmail, Things).
    5. Kein toter Download: CSV/ZIP im Artefakt → Tabelle zum Kopieren (siehe deliver()).
+   6. Paket für die Treuhand (Runde 8b): Zeitraum wählen, CSV + Belegfotos + LIESMICH als ZIP (makeZip aus index.html).
    Nutzt aus index.html: zettel, isBuch, splitKat, chf, verstehe, parseSatz, save, tx, loadYear, neuId, gehZu, tab, setMode, toast (nur über ihre Funktionen). */
 window.R8 = {
   bild: 'wm/maskottchen.jpg',
@@ -22,7 +23,11 @@ window.R8 = {
     '.r8-vorschau .leer{background:none;border-style:dashed;color:#cfd6ee}',
     '.r8-fo{margin:0 0 16px;padding:16px;border-radius:20px;background:linear-gradient(160deg,#17255a,#0e1838);border:1px solid rgba(242,193,78,.35);color:#f6efe4}',
     '.r8-fo h2{margin:0 0 4px;font-size:1.0625rem}.r8-fo > p{margin:0 0 12px;font-size:.875rem;color:#cfd6ee}',
-    '.r8-fo .r7-reihe{margin:12px 0 0}'
+    '.r8-fo .r7-reihe{margin:12px 0 0}',
+    '.r8-th{margin:14px 0 0}.r8-th label{margin-top:8px}.r8-th select{width:100%}',
+    '.r8-th .r8-th-check{display:flex;align-items:center;gap:10px;min-height:44px;color:inherit;font-size:.9375rem;cursor:pointer}.r8-th .r8-th-check input{width:22px;height:22px;margin:0;accent-color:#f2c14e;flex:none}',
+    '.r8-th-stand{margin:8px 0 0;font-size:.9375rem;color:inherit}.r8-th-stand b{color:inherit}',
+    '.r8-th .r7-reihe .btn{width:100%}.r8-th-fuss{margin:12px 0 0}'
   ].join('\n'),
   start: function (E, R) {
     E.maskottchen('.nb-buehne img, header > img, .r7-kopf > img, .r7-leer > img, .r8-ziehen img', 'wm/maskottchen.jpg'); // helles Tinko-Maskottchen statt dunkler Pose
@@ -154,22 +159,140 @@ window.R8 = {
         schluss: 'Zettel für Zettel wird es ruhig.', hinweis: 'Fompa ordnet und rechnet. Ob etwas abziehbar ist, entscheidet dein Steuerberater.' });
     }
 
+    /* 5. Paket für die Treuhand (Runde 8b): alle Buchhaltungs-Zettel eines Zeitraums als CSV, dazu die Belegfotos und ein LIESMICH, als ZIP.
+       Nutzt makeZip aus index.html (unkomprimiert, ohne Bibliothek). Im Artefakt gibt es keine Downloads: dann Hinweis und Übersicht zum Kopieren.
+       Fompa ordnet, keine Steuer- oder Treuhandberatung. */
+    var MON = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+    var exSek = document.getElementById('export');
+    var th = null;
+    function thJahr() { return +(year || new Date().getFullYear()); }
+    function thZeitraeume() {
+      var j = thJahr(), l = [{ w: 'j', t: 'Ganzes Jahr ' + j }], m = {};
+      [1, 2, 3, 4].forEach(function (q) { l.push({ w: 'q' + q, t: q + '. Quartal ' + j }); });
+      (zettel || []).forEach(function (z) { if (isBuch(z) && z.date && +z.date.slice(0, 4) === j) m[z.date.slice(0, 7)] = 1; });
+      Object.keys(m).sort().reverse().forEach(function (k) { l.push({ w: 'm' + k, t: MON[+k.slice(5, 7) - 1] + ' ' + k.slice(0, 4) }); });
+      return l;
+    }
+    function thListe(w) {
+      var j = String(thJahr());
+      return (zettel || []).filter(function (z) {
+        if (!isBuch(z)) return false;
+        var d = String(z.date || '');
+        if (w === 'j') return !d || d.slice(0, 4) === j;
+        if (!d || d.slice(0, 4) !== j) return false;
+        if (w.charAt(0) === 'q') return Math.ceil(+d.slice(5, 7) / 3) === +w.charAt(1);
+        return d.slice(0, 7) === w.slice(1);
+      }).sort(function (a, b) { return String(a.date || '9999').localeCompare(String(b.date || '9999')); });
+    }
+    function thName(w) { var j = thJahr(); return 'Treuhand-' + (w === 'j' ? j : w.charAt(0) === 'q' ? j + '-Q' + w.charAt(1) : w.slice(1)); }
+    function thZeitText(w) { var t = thZeitraeume().filter(function (x) { return x.w === w; })[0]; return t ? t.t : String(thJahr()); }
+    function thNr(i) { return ('00' + (i + 1)).slice(-3); }
+    function thDatei(z, i) {
+      var ext = z.type === 'application/pdf' ? 'pdf' : (z.type === 'image/png' ? 'png' : 'jpg');
+      return 'Belege/' + thNr(i) + '_' + (z.date || 'ohne-Datum') + '_' + (safe(z.from) || 'Beleg').slice(0, 40) + '.' + ext;
+    }
+    function thCsv(l, mitFotos) {
+      var q = function (v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
+      var rows = [['Nr', 'Datum', 'Wofuer', 'Kategorie', 'Betrag CHF', 'Originalbetrag', 'Bezahlt mit', 'Fixkosten', 'Steuer-Ordner', 'Beleg-Datei', 'Bemerkung']];
+      l.forEach(function (z, i) {
+        rows.push([thNr(i), z.date ? datumCH(z.date) : '', z.from, z.kat, z.amount == null ? '' : z.amount.toFixed(2),
+          z.waehrung && z.waehrung !== 'CHF' && z.betragOrig != null ? z.waehrung + ' ' + z.betragOrig + ' (Kurs geschaetzt)' : '',
+          z.paid, z.fix, z.cat, z.blob ? (mitFotos ? thDatei(z, i) : 'Foto in Fompa') : '(kein Foto)', z.note]);
+      });
+      rows.push(['', '', 'Total', '', sum(l).toFixed(2), '', '', '', '', '', '']);
+      return rows.map(function (r) { return r.map(q).join(';'); }).join('\r\n');
+    }
+    function thLiesmich(w, l, mitFotos) {
+      var b = l.filter(function (z) { return !!z.blob; }).length, ob = l.filter(function (z) { return z.amount == null; }).length;
+      var fw = l.some(function (z) { return z.waehrung && z.waehrung !== 'CHF'; });
+      return ['Paket für die Treuhand: ' + thZeitText(w),
+        'Erstellt mit Fompa am ' + datumCH(R8K.ymd(new Date())) + '.',
+        '',
+        'INHALT',
+        '- 01_Ausgaben.csv: alle Zettel aus der Buchhaltung in diesem Zeitraum. Trennzeichen Semikolon, UTF-8. Öffnet in Excel, Numbers oder LibreOffice.',
+        mitFotos ? '- Belege/: Fotos und PDFs der Quittungen. Die Nummer vorne im Dateinamen passt zur Spalte «Nr» in der Tabelle.' : '- Ohne Belegfotos erstellt. Die Fotos liegen in Fompa auf dem Gerät.',
+        '',
+        'ZAHLEN',
+        '- Zettel: ' + l.length + ', davon mit Beleg: ' + b,
+        '- Total erfasst: CHF ' + chf(sum(l)),
+        ob ? '- Ohne Betrag: ' + ob + ' (in der Tabelle leer)' : '- Alle Zettel haben einen Betrag.',
+        fw ? '- Beträge in Fremdwährung sind mit einem geschätzten Kurs umgerechnet.' : '',
+        '',
+        'WICHTIG',
+        'Fompa ordnet, keine Steuer-/Treuhandberatung.',
+        'Ob etwas abziehbar ist und wie es verbucht wird, entscheidet die Treuhand.'
+      ].filter(function (x, i, a) { return x !== '' || (a[i - 1] !== '' && i > 0); }).join('\r\n') + '\r\n';
+    }
+    function thStand() {
+      if (!th) return;
+      var sel = th.querySelector('#r8ThZeit'), alt = sel.value, l = thZeitraeume();
+      sel.innerHTML = l.map(function (x) { return '<option value="' + x.w + '">' + R.esc(x.t) + '</option>'; }).join('');
+      sel.value = l.some(function (x) { return x.w === alt; }) ? alt : 'j';
+      var z = thListe(sel.value), b = z.filter(function (x) { return !!x.blob; }).length, ob = z.filter(function (x) { return x.amount == null; }).length;
+      th.querySelector('.r8-th-stand').innerHTML = z.length
+        ? '<b>' + z.length + (z.length === 1 ? ' Zettel' : ' Zettel') + '</b> · ' + b + ' mit Beleg · CHF ' + chf(sum(z)) + (ob ? ' · ' + ob + ' ohne Betrag' : '')
+        : 'In diesem Zeitraum gibt es noch keine Zettel.';
+    }
+    function thLos() {
+      var w = th.querySelector('#r8ThZeit').value, mitFotos = th.querySelector('#r8ThFotos').checked, l = thListe(w);
+      if (!l.length) { toast('In diesem Zeitraum gibt es noch keine Zettel'); pose('denkt', '?'); return; }
+      var name = thName(w), liesmich = thLiesmich(w, l, mitFotos), csv = thCsv(l, mitFotos), enc = new TextEncoder();
+      var files = [{ name: name + '/00_LIESMICH.txt', data: enc.encode('﻿' + liesmich) }, { name: name + '/01_Ausgaben.csv', data: enc.encode('﻿' + csv) }];
+      if (mitFotos) l.forEach(function (z, i) { if (z.blob) files.push({ name: name + '/' + thDatei(z, i), data: z.blob }); });
+      var knopf = th.querySelector('[data-r8=thLos]'); knopf.disabled = true; knopf.textContent = 'Paket wird gepackt …'; pose('rechnet', null, 2500);
+      function fertig() { knopf.disabled = false; knopf.textContent = 'Paket erstellen'; }
+      Promise.resolve(makeZip(files)).then(function (zip) {
+        fertig();
+        var kopie = liesmich + '\r\n--- 01_Ausgaben.csv ---\r\n' + csv;
+        if (R8K.imRahmen()) {
+          R8K.datei(zip, name + '.zip', { nurText: true, titel: 'Paket für die Treuhand', text: kopie,
+            hinweis: 'Hier in der Vorschau kann Fompa keine Datei speichern. In der installierten App oder im Browser-Tab entsteht das ZIP mit allen Belegfotos. Bis dahin: Übersicht kopieren und in eine Mail an deine Treuhand einfügen.' });
+          return;
+        }
+        var datei = null; try { datei = new File([zip], name + '.zip', { type: 'application/zip' }); } catch (e) {}
+        var teilen = datei && navigator.canShare && matchMedia('(pointer:coarse)').matches && navigator.canShare({ files: [datei] });
+        if (teilen) { navigator.share({ files: [datei], title: name }).then(function () { pose('freut', '✓'); }, function (e) { if (e && e.name !== 'AbortError') R8K.datei(zip, name + '.zip', { text: kopie }); }); return; }
+        R8K.datei(zip, name + '.zip', { text: kopie });
+        pose('freut', '✓'); summ(15);
+      }, function (e) { fertig(); console.warn('treuhand', e); toast('Das Paket ging nicht. Bitte nochmals versuchen.'); });
+    }
+    if (exSek && typeof makeZip === 'function') {
+      th = document.createElement('div'); th.className = 'r8-fo r8-th'; th.setAttribute('data-r8', 'treuhand');
+      th.innerHTML = '<h2>📦 Paket für die Treuhand</h2>' +
+        '<p>Alle Zettel eines Zeitraums als Tabelle, dazu die Belegfotos und ein kurzes LIESMICH. Ein ZIP, das du selber weitergibst.</p>' +
+        '<label>Zeitraum<select id="r8ThZeit"></select></label>' +
+        '<label class="r8-th-check"><input type="checkbox" id="r8ThFotos" checked><span>Belegfotos mitpacken</span></label>' +
+        '<p class="r8-th-stand" aria-live="polite"></p>' +
+        '<div class="r7-reihe"><button type="button" class="btn main" data-r8="thLos">Paket erstellen</button></div>' +
+        '<p class="hint r8-th-fuss">Fompa ordnet, keine Steuer- oder Treuhandberatung. Alles bleibt auf deinem Gerät, bis du das Paket selber weitergibst.</p>';
+      var det = exSek.querySelector('details'); if (det) exSek.insertBefore(th, det); else exSek.appendChild(th);
+      th.querySelector('#r8ThZeit').addEventListener('change', thStand);
+      th.querySelector('[data-r8=thLos]').addEventListener('click', thLos);
+      thStand();
+      var pre = document.getElementById('exPre'); if (pre) { pre.tabIndex = 0; pre.setAttribute('role', 'region'); pre.setAttribute('aria-label', 'Vorschau der Zeilen'); }
+      if (typeof renderAll === 'function') { var orig2 = renderAll; renderAll = function () { var r = orig2.apply(this, arguments); try { thStand(); } catch (e) {} return r; }; }
+    }
+    function zurTreuhand() { gehZu('export'); setTimeout(function () { if (th) th.scrollIntoView({ behavior: R.ruhig() ? 'auto' : 'smooth', block: 'center' }); }, 120); }
+
     /* 4. Tastaturkürzel */
     E.tasten([
       ['N', 'Schnell-Zettel', function () { schnell(''); }],
       ['1', 'Zettel', function () { gehZu('neu'); }],
       ['2', 'Monat', function () { gehZu('monat'); }],
       ['3', 'Export', function () { gehZu('export'); }],
-      ['M', 'Dein Monat mit Fompa', function () { monatStory(); }]
+      ['M', 'Dein Monat mit Fompa', function () { monatStory(); }],
+      ['T', 'Paket für die Treuhand', function () { zurTreuhand(); }]
     ]);
     var fig = document.getElementById('figur');
     E.menue(fig, [
       { e: '＋', text: 'Schnell-Zettel', tu: function () { schnell(''); } },
       { e: '⭕', text: 'Monats-Ringe', tu: function () { box.scrollIntoView({ behavior: R.ruhig() ? 'auto' : 'smooth', block: 'center' }); ringe(true); } },
       { e: '🗓️', text: 'Monat ansehen', tu: function () { gehZu('monat'); } },
-      { e: '🎞️', text: 'Dein Monat mit Fompa', tu: function () { monatStory(); } }
+      { e: '🎞️', text: 'Dein Monat mit Fompa', tu: function () { monatStory(); } },
+      { e: '📦', text: 'Paket für die Treuhand', tu: function () { zurTreuhand(); } }
     ], 'Fompa');
     window.R8.neu = [
+      { id: 'treuhand', e: '📦', titel: 'Paket für die Treuhand', text: 'Tabelle und Belegfotos als ZIP', auf: function () { zurTreuhand(); } },
       { id: 'monat', e: '🎞️', titel: 'Dein Monat', text: 'Mit Fompa als Story', auf: function () { monatStory(); } },
       { id: 'schnell', e: '＋', titel: 'Schnell-Zettel', text: 'Ein Satz, ein Zettel', auf: function () { schnell(''); } },
       { id: 'ringe', e: '⭕', titel: 'Monats-Ringe', text: 'Betrag, Kategorie, Beleg', auf: function () { box.scrollIntoView({ behavior: R.ruhig() ? 'auto' : 'smooth', block: 'center' }); ringe(true); } }
@@ -478,7 +601,7 @@ window.R8 = {
     o = o || {};
     var blob = inhalt instanceof Blob ? inhalt : new Blob([inhalt], { type: o.typ || 'text/plain;charset=utf-8' });
     var text = o.text != null ? o.text : (typeof inhalt === 'string' ? inhalt : null);
-    if (!o.nurText) try { var a = d.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; d.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000); } catch (e) {}
+    if (!o.nurText) try { var a = d.createElement('a'); a.hidden = true; a.tabIndex = -1; a.href = URL.createObjectURL(blob); a.download = name; d.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000); } catch (e) {}
     if (!imRahmen() && !o.immer && !o.nurText) { rueck('«' + name + '» wird gesichert. Schau in deinen Downloads.'); return; }
     var inh = R.blatt({ titel: o.titel || 'Datei sichern', html: '<p>' + (o.nurText ? '' : 'Startet kein Download (zum Beispiel hier in der Vorschau)? Kein Problem: ') + (o.hinweis || 'Kopiere den Inhalt und füge ihn in Notizen, Mail oder Kalender ein.') + '</p>' +
       (text != null ? '<label for="r8DateiT">Inhalt von «' + esc(name) + '»</label><textarea id="r8DateiT" readonly rows="8" style="font:13px/1.4 ui-monospace,Menlo,monospace">' + esc(text) + '</textarea><div class="r7-reihe"><button type="button" class="r7-knopf" data-r8="kopie">Text kopieren</button></div>' : '') +
