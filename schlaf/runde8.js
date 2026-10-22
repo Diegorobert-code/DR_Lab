@@ -88,6 +88,102 @@
           return n;
         }
       }
+      ,{
+        id: 'schlafzeit', emo: '🌙', titel: 'Wann ins Bett?',
+        bau: function (H) {
+          /* Schlafenszeit-Rechner (90-Minuten-Wellen) und sanfte «Routine starten»-Erinnerung. Nur solange die App offen ist. */
+          function mm(t) { var p = String(t || '').split(':'); return (+p[0] || 0) * 60 + (+p[1] || 0); }
+          function hm(m) { m = ((m % 1440) + 1440) % 1440; var h = Math.floor(m / 60), n = m % 60; return (h < 10 ? '0' : '') + h + ':' + (n < 10 ? '0' : '') + n; }
+          function nest() { try { return (typeof S === 'object' && S && S.zeiten) ? S.zeiten : null; } catch (e) { return null; } }
+          function dauer(n) { var m = n * 90, h = Math.floor(m / 60), r = m % 60; return h + (r ? '½' : '') + ' Std.'; }
+          var EINSCHLAFEN = 15;
+          var z0 = nest();
+          var auf = H.hol('auf', (z0 && z0.auf) || '06:30');
+          var er = H.hol('erinnerung', { an: false, vor: 45 });
+          if (!er || typeof er !== 'object') er = { an: false, vor: 45 };
+          if ([30, 45, 60].indexOf(+er.vor) < 0) er.vor = 45;
+          var n = H.karte('schlafzeit', '🌙 Wann ins Bett?',
+            '<p>Schlaf läuft in Wellen von etwa 90 Minuten. Wer am Ende einer Welle aufwacht, fühlt sich oft frischer. Dazu rechnet Fia rund ' + EINSCHLAFEN + ' Minuten zum Einschlafen. Ein Richtwert, kein Muss.</p>' +
+            '<label class="r8z-feld"><span>Ich stehe auf um</span><input type="time" data-a="auf" step="300"></label>' +
+            '<p class="r8-leise r8z-klein" id="r8z-hilfe">Tippe eine Zeit an, um sie als deine Schlafenszeit im Nest zu übernehmen.</p>' +
+            '<ul class="r8z-liste" aria-describedby="r8z-hilfe"></ul>' +
+            '<div class="r8z-erin"><h3 class="r8z-h3">Erinnerung: Routine starten</h3>' +
+            '<p class="r8z-klein">Fia sagt dir Bescheid, wenn es Zeit für dein Abendritual ist.</p>' +
+            '<label class="r8z-feld"><span>Wie lange vor dem Zubettgehen?</span><select data-a="vor"><option value="30">30 Minuten vorher</option><option value="45">45 Minuten vorher</option><option value="60">1 Stunde vorher</option></select></label>' +
+            '<div class="r8-reihe"><button type="button" class="r8-btn voll" data-a="an" aria-pressed="false"></button></div>' +
+            '<p class="r8z-ehrlich" role="note">Ehrlich gesagt: Die Erinnerung klappt nur, solange Fias Nest offen ist. Ist die App zu oder das Telefon gesperrt, kommt nichts. Für einen sicheren Hinweis stell zusätzlich den Wecker deines Telefons.</p></div>');
+          var st = document.createElement('style');
+          st.textContent = 'label.r8z-feld{display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:12px 0;color:var(--t-text,#EEF0F6);font-size:1rem}.r8z-feld span{flex:1 1 9em}' +
+            '.r8z-feld input,.r8z-feld select{min-height:48px;font:inherit;font-size:1.1rem;padding:6px 12px;border-radius:14px;border:1px solid var(--t-rand2,rgba(255,255,255,.24));background:var(--t-feld,rgba(255,255,255,.06));color:var(--t-text,#EEF0F6);color-scheme:dark;max-width:100%}' +
+            '.r8z-liste{list-style:none;margin:8px 0 4px;padding:0;display:grid;gap:8px}' +
+            '.r8z-wahl{display:flex;align-items:center;gap:12px;width:100%;min-height:60px;padding:10px 14px;border-radius:16px;border:1px solid var(--t-rand,rgba(255,255,255,.10));background:var(--t-flaeche,rgba(255,255,255,.06));color:var(--t-text,#EEF0F6);font:inherit;text-align:left;cursor:pointer}' +
+            '.r8z-wahl b{font-size:1.45rem;font-variant-numeric:tabular-nums;min-width:4.2ch}.r8z-wahl small{color:var(--t-leise,#AEB4C8);line-height:1.3}' +
+            '.r8z-wahl[aria-pressed=true]{border-color:var(--t-akzent,#F2B866);box-shadow:0 0 0 1px var(--t-akzent,#F2B866)}' +
+            '.r8z-tipp{font-weight:700;color:var(--t-akzent,#F2B866)}' +
+            '.r8z-klein{font-size:.95rem}.r8z-h3{font-size:1.05rem;margin:18px 0 4px}.r8z-erin{border-top:1px solid var(--t-rand,rgba(255,255,255,.10));margin-top:14px}' +
+            '.r8z-ehrlich{font-size:.92rem;color:var(--t-leise,#AEB4C8);margin-top:10px}';
+          n.appendChild(st);
+          var inAuf = n.querySelector('[data-a=auf]'), liste = n.querySelector('.r8z-liste'), sel = n.querySelector('[data-a=vor]'), knopf = n.querySelector('[data-a=an]');
+          inAuf.value = auf; sel.value = String(er.vor);
+          function bettJetzt() { var z = nest(); return H.hol('bett', (z && z.bett) || ''); }
+          function zeichne() {
+            var b = bettJetzt(); liste.innerHTML = '';
+            [6, 5, 4].forEach(function (w) {
+              var t = hm(mm(auf) - w * 90 - EINSCHLAFEN);
+              var li = document.createElement('li');
+              li.innerHTML = '<button type="button" class="r8z-wahl" aria-pressed="' + (t === b) + '"><b>' + t + '</b><small>' + w + ' Schlafwellen · ' + dauer(w) + ' Schlaf' + (w === 5 ? '<br>für viele ein guter Mittelweg' : w === 4 ? '<br>für kurze Nächte' : '') + (t === b ? '<br><span class="r8z-tipp">✓ deine Schlafenszeit</span>' : '') + '</small></button>';
+              li.firstChild.onclick = function () { waehle(t); };
+              liste.appendChild(li);
+            });
+            knopf.textContent = er.an ? '🔔 Erinnerung ist an, ausschalten' : '🔕 Erinnerung einschalten';
+            knopf.setAttribute('aria-pressed', er.an ? 'true' : 'false');
+          }
+          function waehle(t) {
+            var z = nest(), vorher = z ? { auf: z.auf, bett: z.bett } : null, vorherB = H.hol('bett', '');
+            H.leg('bett', t);
+            if (z) { try { S.zeiten = { auf: auf, bett: t }; if (typeof save === 'function') save(); if (typeof renderTag === 'function') renderTag(); } catch (e) {} }
+            H.summ(8); zeichne();
+            H.rueck('Schlafenszeit ' + t + ', Aufstehen ' + auf + '.', function () {
+              H.leg('bett', vorherB);
+              if (vorher) { try { S.zeiten = vorher; if (typeof save === 'function') save(); if (typeof renderTag === 'function') renderTag(); } catch (e) {} }
+              zeichne();
+            });
+          }
+          inAuf.onchange = function () { if (!inAuf.value) return; auf = inAuf.value; H.leg('auf', auf); zeichne(); };
+          sel.onchange = function () { er.vor = +sel.value; H.leg('erinnerung', er); };
+          knopf.onclick = function () {
+            er.an = !er.an; H.leg('erinnerung', er); zeichne();
+            if (er.an) {
+              var b = bettJetzt();
+              H.toast(b ? 'Fia erinnert dich um ' + hm(mm(b) - er.vor) + ', solange das Nest offen ist.' : 'Wähl zuerst eine Schlafenszeit, dann weiss Fia, wann.');
+            } else H.toast('Erinnerung ist aus.');
+          };
+          /* Erinnerung prüfen: alle 30 Sekunden und beim Zurückkehren in die App */
+          function tagKey(d) { return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+          function pruefen() {
+            if (!er.an) return; var b = bettJetzt(); if (!b) return;
+            var jetzt = new Date(), ziel = mm(b) - er.vor, nun = jetzt.getHours() * 60 + jetzt.getMinutes();
+            var diff = ((nun - ziel) % 1440 + 1440) % 1440; /* Minuten seit Erinnerungszeit */
+            if (diff > 30) return;
+            var k = tagKey(jetzt); if (H.hol('erinnertAm', '') === k) return;
+            H.leg('erinnertAm', k); melde(b);
+          }
+          function melde(b) {
+            var inh = H.el('<div class="r8z-melde"><p>Es ist Zeit, langsam leiser zu werden. In ' + er.vor + ' Minuten ist deine Schlafenszeit (' + H.esc(b) + ').</p><div class="r8-reihe"><button type="button" class="r8-btn voll" data-a="los">🕯️ Routine starten</button><button type="button" class="r8-btn" data-a="spaeter">Später</button></div></div>');
+            var bl = H.blatt('🌙 Zeit für dein Ritual', inh);
+            function zu() { if (bl && bl.zu) bl.zu(); else { var x = document.querySelector('.r8-blatt [data-zu]'); if (x) x.click(); } }
+            inh.querySelector('[data-a=los]').onclick = function () { zu(); try { if (typeof go === 'function') go('ausgluehen'); } catch (e) {} };
+            inh.querySelector('[data-a=spaeter]').onclick = zu;
+            try { H.sag('Zeit für dein Abendritual. Ganz ohne Eile.'); } catch (e) {}
+          }
+          H.schlafErinnerung = melde;
+          setInterval(pruefen, 30000);
+          document.addEventListener('visibilitychange', function () { if (!document.hidden) pruefen(); });
+          setTimeout(pruefen, 1500);
+          zeichne();
+          return n;
+        }
+      }
     ],
     wachsen: {
       licht: 'Glutfunken', licht1: 'Glutfunke', emo: '🔥', dauer: 20000,
@@ -131,6 +227,7 @@
       if (N.heute) { if (g) g.after(N.heute); else home.appendChild(N.heute); }
       var gc = home.querySelector('.glutcard');
       if (N.rueckblick) { if (gc) gc.after(N.rueckblick); else home.appendChild(N.rueckblick); }
+      if (N.schlafzeit) { var vor = N.rueckblick || gc; if (vor) vor.after(N.schlafzeit); else home.appendChild(N.schlafzeit); }
     }
 };
   if (window.R8) return;
