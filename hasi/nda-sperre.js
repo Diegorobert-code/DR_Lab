@@ -2,13 +2,14 @@
    Ein Vollbild-Fenster deckt die App ab, bis die Person mit dem Finger unterschrieben,
    das Kästchen angekreuzt und auf «Fertig» getippt hat. Danach Bestätigungsfeld für einen
    Screenshot an Diego (WhatsApp) und «Weiter zur App».
-   Schalter: nur aktiv mit window.NDA_SPERRE = true (wird nur in den Artefakt-Fassungen gesetzt).
-   In der öffentlichen Fassung ist die Sperre aus.
+   Schalter: standardmässig AN (live geschaltete Fassung, GitHub Pages).
+   Aus nur mit window.NDA_SPERRE = false (wird in den claude.ai-Artefakt-Fassungen gesetzt,
+   dort ist Diego selbst und braucht keine Sperre).
    Einbau: ein script-Element mit src="nda-sperre.js" und data-app="App-Name" (optional data-eltern).
    Freischaltung in localStorage; ist der Speicher gesperrt, gilt die Sperre pro Sitzung. */
 (function () {
   "use strict";
-  if (window.NDA_SPERRE !== true || window.__ndaSperre) return;
+  if (window.NDA_SPERRE === false || window.__ndaSperre) return;
   window.__ndaSperre = true;
 
   var me = document.currentScript, ds = (me && me.dataset) || {};
