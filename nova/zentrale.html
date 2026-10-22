@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nova Zentrale</title>
+<meta name="theme-color" content="#0b1a3a">
+<link rel="apple-touch-icon" href="icon-nova-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root { --nacht:#0b1a3a; --nacht2:#16306b; --gold:#f5c542; --text:#f4f1e8; --leise:#b9c3e0; --rot:#ff6b6b; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { margin:0; height:100%; }
+  body { background:radial-gradient(120% 80% at 50% 0%, var(--nacht2), var(--nacht) 70%); color:var(--text);
+    font:16px/1.4 system-ui, -apple-system, sans-serif; overflow:hidden; }
+  .seiten { display:flex; height:100%; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; }
+  .seiten::-webkit-scrollbar { display:none; }
+  .seite { flex:none; width:100%; height:100%; scroll-snap-align:start; display:flex; flex-direction:column; align-items:center;
+    padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 18px); overflow-y:auto; }
+  h1 { margin:0 0 10px; font-size:20px; color:var(--gold); letter-spacing:.5px; }
+  .liste { width:100%; max-width:480px; display:flex; flex-direction:column; gap:8px; }
+  .gruppe { font-size:13px; letter-spacing:1px; text-transform:uppercase; color:var(--leise); margin:10px 2px 0; }
+  .karte { display:flex; align-items:center; gap:12px; padding:14px; border-radius:16px; background:#ffffff10; color:inherit; text-decoration:none; }
+  .karte.wichtig { background:#f5c54222; box-shadow:inset 0 0 0 2px var(--gold); }
+  .karte .zeichen { font-size:26px; flex:none; }
+  .karte .titel { font-weight:600; flex:1; }
+  .karte .neu { font-size:12px; color:#1b1300; background:var(--gold); border-radius:20px; padding:2px 8px; flex:none; }
+  .leer { color:var(--leise); text-align:center; margin-top:30px; }
+  .figur { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; text-align:center; }
+  .figur img { width:min(72vw, 320px); aspect-ratio:1; object-fit:cover; border-radius:50%; box-shadow:0 0 0 4px #ffffff22, 0 20px 60px #0008; }
+  .figur h2 { margin:0; font-size:28px; color:var(--gold); }
+  .figur p { margin:0; color:var(--leise); max-width:300px; }
+  .anrufen { display:inline-flex; align-items:center; gap:10px; padding:16px 30px; border-radius:40px; background:var(--gold); color:#1b1300;
+    font-size:19px; font-weight:700; text-decoration:none; box-shadow:0 10px 30px #f5c54255; }
+  .punkte { position:fixed; left:0; right:0; bottom:calc(env(safe-area-inset-bottom) + 6px); display:flex; justify-content:center; gap:6px; pointer-events:none; }
+  .punkte i { width:6px; height:6px; border-radius:50%; background:#ffffff40; }
+  .punkte i.an { background:var(--gold); }
+</style>
+</head>
+<body>
+<div class="seiten" id="seiten">
+  <section class="seite">
+    <h1>Nova</h1>
+    <div class="liste" id="liste"><div class="leer">Threads werden geladen …</div></div>
+  </section>
+</div>
+<div class="punkte" id="punkte"></div>
+<script>
+(function () {
+  // Zentrale: erste Seite = Threads (wichtig oben), danach wischen zu jeder KI, ein Tipp ruft sie an.
+  var KIS = [
+    ['nova', 'Nova', 'nova-3d.jpg', 'Alles über mich.'],
+    ['sparky', 'Sparky', 'figuren/sparky.jpg', 'Human Sparks: Forschung.'],
+    ['mr. ping', 'Mr. Ping', '../tradeping/ping-3d.jpg', 'Wie stehen meine Aktien?'],
+    ['sunny', 'Sunny', 'figuren/sunny.jpg', 'Rauchfrei.'],
+    ['fompa', 'Fompa', 'figuren/fompa.jpg', 'Buchhaltung und Steuern.'],
+    ['coin maker', 'Coin Maker', 'figuren/coinmaker.jpg', 'Ideen und Werkstatt.'],
+    ['jackie', 'Jackie', '../jackie/jackie-3d.jpg', 'Jackie\'s Advice.'],
+    ['flo', 'Flo', 'figuren/flo.jpg', 'Food and Flow.'],
+    ['kiki', 'Kiki', '../kiki/kiki-3d.jpg', 'Singen.'],
+    ['otti', 'Otti', '../otti/otti-3d.jpg', 'Mondschein.'],
+    ['tropfi', 'Tropfi', 'figuren/tropfi.jpg', 'Tropfi.'],
+    ['carmencita', 'Carmencita', 'figuren/carmencita.jpg', 'Tanzen.'],
+    ['ava', 'Ava', 'figuren/ava.jpg', 'Filme.']
+  ];
+  var seiten = document.getElementById('seiten'), punkte = document.getElementById('punkte');
+  KIS.forEach(function (k) {
+    var s = document.createElement('section'); s.className = 'seite';
+    var f = document.createElement('div'); f.className = 'figur';
+    var img = document.createElement('img'); img.src = k[2]; img.alt = k[1];
+    var h = document.createElement('h2'); h.textContent = k[1];
+    var p = document.createElement('p'); p.textContent = k[3];
+    var a = document.createElement('a'); a.className = 'anrufen'; a.href = 'reden.html?f=' + encodeURIComponent(k[0]); a.textContent = '🎙 Reden';
+    f.append(img, h, p, a); s.appendChild(f); seiten.appendChild(s);
+  });
+  for (var i = 0; i <= KIS.length; i++) punkte.appendChild(document.createElement('i'));
+  function punkt() {
+    var n = Math.round(seiten.scrollLeft / seiten.clientWidth);
+    [].forEach.call(punkte.children, function (x, j) { x.classList.toggle('an', j === n); });
+    try { sessionStorage.setItem('zentrale.seite', n); } catch (e) {}
+  }
+  seiten.addEventListener('scroll', function () { requestAnimationFrame(punkt); });
+  try { var alt = +sessionStorage.getItem('zentrale.seite') || 0; if (alt) setTimeout(function () { seiten.scrollLeft = alt * seiten.clientWidth; }, 50); } catch (e) {}
+  punkt();
+
+  // Thread-Liste kommt als JSON (Adresse im #liste=… oder zuletzt gemerkt): {threads:[{titel, wichtig, neu, bilder, link}]}
+  var liste = document.getElementById('liste');
+  var m = location.hash.match(/liste=([^&]+)/), quelle = m ? decodeURIComponent(m[1]) : '';
+  try { if (quelle) localStorage.setItem('zentrale.quelle', quelle); else quelle = localStorage.getItem('zentrale.quelle') || ''; } catch (e) {}
+  function karte(t) {
+    var a = document.createElement(t.link ? 'a' : 'div'); a.className = 'karte' + (t.wichtig ? ' wichtig' : '');
+    if (t.link) { a.href = t.link; a.target = '_blank'; a.rel = 'noopener'; }
+    var z = document.createElement('span'); z.className = 'zeichen'; z.textContent = t.bilder ? '🖼' : t.wichtig ? '❗' : '🕊';
+    var ti = document.createElement('span'); ti.className = 'titel'; ti.textContent = t.titel || '';
+    a.append(z, ti);
+    if (t.neu) { var n = document.createElement('span'); n.className = 'neu'; n.textContent = 'Änderung, wichtig'; a.appendChild(n); }
+    return a;
+  }
+  function zeigen(d) {
+    var l = (d && d.threads) || []; liste.innerHTML = '';
+    if (!l.length) { liste.innerHTML = '<div class="leer">Alles ruhig. Wisch nach links zu den KIs.</div>'; return; }
+    l.sort(function (a, b) { return (b.neu ? 2 : 0) + (b.wichtig ? 1 : 0) - (a.neu ? 2 : 0) - (a.wichtig ? 1 : 0); });
+    var w = l.filter(function (t) { return t.wichtig || t.neu; }), z = l.filter(function (t) { return !(t.wichtig || t.neu); });
+    [['Wichtig', w], ['Hat noch Zeit', z]].forEach(function (g) {
+      if (!g[1].length) return;
+      var h = document.createElement('div'); h.className = 'gruppe'; h.textContent = g[0]; liste.appendChild(h);
+      g[1].forEach(function (t) { liste.appendChild(karte(t)); });
+    });
+  }
+  function laden() {
+    if (!quelle) { zeigen(null); return; }
+    fetch(quelle + (quelle.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.json(); }).then(zeigen)
+      .catch(function () { liste.innerHTML = '<div class="leer">Liste gerade nicht erreichbar. Wisch zu den KIs.</div>'; });
+  }
+  laden();
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) laden(); });
+  setInterval(laden, 60000);
+})();
+</script>
+</body>
+</html>
