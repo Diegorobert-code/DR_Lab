@@ -5,7 +5,7 @@
    - Neutraler Titel «Notizen» im Browser-Tab und als Name auf dem Startbildschirm-Titel.
    - Notruf 117 / 144 / 142 bleibt auch auf dem Code-Bildschirm antippbar.
    - Code vergessen: App zurücksetzen (wie «Alles löschen»), dann ist der Code weg.
-   Einbau: <script src="diskret.js"></script> im <head>, früh (vor dem Inhalt). */
+   Einbau: script-Tag mit src="diskret.js" im <head>, früh (vor dem Inhalt). */
 (function () {
   'use strict';
   if (window.__jkDiskret) return; window.__jkDiskret = true;
