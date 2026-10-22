@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reden</title>
+<meta name="theme-color" content="#0b1a3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root { --nacht:#0b1a3a; --nacht2:#16306b; --gold:#f5c542; --text:#f4f1e8; --leise:#b9c3e0; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { margin:0; height:100%; }
+  body { background:radial-gradient(120% 80% at 50% 0%, var(--nacht2), var(--nacht) 70%); color:var(--text);
+    font:16px/1.4 system-ui, -apple-system, sans-serif; display:flex; flex-direction:column; align-items:center;
+    padding:calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 16px); overflow:hidden; }
+  .sterne { position:fixed; inset:0; pointer-events:none; background-image:
+    radial-gradient(2px 2px at 12% 18%, #fff8 50%, transparent 51%), radial-gradient(1.5px 1.5px at 78% 12%, #fff9 50%, transparent 51%),
+    radial-gradient(2px 2px at 64% 30%, #fff6 50%, transparent 51%), radial-gradient(1.5px 1.5px at 30% 8%, #fff7 50%, transparent 51%),
+    radial-gradient(2px 2px at 90% 40%, #fff5 50%, transparent 51%), radial-gradient(1.5px 1.5px at 6% 44%, #fff6 50%, transparent 51%); }
+  .wahl { display:flex; gap:10px; margin:6px 0 2px; max-width:100%; overflow-x:auto; padding:4px 6px; scrollbar-width:none; }
+  .wahl::-webkit-scrollbar { display:none; }
+  .wahl a { flex:none; width:42px; height:42px; border-radius:50%; overflow:hidden; box-shadow:0 0 0 2px #ffffff22; opacity:.7; transition:transform .15s, opacity .15s; }
+  .wahl a img { width:100%; height:100%; object-fit:cover; display:block; }
+  .wahl a.an { box-shadow:0 0 0 3px var(--gold), 0 0 16px #f5c54288; opacity:1; transform:scale(1.08); }
+  .zurueck { position:fixed; left:12px; top:calc(env(safe-area-inset-top) + 8px); width:44px; height:44px; display:grid; place-items:center;
+    color:var(--gold); font-size:34px; text-decoration:none; z-index:2; }
+  h1 { margin:4px 0 0; font-size:22px; letter-spacing:.5px; color:var(--gold); }
+  .status { min-height:22px; color:var(--leise); font-size:15px; margin:2px 0 10px; text-align:center; }
+  .buehne { position:relative; width:min(86vw, 420px); aspect-ratio:1/1; border-radius:28px; overflow:hidden;
+    box-shadow:0 18px 50px #0008, 0 0 0 3px #f5c54233; transform-origin:50% 90%; transition:box-shadow .3s; }
+  .buehne.hoert { box-shadow:0 18px 50px #0008, 0 0 0 4px #7fd4ff, 0 0 40px #7fd4ff66; }
+  .buehne.spricht { box-shadow:0 18px 50px #0008, 0 0 0 4px var(--gold), 0 0 44px #f5c54277; }
+  .buehne canvas { position:absolute; inset:0; width:100%; height:100%; display:block; transform:scale(1.07); transform-origin:50% 85%; }
+  .buehne .glanz { position:absolute; inset:0; pointer-events:none; background:
+    radial-gradient(3px 3px at 24% 5%, #fff 50%, transparent 51%), radial-gradient(3px 3px at 36% 13%, #fff 50%, transparent 51%),
+    radial-gradient(2.5px 2.5px at 94% 2.5%, #fff 50%, transparent 51%), radial-gradient(2.5px 2.5px at 1% 35%, #fff 50%, transparent 51%);
+    animation:funkeln 2.6s ease-in-out infinite; }
+  @keyframes funkeln { 50% { opacity:.15; } }
+  .funke { position:absolute; width:10px; height:10px; border-radius:50%; background:radial-gradient(#fff, #f5c542 60%, transparent 70%);
+    pointer-events:none; animation:funke 1s ease-out forwards; }
+  @keyframes funke { to { transform:translate(var(--dx), var(--dy)) scale(.2); opacity:0; } }
+  .hopsen { animation:hopsen .55s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes hopsen { 30% { transform:translateY(-14px) scale(1.1); } 60% { transform:translateY(2px) scale(1.06); } }
+  .atmen { animation:atmen 3.6s ease-in-out infinite; }
+  @keyframes atmen { 50% { transform:scale(1.012) translateY(-2px); } }
+  .text { width:min(92vw, 460px); flex:1; min-height:0; overflow-y:auto; margin-top:14px; display:flex; flex-direction:column; gap:8px;
+    mask-image:linear-gradient(transparent, #000 18px); -webkit-mask-image:linear-gradient(transparent, #000 18px); padding-top:14px; }
+  .z { padding:8px 12px; border-radius:14px; max-width:86%; white-space:pre-wrap; }
+  .z.du { align-self:flex-end; background:#24386e; }
+  .z.otti { align-self:flex-start; background:#f4f1e8; color:#22201a; }
+  .knopf { margin-top:12px; width:88px; height:88px; border-radius:50%; border:0; cursor:pointer; font-size:34px;
+    background:var(--gold); color:#2a1d00; box-shadow:0 10px 28px #0007; display:grid; place-items:center; flex:none;
+    transition:transform .1s, background .2s; }
+  .knopf:active { transform:scale(.94); }
+  .knopf.aktiv { background:#d6304a; color:#fff; }
+  .knopf:focus-visible { outline:3px solid #fff; outline-offset:4px; }
+  .hinweis { color:var(--leise); font-size:13px; margin-top:8px; text-align:center; min-height:18px; }
+  .vergessen { margin-top:6px; background:none; border:0; color:var(--leise); font:13px system-ui, sans-serif; text-decoration:underline; cursor:pointer; opacity:.8; }
+  @media (prefers-reduced-motion: reduce) { .atmen { animation:none; } }
+.lernen{display:block;margin:10px auto 0;max-width:340px;font-size:13px;line-height:1.35;color:#d9d2c3;text-align:center}.lernen input{width:18px;height:18px;vertical-align:-3px;accent-color:#f2c14e}.lernen small{display:block;color:#a9a294}
+</style>
+</head>
+<body>
+<div class="sterne"></div>
+<a class="zurueck" id="zurueck" href="#" aria-label="Zurück">‹</a>
+<h1 id="name">Otti</h1>
+<nav class="wahl" id="wahl" aria-label="Mit wem reden?"></nav>
+<div class="status" id="status">Tipp auf den Knopf und rede mit mir.</div>
+
+<div class="buehne atmen" id="buehne" role="img" aria-label="Figur">
+  <canvas id="figur"></canvas>
+  <div class="glanz"></div>
+</div>
+
+<div class="text" id="text" aria-live="polite"></div>
+
+<button class="knopf" id="knopf" type="button" aria-label="Gespräch starten">🎙</button>
+<div class="hinweis" id="hinweis"></div>
+<label class="lernen" id="lernenBox"><input type="checkbox" id="lernen"> Nova darf aus diesem Gespräch lernen <small>(nur Diego und Team, auf unserem Server in der Schweiz)</small></label>
+<button class="vergessen" id="vergessen" type="button" hidden><span id="vname">Otti</span> vergisst alles</button>
+
+<script src="elevenlabs-client-1.26.0.js"></script>
+<script src="mund.js"></script>
+<script>
+(function () {
+  // Live-Gespräch mit einer Figur (reden.html?f=jackie): ElevenLabs Agent hört zu, denkt mit Claude
+  // und spricht mit der eigenen Stimme der Figur; der Mund bewegt sich dazu (mund.js).
+  // Die Agenten sind nur von dieser Adresse aus erreichbar und haben ein Tageslimit.
+  var FIGUREN = {
+    otti: { name: 'Otti', agent: 'agent_4801m55hqwdpeq0ry4awvx45rz5t', bild: '../otti/otti-3d.jpg', gedaechtnis: true,
+      mund: { linie: [[446, 786], [470, 797], [510, 805], [600, 805], [645, 797], [678, 776]], lippe: 858, kinn: 945, max: 30 } },
+    jackie: { name: 'Jackie', agent: 'agent_7501m55rzxb0fdv9j4n97jtnbk08', bild: '../jackie/jackie-3d.jpg',
+      mund: { linie: [[420, 662], [440, 702], [470, 720], [510, 736], [550, 746], [590, 746], [624, 731]], lippe: 774, kinn: 835, max: 26 } },
+    'mr. ping': { name: 'Mr. Ping', agent: 'agent_5601m55s9kdcebzrh23262ytezm2', bild: '../tradeping/ping-3d.jpg', positionen: true,
+      mund: { linie: [[318, 388], [335, 402], [360, 410], [400, 412], [430, 408], [448, 400]], lippe: 426, kinn: 500, max: 22 } },
+    nova: { name: 'Nova', agent: 'agent_4201m55seyhdexd96tkaxt72hmaq', bild: 'nova-3d.jpg', gedaechtnis: true, welt: true,
+      mund: { linie: [[520, 684], [545, 694], [580, 700], [620, 700], [660, 690], [690, 668], [705, 636]], lippe: 738, kinn: 792, max: 22 } },
+    sparky: { name: 'Sparky', agent: 'agent_7401m55j20jwek69gsh3gkfhaa77', bild: 'figuren/sparky.jpg',
+      mund: { linie: [[440, 790], [470, 808], [500, 820], [560, 832], [600, 824], [640, 804], [690, 780]], lippe: 852, kinn: 905, max: 18, innen: [90, 28, 34] } },
+    'coin maker': { name: 'Coin Maker', agent: 'agent_2001m55ss61fe5wb1qct4b8bqkz3', bild: 'figuren/coinmaker.jpg',
+      mund: { linie: [[464, 446], [484, 480], [520, 488], [560, 498], [590, 506], [614, 512]], lippe: 526, kinn: 600, max: 20 } },
+    flo: { name: 'Flo', agent: 'agent_0001m55ss8s7eb0vnzr6f1vz1tf0', bild: 'figuren/flo.jpg',
+      mund: { linie: [[404, 564], [432, 604], [460, 623], [500, 630], [540, 626], [570, 619], [598, 609]], lippe: 656, kinn: 702, max: 22 } },
+    fompa: { name: 'Fompa', agent: 'agent_5401m55ssbdheqwtyw4131dqya8w', bild: 'figuren/fompa.jpg',
+      mund: { linie: [[420, 398], [448, 438], [480, 444], [520, 452], [550, 456], [586, 448]], lippe: 480, kinn: 530, max: 20 } },
+    sunny: { name: 'Sunny', agent: 'agent_4201m55ssdr3fksaey0x2yh1vpmh', bild: 'figuren/sunny.jpg',
+      mund: { linie: [[416, 488], [440, 523], [480, 532], [520, 546], [560, 559], [592, 562], [646, 540]], lippe: 586, kinn: 640, max: 22 } },
+    kiki: { name: 'Kiki', agent: 'agent_0401m55r02rvf96a1xrxv1njqbh3', bild: '../kiki/kiki-3d.jpg', ruhe: -0.4,
+      mund: { linie: [[372, 652], [400, 700], [440, 708], [480, 718], [520, 722], [560, 722], [600, 722], [614, 724]], lippe: 795, kinn: 865, max: 22 } }
+  };
+  var BILDCHEN = { nova: 'nova-3d.jpg', otti: '../otti/icon-180.png', kiki: '../kiki/icon-180.png', jackie: '../jackie/icon-180.png', 'mr. ping': '../tradeping/icon-180.png',
+    sparky: 'figuren/sparky-klein.jpg', 'coin maker': 'figuren/coinmaker-klein.jpg', flo: 'figuren/flo-klein.jpg', fompa: 'figuren/fompa-klein.jpg', sunny: 'figuren/sunny-klein.jpg' };
+  var KEY = (new URLSearchParams(location.search).get('f') || 'otti').toLowerCase();
+  var F = FIGUREN[KEY] || FIGUREN.otti, NAME = F.name, AGENT = F.agent, RUHE = F.ruhe || 0;
+  document.title = NAME;
+  var $ = function (id) { return document.getElementById(id); };
+  var buehne = $('buehne'), figur = $('figur');
+  var knopf = $('knopf'), status = $('status'), text = $('text'), hinweis = $('hinweis');
+  var conv = null, startet = false, mund = null, offen = RUHE, spitze = 0.15;
+  // Alle Figuren in einer App: so teilen sie dasselbe Gedächtnis, und Nova sieht alles.
+  Object.keys(BILDCHEN).forEach(function (k) {
+    var a = document.createElement('a'); a.href = '?f=' + encodeURIComponent(k); a.setAttribute('aria-label', 'Mit ' + FIGUREN[k].name + ' reden');
+    if (k === KEY) { a.className = 'an'; setTimeout(function () { a.scrollIntoView({ inline: 'center', block: 'nearest' }); }, 50); }
+    var im = document.createElement('img'); im.src = BILDCHEN[k]; im.alt = ''; a.appendChild(im);
+    a.addEventListener('click', function (e) { e.preventDefault(); if (conv) { var c = conv; ende(); c.endSession().catch(function () {}); } location.replace(a.href); });
+    $('wahl').appendChild(a);
+  });
+  $('name').textContent = NAME; $('vname').textContent = NAME;
+  $('zurueck').addEventListener('click', function (e) { e.preventDefault(); if (history.length > 1) history.back(); else location.href = '../apps/'; });
+
+  // Ottis Gesicht: Mund bewegt sich im Takt seiner Stimme (nova/mund.js).
+  var bild = new Image();
+  bild.onload = function () {
+    try {
+      mund = NovaMund(figur, bild, F.mund); mund.setze(RUHE);
+    } catch (e) { figur.getContext('2d').drawImage(bild, 0, 0); }
+  };
+  bild.src = F.bild;
+
+  // Funken, wenn Otti sich freut.
+  function funken(n) {
+    for (var i = 0; i < n; i++) {
+      var f = document.createElement('div'); f.className = 'funke';
+      var w = Math.random() * Math.PI * 2, r = 60 + Math.random() * 90;
+      f.style.left = (35 + Math.random() * 30) + '%'; f.style.top = (40 + Math.random() * 25) + '%';
+      f.style.setProperty('--dx', Math.cos(w) * r + 'px'); f.style.setProperty('--dy', Math.sin(w) * r - 40 + 'px');
+      buehne.appendChild(f); setTimeout(function (e) { e.remove(); }.bind(null, f), 1100);
+    }
+  }
+  function hopsen() {
+    figur.classList.remove('hopsen'); void figur.offsetWidth; figur.classList.add('hopsen'); funken(10);
+  }
+
+  // Gedächtnis: worüber ihr geredet habt, nur auf diesem Handy gespeichert.
+  var GED = KEY === 'otti' ? 'otti_gedaechtnis' : 'gedaechtnis_' + KEY, jetztGesagt = [];
+  function gedaechtnis() { try { return JSON.parse(localStorage.getItem(GED)) || []; } catch (e) { return []; } }
+  function merken() {
+    if (jetztGesagt.length < 2) { jetztGesagt = []; return; }
+    var t = jetztGesagt.join('\n'); if (t.length > 900) t = t.slice(-900);
+    var g = gedaechtnis(); g.push({ d: new Date().toLocaleDateString('de-CH'), t: t });
+    try { localStorage.setItem(GED, JSON.stringify(g.slice(-4))); } catch (e) {}
+    if (lernenAn()) zuNova(t);
+    jetztGesagt = []; vergessenZeigen();
+  }
+  // Nova lernt: mit Einwilligung geht jedes Gespräch als Erfahrung in die Sense Engine.
+  // Adresse und Passwort sind die aus «Handy verbinden»; ohne Verbindung bleibt alles nur auf dem Handy.
+  function hol(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+  function lernenAn() { try { return localStorage.getItem('nova_lernen') === '1'; } catch (e) { return false; } }
+  function zuNova(text) {
+    var a = String(hol('drlab-hermes-adresse') || '').trim().replace(/\/+$/, ''), k = hol('drlab-hermes-passwort');
+    if (!a || !k) return;
+    fetch(a + '/erfahrung', { method: 'POST', keepalive: true,
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + k },
+      body: JSON.stringify({ app: 'Live ' + NAME, art: 'gespraech', frage: text, antwort: '' }) }).catch(function () {});
+  }
+  var lernen = $('lernen');
+  lernen.checked = lernenAn();
+  lernen.addEventListener('change', function () { try { localStorage.setItem('nova_lernen', lernen.checked ? '1' : '0'); } catch (e) {} });
+  function erinnerung() {
+    var g = gedaechtnis();
+    return g.length ? g.map(function (x) { return 'Am ' + x.d + ':\n' + x.t; }).join('\n\n') : 'Noch nichts. Ihr redet zum ersten Mal.';
+  }
+  var vergessen = $('vergessen');
+  function vergessenZeigen() { vergessen.hidden = !gedaechtnis().length; }
+  vergessen.addEventListener('click', function () {
+    try { localStorage.removeItem(GED); } catch (e) {}
+    vergessenZeigen(); status.textContent = 'Erledigt. ' + NAME + ' fängt neu an.';
+  });
+  vergessenZeigen();
+
+  // Mr. Ping: Diegos Titel aus der TradePing-Liste (gleiches Handy), keine Kurse erfunden.
+  // Übungstopf aus der Mr.-Ping-App (kommt im Link mit)
+  try {
+    var mt = /[#&]topf=([^&]+)/.exec(location.hash);
+    if (mt) { var tp = JSON.parse(decodeURIComponent(mt[1])); if (Array.isArray(tp)) localStorage.setItem('tp.topf', JSON.stringify(tp)); history.replaceState(null, '', location.pathname + location.search); }
+  } catch (e) {}
+  function positionen() {
+    var it = []; try { it = JSON.parse(localStorage.getItem('tp.items')) || []; } catch (e) {}
+    var topf = []; try { topf = (JSON.parse(localStorage.getItem('tp.topf')) || []).filter(function (x) { return x && x.name; }); } catch (e) {}
+    if (topf.length) {
+      var summe = 0, start = 0;
+      var t = topf.map(function (x) {
+        var e = +x.einsatz || 50, w = x.kauf && x.jetzt ? e * x.jetzt / x.kauf : e;
+        summe += w; start += e;
+        return x.name + ': Einsatz ' + e + ' Franken, Kaufkurs ' + (x.kauf || '?') + ', jetzt ' + (x.jetzt || '?') + ', Wert ' + w.toFixed(2) + ' Franken (' + ((w / e - 1) * 100).toFixed(1) + ' %)';
+      }).join('; ');
+      return 'Übungstopf in Yuh: ' + t + '. Ganzer Topf ' + summe.toFixed(2) + ' von ' + start + ' Franken.' + (it.length ? ' Weitere beobachtete Titel: ' + it.map(function (x) { return x.name || x.sym; }).join(', ') + '.' : '');
+    }
+    if (!it.length) return 'Noch nicht eingetragen. Frag Diego freundlich, welche vier Titel er gekauft hat.';
+    return it.map(function (x) {
+      var t = (x.name || x.sym) + (x.sym ? ' (' + x.sym + ')' : '');
+      if (x.man != null) t += ', zuletzt von Hand eingetragen: ' + x.man + ' ' + (x.cur || '');
+      if (x.under != null) t += ', Ping unter ' + x.under; if (x.over != null) t += ', Ping über ' + x.over;
+      return t;
+    }).join('; ');
+  }
+
+  // Nova verbindet: sie bekommt, was die anderen Figuren auf diesem Handy erlebt haben.
+  function welt() {
+    var teile = [];
+    ['otti', 'kiki', 'jackie', 'mr. ping', 'sparky', 'coin maker', 'flo', 'fompa', 'sunny'].forEach(function (k) {
+      var g = []; try { g = JSON.parse(localStorage.getItem(k === 'otti' ? 'otti_gedaechtnis' : 'gedaechtnis_' + k)) || []; } catch (e) {}
+      g.slice(-2).forEach(function (x) { teile.push(FIGUREN[k].name + ' am ' + x.d + ':\n' + String(x.t).slice(-450)); });
+    });
+    var p = positionen(); if (p.indexOf('Noch nicht') !== 0) teile.push('Mr. Pings Titel: ' + p);
+    return teile.length ? teile.join('\n\n') : 'Noch nichts gespeichert.';
+  }
+  function variablen() {
+    var v = {};
+    if (F.gedaechtnis) v.letztes_mal = erinnerung();
+    if (F.positionen) v.positionen = positionen();
+    if (F.welt) v.welt = welt();
+    return Object.keys(v).length ? v : undefined;
+  }
+
+  function zeile(wer, t) {
+    jetztGesagt.push((wer === 'du' ? 'Gegenüber: ' : NAME + ': ') + t);
+    var d = document.createElement('div'); d.className = 'z ' + wer; d.textContent = t;
+    text.appendChild(d); text.scrollTop = text.scrollHeight;
+    while (text.children.length > 30) text.removeChild(text.firstChild);
+  }
+
+  // Mund und Kopf folgen der Stimme; beim Zuhören neigt Otti den Kopf.
+  var neigung = 0;
+  function takt() {
+    var ziel = RUHE, hoer = 0;
+    if (conv) {
+      var v = 0, iv = 0;
+      try { v = conv.getOutputVolume() || 0; } catch (e) {}
+      try { iv = conv.getInputVolume() || 0; } catch (e) {}
+      spitze = Math.max(spitze * 0.997, v, 0.08);
+      if (conv.__spricht) ziel = Math.min(1, Math.max(-1, RUHE + (v / spitze) * 1.25 - 0.12 + (RUHE < 0 ? -0.6 : 0)));
+      else hoer = Math.min(1, iv * 4);
+    }
+    offen += (ziel - offen) * (ziel > offen ? 0.55 : 0.3);
+    if (mund) mund.setze(offen);
+    neigung += ((conv && !conv.__spricht ? 2 + hoer * 1.5 : 0) - neigung) * 0.08;
+    var hoch = conv && conv.__spricht ? Math.max(0, offen - RUHE) * 4 : 0;
+    figur.style.transform = 'scale(1.07) rotate(' + neigung.toFixed(2) + 'deg) translateY(' + (-hoch).toFixed(1) + 'px)';
+    requestAnimationFrame(takt);
+  }
+  requestAnimationFrame(takt);
+
+  function knopfZeigen() {
+    var an = !!conv || startet;
+    knopf.classList.toggle('aktiv', an);
+    knopf.textContent = an ? '■' : '🎙';
+    knopf.setAttribute('aria-label', an ? 'Gespräch beenden' : 'Gespräch starten');
+  }
+
+  async function starten() {
+    if (startet || conv) return;
+    startet = true; knopfZeigen();
+    status.textContent = NAME + ' wacht auf …'; hinweis.textContent = '';
+    try {
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (e) {
+      startet = false; knopfZeigen();
+      status.textContent = 'Ich brauche das Mikrofon.';
+      hinweis.textContent = 'Einstellungen › Safari › Mikrofon erlauben, dann nochmal tippen.';
+      return;
+    }
+    try {
+      var c = await ElevenLabsClient.Conversation.startSession({
+        agentId: AGENT,
+        connectionType: 'websocket',
+        dynamicVariables: variablen(),
+        onConnect: function () { status.textContent = NAME + ' hört zu.'; hopsen(); },
+        onDisconnect: function () { ende('Bis bald! Tipp auf den Knopf, dann bin ich wieder da.'); },
+        onError: function (m) { hinweis.textContent = 'Fehler: ' + (m || 'unbekannt'); },
+        onMessage: function (m) { if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message); },
+        onModeChange: function (m) {
+          var sp = m && m.mode === 'speaking';
+          if (conv) conv.__spricht = sp;
+          buehne.classList.toggle('spricht', sp); buehne.classList.toggle('hoert', !sp);
+          status.textContent = NAME + (sp ? ' spricht …' : ' hört zu.');
+        }
+      });
+      conv = c; startet = false; knopfZeigen();
+      buehne.classList.add('hoert');
+    } catch (e) {
+      startet = false; knopfZeigen();
+      status.textContent = NAME + ' schläft gerade.';
+      hinweis.textContent = 'Keine Verbindung. Internet prüfen und nochmal tippen.';
+    }
+  }
+
+  function ende(t) {
+    if (conv) merken();
+    conv = null; startet = false;
+    buehne.classList.remove('hoert', 'spricht');
+    knopfZeigen();
+    if (t) status.textContent = t;
+  }
+
+  knopf.addEventListener('click', function () {
+    if (conv) { var c = conv; ende('Bis bald!'); c.endSession().catch(function () {}); }
+    else starten();
+  });
+  // Auf Otti tippen: er hüpft vor Freude.
+  buehne.addEventListener('click', hopsen);
+
+})();
+</script>
+</body>
+</html>
