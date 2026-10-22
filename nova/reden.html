@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-22-10">
+<meta name="stand" content="2026-10-23-01">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -209,6 +209,10 @@
   $('name').textContent = NAME; $('vname').textContent = NAME;
   // Bei Nova keine Figurenreihe: sonst landet man aus Versehen bei Otti und findet nicht zurück.
   if (KEY === 'nova') $('wahl').style.display = 'none';
+  // In der Zentrale (zentrale.html) wischt man zwischen den KIs: dort keine eigene Figurenreihe und kein Zurück.
+  var EINGEBETTET = window.parent !== window && new URLSearchParams(location.search).get('zentrale') === '1';
+  function zentrale(n) { if (EINGEBETTET) try { window.parent.postMessage(Object.assign({ zentrale: true, f: KEY }, n), location.origin); } catch (e) {} }
+  if (EINGEBETTET) { $('wahl').style.display = 'none'; $('zurueck').style.display = 'none'; }
   $('zurueck').addEventListener('click', function (e) { e.preventDefault(); if (history.length > 1) history.back(); else location.href = '../apps/'; });
 
   // Ottis Gesicht: Mund bewegt sich im Takt seiner Stimme (nova/mund.js).
@@ -512,6 +516,7 @@
           var sp = m && m.mode === 'speaking';
           if (conv) conv.__spricht = sp;
           if (BUEHNE.an) BUEHNE.spricht(sp);
+          zentrale({ typ: 'spricht', ja: sp });
           buehne.classList.toggle('spricht', sp); buehne.classList.toggle('hoert', !sp);
           status.textContent = NAME + (sp ? ' spricht …' : ' hört zu.');
         }
@@ -959,6 +964,12 @@
     if (conv) { BUEHNE.aktiv = false; aufgelegt = false; var c = conv; ende('Aufgelegt.'); c.endSession().catch(function () {}); if (BUEHNE.an) $('vorhang').style.display = ''; }
     else if (BUEHNE.an) $('vorhang').click();
     else starten();
+  });
+  // Die Zentrale meldet: diese KI ist jetzt vorne (gleich anrufen) oder weggewischt (auflegen).
+  if (EINGEBETTET) window.addEventListener('message', function (e) {
+    if (e.origin !== location.origin || !e.data || !e.data.zentrale) return;
+    if (e.data.typ === 'start' && !conv && !startet) starten();
+    if (e.data.typ === 'stopp') { vonHand = true; if (conv) { var c = conv; ende('Bis gleich.'); c.endSession().catch(function () {}); } }
   });
   // Auf Otti tippen: er hüpft vor Freude.
   buehne.addEventListener('click', function () { if (buehne.classList.contains('zeigt')) buehne.classList.remove('zeigt'); else hopsen(); });
