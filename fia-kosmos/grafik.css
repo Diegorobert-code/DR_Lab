@@ -1,0 +1,77 @@
+/* Grafik-Feinschliff (g9): nur Darstellung, keine Funktion. Kern + App-Teil. */
+/* ── Kern (für alle Apps gleich) ───────────────────────────── */
+:root{--g9-1:4px;--g9-2:8px;--g9-3:12px;--g9-4:16px;--g9-5:24px;--g9-6:32px;--g9-ease:cubic-bezier(.2,.8,.2,1)}
+html{-webkit-tap-highlight-color:transparent;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;accent-color:var(--g9-akzent)}
+:where(h1,h2,h3,h4){text-wrap:balance}
+:where(p,li,figcaption,small){text-wrap:pretty}
+::selection{background:var(--g9-auswahl)}
+:where(button,a,input,select,textarea,summary,[tabindex]):focus-visible{outline:2.5px solid var(--g9-fokus);outline-offset:2px}
+:where(button,[role="button"],summary){transition:scale .16s var(--g9-ease),background-color .2s ease,border-color .2s ease,box-shadow .25s ease,color .2s ease}
+:where(button,[role="button"]):where(:active):not(:disabled):not([aria-disabled="true"]){scale:.97}
+
+/* Auswahlfelder: eigener feiner Pfeil statt System-Pfeil */
+html.g9 body select:not([multiple]):not([size]){-webkit-appearance:none;appearance:none;background-image:var(--g9-chev)!important;background-repeat:no-repeat!important;background-position:right 12px center!important;background-size:16px 16px!important;padding-right:40px!important;max-width:100%;text-overflow:ellipsis}
+
+/* Icons in Titeln: feine Linie im weichen Rahmen */
+.g9-ico{display:inline-grid;place-items:center;flex:none;box-sizing:border-box;width:1.62em;height:1.62em;margin-right:.48em;border-radius:.58em;vertical-align:-.46em;background:var(--g9-ico-bg);color:var(--g9-ico-fg);box-shadow:inset 0 0 0 1px var(--g9-ico-rand,transparent);line-height:1;font-style:normal;font-weight:400;letter-spacing:0;text-transform:none}
+.g9-ico svg{display:block;width:.98em;height:.98em;overflow:visible}
+.g9-ico.g9-emo{font-size:1em}
+.g9-ico-k{width:2.1em;height:2.1em;margin-right:0;border-radius:.7em;vertical-align:middle}
+.g9-ico-k svg{width:1.2em;height:1.2em}
+.g9-ico-k.g9-emo{font-size:1em}
+.g9-weg{display:none!important}
+.g9-ico-inhalt svg{display:block;width:1em;height:1em;margin:auto;overflow:visible}
+
+/* Bilder: weicher Platzhalter beim Laden, sanftes Einblenden */
+:where(img.g9-laedt){background-color:var(--g9-lade-a);background-image:linear-gradient(100deg,transparent 30%,var(--g9-lade-b) 50%,transparent 70%);background-size:300% 100%;background-repeat:no-repeat;animation:g9Schimmer 1.5s linear infinite}
+:where(img.g9-da){animation:g9Ein .55s var(--g9-ease) both}
+@keyframes g9Schimmer{from{background-position:100% 0}to{background-position:0 0}}
+@keyframes g9Ein{from{opacity:0}to{opacity:1}}
+
+@media (prefers-reduced-motion:reduce){
+  :where(img.g9-laedt),:where(img.g9-da){animation:none}
+  :where(button,[role="button"],summary){transition:none}
+  :where(button,[role="button"]):where(:active){scale:none}
+}
+
+/* ── Fia Körperkosmos: Markt-Look in Creme und Terrakotta, nur verfeinert ─────── */
+:root{--g9-akzent:#C24A22;--g9-fokus:#B0421C;--g9-auswahl:rgba(194,74,34,.2);--g9-ico-bg:linear-gradient(160deg,#FFEDE3,#FFF5EC);--g9-ico-fg:#B0421C;--g9-ico-rand:rgba(194,74,34,.16);--g9-lade-a:#F6E9DE;--g9-lade-b:rgba(255,255,255,.75);--g9-chev:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B0421C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
+
+/* Titel: eine Grösse, ruhiger Zeilenabstand, Icon und Text auf einer Linie */
+html.g9 main h2{font-size:19px;line-height:1.3;letter-spacing:-.012em}
+html.g9 main h3{letter-spacing:-.005em}
+html.g9 h2 .r7-neu{vertical-align:.15em;letter-spacing:.05em}
+
+/* Karten: zweistufiger, warmer Schatten und ein Hauch Kante */
+html.g9{--t-schatten:0 1px 1px rgba(80,50,30,.04),0 2px 6px rgba(80,50,30,.04),0 14px 34px -10px rgba(80,50,30,.14)}
+html.g9 .box{box-shadow:0 1px 1px rgba(80,50,30,.04),0 2px 6px rgba(80,50,30,.04),0 14px 34px -10px rgba(80,50,30,.14)!important}
+
+/* Tab-Leiste: feine Linien-Icons statt Emojis, aktiver Tab mit Punkt */
+html.g9 .tab>span.g9-ico-inhalt{font-size:23px;width:24px;height:24px}
+html.g9 .tab>span.g9-ico-inhalt svg{stroke-width:1.6}
+html.g9 .tab[aria-selected="true"]>span.g9-ico-inhalt svg{stroke-width:2}
+html.g9 .tab{transition:color .2s ease,background-color .2s ease}
+
+/* Organuhr: aktuelle Stunde lesbar (weiss auf Terrakotta) */
+html.g9 .r7-h.an{color:#FFFFFF!important;box-shadow:0 0 0 3px rgba(194,74,34,.25)!important}
+
+/* Bildplätze im hellen Look: warme Fläche statt Nachtblau, solange das Bild lädt */
+html.g9 .r6-bild,html.g9 .r6-besuch img,html.g9 .r6-b-in img{background:#F6E9DE!important}
+html.g9 .r6-bild{border-color:#FFD2BC!important;box-shadow:0 8px 20px -8px rgba(194,74,34,.35)}
+html.g9 .r7-bild{box-shadow:0 10px 24px -14px rgba(80,50,30,.45)}
+html.g9 .r8-heute{box-shadow:0 18px 40px -20px rgba(80,50,30,.55)!important}
+
+/* Neu-bei-Liste */
+html.g9 .r7-was li button .g9-ico{font-size:15px}
+
+/* Felder */
+html.g9 textarea:focus,html.g9 input[type=text]:focus,html.g9 select:focus{border-color:#C24A22!important;box-shadow:0 0 0 3px rgba(194,74,34,.14)}
+html.g9 input::placeholder,html.g9 textarea::placeholder{color:#8F8490}
+
+/* Einführung und Übungs-Fenster: im hellen Look hell (vorher dunkle Schrift auf Nachtblau) */
+html.g9 .overlay{background:rgba(43,30,36,.5)}
+html.g9 .overlay .blatt{background:linear-gradient(170deg,#FFFFFF,#FFF4EA);color:#2B2530;border-color:rgba(43,37,48,.08);box-shadow:0 1px 2px rgba(80,50,30,.06),0 28px 70px -16px rgba(60,30,20,.4)}
+html.g9 .overlay .blatt h2{color:#2B2530}
+html.g9 .overlay .blatt .muted{color:#625868}
+html.g9 .punkte i{background:rgba(43,37,48,.16)}
+html.g9 .punkte i.an{background:#C24A22;width:22px;border-radius:5px;transition:width .3s var(--g9-ease)}
