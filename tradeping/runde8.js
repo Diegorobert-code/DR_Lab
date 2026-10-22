@@ -7,7 +7,7 @@
    6. Ohne Verbindung: klarer Hinweis «Live-Kurse brauchen Verbindung», Kurs von Hand geht immer.
    Alles nur auf diesem Gerät. */
 window.R8 = {
-  bild: 'posen/winkt.jpg',
+  bild: 'wm/maskottchen.jpg',
   offline: 'Offline. Live-Kurse brauchen Verbindung – Kurs von Hand eintragen geht immer.',
   neuText: 'Neu: Ruhe-Ringe mit Ruhetag. Spielgeld, kein Rat.',
   css: [
@@ -23,6 +23,10 @@ window.R8 = {
     '.r8-tp .r7-reihe{margin-bottom:0}'
   ].join('\n'),
   start: function (E, R) {
+    /* Mr. Ping als helles Maskottchen, Avatar passend zu Hell/Dunkel */
+    function tpAva() { var t = document.documentElement.dataset.thema || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dunkel' : 'hell'); return t === 'dunkel' ? 'wm/avatar-dunkel.jpg' : 'wm/avatar-hell.jpg'; }
+    var avaNeu = E.maskottchen('.ping-buehne > img, header .figur-logo, .mp-ava img, .r7-kopf > img, .r7-leer > img, .r8-ziehen img', tpAva);
+    try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', avaNeu); } catch (e) {}
     /* Hell/Dunkel wie in Banking-Apps: Knopf oben rechts, Wahl bleibt auf diesem Handy */
     (function () {
       var h = document.querySelector('header.top'); if (!h || document.getElementById('r8Thema')) return;
@@ -32,7 +36,7 @@ window.R8 = {
       function zeig() { var d = jetzt() === 'dunkel'; b.textContent = d ? '☀️' : '🌙'; b.setAttribute('aria-label', d ? 'Helles Design' : 'Dunkles Design'); b.setAttribute('aria-pressed', d ? 'true' : 'false'); }
       b.addEventListener('click', function () {
         var neu = jetzt() === 'dunkel' ? 'hell' : 'dunkel';
-        E.wechsel(function () { root.dataset.thema = neu; zeig(); });
+        E.wechsel(function () { root.dataset.thema = neu; zeig(); avaNeu(); });
         try { localStorage.setItem('tp_thema', neu); } catch (e) {}
         var m = document.querySelector('meta[name=theme-color]'); if (m) m.content = neu === 'dunkel' ? '#0b0c0f' : '#f3f4f6';
       });
@@ -80,7 +84,7 @@ window.R8 = {
     });
     function bild() {
       var w = werte(), s = W.stand();
-      E.bildKarte({ bild: 'posen/winkt.jpg', oben: 'Meine Ruhe-Ringe', titel: 'Ruhig entschieden', malen: function (c, Wd, y) {
+      E.bildKarte({ bild: 'wm/maskottchen.jpg', oben: 'Meine Ruhe-Ringe', titel: 'Ruhig entschieden', malen: function (c, Wd, y) {
         E.ringeMalen(c, Wd / 2, y + 190, w, 170); return y + 410;
       }, zeilen: RINGE.map(function (r, i) { return [r.name, w[i].n + ' / 5']; }).concat([['Tage in Folge', String(s.serie)]]), fuss: 'TradePing · Spielgeld, kein Rat' }).then(function (cv) {
         E.teileBild(cv, 'ruhe-ringe', 'Meine Ruhe-Ringe diese Woche', 'Ruhe-Ringe als Bild');
@@ -99,10 +103,10 @@ window.R8 = {
       var k = document.getElementById('tpKurseHolen'); if (k) k.click();
       neuerSatz();
       E.rueck(navigator.onLine === false ? 'Offline: Live-Kurse brauchen Verbindung. Kurs von Hand geht immer.' : 'Mr. Ping hat nachgeschaut.');
-    }, 'posen/winkt.jpg');
+    }, 'wm/maskottchen.jpg');
 
     /* Wächst mit dir (Finch): Münzlein, 5 Stufen, täglicher Ausflug */
-    E.waechst({ ort: document.querySelector('.mp-szene') || document.querySelector('.ping-buehne'), wo: 'nach', figur: 'Mr. Ping', bild: 'posen/winkt.jpg', licht: 'Münzlein', licht1: 'Münzlein',
+    E.waechst({ ort: document.querySelector('.mp-szene') || document.querySelector('.ping-buehne'), wo: 'nach', figur: 'Mr. Ping', bild: 'wm/maskottchen.jpg', stufenBilder: ['wm/stufe-1.jpg', 'wm/stufe-2.jpg', 'wm/stufe-3.jpg', 'wm/stufe-4.jpg', 'wm/stufe-5.jpg'], ausflugBild: 'wm/ausflug.jpg', licht: 'Münzlein', licht1: 'Münzlein',
       stufen: ['Lehrling', 'Glöckner', 'Kassenwart', 'Ruhepol', 'Meister der Ruhe'],
       wie: 'Ein kleiner Schritt: ein Ruhe-Ring abgehakt, ein Gefühls-Check, eine Lektion in der Schule.',
       ausfluege: [
@@ -127,10 +131,10 @@ window.R8 = {
       var zahl = function (id) { return tage.filter(function (k) { return dd[k][id]; }).length; };
       var aktiv = tage.filter(function (k) { return dd[k].plan || dd[k].gefuehl || dd[k].pause; }).length;
       var p = zahl('plan'), g = zahl('gefuehl'), pa = zahl('pause');
-      E.monat({ figur: 'Mr. Ping', bild: 'posen/winkt.jpg', bildFroh: 'posen/jubel.jpg', licht: 'Münzlein', fuss: 'TradePing · Spielgeld, kein Rat',
+      E.monat({ figur: 'Mr. Ping', bild: 'wm/maskottchen.jpg', bildFroh: 'wm/stufe-5.jpg', licht: 'Münzlein', fuss: 'TradePing · Spielgeld, kein Rat',
         seiten: [
-          { bild: 'posen/denkt.jpg', oben: 'Ruhige Tage', gross: aktiv, titel: aktiv === 1 ? 'Tag mit Ruhe-Ring' : 'Tage mit Ruhe-Ring', text: aktiv ? 'An so vielen Tagen hast du bewusst entschieden.' : 'Noch kein Ring diesen Monat. Morgen ist ein guter Tag dafür.' },
-          { bild: 'posen/ping.jpg', oben: 'Deine Gewohnheiten', titel: 'Plan ' + p + ' · Gefühl ' + g + ' · Pause ' + pa, text: (pa >= p && pa >= g && pa > 0 ? 'Am stärksten warst du bei der Bildschirm-Pause. Abstand ist eine Stärke.' : g > 0 ? 'Du hast oft auf dein Gefühl geschaut. Das schützt vor schnellen Entscheiden.' : 'Jede Gewohnheit beginnt mit dem ersten Haken.') }
+          { bild: 'wm/maskottchen.jpg', oben: 'Ruhige Tage', gross: aktiv, titel: aktiv === 1 ? 'Tag mit Ruhe-Ring' : 'Tage mit Ruhe-Ring', text: aktiv ? 'An so vielen Tagen hast du bewusst entschieden.' : 'Noch kein Ring diesen Monat. Morgen ist ein guter Tag dafür.' },
+          { bild: 'wm/maskottchen.jpg', oben: 'Deine Gewohnheiten', titel: 'Plan ' + p + ' · Gefühl ' + g + ' · Pause ' + pa, text: (pa >= p && pa >= g && pa > 0 ? 'Am stärksten warst du bei der Bildschirm-Pause. Abstand ist eine Stärke.' : g > 0 ? 'Du hast oft auf dein Gefühl geschaut. Das schützt vor schnellen Entscheiden.' : 'Jede Gewohnheit beginnt mit dem ersten Haken.') }
         ],
         zeilen: [['Tage mit Ruhe-Ring', String(aktiv)], ['Plan vor dem Kauf', String(p)], ['Gefühl geprüft', String(g)], ['Bildschirm-Pause', String(pa)]],
         schluss: 'Ruhig bleiben ist ein Können.', hinweis: 'Spielgeld, kein Rat. Entscheiden tust du.' });
@@ -773,7 +777,7 @@ window.R8 = {
       else if (schonHeute) { knopf = ''; info = 'Heute war ' + esc(o.figur) + ' schon unterwegs. Morgen geht es wieder los.'; }
       else if (heuteN(x) > 0) { knopf = '<button type="button" class="r7-knopf" data-wm="los">🎒 Auf Ausflug schicken</button>'; info = 'Du hast heute schon ' + heuteN(x) + ' ' + esc(heuteN(x) === 1 ? o.licht1 : o.licht) + ' gesammelt. ' + esc(o.figur) + ' möchte etwas entdecken.'; }
       else { knopf = ''; info = esc(o.wie) + ' Dann geht ' + esc(o.figur) + ' auf einen kleinen Ausflug.'; }
-      box.innerHTML = '<div class="fig"><img src="' + esc(o.bild) + '" alt="" width="72" height="72"><span class="st" aria-hidden="true">' + (s + 1) + '</span></div>' +
+      box.innerHTML = '<div class="fig"><img src="' + esc((o.stufenBilder && o.stufenBilder[s]) || o.bild) + '" alt="" width="72" height="72"><span class="st" aria-hidden="true">' + (s + 1) + '</span></div>' +
         '<div><h2 id="r8WmH">Wächst mit dir</h2><span class="name">' + esc(o.figur) + ' · ' + esc(ST[s]) + '</span>' +
         '<div class="bar" role="progressbar" aria-label="Fortschritt zur nächsten Stufe" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + proz + '"><i style="width:' + proz + '%"></i></div>' +
         '<span class="zahl">' + x.n + ' ' + esc(x.n === 1 ? o.licht1 : o.licht) + (naechste == null ? ' · höchste Stufe erreicht' : ' · noch ' + (naechste - x.n) + ' bis «' + esc(ST[s + 1]) + '»') + ' · 🔥 ' + ws.serie + ' Tag' + (ws.serie === 1 ? '' : 'e') + '</span></div>' +
@@ -803,7 +807,7 @@ window.R8 = {
     function vorlesen(t) { try { if (!window.speechSynthesis) return false; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = 'de-CH'; u.rate = .95; speechSynthesis.speak(u); return true; } catch (e) { return false; } }
     function fund(i, neu) {
       var a = o.ausfluege[i]; if (!a) return;
-      var inh = R.blatt({ titel: neu ? esc(o.figur) + ' war unterwegs' : a.n, bild: o.bild, html: (o.extraHtml || '') + '<div class="r8-fund"><span class="e" aria-hidden="true">' + a.f + '</span><h3>' + esc(a.n) + '</h3></div><p>' + esc(a.t) + '</p>' +
+      var inh = R.blatt({ titel: neu ? esc(o.figur) + ' war unterwegs' : a.n, bild: o.bild, html: (o.extraHtml || '') + '<div class="r8-fund">' + (o.ausflugBild ? '<img class="r8-bild" src="' + esc(o.ausflugBild) + '" alt="' + esc(o.figur) + ' unterwegs" loading="lazy">' : '') + '<span class="e" aria-hidden="true">' + a.f + '</span><h3>' + esc(a.n) + '</h3></div><p>' + esc(a.t) + '</p>' +
         '<div class="r7-reihe"><button type="button" class="r7-knopf leise" data-wm="hoer">🔊 Vorlesen</button>' + (neu ? '<button type="button" class="r7-knopf" data-wm="ok">Ins Album legen</button>' : '') + '</div>' });
       inh.querySelector('[data-wm=hoer]').addEventListener('click', function () { if (!vorlesen(a.n + '. ' + a.t)) this.textContent = 'Vorlesen geht hier nicht'; });
       var ok = inh.querySelector('[data-wm=ok]'); if (ok) ok.addEventListener('click', function () { R.zu(); });
@@ -816,7 +820,7 @@ window.R8 = {
     }
     function wie() {
       R.blatt({ titel: 'So wächst ' + o.figur, bild: o.bild, html: (o.extraHtml || '') + '<p>' + esc(o.wie) + ' Jeder kleine Schritt gibt 1 ' + esc(o.licht1) + ' (höchstens ' + MAX_TAG + ' pro Tag).</p><div class="r8-tasten">' +
-        ST.map(function (n, i) { return '<kbd>' + SCHW[i] + '</kbd><span>Stufe ' + (i + 1) + ': ' + esc(n) + '</span>'; }).join('') + '</div>' +
+        ST.map(function (n, i) { return '<kbd>' + SCHW[i] + '</kbd><span style="display:flex;align-items:center;gap:10px">' + (o.stufenBilder && o.stufenBilder[i] ? '<img src="' + esc(o.stufenBilder[i]) + '" alt="" width="44" height="44" loading="lazy" style="flex:none;border-radius:12px;object-fit:cover">' : '') + 'Stufe ' + (i + 1) + ': ' + esc(n) + '</span>'; }).join('') + '</div>' +
         '<p>Nichts geht verloren, nichts geht kaputt. Ein Ruhetag pro Woche zählt bei der Serie mit (🌙).</p>' + W.html({ schutzName: 'Ruhetag', schutzZeichen: '🌙', da: 'mindestens ein ' + o.licht1 }) +
         '<p class="r7-klein">Alles bleibt auf diesem Gerät.</p>' });
     }
@@ -901,8 +905,22 @@ window.R8 = {
     var k = d.querySelector('#r7Neu .r7-neu-kopf small'); if (k && K.neuText) k.textContent = K.neuText;
   }
 
+  /* ---------- 17. Maskottchen: helles Tinko-Bild an festen Stellen, auch wenn alte Skripte die Pose wechseln ---------- */
+  function maskottchen(sel, src) {
+    var get = typeof src === 'function' ? src : function () { return src; };
+    var mo;
+    function fix() {
+      var s = get();
+      [].forEach.call(d.querySelectorAll(sel), function (i) { if (i.getAttribute('src') !== s) { i.removeAttribute('srcset'); i.setAttribute('src', s); } });
+    }
+    function lauf() { if (mo) mo.disconnect(); fix(); if (mo) mo.observe(d.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['src'] }); }
+    if (window.MutationObserver) mo = new MutationObserver(lauf);
+    lauf();
+    return lauf;
+  }
+
   window.R8K = { monat: monat, monatsName: monatsName, sos: sos, waechst: waechst, licht: function (g) { return WM ? WM.licht(g) : false; }, datei: datei, kopiere: kopiere, imRahmen: imRahmen, hol: hol, leg: leg, summ: summ, rueck: rueck, bildKarte: bildKarte, teileBild: teileBild, menue: menue, menueAuf: menueAuf, tasten: tasten, tastenHilfe: tastenHilfe,
-    wechsel: wechsel, ringe: ringe, ringeLos: ringeLos, ringeMalen: ringeMalen, woche: woche, heute: heute, ziehen: ziehen, story: story, ymd: ymd, umbruch: umbruch };
+    wechsel: wechsel, ringe: ringe, ringeLos: ringeLos, ringeMalen: ringeMalen, woche: woche, heute: heute, ziehen: ziehen, story: story, ymd: ymd, umbruch: umbruch, maskottchen: maskottchen };
   function start() {
     try { offline(); } catch (e) { console.warn('r8 offline', e); }
     if (K.start) try { K.start(window.R8K, R); } catch (e) { console.warn('r8 start', e); }
