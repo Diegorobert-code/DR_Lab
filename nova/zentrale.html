@@ -70,7 +70,7 @@
   var $ = function (id) { return document.getElementById(id); };
   // Seite 1 = Threads und Links, danach wischen zu jeder KI. Jede KI läuft in ihrer eigenen reden.html (gleiche Stimme, gleiches Gedächtnis).
   var KIS = [
-    ['nova', 'Nova', 'nova-3d.jpg'], ['sparky', 'Sparky', 'figuren/sparky-klein.jpg'], ['mr. ping', 'Mr. Ping', '../tradeping/icon-180.png'],
+    ['lumo', 'Lumo', 'figuren/lumo-klein.jpg'], ['nova', 'Nova', 'nova-3d.jpg'], ['sparky', 'Sparky', 'figuren/sparky-klein.jpg'], ['mr. ping', 'Mr. Ping', '../tradeping/icon-180.png'],
     ['sunny', 'Sunny', 'figuren/sunny-klein.jpg'], ['fompa', 'Fompa', 'figuren/fompa-klein.jpg'], ['coin maker', 'Coin Maker', 'figuren/coinmaker-klein.jpg'],
     ['jackie', 'Jackie', '../jackie/icon-180.png'], ['flo', 'Flo', 'figuren/flo-klein.jpg'], ['kiki', 'Kiki', '../kiki/icon-180.png'],
     ['otti', 'Otti', '../otti/icon-180.png'], ['tropfi', 'Tropfi', 'figuren/tropfi-klein.jpg'], ['carmencita', 'Carmencita', 'figuren/carmencita-klein.jpg'],
@@ -171,13 +171,28 @@
     var h = document.createElement('div'); h.className = 'gruppe'; h.textContent = name; liste.appendChild(h);
     l.forEach(function (t) { liste.appendChild(karte(t, zeichen(t))); });
   }
-  function zeigen(d) {
+  // Feste Links (immer da), dazu was der Server unter links mitschickt.
+  var FESTE_LINKS = [
+    { titel: 'Tagesbericht', url: 'https://claude.ai/artifact/7kNwYbkM4ZF336obwX4s2S' },
+    { titel: 'Alle Apps (Startseite)', url: 'https://claude.ai/artifact/HsqbPExpryB5TFp2btspc5' },
+    { titel: 'Apps-Übersicht', url: 'https://diegorobert-code.github.io/DR_Lab/apps/' },
+    { titel: 'Lernvideos', url: 'https://claude.ai/artifact/FRnkBqVzeGXL8kNV31ZRHH', video: true },
+    { titel: 'Aktienschule', url: 'https://claude.ai/artifact/1j6T3pdWL1GN5RTCbmywaU' },
+    { titel: 'Sunny rauchfrei', url: 'https://claude.ai/artifact/GmTSyEUNKXdHYgSRg5cnP6' },
+    { titel: 'Fias Nest', url: 'https://diegorobert-code.github.io/DR_Lab/schlaf/' },
+    { titel: 'Mondschein', url: 'https://diegorobert-code.github.io/DR_Lab/mondschein/' },
+    { titel: 'Wäf Wäf', url: 'https://claude.ai/artifact/S2Z75Vs1HSdyZfveKvxyd4' },
+    { titel: 'Zahnböcklein', url: 'https://claude.ai/artifact/8vTVapNioDzqS6nu2hwDMm' }
+  ];
+  function zeigen(d, hinweis) {
     // Server-Format (KI-Verse /api/zentrale/threads): status «läuft» | «wartet auf Diego» | «fertig».
     var l = ((d && d.threads) || []).filter(function (t) { return t.status !== 'fertig'; }).map(function (t) {
       return t.status === 'wartet auf Diego' ? Object.assign({}, t, { neu: true }) : t;
-    }), links = (d && d.links) || [];
+    }), links = ((d && d.links) || []).slice(), da = {};
+    links.forEach(function (x) { da[x.url] = 1; });
+    FESTE_LINKS.forEach(function (x) { if (!da[x.url]) links.push(x); });
     liste.innerHTML = '';
-    if (!l.length && !links.length) { liste.innerHTML = '<div class="leer">Alles ruhig.</div>'; return; }
+    if (hinweis || !l.length) { var h = document.createElement('div'); h.className = 'leer'; h.textContent = hinweis || 'Alles ruhig.'; liste.appendChild(h); }
     var rang = function (t) { return (t.neu ? 2 : 0) + (t.wichtig ? 1 : 0); };
     l.sort(function (a, b) { return rang(b) - rang(a); });
     gruppe('Wichtig', l.filter(function (t) { return rang(t) > 0; }), function (t) { return t.bilder ? '🖼' : '❗'; });
@@ -185,10 +200,10 @@
     gruppe('Links und Videos', links, function (t) { return t.video ? '🎬' : '🔗'; });
   }
   function laden() {
-    if (!quelle) { liste.innerHTML = '<div class="leer">Die Thread-Liste kommt bald. Wisch schon mal zu den KIs.</div>'; return; }
+    if (!quelle) { zeigen({}, 'Threads: einmal in der Nova-App auf «🎛 Zentrale» tippen.'); return; }
     fetch(quelle + (quelle.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); }).then(zeigen)
-      .catch(function () { liste.innerHTML = '<div class="leer">Liste gerade nicht erreichbar.</div>'; });
+      .catch(function () { zeigen({}, 'Threads gerade nicht erreichbar.'); });
   }
   laden();
   document.addEventListener('visibilitychange', function () { if (!document.hidden) laden(); });
