@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-22-03">
+<meta name="stand" content="2026-10-22-04">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -480,7 +480,7 @@
           film_zeigen: BUEHNE.werkzeuge.film_zeigen, film_steuern: BUEHNE.werkzeuge.film_steuern, auflegen: auflegen },
         dynamicVariables: variablen(),
         // Auf der Bühne nimmt Nova ab wie am Telefon; nach einer abgerissenen Verbindung ist sie still wieder da, bis Diego sie anspricht (nach 30 Min. verbindet sie still neu, siehe unten).
-        overrides: BUEHNE.an && !nurText ? { agent: { firstMessage: abgenommen ? '' : anruf > 1 ? 'Hey, da bin ich wieder!' : 'Ja, hallo?' } } : undefined,
+        overrides: BUEHNE.an && !nurText ? { agent: { firstMessage: abgenommen ? '' : anruf > 1 ? 'Hey, da bin ich wieder!' : BUEHNE.gast === 'jackie' ? 'Ja, hallo?' : 'Hey, und? Alle da?' } } : undefined,
         onConnect: function () { if (BUEHNE.an) abgenommen = true; status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); hopsen(); },
         onDisconnect: function () {
           if (nr === sitzung && maltSeit) { maltSeit = 0; ende('Verbindung weg, das Bild kam nicht an. Nochmal 🎨'); return; }
@@ -651,7 +651,7 @@
         if (k) { e.preventDefault(); werkzeuge.film_steuern({ aktion: k }); }
       });
     }
-    return { an: an, werkzeuge: werkzeuge, spricht: spricht, untertitel: untertitel, variable: variable,
+    return { an: an, gast: gast, werkzeuge: werkzeuge, spricht: spricht, untertitel: untertitel, variable: variable,
       get aktiv() { return aktiv; }, set aktiv(v) { aktiv = v; } };
   })();
   // Wie ein Telefonat: Diego tippt, es klingelt zweimal über den Lautsprecher, dann nimmt Nova ab.
