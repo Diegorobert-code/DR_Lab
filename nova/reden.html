@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-22-06">
+<meta name="stand" content="2026-10-22-07">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -710,30 +710,39 @@
   })();
   // Wie ein Telefonat: Diego tippt, es klingelt zwei- oder dreimal über den Lautsprecher, dann nimmt Nova ab.
   // Auflegen (Knopf oben links) bringt den Anruf-Knopf zurück; so kann er sie später nochmal «anrufen».
+  // Der Ton läuft als kleine WAV-Datei über ein Audio-Element: das spielt auf dem iPhone auch,
+  // wenn der Lautlos-Schalter an ist (Web Audio bleibt dort stumm).
+  function tonSpielen(dauer, welle, fertig) {
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+    var rate = 22050, n = Math.floor(dauer * rate), buf = new ArrayBuffer(44 + n * 2), d = new DataView(buf);
+    var txt = function (o, t) { for (var i = 0; i < t.length; i++) d.setUint8(o + i, t.charCodeAt(i)); };
+    txt(0, 'RIFF'); d.setUint32(4, 36 + n * 2, true); txt(8, 'WAVEfmt '); d.setUint32(16, 16, true); d.setUint16(20, 1, true);
+    d.setUint16(22, 1, true); d.setUint32(24, rate, true); d.setUint32(28, rate * 2, true); d.setUint16(32, 2, true);
+    d.setUint16(34, 16, true); txt(36, 'data'); d.setUint32(40, n * 2, true);
+    for (var i = 0; i < n; i++) d.setInt16(44 + i * 2, Math.max(-1, Math.min(1, welle(i / rate))) * 32000, true);
+    var url = URL.createObjectURL(new Blob([buf], { type: 'audio/wav' })), au = new Audio(url), fertigGemacht = false;
+    var ende = function () { if (fertigGemacht) return; fertigGemacht = true; URL.revokeObjectURL(url); fertig(); };
+    au.volume = 1; au.onended = ende;
+    var p = au.play(); if (p && p.catch) p.catch(function () {});
+    setTimeout(ende, dauer * 1000 + 400);
+  }
+  function huelle(t, an, aus) { return t < an ? 0 : t < an + 0.03 ? (t - an) / 0.03 : t < aus - 0.05 ? 1 : t < aus ? (aus - t) / 0.05 : 0; }
   function klingeln(fertig) {
-    var AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) { fertig(); return; }
-    var ac = new AC(), t = ac.currentTime + 0.05, g = ac.createGain(), mal = Math.random() < 0.5 ? 2 : 3; g.gain.value = 0; g.connect(ac.destination);
-    var ringe = mal === 2 ? [0, 1.9] : [0, 1.9, 3.8];
-    [425, 450].forEach(function (hz) { var o = ac.createOscillator(); o.frequency.value = hz; o.connect(g); o.start(t); o.stop(t + ringe[ringe.length - 1] + 1.3); });
-    ringe.forEach(function (ab) { g.gain.setValueAtTime(0, t + ab); g.gain.linearRampToValueAtTime(0.18, t + ab + 0.03);
-      g.gain.setValueAtTime(0.18, t + ab + 1.0); g.gain.linearRampToValueAtTime(0, t + ab + 1.05); });
-    setTimeout(function () { try { ac.close(); } catch (e) {} fertig(); }, (ringe[ringe.length - 1] + 1.4) * 1000);
+    var ringe = Math.random() < 0.5 ? [0, 1.9] : [0, 1.9, 3.8];
+    tonSpielen(ringe[ringe.length - 1] + 1.4, function (t) {
+      var h = 0; ringe.forEach(function (ab) { h = Math.max(h, huelle(t, ab, ab + 1.05)); });
+      return h * 0.45 * (Math.sin(2 * Math.PI * 425 * t) + Math.sin(2 * Math.PI * 450 * t));
+    }, fertig);
   }
   // Ab dem zweiten Anruf klingt es wie ein Videoanruf: kleine Melodie statt Telefon-Ton.
   function videoKlingeln(fertig) {
-    var AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) { fertig(); return; }
-    var ac = new AC(), t0 = ac.currentTime + 0.05;
-    [0, 1.6].forEach(function (ab) {
-      [659, 784, 988, 784].forEach(function (hz, i) {
-        var o = ac.createOscillator(), g = ac.createGain(), t = t0 + ab + i * 0.16;
-        o.type = 'sine'; o.frequency.value = hz; o.connect(g); g.connect(ac.destination);
-        g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.16, t + 0.02); g.gain.linearRampToValueAtTime(0, t + 0.15);
-        o.start(t); o.stop(t + 0.16);
-      });
-    });
-    setTimeout(function () { try { ac.close(); } catch (e) {} fertig(); }, 3000);
+    var noten = [659, 784, 988, 784];
+    tonSpielen(3, function (t) {
+      var v = 0; [0, 1.6].forEach(function (ab) { noten.forEach(function (hz, i) {
+        var an = ab + i * 0.16; if (t >= an && t < an + 0.16) v += huelle(t, an, an + 0.15) * 0.8 * Math.sin(2 * Math.PI * hz * t);
+      }); });
+      return v;
+    }, fertig);
   }
   // Nova legt selbst auf («bis später, piep»), der Film läuft weiter. Enter oder der Knopf ruft sie wieder an.
   var abgenommen = false, anruf = 0, aufgelegt = false, pannen = 0;
