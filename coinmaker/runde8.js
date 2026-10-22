@@ -40,7 +40,7 @@ window.R8 = {
   start: function (E, R) {
     E.maskottchen('#cmfig img, .r7-kopf > img, .r7-leer > img, .r8-ziehen img', 'wm/maskottchen.jpg'); // helles Tinko-Maskottchen statt dunkler Pose
     function st() { try { var s = JSON.parse(localStorage.getItem('coinmaker.v1') || 'null'); return s && Array.isArray(s.items) ? s : { items: [] }; } catch (e) { return { items: [] }; } }
-    function ideen() { return st().items.filter(function (i) { return !i.ex && i.type === 'idee' && i.text; }); }
+    function ideen() { return st().items.filter(function (i) { return !i.ex && i.type === 'idee' && i.text && !(window.CMIrgendwann && CMIrgendwann.ist(i.id)); }); } /* «Irgendwann» (irgendwann.js) wartet ausserhalb des Plans */
     function plan() { return E.hol('plan', {}); }
     function planLeg(p) { E.leg('plan', p); }
     function wochenTage() { var m = new Date(); m.setHours(12, 0, 0, 0); m.setDate(m.getDate() - ((m.getDay() + 6) % 7)); var l = []; for (var i = 0; i < 7; i++) { var x = new Date(m); x.setDate(m.getDate() + i); l.push(E.ymd(x)); } return l; }
@@ -111,6 +111,7 @@ window.R8 = {
     var res = document.getElementById('result');
     var ankerPlan = document.getElementById('buehne');
     if (ankerPlan) { var wrap = ankerPlan.parentNode; wrap.insertBefore(karte, ankerPlan.nextSibling); zeigPlan(); }
+    window.CMPlan = { zeig: zeigPlan, planen: function () { zumPlan(); } }; /* für irgendwann.js */
 
     /* 2. Wächst mit dir */
     E.waechst({ ort: '#buehne', wo: 'nach', figur: 'Coin Maker', bild: 'wm/maskottchen.jpg', stufenBilder: ['wm/stufe-1.jpg', 'wm/stufe-2.jpg', 'wm/stufe-3.jpg', 'wm/stufe-4.jpg', 'wm/stufe-5.jpg'], ausflugBild: 'wm/ausflug.jpg', licht: 'Messingfunken', licht1: 'Messingfunke',
