@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-21-13">
+<meta name="stand" content="2026-10-22-02">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -84,6 +84,34 @@
 .schreiben button.malen{background:#f4f1e8;font-size:19px}
 .schreiben button{width:44px;height:44px;border-radius:50%;border:0;background:var(--gold);color:#2a1d00;font-size:20px;cursor:pointer;flex:none}
 .lernen{display:block;margin:10px auto 0;max-width:340px;font-size:13px;line-height:1.35;color:#d9d2c3;text-align:center}.lernen input{width:18px;height:18px;vertical-align:-3px;accent-color:#f2c14e}.lernen small{display:block;color:#a9a294}
+  /* Bühne (?buehne=1): Präsentation am Beamer. Der Film füllt das Bild, Nova sitzt unten rechts und bedient alles per Stimme. */
+  .kino, .vorhang, .untertitel { display:none; }
+  body.bmodus { padding:0; justify-content:center; cursor:none; }
+  body.bmodus .wahl, body.bmodus .zurueck, body.bmodus .text, body.bmodus .chips, body.bmodus .schreiben, body.bmodus .lernen,
+  body.bmodus .vergessen, body.bmodus h1 { display:none; }
+  body.bmodus .buehne { width:min(58vh, 46vw); z-index:3; transition:width .6s ease, right .6s ease, bottom .6s ease; }
+  body.bmodus.film .buehne { position:fixed; right:2.5vw; bottom:3vh; width:min(24vh, 18vw); box-shadow:0 10px 30px #000a, 0 0 0 3px #f5c54255; }
+  body.bmodus.film .buehne.spricht { box-shadow:0 10px 30px #000a, 0 0 0 4px var(--gold), 0 0 34px #f5c54288; }
+  body.bmodus .status { position:fixed; left:2.5vw; bottom:2vh; margin:0; font-size:14px; opacity:.55; z-index:3; text-align:left; }
+  body.bmodus .knopf { position:fixed; left:2.5vw; top:3vh; width:44px; height:44px; font-size:18px; margin:0; opacity:.35; z-index:4; cursor:pointer; }
+  body.bmodus .hinweis { position:fixed; left:0; right:0; top:2vh; z-index:4; }
+  body.bmodus .kino { display:block; position:fixed; inset:0; background:#000; opacity:0; pointer-events:none; transition:opacity .6s; z-index:1; }
+  body.bmodus.film .kino { opacity:1; }
+  .kino video { width:100%; height:100%; object-fit:contain; display:block; }
+  body.bmodus .untertitel { display:block; position:fixed; left:50%; bottom:7vh; transform:translateX(-50%); max-width:min(70vw, 900px); z-index:3;
+    background:#0b1a3acc; color:var(--text); font-size:clamp(18px, 2.4vw, 30px); line-height:1.3; padding:10px 22px; border-radius:16px;
+    text-align:center; opacity:0; transition:opacity .4s; pointer-events:none; }
+  body.bmodus .untertitel.an { opacity:1; }
+  body.bmodus.film .untertitel { bottom:4vh; left:auto; right:calc(2.5vw + min(24vh, 18vw) + 20px); transform:none; max-width:46vw; text-align:left; font-size:clamp(16px, 1.8vw, 24px); }
+  body.bmodus .vorhang { display:grid; position:fixed; inset:0; z-index:5; place-items:center; align-content:center; gap:18px; cursor:pointer;
+    background:radial-gradient(120% 80% at 50% 0%, var(--nacht2), var(--nacht) 70%); color:var(--text); text-align:center; padding:24px; }
+  .vorhang b { font-size:clamp(28px, 4vw, 48px); color:var(--gold); }
+  .vorhang span { color:var(--leise); max-width:560px; }
+  .vorhang .los.klingelt { animation:klingeln .5s ease-in-out infinite; }
+  @keyframes klingeln { 25% { transform:rotate(-12deg); } 75% { transform:rotate(12deg); } }
+  .vorhang .los { width:120px; height:120px; border-radius:50%; background:var(--gold); color:#2a1d00; display:grid; place-items:center; font-size:48px; box-shadow:0 12px 34px #0008; }
+  .vorhang label { color:var(--leise); font-size:14px; text-decoration:underline; cursor:pointer; }
+  .vorhang input { display:none; }
 </style>
 </head>
 <body>
@@ -100,6 +128,14 @@
   <canvas class="leinwand" id="leinwand"></canvas>
 </div>
 
+<div class="kino" id="kino"><video id="film" playsinline preload="auto"></video></div>
+<div class="untertitel" id="untertitel" aria-live="polite"></div>
+<div class="vorhang" id="vorhang" role="button" tabindex="0" aria-label="Präsentation starten">
+  <b id="vorhangTitel">Nova anrufen</b>
+  <div class="los" id="vorhangLos">📞</div>
+  <span id="vorhangText">Einmal tippen. Danach nur noch reden: «Nova, zeig den Jasmine-Film», «Pause», «weiter», «nächster Film».</span>
+  <label id="ordnerWahl">Filme vom Laptop wählen<input id="ordner" type="file" accept="video/*" multiple></label>
+</div>
 <div class="text" id="text" aria-live="polite"></div>
 <div class="chips" id="chips"></div>
 
@@ -296,6 +332,7 @@
     if (F.gedaechtnis) v.letztes_mal = erinnerung();
     if (F.positionen) v.positionen = positionen();
     if (F.welt) v.welt = welt();
+    if (KEY === 'nova') v.buehne = BUEHNE.an ? BUEHNE.variable() : 'aus';
     return Object.keys(v).length ? v : undefined;
   }
 
@@ -439,18 +476,27 @@
         agentId: AGENT,
         connectionType: 'websocket',
         textOnly: !!nurText,
-        clientTools: { zeige_bild: function (p) { bildZeigen(p); return 'gezeigt'; }, bewegen: bewegen, knoepfe: knoepfe },
+        clientTools: { zeige_bild: function (p) { bildZeigen(p); return 'gezeigt'; }, bewegen: bewegen, knoepfe: BUEHNE.an ? function () { return 'auf der Bühne keine Knöpfe'; } : knoepfe,
+          film_zeigen: BUEHNE.werkzeuge.film_zeigen, film_steuern: BUEHNE.werkzeuge.film_steuern },
         dynamicVariables: variablen(),
-        onConnect: function () { status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); hopsen(); },
-        onDisconnect: function () { if (nr === sitzung && maltSeit) { maltSeit = 0; ende('Verbindung weg, das Bild kam nicht an. Nochmal 🎨'); return; } if (nr === sitzung) ende(nurText ? 'Schreib einfach weiter, ich bin gleich wieder da.' : 'Bis bald! Tipp auf den Knopf, dann bin ich wieder da.'); },
+        // Auf der Bühne nimmt Nova ab wie am Telefon; nach einer abgerissenen Verbindung ist sie still wieder da, bis Diego sie anspricht (nach 30 Min. verbindet sie still neu, siehe unten).
+        overrides: BUEHNE.an && !nurText ? { agent: { firstMessage: abgenommen ? '' : 'Ja, hallo?' } } : undefined,
+        onConnect: function () { if (BUEHNE.an) abgenommen = true; status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); hopsen(); },
+        onDisconnect: function () {
+          if (nr === sitzung && maltSeit) { maltSeit = 0; ende('Verbindung weg, das Bild kam nicht an. Nochmal 🎨'); return; }
+          // Bühne: reisst die Verbindung, ist Nova nach zwei Sekunden still wieder da. Der Film läuft weiter.
+          if (nr === sitzung && BUEHNE.aktiv && !nurText) { ende('Nova verbindet neu …'); setTimeout(function () { if (BUEHNE.aktiv && !conv && !startet) starten(false); }, 2000); return; }
+          if (nr === sitzung) ende(nurText ? 'Schreib einfach weiter, ich bin gleich wieder da.' : 'Bis bald! Tipp auf den Knopf, dann bin ich wieder da.'); },
         onError: function (m) { hinweis.textContent = 'Fehler: ' + (m || 'unbekannt'); },
         onMessage: function (m) {
           if (m && m.source === 'user' && eigene.indexOf(m.message) >= 0) { eigene.splice(eigene.indexOf(m.message), 1); return; }
           if (m && m.source === 'user') $('chips').innerHTML = '';
-          if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message); },
+          if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message);
+          if (BUEHNE.an && m && m.message && m.source !== 'user') BUEHNE.untertitel(m.message); },
         onModeChange: function (m) {
           var sp = m && m.mode === 'speaking';
           if (conv) conv.__spricht = sp;
+          if (BUEHNE.an) BUEHNE.spricht(sp);
           buehne.classList.toggle('spricht', sp); buehne.classList.toggle('hoert', !sp);
           status.textContent = NAME + (sp ? ' spricht …' : ' hört zu.');
         }
@@ -502,6 +548,140 @@
     return 'gezeigt';
   }
 
+  // Bühne: Nova bedient den Beamer (Werkzeuge film_zeigen und film_steuern). Die Filme kommen von Diegos Server
+  // (Liste im Link: #filme=<adresse von filme.json>, bleibt danach auf dem Laptop gespeichert) oder direkt vom Laptop («Filme wählen»).
+  var BUEHNE = (function () {
+    var an = new URLSearchParams(location.search).get('buehne') === '1' && KEY === 'nova';
+    var video = $('film'), kino = $('kino'), ut = $('untertitel'), liste = [], jetzt = -1, laut = 1, utUhr = 0, aktiv = false;
+    function klein(s) { return String(s || '').toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
+    function titelAus(datei) { return String(datei).replace(/\.[a-z0-9]+$/i, '').replace(/^Praesentation-/i, '').replace(/[-_]+/g, ' '); }
+    function setzen(l) {
+      liste = (l || []).filter(function (f) { return f && f.datei; }).map(function (f) {
+        return { titel: f.titel || titelAus(f.datei), datei: f.datei, worte: [f.titel || titelAus(f.datei)].concat(f.stichworte || []).map(klein) };
+      });
+      $('vorhangText').textContent = liste.length ? liste.length + ' Filme bereit. Einmal tippen, danach nur noch reden: «Nova, zeig …», «Pause», «weiter», «nächster Film».'
+        : 'Noch keine Filme. Tipp trotzdem, Nova redet auch ohne Filme. Oder unten Filme vom Laptop wählen.';
+    }
+    function laden() {
+      var m = /[#&]filme=([^&]+)/.exec(location.hash), quelle = null;
+      if (m) { quelle = decodeURIComponent(m[1]); try { localStorage.setItem('buehne_quelle', quelle); } catch (e) {} history.replaceState(null, '', location.pathname + location.search); }
+      if (!quelle) try { quelle = localStorage.getItem('buehne_quelle'); } catch (e) {}
+      setzen([]);
+      if (!quelle || !/^(https:\/\/|http:\/\/(localhost|127\.0\.0\.1)[:/])/.test(quelle)) return;
+      var basis = quelle.replace(/[^/]*$/, '');
+      fetch(quelle, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+        setzen((Array.isArray(d) ? d : d.filme || []).map(function (f) { var x = Object.assign({}, f); if (!/^https?:|^blob:/.test(x.datei || '')) x.datei = basis + x.datei; return x; }));
+      }).catch(function () { $('vorhangText').textContent = 'Die Filmliste kam nicht an. Internet prüfen, oder unten Filme vom Laptop wählen.'; });
+    }
+    $('ordner').addEventListener('change', function (e) {
+      setzen([].slice.call(e.target.files).sort(function (a, b) { return a.name.localeCompare(b.name); })
+        .map(function (f) { return { titel: titelAus(f.name), datei: URL.createObjectURL(f) }; }));
+    });
+    $('ordnerWahl').addEventListener('click', function (e) { e.stopPropagation(); });
+    function namen() { return liste.map(function (f) { return f.titel; }).join(', ') || 'keine Filme geladen'; }
+    function finden(wort) {
+      var w = klein(wort).replace(/\b(film|zeig|zeige|den|die|das|von|ueber|mit|bitte|nova)\b/g, ' ').replace(/\s+/g, ' ').trim(), best = -1, punkte = 0;
+      if (!w) return -1;
+      liste.forEach(function (f, i) {
+        var p = 0;
+        f.worte.forEach(function (x) {
+          if (x === w) p = Math.max(p, 100);
+          else if (x.indexOf(w) >= 0 || w.indexOf(x) >= 0) p = Math.max(p, 60 - Math.abs(x.length - w.length) / 10);
+          else w.split(' ').forEach(function (t) { if (t.length > 2 && x.indexOf(t) >= 0) p = Math.max(p, 20 + t.length); });
+        });
+        if (p > punkte) { punkte = p; best = i; }
+      });
+      return best;
+    }
+    function zeigen(i) {
+      jetzt = i; var f = liste[i];
+      video.src = f.datei; video.volume = laut; document.body.classList.add('film');
+      video.play().catch(function () {});
+      return 'Läuft: ' + f.titel + '.';
+    }
+    function schliessen() { video.pause(); document.body.classList.remove('film'); }
+    video.addEventListener('ended', function () {
+      schliessen();
+      if (conv) try { conv.sendContextualUpdate('Der Film «' + (liste[jetzt] || {}).titel + '» ist fertig. Nova ist wieder gross auf dem Beamer. Sag höchstens einen kurzen Satz oder warte auf Diego.'); } catch (e) {}
+    });
+    var werkzeuge = {
+      film_zeigen: function (p) {
+        if (!liste.length) return 'Keine Filme geladen. Sag Diego, er soll beim Start «Filme wählen» tippen.';
+        var i = finden(p && p.name);
+        return i < 0 ? 'Nicht gefunden. Es gibt: ' + namen() + '.' : zeigen(i);
+      },
+      film_steuern: function (p) {
+        var a = String(p && p.aktion || '').toLowerCase();
+        if (a === 'liste') return 'Filme: ' + namen() + '.';
+        if (a === 'naechster' || a === 'voriger') {
+          if (!liste.length) return 'Keine Filme geladen.';
+          return zeigen(((jetzt < 0 ? (a === 'naechster' ? -1 : 0) : jetzt) + (a === 'naechster' ? 1 : -1) + liste.length) % liste.length);
+        }
+        if (jetzt < 0 || !video.src) return 'Gerade läuft kein Film. Es gibt: ' + namen() + '.';
+        if (a === 'pause') video.pause();
+        else if (a === 'weiter') { document.body.classList.add('film'); video.play().catch(function () {}); }
+        else if (a === 'zurueck') video.currentTime = Math.max(0, video.currentTime - 15);
+        else if (a === 'vor') video.currentTime = Math.min(video.duration || 1e9, video.currentTime + 15);
+        else if (a === 'neustart') { video.currentTime = 0; document.body.classList.add('film'); video.play().catch(function () {}); }
+        else if (a === 'schliessen') schliessen();
+        else if (a === 'leiser') laut = Math.max(0.1, laut - 0.25);
+        else if (a === 'lauter') laut = Math.min(1, laut + 0.25);
+        video.volume = laut;
+        var f = liste[jetzt], min = Math.floor(video.currentTime / 60), sek = Math.floor(video.currentTime % 60);
+        return (f ? f.titel : 'Film') + (video.paused ? ' ist angehalten' : ' läuft') + ' bei ' + min + ':' + (sek < 10 ? '0' : '') + sek + (video.duration ? ' von ' + Math.round(video.duration / 60) + ' Min.' : '.');
+      }
+    };
+    // Spricht Nova, wird der Film leiser, damit man sie versteht.
+    function spricht(ja) { video.volume = ja ? laut * 0.2 : laut; }
+    function untertitel(t) {
+      ut.textContent = t; ut.classList.add('an'); clearTimeout(utUhr);
+      utUhr = setTimeout(function () { ut.classList.remove('an'); }, Math.min(12000, 2500 + t.length * 70));
+    }
+    var gast = (new URLSearchParams(location.search).get('gast') || '').toLowerCase().replace(/[^a-zäöü ]/g, '');
+    function variable() {
+      return 'an' + (gast ? ', Gast: ' + gast : '') + '. Du bist live am Beamer, über den Lautsprecher, wie bei einem Telefonat. Filme: ' + namen() + (document.body.classList.contains('film') && liste[jetzt] ? '. Gerade läuft: ' + liste[jetzt].titel : '') + '.';
+    }
+    if (an) {
+      document.body.classList.add('bmodus'); laden();
+      // Ohne Maus und Tastatur geht alles per Stimme; Tasten gibt es trotzdem als Notbremse.
+      document.addEventListener('keydown', function (e) {
+        if (!aktiv || /input/i.test(e.target.tagName)) return;
+        var k = { ' ': 'pause', ArrowLeft: 'zurueck', ArrowRight: 'vor', n: 'naechster', p: 'voriger', Escape: 'schliessen' }[e.key];
+        if (k === 'pause' && video.paused && video.src) k = 'weiter';
+        if (k) { e.preventDefault(); werkzeuge.film_steuern({ aktion: k }); }
+      });
+    }
+    return { an: an, werkzeuge: werkzeuge, spricht: spricht, untertitel: untertitel, variable: variable,
+      get aktiv() { return aktiv; }, set aktiv(v) { aktiv = v; } };
+  })();
+  // Wie ein Telefonat: Diego tippt, es klingelt zweimal über den Lautsprecher, dann nimmt Nova ab.
+  // Auflegen (Knopf oben links) bringt den Anruf-Knopf zurück; so kann er sie später nochmal «anrufen».
+  function klingeln(fertig) {
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) { fertig(); return; }
+    var ac = new AC(), t = ac.currentTime + 0.05, g = ac.createGain(); g.gain.value = 0; g.connect(ac.destination);
+    [425, 450].forEach(function (hz) { var o = ac.createOscillator(); o.frequency.value = hz; o.connect(g); o.start(t); o.stop(t + 3.2); });
+    [0, 1.9].forEach(function (ab) { g.gain.setValueAtTime(0, t + ab); g.gain.linearRampToValueAtTime(0.18, t + ab + 0.03);
+      g.gain.setValueAtTime(0.18, t + ab + 1.0); g.gain.linearRampToValueAtTime(0, t + ab + 1.05); });
+    setTimeout(function () { try { ac.close(); } catch (e) {} fertig(); }, 3300);
+  }
+  var abgenommen = false;
+  if (BUEHNE.an) {
+    var vorhang = $('vorhang'), klingelt = false;
+    var losGehen = function () {
+      if (klingelt) return; klingelt = true;
+      try { if (document.documentElement.requestFullscreen && !document.fullscreenElement) document.documentElement.requestFullscreen().catch(function () {}); } catch (e) {}
+      $('vorhangLos').classList.add('klingelt'); $('vorhangTitel').textContent = 'Es klingelt …';
+      BUEHNE.aktiv = true; abgenommen = false;
+      klingeln(function () {
+        klingelt = false; vorhang.style.display = 'none'; $('vorhangLos').classList.remove('klingelt'); $('vorhangTitel').textContent = 'Nova anrufen';
+        starten(false);
+      });
+    };
+    vorhang.addEventListener('click', losGehen);
+    vorhang.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); losGehen(); } });
+  }
+
   async function senden(t) {
     $('chips').innerHTML = '';
     zeile('du', t); eigene.push(t);
@@ -530,7 +710,7 @@
   // Wie eine Store-App: beim Öffnen holt sich die App still die neueste Fassung, nie mitten im Gespräch.
   var stand = (document.querySelector('meta[name=stand]') || {}).content;
   function frisch() {
-    if (document.hidden || conv || startet || !stand) return;
+    if (document.hidden || conv || startet || !stand || BUEHNE.aktiv) return;
     fetch(location.pathname + '?s=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (h) {
       var m = h.match(/<meta name="stand" content="([^"]+)"/);
       if (!m || m[1] === stand || conv || startet) return;
@@ -544,7 +724,8 @@
   knopf.addEventListener('click', function () {
     // Vom Schreiben zur Stimme: Text-Gespräch schliessen, dann mit Mikrofon neu starten.
     if (conv && conv.__text) { var t = conv; ende(); t.endSession().catch(function () {}); starten(false); return; }
-    if (conv) { var c = conv; ende('Bis bald!'); c.endSession().catch(function () {}); }
+    if (conv) { BUEHNE.aktiv = false; var c = conv; ende('Aufgelegt.'); c.endSession().catch(function () {}); if (BUEHNE.an) $('vorhang').style.display = ''; }
+    else if (BUEHNE.an) $('vorhang').click();
     else starten();
   });
   // Auf Otti tippen: er hüpft vor Freude.
