@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="TradePing">
-<meta name="theme-color" content="#060d1c">
+<meta name="theme-color" content="#f3f4f6">
 <meta name="color-scheme" content="dark">
 <meta name="description" content="Der Markt schläft nie. TradePing wacht für dich – ein Ping, nur wenn deine Marke erreicht ist.">
 <link rel="manifest" href="manifest.webmanifest">
@@ -344,8 +344,16 @@ footer b{color:var(--ink2);font-weight:600}
 .tp-sicherung{margin-top:10px;padding:10px 12px;border-radius:14px;border:1px solid var(--line)}
 .tp-sicherung summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--ink2);min-height:32px;display:flex;align-items:center}
 .tp-sicherung textarea{width:100%;box-sizing:border-box;border-radius:10px;border:1px solid var(--line2);background:#081329;color:var(--ink);font:12px/1.4 ui-monospace,Menlo,monospace;padding:8px;margin:6px 0}
+.tp-schule{display:flex;align-items:center;gap:14px;margin:16px 0 0;min-height:72px;padding:14px 18px;border-radius:20px;background:linear-gradient(135deg,#f2c14e,#e0a93a);color:#1a1f3a;text-decoration:none;box-shadow:0 10px 28px -12px rgba(242,193,78,.7);transition:transform .15s}
+.tp-schule:active{transform:scale(.98)}
+.tp-schule .e{font-size:32px;line-height:1;flex:none}
+.tp-schule b{display:block;font-size:19px;font-weight:800;line-height:1.2}
+.tp-schule small{display:block;font-size:13px;line-height:1.35;color:#3a2c08;font-weight:600}
+.tp-schule .p{margin-left:auto;font-size:28px;font-weight:800;flex:none}
+.tp-schule:focus-visible{outline:3px solid #fff;outline-offset:3px}
 </style>
 <link rel="stylesheet" href="../nova/puppe.css">
+<script>try{var t=localStorage.getItem("tp_thema");if(t)document.documentElement.dataset.thema=t}catch(e){}</script>
 </head>
 <body>
 <script src="../nova/intro.js" data-art="funken" data-bild="figur-gross.jpg" data-text="Ping! Dein Spieltopf wartet."></script>
@@ -386,6 +394,7 @@ footer b{color:var(--ink2);font-weight:600}
     <div class="unten"><b>Mr. Ping</b><span>Dein Begleiter für den Spieltopf. Spielgeld, kein Rat.</span>
       <div style="display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap"><a class="ping-reden" href="../nova/reden.html?f=mr.%20ping">📞 Mit Mr. Ping reden</a><span data-feedback-slot></span></div></div>
   </section>
+  <a class="tp-schule" id="tpSchule" href="schule.html"><span class="e" aria-hidden="true">🎓</span><span><b>Mr. Pings Schule</b><small>Börse verstehen in 5 Minuten am Tag. Lernen, keine Anlageberatung.</small></span><span class="p" aria-hidden="true">›</span></a>
 
   <div class="radar-box">
     <div class="radar" id="radar">
@@ -467,7 +476,7 @@ footer b{color:var(--ink2);font-weight:600}
     </div>
   </section>
 
-  <footer><b>Keine Anlageberatung. Du entscheidest selbst.</b><br>Spielgeld-Werkzeug · DR Lab</footer>
+  <footer><b>Keine Anlageberatung. Du entscheidest selbst.</b><br>Spielgeld-Werkzeug</footer>
 </div>
 
 <div class="scrim" id="scrim"></div>
@@ -537,7 +546,7 @@ function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(
 /* ---------- Kurse ---------- */
 var demo = null; // { prices:{id:p}, marks:{id:{over,under,aO,aU}}, dir:{}, hold:{}, n }
 function livePrice(it){
-  if (it.kind === 'crypto') return it.last ? it.last[it.cur.toLowerCase()] : null;
+  if (it.kind === 'crypto') { var lp = it.last ? it.last[it.cur.toLowerCase()] : null; return lp != null ? lp : (it.man != null ? it.man : null); } // Runde 8: ohne Verbindung gilt der Kurs von Hand
   return it.man != null ? it.man : null;
 }
 function price(it){ return demo ? demo.prices[it.id] : livePrice(it); }
@@ -582,7 +591,7 @@ function round2(v){ var m = v >= 1000 ? 1 : v >= 10 ? 10 : v >= 1 ? 100 : 10000;
 function renderStand(){
   var el = $('stand'); el.className = 'stand';
   if (demo) { el.classList.add('demo'); el.innerHTML = '<b>Demo läuft</b>Spielkurse, nicht echt'; return; }
-  if (fetchState.ok === false) { el.classList.add('err'); el.innerHTML = '<b>Kurse offline</b>' + (fetchState.at ? 'Stand ' + hhmm(fetchState.at) : 'kommen gleich wieder'); return; }
+  if (fetchState.ok === false) { el.classList.add('err'); el.innerHTML = '<b>Live-Kurse brauchen Verbindung</b>' + (fetchState.at ? 'Stand ' + hhmm(fetchState.at) + ' · ' : '') + 'Kurs von Hand geht immer'; el.title = 'Ohne Verbindung: Titel antippen und den Kurs von Hand eintragen.'; return; }
   if (fetchState.ok && fetchState.at) { el.innerHTML = '<b>Stand ' + hhmm(fetchState.at) + '</b>Krypto live · alle 60 s'; return; }
   el.innerHTML = '<b>Kurse laden …</b>';
 }
@@ -845,7 +854,7 @@ function renderList(){
     var p = price(it), m = marks(it) || {}, r = rel(it);
     var sub, chg = '';
     if (demo) sub = 'Demo · Spielkurs';
-    else if (it.kind === 'crypto') sub = it.name + ' · live';
+    else if (it.kind === 'crypto') sub = it.name + (!it.last && it.man != null ? ' · von Hand, bis Live-Kurse wieder da sind' : !it.last && fetchState.ok === false ? ' · Live-Kurs braucht Verbindung' : ' · live');
     else sub = it.name + ' · von Hand' + (it.manAt ? ' ' + dayLabel(it.manAt) : '');
     if (!demo && it.kind === 'crypto' && it.last && it.last.chg != null) { var c = it.last.chg; chg = '<small class="' + (c >= 0 ? 'up' : 'dn') + '">' + (c >= 0 ? '+' : '−') + Math.abs(c).toFixed(1) + ' % 24 h</small>'; }
     else if (p == null) chg = '<small class="mu">' + (it.kind === 'manual' ? 'Kurs eintragen' : 'kein Kurs') + '</small>';
@@ -965,7 +974,7 @@ function openSheet(it, focusMan){
   setTimeout(function(){ (focusMan ? $('fMan') : it ? $('fOver') : $('fSym')).focus(); }, 330);
 }
 function closeSheet(){ $('scrim').classList.remove('show'); $('sheet').classList.remove('show'); editing = null; }
-function kindUi(){ var c = $('fKind').value === 'crypto'; $('wCg').hidden = !c; $('wMan').hidden = c; }
+function kindUi(){ var c = $('fKind').value === 'crypto', ohne = c && fetchState.ok === false; $('wCg').hidden = !c; $('wMan').hidden = c && !ohne; var lb = document.querySelector('label[for=fMan]'); if (lb) lb.textContent = ohne ? 'Kurs von Hand (Live-Kurse brauchen Verbindung)' : 'Kurs von Hand'; }
 $('fKind').addEventListener('change', kindUi);
 $('fSym').addEventListener('input', function(){
   var s = this.value.trim().toUpperCase();
@@ -1004,7 +1013,7 @@ $('sheet').addEventListener('submit', function(ev){
   if (it.under !== under) it.aU = true;
   it.sym = sym; it.name = name; it.kind = kind; it.cur = $('fCur').value; it.over = over; it.under = under; it.auto = 0; it.autoSet = false;
   it.ein = ein; it.stop = stop; it.kauf = kauf;
-  if (kind === 'crypto') { it.cg = cg; if (cgChanged) it.last = null; }
+  if (kind === 'crypto') { it.cg = cg; if (cgChanged) it.last = null; if (man != null || fetchState.ok === false) { if (man !== it.man) it.manAt = man != null ? Date.now() : null; it.man = man; } }
   else { if (man !== it.man) it.manAt = man != null ? Date.now() : null; it.man = man; }
   closeSheet();
   if (!demo) check(it);
@@ -1184,5 +1193,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 
 <script src="runde6.js" defer></script>
 <script src="runde7.js" defer></script>
+<script src="runde8.js" defer></script>
+<link rel="stylesheet" href="markt.css">
 </body>
 </html>

@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3f4f6">
+<link rel="icon" href="icon.svg">
+<script>try{var t=localStorage.getItem("tp_thema");if(t)document.documentElement.dataset.thema=t}catch(e){}</script>
+<!-- Quelle: trading/aktienschule/mrping-schule.html (Inhalt unverändert; nur Kopf, Bildpfade und Rückweg ergänzt) -->
+<title>Mr. Pings Aktienschule</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: eine Handy-Spalte im TradePing-Look (Nachtblau + Gold), Schritte: Start → Fragen → Dein Weg → Lektion */
+:root{
+  --bg:#060d1c; --card:#101e3c; --card2:#16284e; --ink:#eaf0fb; --ink2:#b8c6e0; --muted:#8597ba;
+  --line:rgba(120,160,230,.2); --gold:#f2c14e; --gold-l:rgba(242,193,78,.14); --green:#5fdc9a; --red:#ff7b72;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  color-scheme:dark;
+}
+body{background:radial-gradient(90% 40% at 50% 0%,#132a5a 0%,rgba(19,42,90,0) 70%),var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5}
+.wrap{max-width:560px;margin:0 auto;padding-block:16px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:16px}
+h1,h2,h3{margin:0;text-wrap:balance;line-height:1.2;letter-spacing:-.01em}
+h1{font-size:26px;font-weight:800} h2{font-size:20px;font-weight:700} h3{font-size:17px;font-weight:700}
+p{margin:0}
+.muted{color:var(--muted);font-size:14px}
+.hero{position:relative;border-radius:24px;overflow:hidden;border:1px solid rgba(242,193,78,.45)}
+.hero img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:50% 22%}
+.hero .unten{position:absolute;inset:auto 0 0 0;padding:56px 16px 16px;background:linear-gradient(transparent,rgba(5,11,31,.94) 55%);display:grid;gap:4px}
+.hero b{font-size:22px;color:var(--gold)}
+.bubble{background:var(--card);border:1px solid var(--line);border-radius:18px 18px 18px 6px;padding:14px 16px;display:grid;gap:8px;color:var(--ink2)}
+.bubble strong{color:var(--ink)}
+.btn{min-height:52px;border-radius:16px;border:1px solid var(--line);background:var(--card2);color:var(--ink);font:600 16px var(--sans);padding:0 18px;cursor:pointer}
+.btn.gold{background:var(--gold);border-color:transparent;color:#2a1d00;font-weight:700}
+.btn:focus-visible,.opt:focus-visible,.les:focus-visible,.chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row .btn{flex:1 1 140px}
+.prog{height:6px;border-radius:99px;background:var(--line);overflow:hidden}.prog i{display:block;height:100%;background:var(--gold);transition:width .3s}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;min-height:56px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:500 16px var(--sans);padding:12px 14px;cursor:pointer;display:flex;gap:12px;align-items:center}
+.opt span.e{font-size:24px;flex:none}
+.opt small{display:block;color:var(--muted);font-size:13px}
+.opt[aria-pressed="true"]{border-color:var(--gold);background:var(--gold-l)}
+.weg{background:linear-gradient(160deg,#1c2e60,#0c1834);border:1px solid rgba(242,193,78,.4);border-radius:22px;padding:16px;display:grid;gap:10px}
+.weg .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.hinweis{border-radius:14px;padding:12px 14px;background:rgba(255,123,114,.12);color:#ffc2bc;font-size:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:none;color:var(--ink2);border-radius:999px;padding:8px 12px;font:600 13px var(--sans);min-height:40px;cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);background:var(--gold-l)}
+.lessons{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.les{width:100%;text-align:left;display:flex;gap:12px;align-items:center;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 12px;min-height:56px;font:500 15px var(--sans);cursor:pointer}
+.les .n{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--card2);font-size:13px;font-weight:700;color:var(--ink2)}
+.les.done .n{background:var(--green);color:#03210f}
+.les.next .n{background:var(--gold);color:#2a1d00}
+.les small{display:block;color:var(--muted);font-size:12.5px}
+.les .bald{margin-left:auto;font-size:11px;color:var(--muted);flex:none}
+.lesson{display:grid;gap:14px}
+.lesson ul{margin:0;padding-left:20px;display:grid;gap:6px;color:var(--ink2)}
+.lesson b{color:var(--ink)}
+.merk{border-left:3px solid var(--gold);padding:4px 0 4px 12px;font-size:18px;font-weight:600}
+.box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;gap:10px}
+details{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--card)}
+summary{cursor:pointer;font-weight:600}
+details p{margin-top:8px;color:var(--ink2)}
+.scale{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.scale button{min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink2);font:700 14px var(--sans);cursor:pointer;padding:0}
+.scale button[aria-pressed="true"]{background:var(--gold);color:#2a1d00;border-color:transparent}
+.pose{display:flex;gap:12px;align-items:center}
+.pose img{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);flex:none}
+footer{font-size:13px;color:var(--muted);text-align:center}
+footer b{color:var(--ink2)}
+[data-view]{display:grid;gap:16px}
+@media (prefers-reduced-motion:reduce){.prog i{transition:none}}
+body{margin:0}
+[data-view][hidden]{display:none}
+.zurapp{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--line);color:var(--ink2);text-decoration:none;font:600 14px var(--sans);justify-self:start}
+.zurapp:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <a class="zurapp" href="index.html">‹ Zurück zu TradePing</a>
+  <!-- START -->
+  <section data-view="start">
+    <div class="hero">
+      <img src="posen/ping.jpg" alt="Mr. Ping mit seiner goldenen Glocke">
+      <div class="unten"><b>Mr. Pings Aktienschule</b><span class="muted" style="color:#e9e3d6">Für alle, die ihr Geld selbst verstehen wollen.</span></div>
+    </div>
+    <div class="bubble">
+      <p><strong>Hallo, ich bin Mr. Ping.</strong> Börse fühlt sich oft an wie ein Sturm: alles zappelt, alle reden laut, und du sollst entscheiden.</p>
+      <p>Ich erkläre dir Schritt für Schritt, worum es geht. In 5 Minuten am Tag, in deinem Tempo, ohne Fachchinesisch.</p>
+      <p>Ich sage dir nie, was du kaufen sollst. Ich helfe dir, es selbst zu verstehen.</p>
+    </div>
+    <div class="row">
+      <button class="btn gold" id="los" type="button">Was brauchst du? (6 Fragen)</button>
+    </div>
+    <div class="row">
+      <button class="btn" id="alleWege" type="button">Alle Wege ansehen</button>
+      <button class="btn" id="weiter" type="button" hidden>Weiter lernen</button>
+    </div>
+  </section>
+
+  <!-- FRAGEN -->
+  <section data-view="fragen" hidden>
+    <div class="prog" aria-hidden="true"><i id="progBar" style="width:0"></i></div>
+    <p class="muted" id="qNr">Frage 1 von 6</p>
+    <h2 id="qText"></h2>
+    <p class="muted" id="qHilfe"></p>
+    <div class="opts" id="qOpts" role="group"></div>
+    <div class="row"><button class="btn" id="zurueck" type="button">Zurück</button></div>
+  </section>
+
+  <!-- WEG -->
+  <section data-view="weg" hidden>
+    <div class="pose"><img src="posen/jubel.jpg" alt=""><p id="wegGruss"><strong>Dein Weg steht.</strong></p></div>
+    <div class="weg">
+      <span class="tag">Dein Weg</span>
+      <h2 id="wegName"></h2>
+      <p id="wegText" style="color:var(--ink2)"></p>
+      <p class="muted" id="wegTon"></p>
+    </div>
+    <div id="wegHinweis"></div>
+    <div class="box">
+      <h3>Wie fühlst du dich gerade beim Thema Geld?</h3>
+      <p class="muted">1 = ganz ruhig, 10 = sehr gestresst. Mr. Ping schaut mit dir, ob es mit der Zeit ruhiger wird.</p>
+      <div class="scale" id="stress" role="group" aria-label="Stress von 1 bis 10"></div>
+      <p class="muted" id="stressInfo"></p>
+    </div>
+    <h3>Deine Lektionen</h3>
+    <ul class="lessons" id="lesList"></ul>
+    <h3>Anderen Weg anschauen</h3>
+    <div class="chips" id="wegChips" role="group" aria-label="Wege"></div>
+    <div class="row"><button class="btn" id="neuFragen" type="button">Fragen nochmal machen</button></div>
+  </section>
+
+  <!-- LEKTION -->
+  <section data-view="lektion" hidden>
+    <button class="btn" id="zumWeg" type="button" style="justify-self:start;min-height:44px">‹ Zurück zum Weg</button>
+    <article class="lesson" id="lesBody"></article>
+  </section>
+
+  <footer><b>Lernen, keine Anlageberatung.</b><br>Mr. Ping empfiehlt keine Titel und keine Produkte. Entscheiden und das Risiko tragen tust du selbst.</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+/* ---------- Die 5 Wege (nach Bedürfnis, nicht nach Anfänger/Profi) ---------- */
+var KERN=[
+ {id:'k1',t:'Warum zappelt der Kurs?',s:'Was eine Aktie ist und warum ±1–3 % pro Tag normal sind'},
+ {id:'k2',t:'Aktie, Obligation, Fonds, ETF',s:'Die 4 Grundbausteine in einfachen Worten'},
+ {id:'k3',t:'Risiko und Rendite',s:'Was 5 % oder 8 % pro Jahr wirklich heissen'}
+];
+var WEGE={
+ ruhig:{e:'🌿',name:'Ruhig anlegen',kurz:'Ich will mein Erspartes anlegen, ohne es zu verlieren.',
+  text:'Für alle, die Geld haben (gespart oder geerbt) und es in Ruhe wachsen lassen wollen. Ziel: verstehen, wie man breit streut, Kosten tief hält und bei Schwankungen ruhig bleibt.',
+  les:[['Zuerst der Notgroschen','Wie viel auf dem Konto bleiben soll'],['Zeit ist dein Freund','Geld, das du 10 Jahre nicht brauchst'],['Der Weltindex einfach erklärt','Tausende Firmen mit einem Kauf'],['Gebühren fressen Rendite','Was 1 % Kosten über 20 Jahre ausmacht'],['Monatlich anlegen','Der Sparplan und warum er Nerven schont'],['Säule 3a mit Wertschriften','Steuern sparen und anlegen'],['Wenn alles 20 % fällt','Was in früheren Krisen passiert ist'],['Dein Plan auf einer Seite','Aufschreiben, damit du ruhig bleibst']]},
+ bank:{e:'🏦',name:'Mit der Bank reden',kurz:'Ich will genug wissen, um mit der Bank auf Augenhöhe zu reden.',
+  text:'Für alle, die nicht selbst handeln wollen, aber verstehen möchten, was die Bank vorschlägt. Ziel: die richtigen Fragen stellen, Kosten erkennen, das passende Produkt selbst wählen.',
+  les:[['Wie eine Bank an dir verdient','Gebühren, Produktkosten, Retrozessionen'],['Beratung, Mandat oder selbst?','Die 3 Arten, mit einer Bank anzulegen'],['Dein Risikoprofil','Was der Fragebogen der Bank misst'],['Die 10 Fragen an den Berater','Zum Mitnehmen ins Gespräch'],['Gesamtkosten in Prozent','Ein Angebot richtig lesen'],['Strukturierte Produkte erkennen','Wenn es kompliziert klingt'],['Nein sagen dürfen','Bedenkzeit ist dein Recht'],['Checkliste fürs Gespräch','Eine Seite, alles drauf']]},
+ selbst:{e:'🧭',name:'Selbst verwalten',kurz:'Ich will mein Geld selbst anlegen und verwalten.',
+  text:'Für alle, die ihr eigenes Depot führen wollen, unabhängig und günstig. Ziel: eine einfache Aufteilung bauen, sie einmal im Jahr prüfen und typische Fehler vermeiden.',
+  les:[['Das richtige Depot','Bank, Neobank, Kosten, Sicherheit'],['Deine Aufteilung','Aktien, Obligationen, Bargeld'],['Welt und Schweiz','Wie viel Heimat im Depot?'],['Einmal im Jahr ausgleichen','Rebalancing in 10 Minuten'],['Steuern in der Schweiz','Vermögen, Dividenden, Rückforderung'],['Dollar und Franken','Was die Währung mit deiner Rendite macht'],['Der teuerste Fehler','Zu oft handeln'],['Dein Jahres-Check','Eine Liste für jeden Januar']]},
+ kick:{e:'⚡',name:'Nervenkitzel mit Spielgeld',kurz:'Ich will ein bisschen Spannung und mit Einzeltiteln spielen.',
+  text:'Für alle, die Freude am Auf und Ab haben. Ziel: mit einem kleinen Spieltopf lernen, feste Grenzen setzen und den Kopf behalten. Nur mit Geld, das weg sein darf.',
+  les:[['Die Spielgeld-Regel','Nur ein kleiner Teil, der weg sein darf'],['Grenzen vor dem Kauf','Verlustgrenze und Gewinnmarke festlegen'],['Quartalszahlen-Tage','Warum Kurse dann springen'],['Charts lesen','Trend, Hoch und Tief'],['Hype erkennen','Krypto, KI und Modetitel'],['Angst und Gier','Die zwei Gefühle, die Geld kosten'],['Das Trading-Journal','Aus jedem Trade lernen'],['Gewinne abschöpfen','Wann und wie viel']]},
+ verstehen:{e:'🔭',name:'Verstehen, was passiert',kurz:'Ich will Börsen-News verstehen, ohne Stress.',
+  text:'Für alle, die mitreden und verstehen wollen, warum Märkte steigen und fallen. Ziel: News einordnen statt sich treiben lassen.',
+  les:[['Börse und Handelszeiten','Warum in Zürich ab 15:30 Uhr mehr passiert'],['Was ist ein Index?','SMI, S&P 500, Nasdaq'],['Zinsen und Notenbank','Warum ein Zinsentscheid alles bewegt'],['Quartalszahlen lesen','Umsatz, Gewinn, Ausblick'],['Ist eine Aktie teuer?','Das KGV einfach erklärt'],['News filtern','Was zählt und was nur Lärm ist'],['Der Burggraben','Warum manche Firmen so stark sind'],['Dein Wochenrückblick','5 Minuten am Freitag']]}
+};
+
+/* ---------- Fragen zur Person ---------- */
+var FRAGEN=[
+ {id:'ziel',t:'Was möchtest du am liebsten?',h:'Es gibt kein Richtig oder Falsch. Das bestimmt deinen Weg.',
+  o:Object.keys(WEGE).map(function(k){return {v:k,e:WEGE[k].e,l:WEGE[k].kurz};})},
+ {id:'zeit',t:'Wann brauchst du das Geld voraussichtlich?',h:'Je länger, desto ruhiger kannst du Schwankungen aussitzen.',
+  o:[{v:'kurz',e:'⏱️',l:'In weniger als 2 Jahren'},{v:'mittel',e:'📅',l:'In 2 bis 10 Jahren'},{v:'lang',e:'🌳',l:'In mehr als 10 Jahren'},{v:'weiss',e:'🤷',l:'Weiss ich noch nicht'}]},
+ {id:'fall',t:'Dein Geld ist plötzlich 20 % weniger wert. Was machst du?',h:'Sei ehrlich. Das sagt mehr über dich als jede Tabelle.',
+  o:[{v:'verkauf',e:'😰',l:'Ich verkaufe sofort',s:'Ich halte das nicht aus'},{v:'warte',e:'😐',l:'Ich warte ab',s:'Unruhig, aber ich bleibe'},{v:'nach',e:'😎',l:'Ich kaufe nach',s:'Jetzt ist es günstiger'}]},
+ {id:'stress',t:'Was stresst dich beim Thema Geld am meisten?',h:'Mr. Ping nimmt das in jede Lektion mit.',
+  o:[{v:'verlieren',e:'💸',l:'Geld zu verlieren'},{v:'verstehen',e:'🌀',l:'Nicht zu verstehen, was passiert'},{v:'bank',e:'🏦',l:'Der Bank ausgeliefert zu sein'},{v:'verpassen',e:'🚀',l:'Etwas zu verpassen'}]},
+ {id:'minuten',t:'Wie viel Zeit hast du pro Woche?',h:'Die Lektionen dauern je 5 Minuten.',
+  o:[{v:'5',e:'☕',l:'5 Minuten'},{v:'30',e:'📖',l:'Etwa 30 Minuten'},{v:'mehr',e:'🎓',l:'Mehr, ich will es richtig können'}]},
+ {id:'erfahrung',t:'Wie viel hast du schon mit Anlegen zu tun gehabt?',h:'Damit Mr. Ping weiss, wo er anfangen kann.',
+  o:[{v:'nie',e:'🌱',l:'Noch gar nicht'},{v:'bank',e:'📄',l:'Ich habe Fonds über die Bank'},{v:'selbst',e:'📈',l:'Ich habe schon selbst gekauft'}]}
+];
+
+var st=load('mps.state',{a:{},weg:null,done:{},stress:[]});
+if(!st.a)st.a={}; if(!st.done)st.done={}; if(!st.stress)st.stress=[];
+var qi=0;
+
+function show(v){document.querySelectorAll('[data-view]').forEach(function(s){s.hidden=s.getAttribute('data-view')!==v;});window.scrollTo(0,0);}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+/* ---------- Fragen ---------- */
+function frage(){
+  var f=FRAGEN[qi];
+  $('qNr').textContent='Frage '+(qi+1)+' von '+FRAGEN.length;
+  $('progBar').style.width=(qi/FRAGEN.length*100)+'%';
+  $('qText').textContent=f.t; $('qHilfe').textContent=f.h;
+  $('qOpts').innerHTML=f.o.map(function(o){
+    return '<button type="button" class="opt" data-v="'+o.v+'" aria-pressed="'+(st.a[f.id]===o.v)+'"><span class="e" aria-hidden="true">'+o.e+'</span><span>'+esc(o.l)+(o.s?'<small>'+esc(o.s)+'</small>':'')+'</span></button>';
+  }).join('');
+  $('zurueck').textContent=qi===0?'Abbrechen':'Zurück';
+}
+$('qOpts').addEventListener('click',function(e){
+  var b=e.target.closest('.opt'); if(!b)return;
+  st.a[FRAGEN[qi].id]=b.getAttribute('data-v'); save('mps.state',st);
+  if(qi<FRAGEN.length-1){qi++;frage();}
+  else{st.weg=st.a.ziel; save('mps.state',st); weg();}
+});
+$('zurueck').addEventListener('click',function(){ if(qi===0){show('start');return;} qi--; frage(); });
+$('los').addEventListener('click',function(){qi=0;frage();show('fragen');});
+$('neuFragen').addEventListener('click',function(){qi=0;frage();show('fragen');});
+$('alleWege').addEventListener('click',function(){ if(!st.weg)st.weg='verstehen'; weg(true); });
+$('weiter').addEventListener('click',function(){weg();});
+
+/* ---------- Dein Weg ---------- */
+function lektionen(k){
+  return KERN.map(function(l,i){return {id:l.id,t:l.t,s:l.s,n:i+1,kern:true};})
+   .concat(WEGE[k].les.map(function(l,i){return {id:k+(i+1),t:l[0],s:l[1],n:i+4};}));
+}
+function ton(){
+  var a=st.a, t=[];
+  if(a.stress==='verlieren') t.push('Mr. Ping zeigt dir in jeder Lektion zuerst, wie du dich vor grossen Verlusten schützt.');
+  if(a.stress==='verstehen') t.push('Mr. Ping erklärt jedes neue Wort und fasst am Schluss in einem Satz zusammen.');
+  if(a.stress==='bank') t.push('Mr. Ping gibt dir zu jeder Lektion eine Frage mit, die du der Bank stellen kannst.');
+  if(a.stress==='verpassen') t.push('Mr. Ping zeigt dir, warum Ruhe meist mehr bringt als Tempo.');
+  if(a.minuten==='5') t.push('Eine Lektion pro Woche reicht. In 11 Wochen bist du durch.');
+  else if(a.minuten==='mehr') t.push('Du kannst jeden Tag eine Lektion machen. In gut 2 Wochen bist du durch.');
+  else if(a.minuten) t.push('Zwei bis drei Lektionen pro Woche, in etwa 4 Wochen bist du durch.');
+  return t.join(' ');
+}
+function hinweis(){
+  var a=st.a, h=[];
+  if(a.zeit==='kurz') h.push('Du brauchst das Geld in weniger als 2 Jahren. Für so kurze Zeit gelten Aktien als sehr unsicher, Mr. Ping zeigt dir in Lektion 3 warum.');
+  if(a.fall==='verkauf' && st.weg==='kick') h.push('Du hast gesagt, du würdest bei −20 % sofort verkaufen. Beim Nervenkitzel-Weg fällt ein Titel manchmal so schnell. Halte den Spieltopf darum klein.');
+  if(a.fall==='verkauf' && st.weg!=='kick') h.push('Schwankungen fühlen sich für dich schwer an. Das ist häufig und ganz normal. Lektion 1 und «Wenn alles 20 % fällt» helfen dabei.');
+  return h.map(function(x){return '<p class="hinweis">'+esc(x)+'</p>';}).join('');
+}
+function weg(alle){
+  var k=st.weg||'verstehen', w=WEGE[k];
+  $('wegName').textContent=w.e+' '+w.name;
+  $('wegText').textContent=w.text;
+  $('wegTon').textContent=ton();
+  $('wegHinweis').innerHTML=alle?'':hinweis();
+  $('wegGruss').innerHTML=alle?'<strong>Alle 5 Wege.</strong> Tippe unten auf einen Weg, um seine Lektionen zu sehen.':'<strong>Dein Weg steht.</strong> Die ersten 3 Lektionen sind für alle gleich, dann geht es um dein Bedürfnis.';
+  var arr=lektionen(k), next=null;
+  arr.forEach(function(l){ if(!next && !st.done[l.id]) next=l.id; });
+  $('lesList').innerHTML=arr.map(function(l){
+    var cls=st.done[l.id]?' done':(l.id===next?' next':'');
+    var bald=INHALT[l.id]?'':'<span class="bald">kommt bald</span>';
+    return '<li><button type="button" class="les'+cls+'" data-id="'+l.id+'"><span class="n">'+(st.done[l.id]?'✓':l.n)+'</span><span>'+esc(l.t)+'<small>'+esc(l.s)+'</small></span>'+bald+'</button></li>';
+  }).join('');
+  $('wegChips').innerHTML=Object.keys(WEGE).map(function(x){return '<button type="button" class="chip" data-w="'+x+'" aria-pressed="'+(x===k)+'">'+WEGE[x].e+' '+WEGE[x].name+'</button>';}).join('');
+  stressRender();
+  $('weiter').hidden=false;
+  show('weg');
+}
+$('wegChips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;st.weg=b.getAttribute('data-w');save('mps.state',st);weg(true);});
+$('lesList').addEventListener('click',function(e){var b=e.target.closest('.les');if(b)lektion(b.getAttribute('data-id'));});
+$('zumWeg').addEventListener('click',function(){weg();});
+
+/* ---------- Stress 1–10 ---------- */
+function stressRender(){
+  var last=st.stress.length?st.stress[st.stress.length-1].v:null;
+  var h='';for(var i=1;i<=10;i++)h+='<button type="button" data-s="'+i+'" aria-pressed="'+(i===last)+'">'+i+'</button>';
+  $('stress').innerHTML=h;
+  var f=st.stress[0];
+  $('stressInfo').textContent=st.stress.length>1?('Am Anfang '+f.v+', jetzt '+last+'.'+(last<f.v?' Es wird ruhiger.':'')):(last?'Gespeichert. Nach ein paar Lektionen fragt Mr. Ping wieder.':'');
+}
+$('stress').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;st.stress.push({v:+b.getAttribute('data-s'),d:new Date().toISOString().slice(0,10)});save('mps.state',st);stressRender();});
+
+/* ---------- Lektionen mit Inhalt ---------- */
+var INHALT={
+ k1:{t:'Warum zappelt der Kurs?',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 1 · 5 Minuten</b><br><span class="muted">Was eine Aktie ist und warum Bewegung kein Notfall ist.</span></p></div>'+
+  '<h3>Was eine Aktie ist</h3><ul><li>Eine Aktie ist ein kleines Stück einer Firma. Wer eine Nestlé-Aktie kauft, ist Miteigentümer von Nestlé.</li><li>Der Kurs ist der Preis, zu dem gerade jemand kauft und jemand verkauft.</li><li>Dieser Preis wird jede Sekunde neu ausgehandelt. Darum zappelt er.</li></ul>'+
+  '<h3>Was den Kurs bewegt</h3><ul><li><b>News:</b> neues Produkt, Klage, neuer Chef.</li><li><b>Zahlen:</b> 4-mal im Jahr berichten Firmen über Umsatz und Gewinn. Dann springt der Kurs oft 5–10 %.</li><li><b>Zinsen:</b> Steigen die Zinsen, werden Aktien oft billiger.</li><li><b>Stimmung:</b> Hype oder Angst, zum Beispiel rund um KI.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du hast <b>CHF 1000</b> in einer grossen Tech-Aktie.</p><ul><li>Ein normaler Tag mit −2 % kostet dich <b>CHF 20</b>.</li><li>Am nächsten Tag +1,5 % bringen <b>CHF 15</b> zurück.</li><li>Bei grossen Firmen sind ±1–3 % an einem Tag üblich. Das nennt man Rauschen.</li></ul></div>'+
+  '<p class="merk">Bewegung ist kein Notfall. Sie ist der Preis dafür, dass Aktien langfristig mehr bringen können als ein Sparkonto.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Wenn dein Bauch bei −2 % schon zieht: Das geht fast allen so am Anfang.</li><li>Hilfe Nr. 1: nicht jede Stunde schauen. Einmal am Tag reicht, einmal pro Woche ist noch besser.</li><li>Mr. Ping meldet sich in TradePing nur, wenn sich wirklich etwas Grosses bewegt.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Such dir eine Firma aus, die du kennst, und schau ihren Kurs heute und morgen an.</li><li>Wie viel Prozent hat sie sich bewegt? Wie viele Franken wären das bei CHF 1000?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Eine grosse Aktie fällt heute 2 %. Notfall?</summary><p>Nein. ±1–3 % pro Tag sind bei grossen Firmen normal.</p></details>'+
+  '<details><summary>Wann springt ein Kurs besonders stark?</summary><p>An Tagen mit Quartalszahlen oder grossen News, dann sind 5–10 % möglich.</p></details>'+
+  '<details><summary>Was hilft gegen Börsen-Stress am meisten?</summary><p>Weniger oft schauen und vorher wissen, was normal ist.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Kurs:</b> aktueller Preis einer Aktie</li><li><b>Volatilität:</b> wie stark ein Kurs schwankt</li><li><b>Rauschen:</b> normale kleine Bewegung ohne Bedeutung</li></ul>'}
+};
+function lektion(id){
+  var c=INHALT[id];
+  if(!c){
+    var l=null; Object.keys(WEGE).concat(['kern']).forEach(function(){});
+    $('lesBody').innerHTML='<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Diese Lektion schreibt Mr. Ping gerade.</b><br><span class="muted">Jeden Tag kommt eine neue dazu. Fang mit Lektion 1 an.</span></p></div><button type="button" class="btn gold" id="zuL1">Zu Lektion 1</button>';
+    $('zuL1').addEventListener('click',function(){lektion('k1');});
+    show('lektion');return;
+  }
+  var fertig=st.done[id];
+  $('lesBody').innerHTML='<h1>'+esc(c.t)+'</h1>'+c.html+
+    '<button type="button" class="btn gold" id="gelesen">'+(fertig?'✓ Gelesen':'Gelesen')+'</button>';
+  $('gelesen').addEventListener('click',function(){st.done[id]=true;save('mps.state',st);weg();});
+  show('lektion');
+}
+
+if(st.weg){$('weiter').hidden=false;}
+})();
+</script>
+<link rel="stylesheet" href="markt.css">
+</body>
+</html>

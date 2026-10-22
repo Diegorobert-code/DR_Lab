@@ -455,7 +455,7 @@
   var merkt = karte('mpMerkt', 'Was Mr. Ping sich merkt', 'Nur Zahlen, nur auf diesem Handy: keine Namen, keine Beträge vom Konto, keine Stimme.',
     '<div class="mp-ergebnis" id="mpMerktListe"></div>' +
     '<label class="mp-check"><input type="checkbox" id="mpSpricht"> <span>Mr. Ping spricht Pings laut aus (Handystimme).</span></label>' +
-    '<label class="mp-check"><input type="checkbox" id="mpTeilenOk"> <span>Ich bin einverstanden, dass DR Lab diese Lern-Zahlen (ohne Namen, ohne Beträge, ohne Stimme) lesen und für die Weiterentwicklung von Mr. Ping nutzen darf.</span></label>' +
+    '<label class="mp-check"><input type="checkbox" id="mpTeilenOk"> <span>Ich bin einverstanden, dass das App-Team diese Lern-Zahlen (ohne Namen, ohne Beträge, ohne Stimme) lesen und für die Weiterentwicklung von Mr. Ping nutzen darf.</span></label>' +
     '<div class="mp-reihe"><button class="btn ghost" type="button" id="mpTeilen">📤 Erfahrung teilen</button><button class="btn ghost" type="button" id="mpVergessen">🧽 Alles vergessen</button></div><p class="note" id="mpTeilenMsg"></p>');
   function merktZusammen() {
     var titel = Object.keys(lern.titel).sort(function (a, b) { return lern.titel[b] - lern.titel[a]; }).slice(0, 3);
@@ -560,7 +560,7 @@
     if (!$('mpTeilenOk').checked) { $('mpTeilenMsg').textContent = 'Bitte zuerst das Häkchen setzen.'; return; }
     var x = merktZusammen();
     var text = ['MR. PING (TradePing) – Lern-Erfahrung für Sense Engine', 'Datum: ' + tag(), 'Tage: ' + x.tage, 'Pings gesehen: ' + x.pings, 'Ruhe-Modus: ' + x.ruhe + '×', x.titel.length ? 'Häufigste Titel: ' + x.titel.join(', ') : '', x.regeln.length ? 'Regeln gegriffen: ' + x.regeln.join(', ') : '', 'Ping-Tafeln: ' + x.tafeln + ' · Rechner: ' + x.rechner + '×', x.lex ? 'Lexikon: ' + x.lex : '', 'Einwilligung: ja · ohne Namen · ohne Beträge · ohne Stimme', '', 'Sense Engine (JSON):', JSON.stringify({ app: 'TradePing', art: 'lernen', zeit: new Date().toISOString().slice(0, 16), daten: { tage: x.tage, pings: x.pings, ruhe: x.ruhe, regeln: lern.regeln, tafeln: x.tafeln, rechner: x.rechner }, einwilligung: true })].filter(Boolean).join('\n');
-    kopieren(text, 'Kopiert. Du kannst es jetzt an DR Lab schicken.', 'Mr. Ping – Lern-Erfahrung');
+    kopieren(text, 'Kopiert. Du kannst es jetzt ans App-Team schicken.', 'Mr. Ping – Lern-Erfahrung');
   });
   function kopieren(text, msg, titel) {
     function fallback() { try { navigator.clipboard.writeText(text).then(function () { toastMp(msg); }, function () { prompt('Zum Kopieren:', text); }); } catch (e) { prompt('Zum Kopieren:', text); } }

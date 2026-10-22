@@ -98,7 +98,7 @@
     zahlAnimieren(s.wert);
     d.textContent = proz(s.diff); d.className = 'st-diff' + (s.diff > 0.04 ? ' plus' : s.diff < -0.04 ? ' minus' : '');
     var ein = chf(s.ein).replace('.00', '');
-    $('topfSub').textContent = n === 0 ? 'Noch kein Titel. Tipp auf das goldene Plus.'
+    $('topfSub').textContent = n === 0 ? 'Noch kein Titel. Tipp auf das blaue Plus.'
       : mitKurs ? 'Eingesetzt ' + ein + ' · ' + chfS(s.chf) + ' seit dem Kauf'
       : n < PLAETZE ? 'Eingesetzt ' + ein + ' · ' + n + ' von ' + PLAETZE + ' Titeln eingetragen'
       : 'Eingesetzt ' + ein + ' · alle ' + n + ' Titel im Spiel';
@@ -133,7 +133,7 @@
     return us.offen ? 'Die Börse in New York ist offen, noch ' + dauer + '. Jeder Kurs kann jetzt springen.' : 'Vorhang auf in ' + dauer + ': New York öffnet ' + us.um + '.';
   }
   function spannung() {
-    if (!topf.length) return [['ping', 'Morgen geht’s los? Tipp auf das goldene Plus und trag deinen ersten Titel ein. Dann fiebere ich mit.']];
+    if (!topf.length) return [['ping', 'Morgen geht’s los? Tipp auf das blaue Plus und trag deinen ersten Titel ein. Dann fiebere ich mit.']];
     var mit = topf.map(function (p) { return { p: p, v: pr(p), t: titel(p) }; }).filter(function (x) { return x.v != null; });
     if (!mit.length) return [['denk', 'Fast startklar. Mit Kaufkurs und Kurs jetzt rechne ich Gewinn, Verlust und deine Grenze aus.'], ['', vorhang() || 'Die Bühne ist bereit.']];
     var z = [], sorted = mit.slice().sort(function (x, y) { return y.v - x.v; }), best = sorted[0], worst = sorted[sorted.length - 1], s = stand();
@@ -329,7 +329,7 @@
       if (n) { speichern(); if (neu) nachAenderung(); else zeichnen(); }
     }).catch(function () {
       clearTimeout(to); kursFehler++;
-      info.textContent = 'Kurse gerade offline. Tipp auf einen Titel und trag den Kurs von Hand ein.';
+      info.textContent = 'Live-Kurse brauchen Verbindung. Tipp auf einen Titel und trag den Kurs von Hand ein, das geht immer.';
     });
   }
   function pingId() { try { return localStorage.getItem('tp.pingId'); } catch (e) { return null; } }
