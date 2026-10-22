@@ -153,7 +153,7 @@
   });
 
   // Threads und Links kommen als JSON vom Server (Adresse einmal mit #liste=… öffnen, dann gemerkt):
-  // {threads:[{titel, wichtig, neu, bilder, link}], links:[{titel, url, video}]}
+  // {threads:[{titel, wichtig, status, neu, bilder, link}], links:[{titel, url, video}]}
   var liste = $('liste');
   var m = location.hash.match(/liste=([^&]+)/), quelle = m ? decodeURIComponent(m[1]) : '';
   try { if (quelle) { localStorage.setItem('zentrale.quelle', quelle); history.replaceState(null, '', location.pathname + location.search); } else quelle = localStorage.getItem('zentrale.quelle') || ''; } catch (e) {}
@@ -163,7 +163,7 @@
     var z = document.createElement('span'); z.className = 'zeichen'; z.textContent = zeichen;
     var ti = document.createElement('span'); ti.className = 'titel'; ti.textContent = t.titel || '';
     a.append(z, ti);
-    if (t.neu) { var n = document.createElement('span'); n.className = 'neu'; n.textContent = 'Änderung, wichtig'; a.appendChild(n); }
+    if (t.neu) { var n = document.createElement('span'); n.className = 'neu'; n.textContent = t.status === 'wartet auf Diego' ? 'Wartet auf dich' : 'Änderung, wichtig'; a.appendChild(n); }
     return a;
   }
   function gruppe(name, l, zeichen) {
@@ -172,7 +172,10 @@
     l.forEach(function (t) { liste.appendChild(karte(t, zeichen(t))); });
   }
   function zeigen(d) {
-    var l = ((d && d.threads) || []).slice(), links = (d && d.links) || [];
+    // Server-Format (KI-Verse /api/zentrale/threads): status «läuft» | «wartet auf Diego» | «fertig».
+    var l = ((d && d.threads) || []).filter(function (t) { return t.status !== 'fertig'; }).map(function (t) {
+      return t.status === 'wartet auf Diego' ? Object.assign({}, t, { neu: true }) : t;
+    }), links = (d && d.links) || [];
     liste.innerHTML = '';
     if (!l.length && !links.length) { liste.innerHTML = '<div class="leer">Alles ruhig.</div>'; return; }
     var rang = function (t) { return (t.neu ? 2 : 0) + (t.wichtig ? 1 : 0); };
