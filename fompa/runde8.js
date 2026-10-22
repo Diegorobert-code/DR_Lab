@@ -232,18 +232,24 @@ window.R8 = {
       th.querySelector('.r8-th-stand').innerHTML = z.length
         ? '<b>' + z.length + (z.length === 1 ? ' Zettel' : ' Zettel') + '</b> · ' + b + ' mit Beleg · CHF ' + chf(sum(z)) + (ob ? ' · ' + ob + ' ohne Betrag' : '')
         : 'In diesem Zeitraum gibt es noch keine Zettel.';
+      var fl = window.FompaFahrten ? FompaFahrten.liste(thJahr(), sel.value) : [];
+      if (fl.length) th.querySelector('.r8-th-stand').innerHTML += '<br>' + fl.length + (fl.length === 1 ? ' Fahrt' : ' Fahrten') + ' aus dem Fahrtenbuch kommen mit (02_Fahrten.csv).';
     }
     function thLos() {
       var w = th.querySelector('#r8ThZeit').value, mitFotos = th.querySelector('#r8ThFotos').checked, l = thListe(w);
-      if (!l.length) { toast('In diesem Zeitraum gibt es noch keine Zettel'); pose('denkt', '?'); return; }
+      /* Kilometer-Fahrtenbuch (fahrten.js): Fahrten im gleichen Zeitraum als 02_Fahrten.csv */
+      var fl = window.FompaFahrten ? FompaFahrten.liste(thJahr(), w) : [], fcsv = fl.length ? FompaFahrten.csv(fl) : '';
+      if (!l.length && !fl.length) { toast('In diesem Zeitraum gibt es noch keine Zettel'); pose('denkt', '?'); return; }
       var name = thName(w), liesmich = thLiesmich(w, l, mitFotos), csv = thCsv(l, mitFotos), enc = new TextEncoder();
+      if (fl.length) liesmich = liesmich.replace('\r\n\r\nZAHLEN', '\r\n' + FompaFahrten.text(fl) + '\r\n\r\nZAHLEN');
       var files = [{ name: name + '/00_LIESMICH.txt', data: enc.encode('﻿' + liesmich) }, { name: name + '/01_Ausgaben.csv', data: enc.encode('﻿' + csv) }];
+      if (fl.length) files.push({ name: name + '/02_Fahrten.csv', data: enc.encode('﻿' + fcsv) });
       if (mitFotos) l.forEach(function (z, i) { if (z.blob) files.push({ name: name + '/' + thDatei(z, i), data: z.blob }); });
       var knopf = th.querySelector('[data-r8=thLos]'); knopf.disabled = true; knopf.textContent = 'Paket wird gepackt …'; pose('rechnet', null, 2500);
       function fertig() { knopf.disabled = false; knopf.textContent = 'Paket erstellen'; }
       Promise.resolve(makeZip(files)).then(function (zip) {
         fertig();
-        var kopie = liesmich + '\r\n--- 01_Ausgaben.csv ---\r\n' + csv;
+        var kopie = liesmich + '\r\n--- 01_Ausgaben.csv ---\r\n' + csv + (fl.length ? '\r\n\r\n--- 02_Fahrten.csv ---\r\n' + fcsv : '');
         if (R8K.imRahmen()) {
           R8K.datei(zip, name + '.zip', { nurText: true, titel: 'Paket für die Treuhand', text: kopie,
             hinweis: 'Hier in der Vorschau kann Fompa keine Datei speichern. In der installierten App oder im Browser-Tab entsteht das ZIP mit allen Belegfotos. Bis dahin: Übersicht kopieren und in eine Mail an deine Treuhand einfügen.' });
