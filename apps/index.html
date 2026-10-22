@@ -1,74 +1,603 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>DR Lab Apps</title>
-<meta name="theme-color" content="#0b1636"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="DR Lab Apps"><link rel="apple-touch-icon" href="../nova/nova-3d.jpg">
+<!doctype html><html lang="de-CH"><head><meta charset="utf-8">
+<script src="ton-ios.js"></script><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>DR Lab Apps</title>
+<meta name="description" content="Alle DR-Lab-Apps an einem Ort: jede Figur, kurz erklärt, mit einem Tipp offen.">
+<meta name="theme-color" content="#070f2a"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="DR Lab Apps"><link rel="icon" href="bilder/nova-k.jpg"><link rel="apple-touch-icon" href="bilder/nova-k.jpg">
 <style>
-:root{--bg:#070f2a;--card:rgba(20,34,78,.72);--ink:#f6efe0;--muted:#b9b3a6;--gold:#f2c14e;--line:rgba(242,193,78,.28)}
-*{box-sizing:border-box}
-body{margin:0;color:var(--ink);font:400 16px/1.45 -apple-system,system-ui,sans-serif;padding:max(16px,env(safe-area-inset-top)) 16px max(40px,env(safe-area-inset-bottom));min-height:100vh;
-background:radial-gradient(1.5px 1.5px at 12% 8%,#ffe9a8,transparent),radial-gradient(1px 1px at 84% 14%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 66% 30%,#ffe9a8aa,transparent),radial-gradient(1px 1px at 30% 52%,#ffe9a8aa,transparent),radial-gradient(1px 1px at 90% 70%,#ffe9a8aa,transparent),radial-gradient(60% 30% at 80% 0%,rgba(242,193,78,.18),transparent 70%),radial-gradient(120% 80% at 50% 0%,#1b2c6b 0%,#0e1838 55%,#060a1c 100%) fixed}
-.w{max-width:960px;margin:0 auto}
-h1{font:700 32px/1.1 Georgia,serif;color:var(--gold);margin:10px 0 6px}
-h2{font-size:19px;margin:28px 0 4px}
-p.l{color:var(--muted);margin:0 0 14px;font-size:15px}
-.live{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:12px}
-.live a{display:grid;justify-items:center;gap:6px;text-decoration:none;color:var(--ink);font-size:14px;font-weight:600;text-align:center}
-.live img{width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 18px rgba(242,193,78,.35);animation:atmen 5s ease-in-out infinite}
-.live a:nth-child(2n) img{animation-delay:-1.6s}.live a:nth-child(3n) img{animation-delay:-3.1s}
-.live small{display:block;font-weight:400;color:var(--muted);font-size:12px}
-@keyframes atmen{50%{transform:translateY(-3px) scale(1.03)}}
-.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
-.c{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;display:grid;gap:10px;backdrop-filter:blur(6px)}
-.c .hd{display:flex;align-items:center;gap:12px}
-.c .hd img{width:56px;height:56px;border-radius:14px;object-fit:cover;flex:none;box-shadow:0 2px 10px rgba(0,0,0,.4)}
-.c h3{margin:0;font-size:18px}.c p{margin:0;color:var(--muted);font-size:14px}
-.k{display:flex;gap:8px}
-.k a{flex:1;display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:14px;background:var(--gold);color:#1a1300;font-weight:700;text-decoration:none}
-.k a.r{background:rgba(242,193,78,.14);color:var(--gold);border:1px solid var(--line)}
-.n{font-size:13px;color:var(--muted);margin-top:26px}.n a{color:var(--ink)}
-@media (prefers-reduced-motion:reduce){.live img{animation:none}}
+:root{--bg:#070f2a;--card:#111d45;--card2:#16245a;--ink:#f6efe0;--muted:#c9c2b3;--leise:#9fa8c7;--gold:#f2c14e;--gold2:#ffd977;--line:rgba(242,193,78,.24);--trenn:rgba(255,255,255,.1);--ok:#7fe0a6;
+--r1:8px;--r2:16px;--r3:24px;--s1:8px;--s2:16px;--s3:24px;--s4:32px;--schatten:0 12px 32px rgba(0,0,0,.4),0 2px 6px rgba(0,0,0,.3)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;background:var(--bg)}
+body{margin:0;color:var(--ink);font:400 17px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Segoe UI",sans-serif;min-height:100vh;overflow-x:hidden;
+padding:max(var(--s2),env(safe-area-inset-top)) max(var(--s2),env(safe-area-inset-right)) calc(112px + env(safe-area-inset-bottom)) max(var(--s2),env(safe-area-inset-left));
+background:radial-gradient(1.5px 1.5px at 12% 6%,#ffe9a8,transparent),radial-gradient(1px 1px at 84% 10%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 66% 24%,#ffe9a8aa,transparent),radial-gradient(1px 1px at 30% 44%,#ffe9a8aa,transparent),radial-gradient(1px 1px at 90% 62%,#ffe9a8aa,transparent),radial-gradient(70% 40% at 85% 0%,var(--himmel,rgba(242,193,78,.16)),transparent 70%),linear-gradient(180deg,#0b1636 0%,#070f2a 60%,#050a1e 100%) fixed}
+.w{max-width:1040px;margin:0 auto}
+button{font:inherit;color:inherit}
+img{display:block}
+/* Kopf wie «Heute» */
+.kopf{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s2);margin:var(--s1) 0 var(--s3)}
+.datum{margin:0;font:600 13px/1.2 -apple-system,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--leise)}
+h1{margin:2px 0 0;font:800 34px/1.1 -apple-system,system-ui,sans-serif;letter-spacing:-.02em;color:var(--ink)}
+h1 em{font-style:normal;color:var(--gold)}
+.ich{flex:none;width:44px;height:44px;border-radius:50%;padding:0;border:2px solid var(--gold);background:none;overflow:hidden;cursor:pointer;box-shadow:0 0 18px rgba(242,193,78,.3)}
+.ich img{width:100%;height:100%;object-fit:cover}
+/* Weiter */
+.weiter{display:none;margin:0 0 var(--s3);align-items:center;gap:12px;min-height:64px;padding:8px 16px 8px 8px;border-radius:var(--r2);background:linear-gradient(90deg,rgba(242,193,78,.2),rgba(242,193,78,.05));border:1px solid var(--line);color:var(--ink);text-decoration:none}
+.weiter.da{display:flex}
+.weiter img{width:48px;height:48px;border-radius:12px;object-fit:cover}
+.weiter span{flex:1;font-weight:600}.weiter i{font-style:normal;color:var(--gold);font-size:22px}
+/* Story-Karten (wie App des Tages) */
+.storys{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:var(--s3)}
+.story{position:relative;display:block;border-radius:var(--r3);overflow:hidden;background:var(--card);box-shadow:var(--schatten);color:var(--ink);transform:translateZ(0);transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s;animation:rein .55s cubic-bezier(.2,.8,.2,1) both}
+.story:has(.decke:active){transform:scale(.97)}
+@media (hover:hover){.story:hover{transform:translateY(-2px)}}
+.story .bild{position:relative;aspect-ratio:4/4.4;overflow:hidden}
+.story .bild img{width:100%;height:100%;object-fit:cover;transform:scale(1.04) translateY(var(--px,0px));transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.story .bild::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,10,30,.55) 0%,rgba(5,10,30,0) 30%,rgba(5,10,30,0) 52%,rgba(7,15,42,.92) 100%)}
+.story .oben{position:absolute;left:var(--s2);right:var(--s2);top:var(--s2);z-index:1}
+.eyebrow{margin:0;font:700 13px/1.2 -apple-system,system-ui,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--gold2);text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.story h2{margin:6px 0 0;font:800 28px/1.12 -apple-system,system-ui,sans-serif;letter-spacing:-.01em;text-shadow:0 2px 14px rgba(0,0,0,.65);max-width:16ch}
+.story.gross .bild{aspect-ratio:4/5}
+.story.gross h2{font-size:32px}
+.zeile{display:flex;align-items:center;gap:12px;padding:12px var(--s2) var(--s2)}
+.story .zeile{position:absolute;left:0;right:0;bottom:0;z-index:1;padding-top:0}
+.zeile .sym{flex:none;width:56px;height:56px;border-radius:14px;object-fit:cover;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 4px 12px rgba(0,0,0,.4)}
+.zeile .tx{flex:1;min-width:0}
+.zeile b{display:block;font-size:17px;line-height:1.25}
+.zeile small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--muted);font-size:14px;line-height:1.35}
+.laden{flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:84px;min-height:44px;padding:0 16px;border-radius:999px;border:0;background:rgba(255,255,255,.16);color:#fff;font:800 15px/1 -apple-system,system-ui,sans-serif;letter-spacing:.02em;text-decoration:none;cursor:pointer;transition:transform .12s,background .2s;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.laden.gold{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#1a1300}
+.laden:active{transform:scale(.94)}
+.laden[aria-disabled="true"]{background:rgba(255,255,255,.08);color:var(--leise);font-weight:600}
+/* Abschnitte */
+.ab{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s2);margin:var(--s4) 0 var(--s1);padding-top:var(--s2);border-top:1px solid var(--trenn)}
+.ab h3{margin:0;font:800 22px/1.2 -apple-system,system-ui,sans-serif;letter-spacing:-.01em}
+.ab small{display:block;color:var(--leise);font-size:15px;font-weight:400;margin-top:2px}
+/* Liste wie App Store */
+.liste{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));column-gap:var(--s3)}
+.reihe{display:flex;align-items:center;gap:12px;min-height:80px;padding:8px 0;border-bottom:1px solid var(--trenn);animation:rein .5s cubic-bezier(.2,.8,.2,1) both}
+.reihe .mitte{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:64px;padding:0;border:0;background:none;text-align:left;cursor:pointer;color:var(--ink)}
+.reihe .sym{flex:none;width:64px;height:64px;border-radius:16px;object-fit:cover;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.reihe .tx{min-width:0}
+.reihe b{display:block;font-size:17px;line-height:1.25}
+.reihe small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--muted);font-size:14px;line-height:1.35}
+.pill{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:700;vertical-align:2px;background:rgba(242,193,78,.18);color:var(--gold2)}
+.pill[hidden]{display:none}
+.pill.live{background:rgba(127,224,166,.16);color:var(--ok)}
+/* Figuren reden */
+.live{display:flex;gap:var(--s2);overflow-x:auto;padding:8px 2px 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.live::-webkit-scrollbar{display:none}
+.live a{flex:none;width:84px;min-height:44px;scroll-snap-align:start;display:grid;justify-items:center;gap:6px;text-decoration:none;color:var(--ink);font-size:15px;font-weight:600;text-align:center}
+.live img{width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 16px rgba(242,193,78,.3)}
+.mehr{display:grid;gap:8px}
+.mehr a{display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 16px 8px 8px;border-radius:var(--r2);background:var(--card);border:1px solid var(--line);color:var(--ink);text-decoration:none;font-weight:600}
+.mehr a img{width:40px;height:40px;border-radius:12px;object-fit:cover}
+.mehr a span{flex:1}.mehr a small{display:block;color:var(--muted);font-weight:400;font-size:14px}
+.mehr a i{font-style:normal;color:var(--gold)}
+/* Schalter */
+.schalter{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;margin-top:var(--s1);padding:12px 16px;border-radius:var(--r2);background:var(--card);border:1px solid var(--line);cursor:pointer;text-align:left}
+.schalter .t{flex:1;display:grid}
+.schalter b{font-size:17px}.schalter small{color:var(--muted);font-size:14px}
+.sw{position:relative;width:52px;height:32px;border-radius:16px;background:rgba(255,255,255,.18);flex:none;transition:background .25s}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.35);transition:transform .25s cubic-bezier(.3,.7,.4,1)}
+.schalter[aria-checked="true"] .sw{background:var(--gold)}
+.schalter[aria-checked="true"] .sw::after{transform:translateX(20px)}
+.hinweis{display:none;margin:8px 0 0;padding:10px 14px;border-radius:14px;background:rgba(242,193,78,.14);border:1px solid var(--line);color:var(--gold2);font-size:15px}
+body.test .hinweis{display:block}
+.n{font-size:14px;color:var(--leise);margin-top:var(--s4);text-align:center}.n a{color:var(--ink);display:inline-block;min-height:44px;line-height:44px}
+.bald .reihe{opacity:.75}
+/* Fenster (Bottom Sheet) */
+.dunkel{position:fixed;inset:0;background:rgba(3,6,18,.62);opacity:0;pointer-events:none;transition:opacity .25s;z-index:2147483600}
+.fenster{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:0 auto;max-height:90vh;overflow:auto;background:linear-gradient(180deg,#16245a,#0b1636);border:1px solid var(--line);border-bottom:0;border-radius:28px 28px 0 0;padding:0 0 calc(24px + env(safe-area-inset-bottom));transform:translateY(105%);visibility:hidden;transition:transform .32s cubic-bezier(.2,.8,.2,1),visibility 0s .32s;z-index:2147483601;overscroll-behavior:contain}
+body.offen .dunkel{opacity:1;pointer-events:auto}
+body.offen .fenster{transform:none;visibility:visible;transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+.fkopf{position:relative}
+.fkopf img{width:100%;aspect-ratio:16/11;object-fit:cover}
+.fkopf::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,15,42,0) 50%,#11204f 100%)}
+.griff{position:absolute;z-index:2;left:50%;top:8px;width:40px;height:5px;margin-left:-20px;border-radius:3px;background:rgba(255,255,255,.55)}
+.fzu{position:absolute;z-index:2;right:12px;top:12px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(7,15,42,.6);color:#fff;font-size:22px;cursor:pointer;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.finnen{padding:0 var(--s3)}
+.fenster h3{margin:4px 0 8px;font:800 26px/1.15 -apple-system,system-ui,sans-serif;color:var(--ink);position:relative;z-index:1}
+.fenster .lang{margin:0 0 var(--s2);color:var(--muted);font-size:17px}
+.fenster ol{margin:8px 0 16px;padding:0;list-style:none;counter-reset:s;display:grid;gap:12px}
+.fenster li{counter-increment:s;display:flex;gap:12px;align-items:flex-start;font-size:17px}
+.fenster li::before{content:counter(s);flex:none;width:30px;height:30px;border-radius:50%;background:var(--gold);color:#1a1300;font-weight:700;display:grid;place-items:center;font-size:15px}
+.fenster .sym2{display:inline-block;padding:0 6px;border-radius:6px;background:rgba(255,255,255,.12)}
+.fenster .klein{color:var(--muted);font-size:15px;margin:0 0 16px}
+.fenster details{margin:0 0 16px;color:var(--muted)}
+.fenster summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--ink);font-weight:600}
+.fk{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fk .ganz{grid-column:1/-1}
+.b{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 12px;white-space:nowrap;border-radius:var(--r2);border:1px solid var(--line);background:rgba(242,193,78,.12);color:var(--gold2);font-weight:700;font-size:16px;text-decoration:none;cursor:pointer;transition:transform .12s,background .2s,color .2s;user-select:none;-webkit-user-select:none}
+.b:active{transform:scale(.97)}
+.b.auf{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#1a1300;border:0;font-size:18px;min-height:56px;box-shadow:0 4px 16px rgba(242,193,78,.3)}
+.b.ok{background:rgba(127,224,166,.2);color:var(--ok);border-color:rgba(127,224,166,.5)}
+.b.zu{background:rgba(255,255,255,.08);color:var(--ink);border-color:rgba(255,255,255,.18)}
+.b svg{width:20px;height:20px;flex:none}
+.feld{width:100%;resize:none;word-break:break-all;min-height:52px;padding:12px;border-radius:14px;border:1px solid var(--line);background:rgba(0,0,0,.3);color:var(--ink);font:16px/1.3 ui-monospace,Menlo,monospace;margin:4px 0 12px}
+/* Meldung */
+.toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translate(-50%,-160%);padding:12px 20px;border-radius:24px;background:#13224f;border:1px solid rgba(127,224,166,.5);color:var(--ok);font-weight:700;z-index:2147483602;transition:transform .3s cubic-bezier(.2,.8,.2,1);box-shadow:0 8px 24px rgba(0,0,0,.45);white-space:nowrap;max-width:calc(100vw - 32px);overflow:hidden;text-overflow:ellipsis}
+.toast.da{transform:translate(-50%,0)}
+@keyframes rein{from{opacity:0;transform:translateY(16px)}}
+@media (max-width:374px){h1{font-size:30px}.story h2{font-size:24px}.story.gross h2{font-size:27px}.zeile .sym{width:48px;height:48px}.laden{min-width:72px;padding:0 12px}}
+@media (orientation:landscape) and (max-height:500px){.story .bild,.story.gross .bild{aspect-ratio:16/10}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.story .bild img{transform:none!important}}
+:focus-visible{outline:3px solid var(--gold2);outline-offset:3px;border-radius:12px}
+.decke{position:absolute;inset:0;z-index:1;width:100%;height:100%;margin:0;padding:0;border:0;background:none;cursor:pointer;border-radius:var(--r3)}
+.decke:focus-visible{outline-offset:-4px}
+.story .oben,.story .zeile{z-index:2;pointer-events:none}
+.story .laden{pointer-events:auto}
+.nurrepo[hidden]{display:none!important}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* Runde 8: Ideen des Tages, Kategorien, Meine Apps, Lange-drücken-Menü */
+/* Runde 8: jede App in ihrer eigenen Farbe (eigener Markt-Look) */
+.story[style*="--app"] .laden,.reihe[style*="--app"] .laden:not([aria-disabled]){background:var(--app)!important;color:#fff!important;box-shadow:0 0 0 1px rgba(255,255,255,.22) inset}
+.story[style*="--app"]{box-shadow:var(--schatten),0 0 0 2px var(--app) inset}
+.reihe[style*="--app"] .sym{box-shadow:0 0 0 2px var(--app),0 0 0 4px rgba(255,255,255,.12)}
+.reihe[style*="--app"] b::after{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--appH,var(--app));margin-left:8px;vertical-align:2px}
+.dock a[style*="--app"] img,.passt a[style*="--app"] img{box-shadow:0 0 0 2px var(--app)}
+.ideen{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 calc(-1 * max(var(--s2),env(safe-area-inset-left)));padding:4px max(var(--s2),env(safe-area-inset-left)) 8px;scroll-padding:0 max(var(--s2),env(safe-area-inset-left))}
+.ideen::-webkit-scrollbar{display:none}
+.idee{flex:none;width:min(86%,420px);scroll-snap-align:start;position:relative;border-radius:var(--r3);padding:var(--s2) var(--s2) var(--s2);background:linear-gradient(160deg,var(--ic,#24357a),var(--card) 70%);border:1px solid var(--line);box-shadow:var(--schatten);display:flex;flex-direction:column;gap:8px}
+.idee .nr{position:absolute;right:16px;top:12px;font:800 44px/1 -apple-system,system-ui,sans-serif;color:rgba(255,255,255,.12)}
+.idee .vb{display:flex;align-items:center;gap:10px}
+.idee .vb i{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-style:normal;font-size:24px;background:rgba(255,255,255,.1)}
+.idee .vb small{display:block;color:var(--leise);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.idee .vb b{font-size:17px}
+.idee h4{margin:4px 0 0;font:800 21px/1.2 -apple-system,system-ui,sans-serif;letter-spacing:-.01em}
+.idee p{margin:0;color:var(--muted);font-size:15px;line-height:1.45}
+.idee p b{color:var(--ink)}
+.idee .drin{align-self:flex-start;padding:4px 10px;border-radius:999px;background:rgba(127,224,166,.16);color:var(--ok);font-size:13px;font-weight:700}
+.idee .pz{margin:4px 0 0;font-size:13px;font-weight:700;color:var(--gold2);text-transform:uppercase;letter-spacing:.06em}
+.passt{display:flex;flex-wrap:wrap;gap:8px}
+.passt a{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:4px 14px 4px 4px;border-radius:999px;background:rgba(255,255,255,.1);color:var(--ink);text-decoration:none;font-weight:700;font-size:15px}
+.passt a img{width:36px;height:36px;border-radius:50%;object-fit:cover}
+.passt a:active{transform:scale(.96)}
+.punkte{display:flex;justify-content:center;gap:6px;margin-top:4px}.punkte i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.25);transition:background .2s,width .2s}.punkte i.an{background:var(--gold);width:18px;border-radius:4px}
+.kats{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:4px calc(-1 * max(var(--s2),env(safe-area-inset-left))) 4px;padding:4px max(var(--s2),env(safe-area-inset-left))}
+.kats::-webkit-scrollbar{display:none}
+.kats button{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:var(--ink);font-weight:700;font-size:15px;cursor:pointer}
+.kats button[aria-pressed="true"]{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#1a1300;border-color:transparent}
+.reihe[hidden]{display:none}
+.dock{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;padding:8px 2px 4px}.dock::-webkit-scrollbar{display:none}
+.dock a{flex:none;width:72px;display:grid;justify-items:center;gap:6px;color:var(--ink);text-decoration:none;font-size:13px;font-weight:600;text-align:center;line-height:1.2}
+.dock img{width:64px;height:64px;border-radius:16px;object-fit:cover;box-shadow:0 0 0 1px rgba(255,255,255,.14),0 6px 16px rgba(0,0,0,.35)}
+.gedrueckt{transform:scale(.96);transition:transform .35s}
+.toast button{margin-left:12px;min-height:44px;padding:0 14px;border-radius:999px;border:0;background:var(--gold);color:#1a1300;font-weight:800;cursor:pointer}
+.toast.mitknopf{pointer-events:auto;padding:6px 6px 6px 18px;display:flex;align-items:center;white-space:normal;width:max-content}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.25s}
 </style></head><body><div class="w">
-<h1>DR Lab Apps</h1>
-<p class="l"><a href="qr.html" style="color:var(--gold);font-weight:700">▦ Alle QR-Codes</a></p>
-<p class="l">Alle Apps zum Testen. Die Figuren reden live direkt im Handy, ohne unseren Server. Tipp auf eine Figur, erlaube das Mikrofon und rede los.</p>
 
-<h2>📞 Live reden</h2>
-<p class="l">Tipp: Diese Seite einmal auf den Home-Bildschirm legen, dann erinnern sich alle Figuren und Nova an dasselbe.</p>
+<header class="kopf">
+  <div><p class="datum" id="datum">Heute</p><h1>Heute bei <em>DR Lab</em></h1></div>
+  <button type="button" class="ich" id="ich" aria-label="Nova: Was ist das hier?"><img src="bilder/nova-k.jpg" alt=""></button>
+</header>
+
+<a class="weiter" id="weiter" href="#"><img alt="" id="weiterbild"><span id="weitertx"></span><i aria-hidden="true">›</i></a>
+
+<main>
+<div id="tag"></div>
+
+<div id="meine" hidden><div class="ab"><div><h3>Meine Apps</h3><small>Lange auf eine App drücken: hinzufügen oder entfernen</small></div></div><div class="dock" id="dock"></div></div>
+
+<section id="ideen" aria-labelledby="ideent"><div class="ab"><div><h3 id="ideent">Ideen des Tages</h3><small id="ideentx">Fünf Funktionen aus anderen Apps, die Kunden wirklich helfen</small></div></div>
+<div class="ideen" id="ideenleiste"></div><div class="punkte" id="ideenpunkte" aria-hidden="true"></div></section>
+
+<div class="ab"><div><h3>Zuerst</h3><small>Die wichtigsten Apps gerade jetzt</small></div></div>
+<div class="storys" id="zuerst"></div>
+
+<div class="ab"><div><h3>Alle Apps</h3><small id="alletx">Tipp auf eine App für mehr</small></div></div>
+<div class="kats" id="kats" role="group" aria-label="Nach Thema filtern"></div>
+<div class="liste" id="alle"></div>
+
+<div id="baldteil" hidden>
+<div class="ab"><div><h3>Bald hier</h3><small>Diese Apps kommen noch als eigene Seite dazu</small></div></div>
+<div class="liste bald" id="bald"></div>
+</div>
+
+<div class="nurrepo">
+<div class="ab"><div><h3>Mit Figuren reden</h3><small>Tipp auf eine Figur, erlaube das Mikrofon und rede los.</small></div></div>
 <div class="live">
-<a href="../nova/reden.html?f=nova"><img src="../nova/nova-3d.jpg" alt="">Nova<small>verbindet alle</small></a>
-<a href="../nova/reden.html?f=otti"><img src="../otti/otti-3d.jpg" alt="">Otti<small>lernt dich kennen</small></a>
-<a href="../nova/reden.html?f=jackie"><img src="../jackie/jackie-3d.jpg" alt="">Jackie<small>Alltagshilfe</small></a>
-<a href="../nova/reden.html?f=kiki"><img src="../kiki/kiki-3d.jpg" alt="">Kiki<small>singt mit dir</small></a>
-<a href="../nova/reden.html?f=mr.%20ping"><img src="../tradeping/ping-3d.jpg" alt="">Mr. Ping<small>Übungstopf</small></a>
-<a href="../nova/reden.html?f=sparky"><img src="../nova/figuren/sparky-klein.jpg" alt="">Sparky<small>Funken</small></a>
-<a href="../nova/reden.html?f=coin%20maker"><img src="../nova/figuren/coinmaker-klein.jpg" alt="">Coin Maker<small>Ideen</small></a>
-<a href="../nova/reden.html?f=flo"><img src="../nova/figuren/flo-klein.jpg" alt="">Flo<small>Food and Flow</small></a>
-<a href="../nova/reden.html?f=fompa"><img src="../nova/figuren/fompa-klein.jpg" alt="">Fompa<small>Steuern</small></a>
-<a href="../nova/reden.html?f=sunny"><img src="../nova/figuren/sunny-klein.jpg" alt="">Sunny<small>KI-Verse</small></a>
+<a href="../nova/reden.html?f=nova"><img src="bilder/nova-k.jpg" alt="" loading="lazy">Nova</a>
+<a href="../nova/reden.html?f=otti"><img src="bilder/otti-k.jpg" alt="" loading="lazy">Otti</a>
+<a href="../nova/reden.html?f=jackie"><img src="bilder/jackie-k.jpg" alt="" loading="lazy">Jackie</a>
+<a href="../nova/reden.html?f=kiki"><img src="bilder/kiki-k.jpg" alt="" loading="lazy">Kiki</a>
+<a href="../nova/reden.html?f=mr.%20ping"><img src="bilder/tradeping-k.jpg" alt="" loading="lazy">Mr. Ping</a>
+<a href="../nova/reden.html?f=sparky"><img src="bilder/humanspark-k.jpg" alt="" loading="lazy">Sparky</a>
+<a href="../nova/reden.html?f=coin%20maker"><img src="bilder/coinmaker-k.jpg" alt="" loading="lazy">Coin Maker</a>
+<a href="../nova/reden.html?f=flo"><img src="bilder/appid-k.jpg" alt="" loading="lazy">Flo</a>
+<a href="../nova/reden.html?f=fompa"><img src="bilder/fompa-k.jpg" alt="" loading="lazy">Fompa</a>
+<a href="../nova/reden.html?f=sunny"><img src="../nova/figuren/sunny-klein.jpg" alt="" loading="lazy">Sunny</a>
 </div>
 
-<h2>Alle Apps</h2>
-<div class="g">
-<div class="c"><div class="hd"><img src="../otti/otti-3d.jpg" alt=""><h3>Otti</h3></div><p>Otti im 3D-Look, redet mit Lippen und merkt sich euch.</p><div class="k"><a href="../otti/">Öffnen</a><a class="r" href="../nova/reden.html?f=otti">📞 Reden</a></div></div>
-<div class="c"><div class="hd"><img src="../tradeping/ping-3d.jpg" alt=""><h3>Mr. Ping</h3></div><p>Übungstopf mit 4 Titeln, Glocke, Verlustgrenze. Keine Anlageberatung.</p><div class="k"><a href="../tradeping/">Öffnen</a><a class="r" href="../nova/reden.html?f=mr.%20ping">📞 Reden</a></div></div>
-<div class="c"><div class="hd"><img src="../jackie/jackie-3d.jpg" alt=""><h3>Jackie's Advice</h3></div><p>Erzähl, was los ist, und bekomm einen klaren nächsten Schritt. Notfallnummern drin.</p><div class="k"><a href="../jackie/">Öffnen</a><a class="r" href="../nova/reden.html?f=jackie">📞 Reden</a></div></div>
-<div class="c"><div class="hd"><img src="../kiki/kiki-3d.jpg" alt=""><h3>Kiki singt</h3></div><p>Mit Kiki dem Koala singen: Ton treffen, Tonleiter, Kinderlieder.</p><div class="k"><a href="../kiki/">Öffnen</a><a class="r" href="../nova/reden.html?f=kiki">📞 Reden</a></div></div>
-<div class="c"><div class="hd"><img src="../nova/nova-3d.jpg" alt=""><h3>Nova</h3></div><p>Verbindet alle Figuren und weiss, was ihr mit den anderen erlebt habt.</p><div class="k"><a href="../nova/reden.html?f=nova">Öffnen</a><a class="r" href="../nova/reden.html?f=nova">📞 Reden</a></div></div>
-<div class="c"><div class="hd"><img src="../mondschein/icon-180.png" alt=""><h3>Mondschein</h3></div><p>Otti, Kiki und Nova erzählen Gutenachtgeschichten.</p><div class="k"><a href="../mondschein/">Öffnen</a></div></div>
-<div class="c"><div class="hd"><img src="../schlaf/icon-180.png" alt=""><h3>Fias Nest</h3></div><p>Schlaf-App: ausprobieren, was dir guttut.</p><div class="k"><a href="../schlaf/">Öffnen</a></div></div>
-<div class="c"><div class="hd"><img src="../appid/icon-180.png" alt=""><h3>Food and Flow</h3></div><p>Flo begleitet dich beim Essen und im Alltag.</p><div class="k"><a href="../appid/">Öffnen</a><a class="r" href="../nova/reden.html?f=flo">📞 Reden</a></div></div>
-<div class="c"><div class="hd"><img src="../fompa/icon-180.png" alt=""><h3>Fompa · Steuern</h3></div><p>Belege fotografieren, ordnen, zusammenzählen.</p><div class="k"><a href="../fompa/">Öffnen</a><a class="r" href="../nova/reden.html?f=fompa">📞 Reden</a></div></div>
-<div class="c"><div class="hd"><img src="../coinmaker/icon-180.png" alt=""><h3>Coin Maker Werkstatt</h3></div><p>Ideen für Kleinunternehmen in Apps verwandeln.</p><div class="k"><a href="../coinmaker/">Öffnen</a><a class="r" href="../nova/reden.html?f=coin%20maker">📞 Reden</a></div></div>
-<div class="c"><div class="hd"><img src="../kiverse/icon-180.png" alt=""><h3>KI-Verse</h3></div><p>Sunnys Comic-Städtchen an der Costa Brava.</p><div class="k"><a href="../kiverse/">Öffnen</a><a class="r" href="../nova/reden.html?f=sunny">📞 Reden</a></div></div>
-<div class="c"><div class="hd"><img src="../humanspark/icon-180.png" alt=""><h3>HumanSpark</h3></div><p>Finger drauf, messen, reinreden. Mit Sparky.</p><div class="k"><a href="../humanspark/">Öffnen</a><a class="r" href="../nova/reden.html?f=sparky">📞 Reden</a></div></div>
-<div class="c"><div class="hd"><img src="../mama-affe/icon-180.png" alt=""><h3>Mama Affe</h3></div><p>Für Eltern und Kinder. Wegweiserin zu Fachpersonen.</p><div class="k"><a href="../mama-affe/">Öffnen</a></div></div>
-<div class="c"><div class="hd"><img src="../waefwaef/icon-180.png" alt=""><h3>Wäf Wäf</h3></div><p>Die Hunde-App.</p><div class="k"><a href="../waefwaef/">Öffnen</a></div></div>
-<div class="c"><div class="hd"><img src="../carmen/icon-180.png" alt=""><h3>Carmen</h3></div><p>Salsa lernen mit Carmencita.</p><div class="k"><a href="../carmen/">Öffnen</a></div></div>
-<div class="c"><div class="hd"><img src="../granny/icon-180.png" alt=""><h3>Granny</h3></div><p>Granny-App.</p><div class="k"><a href="../granny/">Öffnen</a></div></div>
-<div class="c"><div class="hd"><img src="../hasi/icon-180.png" alt=""><h3>Hasis Programmladen</h3></div><p>Kuratierter Laden für gute Programme.</p><div class="k"><a href="../hasi/">Öffnen</a></div></div>
-<div class="c"><div class="hd"><img src="../golden-taurus/icon-180.png" alt=""><h3>Golden Taurus Gäste</h3></div><p>Gäste-App für das Hotel (Entwurf).</p><div class="k"><a href="../golden-taurus/">Öffnen</a></div></div>
-<div class="c"><div class="hd"><img src="../transkript/icon-180.png" alt=""><h3>Transkript</h3></div><p>Reinreden statt tippen, Text kopieren.</p><div class="k"><a href="../transkript/">Öffnen</a></div></div>
-<div class="c"><div class="hd"><img src="../reminder/icon-180.png" alt=""><h3>Erinnerung</h3></div><p>Für dich und für Klienten, mit Kalender.</p><div class="k"><a href="../reminder/">Öffnen</a></div></div>
-<div class="c"><div class="hd"><img src="../foto/icon-180.png" alt=""><h3>Fotowissen</h3></div><p>Profi-Tipps einsprechen und teilen.</p><div class="k"><a href="../foto/">Öffnen</a></div></div>
-<div class="c"><div class="hd"><img src="../nova/nova.jpg" alt=""><h3>Sense Engine</h3></div><p>Deine Zentrale. Nur für Diego.</p><div class="k"><a href="https://diegorobert-code.github.io/Stimmraum/sense/">Öffnen</a></div></div>
+<div class="ab"><div><h3>Werkzeuge</h3></div></div>
+<div class="mehr">
+<a href="../kiverse/"><img src="../kiverse/icon-180.png" alt="" loading="lazy"><span>KI-Verse<small>Sunnys Comic-Städtchen</small></span><i aria-hidden="true">›</i></a>
+<a href="../reminder/"><img src="../reminder/icon-180.png" alt="" loading="lazy"><span>Erinnerung<small>Für dich und für Klienten</small></span><i aria-hidden="true">›</i></a>
+<a href="../foto/"><img src="../foto/icon-180.png" alt="" loading="lazy"><span>Fotowissen<small>Profi-Tipps einsprechen und teilen</small></span><i aria-hidden="true">›</i></a>
+<a href="../golden-taurus/"><img src="../golden-taurus/icon-180.png" alt="" loading="lazy"><span>Golden Taurus Gäste<small>Entwurf</small></span><i aria-hidden="true">›</i></a>
+<a href="qr.html"><img src="bilder/nova-k.jpg" alt="" loading="lazy"><span>Alle QR-Codes<small>Zum Zeigen und Ausdrucken</small></span><i aria-hidden="true">›</i></a>
+<a href="https://diegorobert-code.github.io/Stimmraum/sense/"><img src="bilder/nova-k.jpg" alt="" loading="lazy"><span>Sense Engine<small>Deine Zentrale. Nur für Diego.</small></span><i aria-hidden="true">›</i></a>
 </div>
-<p class="n">Testphase · Daten bleiben auf deinem Handy · <a href="../">DR Lab Startseite</a></p>
-</div></body></html>
+
+<div class="ab"><div><h3>Einstellungen</h3></div></div>
+<button type="button" class="schalter" id="test" role="switch" aria-checked="false" aria-labelledby="testname" aria-describedby="testtx">
+  <span class="t"><b id="testname">Testversion</b><small id="testtx">Aus: du siehst die fertigen Apps</small></span><span class="sw" aria-hidden="true"></span>
+</button>
+<p class="hinweis">Testversion an: Die Knöpfe öffnen und kopieren die neusten Entwürfe (noch nicht fertig).</p>
+</div>
+</main>
+
+<p class="n" id="fuss">Testphase · Daten bleiben auf deinem Handy<span class="nurrepo"> · <a href="../">DR Lab Startseite</a></span></p>
+</div>
+
+<div class="dunkel" id="dunkel"></div>
+<div class="fenster" id="fenster" role="dialog" aria-modal="true" aria-labelledby="ftitel" aria-hidden="true">
+  <div id="finhalt"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  'use strict';
+  const LIVE = 'https://diegorobert-code.github.io/DR_Lab/';
+  const RAW = 'https://raw.githack.com/Diegorobert-code/DR_Lab/';
+  // Artefakt-Fassung: das Bauskript setzt hier die Adressen der Artefakte ein (in der Repo-Fassung leer)
+  const ARTEFAKTE = null;
+  const IM_ARTEFAKT = !!ARTEFAKTE;
+  // pfad = Ordner live (Pages), br/tp = Test-Branch und Pfad, nurTest = noch nicht live, top = oben
+  const APPS = [
+    {id:'otti', name:'Otti', eb:'Dein Begleiter', titel:'Otti merkt sich, was dir wichtig ist', satz:'Otti lernt dich kennen, redet mit dir und merkt sich, was euch wichtig ist.', pfad:'otti/', br:'otti-filmgeschichten', tp:'otti/index.html', pr:122, top:1},
+    {id:'fia-kosmos', name:'Fia Körperkosmos', eb:'Körper & Atem', titel:'Eine Reise durch deinen Körper', satz:'Fia zeigt dir Atem, Körper und kleine Übungsreihen, ruhig erklärt.', pfad:'fia-kosmos/', br:'fia-koerperkosmos', tp:'fia-kosmos/index.html', pr:134, top:1},
+    {id:'schlaf', name:'Fias Nest', eb:'Zur Ruhe kommen', titel:'Abends langsam runterfahren', satz:'Abends runterfahren und ausprobieren, was dir beim Einschlafen guttut.', pfad:'schlaf/', br:'fiasnest-ideen-2026-10-19', tp:'schlaf/index.html', pr:129, top:1},
+    {id:'humanspark', name:'Human Sparks', eb:'Spüren & sammeln', titel:'Sparky sammelt deine Funken', satz:'Finger drauf, kurz messen, reinreden: Sparky sammelt deine Funken.', pfad:'humanspark/', br:'claude/humanspark-ideen-film', tp:'humanspark/index.html', pr:128, top:1},
+    {id:'tradeping', name:'TradePing', eb:'Übungstopf', titel:'Mr. Ping läutet nur, wenn es zählt', satz:'Mr. Ping wacht über deinen Übungstopf und pingt nur, wenn deine Marke erreicht ist.', pfad:'tradeping/', br:'claude/tradeping-ideen', tp:'tradeping/index.html', pr:119, top:1},
+    {id:'mondschein', name:'Mondschein', eb:'Gute Nacht', titel:'Geschichten für sanfte Träume', satz:'Otti, Kiki und Nova erzählen dir Gutenachtgeschichten.', pfad:'mondschein/', br:'otti-filmgeschichten', tp:'mondschein/index.html', pr:122},
+    {id:'kiki', name:'Kiki', eb:'Singen', titel:'Mit Kiki den Ton treffen', satz:'Mit Kiki dem Koala singen: Töne treffen, Tonleitern, Kinderlieder.', pfad:'kiki/', br:'kiki-trickfilm-ideen', tp:'kiki/index.html', pr:121},
+    {id:'jackie', name:"Jackie's Advice", eb:'Für Frauen', titel:'Ein klarer nächster Schritt', satz:'Erzähl, was los ist, und bekomm einen klaren nächsten Schritt.', pfad:'jackie/', br:'jackie-frauenhilfe-film', tp:'jackie/index.html', pr:125},
+    {id:'mama-affe', name:'Mama Affe', eb:'Familie', titel:'Für Eltern und Kinder', satz:'Für Eltern und Kinder, mit Wegweiser zu Fachpersonen.', pfad:'mama-affe/', br:'mama-affe-ideen-2026-10-19', tp:'mama-affe/index.html', pr:124},
+    {id:'fompa', name:'Fompa', eb:'Buchhaltung', titel:'Zettel rein, Ordnung raus', satz:'Buchhaltung und Steuern: Zettel fotografieren oder reinreden.', pfad:'fompa/', br:'fompa-ideen-2026-10-19', tp:'fompa/index.html', pr:123},
+    {id:'transkript', name:'Transkript', eb:'Werkzeug', titel:'Reden statt tippen', satz:'Reinreden statt tippen und den Text mit einem Tipp kopieren.', pfad:'transkript/', br:'fompa-ideen-2026-10-19', tp:'transkript/index.html', pr:123, kein:1},
+    {id:'appid', name:'Food and Flow', eb:'Essen', titel:'Flo hilft dir, dein Essen zu verstehen', satz:'Flo hilft dir, dein Essen zu verstehen, ohne viel nachzudenken.', pfad:'appid/', br:'food-flow-ideen', tp:'appid/index.html', pr:126},
+    {id:'granny', name:'Granny', eb:'Für Ältere', titel:'Der einfachste Bildschirm der Welt', satz:'Der einfachste Bildschirm für ältere Menschen und ihre Familie.', pfad:'granny/', br:'granny-trickfilm', tp:'granny/index.html', pr:118},
+    {id:'carmen', name:'Milulu', eb:'Tanzen', titel:'Salsa lernen mit Carmencita', satz:'Salsa lernen mit Carmencita: Takt hören, Grundschritt, Feedback.', pfad:'carmen/', br:'milulu-trickfilm', tp:'carmen/index.html', pr:120},
+    {id:'waefwaef', name:'Wäf Wäf', eb:'Hund', titel:'Wäf Wäf begleitet dich und deinen Hund', satz:'Die Hunde-App: Wäf Wäf begleitet dich und deinen Hund.', pfad:'waefwaef/', br:'waefwaef-trickfilm', tp:'waefwaef/index.html', pr:127},
+    {id:'coinmaker', name:'Coin Maker', eb:'Ideen-Werkstatt', titel:'Aus Ideen werden kleine Apps', satz:'Ideen für Kleinunternehmen in kleine Apps verwandeln.', pfad:'coinmaker/', br:'coinmaker-trickfilm', tp:'coinmaker/index.html', pr:130},
+    {id:'hasi', name:'Hasis Laden', eb:'Gute Programme', titel:'Hasi zeigt dir, was wirklich hilft', satz:'Hasis kuratierter Laden für gute Programme. Hasi sagt kein Wort, aber zeigt alles.', pfad:'hasi/', br:'hasi-trickfilm', tp:'hasi/index.html', pr:132},
+    {id:'copacabana', name:'Copacabana', eb:'Geschenk-Lädeli', titel:'Copa findet das passende Geschenk', satz:'Copa, der bunte Ara, zeigt dir Geschenke aus dem Lädeli.', pfad:'copacabana/', br:'copacabana-webshop', tp:'copacabana/index.html', pr:131, nurTest:1},
+    {id:'nova', name:'Nova', eb:'Verbindet alles', titel:'Nova kennt alle Figuren', satz:'Nova verbindet alle Figuren und weiss, was ihr zusammen erlebt habt.', pfad:'nova/reden.html?f=nova'}
+  ];
+  const bild = a => 'bilder/' + a.id + '.jpg', sym = a => 'bilder/' + a.id + '-k.jpg';
+
+  const $ = s => document.querySelector(s);
+  const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+  const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const summ = ms => { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} };
+  const K_TEST = 'drlab-zentrale-test', K_ZULETZT = 'drlab-zentrale-zuletzt';
+  const qs = new URLSearchParams(location.search);
+  let test = !IM_ARTEFAKT && (qs.has('test') ? qs.get('test') !== '0' : lsGet(K_TEST) === '1');
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  if (IM_ARTEFAKT) document.querySelectorAll('.nurrepo').forEach(e => e.hidden = true);
+
+  // Datum wie «Heute»: MITTWOCH, 21. OKTOBER; Himmel passend zur Tageszeit
+  const jetzt = new Date();
+  try { $('#datum').textContent = jetzt.toLocaleDateString('de-CH', { weekday: 'long', day: 'numeric', month: 'long' }); } catch (e) {}
+  const std = jetzt.getHours();
+  document.documentElement.style.setProperty('--himmel', std < 6 || std >= 21 ? 'rgba(143,163,232,.16)' : std < 11 ? 'rgba(255,190,120,.2)' : std < 18 ? 'rgba(242,193,78,.16)' : 'rgba(255,140,90,.18)');
+
+  // Welche Adresse gilt? Artefakt: Artefakt-Link. Test: raw.githack des PR-Branchs. Live: Pages.
+  function ziel(a) {
+    if (IM_ARTEFAKT) { const u = ARTEFAKTE[a.id]; return u ? { href: u, url: u, extern: true } : null; }
+    if (a.br && (test || a.nurTest)) { const u = RAW + a.br + '/' + a.tp; return { href: u, url: u, test: true }; }
+    return { href: '../' + a.pfad, url: LIVE + a.pfad, test: false };
+  }
+  const zeigbar = a => !IM_ARTEFAKT || ARTEFAKTE[a.id];
+
+  const ICON = {
+    kopie: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>',
+    teilen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>',
+    home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>'
+  };
+  const kannTeilen = typeof navigator.share === 'function';
+  const ziel_attr = z => z ? ' href="' + esc(z.href) + '"' + (z.extern ? ' target="_blank" rel="noopener"' : '') : '';
+
+  // App des Tages: wechselt jeden Tag
+  const tagNr = Math.floor((jetzt - new Date(jetzt.getFullYear(), 0, 0)) / 864e5);
+  const kandidaten = APPS.filter(a => zeigbar(a) && !a.kein && a.id !== 'nova');
+  const heute = kandidaten[tagNr % kandidaten.length];
+
+  /* Runde 8: eigene Farbe pro App (aus ihrem Markt-Look), weiss darauf lesbar */
+  const APP_FARBE = { granny: '#a8480f', appid: '#2f6a4f', hasi: '#0a6253', jackie: '#5b2a4a', schlaf: '#3b4a7e', 'fia-kosmos': '#a4502e', tradeping: '#1f4fd1', fompa: '#2457c5', coinmaker: '#4a4740', copacabana: '#0d7a73', waefwaef: '#b4521a', otti: '#2d6a8a', mondschein: '#5a4ea0', kiki: '#8a3f7a', 'mama-affe': '#7a5a1f', humanspark: '#b0343a', transkript: '#3d5566', carmen: '#9a2f55' };
+  const APP_HELL = { schlaf: '#8f9fd8', coinmaker: '#b9b4a8', jackie: '#c98aa8', mondschein: '#a99be6', tradeping: '#7f9dff', fompa: '#7fa3ef' };
+  const farbe = (d, a) => { const f = APP_FARBE[a.id]; if (f) { d.style.setProperty('--app', f); d.style.setProperty('--appH', APP_HELL[a.id] || f); } return d; };
+  function story(a, gross, i) {
+    const z = ziel(a);
+    const d = document.createElement('article');
+    d.className = 'story' + (gross ? ' gross' : '');
+    d.dataset.id = a.id;
+    d.style.animationDelay = Math.min(i * 60, 360) + 'ms';
+    d.innerHTML =
+      '<button type="button" class="decke" data-tun="mehr" aria-label="' + (gross ? 'App des Tages: ' : '') + esc(a.name + '. ' + a.titel) + '. Mehr erfahren"></button>' +
+      '<div class="bild"><img src="' + bild(a) + '" alt="" width="640" height="640"' + (gross || i < 2 ? ' fetchpriority="' + (gross ? 'high' : 'auto') + '"' : ' loading="lazy"') + ' decoding="async"></div>' +
+      '<div class="oben"><p class="eyebrow">' + (gross ? 'App des Tages' : esc(a.eb)) + '</p><h2>' + esc(a.titel) + '</h2></div>' +
+      '<div class="zeile"><img class="sym" src="' + sym(a) + '" alt="" loading="lazy"><div class="tx"><b>' + esc(a.name) + '<span class="pill" hidden></span></b><small>' + esc(a.satz) + '</small></div>' +
+      '<a class="laden gold" data-tun="auf"' + ziel_attr(z) + ' aria-label="' + esc(a.name) + ' öffnen">Öffnen</a></div>';
+    return farbe(d, a);
+  }
+  function reihe(a, i) {
+    const z = ziel(a);
+    const d = document.createElement('div');
+    d.className = 'reihe'; d.dataset.id = a.id;
+    d.style.animationDelay = Math.min(i * 30, 300) + 'ms';
+    d.innerHTML = '<button type="button" class="mitte" data-tun="mehr"><img class="sym" src="' + sym(a) + '" alt="" loading="lazy" decoding="async"><span class="tx"><b>' + esc(a.name) + '<span class="pill" hidden></span></b><small>' + esc(a.satz) + '</small></span></button>' +
+      (z ? '<a class="laden" data-tun="auf"' + ziel_attr(z) + ' aria-label="' + esc(a.name) + ' öffnen">Öffnen</a>' : '<span class="laden" aria-disabled="true">Bald</span>');
+    return farbe(d, a);
+  }
+
+  if (heute) $('#tag').appendChild(story(heute, true, 0));
+  APPS.filter(a => a.top && zeigbar(a) && a !== heute).forEach((a, i) => $('#zuerst').appendChild(story(a, false, i + 1)));
+  if (!$('#zuerst').children.length) { $('#zuerst').previousElementSibling.remove(); }
+  APPS.filter(a => zeigbar(a)).forEach((a, i) => $('#alle').appendChild(reihe(a, i)));
+  if (IM_ARTEFAKT) {
+    const bald = APPS.filter(a => !zeigbar(a));
+    if (bald.length) { $('#baldteil').hidden = false; bald.forEach((a, i) => $('#bald').appendChild(reihe(a, i))); }
+    $('#alletx').textContent = 'Jede App öffnet sich in einem neuen Fenster';
+  }
+
+  function aktualisieren() {
+    document.body.classList.toggle('test', test);
+    if (!IM_ARTEFAKT) {
+      $('#test').setAttribute('aria-checked', test ? 'true' : 'false');
+      $('#testtx').textContent = test ? 'An: neuste Entwürfe aus den offenen PRs' : 'Aus: du siehst die fertigen Apps';
+    }
+    document.querySelectorAll('[data-id]').forEach(c => {
+      const a = APPS.find(x => x.id === c.dataset.id), z = ziel(a);
+      c.querySelectorAll('a[data-tun="auf"]').forEach(l => { if (z) l.href = z.href; });
+      c.querySelectorAll('.pill').forEach(p => {
+        if (z && z.test) { p.textContent = a.pr ? 'Test · PR ' + a.pr : 'nur Test'; p.className = 'pill'; p.hidden = false; }
+        else if (test) { p.textContent = 'live'; p.className = 'pill live'; p.hidden = false; }
+        else p.hidden = true;
+      });
+    });
+    zuletztZeigen();
+  }
+
+  if (!IM_ARTEFAKT) $('#test').addEventListener('click', () => {
+    test = !test; lsSet(K_TEST, test ? '1' : '0'); summ(8);
+    aktualisieren();
+    meldung(test ? 'Testversion an' : 'Fertige Apps');
+  });
+
+  // Zuletzt geöffnet: oben «Weiter mit …»
+  function zuletztZeigen() {
+    const a = APPS.find(x => x.id === lsGet(K_ZULETZT)), w = $('#weiter');
+    const z = a && ziel(a);
+    if (!z) { w.classList.remove('da'); return; }
+    w.href = z.href; if (z.extern) { w.target = '_blank'; w.rel = 'noopener'; }
+    $('#weiterbild').src = sym(a); $('#weitertx').textContent = 'Weiter mit ' + a.name;
+    w.dataset.auf = a.id; w.classList.add('da');
+  }
+
+  let tt;
+  function meldung(t, undo) {
+    const m = $('#toast'); m.textContent = t; m.classList.toggle('mitknopf', !!undo);
+    if (undo) { const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Rückgängig'; b.onclick = () => { m.classList.remove('da'); undo(); }; m.appendChild(b); }
+    m.classList.add('da');
+    clearTimeout(tt); tt = setTimeout(() => m.classList.remove('da'), undo ? 5000 : 1800);
+  }
+
+  // Kopieren: Zwischenablage, sonst execCommand, sonst Textfeld im Fenster
+  function altKopieren(t) {
+    const f = document.createElement('textarea');
+    f.value = t; f.setAttribute('readonly', ''); f.style.cssText = 'position:fixed;top:0;left:0;opacity:0;font-size:16px';
+    document.body.appendChild(f); f.focus({preventScroll: true}); f.select(); f.setSelectionRange(0, t.length);
+    let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+    f.remove(); return ok;
+  }
+  async function kopieren(t) {
+    if (navigator.clipboard && window.isSecureContext) { try { await navigator.clipboard.writeText(t); return true; } catch (e) {} }
+    return altKopieren(t);
+  }
+  function kopiertZeigen(b) {
+    const sp = b.querySelector('span');
+    if (!b._alt) b._alt = sp.textContent;
+    b.classList.add('ok'); sp.textContent = 'Kopiert ✓'; summ(12);
+    clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('ok'); sp.textContent = b._alt; }, 2200);
+  }
+
+  // Fenster (wie die App-Seite im Store)
+  let vorher = null, offenesApp = null;
+  function fensterAuf(html) {
+    vorher = document.activeElement;
+    $('#finhalt').innerHTML = html;
+    $('#fenster').scrollTop = 0;
+    document.body.classList.add('offen');
+    $('#fenster').setAttribute('aria-hidden', 'false');
+    document.querySelector('.w').setAttribute('inert', '');
+    const f = $('#fenster').querySelector('.b.auf') || $('#fenster').querySelector('.b') || $('#fenster').querySelector('button'); if (f) setTimeout(() => f.focus({preventScroll: true}), 60);
+  }
+  function fensterZu() {
+    document.body.classList.remove('offen');
+    $('#fenster').setAttribute('aria-hidden', 'true');
+    document.querySelector('.w').removeAttribute('inert');
+    if (vorher && vorher.focus) vorher.focus({preventScroll: true});
+  }
+  $('#dunkel').addEventListener('click', fensterZu);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.body.classList.contains('offen')) fensterZu();
+  });
+  // nach unten ziehen schliesst
+  let zugY = null;
+  $('#fenster').addEventListener('touchstart', e => { zugY = $('#fenster').scrollTop <= 0 ? e.touches[0].clientY : null; }, { passive: true });
+  $('#fenster').addEventListener('touchend', e => { if (zugY != null && e.changedTouches[0].clientY - zugY > 90) fensterZu(); zugY = null; }, { passive: true });
+
+  function kopf(a, titel) {
+    return '<div class="fkopf"><span class="griff" aria-hidden="true"></span><button type="button" class="fzu" data-f="zu"><span aria-hidden="true">×</span><span class="vh">Schliessen</span></button><img src="' + bild(a) + '" alt="' + esc(a.name) + '"></div>' +
+      '<div class="finnen"><p class="eyebrow" style="position:relative;z-index:1;margin-top:-28px">' + esc(a.eb) + '</p><h3 id="ftitel">' + esc(titel || a.name) + '</h3>';
+  }
+  function appFenster(a) {
+    if (!a) return;
+    offenesApp = a;
+    const z = ziel(a);
+    fensterAuf(kopf(a) + '<p class="lang">' + esc(a.satz) + '</p>' +
+      '<div class="fk">' +
+      (z ? '<a class="b auf ganz" data-auf="' + esc(a.id) + '"' + ziel_attr(z) + '>' + esc(a.name) + ' öffnen</a>' : '<p class="klein ganz">Diese App kommt bald als eigene Seite dazu.</p>') +
+      (z ? '<button type="button" class="b' + (kannTeilen ? '' : ' ganz') + '" data-f="kopie">' + ICON.kopie + '<span>Link kopieren</span></button>' +
+        (kannTeilen ? '<button type="button" class="b" data-f="teilen">' + ICON.teilen + '<span>Teilen</span></button>' : '') : '') +
+      (z ? '<button type="button" class="b zu ganz" data-f="fav">' + (favs().includes(a.id) ? '★ Aus «Meine Apps» entfernen' : '☆ Zu «Meine Apps»') + '</button>' : '') +
+      (z && !IM_ARTEFAKT ? '<button type="button" class="b zu ganz" data-f="home">' + ICON.home + '<span>Auf den Home-Bildschirm</span></button>' : '') +
+      '</div>' + (z && z.test ? '<p class="klein" style="margin-top:16px">Das ist die Testversion (Entwurf).</p>' : '') + '</div>');
+  }
+  function feldFenster(a, url) {
+    fensterAuf(kopf(a, 'Link von ' + a.name) +
+      '<p class="klein">Kopieren ging nicht automatisch. Halte den Finger auf den Link und wähle «Kopieren».</p>' +
+      '<label class="vh" for="ffeld">Link</label><textarea class="feld" id="ffeld" readonly rows="3">' + esc(url) + '</textarea>' +
+      '<div class="fk"><button type="button" class="b ganz" data-f="kopie2">' + ICON.kopie + '<span>Nochmals kopieren</span></button>' +
+      '<button type="button" class="b zu ganz" data-f="zu">Fertig</button></div></div>');
+    setTimeout(() => { const f = $('#ffeld'); f.focus(); f.select(); }, 80);
+  }
+  function homeFenster(a) {
+    const z = ziel(a);
+    const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const iphone = '<ol><li><span>Tippe unten auf <b>Öffnen</b>, damit ' + esc(a.name) + ' in Safari offen ist.</span></li>' +
+      '<li><span>Tippe auf <span class="sym2">Teilen ⬆︎</span> (unten in der Mitte, oder <span class="sym2">•••</span> neben der Adresse).</span></li>' +
+      '<li><span>Nach unten wischen und <b>«Zum Home-Bildschirm»</b> wählen.</span></li>' +
+      '<li><span>Oben rechts <b>«Hinzufügen»</b>. Fertig: ' + esc(a.name) + ' wohnt jetzt auf deinem Home-Bildschirm.</span></li></ol>';
+    const android = '<ol><li><span>Tippe auf <b>Öffnen</b>, damit die App in Chrome offen ist.</span></li>' +
+      '<li><span>Oben rechts auf <span class="sym2">⋮</span> tippen.</span></li>' +
+      '<li><span><b>«Zum Startbildschirm hinzufügen»</b>, dann <b>«Hinzufügen»</b>.</span></li></ol>';
+    fensterAuf(kopf(a, 'Auf den Home-Bildschirm') +
+      (ios ? iphone + '<details><summary>Android-Handy?</summary>' + android + '</details>'
+           : '<p class="klein" style="margin:0 0 4px"><b>iPhone</b> (Safari)</p>' + iphone + '<p class="klein" style="margin:0 0 4px"><b>Android</b> (Chrome)</p>' + android) +
+      (z.test ? '<p class="klein">Hinweis: Das ist die Testversion. Auf dem Home-Bildschirm bleibt dann der Entwurf.</p>' : '') +
+      '<div class="fk"><a class="b auf ganz" href="' + esc(z.href) + '" data-auf="' + esc(a.id) + '">' + esc(a.name) + ' öffnen</a>' +
+      '<button type="button" class="b zu ganz" data-f="zu">Schliessen</button></div></div>');
+  }
+
+  $('#fenster').addEventListener('click', async e => {
+    const b = e.target.closest('[data-f]'); if (!b) return;
+    const a = offenesApp, z = a && ziel(a);
+    const f = b.dataset.f;
+    if (f === 'zu') fensterZu();
+    if (f === 'kopie' && z) { if (await kopieren(z.url)) { kopiertZeigen(b); meldung('Link von ' + a.name + ' kopiert ✓'); } else feldFenster(a, z.url); }
+    if (f === 'kopie2') { const feld = $('#ffeld'); feld.focus(); feld.select(); if (await kopieren(feld.value)) { kopiertZeigen(b); meldung('Kopiert ✓'); } }
+    if (f === 'teilen' && z) {
+      try { await navigator.share({ title: a.name, text: a.name + ': ' + a.satz, url: z.url }); }
+      catch (err) { if (err && err.name !== 'AbortError') { if (await kopieren(z.url)) meldung('Link kopiert ✓'); else feldFenster(a, z.url); } }
+    }
+    if (f === 'home' && z) homeFenster(a);
+    if (f === 'fav' && a) { favUmschalten(a); fensterZu(); }
+  });
+
+  $('#ich').addEventListener('click', () => {
+    const nova = APPS.find(x => x.id === 'nova');
+    offenesApp = null;
+    fensterAuf(kopf(nova, 'Hoi! Ich bin Nova.') + '<p class="lang">Hier wohnen alle Figuren von DR Lab. Jeden Tag stelle ich dir eine App vor. Tipp auf eine Karte für mehr, oder auf «Öffnen», um gleich loszulegen.</p>' +
+      '<div class="fk"><button type="button" class="b auf ganz" data-f="zu">Los geht’s</button></div></div>');
+    summ(8);
+  });
+
+  document.addEventListener('click', e => {
+    const auf = e.target.closest('[data-auf]');
+    if (auf) { lsSet(K_ZULETZT, auf.dataset.auf); return; }
+    const t = e.target.closest('[data-tun]');
+    const karte = e.target.closest('[data-id]');
+    if (!karte || e.target.closest('#fenster')) return;
+    const a = APPS.find(x => x.id === karte.dataset.id);
+    if (t && t.dataset.tun === 'auf') { if (t.getAttribute('aria-disabled') !== 'true') { lsSet(K_ZULETZT, a.id); summ(6); } return; }
+    if (t && t.dataset.tun === 'mehr') { summ(6); appFenster(a); }
+  });
+
+  // leichter Tiefen-Effekt beim Scrollen (nur Bilder, ruhig)
+  const ruhig = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!ruhig) {
+    let lauf = false;
+    const bilder = () => document.querySelectorAll('.story .bild img');
+    const setze = () => { lauf = false; const h = innerHeight; bilder().forEach(im => { const r = im.parentNode.getBoundingClientRect(); if (r.bottom < 0 || r.top > h) return; const m = (r.top + r.height / 2 - h / 2) / h; im.style.setProperty('--px', (m * -14).toFixed(1) + 'px'); }); };
+    addEventListener('scroll', () => { if (!lauf) { lauf = true; requestAnimationFrame(setze); } }, { passive: true });
+    setze();
+  }
+
+
+  /* ---------- Runde 8: Ideen des Tages (wie App-Store-«Heute»-Karten zum Wischen) ---------- */
+  const IDEEN = [
+    { datum: '2026-10-22', liste: [
+      { vb: 'Finch', ic: '#2f5a4a', sym: '🐣', titel: 'Die Figur wächst mit dir', fn: 'Bei jedem kleinen Selbstfürsorge-Schritt wächst das Vögelchen und kommt mit einer Geschichte von seiner Reise zurück.', bei: 'Unsere Figur war unterwegs und erzählt ruhig, als Standbild: «Fia war unterwegs und erzählt …».', passt: ['granny', 'appid', 'hasi', 'otti', 'waefwaef', 'schlaf'], drin: { id: 'appid', t: 'Flos Körnli, dazu Grannys Herzli und Hasis Rüebli' } },
+      { vb: 'Duolingo', ic: '#4a5a1f', sym: '🔥', titel: 'Ein verpasster Tag bricht die Serie nicht', fn: 'Der Serien-Schutz rettet die Lernserie, wenn man einen Tag auslässt. Weniger Druck, mehr Dranbleiben.', bei: 'Eine «Schutzfeder» oder ein «Ruhetag» pro Woche, ohne Druck: Glut-Kette, Körperkosmos-Woche, Otti-Sterne, Wochenkarte.', passt: ['schlaf', 'fia-kosmos', 'otti', 'coinmaker', 'tradeping'], drin: { id: 'appid', t: 'Flo-Kette mit Ruhetag' } },
+      { vb: 'Too Good To Go', ic: '#5a3b1f', sym: '🛍', titel: 'Überraschungstüte zum kleinen Preis', fn: 'Man wählt nur Laden und Preis, der Inhalt ist eine Überraschung. Das macht Lust und spart Entscheidungen.', bei: 'Budget wählen, die Figur stellt zusammen: Copas «Überraschungs-Säckli», Hasis «Werkzeug-Wundertüte».', passt: ['copacabana', 'hasi'], drin: { id: 'hasi', t: 'Werkzeug-Wundertüte' } },
+      { vb: 'Headspace', ic: '#7a3b1f', sym: '🫧', titel: 'SOS: eine Minute ruhig atmen', fn: 'Ein einziger Knopf für schwierige Momente: eine Minute geführtes Atmen, sofort, ohne Menü und ohne Anmeldung.', bei: 'Die Figur atmet mit: 4 ein, kurz halten, 5 aus, wahlweise mit Stimme. Kein Ersatz für Hilfe, einfach ein ruhiger Moment.', passt: ['granny', 'schlaf', 'fia-kosmos', 'jackie', 'mama-affe'], drin: { id: 'granny', t: 'Knopf «Kurz durchatmen mit Granny»' } },
+      { vb: 'Spotify Wrapped', ic: '#3b2a6a', sym: '🎞', titel: 'Dein Monat als Story', fn: 'Ein Rückblick zum Wischen, Karte für Karte, mit den eigenen Zahlen und einem Bild zum Teilen am Schluss.', bei: '«Dein Monat mit Flo»: Mahlzeiten, Farben, Bewegung. Die Zahlen bleiben auf dem Gerät, geteilt wird nur das Bild.', passt: ['appid', 'fompa', 'waefwaef', 'otti', 'tradeping', 'coinmaker'], drin: { id: 'appid', t: 'Story «Dein Monat mit Flo»' } }
+    ] }
+  ];
+  (function ideenZeigen() {
+    const heuteK = jetzt.getFullYear() + '-' + String(jetzt.getMonth() + 1).padStart(2, '0') + '-' + String(jetzt.getDate()).padStart(2, '0');
+    const satz = IDEEN.filter(x => x.datum <= heuteK).pop() || IDEEN[0];
+    const d = new Date(satz.datum + 'T12:00:00');
+    try { $('#ideentx').textContent = (satz.datum === heuteK ? 'Heute' : d.toLocaleDateString('de-CH', { day: 'numeric', month: 'long' })) + ': fünf Funktionen aus anderen Apps, die Kunden wirklich helfen'; } catch (e) {}
+    const box = $('#ideenleiste');
+    satz.liste.forEach((x, i) => {
+      const links = x.passt.map(id => APPS.find(a => a.id === id)).filter(a => a && zeigbar(a)).map(a => { const z = ziel(a); return z ? '<a' + ziel_attr(z) + ' data-auf="' + esc(a.id) + '"' + (APP_FARBE[a.id] ? ' style="--app:' + APP_FARBE[a.id] + '"' : '') + '><img src="' + sym(a) + '" alt="" loading="lazy">' + esc(a.name) + '</a>' : ''; }).join('');
+      const drinApp = x.drin && APPS.find(a => a.id === x.drin.id);
+      const k = document.createElement('article');
+      k.className = 'idee'; k.style.setProperty('--ic', x.ic); k.setAttribute('aria-label', 'Idee ' + (i + 1) + ' von ' + satz.liste.length + ': ' + x.titel);
+      k.innerHTML = '<span class="nr" aria-hidden="true">' + (i + 1) + '</span>' +
+        '<div class="vb"><i aria-hidden="true">' + x.sym + '</i><span><small>Vorbild</small><b>' + esc(x.vb) + '</b></span></div>' +
+        '<h4>' + esc(x.titel) + '</h4><p>' + esc(x.fn) + '</p><p><b>Bei uns:</b> ' + esc(x.bei) + '</p>' +
+        (drinApp ? '<span class="drin">✓ Schon eingebaut: ' + esc(drinApp.name) + ' · ' + esc(x.drin.t) + '</span>' : '') +
+        '<p class="pz">Passt zu</p><div class="passt">' + links + '</div>';
+      box.appendChild(k);
+    });
+    const pk = $('#ideenpunkte'); pk.innerHTML = satz.liste.map((_, i) => '<i' + (i ? '' : ' class="an"') + '></i>').join('');
+    box.addEventListener('scroll', () => { const w = box.firstElementChild ? box.firstElementChild.offsetWidth + 12 : 1; const n = Math.round(box.scrollLeft / w); pk.querySelectorAll('i').forEach((p, j) => p.classList.toggle('an', j === n)); }, { passive: true });
+  })();
+
+  /* ---------- Runde 8: Kategorien (wie Airbnb) mit weichem Wechsel (View Transitions) ---------- */
+  const KAT = [['alle', '✨', 'Alle'], ['kinder', '🧸', 'Kinder'], ['familie', '🏡', 'Familie & Alltag'], ['koerper', '🌿', 'Körper & Ruhe'], ['arbeit', '💼', 'Arbeit & Geld']];
+  const KAT_VON = { mondschein: 'kinder', kiki: 'kinder', 'mama-affe': 'kinder', granny: 'familie', waefwaef: 'familie', otti: 'familie', jackie: 'familie', copacabana: 'familie', 'fia-kosmos': 'koerper', schlaf: 'koerper', humanspark: 'koerper', appid: 'koerper', carmen: 'koerper', fompa: 'arbeit', transkript: 'arbeit', coinmaker: 'arbeit', hasi: 'arbeit', tradeping: 'arbeit' };
+  const weich = fn => { if (!ruhig8 && document.startViewTransition) { try { document.startViewTransition(fn); return; } catch (e) {} } fn(); };
+  const ruhig8 = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let katJetzt = 'alle';
+  function katSetzen(k) {
+    katJetzt = k;
+    $('#kats').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.k === k)));
+    let n = 0;
+    $('#alle').querySelectorAll('.reihe').forEach(r => { const an = k === 'alle' || KAT_VON[r.dataset.id] === k; r.hidden = !an; if (an) n++; });
+    $('#alletx').textContent = k === 'alle' ? (IM_ARTEFAKT ? 'Jede App öffnet sich in einem neuen Fenster' : 'Tipp auf eine App für mehr') : n + (n === 1 ? ' App' : ' Apps') + ' in «' + KAT.find(x => x[0] === k)[2] + '»';
+  }
+  KAT.forEach(x => { const b = document.createElement('button'); b.type = 'button'; b.dataset.k = x[0]; b.setAttribute('aria-pressed', String(x[0] === 'alle')); b.innerHTML = '<span aria-hidden="true">' + x[1] + '</span>' + esc(x[2]); b.onclick = () => { summ(6); weich(() => katSetzen(x[0])); }; $('#kats').appendChild(b); });
+
+  /* ---------- Runde 8: Meine Apps + lange drücken (wie iPhone «Haptic Touch»), Rückgängig ---------- */
+  const K_FAV = 'drlab-zentrale-meine';
+  const favs = () => { try { return JSON.parse(lsGet(K_FAV)) || []; } catch (e) { return []; } };
+  const favSetzen = l => lsSet(K_FAV, JSON.stringify(l.slice(0, 12)));
+  function dockZeigen() {
+    const L = favs().map(id => APPS.find(a => a.id === id)).filter(a => a && zeigbar(a));
+    $('#meine').hidden = !L.length;
+    $('#dock').innerHTML = L.map(a => { const z = ziel(a); return '<a' + ziel_attr(z) + ' data-auf="' + esc(a.id) + '" data-id="' + esc(a.id) + '" data-tun="auf"' + (APP_FARBE[a.id] ? ' style="--app:' + APP_FARBE[a.id] + '"' : '') + '><img src="' + sym(a) + '" alt="" loading="lazy">' + esc(a.name) + '</a>'; }).join('');
+  }
+  function favUmschalten(a) {
+    const vor = favs(), drin = vor.includes(a.id);
+    favSetzen(drin ? vor.filter(x => x !== a.id) : [a.id].concat(vor));
+    weich(dockZeigen); summ(drin ? 8 : [8, 30, 8]);
+    meldung(drin ? a.name + ' entfernt' : a.name + ' bei «Meine Apps»', () => { favSetzen(vor); weich(dockZeigen); });
+  }
+  let druckT = null, druckXY = null, druckEl = null, lang = false;
+  document.addEventListener('pointerdown', e => {
+    const k = e.target.closest('[data-id]'); if (!k || e.target.closest('#fenster') || k.dataset.id === 'nova') return;
+    druckXY = [e.clientX, e.clientY]; druckEl = k; lang = false; k.classList.add('gedrueckt');
+    clearTimeout(druckT); druckT = setTimeout(() => { lang = true; k.classList.remove('gedrueckt'); const a = APPS.find(x => x.id === k.dataset.id); if (a) { summ(14); appFenster(a); } }, 520);
+  });
+  const druckAus = () => { clearTimeout(druckT); if (druckEl) druckEl.classList.remove('gedrueckt'); druckEl = null; };
+  document.addEventListener('pointermove', e => { if (druckXY && Math.hypot(e.clientX - druckXY[0], e.clientY - druckXY[1]) > 10) druckAus(); }, { passive: true });
+  document.addEventListener('pointerup', druckAus); document.addEventListener('pointercancel', druckAus);
+  document.addEventListener('scroll', druckAus, { passive: true, capture: true });
+  document.addEventListener('click', e => { if (lang && e.target.closest('[data-id]')) { e.preventDefault(); e.stopPropagation(); lang = false; } }, true);
+  document.addEventListener('contextmenu', e => { const k = e.target.closest('[data-id]'); if (k && !e.target.closest('#fenster')) { e.preventDefault(); } });
+  dockZeigen();
+
+  window.addEventListener('pageshow', zuletztZeigen);
+  aktualisieren();
+})();
+</script>
+<script src="../nova/nova.js" data-nova-app="apps" defer></script>
+</body></html>
