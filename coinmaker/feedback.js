@@ -65,7 +65,7 @@
       <button type="button" class="fb-round send" id="fbSend" aria-label="Senden">➤</button>
     </div>
     <div class="fb-out" id="fbOut">
-      <label class="fb-ok"><input type="checkbox" id="fbOk"><span>Einverstanden: Meine Nachrichten (nur Text, kein Ton, kein Bild) gehen an DR Lab, damit Claude die App verbessert.</span></label>
+      <label class="fb-ok"><input type="checkbox" id="fbOk"><span>Einverstanden: Meine Nachrichten (nur Text, kein Ton, kein Bild) gehen ans App-Team, damit Claude die App verbessert.</span></label>
       <div class="fb-row"><button type="button" class="gold" id="fbCopy">📋 An Claude weitergeben</button><button type="button" id="fbMail">✉️ Mail</button></div>
       <div class="fb-row"><button type="button" id="fbPaste">↩︎ Claudes Antwort einfügen</button></div>
       <div class="fb-msg" id="fbMsg"></div>
@@ -86,7 +86,7 @@
     const info = document.createElement('div'); info.className = 'fb-b info';
     info.textContent = ENDPOINT
       ? 'Claude antwortet hier direkt.'
-      : 'Rede einfach rein. Solange der DR-Lab-Server fehlt, gibst du die Nachrichten mit einem Tipp an Claude weiter. Die Antwort kommt im Projekt, du kannst sie hier einfügen.';
+      : 'Rede einfach rein. Solange der App-Server fehlt, gibst du die Nachrichten mit einem Tipp an Claude weiter. Die Antwort kommt im Projekt, du kannst sie hier einfügen.';
     L.appendChild(info);
     for (const m of log){
       const b = document.createElement('div'); b.className = 'fb-b ' + m.who;
@@ -169,12 +169,12 @@
     };
 
     $('fbCopy').onclick = async () => {
-      try{ await navigator.clipboard.writeText(packet()); markOut(); $('fbMsg').textContent = 'Kopiert. Jetzt im DR-Lab-Projekt einfügen und senden.'; }
+      try{ await navigator.clipboard.writeText(packet()); markOut(); $('fbMsg').textContent = 'Kopiert. Jetzt im Projekt einfügen und senden.'; }
       catch(e){ $('fbMsg').textContent = 'Kopieren ging nicht. Bitte «Mail» nehmen.'; }
     };
     $('fbMail').onclick = () => {
       const first = pending()[0];
-      const subj = `[DR Lab Feedback] ${APP}: ${(first ? first.t : '').slice(0, 50)}`;
+      const subj = `[App-Feedback] ${APP}: ${(first ? first.t : '').slice(0, 50)}`;
       location.href = `mailto:${TO}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(packet())}`;
       markOut(); $('fbMsg').textContent = 'Die Mail-App öffnet sich. Dort auf Senden tippen.';
     };

@@ -217,10 +217,10 @@
       if (!letzte) return;
       var v = verbindung();
       mt.hidden = false;
-      if (!v) { mt.textContent = 'Kein DR-Lab-Server eingerichtet. Die Bewertung oben kommt von festen, sichtbaren Regeln.'; return; }
+      if (!v) { mt.textContent = 'Kein App-Server eingerichtet. Die Bewertung oben kommt von festen, sichtbaren Regeln.'; return; }
       if (letzte.type === 'daten') { mt.textContent = 'Daten-Beiträge schicke ich nie an den Server. Die Bewertung bleibt hier.'; return; }
       mt.textContent = 'Der Coin Maker fragt den Server …'; pose('lupe', 0); zaehl('meinung');
-      var sys = 'Du bist The Coin Maker, ein gütiger alter Münzmacher in der DR-Lab-Werkstatt. Du sagst ehrlich und ruhig, was eine Idee wert ist, nie mehr. Antworte auf Deutsch (Schweiz, kein ß), höchstens 4 kurze Sätze: je ein Satz zu Klarheit, Neuheit, Umsetzbarkeit, Vollständigkeit, dann ein konkreter Tipp. Keine Geldversprechen. Coins sind Punkte ohne Geldwert.';
+      var sys = 'Du bist The Coin Maker, ein gütiger alter Münzmacher in der Ideen-Werkstatt. Du sagst ehrlich und ruhig, was eine Idee wert ist, nie mehr. Antworte auf Deutsch (Schweiz, kein ß), höchstens 4 kurze Sätze: je ein Satz zu Klarheit, Neuheit, Umsetzbarkeit, Vollständigkeit, dann ein konkreter Tipp. Keine Geldversprechen. Coins sind Punkte ohne Geldwert.';
       fetch(v.a + '/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + v.k, 'X-Nova-App': 'Coin Maker' },
         body: JSON.stringify({ model: 'sense-engine', max_tokens: 220, messages: [{ role: 'system', content: sys }, { role: 'user', content: 'Bewerte diese ' + (letzte.type === 'idee' ? 'Idee' : 'Rückmeldung') + ': ' + letzte.text }] }) })
         .then(function (r) { return r.ok ? r.json() : null; })
@@ -261,7 +261,7 @@
     var doppelt = ku.ideen.some(function (i) { return i.text.toLowerCase() === text.toLowerCase(); });
     var w, grund;
     if (std || doppelt) { w = 0; grund = doppelt ? 'Schon auf der Liste' : 'Standard, hat fast jede App'; }
-    else if (dr) { w = 5; grund = 'Bringt DR Lab weiter'; }
+    else if (dr) { w = 5; grund = 'Bringt die Werkstatt weiter'; }
     else if (app) { w = 2; grund = 'Macht die App besser'; }
     else { w = 0; grund = 'Noch zu allgemein'; }
     pose('waage', 1200);
@@ -287,7 +287,7 @@
     var nachStore = u * (1 - fee / 100);
     var mwst = nachStore * 8.1 / 108.1;
     var netto = nachStore - mwst;
-    var rows = [['Einnahmen', chf(u)], ['minus Store ' + fee + '\u00a0%', chf(u - nachStore)], ['minus MWST', chf(mwst)], ['Netto', chf(netto)], ['Unternehmen 80\u00a0%', chf(netto * 0.8)], ['DR Lab 20\u00a0%', chf(netto * 0.2)]];
+    var rows = [['Einnahmen', chf(u)], ['minus Store ' + fee + '\u00a0%', chf(u - nachStore)], ['minus MWST', chf(mwst)], ['Netto', chf(netto)], ['Unternehmen 80\u00a0%', chf(netto * 0.8)], ['Werkstatt 20\u00a0%', chf(netto * 0.2)]];
     var kv = $('teilKv'); kv.innerHTML = '';
     rows.forEach(function (r) { var a = document.createElement('span'); a.textContent = r[0]; var b = document.createElement('span'); b.textContent = r[1]; kv.appendChild(a); kv.appendChild(b); });
   }
@@ -328,7 +328,7 @@
     { p: 'nicken', b: '<span class="fx">🤲</span><span class="fx">💡</span><span class="fx">🎰</span>', t: 'Bei mir entscheidest du. Du gibst nur, was du geben möchtest. Deine Ideen sind auch Daten. Und sie haben einen Wert.' },
     { p: 'lupe', b: '<span class="m5">5</span><span class="m2">2</span><span class="m0">0</span>', t: 'Ich prüfe jede Idee mit der Lupe. Bringt sie uns alle weiter, ist sie fünf Franken Ideenwert. Macht sie deine App besser, zwei. Kennt man sie schon überall, null. Ehrlich, Münze für Münze.' },
     { p: 'freude', b: '<span class="fx">📱</span><div class="fb"><i></i></div><span class="fx">200</span>', t: 'Mit deinen Ideen bezahlst du dein Konzept und deinen Auftritt. Zweihundert Franken Ideenwert, das sind etwa sechs Gespräche. Versprechen kann ich es nicht, aber oft reicht es.' },
-    { p: 'kuchen', b: '<span class="kuchen" style="width:60px;height:60px"><span>80·20</span></span>', t: 'Wir bauen, betreiben und machen Werbung. Darum gehen später zwanzig Prozent vom Netto-Umsatz an DR Lab. Der Rest gehört dir.' },
+    { p: 'kuchen', b: '<span class="kuchen" style="width:60px;height:60px"><span>80·20</span></span>', t: 'Wir bauen, betreiben und machen Werbung. Darum gehen später zwanzig Prozent vom Netto-Umsatz an die Werkstatt. Der Rest gehört dir.' },
     { p: 'tresor', b: '<span class="fx">🔒</span><span class="fx">🇨🇭</span><span class="fx">🗑️</span>', t: 'Deine Daten sollen sicher in der Schweiz liegen, verschlüsselt. Du gibst nur mit deinem Ja, und du kannst alles wieder löschen.' },
     { p: 'freude', b: '<span class="fx">📈</span><span class="fx">🕹️</span><span class="fx">🪙</span>', t: 'Die Welt verändert sich, und mit ihr der Wert von Ideen. Darum hat mein Automat einen Wechselkurs. Also: Bring mir deine erste Idee. Jede Idee hat ihren Wert. Ich sage dir, welchen.' }
   ];
@@ -363,7 +363,7 @@
     try { if (window.NovaStimme) NovaStimme.stopp(); } catch (e) {}
     $('filmLeiste').hidden = true; $('filmBild').hidden = true; $('filmBtn').textContent = '▶ Film «Zahlen mit Daten»';
     pose(ende === true ? 'winken' : 'ruhig', 2000);
-    sag(ende === true ? 'Ende. The Coin Maker · DR Lab · Zahlen mit Daten.' : 'Film angehalten. Du kannst ihn jederzeit neu starten.', 'Leg etwas in den Automaten und zieh am Hebel.');
+    sag(ende === true ? 'Ende. The Coin Maker · Zahlen mit Daten.' : 'Film angehalten. Du kannst ihn jederzeit neu starten.', 'Leg etwas in den Automaten und zieh am Hebel.');
   }
 
   /* ---------- Tipps ---------- */
@@ -424,11 +424,11 @@
     w.parentNode.insertBefore(k, w.nextSibling.nextSibling || null);
   }
   var FOLIEN = [
-    ['🤝', 'Zahlen mit Ideen', 'Kleinunternehmen bekommen von DR Lab ihr Konzept und den Aufbau für Social Media. Statt mit Geld zahlen sie mit Ideen, die sie im Gespräch einbringen.'],
-    ['⚖️', 'Die Ideen-Waage 5 · 2 · 0', '5 = die Idee bringt DR Lab weiter. 2 = sie macht die App besser und ist gut. 0 = Standard oder doppelt. Strenger wird es mit der Zeit, je mehr Ideen es gibt.'],
+    ['🤝', 'Zahlen mit Ideen', 'Kleinunternehmen bekommen von der Werkstatt ihr Konzept und den Aufbau für Social Media. Statt mit Geld zahlen sie mit Ideen, die sie im Gespräch einbringen.'],
+    ['⚖️', 'Die Ideen-Waage 5 · 2 · 0', '5 = die Idee bringt die Werkstatt weiter. 2 = sie macht die App besser und ist gut. 0 = Standard oder doppelt. Strenger wird es mit der Zeit, je mehr Ideen es gibt.'],
     ['🎯', 'Ziel: Ideenwert 200', 'Etwa 6 gute Gespräche, dann ist der Ideenwert erreicht. Das ist eine Schätzung, keine Garantie. Es wird nichts ausbezahlt.'],
-    ['🥧', 'Wenn die App läuft', 'Entwurf: 80 % vom Netto-Umsatz bleiben beim Kleinunternehmen, 20 % gehen an DR Lab, weil DR Lab auch Werbung und Pflege macht. Gilt erst mit Vertrag.'],
-    ['🔒', 'Deine Daten', 'Du gibst nur, was du geben willst, mit Einwilligung. Ideen bleiben bei DR Lab und werden nicht verkauft. Die Daten sollen verschlüsselt gespeichert werden.'],
+    ['🥧', 'Wenn die App läuft', 'Entwurf: 80 % vom Netto-Umsatz bleiben beim Kleinunternehmen, 20 % gehen an die Werkstatt, weil sie auch Werbung und Pflege macht. Gilt erst mit Vertrag.'],
+    ['🔒', 'Deine Daten', 'Du gibst nur, was du geben willst, mit Einwilligung. Ideen bleiben in der Werkstatt und werden nicht verkauft. Die Daten sollen verschlüsselt gespeichert werden.'],
     ['🪙', 'Coins', 'Coins sind Punkte ohne Geldwert. Sie zeigen, wie viel deine Ideen bewegt haben. Man kann sie nicht kaufen und nicht in Franken wechseln.']
   ];
   var fi = 0;

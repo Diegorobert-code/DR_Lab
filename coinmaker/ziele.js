@@ -48,7 +48,15 @@
     var d = new Date(), n = 0;
     function key(x) { return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); }
     if (!set[key(d)]) d.setDate(d.getDate() - 1);
-    while (set[key(d)]) { n++; d.setDate(d.getDate() - 1); }
+    // Runde 8: Serien-Schutz wie Duolingo – ein verpasster Tag pro Kalenderwoche bricht die Serie nicht («Ruhetag»).
+    var benutzt = {};
+    function woche(x) { var m = new Date(x); m.setDate(m.getDate() - ((m.getDay() + 6) % 7)); return key(m); }
+    for (var g = 0; g < 400; g++) {
+      if (set[key(d)]) { n++; d.setDate(d.getDate() - 1); continue; }
+      var vor = new Date(d); vor.setDate(vor.getDate() - 1);
+      if (n > 0 && !benutzt[woche(d)] && set[key(vor)]) { benutzt[woche(d)] = 1; d = vor; continue; }
+      break;
+    }
     return n;
   }
   var tag = document.querySelector('.werk-kopf .tag'), chip = null;
@@ -57,7 +65,7 @@
     if (n < 1) { if (chip) chip.hidden = true; return; }
     if (!chip) { chip = document.createElement('span'); chip.className = 'zv-serie'; tag.parentNode.insertBefore(chip, tag.nextSibling); }
     chip.hidden = false; chip.textContent = '🔥 ' + n + (n === 1 ? ' Tag' : ' Tage in Folge');
-    chip.title = 'Werkstatt-Serie: so viele Tage in Folge warst du hier.';
+    chip.title = 'Werkstatt-Serie: so viele Tage in Folge warst du hier. Ein Ruhetag pro Woche zählt mit.';
   }
 
   /* 3. Sparziel im Münzladen */
