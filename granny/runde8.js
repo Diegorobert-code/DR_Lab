@@ -667,3 +667,180 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(los, 0); }); else setTimeout(los, 0);
 })();
+/* Granny Runde 8b (22.10.2026): Medikamenten-Erinnerung.
+   Angehörige tragen Medikamente mit Uhrzeit ein, Granny zeigt die Tagesliste mit grossem «Genommen»-Knopf und Rückgängig.
+   Ehrlich: Erinnerung nur, solange Granny offen ist. Kein Rat zu Medikamenten oder Dosierung. Alles bleibt auf dem Gerät. */
+(function () {
+  'use strict';
+  var R = window.R7, Z = window.R8; if (!R || !Z) return;
+  var esc = R.esc, el = R.el;
+  function zwei(n) { return ('0' + n).slice(-2); }
+  function jetztHM() { var d = new Date(); return zwei(d.getHours()) + ':' + zwei(d.getMinutes()); }
+  function liste() { var l = R.hol('medi', []); return Array.isArray(l) ? l : []; }
+  function legListe(l) { R.leg('medi', l); }
+  function tag(k) { var A = R.hol('mediTag', {}); return A[k || R.heuteK()] || {}; }
+  function legTag(t) {
+    var A = R.hol('mediTag', {}); A[R.heuteK()] = t;
+    var ks = Object.keys(A).sort(); while (ks.length > 14) delete A[ks.shift()];
+    R.leg('mediTag', A);
+  }
+  function uhr(z) { var p = String(z || '').split(':'); return (+p[0]) + (p[1] && p[1] !== '00' ? '.' + p[1] : '') + ' Uhr'; }
+  function sag(t) {
+    try {
+      if (!window.speechSynthesis) return;
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(t); u.lang = 'de-CH'; u.rate = 0.9;
+      var v = speechSynthesis.getVoices().filter(function (x) { return /^de/.test(x.lang); });
+      if (v.length) u.voice = v.filter(function (x) { return x.lang === 'de-CH'; })[0] || v[0];
+      speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+  var AC = null;
+  function gong() {
+    try {
+      AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+      if (AC.state === 'suspended') AC.resume();
+      [523.25, 659.25].forEach(function (f, i) {
+        var o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime + i * 0.45;
+        o.type = 'sine'; o.frequency.value = f;
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.35, t + 0.03); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.6);
+        o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + 1.7);
+      });
+    } catch (e) {}
+  }
+
+  var css = document.createElement('style');
+  css.textContent = [
+    '.r8m-ehrlich{margin:4px 0 16px;padding:12px 14px;border-radius:14px;background:#fff4e0;border:1px solid #e0b878;color:#4a3410;font-size:16px;line-height:1.45}',
+    '.r8m-liste{list-style:none;margin:0;padding:0;display:grid;gap:12px}',
+    '.r8m-z{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;padding:14px;border-radius:20px;background:#fbf8f3;border:2px solid #e6dccd;color:#161412}',
+    '.r8m-z.dran{border-color:#a8480f;background:#fdeee0;box-shadow:0 0 0 4px rgba(168,72,15,.12)}',
+    '.r8m-z.ok{background:#eef7f1;border-color:#9cc9ad}',
+    '.r8m-kopf{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}',
+    '.r8m-zeit{font-size:26px;font-weight:800;color:#8a3a0b;font-variant-numeric:tabular-nums}',
+    '.r8m-name{font-size:24px;font-weight:800;line-height:1.2;min-width:0;overflow-wrap:anywhere}',
+    '.r8m-hinweis{margin:0;font-size:18px;color:#4a443d;overflow-wrap:anywhere}',
+    '.r8m-gen{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:72px;padding:12px 20px;border:0;border-radius:20px;background:#1f6f4a;color:#fff;font:inherit;font-size:24px;font-weight:800;cursor:pointer;box-shadow:0 6px 0 #134a31}',
+    '.r8m-gen:active{transform:translateY(3px);box-shadow:0 3px 0 #134a31}',
+    '.r8m-fertig{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:20px;font-weight:700;color:#1b5e3b}',
+    '.r8m-zurueck{min-height:48px;padding:8px 18px;border-radius:999px;border:2px solid #a8957c;background:#fff;color:#161412;font:inherit;font-size:17px;font-weight:700;cursor:pointer}',
+    '.r8m-leer{margin:0;padding:16px;border-radius:16px;border:2px dashed #a8957c;background:#fbf8f3;font-size:19px;color:#4a443d}',
+    '.r8m-einr{margin-top:16px;border-top:1px solid #e6dccd;padding-top:12px}',
+    '.r8m-einr summary{min-height:48px;display:flex;align-items:center;font-size:18px;font-weight:700;color:#8a3a0b;cursor:pointer}',
+    '.r8m-form{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:8px}',
+    '.r8m-form .r8m-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}',
+    '.r8m-form input{width:100%;box-sizing:border-box;font-size:18px!important}',
+    '.r8m-plan{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}',
+    '.r8m-plan li{display:flex;align-items:center;gap:12px;padding:8px 8px 8px 14px;border-radius:14px;background:#fff;border:1px solid #e6dccd;font-size:17px}',
+    '.r8m-plan li span{flex:1;min-width:0;overflow-wrap:anywhere}',
+    '.r8m-plan li button{flex:none;min-height:44px;min-width:44px;padding:0 14px;border-radius:999px;border:1px solid #a8957c;background:#fff;color:#161412;font:inherit;font-size:15px;font-weight:700;cursor:pointer}',
+    '.r8m-klein{margin:8px 0 0;font-size:16px;color:#4a443d}',
+    '.r8m-ruf{animation:r8mRuf 1s ease-in-out 3}',
+    '@keyframes r8mRuf{50%{box-shadow:0 0 0 10px rgba(168,72,15,.25)}}',
+    '@media (prefers-reduced-motion:reduce){.r8m-ruf{animation:none}.r8m-gen:active{transform:none}}'
+  ].join('\n');
+  document.head.appendChild(css);
+
+  var karte = el('<section class="r7 r7-karte r8m" id="r8Medi" aria-labelledby="r8m-t">' +
+    '<p class="r7-eb">Jeden Tag</p><h2 id="r8m-t">💊 Meine Medikamente</h2>' +
+    '<p class="r8m-ehrlich">⏰ <b>Ehrlich gesagt:</b> Granny erinnert nur, solange sie offen ist. Was sicher klingeln muss, bitte zusätzlich im Wecker des Handys eintragen. Granny gibt keinen Rat zu Medikamenten oder Mengen. Das entscheiden Ärztin, Arzt oder Apotheke.</p>' +
+    '<ul class="r8m-liste" aria-live="polite"></ul>' +
+    '<details class="r8m-einr"><summary>Für Angehörige: Medikamente eintragen</summary>' +
+    '<form class="r8m-form" novalidate><label>Name des Medikaments<input name="mname" maxlength="60" autocomplete="off" placeholder="z. B. Blutdruck-Tablette"></label>' +
+    '<div class="r8m-2"><label>Uhrzeit<input name="mzeit" type="time" value="08:00" required></label><label>Hinweis (wie auf dem Plan)<input name="mhinweis" maxlength="60" autocomplete="off" placeholder="z. B. zum Essen"></label></div>' +
+    '<button type="submit" class="r7-btn voll gross">Eintragen</button></form>' +
+    '<p class="r8m-klein">Bitte genau so eintragen, wie es auf dem Medikamentenplan steht. Für mehrere Zeiten am Tag das Medikament mehrmals eintragen.</p>' +
+    '<ul class="r8m-plan" aria-label="Eingetragene Medikamente"></ul></details></section>');
+  var ul = karte.querySelector('.r8m-liste'), plan = karte.querySelector('.r8m-plan'), form = karte.querySelector('form');
+
+  function zeigen() {
+    var l = liste().slice().sort(function (a, b) { return a.zeit < b.zeit ? -1 : a.zeit > b.zeit ? 1 : 0; });
+    var t = tag(), jetzt = jetztHM();
+    if (!l.length) {
+      ul.innerHTML = '<li><p class="r8m-leer">Noch keine Medikamente eingetragen. Angehörige können sie unten eintragen.</p></li>';
+    } else {
+      ul.innerHTML = l.map(function (m) {
+        var gen = t[m.id], dran = !gen && m.zeit <= jetzt;
+        return '<li class="r8m-z' + (gen ? ' ok' : dran ? ' dran' : '') + '" data-id="' + esc(m.id) + '">' +
+          '<div class="r8m-kopf"><span class="r8m-zeit">' + esc(uhr(m.zeit)) + '</span><span class="r8m-name">' + esc(m.name) + '</span></div>' +
+          (m.hinweis ? '<p class="r8m-hinweis">' + esc(m.hinweis) + '</p>' : '') +
+          (gen ? '<div class="r8m-fertig"><span>✓ Genommen um ' + esc(uhr(gen)) + '</span><button type="button" class="r8m-zurueck" data-a="zurueck" aria-label="' + esc(m.name) + ': doch noch nicht genommen">Rückgängig</button></div>'
+            : '<button type="button" class="r8m-gen" data-a="gen"><span aria-hidden="true">' + (dran ? '🔔' : '💊') + '</span>' + esc(m.name) + ' genommen</button>') +
+          '</li>';
+      }).join('');
+    }
+    plan.innerHTML = liste().map(function (m) {
+      return '<li><span><b>' + esc(uhr(m.zeit)) + '</b> · ' + esc(m.name) + (m.hinweis ? ' · ' + esc(m.hinweis) : '') + '</span><button type="button" data-a="weg" data-id="' + esc(m.id) + '" aria-label="' + esc(m.name) + ' um ' + esc(uhr(m.zeit)) + ' entfernen">Entfernen</button></li>';
+    }).join('');
+  }
+
+  function genommen(id, an) {
+    var t = tag(), vor = t[id];
+    if (an) t[id] = jetztHM(); else delete t[id];
+    legTag(t); zeigen();
+    var m = liste().filter(function (x) { return x.id === id; })[0] || { name: 'Medikament' };
+    if (an) {
+      sag('Gut. ' + m.name + ' ist eingetragen.');
+      try { Z.licht('medi'); } catch (e) {}
+      Z.toast('✓ ' + m.name + ' genommen', { undo: function () { var u = tag(); if (vor) u[id] = vor; else delete u[id]; legTag(u); zeigen(); } });
+      var b = ul.querySelector('[data-id="' + id + '"] .r8m-zurueck'); if (b) b.focus({ preventScroll: true });
+    } else {
+      Z.toast('Zurückgenommen. Kein Problem.', { undo: function () { var u = tag(); u[id] = vor; legTag(u); zeigen(); } });
+      var g = ul.querySelector('[data-id="' + id + '"] .r8m-gen'); if (g) g.focus({ preventScroll: true });
+    }
+  }
+
+  karte.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-a]'); if (!b) return;
+    var li = b.closest('[data-id]'), id = b.getAttribute('data-id') || (li && li.getAttribute('data-id'));
+    if (b.dataset.a === 'gen') genommen(id, true);
+    else if (b.dataset.a === 'zurueck') genommen(id, false);
+    else if (b.dataset.a === 'weg') {
+      var alt = liste(), m = alt.filter(function (x) { return x.id === id; })[0];
+      legListe(alt.filter(function (x) { return x.id !== id; })); zeigen();
+      Z.toast((m ? m.name : 'Medikament') + ' entfernt', { undo: function () { legListe(alt); zeigen(); } });
+    }
+  });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var fN = form.elements.mname, fZ = form.elements.mzeit, fH = form.elements.mhinweis;
+    var n = fN.value.trim(), z = fZ.value, h = fH.value.trim();
+    if (!n) { fN.focus(); Z.toast('Bitte den Namen eintragen.'); return; }
+    if (!/^\d{2}:\d{2}$/.test(z)) { fZ.focus(); Z.toast('Bitte eine Uhrzeit wählen.'); return; }
+    var l = liste(); l.push({ id: 'm' + Date.now().toString(36), name: n, zeit: z, hinweis: h }); legListe(l);
+    fN.value = ''; fH.value = '';
+    zeigen(); Z.toast('💊 ' + n + ' um ' + uhr(z) + ' eingetragen');
+    fN.focus();
+  });
+
+  /* Erinnerung, solange Granny offen ist: Gong, Vorlesen, Karte leuchtet */
+  var gerufen = {};
+  function pruefen() {
+    var k = R.heuteK(), t = tag(), jetzt = jetztHM(), neu = false;
+    liste().forEach(function (m) {
+      var key = k + m.id;
+      if (t[m.id] || gerufen[key] || m.zeit > jetzt) return;
+      var d = new Date(), p = m.zeit.split(':'), ziel = new Date(d.getFullYear(), d.getMonth(), d.getDate(), +p[0], +p[1]);
+      gerufen[key] = 1;
+      if (d - ziel > 90 * 60000) return; /* länger her: still als «dran» zeigen, nicht laut */
+      neu = true;
+      gong();
+      setTimeout(function () { sag('Es ist ' + uhr(m.zeit) + '. Zeit für ' + m.name + '.'); }, 900);
+      Z.toast('🔔 ' + uhr(m.zeit) + ': ' + m.name, { ms: 8000 });
+    });
+    zeigen();
+    if (neu) { karte.classList.remove('r8m-ruf'); void karte.offsetWidth; karte.classList.add('r8m-ruf'); }
+  }
+
+  function los() {
+    var ring = document.querySelector('.r8-tag'), h = document.getElementById('heute');
+    var vor = ring || h;
+    if (vor && vor.parentNode) vor.parentNode.insertBefore(karte, vor.nextSibling); else R.einsetzen(karte);
+    R.namen(karte);
+    /* beim Start nicht für alles Vergangene gongen: nur, was in den letzten 90 Minuten fällig wurde */
+    pruefen();
+    setInterval(pruefen, 30000);
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) pruefen(); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(los, 20); }); else setTimeout(los, 20);
+})();
