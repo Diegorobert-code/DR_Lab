@@ -190,8 +190,9 @@
     <div id="e_stimmen"></div>
 
     <h2>Granny-Station</h2>
+    <p class="kasten" style="border-color:#f2c14e"><b>Ehrlich gesagt:</b> Granny ist eine Web-App. Sie erinnert nur, solange sie offen auf dem Bildschirm ist, am besten am Ladekabel mit «Bildschirm bleibt an». Ist das Handy gesperrt oder Granny zu, kommt keine Erinnerung. Was sicher klingeln muss (z. B. Tabletten), bitte zusätzlich im Wecker oder Kalender des Handys eintragen.</p>
     <div class="kasten">
-      <label class="check"><input type="checkbox" id="o_trinken"> Granny erinnert tagsüber alle 2 Stunden ans Trinken.</label>
+      <label class="check"><input type="checkbox" id="o_trinken"> Granny erinnert tagsüber alle 2 Stunden ans Trinken (nur solange Granny offen ist).</label>
       <label class="check" style="margin-top:10px"><input type="checkbox" id="o_wach"> Bildschirm bleibt an (Granny steht auf dem Tisch, am Ladekabel).</label>
       <label class="check" style="margin-top:10px"><input type="checkbox" id="o_gross"> Extra grosse Schrift.</label>
       <label class="check" style="margin-top:10px"><input type="checkbox" id="o_akku"> Akku-Wächter: unter 20 % bittet Granny laut ums Laden (geht auf Android, nicht auf dem iPhone).</label>
@@ -200,21 +201,21 @@
 
     <h2>Was Granny sich merkt</h2>
     <div class="kasten" id="e_lernen"></div>
-    <label class="check" style="margin-top:10px"><input type="checkbox" id="o_teilen"> Ich bin einverstanden, dass DR Lab diese Lern-Zahlen (ohne Namen, ohne Stimme, ohne Bilder) über den eigenen Server lesen darf, um Granny zu verbessern.</label>
+    <label class="check" style="margin-top:10px"><input type="checkbox" id="o_teilen"> Ich bin einverstanden, dass das Granny-Team diese Lern-Zahlen (ohne Namen, ohne Stimme, ohne Bilder) über den eigenen Server lesen darf, um Granny zu verbessern.</label>
     <div class="reihe"><button class="grau klein" id="e_lernen_weg">Lern-Zahlen löschen</button></div>
 
-    <h2>Rückmeldung an DR Lab</h2>
+    <h2>Rückmeldung an das Granny-Team</h2>
     <p>Was fehlt, was stört? Hier reinschreiben oder reinsprechen.</p>
     <div data-feedback-slot style="margin-top:8px"></div>
 
     <h2>Server</h2>
-    <p>Ist dieses Gerät über «Handy verbinden» mit dem DR-Lab-Server verbunden, antwortet Granny frei und mit ihrer eigenen Stimme. Ohne Server antwortet sie einfach selbst, ohne Internet. Eine eigene Adresse unten ist nur für Tests nötig.</p>
+    <p>Ist dieses Gerät über «Handy verbinden» mit dem Granny-Server verbunden, antwortet Granny frei und mit ihrer eigenen Stimme. Ohne Server antwortet sie einfach selbst, ohne Internet. Eine eigene Adresse unten ist nur für Tests nötig.</p>
     <label>Adresse (z. B. https://…/v1/chat/completions)</label>
     <input id="e_server" placeholder="leer lassen">
     <label>Schlüssel</label>
     <input id="e_key" type="password" placeholder="leer lassen">
 
-    <p class="klein" style="margin-top:18px">Granny ist keine Ärztin und stellt keine Diagnose. Fragen zu Gedächtnis und Demenz: Hausarzt oder Alzheimer-Telefon Schweiz 058 058 80 00 (Mo–Fr). DR Lab.</p>
+    <p class="klein" style="margin-top:18px">Granny ist keine Ärztin und stellt keine Diagnose. Fragen zu Gedächtnis und Demenz: Hausarzt oder Alzheimer-Telefon Schweiz 058 058 80 00 (Mo–Fr).</p>
 
     <div class="reihe"><button class="grau" id="e_zu">Abbrechen</button><button class="gold" id="e_speichern">Speichern</button></div>
 
@@ -233,7 +234,7 @@
       tage:['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
       monate:['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
       teil:h=> h<5?'Nacht':h<11?'Morgen':h<14?'Mittag':h<18?'Nachmittag':h<22?'Abend':'Nacht',
-      gruss:(h,n)=> (h<11?'Guten Morgen':h<18?'Grüezi':'Guten Abend')+(n?', '+n:'')+'! Ich bin Granny. Drück den goldenen Knopf und rede mit mir.',
+      gruss:(h,n)=> (h<11?'Guten Morgen':h<18?'Grüezi':'Guten Abend')+(n?', '+n:'')+'! Ich bin Granny. Drück den grünen Knopf und rede mit mir.',
       reden:'Drück mich und rede', hoere:'Ich höre zu …',
       hilfe:'Ich brauche Hilfe', klemmt:'Handy oder Passwort geht nicht',
       heute:'Heute', nichts:'Nichts geplant. Schön ruhig.',
@@ -256,7 +257,7 @@
       tage:['domingo','lunes','martes','miércoles','jueves','viernes','sábado'],
       monate:['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'],
       teil:h=> h<5?'noche':h<12?'mañana':h<15?'mediodía':h<20?'tarde':'noche',
-      gruss:(h,n)=> (h<12?'¡Buenos días':h<20?'¡Buenas tardes':'¡Buenas noches')+(n?', '+n:'')+'! Soy Granny. Pulsa el botón dorado y háblame.',
+      gruss:(h,n)=> (h<12?'¡Buenos días':h<20?'¡Buenas tardes':'¡Buenas noches')+(n?', '+n:'')+'! Soy Granny. Pulsa el botón verde y háblame.',
       reden:'Púlsame y habla', hoere:'Te escucho …',
       hilfe:'Necesito ayuda', klemmt:'El móvil o la contraseña no va',
       heute:'Hoy', nichts:'Nada previsto. Todo tranquilo.',
@@ -364,7 +365,7 @@
     if(S.server){
       try{
         $('blase').textContent='…';
-        const r=await fetch(S.server,{method:'POST',headers:Object.assign({'Content-Type':'application/json'},S.key?{'Authorization':'Bearer '+S.key}:{}),
+        const r=await fetch(S.server,{signal:(window.AbortSignal&&AbortSignal.timeout)?AbortSignal.timeout(10000):undefined,method:'POST',headers:Object.assign({'Content-Type':'application/json'},S.key?{'Authorization':'Bearer '+S.key}:{}),
           body:JSON.stringify({model:'granny',max_tokens:120,messages:[
             {role:'system',content:'Du bist Granny, eine liebe, lustige ältere Frau aus dem Dorf. Du sprichst mit einer älteren Person'+(S.name?' namens '+S.name:'')+', die manchmal Dinge vergisst. Antworte in '+(S.sprache==='es'?'Spanisch':'Deutsch')+', höchstens zwei kurze, warme Sätze, einfache Wörter. Keine Diagnosen, keine medizinischen Ratschläge, frag nie nach Passwörtern oder Geld. Bei Notfall: Hilfe-Knopf drücken oder 144/112.'},
             {role:'user',content:text}]})});
@@ -372,6 +373,7 @@
         if(a) return sag(a.trim());
       }catch(e){}
     }
+    if(nv||S.server){try{window.R8&&R8.toast(S.sprache==='es'?'Sin conexión: Granny responde más sencillo.':'Gerade keine Verbindung. Granny antwortet einfacher.');}catch(e){}}
     sag(t.sonst(S.leute[0] && S.leute[0].nr ? S.leute[0].n : ''));
   }
 
@@ -557,6 +559,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 <script src="runde4.js" defer></script>
 <script src="runde6.js" defer></script>
 <script src="runde7.js" defer></script>
+<script src="runde8.js" defer></script>
 <script src="../nova/nova.js" data-nova-app="Granny" data-nova-bild="figur.jpg" defer></script>
 </body>
 </html>

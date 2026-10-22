@@ -43,7 +43,7 @@
         'Ein Witz: Sagt die eine Oma zur anderen: Ich vergesse alles. Sagt die andere: Seit wann? Sagt die erste: Seit wann was?'],
       offline: 'Ich bin gerade ohne Internet. Macht nichts, ich bin trotzdem da. Anrufen geht wie immer.',
       startTitel: 'Willkommen bei Granny',
-      startSchritte: ['Jemand aus der Familie tippt auf «Einrichten».', 'Namen, Nummern und Fotos eintragen.', 'Fertig. Ab dann reicht der goldene Knopf.'],
+      startSchritte: ['Jemand aus der Familie tippt auf «Einrichten».', 'Namen, Nummern und Fotos eintragen.', 'Fertig. Ab dann reicht der grüne Knopf.'],
       startKnopf: 'Einrichten (2 Minuten)',
       letti: function (n) { return 'Letti, die Brieftaube, hat dir eine Nachricht von ' + n + ' gebracht. Drück auf den rosa Knopf.'; },
       stimmen: [['morgen', 'Guten Morgen (spielt morgens beim ersten Tippen)'], ['liebe', 'Einfach so (Knopf «Nachricht»)'], ['akku', 'Bitte laden (Akku-Wächter)'], ['nacht', 'Gute Nacht (abends beim ersten Tippen)']],
@@ -238,7 +238,7 @@
         'Familie: ' + S.leute.filter(function (p) { return p.n; }).map(function (p) { return p.n + (p.wer ? ' (' + p.wer + ')' : ''); }).join(', ') + '.';
       verlauf.push({ role: 'user', content: text }); verlauf = verlauf.slice(-8);
       return fetch(v.a + '/v1/chat/completions', {
-        method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + v.k, 'X-Nova-App': 'Granny' },
+        signal:(window.AbortSignal&&AbortSignal.timeout)?AbortSignal.timeout(10000):undefined, method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + v.k, 'X-Nova-App': 'Granny' },
         body: JSON.stringify({ model: 'sense-engine', max_tokens: 160, messages: [{ role: 'system', content: sys }].concat(verlauf) })
       }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
         var a = j && j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;

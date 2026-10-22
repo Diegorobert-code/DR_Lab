@@ -290,7 +290,7 @@ window.R7_CFG = {
     '<details class="r7-geb-neu" style="margin-top:16px"><summary class="r7-btn" style="list-style:none">＋ Geburtstag eintragen</summary>' +
     '<form style="display:grid;gap:12px;margin-top:12px"><label>Name<input name="n" required autocomplete="off" placeholder="z. B. Diego"></label>' +
     '<label>Geburtstag<input name="d" type="date" required></label><button class="r7-btn voll" type="submit">Merken</button></form></details>' +
-    '<p class="r7-leise">Granny erinnert dich drei Tage vorher und am Tag selbst. Bleibt nur auf diesem Gerät.</p></section>');
+    '<p class="r7-leise">Granny zeigt es dir drei Tage vorher und am Tag selbst, wenn du sie öffnest. Bleibt nur auf diesem Gerät.</p></section>');
   function tageBis(md) {
     var h = new Date(); h.setHours(0, 0, 0, 0);
     var t = new Date(h.getFullYear(), +md.slice(0, 2) - 1, +md.slice(3, 5));
@@ -305,7 +305,7 @@ window.R7_CFG = {
     L.forEach(function (g, j) {
       var wann = g.bis === 0 ? 'Heute! 🎉' : g.bis === 1 ? 'Morgen' : 'in ' + g.bis + ' Tagen';
       var li = el('<li style="display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 12px;border-radius:16px;background:rgba(255,250,240,.07)"><span style="font-size:28px" aria-hidden="true">🎂</span><span style="flex:1"><b style="display:block;font-size:18px">' + esc(g.n) + '</b><small style="color:var(--r7-leise);font-size:15px">' + (+g.d.slice(3, 5)) + '. ' + MON[+g.d.slice(0, 2) - 1] + ' · ' + wann + '</small></span><button type="button" class="r7-btn" data-weg="' + j + '" aria-label="' + esc(g.n) + ' entfernen">✕</button></li>');
-      li.querySelector('[data-weg]').onclick = function () { var A = R.hol('geb', []).filter(function (x) { return !(x.n === g.n && x.d === g.d); }); R.leg('geb', A); gebZeigen(); };
+      li.querySelector('[data-weg]').onclick = function () { var vor = R.hol('geb', []); var A = vor.filter(function (x) { return !(x.n === g.n && x.d === g.d); }); R.leg('geb', A); gebZeigen(); if (window.R8) R8.toast('🎂 ' + g.n + ' entfernt', { undo: function () { R.leg('geb', vor); gebZeigen(); } }); };
       ul.appendChild(li);
     });
     var h = L.filter(function (g) { return g.bis <= 3; });
