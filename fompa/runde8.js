@@ -7,7 +7,7 @@
    5. Kein toter Download: CSV/ZIP im Artefakt → Tabelle zum Kopieren (siehe deliver()).
    Nutzt aus index.html: zettel, isBuch, splitKat, chf, verstehe, parseSatz, save, tx, loadYear, neuId, gehZu, tab, setMode, toast (nur über ihre Funktionen). */
 window.R8 = {
-  bild: 'posen/nickt.jpg',
+  bild: 'wm/maskottchen.jpg',
   offline: 'Offline. Fompa arbeitet weiter, alle Zettel bleiben auf deinem Gerät.',
   neuText: 'Neu: Schnell-Zettel und Monats-Ringe. Alles bleibt auf deinem Handy.',
   css: [
@@ -25,6 +25,7 @@ window.R8 = {
     '.r8-fo .r7-reihe{margin:12px 0 0}'
   ].join('\n'),
   start: function (E, R) {
+    E.maskottchen('.nb-buehne img, header > img, .r7-kopf > img, .r7-leer > img, .r8-ziehen img', 'wm/maskottchen.jpg'); // helles Tinko-Maskottchen statt dunkler Pose
     if (typeof verstehe !== 'function' || typeof parseSatz !== 'function') return;
     /* 1. Schnell-Zettel */
     function vorschau(t) {
@@ -35,7 +36,7 @@ window.R8 = {
         (p.paid ? '<span>Bezahlt <b>' + R.esc(p.paid) + '</b></span>' : '') + '<span>Datum <b>' + R.esc(datumCH ? datumCH(p.date) : p.date) + '</b></span>';
     }
     function schnell(vorgabe) {
-      var inh = R.blatt({ titel: 'Schnell-Zettel', bild: 'posen/rechnet.jpg', html: '<p>Schreib es so, wie du es sagen würdest. Fompa versteht Betrag, Zahlart, «gestern» und vieles mehr.</p>' +
+      var inh = R.blatt({ titel: 'Schnell-Zettel', bild: 'wm/maskottchen.jpg', html: '<p>Schreib es so, wie du es sagen würdest. Fompa versteht Betrag, Zahlart, «gestern» und vieles mehr.</p>' +
         '<label for="r8Satz">Was hast du bezahlt?</label><input id="r8Satz" autocomplete="off" enterkeyhint="done" placeholder="Kaffee 4.80 Twint">' +
         '<div class="r8-vorschau" aria-live="polite"></div>' +
         '<div class="r7-reihe"><button type="button" class="r7-knopf" data-r8="glas">⭐ Ins Glas legen</button><button type="button" class="r7-knopf leise" data-r8="form">Im Formular prüfen</button></div>' +
@@ -117,7 +118,7 @@ window.R8 = {
 
 
     /* Wächst mit dir (Finch): Sternzettel, 5 Stufen, täglicher Ausflug */
-    E.waechst({ ort: '#szene', wo: 'nach', figur: 'Fompa', bild: 'posen/freut.jpg', licht: 'Sternzettel', licht1: 'Sternzettel',
+    E.waechst({ ort: '#szene', wo: 'nach', figur: 'Fompa', bild: 'wm/maskottchen.jpg', stufenBilder: ['wm/stufe-1.jpg', 'wm/stufe-2.jpg', 'wm/stufe-3.jpg', 'wm/stufe-4.jpg', 'wm/stufe-5.jpg'], ausflugBild: 'wm/ausflug.jpg', licht: 'Sternzettel', licht1: 'Sternzettel',
       stufen: ['Zettelsammler', 'Glasfüller', 'Ordnungshüter', 'Sternenzähler', 'Sternenglas-Meister'],
       wie: 'Ein kleiner Schritt: ein Zettel erfasst, ein Wunsch ins Glas gelegt, eine Kaufpause gefeiert.',
       ausfluege: [
@@ -143,11 +144,11 @@ window.R8 = {
       var kat = {}; l.forEach(function (z) { if (z.amount && z.kat) { var h = splitKat(z.kat).h; kat[h] = (kat[h] || 0) + z.amount; } });
       var top = Object.keys(kat).sort(function (a, b) { return kat[b] - kat[a]; })[0];
       var tage = {}; l.forEach(function (z) { if (z.date) tage[z.date] = 1; });
-      E.monat({ figur: 'Fompa', bild: 'posen/freut.jpg', bildFroh: 'posen/staunt.jpg', licht: 'Sternzettel', fuss: 'Fompa · ordnet und rechnet, keine Steuerberatung',
+      E.monat({ figur: 'Fompa', bild: 'wm/maskottchen.jpg', bildFroh: 'wm/stufe-5.jpg', licht: 'Sternzettel', fuss: 'Fompa · ordnet und rechnet, keine Steuerberatung',
         seiten: [
-          { bild: 'posen/rechnet.jpg', oben: 'Zettel', gross: l.length, titel: l.length === 1 ? 'Zettel im Glas' : 'Zettel im Glas', text: l.length ? 'An ' + Object.keys(tage).length + ' verschiedenen Tagen gesammelt.' : 'Noch kein Zettel diesen Monat. Der Schnell-Zettel geht in 5 Sekunden.' },
-          { bild: 'posen/nickt.jpg', oben: 'Zusammen', gross: 'CHF ' + chf(summe), titel: 'erfasst', text: top ? 'Am meisten ging zu «' + top + '».' : 'Sobald Beträge da sind, rechne ich zusammen.' },
-          { bild: 'posen/staunt.jpg', oben: 'Belege', gross: beleg + '/' + l.length, titel: 'mit Foto', text: beleg === l.length && l.length ? 'Alles belegt. Dein Steuerberater wird strahlen.' : 'Ein Foto pro Zettel macht das Jahresende leicht.' }
+          { bild: 'wm/maskottchen.jpg', oben: 'Zettel', gross: l.length, titel: l.length === 1 ? 'Zettel im Glas' : 'Zettel im Glas', text: l.length ? 'An ' + Object.keys(tage).length + ' verschiedenen Tagen gesammelt.' : 'Noch kein Zettel diesen Monat. Der Schnell-Zettel geht in 5 Sekunden.' },
+          { bild: 'wm/maskottchen.jpg', oben: 'Zusammen', gross: 'CHF ' + chf(summe), titel: 'erfasst', text: top ? 'Am meisten ging zu «' + top + '».' : 'Sobald Beträge da sind, rechne ich zusammen.' },
+          { bild: 'wm/maskottchen.jpg', oben: 'Belege', gross: beleg + '/' + l.length, titel: 'mit Foto', text: beleg === l.length && l.length ? 'Alles belegt. Dein Steuerberater wird strahlen.' : 'Ein Foto pro Zettel macht das Jahresende leicht.' }
         ],
         zeilen: [['Zettel', String(l.length)], ['Erfasst', 'CHF ' + chf(summe)], ['Mit Beleg', beleg + ' / ' + l.length]],
         schluss: 'Zettel für Zettel wird es ruhig.', hinweis: 'Fompa ordnet und rechnet. Ob etwas abziehbar ist, entscheidet dein Steuerberater.' });
@@ -789,7 +790,7 @@ window.R8 = {
       else if (schonHeute) { knopf = ''; info = 'Heute war ' + esc(o.figur) + ' schon unterwegs. Morgen geht es wieder los.'; }
       else if (heuteN(x) > 0) { knopf = '<button type="button" class="r7-knopf" data-wm="los">🎒 Auf Ausflug schicken</button>'; info = 'Du hast heute schon ' + heuteN(x) + ' ' + esc(heuteN(x) === 1 ? o.licht1 : o.licht) + ' gesammelt. ' + esc(o.figur) + ' möchte etwas entdecken.'; }
       else { knopf = ''; info = esc(o.wie) + ' Dann geht ' + esc(o.figur) + ' auf einen kleinen Ausflug.'; }
-      box.innerHTML = '<div class="fig"><img src="' + esc(o.bild) + '" alt="" width="72" height="72"><span class="st" aria-hidden="true">' + (s + 1) + '</span></div>' +
+      box.innerHTML = '<div class="fig"><img src="' + esc((o.stufenBilder && o.stufenBilder[s]) || o.bild) + '" alt="" width="72" height="72"><span class="st" aria-hidden="true">' + (s + 1) + '</span></div>' +
         '<div><h2 id="r8WmH">Wächst mit dir</h2><span class="name">' + esc(o.figur) + ' · ' + esc(ST[s]) + '</span>' +
         '<div class="bar" role="progressbar" aria-label="Fortschritt zur nächsten Stufe" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + proz + '"><i style="width:' + proz + '%"></i></div>' +
         '<span class="zahl">' + x.n + ' ' + esc(x.n === 1 ? o.licht1 : o.licht) + (naechste == null ? ' · höchste Stufe erreicht' : ' · noch ' + (naechste - x.n) + ' bis «' + esc(ST[s + 1]) + '»') + ' · 🔥 ' + ws.serie + ' Tag' + (ws.serie === 1 ? '' : 'e') + '</span></div>' +
@@ -819,7 +820,7 @@ window.R8 = {
     function vorlesen(t) { try { if (!window.speechSynthesis) return false; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = 'de-CH'; u.rate = .95; speechSynthesis.speak(u); return true; } catch (e) { return false; } }
     function fund(i, neu) {
       var a = o.ausfluege[i]; if (!a) return;
-      var inh = R.blatt({ titel: neu ? esc(o.figur) + ' war unterwegs' : a.n, bild: o.bild, html: (o.extraHtml || '') + '<div class="r8-fund"><span class="e" aria-hidden="true">' + a.f + '</span><h3>' + esc(a.n) + '</h3></div><p>' + esc(a.t) + '</p>' +
+      var inh = R.blatt({ titel: neu ? esc(o.figur) + ' war unterwegs' : a.n, bild: o.bild, html: (o.extraHtml || '') + '<div class="r8-fund">' + (o.ausflugBild ? '<img class="r8-bild" src="' + esc(o.ausflugBild) + '" alt="' + esc(o.figur) + ' unterwegs" loading="lazy">' : '') + '<span class="e" aria-hidden="true">' + a.f + '</span><h3>' + esc(a.n) + '</h3></div><p>' + esc(a.t) + '</p>' +
         '<div class="r7-reihe"><button type="button" class="r7-knopf leise" data-wm="hoer">🔊 Vorlesen</button>' + (neu ? '<button type="button" class="r7-knopf" data-wm="ok">Ins Album legen</button>' : '') + '</div>' });
       inh.querySelector('[data-wm=hoer]').addEventListener('click', function () { if (!vorlesen(a.n + '. ' + a.t)) this.textContent = 'Vorlesen geht hier nicht'; });
       var ok = inh.querySelector('[data-wm=ok]'); if (ok) ok.addEventListener('click', function () { R.zu(); });
@@ -832,7 +833,7 @@ window.R8 = {
     }
     function wie() {
       R.blatt({ titel: 'So wächst ' + o.figur, bild: o.bild, html: (o.extraHtml || '') + '<p>' + esc(o.wie) + ' Jeder kleine Schritt gibt 1 ' + esc(o.licht1) + ' (höchstens ' + MAX_TAG + ' pro Tag).</p><div class="r8-tasten">' +
-        ST.map(function (n, i) { return '<kbd>' + SCHW[i] + '</kbd><span>Stufe ' + (i + 1) + ': ' + esc(n) + '</span>'; }).join('') + '</div>' +
+        ST.map(function (n, i) { return '<kbd>' + SCHW[i] + '</kbd><span style="display:flex;align-items:center;gap:10px">' + (o.stufenBilder && o.stufenBilder[i] ? '<img src="' + esc(o.stufenBilder[i]) + '" alt="" width="44" height="44" loading="lazy" style="flex:none;border-radius:12px;object-fit:cover">' : '') + 'Stufe ' + (i + 1) + ': ' + esc(n) + '</span>'; }).join('') + '</div>' +
         '<p>Nichts geht verloren, nichts geht kaputt. Ein Ruhetag pro Woche zählt bei der Serie mit (🌙).</p>' + W.html({ schutzName: 'Ruhetag', schutzZeichen: '🌙', da: 'mindestens ein ' + o.licht1 }) +
         '<p class="r7-klein">Alles bleibt auf diesem Gerät.</p>' });
     }
@@ -917,8 +918,22 @@ window.R8 = {
     var k = d.querySelector('#r7Neu .r7-neu-kopf small'); if (k && K.neuText) k.textContent = K.neuText;
   }
 
+  /* ---------- 17. Maskottchen: helles Tinko-Bild an festen Stellen, auch wenn alte Skripte die Pose wechseln ---------- */
+  function maskottchen(sel, src) {
+    var get = typeof src === 'function' ? src : function () { return src; };
+    var mo;
+    function fix() {
+      var s = get();
+      [].forEach.call(d.querySelectorAll(sel), function (i) { if (i.getAttribute('src') !== s) { i.removeAttribute('srcset'); i.setAttribute('src', s); } });
+    }
+    function lauf() { if (mo) mo.disconnect(); fix(); if (mo) mo.observe(d.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['src'] }); }
+    if (window.MutationObserver) mo = new MutationObserver(lauf);
+    lauf();
+    return lauf;
+  }
+
   window.R8K = { monat: monat, monatsName: monatsName, sos: sos, waechst: waechst, licht: function (g) { return WM ? WM.licht(g) : false; }, datei: datei, kopiere: kopiere, imRahmen: imRahmen, hol: hol, leg: leg, summ: summ, rueck: rueck, bildKarte: bildKarte, teileBild: teileBild, menue: menue, menueAuf: menueAuf, tasten: tasten, tastenHilfe: tastenHilfe,
-    wechsel: wechsel, ringe: ringe, ringeLos: ringeLos, ringeMalen: ringeMalen, woche: woche, heute: heute, ziehen: ziehen, story: story, ymd: ymd, umbruch: umbruch };
+    wechsel: wechsel, ringe: ringe, ringeLos: ringeLos, ringeMalen: ringeMalen, woche: woche, heute: heute, ziehen: ziehen, story: story, ymd: ymd, umbruch: umbruch, maskottchen: maskottchen };
   function start() {
     try { offline(); } catch (e) { console.warn('r8 offline', e); }
     if (K.start) try { K.start(window.R8K, R); } catch (e) { console.warn('r8 start', e); }

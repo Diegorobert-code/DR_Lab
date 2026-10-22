@@ -1,6 +1,6 @@
 // Fompa – Offline-Cache (nur eigene Dateien, keine Belege)
-const CACHE = 'fompa-v15';
-const FILES = ['./runde8.js', './markt.css', './runde7.js', './runde6.js', './saison/advent.jpg', './besuch/coinmaker.jpg', './besuch/copa.jpg', './besuch/mrping.jpg', './', './index.html', './manifest.webmanifest', './icon-180.png', './icon-96.png', './figur.jpg', './held.jpg', './fompa-posen.jpg', './feedback.js', './runde4.js', './posen/posen.json', './posen/freut.jpg', './posen/denkt.jpg', './posen/rechnet.jpg', './posen/staunt.jpg', './posen/schlaeft.jpg', './posen/nickt.jpg', './posen/leer.jpg', '../nova/puppe.js', '../nova/puppe.css', '../apps/sprechen/sprechen.js', '../nova/intro.js', '../nova/buehne.js', '../nova/nova.js', '../nova/seelen.js'];
+const CACHE = 'fompa-v16';
+const FILES = ['./runde8.js', './markt.css', './wm/ausflug.jpg', './wm/maskottchen.jpg', './wm/stufe-1.jpg', './wm/stufe-2.jpg', './wm/stufe-3.jpg', './wm/stufe-4.jpg', './wm/stufe-5.jpg', './runde7.js', './runde6.js', './saison/advent.jpg', './besuch/coinmaker.jpg', './besuch/copa.jpg', './besuch/mrping.jpg', './', './index.html', './manifest.webmanifest', './icon-180.png', './icon-96.png', './figur.jpg', './held.jpg', './fompa-posen.jpg', './feedback.js', './runde4.js', './posen/posen.json', './posen/freut.jpg', './posen/denkt.jpg', './posen/rechnet.jpg', './posen/staunt.jpg', './posen/schlaeft.jpg', './posen/nickt.jpg', './posen/leer.jpg', '../nova/puppe.js', '../nova/puppe.css', '../apps/sprechen/sprechen.js', '../nova/intro.js', '../nova/buehne.js', '../nova/nova.js', '../nova/seelen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
 });
