@@ -203,7 +203,7 @@
   function icsZeit(s) { var m = /(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2})/.exec(s || ''); return m ? m[1] + m[2] + m[3] + 'T' + ('0' + m[4]).slice(-2) + m[5] + '00' : null; }
   function icsLaden(d) {
     var z = icsZeit(d.t[0]); if (!z) { hasi('nein', 'Datum?', 'Hasi tippt auf das Datum: So schreiben, 2026-11-05 10:00.'); return; }
-    var txt = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//DR Lab//Hasis Werkbank//DE', 'BEGIN:VEVENT', 'UID:' + Date.now() + '@hasi', 'DTSTAMP:' + z, 'DTSTART:' + z, 'SUMMARY:' + (d.t[1] || d.n).replace(/[\r\n,;]/g, ' '), 'BEGIN:VALARM', 'TRIGGER:-PT30M', 'ACTION:DISPLAY', 'DESCRIPTION:Erinnerung', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    var txt = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Hasis Laden//Werkbank//DE', 'BEGIN:VEVENT', 'UID:' + Date.now() + '@hasi', 'DTSTAMP:' + z, 'DTSTART:' + z, 'SUMMARY:' + (d.t[1] || d.n).replace(/[\r\n,;]/g, ' '), 'BEGIN:VALARM', 'TRIGGER:-PT30M', 'ACTION:DISPLAY', 'DESCRIPTION:Erinnerung', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
     laden(new Blob([txt], { type: 'text/calendar' }), 'termin.ics');
     hasi('daumen', 'Läuft', 'Hasi reicht dir einen kleinen Kalenderzettel.');
   }
