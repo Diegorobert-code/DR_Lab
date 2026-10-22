@@ -7,7 +7,7 @@
    4. Wunschzettel als Text teilen (siehe runde4.js) und «Wächst mit dir» mit Sonnenfedern (Vorbild: Finch).
    Nutzt aus index.html: WAREN, korb, speichern, korbZeigen, filterZeigen, regalZeigen, aktiv. */
 window.R8 = {
-  bild: 'copa/winkt.jpg',
+  bild: 'wm/maskottchen.jpg',
   offline: 'Offline. Das Lädeli bleibt offen: Korb und Wunschzettel sind auf deinem Gerät.',
   neuText: 'Neu: Geschenk-Finder mit fertigem Set und Überraschungs-Säckli.',
   css: [
@@ -27,17 +27,35 @@ window.R8 = {
     '.r8-frage{margin:16px 0 8px!important;font-weight:700;color:#f6efe4!important}',
     '.r8-set{display:grid;gap:8px;margin:12px 0}',
     '.r8-set div{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14)}',
-    '.r8-set div b{flex:1;min-width:0}.r8-set div i{font-style:normal;font-size:28px}.r8-set div span{font-variant-numeric:tabular-nums;font-weight:700}',
+    '.r8-set div img{flex:none;width:44px;height:44px;border-radius:10px;object-fit:cover}.r8-set div b{flex:1;min-width:0}.r8-set div i{font-style:normal;font-size:28px}.r8-set div span{font-variant-numeric:tabular-nums;font-weight:700}',
     '.r8-total{display:flex;justify-content:space-between;font-size:1.125rem;font-weight:800;margin:8px 0 12px}',
     '.r8-saeckli{display:grid;place-items:center;margin:8px 0 16px}',
-    '.r8-saeckli span{font-size:96px;line-height:1;display:block}',
-    '.r8-saeckli.packt span{animation:r8Wackel .35s ease-in-out 4}',
+    '.r8-saeckli img{display:block;width:min(200px,60vw);aspect-ratio:1;object-fit:cover;border-radius:24px;transition:transform .3s}',
+    '.r8-saeckli.offen img{transform:scale(1.05)}',
+    '.r8-saeckli.packt img{animation:r8Wackel .35s ease-in-out 4}',
     '@keyframes r8Wackel{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}',
     '.r8-set div.neu{animation:r8Auf .4s var(--r7-ease) both}',
     '@keyframes r8Auf{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}'
   ].join('\n'),
   start: function (E, R) {
+    E.maskottchen('#copaBild, .r7-kopf > img, .r7-leer > img, .r8-ziehen img', 'wm/maskottchen.jpg'); // helles Tinko-Maskottchen statt dunkler Pose
     if (typeof WAREN === 'undefined') return;
+    /* Produktfotos (Tinko-Bilder) statt Emoji-Raster; zwei neue Strand-Waren */
+    (function () {
+      var FOTO = { kerze: 'kerze.jpg', tuch: 'strandtuch.jpg', karte: 'postkarte.jpg', muschel: 'muschelkette.jpg', box: 'ueberraschung.jpg' };
+      WAREN.forEach(function (w) { if (FOTO[w.id] && !w.bild) w.bild = FOTO[w.id]; });
+      var mu = WAREN.filter(function (w) { return w.id === 'muschel'; })[0];
+      if (mu) { mu.em = '🐚'; mu.name = 'Muschelkette'; mu.text = 'Kleine Muscheln an einem Baumwollband, für Sommergefühl am Hals.'; mu.kat = 'Schmuck'; mu.preis = 19; }
+      var ka = WAREN.filter(function (w) { return w.id === 'karte'; })[0];
+      if (ka) { ka.name = 'Postkarte Copacabana'; ka.text = 'Postkarte mit Strandmotiv, für ein paar liebe Zeilen.'; }
+      var neu = [
+        { id: 'hut', em: '👒', name: 'Sonnenhut', text: 'Leichter Strohhut mit breiter Krempe, für lange Sonnentage.', preis: 32, kat: 'Strand', bild: 'sonnenhut.jpg' },
+        { id: 'tasche', em: '👜', name: 'Strandtasche', text: 'Geflochtene Tasche, gross genug für Tuch, Buch und Glace-Geld.', preis: 36, kat: 'Strand', bild: 'tasche.jpg' }
+      ];
+      var iBox = WAREN.findIndex(function (w) { return w.id === 'box'; });
+      neu.forEach(function (n) { if (!WAREN.some(function (w) { return w.id === n.id; })) WAREN.splice(iBox < 0 ? WAREN.length : iBox++, 0, n); });
+      try { regalZeigen(); korbZeigen(); } catch (e) {}
+    })();
     var TAGS = {
       kerze: { wer: ['mama', 'freundin', 'kollege'], wozu: ['geburtstag', 'danke', 'einfach'], stil: ['gemuetlich'] },
       tuch: { wer: ['freundin', 'mama', 'kind'], wozu: ['geburtstag', 'einfach'], stil: ['sommer'] },
@@ -45,7 +63,9 @@ window.R8 = {
       armband: { wer: ['kind', 'freundin'], wozu: ['einfach', 'danke', 'geburtstag'], stil: ['sommer', 'persoenlich'] },
       schoggi: { wer: ['kollege', 'kind', 'mama', 'freundin'], wozu: ['danke', 'einfach'], stil: ['geniessen'] },
       karte: { wer: ['mama', 'freundin', 'kollege', 'kind'], wozu: ['geburtstag', 'danke', 'einfach'], stil: ['persoenlich'] },
-      muschel: { wer: ['mama', 'freundin'], wozu: ['danke', 'einfach'], stil: ['sommer', 'praktisch'] },
+      muschel: { wer: ['mama', 'freundin', 'kind'], wozu: ['danke', 'einfach', 'geburtstag'], stil: ['sommer', 'persoenlich'] },
+      hut: { wer: ['mama', 'freundin', 'kind'], wozu: ['geburtstag', 'einfach'], stil: ['sommer', 'praktisch'] },
+      tasche: { wer: ['freundin', 'mama', 'kollege'], wozu: ['geburtstag', 'danke'], stil: ['sommer', 'praktisch'] },
       box: { wer: ['mama', 'freundin', 'kind'], wozu: ['geburtstag'], stil: ['geniessen'] }
     };
     var WER = [['mama', '👩 Mama'], ['freundin', '💁 Freundin'], ['kind', '🧒 Kind'], ['kollege', '🧑‍💼 Kollegin/Kollege']];
@@ -70,7 +90,7 @@ window.R8 = {
       return { set: set, summe: summe };
     }
     function setHtml(r, neu) {
-      return '<div class="r8-set">' + r.set.map(function (w, i) { return '<div' + (neu ? ' class="neu" style="animation-delay:' + (i * 0.25) + 's"' : '') + '><i aria-hidden="true">' + w.em + '</i><b>' + R.esc(w.name) + '</b><span>' + chf(w.preis) + '</span></div>'; }).join('') + '</div>' +
+      return '<div class="r8-set">' + r.set.map(function (w, i) { return '<div' + (neu ? ' class="neu" style="animation-delay:' + (i * 0.25) + 's"' : '') + '>' + (w.bild ? '<img src="bilder/' + R.esc(w.bild) + '" alt="" width="44" height="44" loading="lazy">' : '<i aria-hidden="true">' + w.em + '</i>') + '<b>' + R.esc(w.name) + '</b><span>' + chf(w.preis) + '</span></div>'; }).join('') + '</div>' +
         '<div class="r8-total"><span>Total</span><span>' + chf(r.summe) + '</span></div>';
     }
     function anfrage(r, titel) {
@@ -80,7 +100,7 @@ window.R8 = {
     /* 1. Geschenk-Finder mit fertigem Set */
     function finder() {
       var F = { wer: null, wozu: null, budget: null, stil: null };
-      var inh = R.blatt({ titel: 'Geschenk-Finder', bild: 'copa/produkte.jpg', html: '<div id="r8FInh"></div>' });
+      var inh = R.blatt({ titel: 'Geschenk-Finder', bild: 'wm/maskottchen.jpg', html: '<div id="r8FInh"></div>' });
       var box = inh.querySelector('#r8FInh');
       function chips(name, liste) { return '<div class="r8-wahl" role="group" aria-label="' + name + '">' + liste.map(function (x) { return '<button type="button" data-f="' + name + '" data-v="' + x[0] + '" aria-pressed="' + (String(F[name]) === String(x[0])) + '">' + R.esc(x[1]) + '</button>'; }).join('') + '</div>'; }
       function zeig(vorgabe) {
@@ -88,7 +108,7 @@ window.R8 = {
         box.innerHTML = '<p>Vier kurze Fragen, dann packt Copa ein fertiges Set für dich zusammen.</p>' +
           '<p class="r8-frage">Für wen?</p>' + chips('wer', WER) + '<p class="r8-frage">Wozu?</p>' + chips('wozu', WOZU) +
           '<p class="r8-frage">Wie viel?</p>' + chips('budget', BUDGET) + '<p class="r8-frage">Welcher Stil?</p>' + chips('stil', STIL) +
-          '<div aria-live="polite">' + (r ? (r.set.length ? '<h3>Copas Vorschlag</h3>' + setHtml(r) + '<div class="r7-reihe"><button type="button" class="r7-knopf" data-a="korb">Alles in den Korb</button><button type="button" class="r7-knopf leise" data-a="wunsch">♥ Merken</button><button type="button" class="r7-knopf leise" data-a="anders">Anderes Set</button></div><p class="r7-klein">Testladen: es wird nichts bezahlt und nichts verschickt.</p>' : R.leer('Für dieses Budget habe ich gerade nichts Passendes. Probier ein anderes Budget.', 'copa/winkt.jpg')) : '') + '</div>';
+          '<div aria-live="polite">' + (r ? (r.set.length ? '<h3>Copas Vorschlag</h3>' + setHtml(r) + '<div class="r7-reihe"><button type="button" class="r7-knopf" data-a="korb">Alles in den Korb</button><button type="button" class="r7-knopf leise" data-a="wunsch">♥ Merken</button><button type="button" class="r7-knopf leise" data-a="anders">Anderes Set</button></div><p class="r7-klein">Testladen: es wird nichts bezahlt und nichts verschickt.</p>' : R.leer('Für dieses Budget habe ich gerade nichts Passendes. Probier ein anderes Budget.', 'wm/maskottchen.jpg')) : '') + '</div>';
         box._r = r;
       }
       box.addEventListener('click', function (e) {
@@ -107,26 +127,26 @@ window.R8 = {
     /* 2. Überraschungs-Säckli (ohne Zahlung) */
     function saeckli() {
       var budget = null;
-      var inh = R.blatt({ titel: 'Überraschungs-Säckli', bild: 'copa/freut.jpg', html: '<p>Du wählst das Budget, Copa packt eine Überraschung. Kein Kauf, keine Zahlung: du kannst sie als Wunsch merken oder als Anfrage schicken.</p>' +
+      var inh = R.blatt({ titel: 'Überraschungs-Säckli', bild: 'wm/maskottchen.jpg', html: '<p>Du wählst das Budget, Copa packt eine Überraschung. Kein Kauf, keine Zahlung: du kannst sie als Wunsch merken oder als Anfrage schicken.</p>' +
         '<div class="r8-wahl" role="group" aria-label="Budget">' + [[15, 'CHF 15'], [25, 'CHF 25'], [40, 'CHF 40'], [60, 'CHF 60']].map(function (x) { return '<button type="button" data-b="' + x[0] + '" aria-pressed="false">' + x[1] + '</button>'; }).join('') + '</div>' +
-        '<div class="r8-saeckli" aria-hidden="true"><span>🛍️</span></div><div id="r8SInh" aria-live="polite"></div>' });
+        '<div class="r8-saeckli" aria-hidden="true"><img src="wm/ueberraschung.jpg" alt="" width="200" height="200"></div><div id="r8SInh" aria-live="polite"></div>' });
       var out = inh.querySelector('#r8SInh'), sk = inh.querySelector('.r8-saeckli');
       function packen() {
         out.innerHTML = '<p>Copa packt …</p>'; sk.classList.remove('packt'); void sk.offsetWidth; if (!R.ruhig()) sk.classList.add('packt');
         setTimeout(function () {
           var r = zusammen({ budget: budget }, true); out._r = r;
-          sk.querySelector('span').textContent = '🎁';
+          sk.classList.add('offen');
           out.innerHTML = r.set.length ? '<h3>Im Säckli ist …</h3>' + setHtml(r, true) + '<div class="r7-reihe"><button type="button" class="r7-knopf" data-s="wunsch">♥ Als Wunsch merken</button><button type="button" class="r7-knopf leise" data-s="text">Anfrage-Text</button><button type="button" class="r7-knopf leise" data-s="neu">Nochmal mischen</button></div><p class="r7-klein">Es wird nichts bestellt und nichts bezahlt.</p>' : '<p>Für dieses Budget ist das Säckli noch leer.</p>';
           E.licht('saeckli');
         }, R.ruhig() ? 200 : 1400);
       }
       inh.addEventListener('click', function (e) {
         var b = e.target.closest('[data-b]'), s = e.target.closest('[data-s]');
-        if (b) { budget = +b.dataset.b; inh.querySelectorAll('[data-b]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); }); sk.querySelector('span').textContent = '🛍️'; packen(); }
+        if (b) { budget = +b.dataset.b; inh.querySelectorAll('[data-b]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); }); sk.classList.remove('offen'); packen(); }
         if (s && out._r) {
           if (s.dataset.s === 'wunsch') { wunschDazu(out._r.set.map(function (w) { return w.id; })); s.textContent = '♥ Gemerkt'; E.summ(10); }
           if (s.dataset.s === 'text') E.datei(anfrage(out._r, 'Ich hätte gern dieses Überraschungs-Säckli (Budget ' + chf(budget) + ')'), 'saeckli-anfrage.txt', { nurText: true, titel: 'Anfrage-Text', hinweis: 'Kopiere den Text und schick ihn per Mail oder WhatsApp. Es wird nichts bezahlt.' });
-          if (s.dataset.s === 'neu') { sk.querySelector('span').textContent = '🛍️'; packen(); }
+          if (s.dataset.s === 'neu') { sk.classList.remove('offen'); packen(); }
         }
       });
     }
@@ -155,7 +175,7 @@ window.R8 = {
     }
 
     /* 4. Wächst mit dir */
-    E.waechst({ ort: '.copa-gruss', wo: 'nach', figur: 'Copa', bild: 'copa/freut.jpg', licht: 'Sonnenfedern', licht1: 'Sonnenfeder',
+    E.waechst({ ort: '.copa-gruss', wo: 'nach', figur: 'Copa', bild: 'wm/maskottchen.jpg', stufenBilder: ['wm/stufe-1.jpg', 'wm/stufe-2.jpg', 'wm/stufe-3.jpg', 'wm/stufe-4.jpg', 'wm/stufe-5.jpg'], ausflugBild: 'wm/ausflug.jpg', licht: 'Sonnenfedern', licht1: 'Sonnenfeder',
       stufen: ['Küken', 'Strandvogel', 'Palmenpapagei', 'Sonnenara', 'Strandkönig'],
       wie: 'Ein kleiner Schritt: ein Geschenk gefunden, ein Säckli geöffnet, etwas auf den Wunschzettel gelegt.',
       ausfluege: [
@@ -800,7 +820,7 @@ window.R8 = {
       else if (schonHeute) { knopf = ''; info = 'Heute war ' + esc(o.figur) + ' schon unterwegs. Morgen geht es wieder los.'; }
       else if (heuteN(x) > 0) { knopf = '<button type="button" class="r7-knopf" data-wm="los">🎒 Auf Ausflug schicken</button>'; info = 'Du hast heute schon ' + heuteN(x) + ' ' + esc(heuteN(x) === 1 ? o.licht1 : o.licht) + ' gesammelt. ' + esc(o.figur) + ' möchte etwas entdecken.'; }
       else { knopf = ''; info = esc(o.wie) + ' Dann geht ' + esc(o.figur) + ' auf einen kleinen Ausflug.'; }
-      box.innerHTML = '<div class="fig"><img src="' + esc(o.bild) + '" alt="" width="72" height="72"><span class="st" aria-hidden="true">' + (s + 1) + '</span></div>' +
+      box.innerHTML = '<div class="fig"><img src="' + esc((o.stufenBilder && o.stufenBilder[s]) || o.bild) + '" alt="" width="72" height="72"><span class="st" aria-hidden="true">' + (s + 1) + '</span></div>' +
         '<div><h2 id="r8WmH">Wächst mit dir</h2><span class="name">' + esc(o.figur) + ' · ' + esc(ST[s]) + '</span>' +
         '<div class="bar" role="progressbar" aria-label="Fortschritt zur nächsten Stufe" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + proz + '"><i style="width:' + proz + '%"></i></div>' +
         '<span class="zahl">' + x.n + ' ' + esc(x.n === 1 ? o.licht1 : o.licht) + (naechste == null ? ' · höchste Stufe erreicht' : ' · noch ' + (naechste - x.n) + ' bis «' + esc(ST[s + 1]) + '»') + ' · 🔥 ' + ws.serie + ' Tag' + (ws.serie === 1 ? '' : 'e') + '</span></div>' +
@@ -830,7 +850,7 @@ window.R8 = {
     function vorlesen(t) { try { if (!window.speechSynthesis) return false; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = 'de-CH'; u.rate = .95; speechSynthesis.speak(u); return true; } catch (e) { return false; } }
     function fund(i, neu) {
       var a = o.ausfluege[i]; if (!a) return;
-      var inh = R.blatt({ titel: neu ? esc(o.figur) + ' war unterwegs' : a.n, bild: o.bild, html: (o.extraHtml || '') + '<div class="r8-fund"><span class="e" aria-hidden="true">' + a.f + '</span><h3>' + esc(a.n) + '</h3></div><p>' + esc(a.t) + '</p>' +
+      var inh = R.blatt({ titel: neu ? esc(o.figur) + ' war unterwegs' : a.n, bild: o.bild, html: (o.extraHtml || '') + '<div class="r8-fund">' + (o.ausflugBild ? '<img class="r8-bild" src="' + esc(o.ausflugBild) + '" alt="' + esc(o.figur) + ' unterwegs" loading="lazy">' : '') + '<span class="e" aria-hidden="true">' + a.f + '</span><h3>' + esc(a.n) + '</h3></div><p>' + esc(a.t) + '</p>' +
         '<div class="r7-reihe"><button type="button" class="r7-knopf leise" data-wm="hoer">🔊 Vorlesen</button>' + (neu ? '<button type="button" class="r7-knopf" data-wm="ok">Ins Album legen</button>' : '') + '</div>' });
       inh.querySelector('[data-wm=hoer]').addEventListener('click', function () { if (!vorlesen(a.n + '. ' + a.t)) this.textContent = 'Vorlesen geht hier nicht'; });
       var ok = inh.querySelector('[data-wm=ok]'); if (ok) ok.addEventListener('click', function () { R.zu(); });
@@ -843,7 +863,7 @@ window.R8 = {
     }
     function wie() {
       R.blatt({ titel: 'So wächst ' + o.figur, bild: o.bild, html: (o.extraHtml || '') + '<p>' + esc(o.wie) + ' Jeder kleine Schritt gibt 1 ' + esc(o.licht1) + ' (höchstens ' + MAX_TAG + ' pro Tag).</p><div class="r8-tasten">' +
-        ST.map(function (n, i) { return '<kbd>' + SCHW[i] + '</kbd><span>Stufe ' + (i + 1) + ': ' + esc(n) + '</span>'; }).join('') + '</div>' +
+        ST.map(function (n, i) { return '<kbd>' + SCHW[i] + '</kbd><span style="display:flex;align-items:center;gap:10px">' + (o.stufenBilder && o.stufenBilder[i] ? '<img src="' + esc(o.stufenBilder[i]) + '" alt="" width="44" height="44" loading="lazy" style="flex:none;border-radius:12px;object-fit:cover">' : '') + 'Stufe ' + (i + 1) + ': ' + esc(n) + '</span>'; }).join('') + '</div>' +
         '<p>Nichts geht verloren, nichts geht kaputt. Ein Ruhetag pro Woche zählt bei der Serie mit (🌙).</p>' + W.html({ schutzName: 'Ruhetag', schutzZeichen: '🌙', da: 'mindestens ein ' + o.licht1 }) +
         '<p class="r7-klein">Alles bleibt auf diesem Gerät.</p>' });
     }
@@ -928,8 +948,22 @@ window.R8 = {
     var k = d.querySelector('#r7Neu .r7-neu-kopf small'); if (k && K.neuText) k.textContent = K.neuText;
   }
 
+  /* ---------- 17. Maskottchen: helles Tinko-Bild an festen Stellen, auch wenn alte Skripte die Pose wechseln ---------- */
+  function maskottchen(sel, src) {
+    var get = typeof src === 'function' ? src : function () { return src; };
+    var mo;
+    function fix() {
+      var s = get();
+      [].forEach.call(d.querySelectorAll(sel), function (i) { if (i.getAttribute('src') !== s) { i.removeAttribute('srcset'); i.setAttribute('src', s); } });
+    }
+    function lauf() { if (mo) mo.disconnect(); fix(); if (mo) mo.observe(d.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['src'] }); }
+    if (window.MutationObserver) mo = new MutationObserver(lauf);
+    lauf();
+    return lauf;
+  }
+
   window.R8K = { monat: monat, monatsName: monatsName, sos: sos, waechst: waechst, licht: function (g) { return WM ? WM.licht(g) : false; }, datei: datei, kopiere: kopiere, imRahmen: imRahmen, hol: hol, leg: leg, summ: summ, rueck: rueck, bildKarte: bildKarte, teileBild: teileBild, menue: menue, menueAuf: menueAuf, tasten: tasten, tastenHilfe: tastenHilfe,
-    wechsel: wechsel, ringe: ringe, ringeLos: ringeLos, ringeMalen: ringeMalen, woche: woche, heute: heute, ziehen: ziehen, story: story, ymd: ymd, umbruch: umbruch };
+    wechsel: wechsel, ringe: ringe, ringeLos: ringeLos, ringeMalen: ringeMalen, woche: woche, heute: heute, ziehen: ziehen, story: story, ymd: ymd, umbruch: umbruch, maskottchen: maskottchen };
   function start() {
     try { offline(); } catch (e) { console.warn('r8 offline', e); }
     if (K.start) try { K.start(window.R8K, R); } catch (e) { console.warn('r8 start', e); }

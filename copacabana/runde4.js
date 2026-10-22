@@ -129,8 +129,8 @@
     var l = wunsch(), mitLink = geteilt && geteilt.length;
     wk.hidden = !l.length && !mitLink; if (wk.hidden) return;
     var wl = function (ids) { return ids.map(function (id) { var w = WAREN.filter(function (x) { return x.id === id; })[0]; return w ? '<span>' + w.em + ' ' + esc(w.name) + '</span>' : ''; }).join(''); };
-    wk.innerHTML = (mitLink ? '<h2>💌 Ein Wunschzettel für dich</h2><p class="hinweis">Jemand hat dir diese Wünsche geschickt. Sie sind im Regal golden markiert.</p><div class="r4-wunsch">' + wl(geteilt) + '</div>' : '') +
-      (l.length ? '<h2' + (mitLink ? ' style="margin-top:14px"' : '') + '>♥ Mein Wunschzettel</h2><div class="r4-wunsch">' + wl(l) + '</div><div class="r4-reihe"><button class="knopf" type="button" data-r4="teilen">Wunschzettel teilen</button></div>' : '');
+    wk.innerHTML = (mitLink ? '<h2>💌 Ein Wunschzettel für dich</h2><p class="hinweis">Jemand hat dir diese Wünsche geschickt. Sie sind im Regal golden markiert.</p><div class="r4-wunsch" tabindex="0" role="region" aria-label="Geschickte Wünsche">' + wl(geteilt) + '</div>' : '') +
+      (l.length ? '<h2' + (mitLink ? ' style="margin-top:14px"' : '') + '>♥ Mein Wunschzettel</h2><div class="r4-wunsch" tabindex="0" role="region" aria-label="Mein Wunschzettel">' + wl(l) + '</div><div class="r4-reihe"><button class="knopf" type="button" data-r4="teilen">Wunschzettel teilen</button></div>' : '');
     var t = wk.querySelector('[data-r4=teilen]');
     if (t) t.onclick = function () {
       var url = location.href.split('#')[0] + '#wunsch=' + wunsch().join(',');
