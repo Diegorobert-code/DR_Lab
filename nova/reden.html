@@ -213,6 +213,15 @@
   var EINGEBETTET = window.parent !== window && new URLSearchParams(location.search).get('zentrale') === '1';
   function zentrale(n) { if (EINGEBETTET) try { window.parent.postMessage(Object.assign({ zentrale: true, f: KEY }, n), location.origin); } catch (e) {} }
   if (EINGEBETTET) { $('wahl').style.display = 'none'; $('zurueck').style.display = 'none'; }
+  // Wischen im eingebetteten Fenster: falls das iPhone die Geste nicht selbst an die Zentrale weitergibt.
+  if (EINGEBETTET) (function () {
+    var x0 = 0, y0 = 0;
+    document.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    document.addEventListener('touchend', function (e) {
+      var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5 && !/input|select|textarea/i.test(e.target.tagName)) zentrale({ typ: 'wisch', richtung: dx < 0 ? 1 : -1 });
+    }, { passive: true });
+  })();
   $('zurueck').addEventListener('click', function (e) { e.preventDefault(); if (history.length > 1) history.back(); else location.href = '../apps/'; });
 
   // Ottis Gesicht: Mund bewegt sich im Takt seiner Stimme (nova/mund.js).

@@ -146,6 +146,10 @@
   window.addEventListener('message', function (e) {
     if (e.origin !== location.origin || !e.data || !e.data.zentrale) return;
     if (e.data.typ === 'spricht') { spricht = !!e.data.ja; lautstaerke(); }
+    if (e.data.typ === 'wisch') {
+      var vor = vorne;
+      setTimeout(function () { if (vorne === vor) seiten.scrollTo({ left: Math.max(0, Math.min(KIS.length, vor + e.data.richtung)) * seiten.clientWidth, behavior: 'smooth' }); }, 300);
+    }
   });
 
   // Threads und Links kommen als JSON vom Server (Adresse einmal mit #liste=… öffnen, dann gemerkt):
