@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nova Zentrale</title>
+<meta name="theme-color" content="#0b1a3a">
+<link rel="apple-touch-icon" href="icon-nova-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root { --nacht:#0b1a3a; --nacht2:#16306b; --gold:#f5c542; --text:#f4f1e8; --leise:#b9c3e0; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { margin:0; height:100%; }
+  body { background:radial-gradient(120% 80% at 50% 0%, var(--nacht2), var(--nacht) 70%); color:var(--text);
+    font:16px/1.4 system-ui, -apple-system, sans-serif; overflow:hidden; }
+  .seiten { display:flex; height:100%; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; overscroll-behavior-x:contain; }
+  .seiten::-webkit-scrollbar { display:none; }
+  .seite { flex:none; width:100%; height:100%; scroll-snap-align:start; position:relative; }
+  .start { display:flex; flex-direction:column; align-items:center; overflow-y:auto;
+    padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 90px); }
+  h1 { margin:0 0 6px; font-size:20px; color:var(--gold); letter-spacing:.5px; }
+  .tipp { color:var(--leise); font-size:14px; margin:0 0 6px; }
+  .liste { width:100%; max-width:480px; display:flex; flex-direction:column; gap:8px; }
+  .gruppe { font-size:13px; letter-spacing:1px; text-transform:uppercase; color:var(--leise); margin:12px 2px 0; }
+  .karte { display:flex; align-items:center; gap:12px; padding:14px; border-radius:16px; background:#ffffff10; color:inherit; text-decoration:none; }
+  .karte.wichtig { background:#f5c54222; box-shadow:inset 0 0 0 2px var(--gold); }
+  .karte .zeichen { font-size:26px; flex:none; }
+  .karte .titel { font-weight:600; flex:1; }
+  .karte .neu { font-size:12px; color:#1b1300; background:var(--gold); border-radius:20px; padding:2px 8px; flex:none; }
+  .leer { color:var(--leise); text-align:center; margin-top:18px; }
+  .kis { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; max-width:480px; margin-top:6px; }
+  .kis button { border:0; background:none; padding:0; width:52px; text-align:center; color:var(--leise); font-size:11px; }
+  .kis img { width:52px; height:52px; border-radius:50%; object-fit:cover; box-shadow:0 0 0 2px #ffffff22; display:block; margin-bottom:2px; }
+  iframe { border:0; width:100%; height:100%; display:block; background:transparent; }
+  .platz { position:absolute; inset:0; display:grid; place-items:center; color:var(--leise); }
+  .musik { position:fixed; left:12px; right:12px; bottom:calc(env(safe-area-inset-bottom) + 20px); max-width:480px; margin:0 auto;
+    display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:30px; background:#0b1a3ae6; box-shadow:0 0 0 1px #ffffff22, 0 10px 30px #0008; z-index:5; }
+  .musik button { border:0; border-radius:50%; width:40px; height:40px; background:var(--gold); color:#1b1300; font-size:18px; flex:none; }
+  .musik select { flex:1; min-width:0; background:transparent; color:var(--text); border:0; font:inherit; }
+  .musik input[type=range] { width:70px; flex:none; accent-color:var(--gold); }
+  .musik.zu { left:auto; right:12px; width:auto; padding:6px; }
+  .musik.zu > :not(#musikAuf) { display:none; }
+  #musikAuf { background:#ffffff18; color:var(--gold); }
+  .punkte { position:fixed; left:0; right:0; bottom:calc(env(safe-area-inset-bottom) + 4px); display:flex; justify-content:center; gap:6px; pointer-events:none; z-index:6; }
+  .punkte i { width:6px; height:6px; border-radius:50%; background:#ffffff40; }
+  .punkte i.an { background:var(--gold); }
+</style>
+</head>
+<body>
+<div class="seiten" id="seiten">
+  <section class="seite start">
+    <h1>Nova Zentrale</h1>
+    <p class="tipp">Wisch nach links: jede KI hört dich sofort.</p>
+    <div class="kis" id="kis"></div>
+    <div class="liste" id="liste"><div class="leer">Threads werden geladen …</div></div>
+  </section>
+</div>
+<div class="musik zu" id="musik">
+  <button id="musikAuf" aria-label="Musik">🎵</button>
+  <button id="spiel" aria-label="Abspielen">▶</button>
+  <select id="sender" aria-label="Musik wählen"></select>
+  <input type="range" id="laut" min="0" max="1" step="0.05" value="0.5" aria-label="Lautstärke">
+  <input type="file" id="eigene" accept="audio/*" multiple hidden>
+</div>
+<audio id="ton" preload="none" playsinline></audio>
+<div class="punkte" id="punkte"></div>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  // Seite 1 = Threads und Links, danach wischen zu jeder KI. Jede KI läuft in ihrer eigenen reden.html (gleiche Stimme, gleiches Gedächtnis).
+  var KIS = [
+    ['nova', 'Nova', 'nova-3d.jpg'], ['sparky', 'Sparky', 'figuren/sparky-klein.jpg'], ['mr. ping', 'Mr. Ping', '../tradeping/icon-180.png'],
+    ['sunny', 'Sunny', 'figuren/sunny-klein.jpg'], ['fompa', 'Fompa', 'figuren/fompa-klein.jpg'], ['coin maker', 'Coin Maker', 'figuren/coinmaker-klein.jpg'],
+    ['jackie', 'Jackie', '../jackie/icon-180.png'], ['flo', 'Flo', 'figuren/flo-klein.jpg'], ['kiki', 'Kiki', '../kiki/icon-180.png'],
+    ['otti', 'Otti', '../otti/icon-180.png'], ['tropfi', 'Tropfi', 'figuren/tropfi-klein.jpg'], ['carmencita', 'Carmencita', 'figuren/carmencita-klein.jpg'],
+    ['ava', 'Ava', 'figuren/ava-klein.jpg'], ['mama affe', 'Mama Affe', 'figuren/mamaaffe-klein.jpg'], ['granny', 'Granny', 'figuren/granny-klein.jpg']
+  ];
+  var seiten = $('seiten'), punkte = $('punkte'), rahmen = [];
+  KIS.forEach(function (k, i) {
+    var s = document.createElement('section'); s.className = 'seite';
+    var p = document.createElement('div'); p.className = 'platz'; p.textContent = k[1] + ' …'; s.appendChild(p);
+    seiten.appendChild(s); rahmen.push({ seite: s, f: k[0], fenster: null });
+    var b = document.createElement('button'); b.innerHTML = '<img alt=""><span></span>';
+    b.querySelector('img').src = k[2]; b.querySelector('span').textContent = k[1];
+    b.addEventListener('click', function () { seiten.scrollTo({ left: (i + 1) * seiten.clientWidth, behavior: 'smooth' }); });
+    $('kis').appendChild(b);
+  });
+  for (var i = 0; i <= KIS.length; i++) punkte.appendChild(document.createElement('i'));
+
+  // Nur die KI vorne ist geladen und hört zu; weggewischte legen auf, damit nie zwei gleichzeitig reden (und Minuten kosten).
+  var vorne = -1;
+  function senden(r, typ) { try { r.fenster.contentWindow.postMessage({ zentrale: true, typ: typ }, location.origin); } catch (e) {} }
+  function wechsel() {
+    var n = Math.round(seiten.scrollLeft / seiten.clientWidth);
+    [].forEach.call(punkte.children, function (x, j) { x.classList.toggle('an', j === n); });
+    if (n === vorne) return;
+    rahmen.forEach(function (r, j) {
+      if (j === n - 1) {
+        if (!r.fenster) {
+          r.fenster = document.createElement('iframe');
+          r.fenster.allow = 'microphone; autoplay; camera; fullscreen';
+          r.fenster.src = 'reden.html?f=' + encodeURIComponent(r.f) + '&zentrale=1';
+          r.fenster.onload = function () { if (rahmen[vorne - 1] === r) senden(r, 'start'); };
+          r.seite.appendChild(r.fenster);
+        } else senden(r, 'start');
+      } else if (r.fenster) {
+        senden(r, 'stopp');
+        // Weit weg gewischt: ganz schliessen, das spart Speicher am Handy.
+        if (Math.abs(j - (n - 1)) > 1) { var alt = r.fenster; r.fenster = null; setTimeout(function () { alt.remove(); }, 800); }
+      }
+    });
+    vorne = n;
+    try { sessionStorage.setItem('zentrale.seite', n); } catch (e) {}
+  }
+  var uhr = 0;
+  seiten.addEventListener('scroll', function () { clearTimeout(uhr); uhr = setTimeout(wechsel, 180); });
+  try { var alt = +sessionStorage.getItem('zentrale.seite') || 0; if (alt) setTimeout(function () { seiten.scrollLeft = alt * seiten.clientWidth; wechsel(); }, 60); } catch (e) {}
+  wechsel();
+
+  // Musik läuft in der Zentrale selbst weiter, auch beim Wischen. Spricht eine KI, wird sie leiser.
+  var ton = $('ton'), laut = $('laut'), sender = $('sender'), musik = $('musik'), spricht = false;
+  var SENDER = [
+    ['Ruhig (Lounge)', 'https://ice1.somafm.com/groovesalad-128-mp3'],
+    ['Weich (Vocals)', 'https://ice1.somafm.com/lush-128-mp3'],
+    ['Fokus (Ambient)', 'https://ice1.somafm.com/dronezone-128-mp3'],
+    ['Beats', 'https://ice1.somafm.com/beatblender-128-mp3'],
+    ['Eigene Musik vom iPhone …', 'eigene']
+  ];
+  SENDER.forEach(function (x, i) { var o = document.createElement('option'); o.value = i; o.textContent = x[0]; sender.appendChild(o); });
+  try { sender.value = localStorage.getItem('zentrale.sender') || 0; laut.value = localStorage.getItem('zentrale.laut') || 0.5; } catch (e) {}
+  var eigene = [], eigenNr = 0;
+  function lautstaerke() { ton.volume = laut.value * (spricht ? 0.35 : 1); }
+  function spielen() {
+    var x = SENDER[sender.value];
+    if (x[1] === 'eigene') { if (!eigene.length) { $('eigene').click(); return; } ton.src = URL.createObjectURL(eigene[eigenNr % eigene.length]); }
+    else ton.src = x[1];
+    lautstaerke(); ton.play().then(function () { $('spiel').textContent = '❚❚'; }).catch(function () { $('spiel').textContent = '▶'; });
+  }
+  $('spiel').addEventListener('click', function () { if (ton.paused || !ton.src) spielen(); else { ton.pause(); $('spiel').textContent = '▶'; } });
+  sender.addEventListener('change', function () { try { localStorage.setItem('zentrale.sender', sender.value); } catch (e) {} if (!ton.paused) spielen(); });
+  laut.addEventListener('input', function () { lautstaerke(); try { localStorage.setItem('zentrale.laut', laut.value); } catch (e) {} });
+  $('eigene').addEventListener('change', function () { eigene = [].slice.call(this.files || []); eigenNr = 0; if (eigene.length) spielen(); });
+  ton.addEventListener('ended', function () { if (SENDER[sender.value][1] === 'eigene' && eigene.length) { eigenNr++; spielen(); } });
+  $('musikAuf').addEventListener('click', function () { musik.classList.toggle('zu'); });
+  window.addEventListener('message', function (e) {
+    if (e.origin !== location.origin || !e.data || !e.data.zentrale) return;
+    if (e.data.typ === 'spricht') { spricht = !!e.data.ja; lautstaerke(); }
+    if (e.data.typ === 'wisch') {
+      var vor = vorne;
+      setTimeout(function () { if (vorne === vor) seiten.scrollTo({ left: Math.max(0, Math.min(KIS.length, vor + e.data.richtung)) * seiten.clientWidth, behavior: 'smooth' }); }, 300);
+    }
+  });
+
+  // Threads und Links kommen als JSON vom Server (Adresse einmal mit #liste=… öffnen, dann gemerkt):
+  // {threads:[{titel, wichtig, status, neu, bilder, link}], links:[{titel, url, video}]}
+  var liste = $('liste');
+  var m = location.hash.match(/liste=([^&]+)/), quelle = m ? decodeURIComponent(m[1]) : '';
+  try { if (quelle) { localStorage.setItem('zentrale.quelle', quelle); history.replaceState(null, '', location.pathname + location.search); } else quelle = localStorage.getItem('zentrale.quelle') || ''; } catch (e) {}
+  function karte(t, zeichen) {
+    var a = document.createElement(t.link || t.url ? 'a' : 'div'); a.className = 'karte' + (t.wichtig ? ' wichtig' : '');
+    if (t.link || t.url) { a.href = t.link || t.url; a.target = '_blank'; a.rel = 'noopener'; }
+    var z = document.createElement('span'); z.className = 'zeichen'; z.textContent = zeichen;
+    var ti = document.createElement('span'); ti.className = 'titel'; ti.textContent = t.titel || '';
+    a.append(z, ti);
+    if (t.neu) { var n = document.createElement('span'); n.className = 'neu'; n.textContent = t.status === 'wartet auf Diego' ? 'Wartet auf dich' : 'Änderung, wichtig'; a.appendChild(n); }
+    return a;
+  }
+  function gruppe(name, l, zeichen) {
+    if (!l.length) return;
+    var h = document.createElement('div'); h.className = 'gruppe'; h.textContent = name; liste.appendChild(h);
+    l.forEach(function (t) { liste.appendChild(karte(t, zeichen(t))); });
+  }
+  function zeigen(d) {
+    // Server-Format (KI-Verse /api/zentrale/threads): status «läuft» | «wartet auf Diego» | «fertig».
+    var l = ((d && d.threads) || []).filter(function (t) { return t.status !== 'fertig'; }).map(function (t) {
+      return t.status === 'wartet auf Diego' ? Object.assign({}, t, { neu: true }) : t;
+    }), links = (d && d.links) || [];
+    liste.innerHTML = '';
+    if (!l.length && !links.length) { liste.innerHTML = '<div class="leer">Alles ruhig.</div>'; return; }
+    var rang = function (t) { return (t.neu ? 2 : 0) + (t.wichtig ? 1 : 0); };
+    l.sort(function (a, b) { return rang(b) - rang(a); });
+    gruppe('Wichtig', l.filter(function (t) { return rang(t) > 0; }), function (t) { return t.bilder ? '🖼' : '❗'; });
+    gruppe('Hat noch Zeit', l.filter(function (t) { return !rang(t); }), function (t) { return t.bilder ? '🖼' : '🕊'; });
+    gruppe('Links und Videos', links, function (t) { return t.video ? '🎬' : '🔗'; });
+  }
+  function laden() {
+    if (!quelle) { liste.innerHTML = '<div class="leer">Die Thread-Liste kommt bald. Wisch schon mal zu den KIs.</div>'; return; }
+    fetch(quelle + (quelle.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.json(); }).then(zeigen)
+      .catch(function () { liste.innerHTML = '<div class="leer">Liste gerade nicht erreichbar.</div>'; });
+  }
+  laden();
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) laden(); });
+  setInterval(laden, 60000);
+})();
+</script>
+</body>
+</html>
