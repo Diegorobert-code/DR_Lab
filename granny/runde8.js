@@ -160,6 +160,7 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
     wZeigen(true);
     if (neu > vor) {
       toast(W8.lichtE + ' ' + W8.name + ' ist jetzt: ' + W8.stufen[neu][1] + '!');
+      if (W8.stufenBilder && window.R7) R7.blatt(W8.name + ' ist gewachsen', '<div class="r8w-fund"><img src="' + W8.stufenBilder[neu] + '" alt="' + esc(W8.name + ', ' + W8.stufen[neu][1]) + '" width="240" height="240"></div><h3 class="r8w-ft">Stufe ' + (neu + 1) + ': ' + esc(W8.stufen[neu][1]) + '</h3><p class="r8w-fx">Danke für deine kleinen Schritte. ' + esc(W8.name) + ' freut sich mit dir.</p>');
       if (window.R7) R7.feier(W8.karte.querySelector('.r8w-bild'), 14);
     } else toast(W8.lichtE + ' +1 ' + W8.licht);
   }
@@ -175,6 +176,7 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
     var se = serie(s);
     c.querySelector('.r8w-serie').textContent = se ? '🔥 ' + se + (se === 1 ? ' Tag' : ' Tage') + ' dabei · 🌙 ein Ruhetag pro Woche zählt mit' : '🌙 Kein Druck: ein Ruhetag pro Woche zählt mit.';
     var a = c.querySelector('.r8w-ausflug'), bild = c.querySelector('.r8w-bild');
+    if (W8.stufenBilder && W8.stufenBilder[st]) { var bi = bild.querySelector('img'), soll = W8.stufenBilder[st]; if (bi.getAttribute('src') !== soll) { bi.src = soll; bi.alt = W8.name + ', Stufe ' + (st + 1) + ': ' + W8.stufen[st][1]; } }
     bild.classList.toggle('weg', false);
     if (s.reise && s.ausflugTag !== h) {
       var zurueck = Date.now() - s.reise.ab > (W8.reiseMs || 45000);
@@ -196,7 +198,7 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
     wZeigen(false);
   }
   function zeigeFund(f, i, neu) {
-    var bild = W8.ausflugBilder[i % W8.ausflugBilder.length];
+    var bild = neu && W8.heimkehrBild ? W8.heimkehrBild : W8.ausflugBilder[i % W8.ausflugBilder.length];
     var html = '<div class="r8w-fund"><img src="' + bild[0] + '" alt="' + esc(bild[1]) + '" width="240" height="240"><span class="r8w-fe" aria-hidden="true">' + f[1] + '</span></div>' +
       '<h3 class="r8w-ft">' + esc(f[0]) + '</h3><p class="r8w-fx">' + esc(f[2]) + '</p>' +
       (W8.stumm ? '' : '<div class="r7-reihe"><button type="button" class="r7-btn voll r8w-hoer">🔊 Vorlesen</button></div>');
@@ -226,7 +228,7 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
     cfg.karte = c;
     c.querySelector('.r8w-alb').onclick = album;
     c.querySelector('.r8w-wie').onclick = function () {
-      window.R7 && R7.blatt('So wächst ' + cfg.name, '<p class="r7-p">' + esc(cfg.wie) + '</p><ol class="r8w-stufen">' + cfg.stufen.map(function (x) { return '<li><b>' + esc(x[1]) + '</b> ab ' + x[0] + ' ' + esc(cfg.licht) + '</li>'; }).join('') + '</ol><p class="r7-leise">Nichts geht verloren, nichts geht kaputt. Ein Ruhetag pro Woche zählt mit. Alles bleibt nur auf diesem Gerät.</p>');
+      window.R7 && R7.blatt('So wächst ' + cfg.name, '<p class="r7-p">' + esc(cfg.wie) + '</p><ol class="r8w-stufen">' + cfg.stufen.map(function (x, i) { return '<li>' + (cfg.stufenBilder ? '<img src="' + cfg.stufenBilder[i] + '" alt="" width="48" height="48" loading="lazy" style="width:48px;height:48px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:10px">' : '') + '<b>' + esc(x[1]) + '</b> ab ' + x[0] + ' ' + esc(cfg.licht) + '</li>'; }).join('') + '</ol><p class="r7-leise">Nichts geht verloren, nichts geht kaputt. Ein Ruhetag pro Woche zählt mit. Alles bleibt nur auf diesem Gerät.</p>');
     };
     var st = document.createElement('style');
     st.textContent = [
@@ -515,7 +517,7 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
   }
 
   /* ---------- 2) Postkarte als Bild (Vorbild: Instagram «Teilen als Bild») ---------- */
-  var MOTIVE = [['posen/winken.jpg', 'Granny winkt'], ['posen/herz.jpg', 'Granny mit Herz'], ['posen/lachen.jpg', 'Granny lacht'], ['posen/kerze.jpg', 'Granny mit Kerze']];
+  var MOTIVE = [['r8bilder/postkarte.jpg', 'Granny mit Postkarte'], ['posen/winken.jpg', 'Granny winkt'], ['posen/herz.jpg', 'Granny mit Herz'], ['posen/lachen.jpg', 'Granny lacht'], ['posen/kerze.jpg', 'Granny mit Kerze']];
   var SAETZE = ['Mir geht es gut.', 'Ich denke an dich.', 'Danke für deinen Besuch.', 'Ruf mich an, wenn du magst.', 'Gute Nacht, schlaf gut.'];
   var pk = el('<section class="r7 r7-karte" aria-labelledby="r8p-t"><p class="r7-eb">Ein Gruss für die Familie</p><h2 id="r8p-t">💌 Postkarte schicken</h2>' +
     '<div style="display:flex;gap:16px;align-items:center"><img class="r7-figur" src="posen/herz.jpg" alt="Granny hält ein Herz" loading="lazy" width="72" height="72"><p class="r7-p" style="margin:0">Granny malt dir eine Karte mit einem lieben Satz. Dann schickst du sie mit einem Tipp.</p></div>' +
@@ -590,7 +592,9 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
 
   /* ---------- 3) Wächst mit dir (Vorbild: Finch) + SOS (Vorbild: Headspace) ---------- */
   var WCFG = {
-    k: 'granny', name: 'Granny', licht: 'Herzli', lichtE: '💗', bild: 'figur.jpg', vorlesenAuto: true,
+    k: 'granny', name: 'Granny', licht: 'Herzli', lichtE: '💗', bild: 'r8bilder/stufe-1.jpg', vorlesenAuto: true,
+    stufenBilder: ['r8bilder/stufe-1.jpg', 'r8bilder/stufe-2.jpg', 'r8bilder/stufe-3.jpg', 'r8bilder/stufe-4.jpg', 'r8bilder/stufe-5.jpg'],
+    heimkehrBild: ['r8bilder/ausflug.jpg', 'Granny ist zurück vom Ausflug'],
     stufen: [[0, 'Rosenknospe'], [5, 'Gartenfreundin'], [15, 'Dorf-Granny'], [35, 'Herzens-Granny'], [70, 'Goldene Granny']],
     wie: 'Jedes Mal, wenn du etwas Kleines machst (einen Ring füllen, Granny etwas erzählen, Bilder anschauen, eine Karte schicken, einmal ruhig atmen), bekommt Granny ein Herzli. Mit genug Herzli wächst sie eine Stufe. Und einmal am Tag geht sie auf einen kleinen Ausflug und bringt dir eine Geschichte mit.',
     schritte: [['#erzaehl', 'erzaehl'], ['#reden', 'reden'], ['.r7-dia-los', 'dia'], ['.r4-memo button', 'memo'], ['.r7-geb-neu button[type=submit]', 'geb']],
@@ -648,7 +652,7 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
     var h = document.getElementById('heute');
     if (h && h.parentNode) h.parentNode.insertBefore(rk, h.nextSibling); else R.einsetzen(rk);
     R.einsetzen(pk);
-    var wc = Z.waechst(WCFG), sb = Z.sos({ name: 'Granny', bild: 'posen/nicken.jpg', unter: 'Mit Granny atmen. Ein Tipp, sofort.', ende: 'Gut gemacht. Schön ruhig. Granny ist stolz auf dich.' });
+    var wc = Z.waechst(WCFG), sb = Z.sos({ name: 'Granny', bild: 'r8bilder/atem.jpg', unter: 'Mit Granny atmen. Ein Tipp, sofort.', ende: 'Gut gemacht. Schön ruhig. Granny ist stolz auf dich.' });
     var rd = document.getElementById('reden');
     if (rd && rd.parentNode) { rd.parentNode.insertBefore(wc, rd.nextSibling); rd.parentNode.insertBefore(sb, rd.nextSibling); } else { R.einsetzen(sb); R.einsetzen(wc); }
     R.namen(wc);
