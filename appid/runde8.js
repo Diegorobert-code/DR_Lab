@@ -160,6 +160,7 @@ window.R8_CFG = {"k":"flo","offlineText":"Offline. Flo notiert trotzdem alles."}
     wZeigen(true);
     if (neu > vor) {
       toast(W8.lichtE + ' ' + W8.name + ' ist jetzt: ' + W8.stufen[neu][1] + '!');
+      if (W8.stufenBilder && window.R7) R7.blatt(W8.name + ' ist gewachsen', '<div class="r8w-fund"><img src="' + W8.stufenBilder[neu] + '" alt="' + esc(W8.name + ', ' + W8.stufen[neu][1]) + '" width="240" height="240"></div><h3 class="r8w-ft">Stufe ' + (neu + 1) + ': ' + esc(W8.stufen[neu][1]) + '</h3><p class="r8w-fx">Danke für deine kleinen Schritte. ' + esc(W8.name) + ' freut sich mit dir.</p>');
       if (window.R7) R7.feier(W8.karte.querySelector('.r8w-bild'), 14);
     } else toast(W8.lichtE + ' +1 ' + W8.licht);
   }
@@ -175,6 +176,7 @@ window.R8_CFG = {"k":"flo","offlineText":"Offline. Flo notiert trotzdem alles."}
     var se = serie(s);
     c.querySelector('.r8w-serie').textContent = se ? '🔥 ' + se + (se === 1 ? ' Tag' : ' Tage') + ' dabei · 🌙 ein Ruhetag pro Woche zählt mit' : '🌙 Kein Druck: ein Ruhetag pro Woche zählt mit.';
     var a = c.querySelector('.r8w-ausflug'), bild = c.querySelector('.r8w-bild');
+    if (W8.stufenBilder && W8.stufenBilder[st]) { var bi = bild.querySelector('img'), soll = W8.stufenBilder[st]; if (bi.getAttribute('src') !== soll) { bi.src = soll; bi.alt = W8.name + ', Stufe ' + (st + 1) + ': ' + W8.stufen[st][1]; } }
     bild.classList.toggle('weg', false);
     if (s.reise && s.ausflugTag !== h) {
       var zurueck = Date.now() - s.reise.ab > (W8.reiseMs || 45000);
@@ -196,7 +198,7 @@ window.R8_CFG = {"k":"flo","offlineText":"Offline. Flo notiert trotzdem alles."}
     wZeigen(false);
   }
   function zeigeFund(f, i, neu) {
-    var bild = W8.ausflugBilder[i % W8.ausflugBilder.length];
+    var bild = neu && W8.heimkehrBild ? W8.heimkehrBild : W8.ausflugBilder[i % W8.ausflugBilder.length];
     var html = '<div class="r8w-fund"><img src="' + bild[0] + '" alt="' + esc(bild[1]) + '" width="240" height="240"><span class="r8w-fe" aria-hidden="true">' + f[1] + '</span></div>' +
       '<h3 class="r8w-ft">' + esc(f[0]) + '</h3><p class="r8w-fx">' + esc(f[2]) + '</p>' +
       (W8.stumm ? '' : '<div class="r7-reihe"><button type="button" class="r7-btn voll r8w-hoer">🔊 Vorlesen</button></div>');
@@ -226,7 +228,7 @@ window.R8_CFG = {"k":"flo","offlineText":"Offline. Flo notiert trotzdem alles."}
     cfg.karte = c;
     c.querySelector('.r8w-alb').onclick = album;
     c.querySelector('.r8w-wie').onclick = function () {
-      window.R7 && R7.blatt('So wächst ' + cfg.name, '<p class="r7-p">' + esc(cfg.wie) + '</p><ol class="r8w-stufen">' + cfg.stufen.map(function (x) { return '<li><b>' + esc(x[1]) + '</b> ab ' + x[0] + ' ' + esc(cfg.licht) + '</li>'; }).join('') + '</ol><p class="r7-leise">Nichts geht verloren, nichts geht kaputt. Ein Ruhetag pro Woche zählt mit. Alles bleibt nur auf diesem Gerät.</p>');
+      window.R7 && R7.blatt('So wächst ' + cfg.name, '<p class="r7-p">' + esc(cfg.wie) + '</p><ol class="r8w-stufen">' + cfg.stufen.map(function (x, i) { return '<li>' + (cfg.stufenBilder ? '<img src="' + cfg.stufenBilder[i] + '" alt="" width="48" height="48" loading="lazy" style="width:48px;height:48px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:10px">' : '') + '<b>' + esc(x[1]) + '</b> ab ' + x[0] + ' ' + esc(cfg.licht) + '</li>'; }).join('') + '</ol><p class="r7-leise">Nichts geht verloren, nichts geht kaputt. Ein Ruhetag pro Woche zählt mit. Alles bleibt nur auf diesem Gerät.</p>');
     };
     var st = document.createElement('style');
     st.textContent = [
@@ -444,7 +446,7 @@ window.R8_CFG = {"k":"flo","offlineText":"Offline. Flo notiert trotzdem alles."}
     var bunt = FARB.filter(function (x) { return w.f[x[0]]; }).length;
     var fehlt = FARB.slice().sort(function (a, b) { return (w.f[a[0]] || 0) - (w.f[b[0]] || 0); })[0];
     return [
-      { bg: '#1b2b66', bild: 'posen/winkt.jpg', alt: 'Flo winkt', eb: vom.getDate() + '. ' + MON[vom.getMonth()] + ' bis heute', h: 'Dein Monat mit Flo', p: 'Ein kleiner Rückblick auf 30 Tage. Kein Zählen, kein Muss. Die Zahlen bleiben auf deinem Handy.' },
+      { bg: '#1b2b66', bild: 'r8bilder/rueckblick.jpg', alt: 'Flo blättert im Monats-Rückblick', eb: vom.getDate() + '. ' + MON[vom.getMonth()] + ' bis heute', h: 'Dein Monat mit Flo', p: 'Ein kleiner Rückblick auf 30 Tage. Kein Zählen, kein Muss. Die Zahlen bleiben auf deinem Handy.' },
       { bg: '#2a4f3f', bild: 'posen/teller.jpg', alt: 'Flo mit leerem Teller', eb: 'Mahlzeiten', h: w.m ? w.m + ' Mahlzeiten an ' + w.tg + (w.tg === 1 ? ' Tag' : ' Tagen') : 'Eine ruhige Woche', p: w.m ? 'Du hast dir Zeit genommen hinzuschauen. Das ist schon viel.' : 'Flo freut sich auf deinen ersten Teller. Einfach reinreden genügt.' },
       { bg: '#4a2f5e', bild: 'posen/jubel.jpg', alt: 'Flo jubelt', eb: 'Regenbogen', h: bunt ? bunt + ' von 5 Farben' : 'Noch farblos', p: bunt ? 'So bunt war dein Teller:' : 'Tipp eine Farbe im Regenbogen an, sobald du sie isst.', farben: w.f },
       { bg: '#5a3b1f', bild: 'posen/joggt.jpg', alt: 'Flo joggt', eb: 'Bewegung', h: w.bew ? w.bew + '× bewegt' : 'Bewegung darf leicht sein', p: w.bew ? 'Jede Treppe zählt. Flo joggt dir zu.' : 'Eine Treppe statt Lift reicht für den Anfang.' },
@@ -519,7 +521,7 @@ window.R8_CFG = {"k":"flo","offlineText":"Offline. Flo notiert trotzdem alles."}
     Z.licht('story');
   }
   var sk = el('<section class="r7 r7-karte r8-story-k" aria-labelledby="r8s-t"><p class="r7-eb">Wie ein Jahresrückblick, nur kleiner</p><h2 id="r8s-t">📖 Dein Monat mit Flo</h2>' +
-    '<div class="r8-story-vor"><img src="posen/winkt.jpg" alt="" width="64" height="64" loading="lazy"><img src="posen/teller.jpg" alt="" width="64" height="64" loading="lazy"><img src="posen/jubel.jpg" alt="" width="64" height="64" loading="lazy"><img src="posen/joggt.jpg" alt="" width="64" height="64" loading="lazy"></div>' +
+    '<div class="r8-story-vor"><img src="r8bilder/rueckblick.jpg" alt="" width="64" height="64" loading="lazy"><img src="posen/teller.jpg" alt="" width="64" height="64" loading="lazy"><img src="posen/jubel.jpg" alt="" width="64" height="64" loading="lazy"><img src="posen/joggt.jpg" alt="" width="64" height="64" loading="lazy"></div>' +
     '<p class="r7-p">Sechs Story-Karten über deine letzten 30 Tage: Mahlzeiten, Farben, Bewegung. Antippen für weiter, gedrückt halten für Pause. Am Schluss als Bild teilen.</p>' +
     '<button type="button" class="r7-btn voll gross r8-story-los">▶ Monat ansehen</button></section>');
   sk.querySelector('.r8-story-los').onclick = story;
@@ -607,7 +609,9 @@ window.R8_CFG = {"k":"flo","offlineText":"Offline. Flo notiert trotzdem alles."}
 
   /* ---------- 4) Wächst mit dir (Vorbild: Finch) ---------- */
   var WCFG = {
-    k: 'flo', name: 'Flo', licht: 'Körnli', lichtE: '🌾', bild: 'figur.jpg',
+    k: 'flo', name: 'Flo', licht: 'Körnli', lichtE: '🌾', bild: 'r8bilder/stufe-1.jpg',
+    stufenBilder: ['r8bilder/stufe-1.jpg', 'r8bilder/stufe-2.jpg', 'r8bilder/stufe-3.jpg', 'r8bilder/stufe-4.jpg', 'r8bilder/stufe-5.jpg'],
+    heimkehrBild: ['r8bilder/ausflug.jpg', 'Flo ist zurück vom Ausflug'],
     stufen: [[0, 'Keimling'], [5, 'Gartenkoch'], [15, 'Marktgänger'], [35, 'Regenbogen-Koch'], [70, 'Goldener Flo']],
     wie: 'Jeder kleine Schritt gibt Flo ein Körnli: eine Mahlzeit speichern, eine Farbe im Regenbogen antippen, Bewegung eintragen, den Kochtimer starten, achtsam essen, einen ausgewogenen Teller bauen. Mit genug Körnli wächst Flo. Einmal am Tag zieht er los und bringt eine kleine Geschichte mit.',
     schritte: [['#save', 'mahlzeit'], ['.r4-farbe', 'farbe'], ['#actok', 'bewegung'], ['#stepok', 'schritte'], ['.r7-tm-los', 'timer'], ['#r4achtsam button', 'achtsam']],
