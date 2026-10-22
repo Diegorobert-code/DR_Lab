@@ -9,33 +9,33 @@
 (function () {
   'use strict';
   var C = {
-    k: 'waefwaef', figur: 'Wäf Wäf', app: 'Wäf Wäf', bild: 'posen/freut.jpg', kind: false, haptik: true,
+    k: 'waefwaef', figur: 'Wäf Wäf', app: 'Wäf Wäf', bild: 'maskottchen.jpg', maskottchen: { bild: 'maskottchen.jpg', ziele: '#pup', wenn: 'figur\\.jpg$' }, kind: false, haptik: true,
     vtKlick: '#nav a[data-v]',
     markiereBeiKlick: true,
     heute: {
       titel: 'Wäf Wäf war unterwegs',
       geschichten: [
-        { titel: 'Die Spur am Bach', bild: 'posen/schnueffelt.jpg', pos: '50% 45%', alt: 'Wäf Wäf schnüffelt am Boden', kurz: 'Heute hat meine Nase eine geheimnisvolle Spur gefunden.',
-          text: ['Wäf! Am Bach habe ich eine Spur gefunden. Sie roch nach Igel, nach Laub und ein bisschen nach Abenteuer.', 'Ich bin ihr ganz langsam gefolgt, Nase am Boden. Schnüffeln macht mich müde und zufrieden, viel mehr als Rennen.', 'Am Ende war da nur ein Laubhaufen. Aber was für einer!'],
-          frage: 'Tipp: Fünf Minuten Schnüffeln ist für einen Hund so erholsam wie eine lange Runde. Wo könntet ihr heute schnüffeln?' },
-        { titel: 'Der Regen und ich', bild: 'posen/regenmantel.jpg', pos: '50% 35%', alt: 'Wäf Wäf im gelben Regenmantel', kurz: 'Regen ist gar nicht so schlimm, wenn man einen Mantel hat.',
-          text: ['Heute hat es geregnet. Ich mag Pfützen nicht so sehr, aber mein gelber Mantel ist super.', 'Wir haben eine kurze Runde gemacht und danach hat mich jemand mit einem warmen Tuch trocken gerubbelt. Das ist das Beste am Regen!', 'Kurze Runde, viel Kuscheln. So geht Regentag.'],
-          frage: 'Was ist euer Plan für einen Regentag mit Hund?' },
-        { titel: 'Ein neuer Trick', bild: 'posen/trick.jpg', pos: '50% 40%', alt: 'Wäf Wäf macht einen Trick', kurz: 'Ich habe etwas Neues gelernt.',
-          text: ['Heute habe ich «Pfote» geübt. Am Anfang habe ich einfach gesessen und geschaut.', 'Dann hat die Hand ganz still gewartet und ich habe sie mit der Pfote angestupst. Leckerli! Jetzt weiss ich es.', 'Kurz üben, oft loben. So lerne ich am liebsten.'],
-          frage: 'Welchen kleinen Trick könntet ihr diese Woche zusammen üben?' },
-        { titel: 'Besuch bei Otti', bild: 'besuch/otti.jpg', pos: '50% 35%', alt: 'Otti der kleine Igel', kurz: 'Ich habe einen stacheligen Freund im Wald.',
-          text: ['Im Wald habe ich Otti getroffen, den kleinen Igel. Ich wollte ihn beschnuppern, aber Stacheln kitzeln an der Nase!', 'Also habe ich mich hingelegt und gewartet. Otti ist langsam näher gekommen.', 'Abstand halten und warten: So werden auch scheue Tiere Freunde.'],
-          frage: 'Wie begegnet euer Hund anderen Tieren am liebsten?' },
-        { titel: 'Pssst, Ruhezeit', bild: 'posen/pssst.jpg', pos: '50% 35%', alt: 'Wäf Wäf macht Pssst', kurz: 'Auch Hunde brauchen viel Schlaf.',
-          text: ['Wusstet ihr, dass ich bis zu 18 Stunden am Tag schlafe und döse? Das ist ganz normal für Hunde.', 'Heute habe ich mein Körbchen in einer ruhigen Ecke bekommen. Dort stört mich niemand. Herrlich.', 'Wenn ich in meinem Körbchen liege, bin ich im Pause-Modus. Bitte nicht wecken.'],
+        { titel: 'Pssst, Ruhezeit', bild: 'heute/heute-1.jpg', pos: '50% 50%', alt: 'Wäf Wäf liegt wach in seinem Körbchen', kurz: 'Auch Hunde brauchen viel Schlaf.',
+          text: ['Wusstet ihr, dass ich bis zu 18 Stunden am Tag schlafe und döse? Das ist ganz normal für Hunde.', 'Heute steht mein Körbchen in einer ruhigen Ecke beim Fenster. Dort stört mich niemand. Herrlich.', 'Wenn ich in meinem Körbchen liege, bin ich im Pause-Modus. Bitte nicht wecken.'],
           frage: 'Hat euer Hund einen ruhigen Platz, wo ihn niemand stört?' },
-        { titel: 'Granny und die Kekse', bild: 'besuch/granny.jpg', pos: '50% 35%', alt: 'Granny lacht', kurz: 'Granny hat für mich gebacken.',
-          text: ['Bei Granny riecht es immer nach Keksen. Heute hat sie extra Hundekekse gebacken, ohne Zucker.', 'Ich musste «Sitz» machen, dann gab es einen. Und noch einen für «Platz».', 'Granny hat gelacht und gesagt: «Du bist der höflichste Hund im ganzen KI-Verse.» Wäf!'],
+        { titel: 'Der rote Ball', bild: 'heute/heute-2.jpg', pos: '50% 50%', alt: 'Wäf Wäf schaut auf einen roten Ball', kurz: 'Ball? Ball! BALL!',
+          text: ['Heute lag ein roter Ball auf dem Platz. Ich habe ihn angeschaut, ganz lange, mit schief gelegtem Kopf.', 'Dann durfte ich ihn holen. Und das Beste: Wenn ich ihn loslasse, fliegt er gleich nochmal. Tauschen lohnt sich!', 'Nach fünf Würfen haben wir aufgehört. Lieber kurz und fröhlich als lang und wild.'],
+          frage: 'Tipp: Ein Leckerli gegen den Ball tauschen hilft beim Loslassen. Probiert ihr es aus?' },
+        { titel: 'Badetag', bild: 'heute/heute-3.jpg', pos: '50% 45%', alt: 'Wäf Wäf sitzt im Schaum in einer Wanne', kurz: 'Ich war im Schaum, und es war gar nicht schlimm.',
+          text: ['Heute war Badetag. Zuerst wollte ich nicht in die Wanne. Wasser ist so … nass.', 'Aber das Wasser war lauwarm, und es gab Schaum, der auf meiner Nase gekitzelt hat. Und zwischendurch ein Leckerli.', 'Danach ein grosses Tuch und viel Rubbeln. Ich rieche jetzt wie eine Blume. Wäf!'],
+          frage: 'Was macht das Baden für euren Hund angenehmer?' },
+        { titel: 'Die Abendrunde', bild: 'heute/heute-4.jpg', pos: '50% 45%', alt: 'Wäf Wäf an der Leine bei Blumen und einer Laterne', kurz: 'Heute habe ich jede Blume gelesen.',
+          text: ['Bei der Abendrunde habe ich an jeder Blume geschnüffelt. Für mich ist das wie Zeitunglesen.', 'Niemand hat gezogen. Wir sind langsam gegangen, und die Laterne hat schon geleuchtet.', 'Schnüffeln macht mich müde und zufrieden, viel mehr als Rennen.'],
+          frage: 'Tipp: Fünf Minuten Schnüffeln ist für einen Hund so erholsam wie eine lange Runde. Wo könntet ihr heute schnüffeln?' },
+        { titel: 'Besuch von Minka', bild: 'heute/heute-5.jpg', pos: '50% 50%', alt: 'Wäf Wäf und eine kleine Katze stupsen sich mit der Nase an', kurz: 'Ich habe eine neue Freundin mit Schnurrhaaren.',
+          text: ['Auf dem Platz sass Minka, die kleine Katze. Ich wollte zu ihr rennen, aber ich habe gewartet.', 'Minka ist ganz langsam näher gekommen. Dann hat sie mich mit der Nase angestupst. Die Schnurrhaare kitzeln!', 'Abstand halten und warten: So werden auch scheue Tiere Freunde.'],
+          frage: 'Wie begegnet euer Hund anderen Tieren am liebsten?' },
+        { titel: 'Ich helfe beim Einkaufen', bild: 'heute/heute-6.jpg', pos: '50% 50%', alt: 'Wäf Wäf trägt eine kleine Tasche im Maul', kurz: 'Granny hat mir etwas mitgegeben.',
+          text: ['Bei Granny gab es heute eine kleine Tasche. Und darin? Hundekekse, ohne Zucker!', 'Ich habe sie selbst nach Hause getragen, ganz stolz, mit hoch erhobenem Kopf.', 'Zu Hause musste ich «Sitz» machen, dann gab es einen Keks. Und noch einen für «Platz».'],
           frage: 'Was ist das Lieblingsleckerli eures Hundes?' },
-        { titel: 'Rennen auf der Wiese', bild: 'posen/rennt.jpg', pos: '50% 40%', alt: 'Wäf Wäf rennt über die Wiese', kurz: 'Ohren im Wind!',
-          text: ['Heute durfte ich auf der grossen Wiese rennen. Ohren im Wind, Zunge raus, einfach glücklich.', 'Dann ein Pfiff, und ich bin sofort zurückgekommen. Dafür gab es ein riesiges Lob.', 'Rennen ist toll. Zurückkommen auch.'],
-          frage: 'Wie klappt das Zurückrufen bei euch? Ein Lob wirkt Wunder.' }
+        { titel: 'Kuscheln nach dem Regen', bild: 'heute/heute-7.jpg', pos: '50% 50%', alt: 'Wäf Wäf unter einer gelben Decke auf dem Sofa', kurz: 'Nach dem Regen kommt die Decke.',
+          text: ['Heute hat es geregnet. Wir haben nur eine kurze Runde gemacht.', 'Danach hat mich jemand mit einem warmen Tuch trocken gerubbelt und in meine gelbe Decke gewickelt. Das ist das Beste am Regen!', 'Kurze Runde, viel Kuscheln. So geht Regentag.'],
+          frage: 'Was ist euer Plan für einen Regentag mit Hund?' }
       ]
     },
     woche: {
@@ -116,11 +116,11 @@
     wachsen: {
       licht: 'Pfötchen', licht1: 'Pfötchen', emo: '🐾', dauer: 20000,
       schritte: '#walkSave,#cards button,#suchspielPlan,.r7-karte .r7-btn.voll',
-      ausflugBild: 'posen/schnueffelt.jpg', albumTitel: 'Wäf Wäfs Schatzkiste',
+      ausflugBild: 'wachsen/ausflug.jpg', albumTitel: 'Wäf Wäfs Schatzkiste',
       los: 'flitzt in den Park. Bis gleich, Wäf!',
       wartenText: 'Hakt eine Aufgabe ab oder tragt eine Runde ein, dann gibt es ein Pfötchen. Danach geht Wäf Wäf auf Ausflug.',
-      stufen: [[0, 'Welpenpfote', 'posen/sitzt.jpg', 'Alles ist neu und spannend.'], [5, 'Schnüffelnase', 'posen/schnueffelt.jpg', 'Wäf Wäf kennt jetzt jeden Geruch im Quartier.'], [15, 'Parkfreund', 'posen/rennt.jpg', 'Im Park kennen ihn alle.'], [35, 'Treue Pfote', 'posen/trick.jpg', 'Ihr seid ein eingespieltes Team.'], [70, 'Bester Freund', 'posen/freut.jpg', 'Wäf Wäf ist euer bester Freund. Und ihr seine.']],
-      funde: [['🎾', 'Ein fast neuer Tennisball', 'Nur ein bisschen angeknabbert. Von wem wohl?'], ['🦴', 'Ein Stock in Knochenform', 'Wäf Wäf hat ihn ganz stolz nach Hause getragen.'], ['🍂', 'Ein Laubhaufen-Sprung', 'Hinein und hinaus. Zehn Mal.'], ['🐿️', 'Ein Eichhörnchen', 'Wäf Wäf hat nur geschaut. Ganz ruhig. Braver Hund!'], ['💧', 'Ein Schluck aus dem Brunnen', 'Das kälteste Wasser im ganzen Park.'], ['🌸', 'Ein Blümchen am Ohr', 'Es ist hängen geblieben. Sieht schön aus.'], ['🐕', 'Ein neuer Hundefreund', 'Er heisst Bello und schnüffelt sehr gründlich.'], ['🪵', 'Ein riesiger Ast', 'Zu gross zum Tragen. Wäf Wäf hat es trotzdem probiert.'], ['🌈', 'Ein Regenbogen über dem Park', 'Wäf Wäf hat ihn angebellt. Einmal, ganz freundlich.'], ['🧦', 'Eine einzelne Socke', 'Wo die andere ist? Niemand weiss es.'], ['🐦', 'Ein Amsel-Lied', 'Wäf Wäf hat den Kopf schief gelegt und zugehört.']]
+      stufen: [[0, 'Welpenpfote', 'wachsen/stufe-1.jpg', 'Alles ist neu und spannend.'], [5, 'Schnüffelnase', 'wachsen/stufe-2.jpg', 'Wäf Wäf kennt jetzt jeden Geruch im Quartier.'], [15, 'Parkfreund', 'wachsen/stufe-3.jpg', 'Im Park kennen ihn alle.'], [35, 'Treue Pfote', 'wachsen/stufe-4.jpg', 'Ihr seid ein eingespieltes Team.'], [70, 'Bester Freund', 'wachsen/stufe-5.jpg', 'Wäf Wäf ist euer bester Freund. Und ihr seine.']],
+      fundBilder: true, funde: [['🎾', 'Ein fast neuer Tennisball', 'Nur ein bisschen angeknabbert. Von wem wohl?'], ['🦴', 'Ein Stock in Knochenform', 'Wäf Wäf hat ihn ganz stolz nach Hause getragen.'], ['🍂', 'Ein Laubhaufen-Sprung', 'Hinein und hinaus. Zehn Mal.'], ['🐿️', 'Ein Eichhörnchen', 'Wäf Wäf hat nur geschaut. Ganz ruhig. Braver Hund!'], ['💧', 'Ein Schluck aus dem Brunnen', 'Das kälteste Wasser im ganzen Park.'], ['🌸', 'Ein Blümchen am Ohr', 'Es ist hängen geblieben. Sieht schön aus.'], ['🐕', 'Ein neuer Hundefreund', 'Er heisst Bello und schnüffelt sehr gründlich.'], ['🪵', 'Ein riesiger Ast', 'Zu gross zum Tragen. Wäf Wäf hat es trotzdem probiert.'], ['🌈', 'Ein Regenbogen über dem Park', 'Wäf Wäf hat ihn angebellt. Einmal, ganz freundlich.'], ['🧦', 'Eine einzelne Socke', 'Wo die andere ist? Niemand weiss es.'], ['🐦', 'Ein Amsel-Lied', 'Wäf Wäf hat den Kopf schief gelegt und zugehört.']]
     },
     thema: {
       hell: true, farbe: '#F4F8FF',
@@ -254,7 +254,7 @@
     '.r8-herz{position:fixed;z-index:2147483603;pointer-events:none;font-size:22px;animation:r8Herz 1.3s ease-out forwards}',
     '@keyframes r8Herz{from{opacity:0;transform:translate(0,0) scale(.6)}20%{opacity:1}to{opacity:0;transform:translate(var(--dx),-90px) scale(1.1)}}',
     /* Kontextmenü (lange drücken) */
-    '.r8-menue{position:fixed;inset:0;z-index:2147483602;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;background:rgba(4,8,24,.55);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}',
+    '.r8-menue{position:fixed;inset:0;z-index:2147483602;display:flex;flex-direction:column;align-items:center;justify-content:safe center;overflow-y:auto;overscroll-behavior:contain;gap:16px;padding:24px;background:rgba(4,8,24,.55);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}',
     '.r8-menue img{width:min(46vw,190px);height:min(46vw,190px);border-radius:28px;object-fit:cover;border:3px solid var(--r7-gold,#f2c14e);box-shadow:0 20px 50px rgba(0,0,0,.45)}',
     '.r8-menue ul{list-style:none;margin:0;padding:6px;width:min(100%,300px);border-radius:16px;background:rgba(24,34,72,.94);border:1px solid rgba(255,255,255,.14);box-shadow:0 20px 50px rgba(0,0,0,.45)}',
     '.r8-menue li+li{border-top:1px solid rgba(255,255,255,.1)}',
@@ -798,6 +798,12 @@
   var WX = C.wachsen || null;
   var wachsKarten = [];
   function lichter() { return hol('licht', 0); }
+  /* Fundstück-Bild (wachsen/fund-NN.jpg), Emoji als Ersatz, wenn das Bild fehlt oder nicht lädt */
+  function fundIcon(i, f, px) {
+    if (!WX.fundBilder) return f[0];
+    var n = i + 1; return '<img class="r8-fundbild" data-e="' + esc(f[0]) + '" alt="" width="' + px + '" height="' + px + '" src="wachsen/fund-' + (n < 10 ? '0' : '') + n + '.jpg" style="width:min(' + px + 'px,26vh);height:min(' + px + 'px,26vh);border-radius:22%;object-fit:cover;display:block;margin:0 auto">';
+  }
+  document.addEventListener('error', function (v) { var t = v.target; if (t && t.classList && t.classList.contains('r8-fundbild')) { var sp = document.createElement('span'); sp.textContent = t.dataset.e || ''; t.replaceWith(sp); } }, true);
   function stufeVon(n) { var s = 0; WX.stufen.forEach(function (x, i) { if (n >= x[0]) s = i; }); return s; }
   function licht(n, grund) {
     if (!WX) return;
@@ -830,7 +836,7 @@
   }
   function fundZeigen(i, neu) {
     var f = WX.funde[i];
-    var e = ebene(el('<div class="r8-menue" aria-label="Fundstück"><div class="r8-karte r8-ein-menue" style="max-width:400px;width:100%;text-align:center"><img alt="" src="' + esc(WX.ausflugBild || C.bild) + '" style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid var(--r7-gold,#f2c14e)"><div style="font-size:56px;line-height:1.2" aria-hidden="true">' + f[0] + '</div><h2 style="text-align:center">' + (neu ? esc(F) + ' bringt mit: ' : '') + esc(f[1]) + '</h2><p style="font-size:17px;line-height:1.55">' + esc(f[2]) + '</p><div class="r8-reihe" style="justify-content:center">' + (kannReden() ? '<button type="button" class="r8-btn" data-a="hoer">🔊 Vorlesen</button>' : '') + '<button type="button" class="r8-btn voll" data-a="zu">' + (neu ? 'Ins Album legen' : 'Schliessen') + '</button></div></div></div>'), function () { still(); });
+    var e = ebene(el('<div class="r8-menue" aria-label="Fundstück"><div class="r8-karte r8-ein-menue" style="max-width:400px;width:100%;text-align:center"><img alt="" src="' + esc(WX.ausflugBild || C.bild) + '" style="width:min(120px,20vh);height:min(120px,20vh);border-radius:50%;object-fit:cover;border:3px solid var(--r7-gold,#f2c14e)"><div style="font-size:56px;line-height:1.2;margin:8px 0" aria-hidden="true">' + fundIcon(i, f, 168) + '</div><h2 style="text-align:center">' + (neu ? esc(F) + ' bringt mit: ' : '') + esc(f[1]) + '</h2><p style="font-size:17px;line-height:1.55">' + esc(f[2]) + '</p><div class="r8-reihe" style="justify-content:center">' + (kannReden() ? '<button type="button" class="r8-btn" data-a="hoer">🔊 Vorlesen</button>' : '') + '<button type="button" class="r8-btn voll" data-a="zu">' + (neu ? 'Ins Album legen' : 'Schliessen') + '</button></div></div></div>'), function () { still(); });
     e.el.addEventListener('click', function (v) { var b = v.target.closest('[data-a]'); if (!b) { if (v.target === e.el) e.zu(); return; } if (b.getAttribute('data-a') === 'hoer') sag(f[1] + '. ' + f[2]); else e.zu(); });
     e.el.querySelector('[data-a=zu]').focus();
   }
@@ -846,7 +852,7 @@
   function album() {
     var al = hol('album', []);
     var node = el('<div class="r8-menue" aria-label="Sammelalbum"><div class="r8-karte" style="max-width:440px;width:100%;max-height:86vh;overflow:auto"><h2>📒 ' + esc(WX.albumTitel || ('Fundstücke von ' + F)) + '</h2><p class="r8-leise">' + al.length + ' von ' + WX.funde.length + ' gesammelt. Jeden Tag kann ein neues dazukommen.</p><div class="r8-album">' +
-      WX.funde.map(function (f, i) { var h = al.filter(function (x) { return x.i === i; })[0]; return h ? '<button type="button" data-i="' + i + '" aria-label="' + esc(f[1]) + '"><span aria-hidden="true">' + f[0] + '</span><small>' + esc(f[1]) + '</small></button>' : '<span class="r8-zu-finden" aria-hidden="true">?</span>'; }).join('') +
+      WX.funde.map(function (f, i) { var h = al.filter(function (x) { return x.i === i; })[0]; return h ? '<button type="button" data-i="' + i + '" aria-label="' + esc(f[1]) + '"><span aria-hidden="true">' + fundIcon(i, f, 56) + '</span><small>' + esc(f[1]) + '</small></button>' : '<span class="r8-zu-finden" aria-hidden="true">?</span>'; }).join('') +
       '</div><div class="r8-reihe"><button type="button" class="r8-btn voll" data-z>Schliessen</button></div></div></div>');
     var e = ebene(node);
     node.addEventListener('click', function (v) { var b = v.target.closest('[data-i]'); if (b) { fundZeigen(+b.getAttribute('data-i'), false); return; } if (v.target.closest('[data-z]') || v.target === node) e.zu(); });
@@ -932,6 +938,25 @@
   H8.licht = licht; H8.sos = sos; H8.album = function () { if (WX) album(); }; H8.lichter = lichter; H8.stufe = function () { return WX ? WX.stufen[stufeVon(lichter())] : null; };
   window.R8 = H8;
 
+
+  /* Maskottchen: kleines rundes Icon statt dunkler Pose im Kopf und in der Begrüssung (nur Erwachsenen-Apps) */
+  function maskottchen() {
+    var M = C.maskottchen; if (!M) return;
+    var wenn = M.wenn ? new RegExp(M.wenn) : null, plan = 0;
+    function setz() {
+      plan = 0;
+      document.querySelectorAll(M.ziele).forEach(function (im) {
+        var s = im.getAttribute('src') || '';
+        if (s === M.bild || (wenn && !wenn.test(s))) return;
+        im.setAttribute('src', M.bild); im.classList.add('r8-maskottchen'); im.classList.remove('echt');
+        if (im.dataset.pose) im.removeAttribute('data-pose');
+        if (im.dataset.basis) im.dataset.basis = M.bild;
+        if (im.dataset.grundbild) im.dataset.grundbild = M.bild;
+      });
+    }
+    setz();
+    try { new MutationObserver(function () { if (!plan) plan = requestAnimationFrame(setz); }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] }); } catch (e) {}
+  }
   function start() {
     var N = {};
     try { var r7 = R7(); if (r7 && r7.voll && !r7.voll.r8) { var alt = r7.voll; r7.voll = function (h, z) { var v = alt(h, z); try { if (!v.el.getAttribute('aria-label')) v.el.setAttribute('aria-label', F); } catch (e) {} return v; }; r7.voll.r8 = true; } } catch (e) {}
@@ -943,6 +968,7 @@
     (C.funktionen || []).forEach(function (f) { try { var n = f.bau(H8); if (n) { N[f.id] = n; n.setAttribute('data-r8', f.id); } } catch (e) { if (window.console) console.warn('Runde 8', f.id, e); } });
     try { C.einsetzen(N, H8); } catch (e) { if (window.console) console.warn('Runde 8 einsetzen', e); }
     if (W && W.kette) { var v = 0; (function warte() { if (document.querySelector(W.kette) && document.querySelector(W.kette).children.length) ketteVerbinden(); else if (v++ < 50) setTimeout(warte, 200); })(); }
+    try { maskottchen(); } catch (e) { if (window.console) console.warn('Runde 8 Maskottchen', e); }
     try { figurVerbinden(); } catch (e) { if (window.console) console.warn('Runde 8 Figur', e); }
     try { kuerzel(); } catch (e) {}
     try { schritteVerbinden(); } catch (e) {}
