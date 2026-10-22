@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-22-09">
+<meta name="stand" content="2026-10-22-10">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -145,7 +145,7 @@
 <div class="text" id="text" aria-live="polite"></div>
 <div class="chips" id="chips"></div>
 
-<form class="schreiben" id="schreiben" autocomplete="off"><input id="eingabe" type="text" enterkeyhint="send" placeholder="Schreiben …" aria-label="Nachricht schreiben"><button type="button" class="malen" id="malen" aria-label="Nova zeichnet">🎨</button><button type="submit" aria-label="Senden">➤</button></form>
+<form class="schreiben" id="schreiben" autocomplete="off"><input id="eingabe" type="text" enterkeyhint="send" placeholder="Schreiben …" aria-label="Nachricht schreiben"><button type="button" class="malen" id="foto" aria-label="Foto an Nova schicken">📷</button><input id="fotoWahl" type="file" accept="image/*" hidden><button type="button" class="malen" id="malen" aria-label="Nova zeichnet">🎨</button><button type="submit" aria-label="Senden">➤</button></form>
 <button class="knopf" id="knopf" type="button" aria-label="Gespräch starten">🎙</button>
 <div class="hinweis" id="hinweis"></div>
 <label class="lernen" id="lernenBox"><input type="checkbox" id="lernen"> Nova darf aus diesem Gespräch lernen <small>(nur Diego und Team, auf unserem Server in der Schweiz)</small></label>
@@ -910,6 +910,32 @@
     var bitte = t ? 'Zeichne mir bitte: ' + t : 'Zeichne mir bitte, worüber wir gerade reden.';
     if (conv && !conv.__text) { zeile('du', bitte); eigene.push(bitte); try { conv.sendUserMessage(bitte); } catch (err) {} }
     else senden(bitte);
+  });
+
+  // 📷: Foto machen oder auswählen, es geht direkt ins laufende Gespräch und Nova schaut es an.
+  // Die Kamera kann das Gespräch kurz unterbrechen; dann wartet das Foto, bis Nova wieder dran ist.
+  $('foto').addEventListener('click', function () { $('fotoWahl').click(); });
+  $('fotoWahl').addEventListener('change', async function () {
+    var datei = this.files && this.files[0]; this.value = '';
+    if (!datei) return;
+    status.textContent = '📷 Foto geht an ' + NAME + ' …';
+    var bild = datei;
+    try {
+      var b = await createImageBitmap(datei), m = Math.min(1, 1600 / Math.max(b.width, b.height));
+      var cv = document.createElement('canvas'); cv.width = Math.round(b.width * m); cv.height = Math.round(b.height * m);
+      cv.getContext('2d').drawImage(b, 0, 0, cv.width, cv.height);
+      bild = await new Promise(function (ja) { cv.toBlob(function (x) { ja(x || datei); }, 'image/jpeg', 0.85); });
+    } catch (e) {}
+    if (!conv && !startet) starten(false);
+    for (var i = 0; i < 40 && (!conv || conv.__text === undefined); i++) await new Promise(function (ja) { setTimeout(ja, 250); });
+    if (!conv) { hinweis.textContent = 'Foto nicht gesendet: ' + NAME + ' ist nicht dran. Nochmal 📷.'; return; }
+    var feld = $('eingabe'), t = feld.value.trim() || 'Schau mal, das Foto habe ich gerade gemacht.'; feld.value = '';
+    try {
+      var hoch = await conv.uploadFile(new File([bild], 'foto.jpg', { type: bild.type || 'image/jpeg' }));
+      zeile('du', '📷 ' + t); eigene.push(t);
+      conv.sendMultimodalMessage({ text: t, fileId: hoch.fileId });
+      status.textContent = '📷 ' + NAME + ' schaut es an …';
+    } catch (e) { hinweis.textContent = 'Foto nicht gesendet. Nochmal 📷.'; }
   });
 
   // Wie eine Store-App: beim Öffnen holt sich die App still die neueste Fassung, nie mitten im Gespräch.
