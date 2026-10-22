@@ -137,6 +137,16 @@ window.R8 = {
       nr.parentNode.insertBefore(sb, nr.nextSibling);
     }
 
+    /* Magazin-Look: Begrüssung, Satz und Jackie als Hero direkt unter dem Notruf (nur Anordnung, Funktionen gleich) */
+    (function () {
+      var vh = document.getElementById('vHome'), h = document.getElementById('greet');
+      if (!vh || !h || document.getElementById('jkHero')) return;
+      var hero = document.createElement('section'); hero.id = 'jkHero'; hero.className = 'jk-hero'; hero.setAttribute('aria-labelledby', 'greet');
+      var nr0 = vh.querySelector('.jk-notruf'), sos0 = document.getElementById('r8Sos');
+      vh.insertBefore(hero, sos0 && sos0.parentNode === vh ? sos0 : (nr0 && nr0.parentNode === vh ? nr0.nextSibling : vh.firstChild));
+      ['greetEyebrow', 'greet', 'greetLead', 'jkBuehne'].forEach(function (id) { var x = document.getElementById(id); if (x) hero.appendChild(x); });
+    })();
+
     window.R8.neu = [
       { id: 'sos', e: '🆘', titel: 'SOS-Minute', text: 'Sofort 1 Minute ruhig', auf: sosLos },
       { id: 'heute', e: '☀️', titel: 'Heute für dich', text: 'Ein Gedanke in drei Blättern', auf: function () { heuteStory(false); } },
