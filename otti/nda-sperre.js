@@ -4,7 +4,7 @@
    Screenshot an Diego (WhatsApp) und «Weiter zur App».
    Schalter: nur aktiv mit window.NDA_SPERRE = true (wird nur in den Artefakt-Fassungen gesetzt).
    In der öffentlichen Fassung ist die Sperre aus.
-   Einbau: <script src="nda-sperre.js" data-app="App-Name" [data-eltern]></script>
+   Einbau: ein script-Element mit src="nda-sperre.js" und data-app="App-Name" (optional data-eltern).
    Freischaltung in localStorage; ist der Speicher gesperrt, gilt die Sperre pro Sitzung. */
 (function () {
   "use strict";

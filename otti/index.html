@@ -693,6 +693,7 @@
 <script src="runde6.js" defer></script>
 <script src="runde7.js" defer></script>
 <script src="runde8.js" defer></script>
+<script src="runde9.js" defer></script>
 <script>
 (function () {
   // Live-Gespräch mit Otti: ElevenLabs Agent. Nur von dieser Adresse aus erreichbar, mit Tageslimit.
@@ -2592,6 +2593,17 @@
   if (location.hash === '#spiele') setTimeout(spielWahl, 1200);
   if (location.hash === '#abend') setTimeout(function () { spielStarten('abend'); }, 1200);
 
+  // Runde 9: Griffe für das Sanfte Zeitlimit (runde9.js)
+  window.OTTI_API = {
+    gaehnen: function () { try { TRICKS.gaehnen(); } catch (e) {} },
+    schlafen: function (an) { try { schlafen(an); } catch (e) {} },
+    allesStill: function () {
+      try { if (conv) { var c = conv; ende('Otti schläft jetzt.'); c.endSession().catch(function () {}); } } catch (e) {}
+      try { spielBeenden(); } catch (e) {}
+      ['spielwahl', 'zimmer', 'gefuehle'].forEach(function (id) { var b = $(id); if (b) b.hidden = true; });
+      try { stimmeStopp(); schlafen(true); } catch (e) {}
+    }
+  };
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
 })();
 </script>
