@@ -90,7 +90,7 @@
     { id: 'zeichentafel', r: 'offen', e: '✏️', g: 'Hasi malt mit der Pfote einen Kreis in die Luft und legt den Würfel auf die goldene Waage.', s: 'Prüfung', n: 'Hasis Zeichentafel', k: '#6fe3ff', t: 'Eine Wandtafel zum Skizzieren: Abläufe, Pläne, Ideen. Die Zeichnungen bleiben im Browser.', w: 'Praxen, Coaches, Handwerker, Schulen', p: 'Noch nicht im Regal · wartet auf Sicherheitsprüfung und Diegos Go', lic: 'Basiert auf dem Open-Source-Programm Excalidraw, Lizenz MIT, Copyright (c) 2020 Excalidraw. Grundprogramm gratis, wir würden nur Einrichten und Hilfe anbieten.', candidate: true }
   ];
   var REGAL_TEXT = {
-    lab: 'Unsere eigenen Programme. Alle Rechte bei DR Lab.',
+    lab: 'Unsere eigenen Programme. Alle Rechte bei Hasis Laden.',
     offen: 'Geprüfte Gratis-Programme anderer Erfinder, nur mit freier Lizenz. Hasi verkauft nie den fremden Code, nur Einrichten und Hilfe, und erst nach Go.',
     garten: 'Frisch aus Hasis Code-Garten: Vorlagen für die Werkbank und Bau auf Bestellung.'
   };
@@ -118,7 +118,7 @@
     $('t-name').textContent = x.n; $('t-text').textContent = x.t; $('t-wer').textContent = x.w; $('t-preis').textContent = x.p;
     var a = $('t-link');
     if (x.l) { a.hidden = false; a.href = x.l; } else a.hidden = true;
-    $('t-lizenz').textContent = x.lic || (x.r === 'lab' ? 'Eigenes Programm von DR Lab.' : '');
+    $('t-lizenz').textContent = x.lic || (x.r === 'lab' ? 'Eigenes Programm aus Hasis Laden.' : '');
     hasi(x.candidate ? 'waage' : (x.pose || 'schild'), x.s, x.g, 3200);
     t.scrollIntoView({ behavior: ruhig ? 'auto' : 'smooth', block: 'nearest' });
   }
@@ -161,14 +161,14 @@
     var v = verbindung();
     if (!v) { setTimeout(function () { treffer(lokal); }, ruhig ? 0 : 900); return; }
     var liste = W.map(function (w) { return w.id + ': ' + w.n + ' – ' + w.t; }).join('\n');
-    fetch(v.a + '/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + v.k, 'X-Nova-App': 'Hasis Laden' },
+    fetch(v.a + '/v1/chat/completions', { signal:(window.AbortSignal&&AbortSignal.timeout)?AbortSignal.timeout(9000):undefined, method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + v.k, 'X-Nova-App': 'Hasis Laden' },
       body: JSON.stringify({ model: 'sense-engine', max_tokens: 60, messages: [{ role: 'system', content: 'Du wählst für Hasis Programmladen 0 bis 3 passende Werkzeuge aus dieser Liste. Antworte nur mit den ids, durch Komma getrennt, ohne weiteren Text. Wenn nichts passt, antworte: keine.\n' + liste }, { role: 'user', content: text }] }) })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (j) {
         var a = j && j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content || '';
         var ids = a.split(/[\s,]+/).map(function (s) { return s.trim(); }).filter(function (s) { return W.some(function (w) { return w.id === s; }); });
         treffer(ids.length ? ids : lokal);
-      }).catch(function () { treffer(lokal); });
+      }).catch(function () { treffer(lokal); if (window.R8) R8.toast('Ohne Verbindung: Hasi sucht im eigenen Regal.'); });
   }
 
   /* ---------- Werkbank ---------- */
@@ -190,7 +190,7 @@
     if (d.a === 'erinnerung') h += '<p>Nächster Termin: <b>' + esc(d.t[1] || 'Termin') + '</b><br>' + esc(d.t[0] || '') + '</p><button class="wb-ics" style="background:' + d.f + '">In meinen Kalender</button>';
     if (d.a === 'quiz') h += d.t.map(function (q, i) { var p = q.split('='); return '<p><b>' + esc((p[0] || '').trim()) + '</b><br><button class="wb-q" data-i="' + i + '" style="background:' + d.f + '">Antwort zeigen</button> <span class="wb-a" data-i="' + i + '" hidden>' + esc((p[1] || '').trim()) + '</span></p>'; }).join('');
     if (d.a === 'karte') h += '<p style="font-size:15px;line-height:1.7">' + d.t.map(esc).join('<br>') + '</p><div style="height:6px;border-radius:3px;background:' + d.f + '"></div>';
-    if (eigen) h += '<p style="font-size:11px;color:#777;margin-top:16px">Gebaut in Hasis Werkbank · DR Lab</p>';
+    if (eigen) h += '<p style="font-size:11px;color:#777;margin-top:16px">Gebaut in Hasis Werkbank</p>';
     return h;
   }
   function wbBeleben(root, d) {
@@ -310,7 +310,7 @@
     { p: 'daumen', s: 'Passt!', b: '🧊 ✨ 🛠️', t: 'Der Würfel entfaltet sich als cyan-goldenes Hologramm und wird ein Werkzeug. Tinko strahlt und greift mit vielen Tentakeln zu.' },
     { p: 'winken', s: 'Für dich', b: '🥖 📚 🧒', t: 'Eine Bäckerin, ein Lehrer und ein Kind kommen herein. Jeder zeigt sein Problem. Hasi zeigt jedem einen anderen Würfel.' },
     { p: 'huepfen', s: '♥', b: '🥕 🐙 🐰', t: 'Hasi schiebt Tinko heimlich ein goldenes Rüebli zu. Beide grinsen. Beste Freunde.' },
-    { p: 'schild', s: 'Geh zu Hasi', b: '🧰', t: 'Brauchst du ein Werkzeug? Geh zu Hasi. DR Lab.' }
+    { p: 'schild', s: 'Geh zu Hasi', b: '🧰', t: 'Brauchst du ein Werkzeug? Geh zu Hasi.' }
   ];
   var film = { an: false, i: 0, t: null };
   function filmSzene() {

@@ -249,7 +249,7 @@ window.R7_CFG = {
   }
   mk.querySelector('.r7-vgl').addEventListener('click', function () {
     var a = wz(wahl[0]), b = wz(wahl[1]); if (!a || !b) return;
-    function lz(x) { return x.lic || (x.r === 'lab' ? 'Eigenes Programm von DR Lab' : '–'); }
+    function lz(x) { return x.lic || (x.r === 'lab' ? 'Eigenes Programm aus Hasis Laden' : '–'); }
     function zeile(titel, fa, fb) { return '<tr><th scope="row">' + titel + '</th><td>' + esc(fa) + '</td><td>' + esc(fb) + '</td></tr>'; }
     function link(m) { return m.l ? '<a class="r7-btn" href="' + esc(m.l) + '" target="_blank" rel="noopener">Ansehen</a>' : ''; }
     R.blatt('Nebeneinander auf dem Tresen', '<p class="r7-p" style="font-style:italic;color:var(--r7-leise)">Hasi legt beide Würfel auf die goldene Waage und zeigt abwechselnd mit der Pfote darauf.</p>' +
