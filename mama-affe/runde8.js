@@ -132,6 +132,138 @@
           return n;
         }
       }
+      ,{
+        id: 'aemtli', emo: '⭐', titel: 'Ämtli-Plan',
+        bau: function (H) {
+          /* Ämtli-Plan mit Sternen: Eltern erfassen, das Kind hakt in der grossen Kinderansicht ab.
+             Jeder Haken pro Tag gibt einen Stern. Am Montag beginnt eine neue Woche. Keine Strafen, nichts wird abgezogen. */
+          var VORSCHLAG = [['🛏️', 'Bett machen'], ['🍽️', 'Tisch decken'], ['🪴', 'Pflanzen giessen'], ['🧸', 'Zimmer aufräumen'], ['🦷', 'Zähne putzen'], ['🎒', 'Schulsack packen']];
+          var EMO = ['⭐', '🛏️', '🍽️', '🪴', '🧸', '🦷', '🎒', '🐾', '🧺', '🗑️'];
+          function z2(n) { return (n < 10 ? '0' : '') + n; }
+          function tagK(d) { d = d || new Date(); return d.getFullYear() + '-' + z2(d.getMonth() + 1) + '-' + z2(d.getDate()); }
+          function wocheK(d) { d = d ? new Date(d) : new Date(); d.setHours(12, 0, 0, 0); var tg = (d.getDay() + 6) % 7; d.setDate(d.getDate() - tg + 3); var j = new Date(d.getFullYear(), 0, 4); var w = 1 + Math.round(((d - j) / 864e5 - 3 + ((j.getDay() + 6) % 7)) / 7); return d.getFullYear() + '-W' + z2(w); }
+          function plan() { var l = H.hol('aemtli', []); return Array.isArray(l) ? l : []; }
+          function woche() {
+            var w = H.hol('aemtliWoche', null), k = wocheK();
+            if (!w || typeof w !== 'object' || !w.ok) w = { wk: k, ok: {} };
+            if (w.wk !== k) { /* Neue Woche: Sterne der alten Woche ins Album, dann frisch anfangen */
+              var alt = H.hol('aemtliAlt', []); if (!Array.isArray(alt)) alt = [];
+              alt.unshift({ wk: w.wk, sterne: sterne(w) }); H.leg('aemtliAlt', alt.slice(0, 8));
+              w = { wk: k, ok: {} }; H.leg('aemtliWoche', w);
+            }
+            return w;
+          }
+          function sterne(w) { var s = 0; Object.keys(w.ok || {}).forEach(function (id) { s += (w.ok[id] || []).length; }); return s; }
+          function heuteOk(w, id) { return (w.ok[id] || []).indexOf(tagK()) >= 0; }
+          function kindName() { return String(H.hol('aemtliKind', '') || '').slice(0, 24); }
+          var n = H.karte('aemtli', '⭐ Ämtli-Plan',
+            '<p>Kleine Aufgaben für dein Kind, mit Sternen statt Druck. Du trägst die Ämtli ein, dein Kind hakt in der grossen Kinderansicht selber ab.</p>' +
+            '<p class="r8a-stand" aria-live="polite"></p>' +
+            '<div class="r8-reihe"><button type="button" class="r8-btn voll" data-a="kind">🧒 Kinderansicht öffnen</button></div>' +
+            '<details class="r8a-det"><summary>Ämtli bearbeiten</summary>' +
+            '<label class="r8a-feld"><span>Name des Kindes (freiwillig)</span><input type="text" data-a="name" maxlength="24" autocomplete="off"></label>' +
+            '<ul class="r8a-plan" aria-label="Eingetragene Ämtli"></ul>' +
+            '<form class="r8a-neu"><label class="r8a-feld"><span>Neues Ämtli</span><input type="text" data-a="text" maxlength="40" autocomplete="off" placeholder="z. B. Schuhe versorgen"></label>' +
+            '<div class="r8a-emo" role="group" aria-label="Bild wählen"></div>' +
+            '<button type="submit" class="r8-btn voll">＋ Ämtli dazu</button></form>' +
+            '<p class="r8-leise">Schnell dazu:</p><div class="r8a-vor"></div>' +
+            '</details>' +
+            '<p class="r8-leise r8a-klein">Keine Strafen: Was heute nicht klappt, bleibt einfach offen. Sterne zählen nur das, was gelungen ist. Am Montag beginnt eine neue Sternenwoche. Alles bleibt auf diesem Gerät.</p>');
+          var st = document.createElement('style');
+          st.textContent = '.r8a-stand{font-weight:700;margin:8px 0}' +
+            '.r8a-det{margin-top:12px;border-top:1px solid var(--t-rand,#E6E1D4);padding-top:8px}.r8a-det summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:700;color:var(--t-primaer-text-auf-hell,#1A6B42)}' +
+            '.r8a-feld{display:flex;flex-direction:column;gap:4px;margin:10px 0;font-weight:600}.r8a-feld input{min-height:48px;font:inherit;padding:8px 12px;border-radius:14px;border:1px solid var(--t-rand2,#CFC8B6);background:#FFFFFF;color:#1F2A24}' +
+            '.r8a-plan{list-style:none;margin:8px 0;padding:0;display:grid;gap:6px}.r8a-plan li{display:flex;align-items:center;gap:10px;min-height:48px;padding:4px 4px 4px 12px;border-radius:14px;background:var(--t-flaeche,#F3F1EA)}' +
+            '.r8a-plan li span.t{flex:1;min-width:0;overflow-wrap:anywhere}.r8a-plan li button{min-width:44px;min-height:44px;border-radius:12px;border:1px solid var(--t-rand2,#CFC8B6);background:#FFFFFF;color:#1F2A24;font:inherit;cursor:pointer}' +
+            '.r8a-emo,.r8a-vor{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}.r8a-emo button,.r8a-vor button{min-height:44px;min-width:44px;padding:6px 12px;border-radius:999px;border:1px solid var(--t-rand2,#CFC8B6);background:#FFFFFF;color:#1F2A24;font:inherit;cursor:pointer}' +
+            '.r8a-emo button[aria-pressed=true]{background:#EAF4EE;border-color:#1E7A4C;box-shadow:0 0 0 1px #1E7A4C}.r8a-klein{font-size:.92rem;margin-top:12px}' +
+            '.r8a-kind{position:fixed;inset:0;z-index:2147483000;background:linear-gradient(180deg,#FFF6E6,#FFFDF8);color:#1F2A24;overflow-y:auto;padding:max(16px,env(safe-area-inset-top,0px)) 16px max(24px,env(safe-area-inset-bottom,0px));font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,sans-serif}' +
+            '.r8a-kind .in{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:14px}' +
+            '.r8a-kopf{display:flex;align-items:center;justify-content:space-between;gap:10px}.r8a-kopf h2{margin:0;font-size:1.6rem;line-height:1.2}' +
+            '.r8a-kopf button{min-height:48px;padding:8px 18px;border-radius:999px;border:1px solid #CFC8B6;background:#FFFFFF;color:#1F2A24;font:inherit;font-weight:700;cursor:pointer}' +
+            '.r8a-himmel{background:#FFFFFF;border:2px solid #F4C27A;border-radius:22px;padding:14px;text-align:center}.r8a-himmel b{display:block;font-size:2.2rem;line-height:1.1}.r8a-himmel .reihe{font-size:1.5rem;letter-spacing:2px;overflow-wrap:anywhere;min-height:1.6em}' +
+            '.r8a-liste{list-style:none;margin:0;padding:0;display:grid;gap:12px}' +
+            '.r8a-tipp{display:flex;align-items:center;gap:14px;width:100%;min-height:88px;padding:12px 16px;border-radius:22px;border:2px solid #E6E1D4;background:#FFFFFF;color:#1F2A24;font:inherit;font-size:1.3rem;font-weight:700;text-align:left;cursor:pointer;transition:transform .15s}' +
+            '.r8a-tipp:active{transform:scale(.97)}.r8a-tipp .e{font-size:2.4rem;line-height:1}.r8a-tipp .t{flex:1;min-width:0;overflow-wrap:anywhere}.r8a-tipp .h{font-size:1.8rem}' +
+            '.r8a-tipp[aria-pressed=true]{background:#EAF4EE;border-color:#1E7A4C}' +
+            '.r8a-flug{position:fixed;z-index:2147483001;font-size:2.4rem;pointer-events:none;animation:r8aFlug .9s ease-out forwards}' +
+            '@keyframes r8aFlug{to{transform:translate(var(--dx),var(--dy)) scale(.4);opacity:0}}' +
+            '.r8a-lob{text-align:center;font-size:1.15rem;font-weight:700;color:#1A6B42;min-height:1.5em}' +
+            '@media (prefers-reduced-motion:reduce){.r8a-flug{display:none}.r8a-tipp{transition:none}}';
+          n.appendChild(st);
+          var stand = n.querySelector('.r8a-stand'), planUl = n.querySelector('.r8a-plan'), emoBox = n.querySelector('.r8a-emo'), vorBox = n.querySelector('.r8a-vor');
+          var inName = n.querySelector('[data-a=name]'), inText = n.querySelector('[data-a=text]'), emoWahl = EMO[0];
+          inName.value = kindName();
+          inName.onchange = function () { H.leg('aemtliKind', inName.value.trim().slice(0, 24)); zeichne(); };
+          emoBox.innerHTML = EMO.map(function (e) { return '<button type="button" data-e="' + e + '" aria-pressed="' + (e === emoWahl) + '" aria-label="Bild ' + e + '">' + e + '</button>'; }).join('');
+          emoBox.onclick = function (v) { var b = v.target.closest('[data-e]'); if (!b) return; emoWahl = b.getAttribute('data-e'); emoBox.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); }); };
+          vorBox.innerHTML = VORSCHLAG.map(function (v, i) { return '<button type="button" data-v="' + i + '">' + v[0] + ' ' + v[1] + '</button>'; }).join('');
+          vorBox.onclick = function (v) { var b = v.target.closest('[data-v]'); if (!b) return; var x = VORSCHLAG[+b.getAttribute('data-v')]; dazu(x[0], x[1]); };
+          n.querySelector('.r8a-neu').onsubmit = function (v) { v.preventDefault(); var t = inText.value.trim(); if (!t) { inText.focus(); return; } dazu(emoWahl, t); inText.value = ''; };
+          function dazu(e, t) {
+            var l = plan(); if (l.length >= 12) { H.toast('Zwölf Ämtli sind genug. Weniger ist oft mehr.'); return; }
+            if (l.some(function (x) { return x.t.toLowerCase() === t.toLowerCase(); })) { H.toast('Das Ämtli gibt es schon.'); return; }
+            l.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5), e: e, t: t.slice(0, 40) }); H.leg('aemtli', l); H.summ(6); zeichne();
+          }
+          function zeichne() {
+            var l = plan(), w = woche(), s = sterne(w), alt = H.hol('aemtliAlt', []), nm = kindName();
+            var heute = l.filter(function (x) { return heuteOk(w, x.id); }).length;
+            stand.textContent = l.length ? '⭐ ' + s + (s === 1 ? ' Stern' : ' Sterne') + ' diese Woche' + (nm ? ' für ' + nm : '') + ' · heute ' + heute + ' von ' + l.length + ' erledigt' + (Array.isArray(alt) && alt[0] ? ' · vorherige Sternenwoche ' + alt[0].sterne : '') : 'Noch keine Ämtli. Öffne «Ämtli bearbeiten» und wähle zwei oder drei.';
+            planUl.innerHTML = l.length ? '' : '<li><span class="t">Noch leer.</span></li>';
+            l.forEach(function (x) {
+              var li = H.el('<li><span aria-hidden="true">' + x.e + '</span><span class="t">' + H.esc(x.t) + '</span><button type="button" aria-label="' + H.esc(x.t) + ' entfernen">✕</button></li>');
+              li.querySelector('button').onclick = function () {
+                var vor = plan(); H.leg('aemtli', vor.filter(function (y) { return y.id !== x.id; })); zeichne();
+                H.rueck('«' + x.t + '» entfernt.', function () { H.leg('aemtli', vor); zeichne(); });
+              };
+              planUl.appendChild(li);
+            });
+            if (kindAuf) kindAuf();
+          }
+          var kindAuf = null;
+          function kinderansicht() {
+            var nm = kindName();
+            var k = H.el('<div class="r8a-kind" aria-labelledby="r8a-kt"><div class="in">' +
+              '<div class="r8a-kopf"><h2 id="r8a-kt" tabindex="-1">⭐ ' + (nm ? H.esc(nm) + (/[sxzß]$/i.test(nm) ? '’' : 's') + ' Ämtli' : 'Meine Ämtli') + '</h2><button type="button" data-a="zu">Fertig</button></div>' +
+              '<div class="r8a-himmel"><b class="z"></b><span class="w">Sterne diese Woche</span><div class="reihe" aria-hidden="true"></div></div>' +
+              '<p class="r8a-lob" aria-live="polite"></p><ul class="r8a-liste"></ul></div></div>');
+            var e = H.ebene(k, function () { kindAuf = null; zeichne(); });
+            k.querySelector('[data-a=zu]').onclick = e.zu;
+            var ul = k.querySelector('.r8a-liste'), lob = k.querySelector('.r8a-lob');
+            function male() {
+              var l = plan(), w = woche(), s = sterne(w);
+              k.querySelector('.z').textContent = String(s); k.querySelector('.w').textContent = s === 1 ? 'Stern diese Woche' : 'Sterne diese Woche';
+              k.querySelector('.reihe').textContent = s ? new Array(Math.min(s, 40) + 1).join('⭐') + (s > 40 ? ' +' + (s - 40) : '') : '☁️';
+              ul.innerHTML = l.length ? '' : '<li class="r8a-lob">Hier kommen bald deine Ämtli hin.</li>';
+              l.forEach(function (x) {
+                var ok = heuteOk(w, x.id);
+                var li = H.el('<li><button type="button" class="r8a-tipp" aria-pressed="' + ok + '"><span class="e" aria-hidden="true">' + x.e + '</span><span class="t">' + H.esc(x.t) + '</span><span class="h" aria-hidden="true">' + (ok ? '✅' : '⬜') + '</span></button></li>');
+                li.firstChild.onclick = function (v) { tipp(x, li.firstChild, v); };
+                ul.appendChild(li);
+              });
+            }
+            function tipp(x, b, v) {
+              var w = woche(), d = tagK(), a = w.ok[x.id] || [];
+              if (a.indexOf(d) >= 0) { w.ok[x.id] = a.filter(function (y) { return y !== d; }); H.leg('aemtliWoche', w); lob.textContent = 'Okay, «' + x.t + '» ist wieder offen. Kein Problem.'; male(); return; }
+              a.push(d); w.ok[x.id] = a; H.leg('aemtliWoche', w); H.summ([8, 40, 8]);
+              var r = b.getBoundingClientRect(), z = k.querySelector('.z').getBoundingClientRect(), f = document.createElement('span');
+              f.className = 'r8a-flug'; f.textContent = '⭐'; f.setAttribute('aria-hidden', 'true'); f.style.left = (r.left + r.width - 60) + 'px'; f.style.top = (r.top + 10) + 'px';
+              f.style.setProperty('--dx', (z.left + z.width / 2 - r.left - r.width + 60) + 'px'); f.style.setProperty('--dy', (z.top - r.top - 10) + 'px');
+              document.body.appendChild(f); setTimeout(function () { f.remove(); }, 1000);
+              var l = plan(), alle = l.every(function (y) { return heuteOk(w, y.id); });
+              lob.textContent = alle ? 'Alle Ämtli für heute geschafft! Super gemacht.' : ['Ein Stern für dich!', 'Toll gemacht!', 'Bravo, weiter so!', 'Danke für deine Hilfe!'][sterne(w) % 4];
+              if (alle) H.feier(b, 'Alle Ämtli für heute!');
+              male();
+            }
+            kindAuf = male; male();
+            setTimeout(function () { var h = k.querySelector('#r8a-kt'); if (h) h.focus(); }, 30);
+          }
+          H.aemtliKind = kinderansicht;
+          n.querySelector('[data-a=kind]').onclick = kinderansicht;
+          zeichne();
+          return n;
+        }
+      }
     ],
     wachsen: {
       licht: 'Blättli', licht1: 'Blättli', emo: '🍃', dauer: 20000,
@@ -189,7 +321,7 @@
           else if (g0) { ['wachsen', 'sos'].forEach(function (k) { if (N[k] && N[k].parentNode !== sc) g0.before(N[k]); }); }
           var nach = sc.querySelector(':scope > .r6-gruss') || stg; if (!nach) return;
           var was = sc.querySelector(':scope > .r7-was'); if (was) nach = was;
-          ['kopffrei', 'woche'].forEach(function (k) { if (N[k] && N[k].parentNode !== sc) nach.after(N[k]); if (N[k]) nach = N[k]; });
+          ['kopffrei', 'aemtli', 'woche'].forEach(function (k) { if (N[k] && N[k].parentNode !== sc) nach.after(N[k]); if (N[k]) nach = N[k]; });
         } finally { laeuft = false; }
       }
       new MutationObserver(rein).observe(root, { childList: true, subtree: true });
