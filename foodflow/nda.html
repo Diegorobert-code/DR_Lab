@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0b0d">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Geheimhaltung Food and Flow</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: eine ruhige Papierspalte, Kopf mit Wortmarke, Vertrag, dann Unterschriftsfelder; Archiv nur für Diego darunter */
+:root {
+  --bg: #F3F2EE;
+  --paper: #FCFBF8;
+  --ink: #1B2230;
+  --muted: #5E6573;
+  --line: #D9D6CE;
+  --accent: #8C6A34;
+  --accent-soft: #EFE6D6;
+  --pad: #FFFFFF;
+  --pad-ink: #1B2230;
+  --ok: #2F6B4F;
+  --warn: #9A3B2E;
+  --font-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-ui: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10141B; --paper: #171C25; --ink: #ECE8DF; --muted: #A2A6AF; --line: #2D3440;
+    --accent: #D2AE6E; --accent-soft: #2A2619; --pad: #F7F5F0; --pad-ink: #1B2230; --ok: #7CC4A0; --warn: #E08A7C;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10141B; --paper: #171C25; --ink: #ECE8DF; --muted: #A2A6AF; --line: #2D3440;
+  --accent: #D2AE6E; --accent-soft: #2A2619; --pad: #F7F5F0; --pad-ink: #1B2230; --ok: #7CC4A0; --warn: #E08A7C;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 64px;
+}
+.sheet {
+  max-width: 760px; margin: 0 auto; background: var(--paper);
+  border: 1px solid var(--line); border-radius: 4px;
+  padding: clamp(22px, 5vw, 56px);
+  display: grid; gap: 28px;
+}
+header.brand { display: grid; gap: 10px; justify-items: center; text-align: center; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+.wordmark { font-family: var(--font-display); font-weight: 600; font-size: clamp(30px, 6vw, 42px); letter-spacing: 0.32em; margin-right: -0.32em; line-height: 1; }
+.wordmark-rule { width: 56px; height: 1px; background: var(--accent); }
+.eyebrow { font-family: var(--font-ui); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(21px, 5.4vw, 34px); line-height: 1.2; margin: 0; text-wrap: balance; hyphens: auto; overflow-wrap: break-word; max-width: 100%; }
+
+.chooser { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; font-family: var(--font-ui); }
+.chooser button {
+  font: 500 15px var(--font-ui); padding: 9px 20px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: transparent; color: var(--ink);
+}
+.chooser button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.chooser button:focus-visible, .btn:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.parties { display: grid; gap: 6px; text-align: center; }
+.parties .and { font-style: italic; color: var(--muted); }
+.parties strong { font-weight: 600; }
+.contract { display: grid; gap: 22px; }
+.contract section { display: grid; gap: 8px; }
+.contract h2 { font-family: var(--font-ui); font-weight: 600; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; margin: 0; color: var(--accent); }
+.contract p, .contract ul, .contract ol { margin: 0; max-width: 65ch; }
+.contract ul, .contract ol { padding-left: 1.3em; display: grid; gap: 4px; }
+
+.form { display: grid; gap: 22px; border-top: 1px solid var(--line); padding-top: 26px; }
+.fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.fields .wide { grid-column: 1 / -1; }
+@media (max-width: 560px) { .fields { grid-template-columns: 1fr; } }
+label.field { display: grid; gap: 6px; min-width: 0; }
+label.field span { font-family: var(--font-ui); font-size: 13px; color: var(--muted); letter-spacing: 0.02em; }
+input[type="text"] {
+  font: 17px var(--font-body); color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; width: 100%;
+}
+.consent { display: flex; gap: 12px; align-items: flex-start; font-size: 16px; }
+.consent input { width: 22px; height: 22px; margin-top: 3px; accent-color: var(--accent); flex: none; }
+
+.sigs { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 640px) { .sigs { grid-template-columns: 1fr; } }
+.sig { display: grid; gap: 8px; min-width: 0; }
+.sig-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-family: var(--font-ui); font-size: 13px; color: var(--muted); }
+.sig-head b { color: var(--ink); font-weight: 600; font-size: 14px; }
+.pad-wrap { position: relative; background: var(--pad); border: 1px solid var(--line); border-radius: 4px; aspect-ratio: 5 / 2; max-width: 100%; }
+.pad-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; border-radius: 4px; }
+.pad-wrap .baseline { position: absolute; left: 8%; right: 8%; bottom: 24%; border-bottom: 1px solid #C9C4B8; pointer-events: none; }
+.pad-wrap .hint { position: absolute; left: 8%; bottom: 8%; font: 12px var(--font-ui); color: #9A958A; pointer-events: none; }
+.pad-wrap.signed .hint { display: none; }
+.linkbtn { font: 500 13px var(--font-ui); background: none; border: 0; color: var(--accent); cursor: pointer; padding: 2px 0; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.btn {
+  font: 600 16px var(--font-ui); padding: 13px 26px; border-radius: 4px; cursor: pointer;
+  border: 1px solid var(--ink); background: var(--ink); color: var(--paper);
+}
+.btn.secondary { background: transparent; color: var(--ink); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.status { font: 14px var(--font-ui); color: var(--muted); }
+.status.err { color: var(--warn); }
+
+.done { display: grid; gap: 14px; justify-items: start; border: 1px solid var(--accent); background: var(--accent-soft); border-radius: 4px; padding: 22px; }
+.done h3 { font-family: var(--font-display); font-weight: 400; font-size: 26px; margin: 0; }
+.done p { margin: 0; }
+.done .check { font: 600 13px var(--font-ui); color: var(--ok); letter-spacing: 0.08em; text-transform: uppercase; }
+
+.archive { max-width: 760px; margin: 28px auto 0; display: grid; gap: 12px; }
+.archive h2 { font: 600 13px var(--font-ui); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.archive .note { font: 13px var(--font-ui); color: var(--muted); margin: 0; }
+.rows { display: grid; gap: 8px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; align-items: center; background: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 12px 16px; font-family: var(--font-ui); font-size: 14px; }
+.row .who { font-weight: 600; }
+.row .when { color: var(--muted); font-variant-numeric: tabular-nums; }
+.row .btn { font-size: 13px; padding: 7px 14px; }
+.empty { font: 14px var(--font-ui); color: var(--muted); background: var(--paper); border: 1px dashed var(--line); border-radius: 4px; padding: 14px 16px; }
+.howto { border: 1px solid var(--accent); background: var(--accent-soft); border-radius: 4px; padding: 18px 20px; display: grid; gap: 8px; font-family: var(--font-ui); font-size: 15px; line-height: 1.5; }
+.howto b { font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.howto ol { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; }
+.proof { display: grid; gap: 6px; line-height: 1.4; background: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 18px; width: 100%; font-size: 15px; }
+.proof > div { display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline; }
+.proof > div.sigrow { display: grid; gap: 4px; }
+.proof .k { font: 11px var(--font-ui); min-width: 92px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.proof img { background: #fff; border: 1px solid var(--line); border-radius: 4px; width: 100%; max-width: 320px; }
+footer.fine { text-align: center; font: 12px var(--font-ui); color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) { .done { animation: rise .4s ease-out both; } @keyframes rise { from { transform: translateY(6px); } to { transform: none; } } }
+</style>
+</head>
+<body>
+
+
+<main class="sheet" id="sheet" lang="de-CH">
+  <header class="brand">
+    <div class="wordmark">DR LAB</div>
+    <div class="wordmark-rule"></div>
+    <div class="eyebrow">Vertraulich</div>
+    <h1>Geheimhaltungsvereinbarung</h1>
+  </header>
+
+  <div class="howto">
+    <b>So geht es</b>
+    <ol>
+      <li>Den Text unten in Ruhe lesen.</li>
+      <li>Nachname, Geburtsdatum und Adresse eintragen.</li>
+      <li>Das Kästchen ankreuzen.</li>
+      <li>Mit dem Finger unterschreiben und auf «Fertig» tippen.</li>
+      <li>Vom Bestätigungsfeld einen Screenshot machen und Diego per WhatsApp schicken.</li>
+      <li>Auf «Weiter zur App» tippen. Erst dann ist Food and Flow offen.</li>
+    </ol>
+  </div>
+
+  <div class="parties">
+    <div class="eyebrow">zwischen</div>
+    <div><strong>Diego Robert</strong>, Einzelfirma Rolfing Kinesiologie, Nordstrasse 56, 8006 Zürich<br><span class="and">(nachfolgend «Offenlegende Partei»)</span></div>
+    <div class="eyebrow">und</div>
+    <div><strong id="party-name">Florence</strong><span></span><span id="party-addr"></span><br><span class="and">(nachfolgend «Empfangende Partei»)</span></div>
+  </div>
+
+  <div class="contract" id="contract"></div>
+
+  <form class="form" id="form" novalidate>
+    <div class="fields">
+      <label class="field"><span>Vorname und Nachname</span><input type="text" id="f-name" autocomplete="name" required></label>
+      <label class="field"><span>Geburtsdatum</span><input type="text" id="f-geb" inputmode="numeric" placeholder="TT.MM.JJJJ"></label>
+      <label class="field wide"><span>Adresse</span><input type="text" id="f-addr" autocomplete="street-address" placeholder="Strasse Nr., PLZ Ort"></label>
+      <label class="field"><span>Ort</span><input type="text" id="f-ort" value="Zürich"></label>
+      <label class="field"><span>Datum</span><input type="text" id="f-date" inputmode="numeric"></label>
+    </div>
+
+    <label class="consent"><input type="checkbox" id="f-ok"><span>Ich habe die Vereinbarung gelesen und bin damit einverstanden.</span></label>
+
+    <div class="sigs">
+      <div class="sig">
+        <div class="sig-head"><b id="sig-p-label">Florence</b><button type="button" class="linkbtn" data-clear="p">Neu zeichnen</button></div>
+        <div class="pad-wrap" id="wrap-p"><canvas id="pad-p" aria-label="Unterschrift Partnerin"></canvas><div class="baseline"></div><div class="hint">Hier mit dem Finger unterschreiben</div></div>
+      </div>
+      <div hidden><canvas id="pad-d"></canvas><div id="wrap-d"></div></div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn" id="submit">Fertig</button>
+      <span class="status" id="status" aria-live="polite"></span>
+    </div>
+  </form>
+
+  <div class="done" id="done" hidden>
+    <div class="check">Unterzeichnet</div>
+    <h3 id="done-title">Vielen Dank</h3>
+    <p id="done-text"></p>
+    <div class="proof" id="proof">
+      <div><div class="k">Vereinbarung</div><div>Geheimhaltung Food and Flow, mit Diego Robert (22.10.2026)</div></div>
+      <div><div class="k">Name</div><div id="pr-name"></div></div>
+      <div><div class="k">Geburtsdatum</div><div id="pr-geb"></div></div>
+      <div><div class="k">Adresse</div><div id="pr-addr"></div></div>
+      <div><div class="k">Ort, Datum</div><div id="pr-ort"></div></div>
+      <div><div>Ich habe die Vereinbarung gelesen und bin damit einverstanden.</div></div>
+      <div class="sigrow"><div class="k">Unterschrift</div><img id="pr-sig" alt="Unterschrift"></div>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn" id="done-app">Weiter zur App</button>
+      <button type="button" class="btn secondary" id="done-new">Nochmals ausfüllen</button>
+    </div>
+    <span class="status" id="done-status" aria-live="polite"></span>
+  </div>
+
+  <footer class="fine" id="fassung"></footer>
+</main>
+
+<section class="archive" id="archive" hidden>
+  <h2>Unterschriebene Exemplare</h2>
+  <p class="note">Nur für dich sichtbar. Jedes Exemplar lässt sich als PDF speichern und ausdrucken.</p>
+  <div class="rows" id="rows"><div class="empty">Noch keine Unterschrift. Sobald Florence auf diesem Gerät unterschreibt, erscheint ihr Exemplar hier.</div></div>
+</section>
+
+<script>
+const FASSUNG = "Fassung vom 22.10.2026";
+const PEOPLE = { florence: "Florence" };
+
+// Vertragstext aus plaene/jasmin/nda-geheimhaltung-vorlage.md (einseitig), Zweck auf die Food-and-Flow-App angepasst, Ziffer 8 Variante A
+const SECTIONS = [
+  { h: "1. Zweck", p: ["Diego Robert stellt der Empfangenden Partei die App «Food and Flow» vor und gibt sie ihr zum Ansehen und Ausprobieren (der «Zweck»)."] },
+  { h: "2. Vertrauliche Informationen",
+    p: ["Vertraulich sind alle Informationen, die im Zusammenhang mit dem Zweck mündlich, schriftlich, digital oder durch Vorführung offengelegt werden, insbesondere:"],
+    ul: ["die App «Food and Flow», ihre Funktionen, Inhalte und ihr Aufbau;",
+         "Ideen, Konzepte, Namen, Figuren, Geschichten, Designs, Bilder und Filme;",
+         "Programme, Quellcode, Server und technische Abläufe;",
+         "Pläne, Zahlen, Preise und alle Unterlagen dazu."] },
+  { h: "3. Ausnahmen",
+    p: ["Nicht vertraulich ist, was nachweislich"],
+    ul: ["a) bereits öffentlich bekannt ist oder ohne Verschulden der Empfangenden Partei öffentlich wird;",
+         "b) der Empfangenden Partei vorher rechtmässig bekannt war;",
+         "c) ihr von Dritten rechtmässig und ohne Geheimhaltungspflicht mitgeteilt wird;",
+         "d) aufgrund Gesetz oder behördlicher Anordnung offengelegt werden muss (dann vorher Information an Diego Robert, soweit erlaubt)."] },
+  { h: "4. Pflichten",
+    p: ["Die Empfangende Partei"],
+    ul: ["a) verwendet die vertraulichen Informationen nur für den Zweck;",
+         "b) gibt sie nicht an Dritte weiter, auch nicht an ihren Arbeitgeber, ohne vorgängige schriftliche Zustimmung (E-Mail genügt);",
+         "c) macht keine Kopien, Fotos, Bildschirmaufnahmen oder Aufnahmen ohne Zustimmung;",
+         "d) nutzt die Ideen nicht selbst oder für Dritte und meldet keine Marken, Namen oder Schutzrechte daraus an."] },
+  { h: "5. Kein Recht und keine Pflicht", p: ["Diese Vereinbarung überträgt keine Rechte an Ideen, Namen, Figuren oder Programmen. Alle Rechte bleiben bei Diego Robert. Keine Partei ist verpflichtet, eine Zusammenarbeit einzugehen."] },
+  { h: "6. Rückgabe", p: ["Auf Verlangen gibt die Empfangende Partei alle Unterlagen zurück oder löscht sie, auch die App, und bestätigt dies."] },
+  { h: "7. Dauer", p: ["Die Vereinbarung gilt ab Unterzeichnung. Die Geheimhaltungspflicht gilt 5 Jahre über das Ende der Gespräche oder einer Zusammenarbeit hinaus."] },
+  { h: "8. Verletzung", p: ["Bei Verletzung haftet die Empfangende Partei für den nachgewiesenen Schaden."] },
+  { h: "9. Recht und Gerichtsstand", p: ["Es gilt Schweizer Recht. Gerichtsstand ist Zürich."] },
+];
+const DIEGO_LINE = "Diego Robert, Einzelfirma Rolfing Kinesiologie, Nordstrasse 56, 8006 Zürich";
+
+const $ = (id) => document.getElementById(id);
+const el = (tag, text) => { const e = document.createElement(tag); if (text != null) e.textContent = text; return e; };
+
+function renderContract() {
+  const box = $("contract");
+  for (const s of SECTIONS) {
+    const sec = el("section");
+    sec.append(el("h2", s.h));
+    (s.p || []).forEach(t => sec.append(el("p", t)));
+    if (s.ul) { const ul = el("ul"); s.ul.forEach(t => ul.append(el("li", t))); sec.append(ul); }
+    if (s.ol) { const ol = el("ol"); s.ol.forEach(t => ol.append(el("li", t))); sec.append(ol); }
+    (s.after || []).forEach(t => sec.append(el("p", t)));
+    box.append(sec);
+  }
+  $("fassung").textContent = "DR Lab · " + FASSUNG;
+}
+
+function today() {
+  const d = new Date();
+  return String(d.getDate()).padStart(2, "0") + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + d.getFullYear();
+}
+
+// --- Unterschriftsfelder ---
+function makePad(canvas, wrap) {
+  const ctx = canvas.getContext("2d");
+  let strokes = [], cur = null;
+  function size() {
+    const r = canvas.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.max(1, Math.round(r.width * dpr));
+    canvas.height = Math.max(1, Math.round(r.height * dpr));
+    redraw();
+  }
+  function drawStroke(c, s, w, h, lw) {
+    if (!s.length) return;
+    c.beginPath();
+    c.moveTo(s[0][0] * w, s[0][1] * h);
+    if (s.length === 1) { c.lineTo(s[0][0] * w + 0.1, s[0][1] * h); }
+    for (let i = 1; i < s.length - 1; i++) {
+      const mx = (s[i][0] + s[i + 1][0]) / 2, my = (s[i][1] + s[i + 1][1]) / 2;
+      c.quadraticCurveTo(s[i][0] * w, s[i][1] * h, mx * w, my * h);
+    }
+    if (s.length > 1) { const l = s[s.length - 1]; c.lineTo(l[0] * w, l[1] * h); }
+    c.lineWidth = lw; c.lineCap = "round"; c.lineJoin = "round";
+    c.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--pad-ink").trim() || "#1B2230";
+    c.stroke();
+  }
+  function redraw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const lw = Math.max(2, canvas.width / 220);
+    strokes.forEach(s => drawStroke(ctx, s, canvas.width, canvas.height, lw));
+    wrap.classList.toggle("signed", strokes.length > 0);
+  }
+  function pt(e) { const r = canvas.getBoundingClientRect(); return [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height]; }
+  canvas.addEventListener("pointerdown", (e) => { e.preventDefault(); canvas.setPointerCapture(e.pointerId); cur = [pt(e)]; strokes.push(cur); redraw(); onChange(); });
+  canvas.addEventListener("pointermove", (e) => { if (!cur) return; const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e]; evs.forEach(ev => cur.push(pt(ev))); redraw(); });
+  const end = () => { cur = null; };
+  canvas.addEventListener("pointerup", end); canvas.addEventListener("pointercancel", end);
+  new ResizeObserver(size).observe(canvas);
+  return {
+    clear() { strokes = []; redraw(); onChange(); },
+    empty() { return strokes.length === 0; },
+    png() {
+      const w = 640, h = 256, c = document.createElement("canvas"); c.width = w; c.height = h;
+      const x = c.getContext("2d"); x.fillStyle = "#FFFFFF"; x.fillRect(0, 0, w, h);
+      strokes.forEach(s => drawStroke(x, s, w, h, 3.2));
+      return c.toDataURL("image/png");
+    },
+  };
+}
+
+let who = "jasmine";
+let pads = {};
+let db = null, downloads = null, isOwner = false;
+let lastSigned = null;
+
+function setWho(w, keepName) {
+  who = "florence";
+  if (!keepName) $("f-name").value = PEOPLE[who] + " ";
+  $("sig-p-label").textContent = PEOPLE[who];
+  syncParty();
+}
+function syncParty() {
+  const n = $("f-name").value.trim() || PEOPLE[who];
+  const a = $("f-addr").value.trim();
+  const g = $("f-geb").value.trim();
+  $("party-name").textContent = n;
+  $("party-addr").textContent = (a ? ", " + a : "");
+  $("party-name").nextSibling && ($("party-name").nextSibling.textContent = g ? ", geboren am " + g : "");
+  $("sig-p-label").textContent = n;
+}
+function onChange() { $("status").textContent = ""; $("status").classList.remove("err"); }
+
+function collect() {
+  return {
+    person: who,
+    name: $("f-name").value.trim(),
+    adresse: $("f-addr").value.trim(),
+    geburtsdatum: $("f-geb").value.trim(),
+    ort: $("f-ort").value.trim(),
+    datum: $("f-date").value.trim(),
+    einverstanden: $("f-ok").checked,
+  };
+}
+
+function problem(d) {
+  if (d.name.split(/\s+/).length < 2) return "Bitte Vor- und Nachnamen eintragen.";
+  if (!d.geburtsdatum) return "Bitte das Geburtsdatum eintragen.";
+  if (!d.adresse) return "Bitte die Adresse eintragen.";
+  if (!d.ort || !d.datum) return "Bitte Ort und Datum eintragen.";
+  if (!d.einverstanden) return "Bitte das Einverständnis ankreuzen.";
+  if (pads.p.empty()) return "Bitte im ersten Feld unterschreiben.";
+  return "";
+}
+
+function contractText() {
+  return SECTIONS.map(s => [s.h, ...(s.p || []), ...(s.ul || []).map(t => "• " + t), ...(s.ol || []).map((t, i) => (i + 1) + ". " + t), ...(s.after || [])].join("\n")).join("\n\n");
+}
+
+async function submit(e) {
+  e.preventDefault();
+  const d = collect();
+  const err = problem(d);
+  const st = $("status");
+  if (err) { st.textContent = err; st.classList.add("err"); return; }
+  const btn = $("submit"); btn.disabled = true; st.classList.remove("err"); st.textContent = "Wird gespeichert…";
+  const now = new Date();
+  const rec = Object.assign({}, d, {
+    fassung: FASSUNG,
+    vertragstext: contractText(),
+    unterschrift_partnerin: pads.p.png(),
+    unterschrift_diego: pads.d.empty() ? "" : pads.d.png(),
+    zeitpunkt: now.toISOString(),
+  });
+  let saved = false;
+  if (db) {
+    try {
+      const id = who + "-" + now.toISOString().replace(/[:.]/g, "-");
+      await db.collection("nda").doc(id).set(rec);
+      saved = true;
+    } catch (x) { saved = false; }
+  }
+  lastSigned = rec;
+  btn.disabled = false; st.textContent = "";
+  showDone(rec, saved);
+}
+
+function fmtTime(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString("de-CH") + ", " + d.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
+}
+
+function showDone(rec, saved) {
+  $("form").hidden = true;
+  $("done").hidden = false;
+  $("done-title").textContent = "Danke, " + rec.name.split(/\s+/)[0];
+  $("done-text").textContent = "Jetzt bitte einen Screenshot machen und Diego per WhatsApp schicken.";
+  $("pr-name").textContent = rec.name;
+  $("pr-geb").textContent = rec.geburtsdatum;
+  $("pr-addr").textContent = rec.adresse;
+  $("pr-ort").textContent = rec.ort + ", " + rec.datum;
+  $("pr-sig").src = rec.unterschrift_partnerin;
+  try { localStorage.setItem("ff-nda", JSON.stringify({ name: rec.name, datum: rec.datum, zeitpunkt: rec.zeitpunkt, fassung: rec.fassung, unterschrift: rec.unterschrift_partnerin })); } catch (x) {}
+  $("done").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function resetForm() {
+  pads.p.clear(); pads.d.clear();
+  $("f-ok").checked = false; $("f-addr").value = ""; $("f-date").value = today();
+  setWho(who);
+  $("done").hidden = true; $("form").hidden = false; $("done-status").textContent = "";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// --- PDF ---
+function buildPdf(rec) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  const L = 22, R = 188, W = R - L;
+  let y = 24;
+  const need = (h) => { if (y + h > 280) { doc.addPage(); y = 22; } };
+  const para = (t, size = 10.5, style = "normal", indent = 0) => {
+    doc.setFont("times", style); doc.setFontSize(size);
+    const lines = doc.splitTextToSize(t, W - indent);
+    lines.forEach(l => { need(5.2); doc.text(l, L + indent, y); y += size * 0.47; });
+  };
+  doc.setFont("times", "bold"); doc.setFontSize(20); doc.setCharSpace(3);
+  doc.text("DR LAB", 105, y, { align: "center" }); doc.setCharSpace(0);
+  y += 4; doc.setDrawColor(140, 106, 52); doc.line(97, y, 113, y); y += 9;
+  doc.setFont("times", "normal"); doc.setFontSize(15);
+  doc.text("Geheimhaltungsvereinbarung", 105, y, { align: "center" }); y += 11;
+  para("zwischen", 10, "italic");
+  para(DIEGO_LINE + " (nachfolgend «Offenlegende Partei»)");
+  y += 2; para("und", 10, "italic");
+  para(rec.name + (rec.geburtsdatum ? ", geboren am " + rec.geburtsdatum : "") + (rec.adresse ? ", " + rec.adresse : "") + " (nachfolgend «Empfangende Partei»)");
+  y += 4;
+  for (const s of SECTIONS) {
+    need(14); y += 2; para(s.h, 11, "bold"); y += 0.5;
+    (s.p || []).forEach(t => para(t));
+    (s.ul || []).forEach(t => para("•  " + t, 10.5, "normal", 4));
+    (s.ol || []).forEach((t, i) => para((i + 1) + ".  " + t, 10.5, "normal", 4));
+    (s.after || []).forEach(t => { y += 1; para(t); });
+  }
+  need(70); y += 8;
+  para("Unterschriften", 11, "bold"); y += 1;
+  para(rec.ort + ", den " + rec.datum);
+  y += 4;
+  const sw = 72, sh = 28.8;
+  if (rec.unterschrift_diego) doc.addImage(rec.unterschrift_diego, "PNG", L, y, sw, sh);
+  doc.addImage(rec.unterschrift_partnerin, "PNG", L + 90, y, sw, sh);
+  y += sh + 1; doc.setDrawColor(120); doc.line(L, y, L + sw, y); doc.line(L + 90, y, L + 90 + sw, y);
+  y += 5; doc.setFont("times", "normal"); doc.setFontSize(10.5);
+  doc.text("Diego Robert", L, y); doc.text(rec.name, L + 90, y);
+  doc.setFontSize(8); doc.setTextColor(110);
+  doc.text("Digital unterzeichnet am " + fmtTime(rec.zeitpunkt) + " · " + rec.fassung, 105, 290, { align: "center" });
+  return doc;
+}
+
+async function savePdf(rec, statusEl) {
+  try {
+    const blob = buildPdf(rec).output("blob");
+    const file = "Geheimhaltung DR Lab - " + rec.name + " - " + rec.datum + ".pdf";
+    await downloads.save({ filename: file, data: blob });
+    if (statusEl) statusEl.textContent = "PDF gespeichert.";
+  } catch (x) {
+    if (statusEl) statusEl.textContent = x && x.code === "declined" ? "Speichern abgebrochen." : "Das PDF liess sich hier nicht speichern.";
+  }
+}
+
+// --- Archiv (nur Diego) ---
+function renderRows(snap) {
+  const box = $("rows"); box.replaceChildren();
+  if (snap.empty) { const e = el("div", "Noch keine Unterschrift. Sobald Florence auf diesem Gerät unterschreibt, erscheint ihr Exemplar hier."); e.className = "empty"; box.append(e); return; }
+  const docs = snap.docs.slice().sort((a, b) => String(b.data().zeitpunkt).localeCompare(String(a.data().zeitpunkt)));
+  docs.forEach(s => {
+    const r = s.data();
+    const row = el("div"); row.className = "row";
+    const left = el("div"); left.style.display = "grid"; left.style.gap = "2px"; left.style.minWidth = "0";
+    const a = el("span", r.name); a.className = "who";
+    const b = el("span", r.ort + ", " + r.datum + " · abgesendet " + fmtTime(r.zeitpunkt)); b.className = "when";
+    left.append(a, b);
+    row.append(left);
+    if (downloads && window.jspdf) {
+      const st = el("span"); st.className = "status";
+      const btn = el("button", "PDF"); btn.type = "button"; btn.className = "btn secondary";
+      btn.addEventListener("click", () => savePdf(r, st));
+      const right = el("div"); right.style.display = "flex"; right.style.gap = "10px"; right.style.alignItems = "center";
+      right.append(st, btn); row.append(right);
+    }
+    box.append(row);
+  });
+}
+
+async function boot() {
+  renderContract();
+  pads.p = makePad($("pad-p"), $("wrap-p"));
+  pads.d = makePad($("pad-d"), $("wrap-d"));
+  document.querySelectorAll("[data-clear]").forEach(b => b.addEventListener("click", () => pads[b.dataset.clear].clear()));
+  $("f-name").addEventListener("input", () => { syncParty(); onChange(); });
+  $("f-addr").addEventListener("input", syncParty);
+  $("f-geb").addEventListener("input", syncParty);
+  $("f-date").value = today();
+  const h = (location.hash || "").replace("#", "").toLowerCase();
+  setWho("florence");
+  $("form").addEventListener("submit", submit);
+  $("done-new").addEventListener("click", resetForm);
+  $("done-app").addEventListener("click", () => location.replace("index.html"));
+
+}
+boot();
+</script>
+
+</body>
+</html>
