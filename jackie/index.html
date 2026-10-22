@@ -719,6 +719,9 @@ body.im-schutz .jk-sticky-nr{display:none}
     <div id="sosNext"></div>
   </section>
 
+  <!-- MUSTER PRO ZYKLUSPHASE (Inhalt aus zyklus.js, nur auf dem Handy) -->
+  <section id="vZyklus" class="hide" aria-labelledby="zyTitel"></section>
+
   <!-- SCHUTZRAUM (Inhalt aus schutz.js, speichert nichts) -->
   <section id="vSchutz" class="hide" aria-label="Wenn es zuhause nicht sicher ist"></section>
 
@@ -1075,7 +1078,7 @@ function analyse(text){
 }
 
 /* ---------- Ansichten ---------- */
-const VIEWS=['vHome','vAsk','vAnswer','vPause','vHistory','vNotes','vSos','vIdeas','vSchutz','vStory'];
+const VIEWS=['vHome','vAsk','vAnswer','vPause','vHistory','vNotes','vSos','vIdeas','vSchutz','vStory','vZyklus'];
 function show(v){
   VIEWS.forEach(id=>{ const el=$(id); const on = id===v; el.classList.toggle('hide', !on); if(on){ el.classList.remove('view-in'); void el.offsetWidth; el.classList.add('view-in'); } });
   window.scrollTo(0,0);
@@ -1952,6 +1955,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 <script src="runde8.js" defer></script>
 <link rel="stylesheet" href="markt.css">
 <link rel="stylesheet" href="feinschliff.css">
+<script src="zyklus.js" defer></script>
 <script src="feinschliff.js" defer></script>
 </body>
 </html>
