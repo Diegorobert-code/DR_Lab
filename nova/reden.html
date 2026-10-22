@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-22-07">
+<meta name="stand" content="2026-10-22-08">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -686,10 +686,65 @@
       }
     };
     // Spricht Nova, wird der Film leiser, damit man sie versteht.
-    function spricht(ja) { video.volume = ja ? laut * 0.2 : laut; }
+    function spricht(ja) { if (rolle === 'telefon' && beamerDa) return; video.volume = ja ? laut * 0.2 : laut; }
     function untertitel(t) {
+      if (rolle === 'telefon' && beamerDa) { funk({ typ: 'text', t: String(t) }); return; }
       ut.textContent = t; ut.classList.add('an'); clearTimeout(utUhr);
       utUhr = setTimeout(function () { ut.classList.remove('an'); }, Math.min(12000, 2500 + t.length * 70));
+    }
+    // Telefon + Beamer, ein Link für beide (?kanal=…): auf dem Handy ist die Seite das Telefon, auf dem Laptop der Beamer.
+    // Ist ein Beamer da, redet Nova übers Handy und der Laptop zeigt Filme, KI-Verse und Untertitel; die Befehle laufen über ntfy.sh.
+    // Ohne Beamer (oder am Laptop allein angerufen) läuft alles wie bisher auf dem einen Gerät.
+    var leiseUhr = 0, q = new URLSearchParams(location.search), kanal = q.get('kanal') || '', ich = Math.random().toString(36).slice(2), beamerDa = false;
+    var rolle = !/^[A-Za-z0-9_-]{12,64}$/.test(kanal) ? '' : /iPhone|iPad|Android|Mobile/i.test(navigator.userAgent) ? 'telefon' : 'beamer';
+    var FUNK = 'https://ntfy.sh/' + kanal;
+    function funk(n) { if (!rolle) return; try { fetch(FUNK, { method: 'POST', body: JSON.stringify(Object.assign({ von: ich }, n)) }).catch(function () {}); } catch (e) {} }
+    function hoeren(fn) {
+      if (!rolle) return;
+      var es = new EventSource(FUNK + '/sse');
+      es.onmessage = function (e) { try { var d = JSON.parse(JSON.parse(e.data).message); if (d && d.von !== ich) fn(d); } catch (x) {} };
+    }
+    if (rolle === 'telefon') {
+      var lokal = werkzeuge, fern = {
+        film_zeigen: function (p) {
+          if (!liste.length) return 'Keine Filme geladen.';
+          var i = finden(p && p.name);
+          if (i < 0) return 'Nicht gefunden. Es gibt: ' + namen() + '.';
+          jetzt = i; gezeigt = true; funk({ typ: 'film', i: i, titel: liste[i].titel });
+          return 'Läuft auf dem Beamer: ' + liste[i].titel + '.';
+        },
+        film_steuern: function (p) {
+          var a = String(p && p.aktion || '').toLowerCase();
+          if (a === 'liste') return 'Filme: ' + namen() + '.';
+          funk({ typ: 'steuern', aktion: a });
+          return 'Erledigt auf dem Beamer: ' + a + '.';
+        },
+        kiverse_zeigen: function (p) {
+          gezeigt = true; funk({ typ: 'kiverse', aktion: String(p && p.aktion || 'zeigen'), ort: String(p && p.ort || '') });
+          return 'Das KI-Verse ist auf dem Beamer offen. Diego kann mit dem Laptop herumlaufen.';
+        }
+      };
+      werkzeuge = {};
+      ['film_zeigen', 'film_steuern', 'kiverse_zeigen'].forEach(function (n) { werkzeuge[n] = function (p) { return (beamerDa ? fern : lokal)[n](p); }; });
+      funk({ typ: 'wer' });
+      hoeren(function (d) {
+        if (d.typ === 'fertig' && conv) try { conv.sendContextualUpdate('Der Film «' + (d.titel || '') + '» ist auf dem Beamer fertig. Sag höchstens einen kurzen Satz oder warte auf Diego.'); } catch (x) {}
+        if (d.typ === 'beamer') { beamerDa = true; hinweis.textContent = '📽 Beamer verbunden. Filme laufen dort.'; }
+      });
+    }
+    if (rolle === 'beamer') {
+      video.addEventListener('ended', function () { funk({ typ: 'fertig', titel: (liste[jetzt] || {}).titel }); });
+      hoeren(function (d) {
+        if (d.typ === 'wer' && aktiv) funk({ typ: 'beamer' });
+        else if (d.typ === 'film' && liste[d.i]) werkzeuge.film_zeigen({ name: liste[d.i].titel });
+        else if (d.typ === 'steuern') werkzeuge.film_steuern({ aktion: d.aktion });
+        else if (d.typ === 'kiverse') werkzeuge.kiverse_zeigen({ aktion: d.aktion, ort: d.ort });
+        else if (d.typ === 'text') {
+          // Nova spricht am Telefon: Untertitel an der Wand, Film so lange leiser.
+          untertitel(d.t); spricht(true); buehne.classList.add('spricht'); clearTimeout(leiseUhr);
+          leiseUhr = setTimeout(function () { spricht(false); buehne.classList.remove('spricht'); }, 1500 + String(d.t).length * 65);
+        }
+      });
     }
     var gast = (new URLSearchParams(location.search).get('gast') || '').toLowerCase().replace(/[^a-zäöü ]/g, '');
     function variable() {
@@ -705,7 +760,7 @@
         if (k) { e.preventDefault(); werkzeuge.film_steuern({ aktion: k }); }
       });
     }
-    return { an: an, gast: gast, werkzeuge: werkzeuge, spricht: spricht, untertitel: untertitel, variable: variable,
+    return { an: an, gast: gast, werkzeuge: werkzeuge, spricht: spricht, untertitel: untertitel, variable: variable, rolle: rolle, funk: funk,
       get aktiv() { return aktiv; }, set aktiv(v) { aktiv = v; } };
   })();
   // Wie ein Telefonat: Diego tippt, es klingelt zwei- oder dreimal über den Lautsprecher, dann nimmt Nova ab.
@@ -775,7 +830,21 @@
   }
   if (BUEHNE.an) {
     var vorhang = $('vorhang'), klingelt = false;
+    var alsBeamer = false;
+    if (BUEHNE.rolle === 'beamer') {
+      var bk = document.createElement('a');
+      bk.textContent = '📽 Ich rufe mit dem Handy an: dieser Laptop ist der Beamer'; bk.href = '#'; bk.style.cssText = 'color:#f5c542;font-size:15px;opacity:.8;margin-top:6px;';
+      bk.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); alsBeamer = true; losGehen(); });
+      vorhang.appendChild(bk);
+    }
     var losGehen = function () {
+      if (alsBeamer) {
+        try { if (document.documentElement.requestFullscreen && !document.fullscreenElement) document.documentElement.requestFullscreen().catch(function () {}); } catch (e) {}
+        // Einmal stumm abspielen, damit Safari die Filme danach mit Ton startet.
+        try { var v = $('film'); v.muted = true; v.play().catch(function () {}); v.pause(); v.muted = false; } catch (e) {}
+        vorhang.style.display = 'none'; BUEHNE.aktiv = true; BUEHNE.funk({ typ: 'beamer' }); status.textContent = '📽 Beamer bereit.';
+        return;
+      }
       if (klingelt) return; klingelt = true;
       try { if (document.documentElement.requestFullscreen && !document.fullscreenElement) document.documentElement.requestFullscreen().catch(function () {}); } catch (e) {}
       $('vorhangLos').classList.add('klingelt'); $('vorhangTitel').textContent = 'Es klingelt …';
