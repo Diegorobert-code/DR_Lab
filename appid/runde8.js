@@ -719,3 +719,227 @@ window.R8_CFG = {"k":"flo","offlineText":"Offline. Flo notiert trotzdem alles."}
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(los, 60); }); else setTimeout(los, 60);
 })();
+/* Food and Flow Runde 8b (22.10.2026): Kochmodus.
+   Im Rezept «Kochmodus»: Bildschirm bleibt an (Screen Wake Lock API, sonst ehrlicher Hinweis), Schritt für Schritt in grosser Schrift,
+   Schritt-Timer und Portionen-Rechner. Ohne Server, ohne Kalorienzählen, alles auf dem Gerät. */
+(function () {
+  'use strict';
+  var R = window.R7, Z = window.R8; if (!R || !Z) return;
+  var esc = R.esc, el = R.el;
+  var css = document.createElement('style');
+  css.textContent = [
+    '.r8k-start{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:56px;margin:16px 0 8px;padding:10px 18px;border-radius:16px;border:0;background:#2f6a4f;color:#fff;font:inherit;font-size:18px;font-weight:800;cursor:pointer}',
+    '.r8k{position:fixed;inset:0;z-index:2147483200;display:flex;flex-direction:column;background:#f7f6f1;color:#1f2a25;font-family:inherit;overflow:hidden}',
+    '.r8k-kopf{flex:none;display:flex;align-items:center;gap:12px;padding:calc(8px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid #e6e2d9;background:#fff}',
+    '.r8k-kopf h2{flex:1;min-width:0;margin:0;font-size:18px;line-height:1.25;overflow-wrap:anywhere}',
+    '.r8k-zu{flex:none;width:48px;height:48px;border-radius:50%;border:1px solid #c9c3b6;background:#fff;color:#1f2a25;font-size:22px;line-height:1;cursor:pointer}',
+    '.r8k-in{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:16px max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}',
+    '.r8k-wrap{max-width:720px;margin:0 auto;display:grid;gap:16px}',
+    '.r8k-wach{margin:0;padding:10px 14px;border-radius:14px;font-size:15px;line-height:1.4;background:#eef4f0;border:1px solid #b9d3c4;color:#1f4a36}',
+    '.r8k-wach.nein{background:#fff6e5;border-color:#e6c78a;color:#5a3d06}',
+    '.r8k-box{padding:16px;border-radius:20px;background:#fff;border:1px solid #e6e2d9}',
+    '.r8k-box h3{margin:0 0 8px;font-size:16px;letter-spacing:.02em;color:#245740}',
+    '.r8k-port{display:flex;align-items:center;gap:12px;flex-wrap:wrap}',
+    '.r8k-port button{width:52px;height:52px;border-radius:50%;border:1px solid #c9c3b6;background:#fff;color:#1f2a25;font:inherit;font-size:26px;font-weight:700;cursor:pointer}',
+    '.r8k-port button:disabled{opacity:.4;cursor:default}',
+    '.r8k-port output{min-width:120px;text-align:center;font-size:20px;font-weight:800}',
+    '.r8k-zut{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:6px;font-size:17px}',
+    '.r8k-zut li{display:flex;gap:10px;align-items:baseline}',
+    '.r8k-zut b{min-width:72px;font-variant-numeric:tabular-nums;color:#245740}',
+    '.r8k-schritt{display:grid;gap:12px}',
+    '.r8k-nr{margin:0;font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#245740}',
+    '.r8k-punkte{display:flex;gap:6px;margin:0;padding:0;list-style:none}',
+    '.r8k-punkte li{flex:1;height:6px;border-radius:3px;background:#e6e2d9}.r8k-punkte li.an{background:#2f6a4f}',
+    '.r8k-text{margin:0;font-size:clamp(24px,6.4vw,34px);line-height:1.3;font-weight:700;overflow-wrap:anywhere}',
+    '.r8k-nav{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:12px}',
+    '.r8k-nav button{min-height:64px;border-radius:18px;font:inherit;font-size:19px;font-weight:800;cursor:pointer;border:1px solid #c9c3b6;background:#fff;color:#1f2a25}',
+    '.r8k-nav button.vor{background:#2f6a4f;border-color:#2f6a4f;color:#fff}',
+    '.r8k-nav button:disabled{opacity:.4;cursor:default}',
+    '.r8k-uhr{display:flex;align-items:center;gap:12px;flex-wrap:wrap}',
+    '.r8k-zeit{font-size:40px;font-weight:800;font-variant-numeric:tabular-nums;min-width:120px}',
+    '.r8k-zeit.fertig{color:#a3402a}',
+    '.r8k-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}',
+    '.r8k-chips button,.r8k-uhr button{min-height:48px;min-width:48px;padding:0 16px;border-radius:999px;border:1px solid #c9c3b6;background:#fff;color:#1f2a25;font:inherit;font-size:16px;font-weight:700;cursor:pointer}',
+    '.r8k-chips button.vorschlag{border-color:#2f6a4f;background:#eef4f0}',
+    '.r8k-uhr button.los{background:#2f6a4f;border-color:#2f6a4f;color:#fff}',
+    '.r8k-leise{margin:8px 0 0;font-size:15px;color:#4b5852}',
+    '.r8k-ein{animation:r8kEin .3s cubic-bezier(.2,.8,.2,1) both}',
+    '@keyframes r8kEin{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}',
+    '@media (orientation:landscape) and (min-width:700px){.r8k-wrap{grid-template-columns:minmax(0,3fr) minmax(0,2fr);align-items:start}.r8k-wrap>.r8k-wach{grid-column:1/-1}.r8k-schritt-box{grid-row:span 2}}',
+    '@media (prefers-reduced-motion:reduce){.r8k-ein{animation:none}}',
+    /* Kopfzeile auf 320 px: «Prototyp»-Schild ausblenden, sonst scrollt die Seite quer */
+    '@media (max-width:360px){.top .right .tag{display:none}}'
+  ].join('\n');
+  document.head.appendChild(css);
+
+  /* ---------- Portionen: Mengen aus «170 g Skyr, 2 Eier» ---------- */
+  function zutaten(ing) {
+    return String(ing || '').split(',').map(function (t) {
+      t = t.trim(); var m = t.match(/^(\d+(?:[.,]\d+)?)\s*(kg|g|ml|dl|l|EL|TL|Stk\.?)?\s+(.*)$/);
+      return m ? { n: parseFloat(m[1].replace(',', '.')), e: m[2] || '', was: m[3] } : { n: null, e: '', was: t };
+    });
+  }
+  function menge(z, p) {
+    if (z.n == null) return '';
+    var x = z.n * p;
+    if (z.e === 'g' || z.e === 'ml') { if (x >= 1000) return (Math.round(x / 100) / 10).toLocaleString('de-CH') + (z.e === 'g' ? ' kg' : ' l'); x = x >= 50 ? Math.round(x / 5) * 5 : Math.round(x); return x + ' ' + z.e; }
+    if (!z.e) { x = Math.round(x * 2) / 2; return (x % 1 ? x.toLocaleString('de-CH') : String(x)); }
+    return (Math.round(x * 10) / 10).toLocaleString('de-CH') + ' ' + z.e;
+  }
+  function minutenAus(t) { var m = String(t).match(/(\d+)(?:\s*[–-]\s*(\d+))?\s*Min/i); return m ? +(m[2] || m[1]) : 0; }
+
+  /* ---------- Bildschirm bleibt an ---------- */
+  var lock = null, wachWunsch = false;
+  function wach(an, hinweis) {
+    wachWunsch = an;
+    if (!an) { if (lock) { try { lock.release(); } catch (e) {} lock = null; } return; }
+    if (!('wakeLock' in navigator)) { zeigeWach(hinweis, false); return; }
+    navigator.wakeLock.request('screen').then(function (l) {
+      lock = l; zeigeWach(hinweis, true);
+      l.addEventListener('release', function () { if (lock === l) lock = null; });
+    }).catch(function () { zeigeWach(hinweis, false); });
+  }
+  function zeigeWach(h, ok) {
+    if (!h) return;
+    h.className = 'r8k-wach' + (ok ? '' : ' nein');
+    h.textContent = ok ? '☀️ Der Bildschirm bleibt an, solange der Kochmodus offen ist.'
+      : '💡 Hier kann Food and Flow den Bildschirm nicht wach halten. Tipp: in den Einstellungen die automatische Sperre kurz verlängern, oder ab und zu auf den Bildschirm tippen.';
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && wachWunsch && !lock) wach(true, document.querySelector('.r8k-wach'));
+  });
+
+  /* ---------- Timer ---------- */
+  var AC = null;
+  function klang() {
+    try {
+      AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+      if (AC.state === 'suspended') AC.resume();
+      [0, .35, .7].forEach(function (v, i) {
+        var o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime + v;
+        o.type = 'sine'; o.frequency.value = [660, 880, 990][i];
+        g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.3, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + .8);
+        o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + .85);
+      });
+    } catch (e) {}
+    try { if (navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch (e) {}
+  }
+
+  var offen = null;
+  function kochmodus(it) {
+    if (offen) offen.zu();
+    var steps = (it.steps || []).slice(); if (!steps.length) return;
+    var Z0 = zutaten(it.ing), portMerk = R.hol('kochPort', {}), port = Math.min(8, Math.max(1, +portMerk[it.id] || 1)), i = 0;
+    var ende = 0, rest = 0, tick = null;
+    var vorher = document.activeElement;
+    var k = el('<div class="r8k" role="dialog" aria-modal="true" aria-labelledby="r8kT">' +
+      '<div class="r8k-kopf"><span aria-hidden="true" style="font-size:24px">🍳</span><h2 id="r8kT">' + esc(it.t) + '</h2><button type="button" class="r8k-zu" aria-label="Kochmodus schliessen">✕</button></div>' +
+      '<div class="r8k-in"><div class="r8k-wrap">' +
+      '<p class="r8k-wach" role="status">Bildschirm wird wach gehalten …</p>' +
+      '<section class="r8k-box r8k-schritt-box" aria-labelledby="r8kS"><div class="r8k-schritt"><p class="r8k-nr" id="r8kS"></p><ol class="r8k-punkte" aria-hidden="true"></ol><p class="r8k-text" aria-live="polite"></p>' +
+      '<div class="r8k-nav"><button type="button" data-a="zur">← Zurück</button><button type="button" class="vor" data-a="vor">Weiter →</button></div></div></section>' +
+      '<section class="r8k-box" aria-labelledby="r8kU"><h3 id="r8kU">⏱️ Schritt-Timer</h3><div class="r8k-uhr"><span class="r8k-zeit" role="timer" aria-live="off">0:00</span><button type="button" class="los" data-a="uhr">Start</button><button type="button" data-a="null">Zurücksetzen</button></div>' +
+      '<div class="r8k-chips" role="group" aria-label="Zeit wählen"></div><p class="r8k-leise">Der Timer läuft, solange der Kochmodus offen ist. Danach klingelt es leise.</p></section>' +
+      '<section class="r8k-box" aria-labelledby="r8kP"><h3 id="r8kP">🍽️ Portionen</h3><div class="r8k-port"><button type="button" data-a="minus" aria-label="Eine Portion weniger">−</button><output aria-live="polite"></output><button type="button" data-a="plus" aria-label="Eine Portion mehr">+</button></div>' +
+      '<ul class="r8k-zut"></ul><p class="r8k-leise">Mengen sind gerundet. Gewürze nach Gefühl.</p></section>' +
+      '</div></div></div>');
+    var $ = function (s) { return k.querySelector(s); };
+    function port0() {
+      $('.r8k-port output').textContent = port + (port === 1 ? ' Portion' : ' Portionen');
+      $('[data-a=minus]').disabled = port <= 1; $('[data-a=plus]').disabled = port >= 8;
+      $('.r8k-zut').innerHTML = Z0.map(function (z) { var m = menge(z, port); return '<li><b>' + esc(m || '·') + '</b><span>' + esc(z.was) + '</span></li>'; }).join('');
+    }
+    function zeit(s) { s = Math.max(0, Math.ceil(s)); return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }
+    function uhrZeigen() {
+      var s = tick ? (ende - Date.now()) / 1000 : rest;
+      $('.r8k-zeit').textContent = zeit(s);
+      $('[data-a=uhr]').textContent = tick ? 'Pause' : (rest > 0 ? 'Start' : 'Start');
+      $('[data-a=uhr]').disabled = !tick && rest <= 0;
+    }
+    function stellen(min) { stopp(); rest = min * 60; $('.r8k-zeit').classList.remove('fertig'); uhrZeigen(); }
+    function stopp() { if (tick) { rest = Math.max(0, (ende - Date.now()) / 1000); clearInterval(tick); tick = null; } }
+    function laufen() {
+      if (tick) { stopp(); uhrZeigen(); return; }
+      if (rest <= 0) return;
+      ende = Date.now() + rest * 1000;
+      tick = setInterval(function () {
+        if (Date.now() >= ende) {
+          clearInterval(tick); tick = null; rest = 0; uhrZeigen();
+          $('.r8k-zeit').classList.add('fertig'); $('.r8k-zeit').textContent = 'Fertig';
+          klang(); Z.toast('⏱️ Timer fertig: ' + steps[i].slice(0, 40));
+          return;
+        }
+        uhrZeigen();
+      }, 250);
+      uhrZeigen();
+    }
+    function schritt(neu) {
+      i = Math.max(0, Math.min(steps.length - 1, neu));
+      $('.r8k-nr').textContent = 'Schritt ' + (i + 1) + ' von ' + steps.length;
+      $('.r8k-punkte').innerHTML = steps.map(function (_, j) { return '<li' + (j <= i ? ' class="an"' : '') + '></li>'; }).join('');
+      var t = $('.r8k-text'); t.textContent = steps[i]; t.classList.remove('r8k-ein'); void t.offsetWidth; t.classList.add('r8k-ein');
+      $('[data-a=zur]').disabled = i === 0;
+      $('[data-a=vor]').textContent = i === steps.length - 1 ? 'Fertig, en Guete! ✓' : 'Weiter →';
+      var m = minutenAus(steps[i]), opts = [1, 3, 5, 10, 15];
+      if (m && opts.indexOf(m) < 0) opts.push(m);
+      opts.sort(function (a, b) { return a - b; });
+      $('.r8k-chips').innerHTML = opts.map(function (x) { return '<button type="button" data-min="' + x + '"' + (x === m ? ' class="vorschlag" aria-label="' + x + ' Minuten, passt zu diesem Schritt"' : ' aria-label="' + x + ' Minuten"') + '>' + x + ' Min.</button>'; }).join('');
+      if (!tick) { if (m) stellen(m); else uhrZeigen(); }
+    }
+    function zu() {
+      stopp(); wach(false); k.remove(); document.removeEventListener('keydown', taste, true);
+      document.documentElement.style.overflow = ''; offen = null;
+      try { if (vorher && vorher.focus) vorher.focus({ preventScroll: true }); } catch (e) {}
+    }
+    function taste(e) {
+      if (e.key === 'Escape') { e.preventDefault(); zu(); }
+      else if (e.key === 'ArrowRight' && !/INPUT|TEXTAREA/.test((e.target || {}).tagName)) schritt(i + 1);
+      else if (e.key === 'ArrowLeft' && !/INPUT|TEXTAREA/.test((e.target || {}).tagName)) schritt(i - 1);
+      else if (e.key === 'Tab') {
+        var f = [].filter.call(k.querySelectorAll('button:not([disabled])'), function (x) { return x.offsetParent !== null; });
+        if (!f.length) return;
+        if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+        else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+      }
+    }
+    k.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      if (b.classList.contains('r8k-zu')) return zu();
+      if (b.dataset.min) { stellen(+b.dataset.min); return; }
+      var a = b.dataset.a;
+      if (a === 'vor') { if (i === steps.length - 1) { Z.toast('En Guete! 🍽️'); try { Z.licht('kochen'); } catch (x) {} zu(); } else schritt(i + 1); }
+      else if (a === 'zur') schritt(i - 1);
+      else if (a === 'uhr') laufen();
+      else if (a === 'null') { stellen(minutenAus(steps[i]) || 0); }
+      else if (a === 'plus' || a === 'minus') { port = Math.min(8, Math.max(1, port + (a === 'plus' ? 1 : -1))); portMerk[it.id] = port; R.leg('kochPort', portMerk); port0(); }
+    });
+    /* Wischen: links = weiter, rechts = zurück */
+    var x0 = null;
+    $('.r8k-schritt').addEventListener('pointerdown', function (e) { x0 = e.clientX; });
+    $('.r8k-schritt').addEventListener('pointerup', function (e) { if (x0 == null) return; var dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 60 && !e.target.closest('button')) schritt(i + (dx < 0 ? 1 : -1)); });
+    document.body.appendChild(k);
+    document.documentElement.style.overflow = 'hidden';
+    document.addEventListener('keydown', taste, true);
+    port0(); schritt(0); wach(true, $('.r8k-wach'));
+    setTimeout(function () { var v = $('[data-a=vor]'); if (v) v.focus({ preventScroll: true }); }, 60);
+    offen = { zu: zu };
+  }
+
+  /* ---------- Knopf «Kochmodus» im Rezept ---------- */
+  function knopf(id) {
+    var it = (typeof FEED !== 'undefined' ? FEED : []).filter(function (x) { return x.id === id; })[0];
+    var s2 = document.getElementById('s2'); if (!it || !s2 || !it.steps || s2.querySelector('.r8k-start')) return;
+    var b = el('<button type="button" class="r8k-start"><span aria-hidden="true">🍳</span> Kochmodus starten</button>');
+    b.addEventListener('click', function () { if (typeof closeSheet === 'function') closeSheet(); kochmodus(it); });
+    var ol = s2.querySelector('ol.steps');
+    if (ol) ol.parentNode.insertBefore(b, ol.nextSibling); else s2.appendChild(b);
+  }
+  function verbinden() {
+    if (typeof window.openPost !== 'function' || window.openPost.r8k) return;
+    var alt = window.openPost;
+    var neu = function (id) { var r = alt.apply(this, arguments); try { knopf(id); } catch (e) {} return r; };
+    neu.r8k = true; window.openPost = neu;
+  }
+  window.R8Kochmodus = kochmodus;
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', verbinden); else verbinden();
+})();
