@@ -2,7 +2,7 @@
    Beim Erhöhen der App-Version VERSION ändern, dann wird der alte Cache gelöscht.
    Liegt neben index.html (die App-Datei zahnboecklein-app.html beim Veröffentlichen in index.html umbenennen).
    Audiodateien, falls als eigene Dateien ausgeliefert, unten in DATEIEN ergänzen. */
-const VERSION = 'zahnboecklein-v9';
+const VERSION = 'zahnboecklein-v10';
 const DATEIEN = [
   './',
   './index.html',
@@ -176,6 +176,7 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return; // nur eigene Dateien, nichts von Dritten
+  if (url.pathname.includes('/video/')) return; // Tanzfilme direkt vom Netz (Safari lädt Videos stückweise); offline zeigt die App die Posen
 
   // Seiten: zuerst Netz (für Updates), sonst Cache
   if (req.mode === 'navigate') {
