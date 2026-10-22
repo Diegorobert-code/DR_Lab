@@ -368,6 +368,35 @@ header .hs-kopf-rechts{margin-left:auto;display:flex;align-items:center;gap:8px}
   <section class="panel on" id="p-messen">
     <div class="box" id="startBox">
       <h2 id="startTitle">Puls und Ruhe messen</h2>
+      <div class="seg" id="modSeg">
+        <button data-mod="hrv" aria-pressed="true">Ruhe (HRV)</button>
+        <button data-mod="pulsbild" aria-pressed="false">Pulsbild</button>
+        <button data-mod="sensor" aria-pressed="false">Sensor</button>
+      </div>
+      <div id="snBox" class="hidden">
+        <p class="muted">Drei-Finger-Sensor: beschreibt nur Pulswelle und Kraft, keine Diagnose. Zuerst nur für dich.</p>
+        <label class="lbl" for="snModus">Modus</label>
+        <select id="snModus" class="inp">
+          <option value="puls">Puls (3 Finger)</option><option value="druck">Druck (Kraft pro Finger)</option>
+          <option value="muskeltest">Muskeltest (kg)</option><option value="behandlung">Behandlungsdruck (neben HRV)</option>
+        </select>
+        <label class="lbl" for="snOrt">Wo liegen die Kissen?</label>
+        <select id="snOrt" class="inp">
+          <option>Finger (Zeige-, Mittel-, Ringfinger)</option><option>Fusssohle Ferse</option><option>Fusssohle Ballen</option>
+          <option>Kiefer links</option><option>Kiefer rechts</option><option>Atmung (Bauch)</option>
+        </select>
+        <ol class="muted" style="padding-left:20px;margin:10px 0">
+          <li>iPhone mit dem WLAN «HumanSpark-Puls» verbinden.</li>
+          <li>«Sensor öffnen», dort messen und «An Human Sparks übergeben» tippen.</li>
+          <li>Zurück hier: «Datei vom Sensor laden».</li>
+        </ol>
+        <a class="btn ghost" id="snOeffnen" href="http://192.168.4.1" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;text-decoration:none">Sensor öffnen</a>
+        <label class="btn primary" for="snDatei" style="display:flex;align-items:center;justify-content:center">Datei vom Sensor laden</label>
+        <input type="file" id="snDatei" accept=".json,application/json" style="display:none">
+        <div class="notice hidden" id="snMsg"></div>
+        <div id="snOut"></div>
+      </div>
+      <p class="muted hidden" id="pbHelp">Pulsbild: Tempo, Rhythmus, Welle und Stärke deines Pulses, angelehnt an die Pulsbeobachtung. Beschreibung, keine Diagnose.</p>
       <div class="seg web-only" id="srcSeg">
         <button data-src="kamera" aria-pressed="true">Finger (Kamera)</button>
         <button data-src="polar" aria-pressed="false">Polar H10</button>
@@ -406,6 +435,18 @@ header .hs-kopf-rechts{margin-left:auto;display:flex;align-items:center;gap:8px}
       <div class="muted" id="mText"></div>
       <div class="notice hidden" id="mDictNote"></div>
       <button class="btn ghost" id="btnStop">Abbrechen</button>
+    </div>
+
+    <div class="box hidden" id="pbBox">
+      <h2>Dein Pulsbild</h2>
+      <p class="muted">Das Pulsbild beschreibt nur, was die Kamera sieht. Es stellt keine Diagnose.</p>
+      <div id="pbOut"></div>
+      <label class="lbl">Mein Tastbefund <span class="muted">(was du selbst am Handgelenk spürst)</span></label>
+      <div class="chips" id="pbTast"></div>
+      <input id="pbTastText" class="inp" placeholder="Eigene Worte …" autocomplete="off">
+      <button class="btn primary" id="pbSave">Pulsbild speichern</button>
+      <div class="notice hidden" id="pbSaved"></div>
+      <button class="btn ghost" id="pbNew">Neue Messung</button>
     </div>
 
     <div class="box hidden" id="resultBox">
@@ -1083,7 +1124,7 @@ function setProgress(sec){
   $('progInfo').textContent = p >= 100 ? 'wird ausgewertet …' : 'noch ca. ' + Math.max(0, Math.ceil(TOTAL - sec)) + ' s';
 }
 function showBox(which){
-  ['startBox','measureBox','resultBox'].forEach(function(id){ $(id).classList.toggle('hidden', id !== which); });
+  ['startBox','measureBox','resultBox','pbBox'].forEach(function(id){ $(id).classList.toggle('hidden', id !== which); });
   // Messung und Ergebnis sofort im Blick, ohne selbst zu scrollen
   if (which !== 'startBox'){ var r = $(which).getBoundingClientRect(); if (r.top < 0 || r.top > innerHeight * 0.6) scrollTo({top:r.top + scrollY - 90, behavior:'smooth'}); }
 }
@@ -1108,7 +1149,7 @@ document.querySelectorAll('#srcSeg button').forEach(function(b){ b.addEventListe
 function startMeasure(demo){
   $('camErr').classList.add('hidden');
   if (sess){ camFail('Während einer laufenden Sitzung ist die Einzelmessung gesperrt.'); return; }
-  if (!demo && src === 'polar'){
+  if (!demo && src === 'polar' && modus !== 'pulsbild'){
     if (!HAS_BT){ camFail(POLAR_NO_BT); return; }
     polarConnect().then(startPolarMeasure).catch(function(err){
       camFail('Polar H10 konnte nicht verbunden werden' + (err && err.name === 'NotFoundError' ? ' (keine Auswahl getroffen)' : '') + '. Gurt anfeuchten, anlegen und nochmals versuchen.');
@@ -1342,7 +1383,8 @@ function analyse(samples, skip){
     rmssd = Math.sqrt(diffs.reduce(function(s,v){return s+v*v;},0) / diffs.length);
     if (rmssd > 200) rmssd = null; // unplausibel
   }
-  return {ok:true, bpm:Math.round(bpm), rmssd: rmssd == null ? null : Math.round(rmssd), quality:Math.round(nGood / ibis.length * 100)};
+  return {ok:true, bpm:Math.round(bpm), rmssd: rmssd == null ? null : Math.round(rmssd), quality:Math.round(nGood / ibis.length * 100),
+    roh:{x:x, fs:FS, pt:pt, ibis:ibis, good:good, med:med}};
 }
 
 // Auswertung aus RR-Abständen (Polar H10 oder Demo), Sekunden
@@ -1379,6 +1421,7 @@ function finishMeasure(){
     $('btnStart').textContent = 'Nochmals messen';
     return;
   }
+  if (modus === 'pulsbild' && res.roh){ pbZeigen(res, demo); return; }
   var stage = stageFrom(res.bpm, res.rmssd, !isPolar && !demo);
   var e = {id:uid(), t:Date.now(), type:'messung', bpm:res.bpm, rmssd:res.rmssd, stage:stage, quality:res.quality, demo:demo, source: isPolar ? 'polar' : demo ? 'demo' : 'kamera', pairOf:pendingPairOf};
   if (gf.stufe){ e.gefuehl = gf.stufe; e.abweichung = gf.stufe - stage; }
@@ -1407,6 +1450,157 @@ var mDict = Dictation({
   err:function(t){ var n = $('mDictNote'); n.textContent = t; n.classList.toggle('hidden', !t); }
 });
 $('mDict').addEventListener('click', function(){ mDict.toggle(); });
+
+/* ---------- Pulsbild (angelehnt an die Pulsbeobachtung, keine Diagnose) ---------- */
+var modus = 'hrv', pbLetztes = null;
+var PB_TAST = ['oberflächlich','tief','saitenförmig','schlüpfrig','dünn','kräftig','schwach','rau'];
+var pbTast = [];
+document.querySelectorAll('#modSeg button').forEach(function(b){
+  b.addEventListener('click', function(){
+    modus = b.dataset.mod;
+    document.querySelectorAll('#modSeg button').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    $('pbHelp').classList.toggle('hidden', modus !== 'pulsbild');
+    $('gfBox').classList.toggle('hidden', modus === 'pulsbild');
+    $('srcSeg').classList.toggle('hidden', modus !== 'hrv');
+    var sn = modus === 'sensor';
+    $('snBox').classList.toggle('hidden', !sn);
+    ['camHelp','btnStart','btnDemo'].forEach(function(id){ $(id).classList.toggle('hidden', sn); });
+    if (sn) $('gfBox').classList.add('hidden');
+  });
+});
+$('pbTast').innerHTML = PB_TAST.map(function(w){ return '<button class="chip" aria-pressed="false">' + w + '</button>'; }).join('');
+$('pbTast').querySelectorAll('.chip').forEach(function(b, i){
+  b.addEventListener('click', function(){
+    var w = PB_TAST[i], on = pbTast.indexOf(w) < 0;
+    if (on) pbTast.push(w); else pbTast.splice(pbTast.indexOf(w), 1);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+});
+function pbAuswerten(res){
+  var r = res.roh, x = r.x, fs = r.fs, pt = r.pt, ibis = r.ibis, good = r.good, med = r.med;
+  // Atmung aus der Schwankung der Schlagabstände (Nulldurchgänge der geglätteten Kurve)
+  var gv = ibis.filter(function(v, i){ return good[i]; }), atem = null;
+  if (gv.length >= 20){
+    var m = gv.reduce(function(a, v){ return a + v; }, 0) / gv.length, d = movAvg(gv.map(function(v){ return v - m; }), 3), z = 0;
+    for (var i = 1; i < d.length; i++) if ((d[i-1] < 0) !== (d[i] < 0)) z++;
+    var dauer = gv.reduce(function(a, v){ return a + v; }, 0) / 60;
+    atem = z / 2 / dauer;
+    if (atem < 4 || atem > 30) atem = null;
+  }
+  var proAtem = atem ? res.bpm / atem : null;
+  // Rhythmus: Aussetzer = Abstände ausserhalb ±25 % vom Median
+  var aus = good.filter(function(g){ return !g; }).length;
+  // Welle: vom Fusspunkt bis zum nächsten Fusspunkt, auf 40 Punkte, gemittelt
+  var N = 40, sum = new Array(N).fill(0), n = 0, amps = [], anst = [], breit = [];
+  for (i = 1; i < pt.length - 1; i++){
+    if (!good[i - 1] || !good[i]) continue;
+    var pk = Math.round(pt[i] * fs), lo = Math.max(0, pk - Math.round(0.4 * med * fs)), fuss = lo;
+    for (var k = lo; k < pk; k++) if (x[k] < x[fuss]) fuss = k;
+    var len = Math.round(med * fs); if (fuss + len >= x.length) continue;
+    var seg = [], mn = Infinity, mx = -Infinity;
+    for (k = 0; k < N; k++){ var v = x[fuss + Math.round(k / (N - 1) * len)]; seg.push(v); if (v < mn) mn = v; if (v > mx) mx = v; }
+    if (mx - mn <= 0) continue;
+    amps.push(mx - mn); anst.push((pk - fuss) / len);
+    var halb = mn + (mx - mn) / 2; breit.push(seg.filter(function(v){ return v >= halb; }).length / N);
+    seg.forEach(function(v, j){ sum[j] += (v - mn) / (mx - mn); }); n++;
+  }
+  if (n < 8) return null;
+  function mittel(a){ return a.reduce(function(s, v){ return s + v; }, 0) / a.length; }
+  var e = {id:uid(), t:Date.now(), type:'pulsbild', bpm:res.bpm, atem: atem ? Math.round(atem * 10) / 10 : null, proAtem: proAtem ? Math.round(proAtem * 10) / 10 : null,
+    aussetzer:aus, schlaege:ibis.length + 1, welle:sum.map(function(v){ return Math.round(v / n * 100) / 100; }),
+    anstieg:Math.round(mittel(anst) * 100) / 100, breite:Math.round(mittel(breit) * 100) / 100, amp:Math.round(mittel(amps) * 100) / 100, quality:res.quality};
+  e.tempo = !proAtem ? null : proAtem < 4 ? 'langsam' : proAtem <= 5.5 ? 'ruhig' : 'schnell';
+  e.rhythmus = aus <= 2 && res.quality >= 90 ? 'regelmässig' : 'unregelmässig';
+  e.anstiegW = e.anstieg < 0.2 ? 'steil' : 'weich';
+  e.breiteW = e.breite < 0.4 ? 'schmal' : 'breit';
+  var vor = load().filter(function(x){ return x.type === 'pulsbild' && !!x.demo === !!res.demo; }).pop();
+  e.staerke = !vor || !vor.amp ? 'erste Messung' : e.amp > vor.amp * 1.15 ? 'stärker' : e.amp < vor.amp * 0.87 ? 'schwächer' : 'gleich';
+  return e;
+}
+function pbZeile(e){
+  return 'Tempo ' + e.bpm + '/Min' + (e.proAtem ? ', ' + e.proAtem + ' Schläge pro Atemzug (' + e.tempo + ')' : '') +
+    ' · Rhythmus ' + e.rhythmus + (e.aussetzer ? ' (' + e.aussetzer + ' Aussetzer)' : '') +
+    ' · Welle ' + e.anstiegW + ', ' + e.breiteW + ' · Stärke ' + e.staerke;
+}
+function pbSvg(w, W, H){
+  if (!w || !w.length) return '';
+  var pts = w.map(function(v, i){ return (4 + i / (w.length - 1) * (W - 8)).toFixed(1) + ',' + (H - 4 - v * (H - 8)).toFixed(1); }).join(' ');
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;max-width:' + W + 'px;height:auto;display:block;margin:6px 0"><polyline points="' + pts + '" fill="none" stroke="var(--navy)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+}
+function pbZeigen(res, demo){
+  res.demo = demo;
+  var e = pbAuswerten(res);
+  showBox('pbBox');
+  pbTast = []; $('pbTast').querySelectorAll('.chip').forEach(function(b){ b.setAttribute('aria-pressed', 'false'); });
+  $('pbTastText').value = ''; $('pbSaved').classList.add('hidden');
+  if (!e){ pbLetztes = null; $('pbOut').innerHTML = '<p><b>Die Welle war nicht sauber genug.</b> Finger ohne Druck auflegen, warme Hände, helles Licht, nochmals messen.</p>'; $('pbSave').classList.add('hidden'); return; }
+  if (demo) e.demo = true;
+  pbLetztes = e; $('pbSave').classList.remove('hidden');
+  $('pbOut').innerHTML = pbSvg(e.welle, 520, 140) +
+    '<div class="tl">' +
+    '<div><b>Tempo</b>' + e.bpm + ' Schläge/Min' + (e.proAtem ? ' · ' + e.proAtem + ' pro Atemzug · <b>' + e.tempo + '</b>' : ' · Atmung nicht erkennbar') + '</div>' +
+    '<div><b>Rhythmus</b><b>' + e.rhythmus + '</b>' + (e.aussetzer ? ' · ' + e.aussetzer + ' Aussetzer von ' + e.schlaege + ' Schlägen' : '') + '</div>' +
+    '<div><b>Welle</b>Anstieg <b>' + e.anstiegW + '</b>, Breite <b>' + e.breiteW + '</b></div>' +
+    '<div><b>Stärke</b><b>' + e.staerke + '</b>' + (e.staerke === 'erste Messung' ? ' · ab der zweiten Messung im Vergleich' : ' als bei deiner letzten Messung') + '</div>' +
+    '</div><p class="muted">Welle und Stärke hängen von Fingerdruck, Licht und Kälte ab. Vergleiche nur deine eigenen Messungen.</p>';
+}
+$('pbSave').addEventListener('click', function(){
+  if (!pbLetztes) return;
+  var t = pbTast.slice(), frei = $('pbTastText').value.trim(); if (frei) t.push(frei);
+  if (t.length) pbLetztes.tast = t;
+  addEntry(pbLetztes); pbLetztes = null;
+  $('pbSave').classList.add('hidden');
+  var n = $('pbSaved'); n.textContent = 'Gespeichert. Im Verlauf siehst du Messung und Tastbefund nebeneinander.'; n.className = 'notice';
+});
+$('pbNew').addEventListener('click', function(){ showBox('startBox'); });
+
+/* ---------- Drei-Finger-Sensor (ESP32 im eigenen WLAN, Übergabe per Datei) ---------- */
+var SN_MODI = {puls:'Puls', druck:'Druck', muskeltest:'Muskeltest', behandlung:'Behandlungsdruck'};
+var SN_FARBEN = ['#e4572e', '#2e86ab', '#6a994e'];
+function snKurz(a, n){ if (a.length <= n) return a.slice(); var o = []; for (var i = 0; i < n; i++) o.push(a[Math.floor(i * a.length / n)]); return o; }
+function snSvg(e){
+  if (!e.kurven || !e.kurven.length) return '';
+  var W = 520, H = 50, g = '';
+  e.kurven.forEach(function(k, c){
+    if (!k.length) return;
+    var mn = Math.min.apply(null, k), mx = Math.max.apply(null, k), r = mx - mn || 1;
+    g += '<polyline transform="translate(0,' + (c * H) + ')" points="' + k.map(function(v, i){ return (4 + i / (k.length - 1) * (W - 8)).toFixed(1) + ',' + (H - 6 - (v - mn) / r * (H - 12)).toFixed(1); }).join(' ') + '" fill="none" stroke="' + SN_FARBEN[c % 3] + '" stroke-width="2"/>';
+  });
+  return '<svg viewBox="0 0 ' + W + ' ' + (H * e.kurven.length) + '" style="width:100%;height:auto;display:block;margin:6px 0">' + g + '</svg>';
+}
+function snZeile(e){
+  var t = (e.kanaele || []).map(function(k){ return k.name + ': ' + (e.modus === 'puls' && k.bpm ? k.bpm + '/Min, ' : '') + 'Mittel ' + k.mittel + ', höchste ' + k.max; }).join(' · ');
+  if (e.kg != null) t += (t ? ' · ' : '') + 'Muskeltest höchste ' + e.kg + ' kg';
+  return t + ' · ' + e.dauer + ' s';
+}
+$('snDatei').addEventListener('change', function(){
+  var f = this.files && this.files[0], msg = $('snMsg'); this.value = '';
+  if (!f) return;
+  var rd = new FileReader();
+  rd.onload = function(){
+    var d; try { d = JSON.parse(rd.result); } catch(x){ d = null; }
+    if (!d || d.app !== 'HumanSpark-Sensor' || !Array.isArray(d.t) || !Array.isArray(d.f)){ msg.textContent = 'Das ist keine Datei vom HumanSpark-Sensor.'; msg.className = 'notice warn'; return; }
+    var t = d.t.map(Number), t0 = t[0] || 0, ts = t.map(function(v){ return (v - t0) / 1000; });
+    var modus = $('snModus').value;
+    var e = {id:uid(), t:Date.now(), type:'sensor', modus:modus, ort:$('snOrt').value, sensorZeit:d.datum || null,
+      dauer: Math.round(ts[ts.length - 1] || 0), kanaele:[], kurven:[], kg: modus === 'muskeltest' || d.muskeltest_hoechste_kg ? (Math.round((+d.muskeltest_hoechste_kg || 0) * 10) / 10) : null};
+    d.f.forEach(function(k, c){
+      var v = (k || []).map(Number); if (!v.length) return;
+      var m = v.reduce(function(a, x){ return a + x; }, 0) / v.length, kn = {name:(d.finger && d.finger[c]) || ('Kanal ' + (c + 1)), mittel:Math.round(m), max:Math.round(Math.max.apply(null, v))};
+      if (modus === 'puls' || modus === 'behandlung'){
+        var r = analyse(ts.map(function(x, i){ return [x, -v[i]]; }), 0);
+        if (r.ok){ kn.bpm = r.bpm; kn.qualitaet = r.quality; }
+      }
+      e.kanaele.push(kn);
+      e.kurven.push(snKurz(v.slice(-Math.min(v.length, 600)), 150).map(Math.round));
+    });
+    if (!e.kanaele.length && e.kg == null){ msg.textContent = 'Die Datei enthält keine Messwerte.'; msg.className = 'notice warn'; return; }
+    addEntry(e);
+    msg.textContent = 'Gespeichert (' + SN_MODI[modus] + ', ' + e.ort + '). Im Verlauf neben Pulsbild und Tastbefund.'; msg.className = 'notice';
+    $('snOut').innerHTML = snSvg(e) + '<p class="muted">' + esc(snZeile(e)) + '</p>';
+  };
+  rd.readAsText(f);
+});
 
 var curEx = null;
 function showResult(e, before){
@@ -2329,6 +2523,10 @@ function renderHistory(){
         '<button class="btn ghost" data-open="' + e.id + '" style="min-height:44px;margin-top:6px">Auswertung öffnen</button></div>';
     }
     var st = e.stage ? STAGES[e.stage-1] : null;
+    if (e.type === 'sensor') return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · Sensor · ' + esc(SN_MODI[e.modus] || e.modus) + '</span></div>' + snSvg(e) +
+      '<div class="muted">' + esc(e.ort) + ' · ' + esc(snZeile(e)) + '</div></div>';
+    if (e.type === 'pulsbild') return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · Pulsbild' + (e.demo ? ' · Demo' : '') + '</span></div>' + pbSvg(e.welle, 260, 70) +
+      '<div class="muted">' + esc(pbZeile(e)) + '</div>' + (e.tast && e.tast.length ? '<div class="txt">Tastbefund: ' + esc(e.tast.join(', ')) + '</div>' : '') + '</div>';
     var head = e.type === 'messung' ? (e.pairOf ? 'Nachmessung' : 'Messung') + (e.source === 'polar' ? ' (Polar)' : '') + (e.exAfter && EX[e.exAfter] ? ' · danach ' + EX[e.exAfter].t : '') :
       e.type === 'wunsch' ? 'Was wünschst du dir wirklich?' : e.type === 'karte' ? 'Karte: ' + (e.karte || '') : e.type === 'kosmos' ? 'Körper & Kosmos: ' + (e.zeichen || '') : 'Reinreden';
     var vals = e.bpm ? 'Puls ' + e.bpm + (e.rmssd != null ? ' · RMSSD ' + e.rmssd + ' ms' : '') : '';
