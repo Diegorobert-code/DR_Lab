@@ -112,6 +112,83 @@
           return n;
         }
       }
+      ,{
+        id: 'logbuch', emo: '📒', titel: 'Mein Logbuch heute',
+        bau: function (H) {
+          /* Alltags-Logbuch: 1 Tipp pro Ereignis, Zeitleiste heute, Muster «meist um …». Bleibt auf diesem Gerät. */
+          var ARTEN = [['futter', '🥣', 'Füttern'], ['gassi', '🦮', 'Gassi'], ['pipi', '💧', 'Pipi'], ['gagi', '💩', 'Gagi'], ['wasser', '🚰', 'Wasser']];
+          var NAME = {}; ARTEN.forEach(function (a) { NAME[a[0]] = a; });
+          function liste() { var l = H.hol('logbuch', []); return Array.isArray(l) ? l : []; }
+          function speichere(l) { var grenze = Date.now() - 45 * 864e5; H.leg('logbuch', l.filter(function (x) { return x && x.ts > grenze; }).slice(-2000)); }
+          function zwei(n) { return (n < 10 ? '0' : '') + n; }
+          function uhr(ts) { var d = new Date(ts); return zwei(d.getHours()) + ':' + zwei(d.getMinutes()); }
+          function tagK(ts) { var d = new Date(ts); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+          function heuteL() { var k = tagK(Date.now()); return liste().filter(function (x) { return tagK(x.ts) === k; }); }
+          var knoepfe = ARTEN.map(function (a) {
+            return '<button type="button" class="r8l-tipp" data-art="' + a[0] + '"><span class="r8l-emo" aria-hidden="true">' + a[1] + '</span><b>' + a[2] + '</b><small data-zuletzt="' + a[0] + '">noch nicht</small></button>';
+          }).join('');
+          var n = H.karte('logbuch', '📒 Mein Logbuch heute',
+            '<p>Ein Tipp genügt, dann weiss die ganze Familie, was heute schon war.</p>' +
+            '<div class="r8l-grid" role="group" aria-label="Eintragen">' + knoepfe + '</div>' +
+            '<h3 class="r8l-h3">Heute</h3><ol class="r8l-zeit" aria-live="polite"></ol>' +
+            '<h3 class="r8l-h3">Meistens um …</h3><ul class="r8l-muster"></ul>' +
+            '<p class="r8l-klein">Bleibt nur auf diesem Gerät. Wenn dir bei Fressen, Trinken oder Verdauung etwas Sorgen macht, frag deine Tierärztin oder deinen Tierarzt.</p>');
+          var st = document.createElement('style');
+          st.textContent = '.r8l-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin:12px 0}' +
+            '.r8l-grid .r8l-tipp{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:96px;padding:10px 6px;border-radius:18px;background:#F1F5FC!important;color:#18233D!important;border:1px solid #E3E9F4!important;box-shadow:none!important;font:inherit;cursor:pointer;transition:transform .15s}' +
+            '.r8l-grid .r8l-tipp:active{transform:scale(.96)}.r8l-grid .r8l-tipp.neu{background:#EAF1FF!important;border-color:#2563EB!important}' +
+            '.r8l-emo{font-size:2rem;line-height:1}.r8l-tipp b{font-size:1.05rem}.r8l-tipp small{font-size:.82rem;color:#56607A!important}' +
+            '.r8l-h3{font-size:1.05rem;margin:16px 0 6px}' +
+            '.r8l-zeit{list-style:none;margin:0;padding:0 0 0 14px;border-left:3px solid #E3E9F4;display:grid;gap:4px}' +
+            '.r8l-zeit li{display:flex;align-items:center;gap:10px;min-height:44px}.r8l-zeit time{font-variant-numeric:tabular-nums;font-weight:700;min-width:3.2rem;color:#1D4FD1}' +
+            '.r8l-zeit .r8l-weg{margin-left:auto;min-width:44px;min-height:44px;border-radius:12px;background:#FFFFFF!important;color:#56607A!important;border:1px solid #E3E9F4!important;box-shadow:none!important;font:inherit;cursor:pointer}' +
+            '.r8l-leer{color:#56607A;border:0!important;padding:0!important}.r8l-muster{margin:0;padding-left:1.1rem}.r8l-muster li{margin:4px 0}' +
+            '.r8l-klein{font-size:.9rem;color:#56607A;margin-top:14px}';
+          n.appendChild(st);
+          var zeitEl = n.querySelector('.r8l-zeit'), musterEl = n.querySelector('.r8l-muster');
+          function muster() {
+            var seit = Date.now() - 14 * 864e5, l = liste().filter(function (x) { return x.ts > seit; }), aus = [];
+            ARTEN.forEach(function (a) {
+              var m = l.filter(function (x) { return x.a === a[0]; }).map(function (x) { var d = new Date(x.ts); return { m: d.getHours() * 60 + d.getMinutes(), t: tagK(x.ts) }; }).sort(function (p, q) { return p.m - q.m; });
+              var gruppen = [], g = null;
+              m.forEach(function (x) { if (g && x.m - g.start <= 75) g.e.push(x); else { g = { start: x.m, e: [x] }; gruppen.push(g); } });
+              var zeiten = gruppen.filter(function (gr) { var tage = {}; gr.e.forEach(function (x) { tage[x.t] = 1; }); return Object.keys(tage).length >= 3; })
+                .map(function (gr) { var s = gr.e.reduce(function (z, x) { return z + x.m; }, 0) / gr.e.length; s = Math.round(s / 15) * 15; return zwei(Math.floor(s / 60) % 24) + ':' + zwei(s % 60); });
+              if (zeiten.length) aus.push('<li>' + a[1] + ' <b>' + a[2] + '</b> meist um ' + (zeiten.length > 1 ? zeiten.slice(0, -1).join(', ') + ' und ' + zeiten[zeiten.length - 1] : zeiten[0]) + '</li>');
+            });
+            musterEl.innerHTML = aus.length ? aus.join('') : '<li class="r8l-leer">Nach ein paar Tagen zeige ich hier, wann es meistens so weit ist.</li>';
+          }
+          function zeichne(neuId) {
+            var h = heuteL().sort(function (p, q) { return q.ts - p.ts; });
+            zeitEl.innerHTML = h.length ? '' : '<li class="r8l-leer">Heute noch nichts eingetragen.</li>';
+            h.forEach(function (x) {
+              var a = NAME[x.a]; if (!a) return;
+              var li = H.el('<li><time>' + uhr(x.ts) + '</time><span aria-hidden="true">' + a[1] + '</span><span>' + a[2] + '</span><button type="button" class="r8l-weg" aria-label="' + a[2] + ' um ' + uhr(x.ts) + ' entfernen">✕</button></li>');
+              li.querySelector('button').onclick = function () { entferne(x); };
+              zeitEl.appendChild(li);
+            });
+            ARTEN.forEach(function (a) {
+              var z = h.filter(function (x) { return x.a === a[0]; }), s = n.querySelector('[data-zuletzt=' + a[0] + ']');
+              s.textContent = z.length ? 'zuletzt ' + uhr(z[0].ts) + (z.length > 1 ? ' · ' + z.length + '×' : '') : 'noch nicht';
+            });
+            muster();
+          }
+          function entferne(x) {
+            speichere(liste().filter(function (y) { return y.id !== x.id; })); zeichne();
+            H.rueck(NAME[x.a][2] + ' um ' + uhr(x.ts) + ' entfernt.', function () { var l = liste(); l.push(x); l.sort(function (p, q) { return p.ts - q.ts; }); speichere(l); zeichne(); });
+          }
+          n.querySelectorAll('.r8l-tipp').forEach(function (b) {
+            b.onclick = function () {
+              var a = NAME[b.getAttribute('data-art')], x = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), a: a[0], ts: Date.now() };
+              var l = liste(); l.push(x); speichere(l); H.summ(8); zeichne();
+              b.classList.add('neu'); setTimeout(function () { b.classList.remove('neu'); }, 700);
+              H.rueck(a[1] + ' ' + a[2] + ' um ' + uhr(x.ts) + ' eingetragen.', function () { speichere(liste().filter(function (y) { return y.id !== x.id; })); zeichne(); });
+            };
+          });
+          zeichne();
+          return n;
+        }
+      }
     ],
     wachsen: {
       licht: 'Pfötchen', licht1: 'Pfötchen', emo: '🐾', dauer: 20000,
@@ -170,7 +247,7 @@
       var g = tag.querySelector('.r7-was') || tag.querySelector('.r6-gruss');
       if (N.heute) { if (g) g.after(N.heute); else tag.insertBefore(N.heute, tag.firstChild); }
       var r6 = tag.querySelectorAll('.r7-karte'), nach = r6.length ? r6[r6.length - 1] : null;
-      ['woche', 'rueckblick'].forEach(function (k) { if (!N[k]) return; if (nach) { nach.after(N[k]); nach = N[k]; } else tag.appendChild(N[k]); });
+      ['logbuch', 'woche', 'rueckblick'].forEach(function (k) { if (!N[k]) return; if (nach) { nach.after(N[k]); nach = N[k]; } else tag.appendChild(N[k]); });
     }
 };
   if (window.R8) return;
