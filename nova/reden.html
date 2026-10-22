@@ -167,7 +167,7 @@
       mund: { linie: [[318, 388], [335, 402], [360, 410], [400, 412], [430, 408], [448, 400]], lippe: 426, kinn: 500, max: 22 } },
     nova: { name: 'Nova', agent: 'agent_4201m55seyhdexd96tkaxt72hmaq', bild: 'nova-3d.jpg', gedaechtnis: true, welt: true,
       mund: { linie: [[520, 684], [545, 694], [580, 700], [620, 700], [660, 690], [690, 668], [705, 636]], lippe: 738, kinn: 792, max: 22 } },
-    sparky: { name: 'Sparky', agent: 'agent_7401m55j20jwek69gsh3gkfhaa77', bild: 'figuren/sparky.jpg',
+    sparky: { name: 'Sparky', agent: 'agent_7401m55j20jwek69gsh3gkfhaa77', bild: 'figuren/sparky.jpg', gedaechtnis: true, messwerte: true,
       mund: { linie: [[440, 790], [470, 808], [500, 820], [560, 832], [600, 824], [640, 804], [690, 780]], lippe: 852, kinn: 905, max: 18, innen: [90, 28, 34] } },
     'coin maker': { name: 'Coin Maker', agent: 'agent_2001m55ss61fe5wb1qct4b8bqkz3', bild: 'figuren/coinmaker.jpg',
       mund: { linie: [[464, 446], [484, 480], [520, 488], [560, 498], [590, 506], [614, 512]], lippe: 526, kinn: 600, max: 20 } },
@@ -338,9 +338,39 @@
     if (F.gedaechtnis) v.letztes_mal = erinnerung();
     if (F.positionen) v.positionen = positionen();
     if (F.welt) v.welt = welt();
+    if (F.messwerte) v.messwerte = messwerte();
     if (KEY === 'nova') v.buehne = BUEHNE.an ? BUEHNE.variable() : 'aus';
     return Object.keys(v).length ? v : undefined;
   }
+
+  // Sparky sieht die letzten Messungen aus Human Sparks (gleiches Handy, gleiche Adresse); neue kommen während dem Gespräch dazu.
+  function messZeile(e) {
+    var d = new Date(e.t), z = d.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' });
+    var a = e.type === 'sitzung' ? (e.start || {}) : e, b = e.type === 'sitzung' ? (e.end || {}) : null;
+    var t = z + ' ' + ({ messung: 'Messung', sitzung: 'Sitzung', pulsbild: 'Pulsbild', sensor: 'Sensor', eintrag: 'Notiz' }[e.type] || e.type) + (e.demo ? ' (Demo)' : '');
+    if (a.bpm) t += ': Puls ' + Math.round(a.bpm) + (a.rmssd != null ? ', HRV ' + Math.round(a.rmssd) + ' ms' : '');
+    if (b && b.bpm) t += ' → Ende Puls ' + Math.round(b.bpm) + (b.rmssd != null ? ', HRV ' + Math.round(b.rmssd) + ' ms' : '');
+    if (e.gefuehl) t += ', Gefühl ' + e.gefuehl + '/5';
+    if (e.befVor != null && e.befNach != null) t += ', Befinden ' + e.befVor + '→' + e.befNach;
+    var w = e.text || e.schluss; if (w) t += ', «' + String(w).slice(0, 160) + '»';
+    return t;
+  }
+  function messListe() {
+    var l = hol('hs_entries') || [];
+    return l.filter(function (e) { return e && e.t && /^(messung|sitzung|pulsbild|sensor|eintrag)$/.test(e.type); }).slice(-6);
+  }
+  function messwerte() {
+    var l = messListe();
+    return l.length ? l.map(messZeile).join('\n') + '\nSchätzwerte vom Handy, keine Diagnose.' : 'Noch keine Messung auf diesem Handy.';
+  }
+  var messZuletzt = (messListe().slice(-1)[0] || {}).t || 0;
+  if (F.messwerte) window.addEventListener('storage', function (ev) {
+    if (ev.key !== 'hs_entries' || !conv) return;
+    var neu = messListe().filter(function (e) { return e.t > messZuletzt; });
+    if (!neu.length) return;
+    messZuletzt = neu[neu.length - 1].t;
+    try { conv.sendContextualUpdate('Neue Messung aus Human Sparks:\n' + neu.map(messZeile).join('\n')); } catch (x) {}
+  });
 
   function zeile(wer, t) {
     jetztGesagt.push((wer === 'du' ? 'Gegenüber: ' : NAME + ': ') + t);
@@ -962,6 +992,15 @@
   });
   // Auf Otti tippen: er hüpft vor Freude.
   buehne.addEventListener('click', function () { if (buehne.classList.contains('zeigt')) buehne.classList.remove('zeigt'); else hopsen(); });
+  // Sparky: App öffnen, irgendwo hintippen, er hört zu (ein Tipp reicht, das Handy verlangt ihn fürs Mikrofon).
+  if (KEY === 'sparky') {
+    status.textContent = 'Tipp irgendwo hin, dann hört Sparky zu.';
+    document.addEventListener('click', function los(ev) {
+      if (ev.target.closest && ev.target.closest('a, button, input, label, form')) return;
+      document.removeEventListener('click', los, true);
+      if (!conv && !startet) starten(false);
+    }, true);
+  }
 
 })();
 </script>
