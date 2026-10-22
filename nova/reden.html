@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-22-05">
+<meta name="stand" content="2026-10-22-06">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -477,8 +477,9 @@
       return;
     }
     if (F.welt) await serverHolen();
+    var versuch = null;
     try {
-      var c = await ElevenLabsClient.Conversation.startSession({
+      versuch = ElevenLabsClient.Conversation.startSession({
         agentId: AGENT,
         connectionType: 'websocket',
         textOnly: !!nurText,
@@ -486,7 +487,7 @@
           film_zeigen: BUEHNE.werkzeuge.film_zeigen, film_steuern: BUEHNE.werkzeuge.film_steuern, kiverse_zeigen: BUEHNE.werkzeuge.kiverse_zeigen, auflegen: auflegen },
         dynamicVariables: variablen(),
         // Auf der Bühne nimmt Nova ab wie am Telefon; nach einer abgerissenen Verbindung ist sie still wieder da, bis Diego sie anspricht (nach 30 Min. verbindet sie still neu, siehe unten).
-        overrides: BUEHNE.an && !nurText ? { agent: { firstMessage: abgenommen ? '' : anruf > 1 ? 'Hey, da bin ich wieder!' : BUEHNE.gast === 'jackie' ? 'Ja, hallo?' : 'Hey, und? Alle da?' } } : undefined,
+        overrides: BUEHNE.an && !nurText ? { agent: { firstMessage: begruessung() } } : undefined,
         onConnect: function () { if (BUEHNE.an) abgenommen = true; status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); hopsen(); },
         onDisconnect: function () {
           if (nr === sitzung && maltSeit) { maltSeit = 0; ende('Verbindung weg, das Bild kam nicht an. Nochmal 🎨'); return; }
@@ -507,11 +508,22 @@
           status.textContent = NAME + (sp ? ' spricht …' : ' hört zu.');
         }
       });
+      // Hängt der Verbindungsaufbau, wartet die Bühne nicht ewig (Plan B unten).
+      var c = await Promise.race([versuch, new Promise(function (_, nein) { setTimeout(function () { nein(new Error('zeit')); }, 12000); })]);
+      pannen = 0;
       c.__text = !!nurText;
       conv = c; startet = false; knopfZeigen();
       if (!nurText) buehne.classList.add('hoert');
     } catch (e) {
       startet = false; knopfZeigen();
+      if (versuch) versuch.then(function (x) { x.endSession().catch(function () {}); }).catch(function () {});
+      // Plan B auf der Bühne: einmal still neu verbinden; klappt das nicht, ein kurzer Satz an der Wand und Enter ruft nochmal an.
+      if (BUEHNE.an && !nurText && nr === sitzung) {
+        if (++pannen < 2) { status.textContent = 'Nova verbindet neu …'; setTimeout(function () { if (!conv && !startet) starten(false); }, 1500); return; }
+        pannen = 0; BUEHNE.aktiv = false; funkloch = true;
+        BUEHNE.untertitel('📵 Nova ist grad im Funkloch. Wir rufen sie gleich nochmal an.');
+        $('vorhang').style.display = '';
+      }
       status.textContent = NAME + ' schläft gerade.';
       hinweis.textContent = 'Keine Verbindung. Internet prüfen und nochmal tippen.';
     }
@@ -617,7 +629,7 @@
     });
     function weltAuf() {
       if (!weltAdresse) return 'Das KI-Verse ist auf diesem Laptop noch nicht eingerichtet.';
-      video.pause();
+      video.pause(); gezeigt = true;
       if (!weltRahmen.src) weltRahmen.src = weltAdresse;
       document.body.classList.add('welt', 'film');
       setTimeout(function () { try { weltRahmen.focus(); } catch (e) {} weltSenden({ aktion: 'stand' }); }, 400);
@@ -649,6 +661,7 @@
       film_zeigen: function (p) {
         if (!liste.length) return 'Keine Filme geladen. Sag Diego, er soll beim Start «Filme wählen» tippen.';
         var i = finden(p && p.name);
+        if (i >= 0) gezeigt = true;
         return i < 0 ? 'Nicht gefunden. Es gibt: ' + namen() + '.' : zeigen(i);
       },
       film_steuern: function (p) {
@@ -680,7 +693,7 @@
     }
     var gast = (new URLSearchParams(location.search).get('gast') || '').toLowerCase().replace(/[^a-zäöü ]/g, '');
     function variable() {
-      return 'an, Anruf ' + anruf + (gast ? ', Gast: ' + gast : '') + '. Du bist live am Beamer, über den Lautsprecher, wie bei einem Telefonat. Filme: ' + namen() + (document.body.classList.contains('welt') ? '. Gerade offen: das KI-Verse' + (weltOrt ? ' (' + weltOrt + ')' : '') : document.body.classList.contains('film') && liste[jetzt] ? '. Gerade läuft: ' + liste[jetzt].titel : '') + (weltAdresse ? '. Das KI-Verse ist bereit' + (novaOrt ? ', du bist dort gerade bei: ' + novaOrt : '') + (weltOrte.length ? ', Orte: ' + weltOrte.join(', ') : '') : '') + '.';
+      return 'an, Anruf ' + akt + (wieder ? ' (Wiederanruf: Diego hat eben kurz aufgelegt und ruft nochmal an)' : '') + (gast ? ', Gast: ' + gast : '') + '. Du bist live am Beamer, über den Lautsprecher, wie bei einem Telefonat. Filme: ' + namen() + (document.body.classList.contains('welt') ? '. Gerade offen: das KI-Verse' + (weltOrt ? ' (' + weltOrt + ')' : '') : document.body.classList.contains('film') && liste[jetzt] ? '. Gerade läuft: ' + liste[jetzt].titel : '') + (weltAdresse ? '. Das KI-Verse ist bereit' + (novaOrt ? ', du bist dort gerade bei: ' + novaOrt : '') + (weltOrte.length ? ', Orte: ' + weltOrte.join(', ') : '') : '') + '.';
     }
     if (an) {
       document.body.classList.add('bmodus'); laden();
@@ -695,16 +708,17 @@
     return { an: an, gast: gast, werkzeuge: werkzeuge, spricht: spricht, untertitel: untertitel, variable: variable,
       get aktiv() { return aktiv; }, set aktiv(v) { aktiv = v; } };
   })();
-  // Wie ein Telefonat: Diego tippt, es klingelt zweimal über den Lautsprecher, dann nimmt Nova ab.
+  // Wie ein Telefonat: Diego tippt, es klingelt zwei- oder dreimal über den Lautsprecher, dann nimmt Nova ab.
   // Auflegen (Knopf oben links) bringt den Anruf-Knopf zurück; so kann er sie später nochmal «anrufen».
   function klingeln(fertig) {
     var AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) { fertig(); return; }
-    var ac = new AC(), t = ac.currentTime + 0.05, g = ac.createGain(); g.gain.value = 0; g.connect(ac.destination);
-    [425, 450].forEach(function (hz) { var o = ac.createOscillator(); o.frequency.value = hz; o.connect(g); o.start(t); o.stop(t + 3.2); });
-    [0, 1.9].forEach(function (ab) { g.gain.setValueAtTime(0, t + ab); g.gain.linearRampToValueAtTime(0.18, t + ab + 0.03);
+    var ac = new AC(), t = ac.currentTime + 0.05, g = ac.createGain(), mal = Math.random() < 0.5 ? 2 : 3; g.gain.value = 0; g.connect(ac.destination);
+    var ringe = mal === 2 ? [0, 1.9] : [0, 1.9, 3.8];
+    [425, 450].forEach(function (hz) { var o = ac.createOscillator(); o.frequency.value = hz; o.connect(g); o.start(t); o.stop(t + ringe[ringe.length - 1] + 1.3); });
+    ringe.forEach(function (ab) { g.gain.setValueAtTime(0, t + ab); g.gain.linearRampToValueAtTime(0.18, t + ab + 0.03);
       g.gain.setValueAtTime(0.18, t + ab + 1.0); g.gain.linearRampToValueAtTime(0, t + ab + 1.05); });
-    setTimeout(function () { try { ac.close(); } catch (e) {} fertig(); }, 3300);
+    setTimeout(function () { try { ac.close(); } catch (e) {} fertig(); }, (ringe[ringe.length - 1] + 1.4) * 1000);
   }
   // Ab dem zweiten Anruf klingt es wie ein Videoanruf: kleine Melodie statt Telefon-Ton.
   function videoKlingeln(fertig) {
@@ -722,7 +736,24 @@
     setTimeout(function () { try { ac.close(); } catch (e) {} fertig(); }, 3000);
   }
   // Nova legt selbst auf («bis später, piep»), der Film läuft weiter. Enter oder der Knopf ruft sie wieder an.
-  var abgenommen = false, anruf = 0, aufgelegt = false;
+  var abgenommen = false, anruf = 0, aufgelegt = false, pannen = 0;
+  // akt 1 = Telefon, ab 2 = Videoanruf (erst nachdem ein Film oder das KI-Verse lief).
+  // Legt Diego auf, ohne dass etwas gezeigt wurde, ist es ein Wiederanruf: gleiches Telefon, Nova frech.
+  var akt = 0, wieder = false, gezeigt = false, letzteBegr = '', funkloch = false;
+  var BEGR = {
+    eins: ['Ja, hallo?', 'Hey, und? Alle da?', 'Hallo, hallo! Geht\'s los?', 'Ja? Nova hier!', 'Hey! Na, seid ihr schon da?'],
+    jackie: ['Ja, hallo?', 'Ja hallo, hier ist Nova!', 'Hey! Ist Jackie schon da?'],
+    wieder: ['Na, bist du jetzt endlich parat?', 'Schon wieder du? Bist du jetzt ready?', 'Ja hallo? Und, hast du\'s jetzt?', 'Haha, da bist du ja. Jetzt aber, oder?', 'Ja? Bist du jetzt endlich bereit?'],
+    video: ['Hey, da bin ich wieder!', 'Hallo zusammen, da bin ich!', 'Hey! Na, wie war der Film?', 'Ja hallo! Bin wieder da, jetzt in gross.']
+  };
+  // Nie zweimal hintereinander dieselbe Begrüssung.
+  function begruessung() {
+    if (abgenommen) return '';
+    var l = wieder ? BEGR.wieder : akt > 1 ? BEGR.video : BUEHNE.gast === 'jackie' ? BEGR.jackie : BEGR.eins;
+    var w = l.filter(function (x) { return x !== letzteBegr; });
+    letzteBegr = w[Math.floor(Math.random() * w.length)];
+    return letzteBegr;
+  }
   function auflegen() {
     if (!BUEHNE.an || !conv) return 'aufgelegt';
     aufgelegt = true;
@@ -740,8 +771,11 @@
       try { if (document.documentElement.requestFullscreen && !document.fullscreenElement) document.documentElement.requestFullscreen().catch(function () {}); } catch (e) {}
       $('vorhangLos').classList.add('klingelt'); $('vorhangTitel').textContent = 'Es klingelt …';
       BUEHNE.aktiv = true; abgenommen = false; aufgelegt = false; anruf++;
-      if (anruf > 1) { BUEHNE.werkzeuge.film_steuern({ aktion: 'schliessen' }); $('vorhangTitel').textContent = 'Videoanruf …'; }
-      (anruf > 1 ? videoKlingeln : klingeln)(function () {
+      // Nach einem Funkloch hat Nova gar nicht abgenommen: gleicher Anruf nochmal, ohne «schon wieder du?».
+      if (funkloch) funkloch = false;
+      else if (akt === 0 || gezeigt) { akt++; wieder = false; gezeigt = false; } else wieder = true;
+      if (akt > 1 && !wieder) { BUEHNE.werkzeuge.film_steuern({ aktion: 'schliessen' }); $('vorhangTitel').textContent = 'Videoanruf …'; }
+      (akt > 1 ? videoKlingeln : klingeln)(function () {
         klingelt = false; vorhang.style.display = 'none'; $('vorhangLos').classList.remove('klingelt'); $('vorhangTitel').textContent = 'Nova anrufen';
         starten(false);
       });
