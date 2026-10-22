@@ -5,6 +5,7 @@
    4. Nach unten ziehen = Kurse neu abrufen und neuer Satz von Mr. Ping (Vorbild: Pull-to-refresh in Mail, Twitter).
    5. Mr. Ping lange drücken = Kontextmenü; Tastaturkürzel G, W, K, R, ? am Computer (Vorbild: iOS-Kontextmenü, Gmail-Kürzel).
    6. Ohne Verbindung: klarer Hinweis «Live-Kurse brauchen Verbindung», Kurs von Hand geht immer.
+   7. «Warum?»-Tagebuch (Runde 8b): Grund und Erwartung vor Kauf/Verkauf, Rückblick nach 7/14/30 Tagen, eigene Trefferquote.
    Alles nur auf diesem Gerät. */
 window.R8 = {
   bild: 'wm/maskottchen.jpg',
@@ -20,7 +21,17 @@ window.R8 = {
     '.r8-tp .r8-heute-chips button[aria-pressed=true]{background:rgba(242,193,78,.16);border-color:#f2c14e;font-weight:700}',
     '.r8-tp .r8-serie{display:flex;align-items:baseline;gap:8px;margin:16px 0 0;font-size:.9375rem}',
     '.r8-tp .r8-serie b{font-size:1.5rem;color:#f2c14e;font-variant-numeric:tabular-nums}',
-    '.r8-tp .r7-reihe{margin-bottom:0}'
+    '.r8-tp .r7-reihe{margin-bottom:0}',
+    '.r8w-faellig{display:grid;gap:8px;margin:0 0 12px}.r8w-f{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-radius:14px;border:1px solid #f2c14e;background:rgba(242,193,78,.1)}.r8w-f span{flex:1 1 180px;min-width:0;overflow-wrap:anywhere}',
+    '.r8w-quote{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;margin:0 0 12px;font-size:.9375rem}.r8w-quote b{font-size:1.75rem;font-variant-numeric:tabular-nums}',
+    '.r8w-h3{margin:16px 0 6px;font-size:1rem}.r8w-liste{list-style:none;margin:0;padding:0;display:grid;gap:6px}',
+    '.r8w-liste li{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid rgba(127,127,127,.25)}.r8w-liste .t{flex:1;min-width:0;overflow-wrap:anywhere}.r8w-liste small{display:block;font-size:.8125rem;opacity:.85}',
+    '.r8w-x{flex:none;min-width:44px;min-height:44px;border-radius:12px;border:1px solid rgba(127,127,127,.4);background:transparent;color:inherit;font:inherit;cursor:pointer}',
+    '.r8w-det{margin-top:12px}.r8w-det summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:700}',
+    '.r8w-fuss{margin:12px 0 0;font-size:.8125rem;line-height:1.45}.r8w-lab{margin:12px 0 6px;font-weight:700}.r8w-fehl{min-height:1.2em;margin:8px 0 0;font-weight:700}.r8w-fehl:empty{display:none}',
+    '.r8w-wahl{display:flex;flex-wrap:wrap;gap:8px}.r8w-wahl button{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(127,127,127,.45);background:transparent;color:inherit;font:inherit;cursor:pointer}.r8w-wahl button[aria-checked=true]{border-color:#f2c14e;box-shadow:0 0 0 1px #f2c14e;font-weight:700;background:rgba(242,193,78,.14)}',
+    '.r8w-damals{padding:10px 12px;border-radius:14px;border:1px solid rgba(127,127,127,.35)}.r8w-damals p{margin:6px 0 0}',
+    'body .r8-rueck{z-index:2147483001}' /* Rückgängig liegt über der Nova-Pille */
   ].join('\n'),
   start: function (E, R) {
     /* Mr. Ping als helles Maskottchen, Avatar passend zu Hell/Dunkel */
@@ -97,6 +108,121 @@ window.R8 = {
     if (ort) { ort.parentNode.insertBefore(box, ort.nextSibling); zeig(false); }
     if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); zeig(true); } }, { threshold: .4 }); io.observe(box); }
 
+    /* 7. «Warum?»-Tagebuch (Runde 8b): vor dem Kauf oder Verkauf den Grund und die Erwartung aufschreiben,
+       nach 7, 14 oder 30 Tagen ehrlich zurückschauen. Daraus entsteht die eigene Trefferquote.
+       Misst nur, ob die eigene Erwartung eingetroffen ist. Keine Anlageberatung, nur auf diesem Gerät. */
+    var WT = [7, 14, 30];
+    function wListe() { var l = E.hol('warum', []); return Array.isArray(l) ? l : []; }
+    function wLeg(l) { E.leg('warum', l.slice(-300)); }
+    function plusT(s, n) { var t = new Date(s + 'T12:00'); t.setDate(t.getDate() + n); return E.ymd(t); }
+    function dCH(s) { return s ? s.slice(8, 10) + '.' + s.slice(5, 7) + '.' + s.slice(0, 4) : ''; }
+    function faelligAm(x) { return plusT(x.datum, x.rueckTage || 14); }
+    function istFaellig(x) { return !x.rueck && faelligAm(x) <= R.heute(); }
+    function quote(l) {
+      var r = l.filter(function (x) { return x.rueck; }), p = 0;
+      r.forEach(function (x) { p += x.rueck.ergebnis === 'ja' ? 1 : x.rueck.ergebnis === 'teils' ? .5 : 0; });
+      return { n: r.length, wert: r.length ? p / r.length : 0 };
+    }
+    var ERG = { ja: ['✅', 'Ja, so gekommen'], teils: ['🌗', 'Teils'], nein: ['❌', 'Nein, anders gekommen'] };
+    var wBox = document.createElement('section'); wBox.className = 'r8-tp r8-warum'; wBox.id = 'r8Warum'; wBox.setAttribute('aria-labelledby', 'r8WarumH');
+    function wZeig() {
+      var l = wListe(), f = l.filter(istFaellig), q = quote(l), heute = R.heute();
+      var qk = quote(l.filter(function (x) { return x.art === 'kauf'; })), qv = quote(l.filter(function (x) { return x.art === 'verkauf'; }));
+      var offen = l.filter(function (x) { return !x.rueck && !istFaellig(x); }).sort(function (a, b) { return faelligAm(a).localeCompare(faelligAm(b)); });
+      var zuletzt = l.filter(function (x) { return x.rueck; }).slice(-5).reverse();
+      wBox.innerHTML = '<h2 id="r8WarumH">📓 Warum gekauft, warum verkauft?</h2>' +
+        '<p>Vorher einen Satz zum Grund und zur Erwartung, später ein ehrlicher Blick zurück. So lernst du deine eigenen Muster kennen.</p>' +
+        (f.length ? '<div class="r8w-faellig" role="group" aria-label="Fällige Rückblicke">' + f.map(function (x) {
+          var tage = Math.round((new Date(heute + 'T12:00') - new Date(x.datum + 'T12:00')) / 864e5);
+          return '<div class="r8w-f"><span>⏰ <b>' + R.esc(x.titel) + '</b> · ' + (x.art === 'kauf' ? 'Kauf' : 'Verkauf') + ' vor ' + tage + ' Tagen</span><button type="button" class="r7-knopf" data-r8w="rueck" data-id="' + x.id + '">Jetzt zurückschauen</button></div>';
+        }).join('') + '</div>' : '') +
+        '<div class="r8w-quote" aria-live="polite">' + (q.n
+          ? '<b>' + Math.round(q.wert * 100) + ' %</b><span>deine Trefferquote aus ' + q.n + (q.n === 1 ? ' Rückblick' : ' Rückblicken') + (qk.n && qv.n ? ' · Kauf ' + Math.round(qk.wert * 100) + ' %, Verkauf ' + Math.round(qv.wert * 100) + ' %' : '') + (q.n < 5 ? '. Ab etwa 5 Rückblicken sagt die Zahl mehr.' : '') + '</span>'
+          : '<span>Noch kein Rückblick. Die Trefferquote erscheint nach dem ersten ehrlichen Blick zurück.</span>') + '</div>' +
+        '<div class="r7-reihe"><button type="button" class="r7-knopf" data-r8w="neu">＋ Entscheid notieren</button></div>' +
+        (offen.length ? '<h3 class="r8w-h3">Wartet auf den Rückblick</h3><ul class="r8w-liste">' + offen.slice(0, 8).map(function (x) {
+          return '<li><span class="t"><b>' + R.esc(x.titel) + '</b> · ' + (x.art === 'kauf' ? 'Kauf' : 'Verkauf') + '<small>Rückblick am ' + dCH(faelligAm(x)) + ' · «' + R.esc(x.warum) + '»</small></span><button type="button" class="r8w-x" data-r8w="weg" data-id="' + x.id + '" aria-label="' + R.esc(x.titel) + ' entfernen">✕</button></li>';
+        }).join('') + '</ul>' : '') +
+        (zuletzt.length ? '<details class="r8w-det"><summary>Letzte Rückblicke</summary><ul class="r8w-liste">' + zuletzt.map(function (x) {
+          var e = ERG[x.rueck.ergebnis] || ERG.teils;
+          return '<li><span class="t"><span aria-hidden="true">' + e[0] + '</span> <b>' + R.esc(x.titel) + '</b> · ' + R.esc(e[1]) + '<small>Erwartet: ' + R.esc(x.erwartung || '–') + (x.rueck.notiz ? ' · Gelernt: ' + R.esc(x.rueck.notiz) : '') + '</small></span><button type="button" class="r8w-x" data-r8w="weg" data-id="' + x.id + '" aria-label="' + R.esc(x.titel) + ' entfernen">✕</button></li>';
+        }).join('') + '</ul></details>' : '') +
+        '<p class="r8w-fuss">Die Quote misst, ob deine Erwartung eingetroffen ist, nicht ob du richtig liegst. Glück und Pech gehören dazu. Keine Anlageberatung, alles bleibt auf diesem Gerät.</p>';
+    }
+    function wahlHtml(name, opt, wert, label) {
+      return '<div class="r8w-wahl" role="radiogroup" aria-label="' + label + '">' + opt.map(function (o) { return '<button type="button" role="radio" data-' + name + '="' + o[0] + '" aria-checked="' + (o[0] === wert) + '">' + o[1] + '</button>'; }).join('') + '</div>';
+    }
+    function wahlLos(inh, name, setze) {
+      inh.querySelectorAll('[data-' + name + ']').forEach(function (b) {
+        b.addEventListener('click', function () { inh.querySelectorAll('[data-' + name + ']').forEach(function (x) { x.setAttribute('aria-checked', String(x === b)); }); setze(b.getAttribute('data-' + name)); });
+      });
+    }
+    function wNeu() {
+      var art = 'kauf', tage = 14;
+      var inh = R.blatt({ titel: 'Entscheid notieren', bild: 'wm/maskottchen.jpg', html:
+        '<p>Bevor du klickst: ein Satz zum Warum. Mr. Ping fragt dich später, wie es gekommen ist.</p>' +
+        '<p class="r8w-lab" id="r8wArtL">Was hast du vor?</p>' + wahlHtml('wart', [['kauf', '🟢 Kaufen'], ['verkauf', '🔴 Verkaufen']], art, 'Kaufen oder verkaufen') +
+        '<label for="r8wTitel">Welcher Titel?</label><input id="r8wTitel" maxlength="40" autocomplete="off" placeholder="z. B. Novartis, ETF Welt">' +
+        '<label for="r8wKurs">Kurs (freiwillig)</label><input id="r8wKurs" inputmode="decimal" maxlength="12" autocomplete="off" placeholder="z. B. 92.40">' +
+        '<label for="r8wWarum">Warum? (ein, zwei Sätze)</label><textarea id="r8wWarum" rows="3" maxlength="280" placeholder="z. B. Gute Zahlen, ich glaube an das neue Medikament"></textarea>' +
+        '<label for="r8wErw">Was erwartest du?</label><input id="r8wErw" maxlength="140" autocomplete="off" placeholder="z. B. Bis Ende Monat eher höher">' +
+        '<p class="r8w-lab">Zurückschauen nach</p>' + wahlHtml('wtage', WT.map(function (t) { return [String(t), t + ' Tagen']; }), String(tage), 'Rückblick nach') +
+        '<p class="r8w-fehl" role="alert"></p>' +
+        '<div class="r7-reihe"><button type="button" class="r7-knopf voll" data-r8w="speichern">Notieren</button></div>' +
+        '<p class="r8w-fuss">Notieren heisst nicht kaufen. Entscheiden tust du, Mr. Ping gibt keinen Rat.</p>' });
+      wahlLos(inh, 'wart', function (v) { art = v; });
+      wahlLos(inh, 'wtage', function (v) { tage = +v; });
+      inh.addEventListener('input', function () { inh.querySelector('.r8w-fehl').textContent = ''; });
+      setTimeout(function () { var t = inh.querySelector('#r8wTitel'); try { t.focus({ preventScroll: true }); } catch (e) {} }, 350);
+      inh.querySelector('[data-r8w=speichern]').addEventListener('click', function () {
+        var titel = inh.querySelector('#r8wTitel').value.trim(), warum = inh.querySelector('#r8wWarum').value.trim(), fehl = inh.querySelector('.r8w-fehl');
+        if (!titel || !warum) { fehl.textContent = !titel ? 'Bitte den Titel eintragen.' : 'Bitte kurz das Warum aufschreiben. Ein Satz reicht.'; (inh.querySelector(!titel ? '#r8wTitel' : '#r8wWarum')).focus(); return; }
+        var k = parseFloat(String(inh.querySelector('#r8wKurs').value).replace(/['’\s]/g, '').replace(',', '.'));
+        var x = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), datum: R.heute(), art: art, titel: titel, kurs: isFinite(k) ? k : null, warum: warum, erwartung: inh.querySelector('#r8wErw').value.trim(), rueckTage: tage, rueck: null };
+        var l = wListe(); l.push(x); wLeg(l);
+        R.zu(); wZeig(); E.summ([8, 30, 8]); E.licht('ring');
+        E.rueck('Notiert. Rückblick am ' + dCH(faelligAm(x)) + '.', function () { wLeg(wListe().filter(function (y) { return y.id !== x.id; })); wZeig(); });
+      });
+    }
+    function wRueck(id) {
+      var x = wListe().filter(function (y) { return y.id === id; })[0]; if (!x) return;
+      var erg = '';
+      var inh = R.blatt({ titel: 'Rückblick: ' + x.titel, bild: 'wm/maskottchen.jpg', html:
+        '<div class="r8w-damals"><small>' + (x.art === 'kauf' ? 'Kauf' : 'Verkauf') + ' am ' + dCH(x.datum) + (x.kurs != null ? ' · Kurs ' + R.esc(String(x.kurs)) : '') + '</small>' +
+        '<p><b>Warum:</b> ' + R.esc(x.warum) + '</p>' + (x.erwartung ? '<p><b>Erwartet:</b> ' + R.esc(x.erwartung) + '</p>' : '') + '</div>' +
+        '<p class="r8w-lab">Ist es so gekommen, wie du erwartet hast?</p>' + wahlHtml('werg', [['ja', '✅ Ja'], ['teils', '🌗 Teils'], ['nein', '❌ Nein']], '', 'Ergebnis') +
+        '<label for="r8wNotiz">Was nimmst du mit? (freiwillig)</label><input id="r8wNotiz" maxlength="140" autocomplete="off" placeholder="z. B. Ich war zu ungeduldig">' +
+        '<p class="r8w-fehl" role="alert"></p>' +
+        '<div class="r7-reihe"><button type="button" class="r7-knopf voll" data-r8w="fertig">Rückblick speichern</button></div>' +
+        '<p class="r8w-fuss">Ehrlich zählt mehr als richtig. Auch ein «Nein» ist ein Gewinn an Erfahrung.</p>' });
+      wahlLos(inh, 'werg', function (v) { erg = v; inh.querySelector('.r8w-fehl').textContent = ''; });
+      inh.querySelector('[data-r8w=fertig]').addEventListener('click', function () {
+        if (!erg) { inh.querySelector('.r8w-fehl').textContent = 'Bitte Ja, Teils oder Nein wählen.'; inh.querySelector('[data-werg]').focus(); return; }
+        var l = wListe(), y = l.filter(function (z) { return z.id === id; })[0]; if (!y) { R.zu(); return; }
+        y.rueck = { datum: R.heute(), ergebnis: erg, notiz: inh.querySelector('#r8wNotiz').value.trim() };
+        wLeg(l); R.zu(); wZeig(); E.summ(10);
+        var q = quote(l);
+        R.feier(erg === 'nein' ? 'Ehrlich hingeschaut. Das ist die halbe Miete.' : 'Rückblick gespeichert. Trefferquote ' + Math.round(q.wert * 100) + ' %.');
+        E.licht('ring');
+      });
+    }
+    wBox.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-r8w]'); if (!b) return;
+      var a = b.getAttribute('data-r8w'), id = b.getAttribute('data-id');
+      if (a === 'neu') wNeu();
+      if (a === 'rueck') wRueck(id);
+      if (a === 'weg') {
+        var l = wListe(), x = l.filter(function (y) { return y.id === id; })[0]; if (!x) return;
+        var pos = l.indexOf(x); wLeg(l.filter(function (y) { return y !== x; })); wZeig();
+        E.rueck('Entfernt: ' + x.titel, function () { var n = wListe(); n.splice(Math.min(pos, n.length), 0, x); wLeg(n); wZeig(); });
+      }
+    });
+    box.parentNode ? box.parentNode.insertBefore(wBox, box.nextSibling) : (document.querySelector('.wrap') || document.body).appendChild(wBox);
+    wZeig();
+    addEventListener('visibilitychange', function () { if (!document.hidden) wZeig(); });
+    addEventListener('storage', function (e) { if (e.key && /r8warum$/.test(e.key)) wZeig(); });
+    function warumZeigen() { wBox.scrollIntoView({ behavior: R.ruhig() ? 'auto' : 'smooth', block: 'start' }); var f = wBox.querySelector('[data-r8w=rueck]') || wBox.querySelector('[data-r8w=neu]'); if (f) setTimeout(function () { f.focus({ preventScroll: true }); }, 400); }
+
     function ringeZeigen() { box.scrollIntoView({ behavior: R.ruhig() ? 'auto' : 'smooth', block: 'start' }); var f = box.querySelector('[data-r8r]'); if (f) setTimeout(function () { f.focus({ preventScroll: true }); }, 400); }
     function neuerSatz() { var q = document.getElementById('r6SatzT'); var b = q && q.closest('button'); if (b) b.click(); }
     E.ziehen(function () {
@@ -144,6 +270,7 @@ window.R8 = {
       { e: '💭', text: 'Gefühls-Check', tu: function () { r7('gefuehl'); } },
       { e: '🎚️', text: 'Was wäre, wenn …?', tu: function () { r7('wenn'); } },
       { e: '⭕', text: 'Ruhe-Ringe', tu: ringeZeigen },
+      { e: '📓', text: 'Warum? Entscheid notieren', tu: warumZeigen },
       { e: '🎓', text: 'Mr. Pings Schule', href: 'schule.html' },
       { e: '🎞️', text: 'Dein Monat mit Mr. Ping', tu: function () { monatStory(); } },
       { e: '🔔', text: 'Glocke läuten', tu: function () { var g = document.getElementById('pingGlocke'); if (g) g.click(); } }
@@ -154,10 +281,12 @@ window.R8 = {
       ['W', 'Was wäre, wenn …?', function () { r7('wenn'); }],
       ['K', 'Wochenkarte', function () { r7('woche'); }],
       ['R', 'Ruhe-Ringe', ringeZeigen],
+      ['T', 'Warum-Tagebuch', warumZeigen],
       ['M', 'Dein Monat mit Mr. Ping', function () { monatStory(); }],
       ['S', 'Mr. Pings Schule', function () { location.href = 'schule.html'; }]
     ]);
     window.R8.neu = [
+      { id: 'warum', e: '📓', titel: 'Warum?', text: 'Grund notieren, später zurückschauen', auf: warumZeigen },
       { id: 'monat', e: '🎞️', titel: 'Dein Monat', text: 'Mit Mr. Ping als Story', auf: monatStory },
       { id: 'ringe', e: '⭕', titel: 'Ruhe-Ringe', text: 'Drei Ringe, ein Ruhetag', auf: ringeZeigen }
     ];
