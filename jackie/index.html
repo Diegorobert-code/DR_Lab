@@ -519,7 +519,7 @@ body.im-schutz .jk-sticky-nr{display:none}
     </div>
     <section class="jk-buehne" aria-label="Jackie" id="jkBuehne">
       <img src="jackie-3d.jpg" alt="Jackie" width="1024" height="1024" id="jkBild">
-      <div class="jk-blase" id="jkBlase" aria-live="polite"><span id="jkBlaseText">Ich höre dir zu. Tipp aufs goldene Mikrofon.</span></div>
+      <div class="jk-blase" id="jkBlase" aria-live="polite"><span id="jkBlaseText">Ich höre dir zu. Tipp aufs Mikrofon.</span></div>
       <button class="jk-stagemic" id="stageMic" type="button" aria-label="Jackie erzählen: Mikrofon starten"><svg class="i"><use href="#i-mic"/></svg></button>
       <svg class="jk-flugschuh" viewBox="0 0 120 70" aria-hidden="true"><use href="#i-goldschuh"/></svg>
       <span class="jk-klack" id="jkKlack" aria-hidden="true"><svg class="l" viewBox="0 0 120 70"><use href="#i-goldschuh"/></svg><svg class="r" viewBox="0 0 120 70"><use href="#i-goldschuh"/></svg><i></i></span>
@@ -671,7 +671,7 @@ body.im-schutz .jk-sticky-nr{display:none}
       <div class="jk-merkt-kopf"><img src="figur.jpg" alt=""><h3>Was Jackie sich merkt</h3></div>
       <p class="muted small" style="margin:6px 0 10px">Jackie lernt mit dir: Themen, die dich oft beschäftigen, stehen weiter oben, und sie fragt nach, wie es weitergegangen ist. Gespeichert werden nur Zahlen, nie deine Worte, nie deine Stimme, nur auf diesem Handy. Der Bereich «Wenn es zuhause nicht sicher ist» wird nie mitgezählt.</p>
       <div id="memList"></div>
-      <label class="check" style="align-items:flex-start"><input type="checkbox" id="memOk" style="margin-top:2px"> <span>Ich bin einverstanden, dass DR Lab diese Lern-Zahlen (ohne Namen, ohne Text, ohne Stimme) für die Weiterentwicklung von Jackie nutzen darf.</span></label>
+      <label class="check" style="align-items:flex-start"><input type="checkbox" id="memOk" style="margin-top:2px"> <span>Ich bin einverstanden, dass das App-Team diese Lern-Zahlen (ohne Namen, ohne Text, ohne Stimme) für die Weiterentwicklung von Jackie nutzen darf.</span></label>
       <div class="row" style="margin-top:8px"><button class="btn soft" id="memShare" disabled>Lern-Zahlen weitergeben</button><button class="btn danger" id="memDel" style="flex:0 0 auto;width:auto;padding:0 18px">Vergessen</button></div>
       <p class="muted small" id="memMsg" style="margin:8px 2px 0;min-height:1em"></p>
     </div>
@@ -749,8 +749,8 @@ body.im-schutz .jk-sticky-nr{display:none}
       <h3>So funktioniert es</h3>
       <ul class="alts">
         <li>Deine Ideen bleiben auf diesem Handy. Nichts wird automatisch verschickt.</li>
-        <li>Willst du, dass DR Lab eine Idee liest? Tipp bei der Idee auf «An DR Lab schicken». Nur dann geht genau dieser Text weg, ohne Namen.</li>
-        <li>Gute Ideen baut DR Lab in Jackie ein. Bezahlt wird mit goldenen Stichen, nicht mit Geld.</li>
+        <li>Willst du, dass das App-Team eine Idee liest? Tipp bei der Idee auf «Ans App-Team schicken». Nur dann geht genau dieser Text weg, ohne Namen.</li>
+        <li>Gute Ideen kommen in Jackie hinein. Bezahlt wird mit goldenen Stichen, nicht mit Geld.</li>
       </ul>
     </div>
   </section>
@@ -766,8 +766,8 @@ body.im-schutz .jk-sticky-nr{display:none}
       <a href="#" id="footSos">Alle Notfallnummern</a>
     </div>
     <div>Keine Rechtsberatung · keine Diagnosen · ohne Konto · Deine Daten bleiben auf deinem Handy.</div>
-    <nav class="jk-familie" id="jkFamilie" aria-label="DR Lab Familie">
-      <span>Die DR Lab Familie</span>
+    <nav class="jk-familie" id="jkFamilie" aria-label="Weitere Apps">
+      <span>Weitere Apps</span>
       <div>
         <a href="../mondschein/"><img src="../mondschein/figur.jpg" alt="" loading="lazy">Otti</a>
         <a href="../kiki/"><img src="../kiki/figur.jpg" alt="" loading="lazy">Kiki</a>
@@ -775,7 +775,7 @@ body.im-schutz .jk-sticky-nr{display:none}
         <a href="../schlaf/"><img src="../schlaf/icon-180.png" alt="" loading="lazy">Fia</a>
       </div>
     </nav>
-    <div style="margin-top:6px">DR Lab · Testphase</div>
+    <div style="margin-top:6px">Testphase</div>
   </footer>
 </div>
 
@@ -1264,7 +1264,7 @@ function renderAnswer(e){
       '<button class="btn" id="btnCopy" style="margin-top:12px">'+icon('copy')+'Text kopieren</button></div>';
   }
   html+=moreBlock(more);
-  if(e.text && !e.sos && serverBereit()) html+='<div class="card jk-ki" id="kiBox"><span class="eyebrow">Jackie persönlich</span><p class="ink2" style="margin:4px 0 10px">Willst du, dass Jackie genauer auf deine Worte eingeht? Dann geht dein Text einmal an den DR Lab Server (Sense Engine), ohne Namen.</p><button class="btn soft" id="btnKi">'+icon('chat')+'Jackie persönlich fragen</button><div id="kiOut"></div></div>';
+  if(e.text && !e.sos && serverBereit()) html+='<div class="card jk-ki" id="kiBox"><span class="eyebrow">Jackie persönlich</span><p class="ink2" style="margin:4px 0 10px">Willst du, dass Jackie genauer auf deine Worte eingeht? Dann geht dein Text einmal an den App-Server, ohne Namen.</p><button class="btn soft" id="btnKi">'+icon('chat')+'Jackie persönlich fragen</button><div id="kiOut"></div></div>';
   $('ansBody').innerHTML=html;
   bindMore(sit.letter ? 'andere Wege und Briefentwurf' : 'andere Wege');
   if($('btnKi')) $('btnKi').addEventListener('click', ()=>kiFragen(e.text, sit));
@@ -1422,9 +1422,9 @@ function getIdeen(){ const i=store.get('ideen',[]); return Array.isArray(i)?i:[]
 function renderIdeen(){
   const l=getIdeen(); const box=$('ideaList');
   const gesendet=l.filter(x=>x.gesendet).length;
-  $('ideaKasse').textContent = l.length ? l.length+(l.length===1?' Idee':' Ideen')+' eingezahlt = '+(l.length*2)+' goldene Stiche'+(gesendet?' · '+gesendet+' an DR Lab geschickt':'')+'.' : 'Noch keine Idee eingezahlt. Die erste bringt dir zwei Stiche.';
+  $('ideaKasse').textContent = l.length ? l.length+(l.length===1?' Idee':' Ideen')+' eingezahlt = '+(l.length*2)+' goldene Stiche'+(gesendet?' · '+gesendet+' ans App-Team geschickt':'')+'.' : 'Noch keine Idee eingezahlt. Die erste bringt dir zwei Stiche.';
   if(!l.length){ box.innerHTML='<div class="jk-leer"><img src="figur.jpg" alt=""><p class="muted" style="margin:0">Hier sammeln sich deine Ideen. Jackie freut sich auf die erste.</p></div>'; return; }
-  box.innerHTML='<div class="section-title"><h2>Deine Ideen</h2></div>'+l.map(x=>'<div class="card jk-idee" data-id="'+x.id+'"><p class="ink2" style="margin:0 0 8px">'+esc(x.text)+'</p><p class="muted small" style="margin:0 0 10px">'+esc(relDay(x.id))+(x.gesendet?' · an DR Lab geschickt ✓':'')+'</p><div class="row"><button class="btn soft" data-idee="senden"'+(x.gesendet?' disabled':'')+'>'+(x.gesendet?'Geschickt':'An DR Lab schicken')+'</button><button class="btn danger" data-idee="weg" style="flex:0 0 auto;width:auto;padding:0 18px" aria-label="Idee löschen">Löschen</button></div></div>').join('');
+  box.innerHTML='<div class="section-title"><h2>Deine Ideen</h2></div>'+l.map(x=>'<div class="card jk-idee" data-id="'+x.id+'"><p class="ink2" style="margin:0 0 8px">'+esc(x.text)+'</p><p class="muted small" style="margin:0 0 10px">'+esc(relDay(x.id))+(x.gesendet?' · ans App-Team geschickt ✓':'')+'</p><div class="row"><button class="btn soft" data-idee="senden"'+(x.gesendet?' disabled':'')+'>'+(x.gesendet?'Geschickt':'Ans App-Team schicken')+'</button><button class="btn danger" data-idee="weg" style="flex:0 0 auto;width:auto;padding:0 18px" aria-label="Idee löschen">Löschen</button></div></div>').join('');
 }
 async function ideeSenden(idee){
   const text="Idee für Jackie's Advice: "+idee.text;
@@ -1770,7 +1770,7 @@ function renderBlase(){
   if(store.get('schuhNeu',false)){ store.del('schuhNeu'); opts.push('Schau mal, dein neuer Schuh glänzt golden!'); pose('fliegt'); }
   else if(h>=21||h<5) opts.push('Späte Stunde'+(n?', '+n:'')+'. Ich bin da.');
   else if(h<11) opts.push('Guten Morgen'+(n?', '+n:'')+'! Was steht heute an?');
-  else opts.push('Ich höre dir zu'+(n?', '+n:'')+'. Tipp aufs goldene Mikrofon.');
+  else opts.push('Ich höre dir zu'+(n?', '+n:'')+'. Tipp aufs Mikrofon.');
   // Jackie lernt: fragt nach dem letzten Familienthema (nie nach dem Hilfebereich)
   const z=l.zuletzt;
   if(z && z.art==='thema' && TOPICS[z.wert] && z.wert!=='pause' && Date.now()-z.am>6*3600e3 && Date.now()-z.am<14*86400e3) opts.push('Letztes Mal ging es um «'+TOPICS[z.wert].name+'». Wie ist es weitergegangen?');
@@ -1798,7 +1798,7 @@ function winke(mitTon){
 }
 window.JackieWinke=winke;
 $('jkBild').addEventListener('click', ()=>{
-  winke(true); blase(['Ich höre dir zu. Ganz in Ruhe.','Du musst das nicht allein lösen.','Ein kleiner Schritt reicht für heute.','Tipp auf das goldene Mikrofon und erzähl.'][Math.floor(Math.random()*4)]); });
+  winke(true); blase(['Ich höre dir zu. Ganz in Ruhe.','Du musst das nicht allein lösen.','Ein kleiner Schritt reicht für heute.','Tipp auf das Mikrofon und erzähl.'][Math.floor(Math.random()*4)]); });
 
 /* Mikrofon auf dem Bild (Yulia v2): startet dasselbe Zuhören wie der grosse Knopf */
 $('stageMic').addEventListener('click', ()=>{
@@ -1945,5 +1945,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 </script>
 <script src="runde6.js" defer></script>
 <script src="runde7.js" defer></script>
+<script src="runde8.js" defer></script>
+<link rel="stylesheet" href="markt.css">
 </body>
 </html>

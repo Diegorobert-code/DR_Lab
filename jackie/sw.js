@@ -1,7 +1,7 @@
 /* Jackie's Advice: offline-Kopie, damit Hilfebereich, Notrufe und Rezeptseite auch ohne Netz gehen.
    Netz zuerst (immer die neuste Fassung), die Kopie nur als Ersatz. Speichert keine Eingaben. */
-const CACHE = 'jackie-v9';
-const DATEIEN = ['./runde7.js', './runde6.js', './saison/advent.jpg', './besuch/fia.jpg', './besuch/granny.jpg', './besuch/otti.jpg', './', 'index.html', 'schutz.js', 'unterwegs.js', 'rezept.html', 'feedback.js', 'figur.jpg', 'jackie-3d.jpg', 'schuhmacher.jpg', 'icon.svg', 'icon-180.png', 'icon-192.png', 'manifest.webmanifest', 'posen/posen.json', 'posen/winkt.jpg', 'posen/zuhoeren.jpg', 'posen/zeigt.jpg', 'posen/mutig.jpg', '../nova/puppe.js', '../nova/puppe.css', '../nova/nova.js', '../nova/seelen.js'];
+const CACHE = 'jackie-v10';
+const DATEIEN = ['./runde8.js', './markt.css', './runde7.js', './runde6.js', './saison/advent.jpg', './besuch/fia.jpg', './besuch/granny.jpg', './besuch/otti.jpg', './', 'index.html', 'schutz.js', 'unterwegs.js', 'rezept.html', 'feedback.js', 'figur.jpg', 'jackie-3d.jpg', 'schuhmacher.jpg', 'icon.svg', 'icon-180.png', 'icon-192.png', 'manifest.webmanifest', 'posen/posen.json', 'posen/winkt.jpg', 'posen/zuhoeren.jpg', 'posen/zeigt.jpg', 'posen/mutig.jpg', '../nova/puppe.js', '../nova/puppe.css', '../nova/nova.js', '../nova/seelen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(DATEIEN.map(f => c.add(f).catch(() => null)))).then(() => self.skipWaiting()));
 });

@@ -119,8 +119,9 @@ window.R7 = {
           var f = function (x) { return x.getFullYear() + ('0' + (x.getMonth() + 1)).slice(-2) + ('0' + x.getDate()).slice(-2); };
           var ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//DR Lab//Jackie//DE', 'BEGIN:VEVENT', 'UID:' + Date.now() + '@jackie', 'DTSTAMP:' + f(new Date()) + 'T080000Z',
             'DTSTART;VALUE=DATE:' + f(e), 'SUMMARY:Frist läuft am ' + ende.toLocaleDateString('de-CH') + ' ab', 'DESCRIPTION:Brief beantworten oder Beratung holen.', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
-          var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })); a.download = 'frist.ics';
-          document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+          if (window.R8K) R8K.datei(ics, 'frist.ics', { typ: 'text/calendar', titel: 'Frist-Erinnerung', hinweis: 'Trag dir in deinem Kalender von Hand ein: <b>' + e.toLocaleDateString('de-CH') + '</b> «Frist läuft am ' + ende.toLocaleDateString('de-CH') + ' ab». Oder kopiere den Kalender-Text.' }); // Runde 8: kein toter Download
+          else { var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })); a.download = 'frist.ics';
+          document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500); }
           mut('Erinnerung drei Tage vorher. Du hast es im Griff.');
         });
       },
