@@ -218,7 +218,7 @@
       '<div class="kennzahl' + (ueber ? ' warn' : '') + '"><b>' + ueber + '</b><span>Überfällig</span></div>' +
       '<div class="kennzahl"><b>' + wartet.length + '</b><span>Delegiert</span></div></div>' +
       '<div class="knopfzeile"><button class="pille dunkel" data-act="vorlesen">▶ Vorlesen</button>' +
-      '<button class="pille" data-act="woche">Woche planen</button></div></div>' +
+      '<button class="pille" data-act="woche">Woche planen</button><button class="pille" data-act="filtern">Eingang filtern</button></div></div>' +
       '<div class="abschnitt"><div class="abschnitt-kopf"><h2>Fokus heute</h2><button class="link" data-act="neueAufgabe">+ Aufgabe</button></div>' +
       (fokus.length ? '<ul class="liste">' + fokus.map(function (a) { return aufgabeZeile(a); }).join('') + '</ul>' : '<p class="leer">Alles Fällige ist erledigt.</p>') + '</div>' +
       '<div class="abschnitt"><div class="abschnitt-kopf"><h2>Tagesablauf</h2><button class="link" data-act="neuerTermin">+ Termin</button></div>' + terminZeilen(termine, true, t) + '</div>';
@@ -315,6 +315,7 @@
     var ende = vonIso(tage[6]);
     var titel = start.getDate() + '. ' + (start.getMonth() !== ende.getMonth() ? MONATE[start.getMonth()].slice(0, 3) + '. ' : '') + '– ' + ende.getDate() + '. ' + MONATE[ende.getMonth()];
     var html = '<div class="abschnitt-kopf" style="margin-top:8px"><h3>Kalender</h3><button class="link" data-act="neuerTermin">+ Termin</button></div>' +
+      '<div class="knopfzeile" style="margin-top:6px"><button class="pille" data-act="screenshot">Termine aus Screenshot</button></div>' +
       '<div class="wochennav"><button data-act="wocheZurueck" aria-label="Woche zurück">‹</button><span>' + titel + '</span><button data-act="wocheVor" aria-label="Woche vor">›</button></div>' +
       '<div class="woche">' + tage.map(function (tg) {
         var d = vonIso(tg), ts = termineAm(tg);
@@ -348,7 +349,7 @@
   })();
 
   var AKTIONEN = [
-    ['tag', 'Tag zusammenfassen'], ['woche', 'Woche planen'], ['meeting', 'Meeting vorbereiten'],
+    ['filtern', 'Eingang filtern'], ['tag', 'Tag zusammenfassen'], ['woche', 'Woche planen'], ['meeting', 'Meeting vorbereiten'],
     ['mail', 'Mail entwerfen'], ['reise', 'Reise planen'], ['entscheid', 'Entscheid abwägen'], ['delegieren', 'Was kann ich abgeben?']
   ];
 
@@ -502,6 +503,7 @@
   }
 
   function novaAktion(art, arg, frage) {
+    if (art === 'filtern') { filterBlatt(); return; }
     if (UI.view !== 'nova') zeige('nova');
     var label = (AKTIONEN.filter(function (a) { return a[0] === art; })[0] || [0, ''])[1];
     if (art === 'mail' && arg === undefined) { eingabeBlatt('Mail entwerfen', 'Worum geht es? An wen?', function (v) { novaAktion('mail', v, 'Mail entwerfen: ' + v); }); return; }
@@ -586,10 +588,12 @@
   /* ---------- Schnell erfassen: «Morgen 14 Uhr Call mit Team» ---------- */
   var WOCHENTAGE = { sonntag: 0, montag: 1, dienstag: 2, mittwoch: 3, donnerstag: 4, freitag: 5, samstag: 6 };
   var STICH = [
+    [/\b(klient|klientin|sitzung|rolfing|kinesiologie|kine|praxis|behandlung|nordstrasse)\w*/i, /praxis/i],
     [/\b(yoga|kurs|seminar|studio|coaching|retreat)\b/i, /yoga|coaching|seminar/i],
-    [/\b(dr ?lab|diego|app|körperkosmos|polvia)\b/i, /dr ?lab/i],
+    [/\b(rechnung|bezahl|zahlung|mahnung|steuer|buchhaltung|treuhand|versicherung|bank|abo|server)\w*/i, /finanz|admin/i],
+    [/\b(dr ?lab|app|körperkosmos|polvia)\b/i, /dr ?lab/i],
     [/\b(mama|papa|kind|kinder|familie|schule|eltern|geburtstag|zuhause|haushalt|ferien|steuer)\w*/i, /familie|zuhause|privat/i],
-    [/\b(arzt|zahnarzt|rolfing|training|massage|lauf|gesundheit|therapie)\w*/i, /gesundheit|ich/i],
+    [/\b(arzt|zahnarzt|rolfing|training|massage|lauf|gesundheit|therapie)\w*/i, /gesundheit|ich|privat/i],
     [/\b(board|team|meeting|kunde|lieferant|budget|quartal|firma|büro|präsentation|call|ceo|konzern|vertrieb|kollektion)\w*/i, /konzern|firma/i]
   ];
   function rateBereich(text) {
@@ -603,14 +607,14 @@
     return (bereicheSichtbar()[0] || S.bereiche[0]).id;
   }
   function verstehe(roh) {
-    var t = ' ' + roh.trim() + ' ', l = t.toLowerCase(), datum = null, von = null, dauer = 60;
+    var t = ' ' + roh.trim().replace(/[.,!?;:]+(?=\s|$)/g, function (m) { return m.indexOf('!') >= 0 ? ' ! ' : ' '; }) + ' ', l = t.toLowerCase(), datum = null, von = null, dauer = 60;
     var weg = [];
-    function raus(re) { var m = t.match(re); if (m) weg.push(m[0]); return m; }
+    function raus(re) { var m = t.match(re); if (m) { weg.push(m[0]); t = t.replace(m[0], ' '); } return m; }
     var m;
     if ((m = raus(/\s(übermorgen)\s/i))) datum = iso(plus(new Date(), 2));
     else if ((m = raus(/\s(morgen)\s/i))) datum = iso(plus(new Date(), 1));
     else if ((m = raus(/\s(heute|heut)\s/i))) datum = heute();
-    else if ((m = raus(/\s(?:am\s+|nächsten\s+|kommenden\s+)?(sonntag|montag|dienstag|mittwoch|donnerstag|freitag|samstag)\s/i))) {
+    else if ((m = raus(/\s(?:bis\s+|am\s+|nächsten\s+|kommenden\s+)?(sonntag|montag|dienstag|mittwoch|donnerstag|freitag|samstag)\s/i))) {
       var ziel = WOCHENTAGE[m[1].toLowerCase()], d = new Date(), diff = (ziel - d.getDay() + 7) % 7;
       datum = iso(plus(d, diff === 0 ? 7 : diff));
     } else if ((m = raus(/\s(?:am\s+)?(\d{1,2})\.(\d{1,2})\.?(\d{2,4})?\s/))) {
@@ -939,6 +943,8 @@
       case 'aufraeumen': S.aufgaben = S.aufgaben.filter(function (x) { return !x.erledigt; }); speichern(); render(); toast('Erledigte gelöscht'); break;
       case 'wocheZurueck': UI.wochenStart = iso(plus(vonIso(UI.wochenStart), -7)); UI.kalTag = UI.wochenStart; renderKalender(); break;
       case 'wocheVor': UI.wochenStart = iso(plus(vonIso(UI.wochenStart), 7)); UI.kalTag = UI.wochenStart; renderKalender(); break;
+      case 'filtern': filterBlatt(); break;
+      case 'screenshot': screenshotLesen(); break;
       case 'kalHeute': UI.kalTag = heute(); UI.wochenStart = wochenStart(UI.kalTag); renderKalender(); break;
       case 'nameAendern': eingabeBlatt('Name', 'Wie darf Nova dich nennen?', function (v) { S.name = v.slice(0, 30); speichern(); render(); }); break;
       case 'verbinden': verbindenBlatt(); break;
@@ -1028,22 +1034,199 @@
   });
   $('#profil').addEventListener('click', profilBlatt);
 
+
+  /* ---------- Eingang filtern: viel Text rein, geordnet raus ---------- */
+  var ART = { termin: 'Termin', aufgabe: 'Aufgabe', notiz: 'Notiz', weg: 'Weglassen' };
+  var ART_FOLGE = ['termin', 'aufgabe', 'notiz', 'weg'];
+  function zerlegen(text) {
+    return String(text).replace(/([.!?])\s+(?=[A-ZÄÖÜ0-9])/g, '$1\n').split(/\n+/).map(function (s) { return s.replace(/^[\s•\-–*\d.)]+/, '').trim(); })
+      .filter(function (s) { return s.length > 2; });
+  }
+  function einordnen(satz) {
+    var v = verstehe(satz), l = satz.toLowerCase();
+    var rauschen = satz.split(/\s+/).length < 3 && !v.datum && !v.von || /^(hallo|hoi|grüezi|danke|merci|ok|okay|lg|liebe grüsse|gruss|ciao|ja|nein)\b[\s!.,]*$/i.test(satz);
+    var art = rauschen ? 'weg' : v.termin && (v.datum || v.von) ? 'termin' :
+      /\b(muss|soll|bitte|nicht vergessen|erledigen|anrufen|schicken|senden|zahlen|bezahlen|kaufen|buchen|bestellen|antworten|prüfen|machen|vorbereiten)\b/i.test(l) || v.datum ? 'aufgabe' : 'notiz';
+    return { art: art, text: v.text, datum: v.datum, von: v.von, dauer: v.dauer, prio: v.prio, bereich: v.bereich, deleg: v.deleg };
+  }
+  function filterBlatt(vorText) {
+    oeffne('<h3>Eingang filtern</h3><form class="form" id="f"><p class="leer" style="padding:0">Füg hier alles ein, was reinkommt: Nachrichten, Diktate, Gedanken. Nova trennt Termine, Aufgaben und Notizen und lässt Unwichtiges weg.</p>' +
+      '<label class="feld">Text<textarea name="t" autofocus style="min-height:160px" placeholder="z. B.\nMorgen 10 Uhr Sitzung MB\nRechnung Server bezahlen bis Freitag\nIdee: Seminar im Frühling">' + esc(vorText || '') + '</textarea></label>' +
+      '<div class="knoepfe"><button class="btn haupt" type="submit">Filtern</button><button class="btn" type="button" id="fEinf">Aus Zwischenablage einfügen</button></div></form>', function (r) {
+        var f = $('#f', r);
+        $('#fEinf', r).addEventListener('click', function () {
+          if (navigator.clipboard && navigator.clipboard.readText) navigator.clipboard.readText().then(function (t) { f.t.value = (f.t.value ? f.t.value + '\n' : '') + t; }, function () { toast('Bitte lange tippen und «Einsetzen» wählen.'); });
+          else toast('Bitte lange tippen und «Einsetzen» wählen.');
+        });
+        f.addEventListener('submit', function (e) {
+          e.preventDefault(); var t = f.t.value.trim(); if (!t) return;
+          var lokal = zerlegen(t).map(einordnen);
+          if (!verbunden()) { filterVorschau(lokal); return; }
+          $('button[type=submit]', r).textContent = 'Nova ordnet …';
+          serverFiltern(t).then(function (liste) { filterVorschau(liste && liste.length ? liste : lokal); }, function () { filterVorschau(lokal); });
+        });
+      });
+  }
+  function serverFiltern(text) {
+    var bereiche = S.bereiche.map(function (b) { return b.name; }).join(', ');
+    var q = 'Ordne den folgenden Eingang. Antworte NUR mit JSON, einem Array von Objekten {"art":"termin|aufgabe|notiz|weg","text":"kurz, ohne Datum","datum":"YYYY-MM-DD oder null","von":"HH:MM oder null","dauer":Minuten,"prio":1|2|3,"bereich":"einer von: ' + bereiche + '"}. ' +
+      '«weg» für Grüsse, Werbung und Rauschen. Heute ist ' + heute() + '. Personen nur mit Kürzel.\n\nEingang:\n' + text;
+    return fetch(addr() + '/v1/chat/completions', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + g(VK.key, ''), 'X-Nova-App': 'Polvia' },
+      body: JSON.stringify({ model: 'sense-engine', messages: [{ role: 'system', content: SEELE }, { role: 'user', content: q }] })
+    }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (j) {
+      var a = j.choices[0].message.content, m = a.match(/\[[\s\S]*\]/);
+      return JSON.parse(m ? m[0] : a).map(function (x) {
+        var b = S.bereiche.filter(function (y) { return y.name.toLowerCase() === String(x.bereich || '').toLowerCase(); })[0];
+        return { art: ART[x.art] ? x.art : 'notiz', text: String(x.text || '').slice(0, 200), datum: /^\d{4}-\d\d-\d\d$/.test(x.datum) ? x.datum : null,
+          von: /^\d\d:\d\d$/.test(x.von) ? x.von : null, dauer: +x.dauer || 60, prio: [1, 2, 3].indexOf(+x.prio) >= 0 ? +x.prio : 2, bereich: b ? b.id : rateBereich(String(x.text || '')) };
+      }).filter(function (x) { return x.text; });
+    });
+  }
+  function filterVorschau(liste) {
+    function zeile(x, i) {
+      var b = bereich(x.bereich);
+      return '<li class="zeile" data-i="' + i + '" style="' + (x.art === 'weg' ? 'opacity:.45' : '') + '"><div class="haupt"><div class="titel">' + (x.prio === 1 ? '<span class="prio">! </span>' : '') + esc(x.text) + '</div>' +
+        '<div class="meta"><button type="button" class="chip an" data-art="' + i + '">' + ART[x.art] + '</button>' +
+        '<button type="button" class="chip" data-ber="' + i + '"><i class="punkt" style="background:' + b.farbe + '"></i>' + esc(b.name) + '</button>' +
+        (x.datum || x.von ? '<span>' + (x.datum ? tagRel(x.datum) : '') + (x.von ? ' ' + x.von : '') + '</span>' : '') + '</div></div></li>';
+    }
+    function zeichnen(r) {
+      $('#fl', r).innerHTML = liste.map(zeile).join('');
+      var n = liste.filter(function (x) { return x.art !== 'weg'; }).length;
+      $('#fUeb', r).textContent = n ? 'Übernehmen (' + n + ')' : 'Nichts zu übernehmen';
+    }
+    var z = { termin: 0, aufgabe: 0, notiz: 0, weg: 0 }; liste.forEach(function (x) { z[x.art]++; });
+    oeffne('<h3>Gefiltert</h3><p class="leer" style="padding:0 0 6px">' + z.termin + ' Termine · ' + z.aufgabe + ' Aufgaben · ' + z.notiz + ' Notizen · ' + z.weg + ' weggelassen. Tippen ändert Art oder Bereich.</p>' +
+      '<ul class="liste" id="fl"></ul><div class="knoepfe"><button class="btn haupt" type="button" id="fUeb"></button><button class="btn" type="button" id="fZur">Zurück</button></div>', function (r) {
+        zeichnen(r);
+        r.addEventListener('click', function (e) {
+          var a = e.target.closest('[data-art]'), b = e.target.closest('[data-ber]');
+          if (a) { var x = liste[+a.getAttribute('data-art')]; x.art = ART_FOLGE[(ART_FOLGE.indexOf(x.art) + 1) % ART_FOLGE.length]; zeichnen(r); }
+          if (b) { var y = liste[+b.getAttribute('data-ber')], ids = S.bereiche.map(function (q) { return q.id; }); y.bereich = ids[(ids.indexOf(y.bereich) + 1) % ids.length]; zeichnen(r); }
+        });
+        $('#fZur', r).addEventListener('click', function () { filterBlatt(liste.map(function (x) { return x.text; }).join('\n')); });
+        $('#fUeb', r).addEventListener('click', function () {
+          var n = 0;
+          liste.forEach(function (x) {
+            if (x.art === 'weg') return; n++;
+            if (x.art === 'termin') { var v = x.von || '09:00'; S.termine.push({ id: uid(), titel: x.text, bereich: x.bereich, datum: x.datum || heute(), von: v, bis: hhmm(minuten(v) + (x.dauer || 60)), ort: '' }); }
+            else if (x.art === 'aufgabe') S.aufgaben.push({ id: uid(), text: x.text, bereich: x.bereich, faellig: x.datum, prio: x.prio || 2, erledigt: false, delegiert: x.deleg || null });
+            else S.notizen.push({ id: uid(), bereich: x.bereich, text: x.text, datum: heute() });
+          });
+          speichern(); zu(); render(); toast(n + ' Einträge übernommen');
+        });
+      });
+  }
+
+  /* ---------- Kalender aus Screenshot oder Ein-Tipp-Link ----------
+     Link-Format: #termine=<base64url von JSON> mit [{t,d,v,b,o,k}] (Titel, Datum, von, bis, Ort, Bereichsname).
+     Gleiche Quelle «arbeit»: Termine an denselben Tagen werden ersetzt, damit nichts doppelt ist. */
+  function b64json(s) { return JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g, '+').replace(/_/g, '/'))))); }
+  function bereichNachName(n, text) {
+    var b = S.bereiche.filter(function (x) { return n && x.name.toLowerCase().indexOf(String(n).toLowerCase()) >= 0; })[0];
+    return b ? b.id : rateBereich(text || '');
+  }
+  function termineVorschau(roh, quelle) {
+    var liste = roh.filter(function (x) { return x && x.t && /^\d{4}-\d\d-\d\d$/.test(x.d) && /^\d\d:\d\d$/.test(x.v); }).map(function (x) {
+      var bis = /^\d\d:\d\d$/.test(x.b) && minuten(x.b) > minuten(x.v) ? x.b : hhmm(minuten(x.v) + 60);
+      return { id: uid(), titel: String(x.t).slice(0, 120), datum: x.d, von: x.v, bis: bis, ort: x.o || '', bereich: bereichNachName(x.k, x.t), quelle: quelle };
+    }).sort(function (a, b) { return (a.datum + a.von).localeCompare(b.datum + b.von); });
+    if (!liste.length) { toast('Keine Termine erkannt.'); return; }
+    var tage = {}; liste.forEach(function (x) { tage[x.datum] = 1; });
+    var ersetzt = S.termine.filter(function (x) { return x.quelle === quelle && tage[x.datum]; }).length;
+    oeffne('<h3>' + liste.length + ' Termine übernehmen?</h3>' + (ersetzt ? '<p class="leer" style="padding:0 0 6px">Ersetzt ' + ersetzt + ' frühere Einträge aus derselben Quelle an diesen Tagen.</p>' : '') +
+      '<div>' + liste.map(function (t) {
+        return '<div class="termin" style="--c:' + bereich(t.bereich).farbe + ';cursor:default"><div class="zeit">' + tagRel(t.datum) + '<small>' + t.von + '–' + t.bis + '</small></div><div class="inhalt"><div class="titel">' + esc(t.titel) + '</div><div class="meta" style="font-size:13px;color:var(--ink3)">' + esc(bereich(t.bereich).name) + (t.ort ? ' · ' + esc(t.ort) : '') + '</div></div></div>';
+      }).join('') + '</div><div class="knoepfe"><button class="btn haupt" type="button" id="tUeb">Übernehmen</button><button class="btn" type="button" id="tNein">Abbrechen</button></div>', function (r) {
+        $('#tNein', r).addEventListener('click', zu);
+        $('#tUeb', r).addEventListener('click', function () {
+          S.termine = S.termine.filter(function (x) { return !(x.quelle === quelle && tage[x.datum]); }).concat(liste);
+          speichern(); zu(); UI.kalTag = liste[0].datum; UI.wochenStart = wochenStart(UI.kalTag); zeige('kalender'); toast(liste.length + ' Termine im Kalender');
+        });
+      });
+  }
+  function screenshotLesen() {
+    if (!verbunden()) {
+      oeffne('<h3>Termine aus Screenshot</h3><div class="vorlage">1. Im Kalender «Arbeit» die Woche öffnen und einen Screenshot machen.\n2. Den Screenshot an Nova im DR-Lab-Chat schicken.\n3. Du bekommst einen Link zurück. Ein Tipp darauf, und die Termine stehen hier im Kalender.\n\nKlienten erscheinen nur mit Kürzel.</div><div class="knoepfe"><button class="btn" type="button" id="sZu">Verstanden</button></div>', function (r) { $('#sZu', r).addEventListener('click', zu); });
+      return;
+    }
+    var i = document.createElement('input'); i.type = 'file'; i.accept = 'image/*';
+    i.onchange = function () {
+      var f = i.files && i.files[0]; if (!f) return;
+      var img = new Image(), url = URL.createObjectURL(f);
+      img.onload = function () {
+        var s = Math.min(1, 1600 / Math.max(img.width, img.height)), c = document.createElement('canvas');
+        c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+        toast('Nova liest den Screenshot …');
+        var q = 'Lies alle Termine aus diesem Kalender-Screenshot. Antworte NUR mit JSON: Array von {"t":"Titel, Personen nur als Kürzel","d":"YYYY-MM-DD","v":"HH:MM","b":"HH:MM","o":"Ort oder leer"}. Heute ist ' + heute() + '.';
+        fetch(addr() + '/v1/chat/completions', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + g(VK.key, ''), 'X-Nova-App': 'Polvia' },
+          body: JSON.stringify({ model: 'sense-engine', messages: [{ role: 'user', content: [{ type: 'text', text: q }, { type: 'image_url', image_url: { url: c.toDataURL('image/jpeg', 0.85) } }] }] })
+        }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (j) {
+          var a = j.choices[0].message.content, m = a.match(/\[[\s\S]*\]/);
+          termineVorschau(JSON.parse(m ? m[0] : a).map(function (x) { x.k = 'Praxis'; return x; }), 'arbeit');
+        }).catch(function () {
+          toast('Nova konnte das Bild nicht lesen. Schick den Screenshot im DR-Lab-Chat, dann kommt ein Ein-Tipp-Link.');
+        });
+      };
+      img.src = url;
+    };
+    i.click();
+  }
+
+  /* ---------- Ein-Tipp-Links: #profil=diego, #termine=… ---------- */
+  var PROFILE = {
+    diego: { name: 'Diego', bereiche: [
+      { id: 'b-praxis', name: 'Praxis', art: 'geschaeft', farbe: '#7a8b6f' },
+      { id: 'b-drlab', name: 'DR Lab', art: 'geschaeft', farbe: '#a8823a' },
+      { id: 'b-admin', name: 'Finanzen & Admin', art: 'geschaeft', farbe: '#3d5a8f' },
+      { id: 'b-privat', name: 'Privat', art: 'privat', farbe: '#b56a74' }
+    ] }
+  };
+  function linkLesen() {
+    var h = location.hash, aufgabe = null;
+    var pr = (h.match(/profil=([a-z]+)/) || [])[1];
+    if (pr && PROFILE[pr]) {
+      if (!S || !S.profil || S.profil !== pr) {
+        var alt = S;
+        S = leer(PROFILE[pr].name); S.profil = pr;
+        S.bereiche = PROFILE[pr].bereiche.map(function (b) { return Object.assign({}, b); });
+        if (alt && alt.foto) S.foto = alt.foto;
+        speichern();
+      }
+    }
+    var tm = (h.match(/termine=([A-Za-z0-9_\-+\/=]+)/) || [])[1];
+    if (tm) { try { aufgabe = b64json(tm); } catch (e) { aufgabe = null; } }
+    if (pr || tm) { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} }
+    return aufgabe;
+  }
+
   /* ---------- Start ---------- */
   function start() {
     $('#intro').hidden = true; $('#app').hidden = false;
     zeige(UI.view);
   }
   S = laden();
-  if (S) start();
+  var linkTermine = linkLesen();
+  if (S) { start(); if (linkTermine) termineVorschau(Array.isArray(linkTermine) ? linkTermine : [], 'arbeit'); }
   else {
     $('#intro').hidden = false;
     $('#introStart').addEventListener('click', function () { S = beispiel($('#introName').value.trim()); speichern(); start(); });
     $('#introLeer').addEventListener('click', function () { S = leer($('#introName').value.trim()); speichern(); start(); });
   }
+  // Link geöffnet, während die App schon offen ist: nur der Teil nach # ändert sich.
+  window.addEventListener('hashchange', function () {
+    var hatte = !!S, lt = linkLesen();
+    if (!S) return;
+    if (!hatte) start(); else render();
+    if (lt) termineVorschau(Array.isArray(lt) ? lt : [], 'arbeit');
+  });
   // Mitternacht oder lange im Hintergrund: Ansicht auffrischen.
   document.addEventListener('visibilitychange', function () { if (!document.hidden && S) render(); });
   setInterval(function () { if (S && !document.hidden && blatt.hidden) render(); }, 5 * 60 * 1000);
 
   // Für Tests im Browser.
-  window.Polvia = { verstehe: function (t) { return verstehe(t); } };
+  window.Polvia = { verstehe: function (t) { return verstehe(t); }, einordnen: function (t) { return einordnen(t); } };
 })();
