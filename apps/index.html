@@ -127,6 +127,43 @@ body.offen .fenster{transform:none;visibility:visible;transition:transform .32s 
 .story .laden{pointer-events:auto}
 .nurrepo[hidden]{display:none!important}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* Runde 8: Ideen des Tages, Kategorien, Meine Apps, Lange-drücken-Menü */
+/* Runde 8: jede App in ihrer eigenen Farbe (eigener Markt-Look) */
+.story[style*="--app"] .laden,.reihe[style*="--app"] .laden:not([aria-disabled]){background:var(--app)!important;color:#fff!important;box-shadow:0 0 0 1px rgba(255,255,255,.22) inset}
+.story[style*="--app"]{box-shadow:var(--schatten),0 0 0 2px var(--app) inset}
+.reihe[style*="--app"] .sym{box-shadow:0 0 0 2px var(--app),0 0 0 4px rgba(255,255,255,.12)}
+.reihe[style*="--app"] b::after{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--appH,var(--app));margin-left:8px;vertical-align:2px}
+.dock a[style*="--app"] img,.passt a[style*="--app"] img{box-shadow:0 0 0 2px var(--app)}
+.ideen{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 calc(-1 * max(var(--s2),env(safe-area-inset-left)));padding:4px max(var(--s2),env(safe-area-inset-left)) 8px;scroll-padding:0 max(var(--s2),env(safe-area-inset-left))}
+.ideen::-webkit-scrollbar{display:none}
+.idee{flex:none;width:min(86%,420px);scroll-snap-align:start;position:relative;border-radius:var(--r3);padding:var(--s2) var(--s2) var(--s2);background:linear-gradient(160deg,var(--ic,#24357a),var(--card) 70%);border:1px solid var(--line);box-shadow:var(--schatten);display:flex;flex-direction:column;gap:8px}
+.idee .nr{position:absolute;right:16px;top:12px;font:800 44px/1 -apple-system,system-ui,sans-serif;color:rgba(255,255,255,.12)}
+.idee .vb{display:flex;align-items:center;gap:10px}
+.idee .vb i{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-style:normal;font-size:24px;background:rgba(255,255,255,.1)}
+.idee .vb small{display:block;color:var(--leise);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.idee .vb b{font-size:17px}
+.idee h4{margin:4px 0 0;font:800 21px/1.2 -apple-system,system-ui,sans-serif;letter-spacing:-.01em}
+.idee p{margin:0;color:var(--muted);font-size:15px;line-height:1.45}
+.idee p b{color:var(--ink)}
+.idee .drin{align-self:flex-start;padding:4px 10px;border-radius:999px;background:rgba(127,224,166,.16);color:var(--ok);font-size:13px;font-weight:700}
+.idee .pz{margin:4px 0 0;font-size:13px;font-weight:700;color:var(--gold2);text-transform:uppercase;letter-spacing:.06em}
+.passt{display:flex;flex-wrap:wrap;gap:8px}
+.passt a{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:4px 14px 4px 4px;border-radius:999px;background:rgba(255,255,255,.1);color:var(--ink);text-decoration:none;font-weight:700;font-size:15px}
+.passt a img{width:36px;height:36px;border-radius:50%;object-fit:cover}
+.passt a:active{transform:scale(.96)}
+.punkte{display:flex;justify-content:center;gap:6px;margin-top:4px}.punkte i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.25);transition:background .2s,width .2s}.punkte i.an{background:var(--gold);width:18px;border-radius:4px}
+.kats{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:4px calc(-1 * max(var(--s2),env(safe-area-inset-left))) 4px;padding:4px max(var(--s2),env(safe-area-inset-left))}
+.kats::-webkit-scrollbar{display:none}
+.kats button{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:var(--ink);font-weight:700;font-size:15px;cursor:pointer}
+.kats button[aria-pressed="true"]{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#1a1300;border-color:transparent}
+.reihe[hidden]{display:none}
+.dock{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;padding:8px 2px 4px}.dock::-webkit-scrollbar{display:none}
+.dock a{flex:none;width:72px;display:grid;justify-items:center;gap:6px;color:var(--ink);text-decoration:none;font-size:13px;font-weight:600;text-align:center;line-height:1.2}
+.dock img{width:64px;height:64px;border-radius:16px;object-fit:cover;box-shadow:0 0 0 1px rgba(255,255,255,.14),0 6px 16px rgba(0,0,0,.35)}
+.gedrueckt{transform:scale(.96);transition:transform .35s}
+.toast button{margin-left:12px;min-height:44px;padding:0 14px;border-radius:999px;border:0;background:var(--gold);color:#1a1300;font-weight:800;cursor:pointer}
+.toast.mitknopf{pointer-events:auto;padding:6px 6px 6px 18px;display:flex;align-items:center;white-space:normal;width:max-content}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.25s}
 </style></head><body><div class="w">
 
 <header class="kopf">
@@ -139,10 +176,16 @@ body.offen .fenster{transform:none;visibility:visible;transition:transform .32s 
 <main>
 <div id="tag"></div>
 
+<div id="meine" hidden><div class="ab"><div><h3>Meine Apps</h3><small>Lange auf eine App drücken: hinzufügen oder entfernen</small></div></div><div class="dock" id="dock"></div></div>
+
+<section id="ideen" aria-labelledby="ideent"><div class="ab"><div><h3 id="ideent">Ideen des Tages</h3><small id="ideentx">Fünf Funktionen aus anderen Apps, die Kunden wirklich helfen</small></div></div>
+<div class="ideen" id="ideenleiste"></div><div class="punkte" id="ideenpunkte" aria-hidden="true"></div></section>
+
 <div class="ab"><div><h3>Zuerst</h3><small>Die wichtigsten Apps gerade jetzt</small></div></div>
 <div class="storys" id="zuerst"></div>
 
 <div class="ab"><div><h3>Alle Apps</h3><small id="alletx">Tipp auf eine App für mehr</small></div></div>
+<div class="kats" id="kats" role="group" aria-label="Nach Thema filtern"></div>
 <div class="liste" id="alle"></div>
 
 <div id="baldteil" hidden>
@@ -262,6 +305,10 @@ body.offen .fenster{transform:none;visibility:visible;transition:transform .32s 
   const kandidaten = APPS.filter(a => zeigbar(a) && !a.kein && a.id !== 'nova');
   const heute = kandidaten[tagNr % kandidaten.length];
 
+  /* Runde 8: eigene Farbe pro App (aus ihrem Markt-Look), weiss darauf lesbar */
+  const APP_FARBE = { granny: '#a8480f', appid: '#2f6a4f', hasi: '#0a6253', jackie: '#5b2a4a', schlaf: '#3b4a7e', 'fia-kosmos': '#a4502e', tradeping: '#1f4fd1', fompa: '#2457c5', coinmaker: '#4a4740', copacabana: '#0d7a73', waefwaef: '#b4521a', otti: '#2d6a8a', mondschein: '#5a4ea0', kiki: '#8a3f7a', 'mama-affe': '#7a5a1f', humanspark: '#b0343a', transkript: '#3d5566', carmen: '#9a2f55' };
+  const APP_HELL = { schlaf: '#8f9fd8', coinmaker: '#b9b4a8', jackie: '#c98aa8', mondschein: '#a99be6', tradeping: '#7f9dff', fompa: '#7fa3ef' };
+  const farbe = (d, a) => { const f = APP_FARBE[a.id]; if (f) { d.style.setProperty('--app', f); d.style.setProperty('--appH', APP_HELL[a.id] || f); } return d; };
   function story(a, gross, i) {
     const z = ziel(a);
     const d = document.createElement('article');
@@ -274,7 +321,7 @@ body.offen .fenster{transform:none;visibility:visible;transition:transform .32s 
       '<div class="oben"><p class="eyebrow">' + (gross ? 'App des Tages' : esc(a.eb)) + '</p><h2>' + esc(a.titel) + '</h2></div>' +
       '<div class="zeile"><img class="sym" src="' + sym(a) + '" alt="" loading="lazy"><div class="tx"><b>' + esc(a.name) + '<span class="pill" hidden></span></b><small>' + esc(a.satz) + '</small></div>' +
       '<a class="laden gold" data-tun="auf"' + ziel_attr(z) + ' aria-label="' + esc(a.name) + ' öffnen">Öffnen</a></div>';
-    return d;
+    return farbe(d, a);
   }
   function reihe(a, i) {
     const z = ziel(a);
@@ -283,7 +330,7 @@ body.offen .fenster{transform:none;visibility:visible;transition:transform .32s 
     d.style.animationDelay = Math.min(i * 30, 300) + 'ms';
     d.innerHTML = '<button type="button" class="mitte" data-tun="mehr"><img class="sym" src="' + sym(a) + '" alt="" loading="lazy" decoding="async"><span class="tx"><b>' + esc(a.name) + '<span class="pill" hidden></span></b><small>' + esc(a.satz) + '</small></span></button>' +
       (z ? '<a class="laden" data-tun="auf"' + ziel_attr(z) + ' aria-label="' + esc(a.name) + ' öffnen">Öffnen</a>' : '<span class="laden" aria-disabled="true">Bald</span>');
-    return d;
+    return farbe(d, a);
   }
 
   if (heute) $('#tag').appendChild(story(heute, true, 0));
@@ -331,9 +378,11 @@ body.offen .fenster{transform:none;visibility:visible;transition:transform .32s 
   }
 
   let tt;
-  function meldung(t) {
-    const m = $('#toast'); m.textContent = t; m.classList.add('da');
-    clearTimeout(tt); tt = setTimeout(() => m.classList.remove('da'), 1800);
+  function meldung(t, undo) {
+    const m = $('#toast'); m.textContent = t; m.classList.toggle('mitknopf', !!undo);
+    if (undo) { const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Rückgängig'; b.onclick = () => { m.classList.remove('da'); undo(); }; m.appendChild(b); }
+    m.classList.add('da');
+    clearTimeout(tt); tt = setTimeout(() => m.classList.remove('da'), undo ? 5000 : 1800);
   }
 
   // Kopieren: Zwischenablage, sonst execCommand, sonst Textfeld im Fenster
@@ -382,7 +431,7 @@ body.offen .fenster{transform:none;visibility:visible;transition:transform .32s 
   $('#fenster').addEventListener('touchend', e => { if (zugY != null && e.changedTouches[0].clientY - zugY > 90) fensterZu(); zugY = null; }, { passive: true });
 
   function kopf(a, titel) {
-    return '<div class="fkopf"><span class="griff" aria-hidden="true"></span><button type="button" class="fzu" data-f="zu" aria-label="Schliessen">×</button><img src="' + bild(a) + '" alt="' + esc(a.name) + '"></div>' +
+    return '<div class="fkopf"><span class="griff" aria-hidden="true"></span><button type="button" class="fzu" data-f="zu"><span aria-hidden="true">×</span><span class="vh">Schliessen</span></button><img src="' + bild(a) + '" alt="' + esc(a.name) + '"></div>' +
       '<div class="finnen"><p class="eyebrow" style="position:relative;z-index:1;margin-top:-28px">' + esc(a.eb) + '</p><h3 id="ftitel">' + esc(titel || a.name) + '</h3>';
   }
   function appFenster(a) {
@@ -394,6 +443,7 @@ body.offen .fenster{transform:none;visibility:visible;transition:transform .32s 
       (z ? '<a class="b auf ganz" data-auf="' + esc(a.id) + '"' + ziel_attr(z) + '>' + esc(a.name) + ' öffnen</a>' : '<p class="klein ganz">Diese App kommt bald als eigene Seite dazu.</p>') +
       (z ? '<button type="button" class="b' + (kannTeilen ? '' : ' ganz') + '" data-f="kopie">' + ICON.kopie + '<span>Link kopieren</span></button>' +
         (kannTeilen ? '<button type="button" class="b" data-f="teilen">' + ICON.teilen + '<span>Teilen</span></button>' : '') : '') +
+      (z ? '<button type="button" class="b zu ganz" data-f="fav">' + (favs().includes(a.id) ? '★ Aus «Meine Apps» entfernen' : '☆ Zu «Meine Apps»') + '</button>' : '') +
       (z && !IM_ARTEFAKT ? '<button type="button" class="b zu ganz" data-f="home">' + ICON.home + '<span>Auf den Home-Bildschirm</span></button>' : '') +
       '</div>' + (z && z.test ? '<p class="klein" style="margin-top:16px">Das ist die Testversion (Entwurf).</p>' : '') + '</div>');
   }
@@ -435,6 +485,7 @@ body.offen .fenster{transform:none;visibility:visible;transition:transform .32s 
       catch (err) { if (err && err.name !== 'AbortError') { if (await kopieren(z.url)) meldung('Link kopiert ✓'); else feldFenster(a, z.url); } }
     }
     if (f === 'home' && z) homeFenster(a);
+    if (f === 'fav' && a) { favUmschalten(a); fensterZu(); }
   });
 
   $('#ich').addEventListener('click', () => {
@@ -465,6 +516,83 @@ body.offen .fenster{transform:none;visibility:visible;transition:transform .32s 
     addEventListener('scroll', () => { if (!lauf) { lauf = true; requestAnimationFrame(setze); } }, { passive: true });
     setze();
   }
+
+
+  /* ---------- Runde 8: Ideen des Tages (wie App-Store-«Heute»-Karten zum Wischen) ---------- */
+  const IDEEN = [
+    { datum: '2026-10-22', liste: [
+      { vb: 'Finch', ic: '#2f5a4a', sym: '🐣', titel: 'Die Figur wächst mit dir', fn: 'Bei jedem kleinen Selbstfürsorge-Schritt wächst das Vögelchen und kommt mit einer Geschichte von seiner Reise zurück.', bei: 'Unsere Figur war unterwegs und erzählt ruhig, als Standbild: «Fia war unterwegs und erzählt …».', passt: ['granny', 'appid', 'hasi', 'otti', 'waefwaef', 'schlaf'], drin: { id: 'appid', t: 'Flos Körnli, dazu Grannys Herzli und Hasis Rüebli' } },
+      { vb: 'Duolingo', ic: '#4a5a1f', sym: '🔥', titel: 'Ein verpasster Tag bricht die Serie nicht', fn: 'Der Serien-Schutz rettet die Lernserie, wenn man einen Tag auslässt. Weniger Druck, mehr Dranbleiben.', bei: 'Eine «Schutzfeder» oder ein «Ruhetag» pro Woche, ohne Druck: Glut-Kette, Körperkosmos-Woche, Otti-Sterne, Wochenkarte.', passt: ['schlaf', 'fia-kosmos', 'otti', 'coinmaker', 'tradeping'], drin: { id: 'appid', t: 'Flo-Kette mit Ruhetag' } },
+      { vb: 'Too Good To Go', ic: '#5a3b1f', sym: '🛍', titel: 'Überraschungstüte zum kleinen Preis', fn: 'Man wählt nur Laden und Preis, der Inhalt ist eine Überraschung. Das macht Lust und spart Entscheidungen.', bei: 'Budget wählen, die Figur stellt zusammen: Copas «Überraschungs-Säckli», Hasis «Werkzeug-Wundertüte».', passt: ['copacabana', 'hasi'], drin: { id: 'hasi', t: 'Werkzeug-Wundertüte' } },
+      { vb: 'Headspace', ic: '#7a3b1f', sym: '🫧', titel: 'SOS: eine Minute ruhig atmen', fn: 'Ein einziger Knopf für schwierige Momente: eine Minute geführtes Atmen, sofort, ohne Menü und ohne Anmeldung.', bei: 'Die Figur atmet mit: 4 ein, kurz halten, 5 aus, wahlweise mit Stimme. Kein Ersatz für Hilfe, einfach ein ruhiger Moment.', passt: ['granny', 'schlaf', 'fia-kosmos', 'jackie', 'mama-affe'], drin: { id: 'granny', t: 'Knopf «Kurz durchatmen mit Granny»' } },
+      { vb: 'Spotify Wrapped', ic: '#3b2a6a', sym: '🎞', titel: 'Dein Monat als Story', fn: 'Ein Rückblick zum Wischen, Karte für Karte, mit den eigenen Zahlen und einem Bild zum Teilen am Schluss.', bei: '«Dein Monat mit Flo»: Mahlzeiten, Farben, Bewegung. Die Zahlen bleiben auf dem Gerät, geteilt wird nur das Bild.', passt: ['appid', 'fompa', 'waefwaef', 'otti', 'tradeping', 'coinmaker'], drin: { id: 'appid', t: 'Story «Dein Monat mit Flo»' } }
+    ] }
+  ];
+  (function ideenZeigen() {
+    const heuteK = jetzt.getFullYear() + '-' + String(jetzt.getMonth() + 1).padStart(2, '0') + '-' + String(jetzt.getDate()).padStart(2, '0');
+    const satz = IDEEN.filter(x => x.datum <= heuteK).pop() || IDEEN[0];
+    const d = new Date(satz.datum + 'T12:00:00');
+    try { $('#ideentx').textContent = (satz.datum === heuteK ? 'Heute' : d.toLocaleDateString('de-CH', { day: 'numeric', month: 'long' })) + ': fünf Funktionen aus anderen Apps, die Kunden wirklich helfen'; } catch (e) {}
+    const box = $('#ideenleiste');
+    satz.liste.forEach((x, i) => {
+      const links = x.passt.map(id => APPS.find(a => a.id === id)).filter(a => a && zeigbar(a)).map(a => { const z = ziel(a); return z ? '<a' + ziel_attr(z) + ' data-auf="' + esc(a.id) + '"' + (APP_FARBE[a.id] ? ' style="--app:' + APP_FARBE[a.id] + '"' : '') + '><img src="' + sym(a) + '" alt="" loading="lazy">' + esc(a.name) + '</a>' : ''; }).join('');
+      const drinApp = x.drin && APPS.find(a => a.id === x.drin.id);
+      const k = document.createElement('article');
+      k.className = 'idee'; k.style.setProperty('--ic', x.ic); k.setAttribute('aria-label', 'Idee ' + (i + 1) + ' von ' + satz.liste.length + ': ' + x.titel);
+      k.innerHTML = '<span class="nr" aria-hidden="true">' + (i + 1) + '</span>' +
+        '<div class="vb"><i aria-hidden="true">' + x.sym + '</i><span><small>Vorbild</small><b>' + esc(x.vb) + '</b></span></div>' +
+        '<h4>' + esc(x.titel) + '</h4><p>' + esc(x.fn) + '</p><p><b>Bei uns:</b> ' + esc(x.bei) + '</p>' +
+        (drinApp ? '<span class="drin">✓ Schon eingebaut: ' + esc(drinApp.name) + ' · ' + esc(x.drin.t) + '</span>' : '') +
+        '<p class="pz">Passt zu</p><div class="passt">' + links + '</div>';
+      box.appendChild(k);
+    });
+    const pk = $('#ideenpunkte'); pk.innerHTML = satz.liste.map((_, i) => '<i' + (i ? '' : ' class="an"') + '></i>').join('');
+    box.addEventListener('scroll', () => { const w = box.firstElementChild ? box.firstElementChild.offsetWidth + 12 : 1; const n = Math.round(box.scrollLeft / w); pk.querySelectorAll('i').forEach((p, j) => p.classList.toggle('an', j === n)); }, { passive: true });
+  })();
+
+  /* ---------- Runde 8: Kategorien (wie Airbnb) mit weichem Wechsel (View Transitions) ---------- */
+  const KAT = [['alle', '✨', 'Alle'], ['kinder', '🧸', 'Kinder'], ['familie', '🏡', 'Familie & Alltag'], ['koerper', '🌿', 'Körper & Ruhe'], ['arbeit', '💼', 'Arbeit & Geld']];
+  const KAT_VON = { mondschein: 'kinder', kiki: 'kinder', 'mama-affe': 'kinder', granny: 'familie', waefwaef: 'familie', otti: 'familie', jackie: 'familie', copacabana: 'familie', 'fia-kosmos': 'koerper', schlaf: 'koerper', humanspark: 'koerper', appid: 'koerper', carmen: 'koerper', fompa: 'arbeit', transkript: 'arbeit', coinmaker: 'arbeit', hasi: 'arbeit', tradeping: 'arbeit' };
+  const weich = fn => { if (!ruhig8 && document.startViewTransition) { try { document.startViewTransition(fn); return; } catch (e) {} } fn(); };
+  const ruhig8 = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let katJetzt = 'alle';
+  function katSetzen(k) {
+    katJetzt = k;
+    $('#kats').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.k === k)));
+    let n = 0;
+    $('#alle').querySelectorAll('.reihe').forEach(r => { const an = k === 'alle' || KAT_VON[r.dataset.id] === k; r.hidden = !an; if (an) n++; });
+    $('#alletx').textContent = k === 'alle' ? (IM_ARTEFAKT ? 'Jede App öffnet sich in einem neuen Fenster' : 'Tipp auf eine App für mehr') : n + (n === 1 ? ' App' : ' Apps') + ' in «' + KAT.find(x => x[0] === k)[2] + '»';
+  }
+  KAT.forEach(x => { const b = document.createElement('button'); b.type = 'button'; b.dataset.k = x[0]; b.setAttribute('aria-pressed', String(x[0] === 'alle')); b.innerHTML = '<span aria-hidden="true">' + x[1] + '</span>' + esc(x[2]); b.onclick = () => { summ(6); weich(() => katSetzen(x[0])); }; $('#kats').appendChild(b); });
+
+  /* ---------- Runde 8: Meine Apps + lange drücken (wie iPhone «Haptic Touch»), Rückgängig ---------- */
+  const K_FAV = 'drlab-zentrale-meine';
+  const favs = () => { try { return JSON.parse(lsGet(K_FAV)) || []; } catch (e) { return []; } };
+  const favSetzen = l => lsSet(K_FAV, JSON.stringify(l.slice(0, 12)));
+  function dockZeigen() {
+    const L = favs().map(id => APPS.find(a => a.id === id)).filter(a => a && zeigbar(a));
+    $('#meine').hidden = !L.length;
+    $('#dock').innerHTML = L.map(a => { const z = ziel(a); return '<a' + ziel_attr(z) + ' data-auf="' + esc(a.id) + '" data-id="' + esc(a.id) + '" data-tun="auf"' + (APP_FARBE[a.id] ? ' style="--app:' + APP_FARBE[a.id] + '"' : '') + '><img src="' + sym(a) + '" alt="" loading="lazy">' + esc(a.name) + '</a>'; }).join('');
+  }
+  function favUmschalten(a) {
+    const vor = favs(), drin = vor.includes(a.id);
+    favSetzen(drin ? vor.filter(x => x !== a.id) : [a.id].concat(vor));
+    weich(dockZeigen); summ(drin ? 8 : [8, 30, 8]);
+    meldung(drin ? a.name + ' entfernt' : a.name + ' bei «Meine Apps»', () => { favSetzen(vor); weich(dockZeigen); });
+  }
+  let druckT = null, druckXY = null, druckEl = null, lang = false;
+  document.addEventListener('pointerdown', e => {
+    const k = e.target.closest('[data-id]'); if (!k || e.target.closest('#fenster') || k.dataset.id === 'nova') return;
+    druckXY = [e.clientX, e.clientY]; druckEl = k; lang = false; k.classList.add('gedrueckt');
+    clearTimeout(druckT); druckT = setTimeout(() => { lang = true; k.classList.remove('gedrueckt'); const a = APPS.find(x => x.id === k.dataset.id); if (a) { summ(14); appFenster(a); } }, 520);
+  });
+  const druckAus = () => { clearTimeout(druckT); if (druckEl) druckEl.classList.remove('gedrueckt'); druckEl = null; };
+  document.addEventListener('pointermove', e => { if (druckXY && Math.hypot(e.clientX - druckXY[0], e.clientY - druckXY[1]) > 10) druckAus(); }, { passive: true });
+  document.addEventListener('pointerup', druckAus); document.addEventListener('pointercancel', druckAus);
+  document.addEventListener('scroll', druckAus, { passive: true, capture: true });
+  document.addEventListener('click', e => { if (lang && e.target.closest('[data-id]')) { e.preventDefault(); e.stopPropagation(); lang = false; } }, true);
+  document.addEventListener('contextmenu', e => { const k = e.target.closest('[data-id]'); if (k && !e.target.closest('#fenster')) { e.preventDefault(); } });
+  dockZeigen();
 
   window.addEventListener('pageshow', zuletztZeigen);
   aktualisieren();
