@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-23-03">
+<meta name="stand" content="2026-10-23-04">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -117,10 +117,30 @@
   .vorhang .los { width:120px; height:120px; border-radius:50%; background:var(--gold); color:#2a1d00; display:grid; place-items:center; font-size:48px; box-shadow:0 12px 34px #0008; }
   .vorhang label { color:var(--leise); font-size:14px; text-decoration:underline; cursor:pointer; }
   .vorhang input { display:none; }
+  /* Nova-Ansichten: «Threads» und «Designvorschläge» legen sich über Nova (Sprachbefehl), ✕ oder «zurück» bringt Nova wieder. */
+  .ansicht { display:none; position:fixed; inset:0; z-index:8; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    background:radial-gradient(120% 80% at 50% 0%, var(--nacht2), var(--nacht) 70%); color:var(--text); padding:max(16px, env(safe-area-inset-top)) 16px 40px; }
+  .ansicht.an { display:block; }
+  .ansicht .kopf { display:flex; align-items:center; gap:10px; max-width:520px; margin:0 auto 12px; }
+  .ansicht .kopf b { flex:1; font-size:22px; color:var(--gold); }
+  .ansicht .kopf button { border:0; background:#ffffff18; color:var(--text); width:44px; height:44px; border-radius:50%; font-size:20px; }
+  .ansicht .inhalt { max-width:520px; margin:0 auto; display:flex; flex-direction:column; gap:8px; }
+  .ansicht .karte { display:flex; align-items:center; gap:12px; padding:14px; border-radius:16px; background:#ffffff10; color:inherit; text-decoration:none; }
+  .ansicht .karte.wichtig { background:#f5c54222; box-shadow:inset 0 0 0 2px var(--gold); }
+  .ansicht .karte .t { flex:1; font-weight:600; }
+  .ansicht .karte .neu { font-size:12px; color:#1b1300; background:var(--gold); border-radius:20px; padding:2px 8px; }
+  .ansicht .design { border-radius:18px; overflow:hidden; background:#ffffff10; }
+  .ansicht .design img { width:100%; display:block; }
+  .ansicht .design .z { display:flex; align-items:center; gap:8px; padding:10px 12px; }
+  .ansicht .design .z span { flex:1; font-weight:600; }
+  .ansicht .sterne5 button { border:0; background:none; font-size:24px; padding:0 1px; color:#ffffff40; }
+  .ansicht .sterne5 button.an { color:var(--gold); }
+  .ansicht .leer { color:var(--leise); text-align:center; margin-top:24px; }
 </style>
 </head>
 <body>
 <div class="sterne"></div>
+<section class="ansicht" id="ansicht" aria-live="polite"><div class="kopf"><b id="ansichtTitel"></b><button id="ansichtZu" aria-label="Zurück zu Nova">✕</button></div><div class="inhalt" id="ansichtInhalt"></div></section>
 <a class="zurueck" id="zurueck" href="#" aria-label="Zurück">‹</a>
 <h1 id="name">Otti</h1>
 <nav class="wahl" id="wahl" aria-label="Mit wem reden?"></nav>
@@ -525,7 +545,7 @@
         onError: function (m) { hinweis.textContent = 'Fehler: ' + (m || 'unbekannt'); },
         onMessage: function (m) {
           if (m && m.source === 'user' && eigene.indexOf(m.message) >= 0) { eigene.splice(eigene.indexOf(m.message), 1); return; }
-          if (m && m.source === 'user') { $('chips').innerHTML = ''; weiterVersuche = 0; }
+          if (m && m.source === 'user') { $('chips').innerHTML = ''; weiterVersuche = 0; ansichtBefehl(m.message); }
           if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message);
           if (BUEHNE.an && m && m.message && m.source !== 'user') BUEHNE.untertitel(m.message); },
         onModeChange: function (m) {
@@ -613,6 +633,77 @@
 
   // Bühne: Nova bedient den Beamer (Werkzeuge film_zeigen und film_steuern). Die Filme kommen von Diegos Server
   // (Liste im Link: #filme=<adresse von filme.json>, bleibt danach auf dem Laptop gespeichert) oder direkt vom Laptop («Filme wählen»).
+  // Nova-Ansichten: Diego sagt «Threads» oder «Designvorschläge», Nova macht Platz und die Liste erscheint direkt hier.
+  // Quelle: die Thread-Adresse, die sich die Zentrale gemerkt hat (gleiche Seite, Lese-Schlüssel nur für Listen).
+  var ansichtArt = '';
+  function ansichtQuelle(art) {
+    var q = ''; try { q = localStorage.getItem('zentrale.quelle') || ''; } catch (e) {}
+    if (!q || art === 'threads') return q;
+    return q.replace('threads-lesen', 'designs-lesen').replace('/zentrale/threads', '/zentrale/designs');
+  }
+  function ansichtLeer(text) { var d = document.createElement('div'); d.className = 'leer'; d.textContent = text; $('ansichtInhalt').appendChild(d); }
+  function ansichtSagen(text) { if (conv) try { conv.sendContextualUpdate(text); } catch (e) {} }
+  function ansichtZu() {
+    if (!ansichtArt) return; ansichtArt = ''; $('ansicht').classList.remove('an');
+    ansichtSagen('Diego ist zurück bei dir, die Liste ist zu.');
+  }
+  function ansichtAuf(art) {
+    ansichtArt = art; var inhalt = $('ansichtInhalt'); inhalt.innerHTML = '';
+    $('ansichtTitel').textContent = art === 'threads' ? 'Threads' : 'Designvorschläge';
+    $('ansicht').classList.add('an');
+    var q = ansichtQuelle(art);
+    if (!q) { ansichtLeer('Einmal in der Nova-App auf «🎛 Zentrale» tippen, dann erscheint die Liste hier.'); return; }
+    ansichtLeer('Lädt …');
+    fetch(q + (q.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now(), { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) {
+      if (ansichtArt !== art) return; inhalt.innerHTML = '';
+      if (art === 'threads') {
+        var l = (d.threads || []).filter(function (t) { return t.status !== 'fertig'; });
+        var rang = function (t) { return (t.status === 'wartet auf Diego' ? 2 : 0) + (t.wichtig ? 1 : 0); };
+        l.sort(function (a, b) { return rang(b) - rang(a); });
+        if (!l.length) return ansichtLeer('Alles ruhig.');
+        l.forEach(function (t) {
+          var a = document.createElement(t.link ? 'a' : 'div'); a.className = 'karte' + (rang(t) ? ' wichtig' : '');
+          if (t.link) { a.href = t.link; a.target = '_blank'; a.rel = 'noopener'; }
+          var z = document.createElement('span'); z.textContent = rang(t) ? '❗' : '🕊';
+          var ti = document.createElement('span'); ti.className = 't'; ti.textContent = t.titel || '';
+          a.append(z, ti);
+          if (t.status === 'wartet auf Diego') { var n = document.createElement('span'); n.className = 'neu'; n.textContent = 'Wartet auf dich'; a.appendChild(n); }
+          inhalt.appendChild(a);
+        });
+        ansichtSagen('Diego sieht jetzt die Thread-Liste auf dem Bildschirm (' + l.length + ' offen). Sag höchstens einen kurzen Satz.');
+      } else {
+        var ds = (d.designs || []).slice(0, 5);
+        if (!ds.length) return ansichtLeer('Heute noch keine Designvorschläge.');
+        ds.forEach(function (x, i) {
+          var k = document.createElement('div'); k.className = 'design';
+          var im = document.createElement('img'); im.src = x.bild; im.alt = x.titel || ''; im.loading = 'lazy';
+          var z = document.createElement('div'); z.className = 'z';
+          var ti = document.createElement('span'); ti.textContent = (i + 1) + '. ' + (x.titel || '') + (x.app ? ' · ' + x.app : '');
+          var st = document.createElement('div'); st.className = 'sterne5';
+          for (var n = 1; n <= 5; n++) (function (n) {
+            var b = document.createElement('button'); b.textContent = '★'; b.setAttribute('aria-label', n + ' Sterne');
+            b.addEventListener('click', function () {
+              Array.prototype.forEach.call(st.children, function (c, j) { c.classList.toggle('an', j < n); });
+              ansichtSagen('Diego bewertet Designvorschlag ' + (i + 1) + ' «' + (x.titel || '') + '»' + (x.app ? ' für ' + x.app : '') + ' mit ' + n + ' von 5 Sternen. Merk dir das mit nova_server (merken) und sag kurz Danke.');
+            });
+            st.appendChild(b);
+          })(n);
+          z.append(ti, st); k.append(im, z); inhalt.appendChild(k);
+        });
+        ansichtSagen('Diego sieht jetzt ' + ds.length + ' Designvorschläge als Bilder: ' + ds.map(function (x, i) { return (i + 1) + '. ' + (x.titel || '') + (x.app ? ' (' + x.app + ')' : ''); }).join(', ') + '. Er kann sie mit Sternen bewerten oder sagen, welcher ihm gefällt. Sag höchstens einen kurzen Satz.');
+      }
+    }).catch(function () { if (ansichtArt !== art) return; inhalt.innerHTML = ''; ansichtLeer(art === 'threads' ? 'Threads gerade nicht erreichbar.' : 'Designvorschläge kommen bald.'); });
+  }
+  $('ansichtZu').addEventListener('click', ansichtZu);
+  // Sprachbefehle nur bei Nova und nicht auf der Bühne (Präsentationen bleiben unverändert).
+  function ansichtBefehl(text) {
+    if (KEY !== 'nova' || BUEHNE.an) return;
+    var t = String(text || '').toLowerCase();
+    if (/design\s*-?\s*vorschl|designs\b/.test(t)) ansichtAuf('designs');
+    else if (/\bthreads?\b|\btrets?\b/.test(t)) ansichtAuf('threads');
+    else if (ansichtArt && /\b(zurück|zurueck|schliess|schließ|zu machen|weg damit|nova)\b/.test(t)) ansichtZu();
+  }
+
   var BUEHNE = (function () {
     var an = new URLSearchParams(location.search).get('buehne') === '1' && KEY === 'nova';
     var video = $('film'), kino = $('kino'), ut = $('untertitel'), liste = [], jetzt = -1, laut = 1, utUhr = 0, aktiv = false;
