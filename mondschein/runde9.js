@@ -17,6 +17,8 @@
     '.r7-chips button{min-height:48px}',
     /* Nur hören: schwarz, Steuerung nur nach Tippen */
     'html.hoermodus .r8-toastwachs{display:none}',
+    /* Die Nova-Pille gehört auf die Startseite; in Geschichten, Spielen und Ritualen deckt sie sonst Knöpfe zu */
+    'body:has(#s-home:not(.on)) .nova-pille,html.hoermodus .nova-pille,body:has(.r9-nacht) .nova-pille{display:none}',
     '#hoeren>*{transition:opacity 1.6s ease}',
     '#hoeren.r9-schwarz{background:#000;cursor:none}',
     '#hoeren.r9-schwarz>*{opacity:0!important;pointer-events:none}',
