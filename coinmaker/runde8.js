@@ -7,7 +7,7 @@
    5. Werkstatt-Serie mit Ruhetag: ein verpasster Tag pro Woche bricht nichts (Vorbild: Duolingo, siehe ziele.js).
    Liest «coinmaker.v1» (Kassenbuch) nur, schreibt eigene Daten unter r7_cm_r8…. */
 window.R8 = {
-  bild: 'posen/winken.jpg',
+  bild: 'wm/maskottchen.jpg',
   offline: 'Offline. Die Werkstatt läuft weiter, alles bleibt auf deinem Gerät.',
   neuText: 'Neu: Vom Einfall zum Plan, Wochenplan und Dein Monat.',
   css: [
@@ -38,6 +38,7 @@ window.R8 = {
     '.r7-spalte.r8-ziel{outline:2px dashed #f2c14e;outline-offset:2px}'
   ].join('\n'),
   start: function (E, R) {
+    E.maskottchen('#cmfig img, .r7-kopf > img, .r7-leer > img, .r8-ziehen img', 'wm/maskottchen.jpg'); // helles Tinko-Maskottchen statt dunkler Pose
     function st() { try { var s = JSON.parse(localStorage.getItem('coinmaker.v1') || 'null'); return s && Array.isArray(s.items) ? s : { items: [] }; } catch (e) { return { items: [] }; } }
     function ideen() { return st().items.filter(function (i) { return !i.ex && i.type === 'idee' && i.text; }); }
     function plan() { return E.hol('plan', {}); }
@@ -50,13 +51,13 @@ window.R8 = {
     function zumPlan(nurId) {
       var l = ideen().slice().reverse(), p = plan(), tage = wochenTage(), heute = R.heute();
       if (nurId) l = l.filter(function (i) { return i.id === nurId; });
-      var inh = R.blatt({ titel: 'Vom Einfall zum Plan', bild: 'posen/lupe.jpg', html: '<p>Eine Idee wird echt, wenn der nächste Schritt klar ist: klein, konkret, in 15 Minuten machbar. Dann bekommt er einen Tag.</p>' +
+      var inh = R.blatt({ titel: 'Vom Einfall zum Plan', bild: 'wm/maskottchen.jpg', html: '<p>Eine Idee wird echt, wenn der nächste Schritt klar ist: klein, konkret, in 15 Minuten machbar. Dann bekommt er einen Tag.</p>' +
         (l.length ? l.slice(0, 12).map(function (i) {
           var e = p[i.id] || {};
           return '<div class="r8-idee" data-id="' + R.esc(i.id) + '"><p>💡 ' + R.esc(kurzText(i.text, 140)) + '</p>' +
             '<label for="r8s' + R.esc(i.id) + '">Nächster Schritt</label><input id="r8s' + R.esc(i.id) + '" data-f="schritt" value="' + R.esc(e.schritt || '') + '" placeholder="z. B. 3 Familien fragen, ob sie das nutzen würden" autocomplete="off">' +
             '<div class="r8-tagwahl" role="group" aria-label="Tag in dieser Woche">' + tage.map(function (t, k) { return '<button type="button" data-tag="' + t + '" aria-pressed="' + (e.tag === t) + '"' + (t < heute ? ' disabled' : '') + ' aria-label="' + KURZ[k] + (t === heute ? ', heute' : '') + '">' + KURZ[k] + '</button>'; }).join('') + '</div></div>';
-        }).join('') : R.leer('Noch keine Idee im Kassenbuch. Leg eine Idee in den Automaten und zieh am Hebel, dann planen wir den ersten Schritt.', 'posen/leer.jpg')) +
+        }).join('') : R.leer('Noch keine Idee im Kassenbuch. Leg eine Idee in den Automaten und zieh am Hebel, dann planen wir den ersten Schritt.', 'wm/maskottchen.jpg')) +
         '<p class="r7-klein">Alles bleibt auf diesem Gerät.</p>' });
       inh.addEventListener('input', function (e) {
         var f = e.target.closest('[data-f=schritt]'); if (!f) return;
@@ -112,7 +113,7 @@ window.R8 = {
     if (ankerPlan) { var wrap = ankerPlan.parentNode; wrap.insertBefore(karte, ankerPlan.nextSibling); zeigPlan(); }
 
     /* 2. Wächst mit dir */
-    E.waechst({ ort: '#buehne', wo: 'nach', figur: 'Coin Maker', bild: 'posen/freude.jpg', licht: 'Messingfunken', licht1: 'Messingfunke',
+    E.waechst({ ort: '#buehne', wo: 'nach', figur: 'Coin Maker', bild: 'wm/maskottchen.jpg', stufenBilder: ['wm/stufe-1.jpg', 'wm/stufe-2.jpg', 'wm/stufe-3.jpg', 'wm/stufe-4.jpg', 'wm/stufe-5.jpg'], ausflugBild: 'wm/ausflug.jpg', licht: 'Messingfunken', licht1: 'Messingfunke',
       stufen: ['Lehrling', 'Geselle', 'Werkmeister', 'Münzmeister', 'Grossmeister'],
       wie: 'Ein kleiner Schritt: eine Idee in den Automaten gelegt, einen geplanten Schritt erledigt, eine Wochen-Aufgabe gemacht.',
       ausfluege: [
@@ -146,11 +147,11 @@ window.R8 = {
       var id = l.filter(function (i) { return i.type === 'idee'; }), coins = l.reduce(function (a, i) { return a + Math.max(0, i.coins || 0); }, 0);
       var beste = id.slice().sort(function (a, b) { return (b.coins || 0) - (a.coins || 0); })[0];
       var p = plan(), erledigt = Object.keys(p).filter(function (k) { return p[k].fertig && String(p[k].tag || '').slice(0, 7) === ym; }).length;
-      E.monat({ figur: 'Coin Maker', bild: 'posen/winken.jpg', bildFroh: 'posen/freude.jpg', licht: 'Messingfunken', fuss: 'Coin Maker · Coins sind Punkte ohne Geldwert',
+      E.monat({ figur: 'Coin Maker', bild: 'wm/maskottchen.jpg', bildFroh: 'wm/stufe-5.jpg', licht: 'Messingfunken', fuss: 'Coin Maker · Coins sind Punkte ohne Geldwert',
         seiten: [
-          { bild: 'posen/lupe.jpg', oben: 'Ideen', gross: id.length, titel: id.length === 1 ? 'Idee in den Automaten gelegt' : 'Ideen in den Automaten gelegt', text: l.length - id.length ? 'Dazu ' + (l.length - id.length) + ' Daten und Rückmeldungen.' : 'Jede Idee zählt, auch die verrückten.' },
-          { bild: 'posen/freude.jpg', oben: 'Coins', gross: coins, titel: 'Coins verdient', text: beste ? 'Deine wertvollste Idee: «' + kurzText(beste.text, 80) + '» mit ' + beste.coins + ' Coins.' : 'Coins sind Punkte ohne Geldwert: sie zeigen, wie viel Klarheit in deinen Ideen steckt.' },
-          { bild: 'posen/hebel.jpg', oben: 'Umgesetzt', gross: erledigt, titel: erledigt === 1 ? 'Schritt erledigt' : 'Schritte erledigt', text: erledigt ? 'Aus Einfällen werden Taten.' : 'Plan den ersten Schritt im Wochenplan. 15 Minuten reichen.' }
+          { bild: 'wm/maskottchen.jpg', oben: 'Ideen', gross: id.length, titel: id.length === 1 ? 'Idee in den Automaten gelegt' : 'Ideen in den Automaten gelegt', text: l.length - id.length ? 'Dazu ' + (l.length - id.length) + ' Daten und Rückmeldungen.' : 'Jede Idee zählt, auch die verrückten.' },
+          { bild: 'wm/maskottchen.jpg', oben: 'Coins', gross: coins, titel: 'Coins verdient', text: beste ? 'Deine wertvollste Idee: «' + kurzText(beste.text, 80) + '» mit ' + beste.coins + ' Coins.' : 'Coins sind Punkte ohne Geldwert: sie zeigen, wie viel Klarheit in deinen Ideen steckt.' },
+          { bild: 'wm/maskottchen.jpg', oben: 'Umgesetzt', gross: erledigt, titel: erledigt === 1 ? 'Schritt erledigt' : 'Schritte erledigt', text: erledigt ? 'Aus Einfällen werden Taten.' : 'Plan den ersten Schritt im Wochenplan. 15 Minuten reichen.' }
         ],
         zeilen: [['Ideen', String(id.length)], ['Coins', String(coins)], ['Schritte erledigt', String(erledigt)]],
         schluss: 'Jede Idee hat ihren Wert.', hinweis: 'Coins sind Punkte, kein Geld. Alles bleibt auf deinem Gerät.' });
@@ -812,7 +813,7 @@ window.R8 = {
       else if (schonHeute) { knopf = ''; info = 'Heute war ' + esc(o.figur) + ' schon unterwegs. Morgen geht es wieder los.'; }
       else if (heuteN(x) > 0) { knopf = '<button type="button" class="r7-knopf" data-wm="los">🎒 Auf Ausflug schicken</button>'; info = 'Du hast heute schon ' + heuteN(x) + ' ' + esc(heuteN(x) === 1 ? o.licht1 : o.licht) + ' gesammelt. ' + esc(o.figur) + ' möchte etwas entdecken.'; }
       else { knopf = ''; info = esc(o.wie) + ' Dann geht ' + esc(o.figur) + ' auf einen kleinen Ausflug.'; }
-      box.innerHTML = '<div class="fig"><img src="' + esc(o.bild) + '" alt="" width="72" height="72"><span class="st" aria-hidden="true">' + (s + 1) + '</span></div>' +
+      box.innerHTML = '<div class="fig"><img src="' + esc((o.stufenBilder && o.stufenBilder[s]) || o.bild) + '" alt="" width="72" height="72"><span class="st" aria-hidden="true">' + (s + 1) + '</span></div>' +
         '<div><h2 id="r8WmH">Wächst mit dir</h2><span class="name">' + esc(o.figur) + ' · ' + esc(ST[s]) + '</span>' +
         '<div class="bar" role="progressbar" aria-label="Fortschritt zur nächsten Stufe" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + proz + '"><i style="width:' + proz + '%"></i></div>' +
         '<span class="zahl">' + x.n + ' ' + esc(x.n === 1 ? o.licht1 : o.licht) + (naechste == null ? ' · höchste Stufe erreicht' : ' · noch ' + (naechste - x.n) + ' bis «' + esc(ST[s + 1]) + '»') + ' · 🔥 ' + ws.serie + ' Tag' + (ws.serie === 1 ? '' : 'e') + '</span></div>' +
@@ -842,7 +843,7 @@ window.R8 = {
     function vorlesen(t) { try { if (!window.speechSynthesis) return false; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = 'de-CH'; u.rate = .95; speechSynthesis.speak(u); return true; } catch (e) { return false; } }
     function fund(i, neu) {
       var a = o.ausfluege[i]; if (!a) return;
-      var inh = R.blatt({ titel: neu ? esc(o.figur) + ' war unterwegs' : a.n, bild: o.bild, html: (o.extraHtml || '') + '<div class="r8-fund"><span class="e" aria-hidden="true">' + a.f + '</span><h3>' + esc(a.n) + '</h3></div><p>' + esc(a.t) + '</p>' +
+      var inh = R.blatt({ titel: neu ? esc(o.figur) + ' war unterwegs' : a.n, bild: o.bild, html: (o.extraHtml || '') + '<div class="r8-fund">' + (o.ausflugBild ? '<img class="r8-bild" src="' + esc(o.ausflugBild) + '" alt="' + esc(o.figur) + ' unterwegs" loading="lazy">' : '') + '<span class="e" aria-hidden="true">' + a.f + '</span><h3>' + esc(a.n) + '</h3></div><p>' + esc(a.t) + '</p>' +
         '<div class="r7-reihe"><button type="button" class="r7-knopf leise" data-wm="hoer">🔊 Vorlesen</button>' + (neu ? '<button type="button" class="r7-knopf" data-wm="ok">Ins Album legen</button>' : '') + '</div>' });
       inh.querySelector('[data-wm=hoer]').addEventListener('click', function () { if (!vorlesen(a.n + '. ' + a.t)) this.textContent = 'Vorlesen geht hier nicht'; });
       var ok = inh.querySelector('[data-wm=ok]'); if (ok) ok.addEventListener('click', function () { R.zu(); });
@@ -855,7 +856,7 @@ window.R8 = {
     }
     function wie() {
       R.blatt({ titel: 'So wächst ' + o.figur, bild: o.bild, html: (o.extraHtml || '') + '<p>' + esc(o.wie) + ' Jeder kleine Schritt gibt 1 ' + esc(o.licht1) + ' (höchstens ' + MAX_TAG + ' pro Tag).</p><div class="r8-tasten">' +
-        ST.map(function (n, i) { return '<kbd>' + SCHW[i] + '</kbd><span>Stufe ' + (i + 1) + ': ' + esc(n) + '</span>'; }).join('') + '</div>' +
+        ST.map(function (n, i) { return '<kbd>' + SCHW[i] + '</kbd><span style="display:flex;align-items:center;gap:10px">' + (o.stufenBilder && o.stufenBilder[i] ? '<img src="' + esc(o.stufenBilder[i]) + '" alt="" width="44" height="44" loading="lazy" style="flex:none;border-radius:12px;object-fit:cover">' : '') + 'Stufe ' + (i + 1) + ': ' + esc(n) + '</span>'; }).join('') + '</div>' +
         '<p>Nichts geht verloren, nichts geht kaputt. Ein Ruhetag pro Woche zählt bei der Serie mit (🌙).</p>' + W.html({ schutzName: 'Ruhetag', schutzZeichen: '🌙', da: 'mindestens ein ' + o.licht1 }) +
         '<p class="r7-klein">Alles bleibt auf diesem Gerät.</p>' });
     }
@@ -940,8 +941,22 @@ window.R8 = {
     var k = d.querySelector('#r7Neu .r7-neu-kopf small'); if (k && K.neuText) k.textContent = K.neuText;
   }
 
+  /* ---------- 17. Maskottchen: helles Tinko-Bild an festen Stellen, auch wenn alte Skripte die Pose wechseln ---------- */
+  function maskottchen(sel, src) {
+    var get = typeof src === 'function' ? src : function () { return src; };
+    var mo;
+    function fix() {
+      var s = get();
+      [].forEach.call(d.querySelectorAll(sel), function (i) { if (i.getAttribute('src') !== s) { i.removeAttribute('srcset'); i.setAttribute('src', s); } });
+    }
+    function lauf() { if (mo) mo.disconnect(); fix(); if (mo) mo.observe(d.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['src'] }); }
+    if (window.MutationObserver) mo = new MutationObserver(lauf);
+    lauf();
+    return lauf;
+  }
+
   window.R8K = { monat: monat, monatsName: monatsName, sos: sos, waechst: waechst, licht: function (g) { return WM ? WM.licht(g) : false; }, datei: datei, kopiere: kopiere, imRahmen: imRahmen, hol: hol, leg: leg, summ: summ, rueck: rueck, bildKarte: bildKarte, teileBild: teileBild, menue: menue, menueAuf: menueAuf, tasten: tasten, tastenHilfe: tastenHilfe,
-    wechsel: wechsel, ringe: ringe, ringeLos: ringeLos, ringeMalen: ringeMalen, woche: woche, heute: heute, ziehen: ziehen, story: story, ymd: ymd, umbruch: umbruch };
+    wechsel: wechsel, ringe: ringe, ringeLos: ringeLos, ringeMalen: ringeMalen, woche: woche, heute: heute, ziehen: ziehen, story: story, ymd: ymd, umbruch: umbruch, maskottchen: maskottchen };
   function start() {
     try { offline(); } catch (e) { console.warn('r8 offline', e); }
     if (K.start) try { K.start(window.R8K, R); } catch (e) { console.warn('r8 start', e); }
