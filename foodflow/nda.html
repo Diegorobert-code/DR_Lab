@@ -524,7 +524,7 @@ async function boot() {
   setWho("florence");
   $("form").addEventListener("submit", submit);
   $("done-new").addEventListener("click", resetForm);
-  $("done-app").addEventListener("click", () => location.replace("index.html"));
+  $("done-app").addEventListener("click", () => (window.parent!==window?window.parent.postMessage("ff-nda-ok","*"):location.replace("index.html?nda=ok")));
 
 }
 boot();

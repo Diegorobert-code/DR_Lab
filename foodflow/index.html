@@ -2,7 +2,12 @@
 <html lang="de-CH">
 <head>
 <meta charset="utf-8">
-<script>try{if(!localStorage.getItem("ff-nda"))location.replace("nda.html")}catch(e){}</script>
+<style>html.nda-lock,html.nda-lock body{overflow:hidden!important}#ndaFrame{position:fixed;inset:0;width:100%;height:100%;border:0;z-index:2147483647;background:#F3F2EE}</style>
+<script>(function(){var ok=false;try{ok=!!localStorage.getItem("ff-nda")}catch(e){}if(ok||/[?&]nda=ok/.test(location.search))return;
+document.documentElement.classList.add("nda-lock");
+function zeig(){if(document.getElementById("ndaFrame"))return;var f=document.createElement("iframe");f.id="ndaFrame";f.title="Geheimhaltung";f.src="nda.html";document.body.appendChild(f);}
+if(document.body)zeig();else document.addEventListener("DOMContentLoaded",zeig);
+window.addEventListener("message",function(e){if(e.data==="ff-nda-ok"){var f=document.getElementById("ndaFrame");if(f)f.remove();document.documentElement.classList.remove("nda-lock");}});})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
