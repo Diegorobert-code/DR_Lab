@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-22-02">
+<meta name="stand" content="2026-10-22-03">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -477,15 +477,15 @@
         connectionType: 'websocket',
         textOnly: !!nurText,
         clientTools: { zeige_bild: function (p) { bildZeigen(p); return 'gezeigt'; }, bewegen: bewegen, knoepfe: BUEHNE.an ? function () { return 'auf der Bühne keine Knöpfe'; } : knoepfe,
-          film_zeigen: BUEHNE.werkzeuge.film_zeigen, film_steuern: BUEHNE.werkzeuge.film_steuern },
+          film_zeigen: BUEHNE.werkzeuge.film_zeigen, film_steuern: BUEHNE.werkzeuge.film_steuern, auflegen: auflegen },
         dynamicVariables: variablen(),
         // Auf der Bühne nimmt Nova ab wie am Telefon; nach einer abgerissenen Verbindung ist sie still wieder da, bis Diego sie anspricht (nach 30 Min. verbindet sie still neu, siehe unten).
-        overrides: BUEHNE.an && !nurText ? { agent: { firstMessage: abgenommen ? '' : 'Ja, hallo?' } } : undefined,
+        overrides: BUEHNE.an && !nurText ? { agent: { firstMessage: abgenommen ? '' : anruf > 1 ? 'Hey, da bin ich wieder!' : 'Ja, hallo?' } } : undefined,
         onConnect: function () { if (BUEHNE.an) abgenommen = true; status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); hopsen(); },
         onDisconnect: function () {
           if (nr === sitzung && maltSeit) { maltSeit = 0; ende('Verbindung weg, das Bild kam nicht an. Nochmal 🎨'); return; }
           // Bühne: reisst die Verbindung, ist Nova nach zwei Sekunden still wieder da. Der Film läuft weiter.
-          if (nr === sitzung && BUEHNE.aktiv && !nurText) { ende('Nova verbindet neu …'); setTimeout(function () { if (BUEHNE.aktiv && !conv && !startet) starten(false); }, 2000); return; }
+          if (nr === sitzung && BUEHNE.aktiv && !aufgelegt && !nurText) { ende('Nova verbindet neu …'); setTimeout(function () { if (BUEHNE.aktiv && !conv && !startet) starten(false); }, 2000); return; }
           if (nr === sitzung) ende(nurText ? 'Schreib einfach weiter, ich bin gleich wieder da.' : 'Bis bald! Tipp auf den Knopf, dann bin ich wieder da.'); },
         onError: function (m) { hinweis.textContent = 'Fehler: ' + (m || 'unbekannt'); },
         onMessage: function (m) {
@@ -639,7 +639,7 @@
     }
     var gast = (new URLSearchParams(location.search).get('gast') || '').toLowerCase().replace(/[^a-zäöü ]/g, '');
     function variable() {
-      return 'an' + (gast ? ', Gast: ' + gast : '') + '. Du bist live am Beamer, über den Lautsprecher, wie bei einem Telefonat. Filme: ' + namen() + (document.body.classList.contains('film') && liste[jetzt] ? '. Gerade läuft: ' + liste[jetzt].titel : '') + '.';
+      return 'an, Anruf ' + anruf + (gast ? ', Gast: ' + gast : '') + '. Du bist live am Beamer, über den Lautsprecher, wie bei einem Telefonat. Filme: ' + namen() + (document.body.classList.contains('film') && liste[jetzt] ? '. Gerade läuft: ' + liste[jetzt].titel : '') + '.';
     }
     if (an) {
       document.body.classList.add('bmodus'); laden();
@@ -665,21 +665,49 @@
       g.gain.setValueAtTime(0.18, t + ab + 1.0); g.gain.linearRampToValueAtTime(0, t + ab + 1.05); });
     setTimeout(function () { try { ac.close(); } catch (e) {} fertig(); }, 3300);
   }
-  var abgenommen = false;
+  // Ab dem zweiten Anruf klingt es wie ein Videoanruf: kleine Melodie statt Telefon-Ton.
+  function videoKlingeln(fertig) {
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) { fertig(); return; }
+    var ac = new AC(), t0 = ac.currentTime + 0.05;
+    [0, 1.6].forEach(function (ab) {
+      [659, 784, 988, 784].forEach(function (hz, i) {
+        var o = ac.createOscillator(), g = ac.createGain(), t = t0 + ab + i * 0.16;
+        o.type = 'sine'; o.frequency.value = hz; o.connect(g); g.connect(ac.destination);
+        g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.16, t + 0.02); g.gain.linearRampToValueAtTime(0, t + 0.15);
+        o.start(t); o.stop(t + 0.16);
+      });
+    });
+    setTimeout(function () { try { ac.close(); } catch (e) {} fertig(); }, 3000);
+  }
+  // Nova legt selbst auf («bis später, piep»), der Film läuft weiter. Enter oder der Knopf ruft sie wieder an.
+  var abgenommen = false, anruf = 0, aufgelegt = false;
+  function auflegen() {
+    if (!BUEHNE.an || !conv) return 'aufgelegt';
+    aufgelegt = true;
+    var c = conv, warte = function (n) {
+      if (c.__spricht && n < 40) { setTimeout(function () { warte(n + 1); }, 250); return; }
+      ende('Aufgelegt. Enter ruft Nova wieder an.'); c.endSession().catch(function () {});
+    };
+    setTimeout(function () { warte(0); }, 600);
+    return 'aufgelegt';
+  }
   if (BUEHNE.an) {
     var vorhang = $('vorhang'), klingelt = false;
     var losGehen = function () {
       if (klingelt) return; klingelt = true;
       try { if (document.documentElement.requestFullscreen && !document.fullscreenElement) document.documentElement.requestFullscreen().catch(function () {}); } catch (e) {}
       $('vorhangLos').classList.add('klingelt'); $('vorhangTitel').textContent = 'Es klingelt …';
-      BUEHNE.aktiv = true; abgenommen = false;
-      klingeln(function () {
+      BUEHNE.aktiv = true; abgenommen = false; aufgelegt = false; anruf++;
+      if (anruf > 1) { BUEHNE.werkzeuge.film_steuern({ aktion: 'schliessen' }); $('vorhangTitel').textContent = 'Videoanruf …'; }
+      (anruf > 1 ? videoKlingeln : klingeln)(function () {
         klingelt = false; vorhang.style.display = 'none'; $('vorhangLos').classList.remove('klingelt'); $('vorhangTitel').textContent = 'Nova anrufen';
         starten(false);
       });
     };
     vorhang.addEventListener('click', losGehen);
     vorhang.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); losGehen(); } });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && anruf > 0 && !conv && !startet && !/input/i.test(e.target.tagName)) { e.preventDefault(); losGehen(); } });
   }
 
   async function senden(t) {
@@ -724,7 +752,7 @@
   knopf.addEventListener('click', function () {
     // Vom Schreiben zur Stimme: Text-Gespräch schliessen, dann mit Mikrofon neu starten.
     if (conv && conv.__text) { var t = conv; ende(); t.endSession().catch(function () {}); starten(false); return; }
-    if (conv) { BUEHNE.aktiv = false; var c = conv; ende('Aufgelegt.'); c.endSession().catch(function () {}); if (BUEHNE.an) $('vorhang').style.display = ''; }
+    if (conv) { BUEHNE.aktiv = false; aufgelegt = false; var c = conv; ende('Aufgelegt.'); c.endSession().catch(function () {}); if (BUEHNE.an) $('vorhang').style.display = ''; }
     else if (BUEHNE.an) $('vorhang').click();
     else starten();
   });
