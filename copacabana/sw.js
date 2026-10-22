@@ -1,6 +1,6 @@
 /* Geschenk Lädeli Copacabana – Offline-Kopie (nur eigene Dateien, kein Korb, keine Eingaben). Netz zuerst, Kopie als Ersatz. */
-const CACHE = 'copacabana-v2';
-const DATEIEN = ['./', './index.html', './manifest.webmanifest', './runde4.js', './runde6.js', './runde7.js', './copa.js', './copa/winkt.jpg', './copa/freut.jpg', './copa/produkte.jpg', './saison/advent.jpg', './saison/halloween.jpg', './besuch/granny.jpg', './besuch/hasi.jpg', './besuch/waefwaef.jpg', './icon-180.png', './icon-192.png'];
+const CACHE = 'copacabana-v3';
+const DATEIEN = ['./runde8.js', './markt.css', './', './index.html', './manifest.webmanifest', './runde4.js', './runde6.js', './runde7.js', './copa.js', './copa/winkt.jpg', './copa/freut.jpg', './copa/produkte.jpg', './saison/advent.jpg', './saison/halloween.jpg', './besuch/granny.jpg', './besuch/hasi.jpg', './besuch/waefwaef.jpg', './icon-180.png', './icon-192.png'];
 const EXTRA = ['../nova/puppe.js', '../nova/puppe.css', '../nova/nova.js', '../nova/seelen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(DATEIEN.concat(EXTRA).map(f => c.add(f).catch(() => null)))).then(() => self.skipWaiting()));

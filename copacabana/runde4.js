@@ -134,7 +134,9 @@
     var t = wk.querySelector('[data-r4=teilen]');
     if (t) t.onclick = function () {
       var url = location.href.split('#')[0] + '#wunsch=' + wunsch().join(',');
-      var text = 'Mein Wunschzettel aus dem Geschenk Lädeli Copacabana 🌴';
+      // Runde 8: Wunschzettel als lesbarer Text (geht in jede Nachricht, auch ohne Link)
+      var text = 'Mein Wunschzettel aus dem Geschenk Lädeli Copacabana 🌴\n' + wunsch().map(function (id) { var w = WAREN.filter(function (x) { return x.id === id; })[0]; return w ? '• ' + w.name + ' (CHF ' + w.preis.toFixed(2) + ')' : ''; }).filter(Boolean).join('\n');
+      if (window.R8K) { var voll = text + '\n\nIm Lädeli anschauen: ' + url; if (navigator.share && !R8K.imRahmen()) { navigator.share({ title: 'Wunschzettel', text: voll }).catch(function () {}); return; } var ib = R8K.datei(voll, 'wunschzettel.txt', { nurText: true, titel: 'Wunschzettel teilen', hinweis: 'Kopiere den Text und schick ihn per WhatsApp, SMS oder Mail.' }); return; }
       if (navigator.share) navigator.share({ title: 'Wunschzettel', text: text, url: url }).catch(function () {});
       else if (navigator.clipboard) navigator.clipboard.writeText(text + ' ' + url).then(function () { toast('Link kopiert. Jetzt einfügen und senden.'); }, function () { prompt('Link kopieren:', url); });
       else prompt('Link kopieren:', url);
@@ -165,6 +167,8 @@
     var txt = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//DR Lab//Copacabana//DE', 'BEGIN:VEVENT', 'UID:' + uid, 'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z',
       'DTSTART;VALUE=DATE:' + start, 'RRULE:FREQ=YEARLY', 'SUMMARY:🎂 Geburtstag ' + n.replace(/[,;\\]/g, ' '), 'DESCRIPTION:Ein kleines Geschenk aus dem Lädeli Copacabana?',
       'BEGIN:VALARM', 'TRIGGER:-P7D', 'ACTION:DISPLAY', 'DESCRIPTION:In einer Woche hat ' + n.replace(/[,;\\]/g, ' ') + ' Geburtstag', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    var dname = 'geburtstag-' + n.toLowerCase().replace(/[^a-z0-9äöü]+/g, '-') + '.ics';
+    if (window.R8K) { R8K.datei(txt, dname, { typ: 'text/calendar', titel: 'Geburtstag merken', hinweis: 'Trag in deinem Kalender von Hand ein: <b>' + d.slice(8, 10) + '.' + d.slice(5, 7) + '.</b> «Geburtstag ' + esc(n) + '», jährlich, Erinnerung eine Woche vorher. Oder kopiere den Kalender-Text.' }); summ([10, 30, 10]); return; } // Runde 8: kein toter Download
     var b = new Blob([txt], { type: 'text/calendar' }), u = URL.createObjectURL(b), a = document.createElement('a');
     a.href = u; a.download = 'geburtstag-' + n.toLowerCase().replace(/[^a-z0-9äöü]+/g, '-') + '.ics'; document.body.appendChild(a); a.click();
     setTimeout(function () { URL.revokeObjectURL(u); a.remove(); }, 1000);
