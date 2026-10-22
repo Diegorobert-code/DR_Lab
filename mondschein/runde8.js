@@ -47,8 +47,8 @@
       ausflugBild: 'posen/hallo.jpg', albumTitel: 'Mondschein-Schatzkiste',
       los: 'wandert durch den Mondschein-Wald. Bis gleich!',
       wartenText: 'Hör eine Geschichte oder spiel etwas, dann gibt es ein Mondsternchen. Danach geht Otti auf Ausflug.',
-      stufen: [[0, 'Träumli', 'posen/winkt.jpg', 'Otti und du, ihr fangt an zu träumen.'], [5, 'Sternensammler', 'posen/lacht.jpg', 'Ihr habt schon viele Sterne gesammelt.'], [15, 'Mondlicht-Hüter', 'posen/hallo.jpg', 'Otti hütet jetzt das Mondlicht für alle im Wald.'], [35, 'Geschichtenweber', 'figur-gross.jpg', 'Aus euren Abenden sind viele Geschichten geworden.'], [70, 'Mondschein-Erzähler', 'posen/schlaeft.jpg', 'Otti ist der grosse Mondschein-Erzähler. Danke für all die Abende.']],
-      funde: [['🌟', 'Eine Sternschnuppe', 'Otti hat sich etwas gewünscht. Was, bleibt sein Geheimnis.'], ['🦉', 'Ein Gruss von Frau Eule', 'Sie hat zweimal «Huhu» gerufen. Das heisst: Schlaf gut.'], ['💧', 'Ein Tautropfen', 'Darin glitzert der ganze Mond.'], ['🧸', 'Ein verlorener Knopf', 'Vielleicht von einem Teddy. Otti bewahrt ihn auf.'], ['🌙', 'Ein Mondsplitter', 'In Wahrheit ein heller Stein. Aber er leuchtet fast wie der Mond.'], ['🪶', 'Eine Wolkenfeder', 'Von der Kissenwolke. Ganz leicht.'], ['🐇', 'Hoppels Fussspur', 'Otti ist ihr gefolgt, bis zum Kleefeld.'], ['🎐', 'Ein Windspiel-Ton', 'Otti hat ihn sich gemerkt und summt ihn leise.'], ['🍃', 'Ein silbernes Blatt', 'Im Mondlicht sieht es aus wie aus Silber.'], ['🦷', 'Ein Glitzerstern vom Zahnböcklein', 'Er ist aus dem Beutel gefallen.'], ['🕯️', 'Ein Glühwürmchen-Licht', 'Es hat Otti nach Hause begleitet.']]
+      stufen: [[0, 'Träumli', 'wachsen/stufe-1.jpg', 'Otti und du, ihr fangt an zu träumen.'], [5, 'Sternensammler', 'wachsen/stufe-2.jpg', 'Ihr habt schon viele Sterne gesammelt.'], [15, 'Mondlicht-Hüter', 'wachsen/stufe-3.jpg', 'Otti hütet jetzt das Mondlicht für alle im Wald.'], [35, 'Geschichtenweber', 'wachsen/stufe-4.jpg', 'Aus euren Abenden sind viele Geschichten geworden.'], [70, 'Mondschein-Erzähler', 'wachsen/stufe-5.jpg', 'Otti ist der grosse Mondschein-Erzähler. Danke für all die Abende.']],
+      fundBilder: true, funde: [['🌟', 'Eine Sternschnuppe', 'Otti hat sich etwas gewünscht. Was, bleibt sein Geheimnis.'], ['🦉', 'Ein Gruss von Frau Eule', 'Sie hat zweimal «Huhu» gerufen. Das heisst: Schlaf gut.'], ['💧', 'Ein Tautropfen', 'Darin glitzert der ganze Mond.'], ['🧸', 'Ein verlorener Knopf', 'Vielleicht von einem Teddy. Otti bewahrt ihn auf.'], ['🌙', 'Ein Mondsplitter', 'In Wahrheit ein heller Stein. Aber er leuchtet fast wie der Mond.'], ['🪶', 'Eine Wolkenfeder', 'Von der Kissenwolke. Ganz leicht.'], ['🐇', 'Hoppels Fussspur', 'Otti ist ihr gefolgt, bis zum Kleefeld.'], ['🎐', 'Ein Windspiel-Ton', 'Otti hat ihn sich gemerkt und summt ihn leise.'], ['🍃', 'Ein silbernes Blatt', 'Im Mondlicht sieht es aus wie aus Silber.'], ['🦷', 'Ein Glitzerstern vom Zahnböcklein', 'Er ist aus dem Beutel gefallen.'], ['🕯️', 'Ein Glühwürmchen-Licht', 'Es hat Otti nach Hause begleitet.']]
     },
     einsetzen: function (N) {
       var home = document.getElementById('s-home'); if (!home) return;
@@ -139,7 +139,7 @@
     '.r8-herz{position:fixed;z-index:2147483603;pointer-events:none;font-size:22px;animation:r8Herz 1.3s ease-out forwards}',
     '@keyframes r8Herz{from{opacity:0;transform:translate(0,0) scale(.6)}20%{opacity:1}to{opacity:0;transform:translate(var(--dx),-90px) scale(1.1)}}',
     /* Kontextmenü (lange drücken) */
-    '.r8-menue{position:fixed;inset:0;z-index:2147483602;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;background:rgba(4,8,24,.55);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}',
+    '.r8-menue{position:fixed;inset:0;z-index:2147483602;display:flex;flex-direction:column;align-items:center;justify-content:safe center;overflow-y:auto;overscroll-behavior:contain;gap:16px;padding:24px;background:rgba(4,8,24,.55);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}',
     '.r8-menue img{width:min(46vw,190px);height:min(46vw,190px);border-radius:28px;object-fit:cover;border:3px solid var(--r7-gold,#f2c14e);box-shadow:0 20px 50px rgba(0,0,0,.45)}',
     '.r8-menue ul{list-style:none;margin:0;padding:6px;width:min(100%,300px);border-radius:16px;background:rgba(24,34,72,.94);border:1px solid rgba(255,255,255,.14);box-shadow:0 20px 50px rgba(0,0,0,.45)}',
     '.r8-menue li+li{border-top:1px solid rgba(255,255,255,.1)}',
@@ -683,6 +683,12 @@
   var WX = C.wachsen || null;
   var wachsKarten = [];
   function lichter() { return hol('licht', 0); }
+  /* Fundstück-Bild (wachsen/fund-NN.jpg), Emoji als Ersatz, wenn das Bild fehlt oder nicht lädt */
+  function fundIcon(i, f, px) {
+    if (!WX.fundBilder) return f[0];
+    var n = i + 1; return '<img class="r8-fundbild" data-e="' + esc(f[0]) + '" alt="" width="' + px + '" height="' + px + '" src="wachsen/fund-' + (n < 10 ? '0' : '') + n + '.jpg" style="width:min(' + px + 'px,26vh);height:min(' + px + 'px,26vh);border-radius:22%;object-fit:cover;display:block;margin:0 auto">';
+  }
+  document.addEventListener('error', function (v) { var t = v.target; if (t && t.classList && t.classList.contains('r8-fundbild')) { var sp = document.createElement('span'); sp.textContent = t.dataset.e || ''; t.replaceWith(sp); } }, true);
   function stufeVon(n) { var s = 0; WX.stufen.forEach(function (x, i) { if (n >= x[0]) s = i; }); return s; }
   function licht(n, grund) {
     if (!WX) return;
@@ -715,7 +721,7 @@
   }
   function fundZeigen(i, neu) {
     var f = WX.funde[i];
-    var e = ebene(el('<div class="r8-menue" aria-label="Fundstück"><div class="r8-karte r8-ein-menue" style="max-width:400px;width:100%;text-align:center"><img alt="" src="' + esc(WX.ausflugBild || C.bild) + '" style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid var(--r7-gold,#f2c14e)"><div style="font-size:56px;line-height:1.2" aria-hidden="true">' + f[0] + '</div><h2 style="text-align:center">' + (neu ? esc(F) + ' bringt mit: ' : '') + esc(f[1]) + '</h2><p style="font-size:17px;line-height:1.55">' + esc(f[2]) + '</p><div class="r8-reihe" style="justify-content:center">' + (kannReden() ? '<button type="button" class="r8-btn" data-a="hoer">🔊 Vorlesen</button>' : '') + '<button type="button" class="r8-btn voll" data-a="zu">' + (neu ? 'Ins Album legen' : 'Schliessen') + '</button></div></div></div>'), function () { still(); });
+    var e = ebene(el('<div class="r8-menue" aria-label="Fundstück"><div class="r8-karte r8-ein-menue" style="max-width:400px;width:100%;text-align:center"><img alt="" src="' + esc(WX.ausflugBild || C.bild) + '" style="width:min(120px,20vh);height:min(120px,20vh);border-radius:50%;object-fit:cover;border:3px solid var(--r7-gold,#f2c14e)"><div style="font-size:56px;line-height:1.2;margin:8px 0" aria-hidden="true">' + fundIcon(i, f, 168) + '</div><h2 style="text-align:center">' + (neu ? esc(F) + ' bringt mit: ' : '') + esc(f[1]) + '</h2><p style="font-size:17px;line-height:1.55">' + esc(f[2]) + '</p><div class="r8-reihe" style="justify-content:center">' + (kannReden() ? '<button type="button" class="r8-btn" data-a="hoer">🔊 Vorlesen</button>' : '') + '<button type="button" class="r8-btn voll" data-a="zu">' + (neu ? 'Ins Album legen' : 'Schliessen') + '</button></div></div></div>'), function () { still(); });
     e.el.addEventListener('click', function (v) { var b = v.target.closest('[data-a]'); if (!b) { if (v.target === e.el) e.zu(); return; } if (b.getAttribute('data-a') === 'hoer') sag(f[1] + '. ' + f[2]); else e.zu(); });
     e.el.querySelector('[data-a=zu]').focus();
   }
@@ -731,7 +737,7 @@
   function album() {
     var al = hol('album', []);
     var node = el('<div class="r8-menue" aria-label="Sammelalbum"><div class="r8-karte" style="max-width:440px;width:100%;max-height:86vh;overflow:auto"><h2>📒 ' + esc(WX.albumTitel || ('Fundstücke von ' + F)) + '</h2><p class="r8-leise">' + al.length + ' von ' + WX.funde.length + ' gesammelt. Jeden Tag kann ein neues dazukommen.</p><div class="r8-album">' +
-      WX.funde.map(function (f, i) { var h = al.filter(function (x) { return x.i === i; })[0]; return h ? '<button type="button" data-i="' + i + '" aria-label="' + esc(f[1]) + '"><span aria-hidden="true">' + f[0] + '</span><small>' + esc(f[1]) + '</small></button>' : '<span class="r8-zu-finden" aria-hidden="true">?</span>'; }).join('') +
+      WX.funde.map(function (f, i) { var h = al.filter(function (x) { return x.i === i; })[0]; return h ? '<button type="button" data-i="' + i + '" aria-label="' + esc(f[1]) + '"><span aria-hidden="true">' + fundIcon(i, f, 56) + '</span><small>' + esc(f[1]) + '</small></button>' : '<span class="r8-zu-finden" aria-hidden="true">?</span>'; }).join('') +
       '</div><div class="r8-reihe"><button type="button" class="r8-btn voll" data-z>Schliessen</button></div></div></div>');
     var e = ebene(node);
     node.addEventListener('click', function (v) { var b = v.target.closest('[data-i]'); if (b) { fundZeigen(+b.getAttribute('data-i'), false); return; } if (v.target.closest('[data-z]') || v.target === node) e.zu(); });
@@ -817,6 +823,25 @@
   H8.licht = licht; H8.sos = sos; H8.album = function () { if (WX) album(); }; H8.lichter = lichter; H8.stufe = function () { return WX ? WX.stufen[stufeVon(lichter())] : null; };
   window.R8 = H8;
 
+
+  /* Maskottchen: kleines rundes Icon statt dunkler Pose im Kopf und in der Begrüssung (nur Erwachsenen-Apps) */
+  function maskottchen() {
+    var M = C.maskottchen; if (!M) return;
+    var wenn = M.wenn ? new RegExp(M.wenn) : null, plan = 0;
+    function setz() {
+      plan = 0;
+      document.querySelectorAll(M.ziele).forEach(function (im) {
+        var s = im.getAttribute('src') || '';
+        if (s === M.bild || (wenn && !wenn.test(s))) return;
+        im.setAttribute('src', M.bild); im.classList.add('r8-maskottchen'); im.classList.remove('echt');
+        if (im.dataset.pose) im.removeAttribute('data-pose');
+        if (im.dataset.basis) im.dataset.basis = M.bild;
+        if (im.dataset.grundbild) im.dataset.grundbild = M.bild;
+      });
+    }
+    setz();
+    try { new MutationObserver(function () { if (!plan) plan = requestAnimationFrame(setz); }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] }); } catch (e) {}
+  }
   function start() {
     var N = {};
     try { var r7 = R7(); if (r7 && r7.voll && !r7.voll.r8) { var alt = r7.voll; r7.voll = function (h, z) { var v = alt(h, z); try { if (!v.el.getAttribute('aria-label')) v.el.setAttribute('aria-label', F); } catch (e) {} return v; }; r7.voll.r8 = true; } } catch (e) {}
@@ -828,6 +853,7 @@
     (C.funktionen || []).forEach(function (f) { try { var n = f.bau(H8); if (n) { N[f.id] = n; n.setAttribute('data-r8', f.id); } } catch (e) { if (window.console) console.warn('Runde 8', f.id, e); } });
     try { C.einsetzen(N, H8); } catch (e) { if (window.console) console.warn('Runde 8 einsetzen', e); }
     if (W && W.kette) { var v = 0; (function warte() { if (document.querySelector(W.kette) && document.querySelector(W.kette).children.length) ketteVerbinden(); else if (v++ < 50) setTimeout(warte, 200); })(); }
+    try { maskottchen(); } catch (e) { if (window.console) console.warn('Runde 8 Maskottchen', e); }
     try { figurVerbinden(); } catch (e) { if (window.console) console.warn('Runde 8 Figur', e); }
     try { kuerzel(); } catch (e) {}
     try { schritteVerbinden(); } catch (e) {}
