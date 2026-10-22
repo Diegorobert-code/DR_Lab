@@ -325,7 +325,7 @@ window.R8_CFG = {"k":"hasi","offlineText":"Offline. Hasis Laden bleibt offen."};
     var c = [
       ':root{color-scheme:light;--r7-gold:' + T.akzT + ';--r7-gold2:' + T.akzT + ';--r7-tinte:' + T.text + ';--r7-leise:' + T.leise + ';--r7-schatten:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.06);--r8w-akzent:' + T.akz + ';--r8w-auf:' + T.auf + ';--r8-sos:' + T.akz + '}',
       'html,body{background:' + T.bg + '!important;color:' + T.text + '}',
-      '.r7-himmel{display:none!important}',
+      '.r7-himmel,.film-aurora,#filmFunken,.film-stern,.film-funke{display:none!important}',
       '.r6{--r6g:' + T.akz + ';--r6g2:' + T.akzT + ';--r6t:' + T.text + ';--r6m:' + T.leise + '}',
       '.r6-karte,.r7-karte{background:' + T.karte + '!important;border:1px solid ' + T.rand + '!important;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.05)!important;color:' + T.text + '}',
       '.r7-karte h2,.r6-karte h2{color:' + T.text + '!important}',
