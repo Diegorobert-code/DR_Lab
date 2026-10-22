@@ -100,6 +100,16 @@ input,textarea{background:var(--nacht);color:var(--text);border:1px solid var(--
 .schleier{position:fixed;inset:0;background:rgba(10,6,30,.55);z-index:25;display:none}
 .schleier.offen{display:block}
 footer{margin-top:40px;color:var(--mute);font-size:13px;text-align:center}
+.lad{margin:22px 0 26px}
+.lad h2{font-family:var(--disp);color:var(--gold2);margin:0 0 4px;font-size:clamp(22px,4.5vw,30px)}
+.lad-sub,.lad-info{color:var(--mute);margin:0 0 12px;max-width:60ch}
+.lad-info{font-size:14px;margin-top:10px}
+.lad-video{display:block;width:100%;max-width:360px;aspect-ratio:3/4;object-fit:cover;border-radius:16px;border:3px solid var(--gold);background:var(--nacht2);margin-bottom:14px}
+.lad-reihe{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.lad-reihe figure{flex:0 0 140px;margin:0;scroll-snap-align:start}
+.lad-reihe img{width:140px;height:186px;object-fit:cover;border-radius:12px;display:block;border:1px solid var(--nacht3)}
+.lad-reihe figcaption{font-size:13px;color:var(--mute);margin-top:4px;text-align:center}
+@media(min-width:760px){.lad{display:grid;grid-template-columns:360px 1fr;gap:6px 22px;align-items:start}.lad h2,.lad-sub{grid-column:1/-1}.lad-video{grid-row:span 2}.lad-reihe{flex-wrap:wrap;overflow:visible}}
 </style>
 <link rel="stylesheet" href="../nova/puppe.css">
 </head>
@@ -122,6 +132,21 @@ footer{margin-top:40px;color:var(--mute);font-size:13px;text-align:center}
     <img id="copaBild" class="copa" src="copa/winkt.jpg" alt="Copa, der bunte Ara des Lädelis, winkt dir zu. Antippen zum Grüssen." width="768" height="768" role="button" tabindex="0">
     <div class="bubble"><b>Olá, ich bin Copa!</b> <span id="copaSatz">Schau dich um.</span> Leg in den Korb, was Freude macht. Auf Wunsch packen wir es als Geschenk ein und legen eine Karte mit deinem Gruss dazu.</div>
   </div>
+
+  <section class="lad" aria-labelledby="ladTitel">
+    <h2 id="ladTitel">Unser Lädeli</h2>
+    <p class="lad-sub">Komm vorbei und stöbere: Ballone, Plüschtiere, Karten für jeden Anlass und viele kleine Freuden.</p>
+    <video class="lad-video" src="laden/rundgang.mp4" poster="laden/poster.jpg" muted autoplay loop playsinline preload="metadata" aria-label="Kurzer Rundgang durch das Lädeli"></video>
+    <div class="lad-reihe" role="list" aria-label="Einblicke ins Lädeli">
+      <figure role="listitem"><img src="laden/laden-1.jpg" alt="Regale mit Spielwaren und Geschenken" loading="lazy" width="360" height="480"><figcaption>Spielwaren</figcaption></figure>
+      <figure role="listitem"><img src="laden/laden-2.jpg" alt="Schaufenster mit Piñatas" loading="lazy" width="360" height="480"><figcaption>Party &amp; Piñatas</figcaption></figure>
+      <figure role="listitem"><img src="laden/laden-3.jpg" alt="Grosse Wand mit Grusskarten" loading="lazy" width="360" height="480"><figcaption>Grusskarten</figcaption></figure>
+      <figure role="listitem"><img src="laden/laden-4.jpg" alt="Eingang mit Spielen und Schirmen" loading="lazy" width="360" height="480"><figcaption>Spiele &amp; Schirme</figcaption></figure>
+      <figure role="listitem"><img src="laden/laden-5.jpg" alt="Ballone an der Decke und Plüschtiere" loading="lazy" width="360" height="480"><figcaption>Ballone</figcaption></figure>
+      <figure role="listitem"><img src="laden/laden-6.jpg" alt="Ständer mit Plüschtieren" loading="lazy" width="360" height="480"><figcaption>Plüschtiere</figcaption></figure>
+    </div>
+    <p class="lad-info">Adresse und Öffnungszeiten folgen.</p>
+  </section>
 
   <div class="filter" id="filter" role="group" aria-label="Kategorien"></div>
   <div class="regal" id="regal"></div>
