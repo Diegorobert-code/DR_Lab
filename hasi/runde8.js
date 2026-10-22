@@ -160,6 +160,7 @@ window.R8_CFG = {"k":"hasi","offlineText":"Offline. Hasis Laden bleibt offen."};
     wZeigen(true);
     if (neu > vor) {
       toast(W8.lichtE + ' ' + W8.name + ' ist jetzt: ' + W8.stufen[neu][1] + '!');
+      if (W8.stufenBilder && window.R7) R7.blatt(W8.name + ' ist gewachsen', '<div class="r8w-fund"><img src="' + W8.stufenBilder[neu] + '" alt="' + esc(W8.name + ', ' + W8.stufen[neu][1]) + '" width="240" height="240"></div><h3 class="r8w-ft">Stufe ' + (neu + 1) + ': ' + esc(W8.stufen[neu][1]) + '</h3><p class="r8w-fx">Danke für deine kleinen Schritte. ' + esc(W8.name) + ' freut sich mit dir.</p>');
       if (window.R7) R7.feier(W8.karte.querySelector('.r8w-bild'), 14);
     } else toast(W8.lichtE + ' +1 ' + W8.licht);
   }
@@ -175,6 +176,7 @@ window.R8_CFG = {"k":"hasi","offlineText":"Offline. Hasis Laden bleibt offen."};
     var se = serie(s);
     c.querySelector('.r8w-serie').textContent = se ? '🔥 ' + se + (se === 1 ? ' Tag' : ' Tage') + ' dabei · 🌙 ein Ruhetag pro Woche zählt mit' : '🌙 Kein Druck: ein Ruhetag pro Woche zählt mit.';
     var a = c.querySelector('.r8w-ausflug'), bild = c.querySelector('.r8w-bild');
+    if (W8.stufenBilder && W8.stufenBilder[st]) { var bi = bild.querySelector('img'), soll = W8.stufenBilder[st]; if (bi.getAttribute('src') !== soll) { bi.src = soll; bi.alt = W8.name + ', Stufe ' + (st + 1) + ': ' + W8.stufen[st][1]; } }
     bild.classList.toggle('weg', false);
     if (s.reise && s.ausflugTag !== h) {
       var zurueck = Date.now() - s.reise.ab > (W8.reiseMs || 45000);
@@ -196,7 +198,7 @@ window.R8_CFG = {"k":"hasi","offlineText":"Offline. Hasis Laden bleibt offen."};
     wZeigen(false);
   }
   function zeigeFund(f, i, neu) {
-    var bild = W8.ausflugBilder[i % W8.ausflugBilder.length];
+    var bild = neu && W8.heimkehrBild ? W8.heimkehrBild : W8.ausflugBilder[i % W8.ausflugBilder.length];
     var html = '<div class="r8w-fund"><img src="' + bild[0] + '" alt="' + esc(bild[1]) + '" width="240" height="240"><span class="r8w-fe" aria-hidden="true">' + f[1] + '</span></div>' +
       '<h3 class="r8w-ft">' + esc(f[0]) + '</h3><p class="r8w-fx">' + esc(f[2]) + '</p>' +
       (W8.stumm ? '' : '<div class="r7-reihe"><button type="button" class="r7-btn voll r8w-hoer">🔊 Vorlesen</button></div>');
@@ -226,7 +228,7 @@ window.R8_CFG = {"k":"hasi","offlineText":"Offline. Hasis Laden bleibt offen."};
     cfg.karte = c;
     c.querySelector('.r8w-alb').onclick = album;
     c.querySelector('.r8w-wie').onclick = function () {
-      window.R7 && R7.blatt('So wächst ' + cfg.name, '<p class="r7-p">' + esc(cfg.wie) + '</p><ol class="r8w-stufen">' + cfg.stufen.map(function (x) { return '<li><b>' + esc(x[1]) + '</b> ab ' + x[0] + ' ' + esc(cfg.licht) + '</li>'; }).join('') + '</ol><p class="r7-leise">Nichts geht verloren, nichts geht kaputt. Ein Ruhetag pro Woche zählt mit. Alles bleibt nur auf diesem Gerät.</p>');
+      window.R7 && R7.blatt('So wächst ' + cfg.name, '<p class="r7-p">' + esc(cfg.wie) + '</p><ol class="r8w-stufen">' + cfg.stufen.map(function (x, i) { return '<li>' + (cfg.stufenBilder ? '<img src="' + cfg.stufenBilder[i] + '" alt="" width="48" height="48" loading="lazy" style="width:48px;height:48px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:10px">' : '') + '<b>' + esc(x[1]) + '</b> ab ' + x[0] + ' ' + esc(cfg.licht) + '</li>'; }).join('') + '</ol><p class="r7-leise">Nichts geht verloren, nichts geht kaputt. Ein Ruhetag pro Woche zählt mit. Alles bleibt nur auf diesem Gerät.</p>');
     };
     var st = document.createElement('style');
     st.textContent = [
@@ -434,6 +436,7 @@ window.R8_CFG = {"k":"hasi","offlineText":"Offline. Hasis Laden bleibt offen."};
   var WER_RE = { mich: /alle|privat|selbst|kopf|tanz/i, familie: /famil|eltern|kind|hund/i, firma: /firm|team|praxen|läden|laden|verein|klein|selbstständ|lehrer|kurse|märkt/i, kinder: /kind|schul/i };
   var wahl = { b: R.hol('tueteB', 'gratis'), w: R.hol('tueteW', 'mich') };
   var tk = el('<section class="r7 r7-karte r8-tuete-k" aria-labelledby="r8t-t"><p class="r7-eb">Wie eine Überraschungstüte</p><h2 id="r8t-t">🛍 Werkzeug-Wundertüte</h2>' +
+    '<img class="r8-tuete-bild" src="r8bilder/wundertuete.jpg" alt="Hasi mit einer Wundertüte" width="96" height="96" loading="lazy" style="float:right;width:96px;height:96px;border-radius:18px;object-fit:cover;margin:0 0 8px 12px">' +
     '<p class="r7-p">Sag Hasi dein Budget. Er packt dir drei Werkzeuge in eine Papiertüte. Was drin ist, siehst du erst beim Öffnen.</p>' +
     '<p class="r8-frage" id="r8t-b">Budget</p><div class="r7-reihe r8-tb" role="radiogroup" aria-labelledby="r8t-b" style="margin-top:0"></div>' +
     '<p class="r8-frage" id="r8t-w">Für wen</p><div class="r7-reihe r8-tw" role="radiogroup" aria-labelledby="r8t-w" style="margin-top:0"></div>' +
@@ -497,7 +500,7 @@ window.R8_CFG = {"k":"hasi","offlineText":"Offline. Hasis Laden bleibt offen."};
   function zeigeInhalt(neu) {
     ul.innerHTML = '';
     drin.forEach(function (x, i) { ul.appendChild(karte(x, i, neu)); });
-    if (!drin.length) ul.appendChild(el('<li class="r7-leer"><img class="r7-figur" src="posen/daumen.jpg" alt="Hasi zeigt den Daumen" loading="lazy" width="72" height="72"><p>Die Tüte ist leer. Hasi verbeugt sich und faltet sie für das nächste Mal.</p></li>'));
+    if (!drin.length) ul.appendChild(el('<li class="r7-leer"><img class="r7-figur" src="r8bilder/wundertuete.jpg" alt="Hasi mit leerer Wundertüte" loading="lazy" width="72" height="72"><p>Die Tüte ist leer. Hasi verbeugt sich und faltet sie für das nächste Mal.</p></li>'));
   }
   function ja(x, li) {
     var vor = kasten().slice(), vorDrin = drin.slice();
@@ -667,8 +670,10 @@ window.R8_CFG = {"k":"hasi","offlineText":"Offline. Hasis Laden bleibt offen."};
 
   /* ---------- 4) Wächst mit dir (Vorbild: Finch). Hasi spricht nie: Ausflug nur als Bild mit kurzer Bildunterschrift ---------- */
   var WCFG = {
-    k: 'hasi', name: 'Hasi', licht: 'Rüebli', lichtE: '🥕', bild: 'posen/winken.jpg', stumm: true,
-    stufen: [[0, 'Lehrling'], [5, 'Werkbank-Hase'], [15, 'Ladenhüter'], [35, 'Meister-Hasi'], [70, 'Goldene Pfote']],
+    k: 'hasi', name: 'Hasi', licht: 'Rüebli', lichtE: '🥕', bild: 'r8bilder/stufe-1.jpg', stumm: true,
+    stufen: [[0, 'Lehrling'], [5, 'Werkbank-Hase'], [15, 'Tüftler'], [35, 'Meister-Hase'], [70, 'Goldene Pfote']],
+    stufenBilder: ['r8bilder/stufe-1.jpg', 'r8bilder/stufe-2.jpg', 'r8bilder/stufe-3.jpg', 'r8bilder/stufe-4.jpg', 'r8bilder/stufe-5.jpg'],
+    heimkehrBild: ['r8bilder/ausflug.jpg', 'Hasi ist zurück vom Ausflug'],
     wie: 'Jeder kleine Schritt im Laden (Finder fertig, Wundertüte geöffnet, Würfel angeschaut, Code lesen lassen, auf der Werkbank etwas gebaut) gibt Hasi ein Rüebli. Mit genug Rüebli wird er Meister. Einmal am Tag geht er los und bringt ein Fundstück mit. Er erzählt nichts, er zeigt es dir.',
     schritte: [['#lesen', 'code'], ['#wb-mit', 'werkbank'], ['.r7-s-e', 'suchen'], ['.wuerfel', 'wuerfel'], ['#bestellen', 'brief']],
     ausflugBilder: [['posen/daumen.jpg', 'Hasi hält den Daumen hoch'], ['posen/huepfen.jpg', 'Hasi hüpft vor Freude'], ['posen/lupe.jpg', 'Hasi schaut durch die Lupe'], ['posen/passt.jpg', 'Hasi zeigt: passt'], ['posen/winken.jpg', 'Hasi winkt']],
