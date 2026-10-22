@@ -94,7 +94,9 @@
     lunge: 'M12 4v6.5|M12 10.5c-1 0-2-.8-2-.8|M12 10.5c1 0 2-.8 2-.8|M9.3 8C6.8 8 4.5 11.6 4.5 16c0 2.2 1.2 3.5 3 3.5 2.2 0 2.5-1.7 2.5-4V8.7a.7.7 0 0 0-.7-.7z|M14.7 8c2.5 0 4.8 3.6 4.8 8 0 2.2-1.2 3.5-3 3.5-2.2 0-2.5-1.7-2.5-4V8.7a.7.7 0 0 1 .7-.7z',
     person: 'c:12,5,2.2|M8.5 21v-6.5L7 14V10a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v4l-1.5.5V21|M12 14.5V21',
     spiegel: 'M12 3.5c3.2 0 5.5 2.9 5.5 6.6S15.2 16.8 12 16.8s-5.5-3-5.5-6.7S8.8 3.5 12 3.5z|M12 16.8v3.7|M8.8 20.5h6.4|M9.6 7.4c-.8.7-1.2 1.6-1.3 2.7',
-    stetho: 'M6 3.5v5a4 4 0 0 0 8 0v-5|M10 12.5v2.8a4.5 4.5 0 0 0 9 0v-1.6|c:19,11.8,1.9|M5 3.5h2|M13 3.5h2'
+    stetho: 'M6 3.5v5a4 4 0 0 0 8 0v-5|M10 12.5v2.8a4.5 4.5 0 0 0 9 0v-1.6|c:19,11.8,1.9|M5 3.5h2|M13 3.5h2',
+    rettung: 'c:12,12,8.5|c:12,12,3.8|M9.3 9.3L6 6|M14.7 9.3L18 6|M9.3 14.7L6 18|M14.7 14.7L18 18',
+    glas: 'M8 3.5h8|M8.5 3.5v2.2c-1.6.8-2.5 2.2-2.5 4V18a2.5 2.5 0 0 0 2.5 2.5h7a2.5 2.5 0 0 0 2.5-2.5V9.7c0-1.8-.9-3.2-2.5-4V3.5|c:10.5,14.5,1.6|c:14,12.5,1.4|c:13.8,16.6,1.3'
   };
   var E = {
     '✨': 'funken', '🌟': 'funken', '💫': 'funken',
@@ -115,7 +117,7 @@
     '🔔': 'glocke', '📅': 'kalender', '🗓️': 'kalender', '📆': 'kalender', '🏠': 'haus', '🏡': 'haus',
     '🎧': 'kopfhoerer', '💧': 'tropfen', '🍎': 'apfel', '🍏': 'apfel', '🎨': 'pinsel', '👪': 'menschen', '👨‍👩‍👧': 'menschen',
     '🧒': 'kind', '🧠': 'gehirn', '🌬️': 'wind', '🌱': 'pflanze', '🪴': 'pflanze', '🧘': 'figur', '🤸': 'figur', '🏃': 'figur',
-    '🗺️': 'karte', '🎯': 'ziel', '⚡': 'blitz', '🛡️': 'schild', '🎈': 'ballon', '🖼️': 'tafel', '🪺': 'nest', '🌤️': 'sonnewolke', '⛅': 'sonnewolke', '🏮': 'laterne', '👂': 'ohr', '🕯️': 'kerze', '🥁': 'trommel', '🦶': 'fuss', '🧪': 'kolben', '🧺': 'korb', '🪶': 'feder', '🫁': 'lunge', '🫶': 'herz', '🧍': 'person', '🪞': 'spiegel', '🩺': 'stetho', '📺': 'tafel', '🖥️': 'tafel'
+    '🗺️': 'karte', '🎯': 'ziel', '⚡': 'blitz', '🛡️': 'schild', '🎈': 'ballon', '🖼️': 'tafel', '🪺': 'nest', '🌤️': 'sonnewolke', '⛅': 'sonnewolke', '🏮': 'laterne', '👂': 'ohr', '🕯️': 'kerze', '🥁': 'trommel', '🦶': 'fuss', '🧪': 'kolben', '🧺': 'korb', '🪶': 'feder', '🫁': 'lunge', '🫶': 'herz', '🧍': 'person', '🪞': 'spiegel', '🩺': 'stetho', '🆘': 'rettung', '🛟': 'rettung', '🫙': 'glas', '📺': 'tafel', '🖥️': 'tafel'
   };
   var RE = /^\s*((?:\p{Extended_Pictographic}|\p{Regional_Indicator})(?:️|⃣|\p{Emoji_Modifier}|‍(?:\p{Extended_Pictographic}))*)\s*/u;
 
