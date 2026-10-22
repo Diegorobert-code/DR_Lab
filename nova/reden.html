@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-22-08">
+<meta name="stand" content="2026-10-22-09">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -203,7 +203,7 @@
     var a = document.createElement('a'); a.href = '?f=' + encodeURIComponent(k); a.setAttribute('aria-label', 'Mit ' + FIGUREN[k].name + ' reden');
     if (k === KEY) { a.className = 'an'; setTimeout(function () { a.scrollIntoView({ inline: 'center', block: 'nearest' }); }, 50); }
     var im = document.createElement('img'); im.src = BILDCHEN[k]; im.alt = ''; a.appendChild(im);
-    a.addEventListener('click', function (e) { e.preventDefault(); if (conv) { var c = conv; ende(); c.endSession().catch(function () {}); } location.replace(a.href); });
+    a.addEventListener('click', function (e) { e.preventDefault(); vonHand = true; if (conv) { var c = conv; ende(); c.endSession().catch(function () {}); } location.replace(a.href); });
     $('wahl').appendChild(a);
   });
   $('name').textContent = NAME; $('vname').textContent = NAME;
@@ -466,7 +466,8 @@
   async function starten(nurText) {
     if (startet || conv) return;
     startet = true; knopfZeigen();
-    var nr = ++sitzung;
+    var nr = ++sitzung, weg = nurText ? null : kurzWeg();
+    vonHand = false;
     status.textContent = NAME + ' wacht auf …'; hinweis.textContent = '';
     if (!nurText) try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -487,17 +488,24 @@
           film_zeigen: BUEHNE.werkzeuge.film_zeigen, film_steuern: BUEHNE.werkzeuge.film_steuern, kiverse_zeigen: BUEHNE.werkzeuge.kiverse_zeigen, auflegen: auflegen },
         dynamicVariables: variablen(),
         // Auf der Bühne nimmt Nova ab wie am Telefon; nach einer abgerissenen Verbindung ist sie still wieder da, bis Diego sie anspricht (nach 30 Min. verbindet sie still neu, siehe unten).
-        overrides: BUEHNE.an && !nurText ? { agent: { firstMessage: begruessung() } } : undefined,
-        onConnect: function () { if (BUEHNE.an) abgenommen = true; status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); hopsen(); },
+        overrides: BUEHNE.an && !nurText ? { agent: { firstMessage: begruessung() } } : weg ? { agent: { firstMessage: weiterBegr() } } : undefined,
+        onConnect: function () { if (BUEHNE.an) abgenommen = true;
+          if (weg) setTimeout(function () { if (conv) try { conv.sendContextualUpdate('Diego war nur kurz weg (' + Math.max(1, Math.round((Date.now() - weg.zeit) / 60000)) + ' Min.). Kein neues Hallo, keine Vorstellung: einfach weitermachen, wo ihr wart. Zuletzt gesagt:\n' + weg.zeilen.join('\n')); } catch (x) {} }, 300); status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); hopsen(); },
         onDisconnect: function () {
           if (nr === sitzung && maltSeit) { maltSeit = 0; ende('Verbindung weg, das Bild kam nicht an. Nochmal 🎨'); return; }
           // Bühne: reisst die Verbindung, ist Nova nach zwei Sekunden still wieder da. Der Film läuft weiter.
           if (nr === sitzung && BUEHNE.aktiv && !aufgelegt && !nurText) { ende('Nova verbindet neu …'); setTimeout(function () { if (BUEHNE.aktiv && !conv && !startet) starten(false); }, 2000); return; }
+          // Sonst bleibt das Gespräch an, bis Diego den Knopf drückt: reisst es ab, ruft Nova still zurück (sobald die App wieder offen ist).
+          if (nr === sitzung && KEY === 'nova' && !BUEHNE.an && !nurText && !vonHand && weiterVersuche < 3) {
+            weiterVersuche++; ende('Kurz weg … ich bin gleich wieder da.');
+            var zurueck = function () { if (document.hidden) { document.addEventListener('visibilitychange', zurueck, { once: true }); return; } setTimeout(function () { if (!conv && !startet && !vonHand) starten(false); }, 1200); };
+            zurueck(); return;
+          }
           if (nr === sitzung) ende(nurText ? 'Schreib einfach weiter, ich bin gleich wieder da.' : 'Bis bald! Tipp auf den Knopf, dann bin ich wieder da.'); },
         onError: function (m) { hinweis.textContent = 'Fehler: ' + (m || 'unbekannt'); },
         onMessage: function (m) {
           if (m && m.source === 'user' && eigene.indexOf(m.message) >= 0) { eigene.splice(eigene.indexOf(m.message), 1); return; }
-          if (m && m.source === 'user') $('chips').innerHTML = '';
+          if (m && m.source === 'user') { $('chips').innerHTML = ''; weiterVersuche = 0; }
           if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message);
           if (BUEHNE.an && m && m.message && m.source !== 'user') BUEHNE.untertitel(m.message); },
         onModeChange: function (m) {
@@ -529,7 +537,23 @@
     }
   }
 
+  // Kurz weg (bis 30 Min.): Nova sagt kein neues Hallo, sondern macht einfach weiter, wo ihr wart.
+  var PAUSE = 'pause_' + KEY, vonHand = false, weiterVersuche = 0;
+  var WEITER = ['Ja, bin da. Wie geht\'s weiter?', 'Yes, ich bin da. Wo waren wir?', 'Da bin ich wieder. Weiter?', 'Ja? Ich bin da.', 'Bin zurück. Was jetzt?',
+    'Ja, yes, ich bin dran.', 'Okay, wo waren wir stehen geblieben?', 'Hier. Was als Nächstes?', 'Ja, ich hör dich. Weiter?', 'Wieder da. Und?'];
+  function kurzWeg() {
+    if (KEY !== 'nova' || BUEHNE.an) return null;
+    var p = hol(PAUSE);
+    return p && p.zeilen && p.zeilen.length && Date.now() - p.zeit < 30 * 60000 ? p : null;
+  }
+  function weiterBegr() {
+    var alt = ''; try { alt = localStorage.getItem(PAUSE + '_begr') || ''; } catch (e) {}
+    var w = WEITER.filter(function (x) { return x !== alt; }), b = w[Math.floor(Math.random() * w.length)];
+    try { localStorage.setItem(PAUSE + '_begr', b); } catch (e) {}
+    return b;
+  }
   function ende(t) {
+    if (conv && !conv.__text && KEY === 'nova' && jetztGesagt.length) try { localStorage.setItem(PAUSE, JSON.stringify({ zeit: Date.now(), zeilen: jetztGesagt.slice(-8) })); } catch (e) {}
     if (conv) merken();
     conv = null; startet = false;
     buehne.classList.remove('hoert', 'spricht');
@@ -905,6 +929,7 @@
   knopf.addEventListener('click', function () {
     // Vom Schreiben zur Stimme: Text-Gespräch schliessen, dann mit Mikrofon neu starten.
     if (conv && conv.__text) { var t = conv; ende(); t.endSession().catch(function () {}); starten(false); return; }
+    if (conv || startet) vonHand = true;
     if (conv) { BUEHNE.aktiv = false; aufgelegt = false; var c = conv; ende('Aufgelegt.'); c.endSession().catch(function () {}); if (BUEHNE.an) $('vorhang').style.display = ''; }
     else if (BUEHNE.an) $('vorhang').click();
     else starten();
