@@ -80,7 +80,7 @@ section.panel.on{display:block}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
 .chip{border:1px solid #c9dcd8;background:#fff;color:var(--navy);border-radius:99px;padding:8px 12px;min-height:40px;font:600 14px/1.1 var(--font);cursor:pointer}
 .chip small{display:block;font-weight:500;font-size:11px;color:var(--muted)}
-.mess{margin:4px 0 10px;padding:10px;border-radius:14px;background:rgba(39,146,220,.06);border:1px solid #c9dcd8}.mess .mz{display:flex;align-items:center;gap:6px;margin:4px 0}.mess .mz b{width:62px;font-size:14px}.mess .mz button{flex:1;min-height:38px;border:1px solid #c9dcd8;background:#fff;border-radius:10px;font:600 15px var(--font);color:var(--navy);cursor:pointer}.mess .mz button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.mess{margin:4px 0 10px;padding:10px;border-radius:14px;background:rgba(39,146,220,.06);border:1px solid #c9dcd8}.mess .mz{display:flex;align-items:center;gap:6px;margin:4px 0}.mess .mz b{width:62px;font-size:14px}.mess .mz button{flex:1;min-height:38px;border:1px solid #c9dcd8;background:#fff;border-radius:10px;font:600 15px var(--font);color:var(--navy);cursor:pointer}.mess .mz button[aria-pressed="true"]{background:var(--navy);color:#fff}.mess .kb{height:8px;border-radius:4px;background:#e3eceb;margin:2px 0 6px;overflow:hidden}.mess .kb i{display:block;height:100%;background:var(--navy)}
 .palgr{display:flex;flex-wrap:wrap;gap:6px}.palsub{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;padding:10px;border-radius:14px;background:rgba(242,176,78,.08);border:1px solid rgba(242,176,78,.35)}
 #mGefuehle.gross .chip{font-size:18px;min-height:58px;padding:12px 16px}
 .chip[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
@@ -208,6 +208,7 @@ h1{color:#F2C14E}
       <div class="muted" id="mHinweis">Tipp, was du gerade fühlst. Mehrmals tippen ist gut.</div>
       <div class="chips" id="mGefuehle"></div>
       <div class="mess" id="mMess"><div class="muted" style="font-size:13px">📏 Körper-Messung zu diesem Stück: 1 = eng/flach, 5 = weit/tief. Vor, während und nach dem Lied tippen.</div></div>
+      <div class="mess" id="mKlang"><button class="btn ghost" id="mKlangBtn" style="margin:0">🎧 Klang messen: 20 Sekunden mithören</button><div class="muted" id="mKlangInfo" style="font-size:13px;margin-top:6px">Misst Tempo, Bass, Stimme, Dichte und Wärme über das Mikrofon. Am besten läuft die Musik über einen Lautsprecher; auf dem gleichen iPhone kann Spotify kurz pausieren. Es wird nichts aufgenommen oder gespeichert ausser den Zahlen.</div></div>
       <div class="noteline"><input id="mText" class="inp" placeholder="Oder in Worten: jetzt fühle ich …" autocomplete="off" enterkeyhint="send"><button class="btn ghost" id="mTextAdd" aria-label="Satz hinzufügen">+</button></div>
       <div class="muted" style="font-size:13px">Tastatur-Mikrofon geht auch, kann Spotify aber kurz anhalten.</div>
       <button class="btn ghost" id="mSparky">🦊 Sparky dazu holen: über die Musik reden</button>
@@ -1897,7 +1898,7 @@ function mLive(){
     if (!mLauf){ localStorage.removeItem('hs_live'); return; }
     var B = mLauf.reise ? LISTE[beatNr] : null;
     localStorage.setItem('hs_live', JSON.stringify({t:Date.now(), song:mLauf.song, stueck:B ? B.n : '', farbe:B ? (B.farbe || B.bpm + ' BPM') : '', praxis:!!mLauf.praxis, wer:mLauf.wer || '', min:mZeit(mJetzt()),
-      messung:mMessAuswertung(mLauf.stamps).slice(-3),
+      messung:mMessAuswertung(mLauf.stamps).slice(-3), klang:mKlangAuswertung(mLauf.stamps).slice(-2),
       zuletzt:mLauf.stamps.slice(-5).map(function(x){ return mWann(x) + ' ' + (x.k || '«' + x.text + '»'); })}));
   } catch(e){}
 }
@@ -1960,6 +1961,67 @@ function mMessAuswertung(stamps){
   stamps.forEach(function(x){ if (!x.m) return; var s = x.b || 'Song'; if (!st[s]){ st[s] = {}; reih.push(s); } var o = st[s][x.m] = st[s][x.m] || {a:x.v}; o.z = x.v; });
   return reih.map(function(s){ return s + ': ' + MESS.filter(function(t){ return st[s][t]; }).map(function(t){ var o = st[s][t]; return t + ' ' + o.a + (o.z !== o.a ? '→' + o.z + (o.z > o.a ? ' ↑' : ' ↓') : ''); }).join(', '); });
 }
+// Klang-Messung: Merkmale des Liedes selbst messen statt schätzen (Tempo, Boden, Stimme, Dichte, Wärme)
+var mKlangLauf = null;
+function klangBand(f, hz, a, b){ var s = 0; for (var i = Math.max(1, Math.floor(a / hz)); i <= Math.min(f.length - 1, Math.ceil(b / hz)); i++) s += f[i]; return s; }
+function klangTempo(env, fps){
+  // Autokorrelation der Einsatz-Kurve, 60–160 BPM
+  var n = env.length, m = 0; env.forEach(function(v){ m += v; }); m /= n || 1;
+  var x = env.map(function(v){ return v - m; }), best = 0, bpm = 0;
+  for (var b = 60; b <= 160; b++){
+    var lag = fps * 60 / b, l0 = Math.floor(lag), fr = lag - l0, s = 0;
+    for (var i = 0; i + l0 + 1 < n; i++) s += x[i] * (x[i + l0] * (1 - fr) + x[i + l0 + 1] * fr);
+    s /= (n - l0) || 1; if (s > best){ best = s; bpm = b; }
+  }
+  return bpm;
+}
+function mKlangMessen(){
+  if (mKlangLauf) return;
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ uiAlert('Dieser Browser gibt kein Mikrofon frei.'); return; }
+  var btn = $('mKlangBtn');
+  navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false, noiseSuppression:false, autoGainControl:false}, video:false}).then(function(strom){
+    var ctx = new (window.AudioContext || window.webkitAudioContext)(); ctx.resume();
+    var an = ctx.createAnalyser(); an.fftSize = 4096; an.smoothingTimeConstant = 0; ctx.createMediaStreamSource(strom).connect(an);
+    var hz = ctx.sampleRate / an.fftSize, f = new Float32Array(an.frequencyBinCount), alt = null, env = [], sum = {bass:0, stimme:0, gesamt:0, schwer:0, flach:0, n:0}, t0 = performance.now(), DAUER = 20000;
+    mKlangLauf = {strom:strom, ctx:ctx};
+    function schritt(){
+      if (!mKlangLauf) return;
+      an.getFloatFrequencyData(f);
+      var p = new Float32Array(f.length), flux = 0, ln = 0, lg = 0, cnt = 0;
+      for (var i = 1; i < f.length; i++){ p[i] = Math.pow(10, f[i] / 10); if (i * hz < 8000){ ln += Math.log(p[i] + 1e-12); lg += p[i]; cnt++; } if (alt && i * hz < 4000) flux += Math.max(0, Math.sqrt(p[i]) - Math.sqrt(alt[i])); }
+      alt = p; env.push(flux);
+      var ges = klangBand(p, hz, 30, 8000);
+      if (ges > 1e-9){
+        sum.bass += klangBand(p, hz, 30, 160) / ges; sum.stimme += klangBand(p, hz, 300, 3400) / ges; sum.n++;
+        var c = 0; for (var k = 1; k < f.length && k * hz < 8000; k++) c += k * hz * p[k]; sum.schwer += c / (lg || 1);
+        sum.flach += Math.exp(ln / cnt) / ((lg / cnt) || 1);
+      }
+      var rest = Math.max(0, DAUER - (performance.now() - t0));
+      btn.textContent = '🎧 Höre mit … ' + Math.ceil(rest / 1000) + ' s';
+      if (rest > 0) mKlangLauf.timer = setTimeout(schritt, 1000 / 60); else fertig();
+    }
+    function fertig(){
+      var fps = env.length / (DAUER / 1000), n = sum.n || 1;
+      var k = {bpm:klangTempo(env, fps), bass:Math.round(100 * sum.bass / n), stimme:Math.round(100 * sum.stimme / n), dichte:Math.round(100 * sum.flach / n) / 100, hell:Math.round(sum.schwer / n)};
+      mKlangStop();
+      if (!sum.n){ uiAlert('Das Mikrofon hat nichts gehört. Musik lauter oder näher ans Handy.'); return; }
+      k.boden = k.bass >= 35 ? 'viel Boden' : k.bass >= 18 ? 'etwas Boden' : 'wenig Boden';
+      k.waerme = k.hell < 1400 ? 'warm' : k.hell < 2600 ? 'mittel' : 'hell';
+      mStempel({k:'Klang › ' + k.bpm + ' BPM, Bass ' + k.bass + ' % (' + k.boden + '), Stimmbereich ' + k.stimme + ' %, Dichte ' + k.dichte + ', ' + k.waerme + ' (' + k.hell + ' Hz)', klang:k});
+      mKlangZeigen(k);
+    }
+    schritt();
+  }).catch(function(){ uiAlert('Mikrofon nicht freigegeben. In den Einstellungen erlauben und nochmals tippen.'); });
+}
+function mKlangStop(){ if (!mKlangLauf) return; clearTimeout(mKlangLauf.timer); try { mKlangLauf.strom.getTracks().forEach(function(t){ t.stop(); }); mKlangLauf.ctx.close(); } catch(e){} mKlangLauf = null; $('mKlangBtn').textContent = '🎧 Klang nochmals messen'; }
+function mKlangZeigen(k){
+  function balken(n, w){ return '<div class="kb"><i style="width:' + Math.max(2, Math.min(100, w)) + '%"></i></div>'; }
+  $('mKlangInfo').innerHTML = '<b>' + k.bpm + ' BPM</b> · ' + k.boden + ' · ' + k.waerme + '<br>Bass ' + k.bass + ' %' + balken(0, k.bass * 2) + 'Stimmbereich ' + k.stimme + ' %' + balken(0, k.stimme) + 'Dichte ' + k.dichte + balken(0, k.dichte * 200) +
+    '<span style="font-size:12px">Geschätzt aus 20 Sekunden über das Mikrofon. Stimmbereich heisst Mitten, dort liegen Stimme, aber auch Klavier und Streicher.</span>';
+}
+function mKlangReset(){ mKlangStop(); $('mKlangBtn').textContent = '🎧 Klang messen: 20 Sekunden mithören'; $('mKlangInfo').textContent = 'Misst Tempo, Bass, Stimme, Dichte und Wärme über das Mikrofon. Am besten läuft die Musik über einen Lautsprecher; auf dem gleichen iPhone kann Spotify kurz pausieren. Es wird nichts aufgenommen oder gespeichert ausser den Zahlen.'; }
+$('mKlangBtn').addEventListener('click', function(){ if (!mLauf){ uiAlert('Zuerst den Song starten.'); return; } mKlangLauf ? mKlangStop() : mKlangMessen(); });
+function mKlangAuswertung(stamps){ return stamps.filter(function(x){ return x.klang; }).map(function(x){ return (x.b ? x.b + ': ' : '') + x.k.replace('Klang › ', ''); }); }
 function mText(){ var v = $('mText').value.trim(); if (!v) return; mStempel({text:v.slice(0, 300)}); $('mText').value = ''; }
 $('mTextAdd').addEventListener('click', mText);
 $('mText').addEventListener('keydown', function(ev){ if (ev.key === 'Enter'){ ev.preventDefault(); mText(); } });
@@ -2056,7 +2118,7 @@ function beatSpielen(n){
   if (beatOut){ var alt = beatOut; alt.gain.setTargetAtTime(0, ac.currentTime, .15); setTimeout(function(){ alt.disconnect(); }, 800); }
   beatOut = ac.createGain(); beatOut.gain.value = .8; beatOut.connect(ac.haupt || ac.destination); if (hall && LISTE[n].melodie) beatOut.connect(hall);
   nextStep = ac.currentTime + .1;
-  mMessReset();
+  mMessReset(); mKlangReset();
   if (mLauf){ mLauf.beatT0 = Date.now(); setTimeout(mLive, 0); $('mTitel').textContent = (LISTE === PRAXIS ? '🌿 ' : '🎧 ') + (n + 1) + '/' + LISTE.length + ' · ' + LISTE[n].n + ' · ' + (LISTE[n].farbe || LISTE[n].bpm + ' BPM'); }
 }
 function beatStopp(){ clearInterval(beatTimer); beatTimer = null; beatNr = -1; if (beatOut){ beatOut.gain.setTargetAtTime(0, ac.currentTime, .1); beatOut = null; } }
@@ -2098,7 +2160,7 @@ function mWerSetzen(w){
 }
 $('mWer').addEventListener('click', function(){ if (!mLauf) return; mLauf.wer = mLauf.wer === 'klient' ? 'diego' : 'klient'; mChips(mLauf.wer === 'klient' ? M_KLIENT : M_BEOB); mWerSetzen(mLauf.wer); });
 $('mStart').addEventListener('click', function(){
-  mChips(M_GEF); mWerSetzen(null); mMessReset();
+  mChips(M_GEF); mWerSetzen(null); mMessReset(); mKlangReset();
   mLauf = {id:uid(), t:Date.now(), t0:Date.now(), song:$('mSong').value.trim().slice(0, 80), link:mLink, stamps:[], timer:null};
   $('mTitel').textContent = '🎵 ' + (mLauf.song || 'Song läuft');
   $('mFeed').innerHTML = ''; $('mClock').textContent = '0:00';
@@ -2106,7 +2168,7 @@ $('mStart').addEventListener('click', function(){
   try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function(l){ if (mLauf) mLauf.wl = l; else l.release(); }).catch(function(){}); } catch(e){}
   mBox('mRunBox');
 });
-function mEnde(){ if (!mLauf) return null; if (mLauf.reise) beatStopp(); $('mWeiter').classList.add('hidden'); $('mAntwort').classList.add('hidden'); clearInterval(mLauf.timer); try { if (mLauf.wl) mLauf.wl.release(); } catch(e){} var l = mLauf; mLauf = null; mLive(); return l; }
+function mEnde(){ if (!mLauf) return null; mKlangStop(); if (mLauf.reise) beatStopp(); $('mWeiter').classList.add('hidden'); $('mAntwort').classList.add('hidden'); clearInterval(mLauf.timer); try { if (mLauf.wl) mLauf.wl.release(); } catch(e){} var l = mLauf; mLauf = null; mLive(); return l; }
 $('mAbbruch').addEventListener('click', function(){ mEnde(); mBox('mStartBox'); });
 function mZeile(e){
   return '«' + (e.song || 'Song') + '» · ' + mZeit(e.dur) + (e.stamps.length ? ': ' + e.stamps.map(function(x){ return mWann(x) + ' ' + (x.k || '«' + x.text + '»'); }).join(', ') : ', nichts angetippt');
@@ -2115,10 +2177,11 @@ var mLetzter = null;
 function mZeigen(e){
   mLetzter = e;
   $('mOutTitel').textContent = '🎵 ' + (e.song || 'Dein Song');
-  var zahl = {}; e.stamps.forEach(function(x){ if (x.k && !x.m) zahl[x.k] = (zahl[x.k] || 0) + 1; });
+  var zahl = {}; e.stamps.forEach(function(x){ if (x.k && !x.m && !x.klang) zahl[x.k] = (zahl[x.k] || 0) + 1; });
   var oben = Object.keys(zahl).sort(function(a, b){ return zahl[b] - zahl[a]; }).slice(0, 3);
   $('mOut').innerHTML = '<p class="muted">' + mZeit(e.dur) + ' gehört · ' + e.stamps.length + ' Gefühle festgehalten' + (oben.length ? ' · am meisten: ' + esc(oben.join(', ')) : '') + '</p>' +
     (mMessAuswertung(e.stamps).length ? '<p><b>📏 Messung</b><br>' + mMessAuswertung(e.stamps).map(esc).join('<br>') + '</p>' : '') +
+    (mKlangAuswertung(e.stamps).length ? '<p><b>🎧 Klang</b><br>' + mKlangAuswertung(e.stamps).map(esc).join('<br>') + '</p>' : '') +
     (e.stamps.length ? '<div class="tl">' + e.stamps.map(function(x){ return '<div><b>' + esc(mWann(x)) + '</b> ' + esc(x.k ? x.k : '«' + x.text + '»') + '</div>'; }).join('') + '</div>' : '');
   $('mKopie').textContent = '🎵 Gefühle für die Song-Analyse kopieren';
   mBox('mOutBox');
