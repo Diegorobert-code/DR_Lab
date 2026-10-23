@@ -1,0 +1,32 @@
+/* Fias Nest · Design-Runde «schön» (Wolldecke: ruhig, warm, ein Holz-Akzent). Als letztes Stylesheet geladen.
+   Fia bleibt die Aura-Fia. Hier nur Feinschliff rund um sie. Nur Darstellung, Hell und Dunkel über die Wolle-Tokens. */
+
+/* Fia als kleines lebendiges Zeichen: kleine runde Bilder atmen sanft */
+@keyframes schAtem{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+html body :is(.r8-wk img,.r7-leer img,.r6-char .r6-bild img){animation:schAtem 5.2s ease-in-out infinite;transform-origin:50% 80%;border-color:var(--w-surface)!important;box-shadow:0 0 0 2px var(--w-accent)}
+@media (prefers-reduced-motion:reduce){html body :is(.r8-wk img,.r7-leer img,.r6-char .r6-bild img){animation:none}}
+
+/* Überschriften ohne Waisenwörter */
+html body :is(h1,h2,h3,.r8-heute b){text-wrap:balance}
+html body p{text-wrap:pretty}
+
+/* Ein Akzent, kein Goldschein: die alten Glimm-Schatten der Knöpfe weg */
+html body :is(.r6,.r7,.r8) button:not(.r8-heute):not(:focus-visible){box-shadow:none!important}
+html body .nova-btn{filter:none!important}
+
+/* Bilder in Parkplatz und Power-Nap ruhiger, Fia bleibt im Bild */
+html body .r7-bild{aspect-ratio:2/1!important;background:var(--w-soft)!important;border-color:var(--w-line)!important}
+
+/* Tagesband: runde Punkte statt Kacheln, alles innerhalb der Karte */
+html body .band{margin:8px 24px 0}
+html body .band .mk{width:32px!important;height:32px!important;margin-left:-16px!important;top:18px!important;padding:0!important;background-clip:border-box!important;border-radius:50%!important;line-height:32px!important;font-size:14px;box-shadow:0 0 0 2px var(--w-surface)!important}
+html body .band .mk::before{inset:-6px}
+html body .band .mk.past{opacity:.55}
+
+/* Nestfund: die 24 Türchen sind auch im Hellen sichtbar */
+html body .r6-sammel{justify-content:center}
+html body .r6-sammel i{border:1px dashed var(--w-line2)!important;color:var(--w-muted)!important;background:transparent}
+
+/* «So ist Fia am Abend»: Sprechblase in Wolle, lesbar in Hell und Dunkel */
+html body .r6-blase{background:var(--w-soft)!important;color:var(--w-ink)!important;border-radius:4px 16px 16px 16px!important}
+html body .r6-blase small{color:var(--w-accent-text)!important}
