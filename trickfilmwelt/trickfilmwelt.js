@@ -1,20 +1,23 @@
-/* trickfilmwelt.js – Kinder-Apps im Look des ersten DR-Lab-Films (DR Lab Markenfilm, 0:08–0:13 Buch und Technik, 0:28–0:33 Glaswand).
-   Eingang: die Figur der App läuft zur Glasbaustein-Wand, legt die Hände an, die Steine weichen zurück,
-   warmes Licht, dahinter das offene Buch mit der Welt der App; eine Seite blättert um und die App ist da.
-   Danach bleibt die App in dieser Welt: Hintergrund aus dem Film, Buchrand, goldene Rahmen, Seiten blättern.
+/* trickfilmwelt.js – Kinder-Apps als Bilderbuch aus dem ersten DR-Lab-Film (Markenfilm 11.10.2026).
+   Stil (Diego 23.10. 09:50): die Welt sieht aus wie das Bilderbuch im Film (0:09–0:11): weiche Wasserfarbe,
+   Pastell, Bleistiftlinien, cremefarbenes Papier, feines Gold als Licht. Kein 3D-Look.
+   Eingang (Geschichte aus dem Film 0:28–0:33, als Bilderbuch gemalt): die Figur läuft zur gemalten Wand,
+   legt die Hände an, die Steine lösen sich wie nasse Farbe, warmes Licht, dahinter das offene Bilderbuch
+   mit der Welt der App; eine Seite blättert um und die App ist da.
 
    Einbau (als erstes im <body>, ohne defer, damit nichts von der App aufblitzt):
      <script src="../trickfilmwelt/trickfilmwelt.js" data-app="otti"
-       data-buch="trickfilm/buch.webp" data-welt="trickfilm/welt.webp" data-figur="trickfilm/figur.webp"
-       data-arme="1"                 (Figur ohne erhobene Hände: Pfoten heben sich als Schattenriss)
-       data-haende="0.17,0.39;0.8,0.37" (sonst: Handpunkte im Figurbild, Anteile 0–1)
+       data-buch="trickfilm/buch.webp"   (Doppelseite 1200×780 mit Aquarell-Bildern, Alpha = Buchform)
+       data-welt="trickfilm/welt.webp"   (Aquarell-Hintergrund, hoch)
+       data-figur="trickfilm/figur.webp" (Figur freigestellt, Bilderbuch-Look)
        data-text="Otti wartet im Mondschein-Wald"
-       data-karten=".buehne,.z.otti" (goldener Seitenrand)
-       data-blaetter=".blatt>.blattinnen;.eltern" (beim Öffnen wie eine Seite einblättern; links Auslöser, rechts was sich bewegt)
-       data-nacht="1"                (Mondlicht statt Abendgold)
-       data-knoepfe=".kimu">  (Knöpfe, die ein Tippen während des Eingangs trotzdem erreicht)
-   Ganz beim ersten Öffnen am Tag, sonst 1 Sekunde. Tippen überspringt. prefers-reduced-motion: nur ruhiges Ein- und Ausblenden.
-   Wartet, solange die NDA-Sperre offen ist. Kein Ton. Kein Blitzen. ?tfw=voll zeigt den ganzen Eingang. */
+       data-karten=".buehne;.feld"       (Bilderbuch-Rahmen)
+       data-blaetter=".blatt>.blattinnen;.eltern" (Fenster blättern wie eine Seite ein: Auslöser>was sich bewegt)
+       data-css="trickfilm/buchwelt.css" (Farben der App für Papier)
+       data-nacht="1"                    (Abendfarben: Lavendel und Mondlicht)
+       data-knoepfe=".kimu">             (Knöpfe, die ein Tippen während des Eingangs trotzdem erreicht)
+   Ganz beim ersten Öffnen am Tag, sonst 1 Sekunde. Tippen überspringt. prefers-reduced-motion: nur Ein- und Ausblenden.
+   Wartet, solange die NDA-Sperre offen ist. Kein Ton. Kein Blitzen. ?tfw=voll zeigt den ganzen Eingang, ?tfw=aus keinen. */
 (function () {
   "use strict";
   if (window.Trickfilmwelt) return;
@@ -25,35 +28,35 @@
   var APP = ds.app || location.pathname;
   var NACHT = ds.nacht === "1";
   var RUHIG = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+  var FARBE = NACHT
+    ? { papier: "#f3eee6", stein: ["#c9bfe2", "#b9cbe8", "#d9cfe9"], licht: "255,240,205", gold: "214,178,106", tinte: "#4a4060" }
+    : { papier: "#f7f0de", stein: ["#bcd6ee", "#cbbfe3", "#d6e6f3"], licht: "255,232,170", gold: "216,170,90", tinte: "#5e4a36" };
   function q(s) { return (s || "").split(";").map(function (x) { return x.trim(); }).filter(Boolean); }
-  function zahlen(s) { return q(s).map(function (p) { return p.split(",").map(Number); }); }
+  function abs(u) { return new URL(u, location.href).href; }
 
-  /* ── Bleibende Welt (gilt sofort, auch hinter dem Eingang) ─────────────────── */
+  /* ── Bleibende Bilderbuch-Welt ───────────────────────────────────────────── */
   html.classList.add("tfw");
   if (NACHT) html.classList.add("tfw-nacht");
-  var css = d.createElement("link"); css.rel = "stylesheet"; css.href = BASIS + "trickfilmwelt.css";
-  (d.head || html).appendChild(css);
+  [BASIS + "trickfilmwelt.css", ds.css && abs(ds.css)].forEach(function (h) {
+    if (!h) return; var l = d.createElement("link"); l.rel = "stylesheet"; l.href = h; (d.head || html).appendChild(l);
+  });
+  html.style.setProperty("--tfw-papier", 'url("' + BASIS + 'papier.webp")');
+  if (ds.welt) html.style.setProperty("--tfw-welt-bild", 'url("' + abs(ds.welt) + '")');
 
   function welt() {
     if (d.getElementById("tfw-welt")) return;
     var w = d.createElement("div"); w.id = "tfw-welt"; w.setAttribute("aria-hidden", "true");
-    if (ds.welt) w.style.setProperty("--tfw-welt-bild", 'url("' + new URL(ds.welt, location.href).href + '")');
-    w.innerHTML = '<i class="tfw-netz"></i><svg class="tfw-band" viewBox="0 0 400 800" preserveAspectRatio="none"><defs><linearGradient id="tfwG" x1="0" x2="1">' +
-      '<stop offset="0" stop-color="#ffd27a" stop-opacity="0"/><stop offset=".5" stop-color="#ffe2a8"/><stop offset="1" stop-color="#ffb84d" stop-opacity="0"/></linearGradient></defs>' +
-      '<path d="M-20 690 C 90 610, 140 720, 230 600 S 360 470, 430 520" fill="none" stroke="url(#tfwG)" stroke-width="9" stroke-linecap="round" opacity=".28"/>' +
-      '<path d="M-20 690 C 90 610, 140 720, 230 600 S 360 470, 430 520" fill="none" stroke="url(#tfwG)" stroke-width="2" stroke-linecap="round" opacity=".7"/></svg>';
+    /* feine goldene Lichtlinie wie im Film, ganz leise */
+    w.innerHTML = '<svg class="tfw-band" viewBox="0 0 400 800" preserveAspectRatio="none"><path d="M-20 700 C 90 620, 150 730, 240 610 S 360 490, 430 530" fill="none" stroke="rgb(' + FARBE.gold + ')" stroke-width="1.6" stroke-linecap="round" opacity=".45"/></svg>';
     d.body.insertBefore(w, d.body.firstChild);
     var r = d.createElement("div"); r.id = "tfw-rand"; r.setAttribute("aria-hidden", "true");
     d.body.appendChild(r);
-    w.querySelector(".tfw-netz").style.backgroundImage = 'url("' + BASIS + 'netz.webp")';
   }
-
   function karten() {
     q(ds.karten).forEach(function (s) { try { d.querySelectorAll(s).forEach(function (e) { e.classList.add("tfw-karte"); }); } catch (e) {} });
   }
-
-  /* Seiten blättern: wird ein Fenster sichtbar, blättert sein Inhalt wie eine Buchseite ein */
-  var blaetter = q(ds.blaetter).map(function (p) { var t = p.split(">"); return { an: t[0].trim(), innen: (t[1] || "").trim() }; });
+  /* Fenster blättern wie eine Buchseite ein */
+  var blaetter = q(ds.blaetter).map(function (p) { var t = p.split(">"); return { an: t[0].trim(), innen: t.slice(1).join(">").trim() }; });
   var sichtbar = new WeakMap();
   function istSichtbar(e) { return !e.hidden && e.getClientRects().length > 0 && getComputedStyle(e).visibility !== "hidden"; }
   function blaettern(el) {
@@ -62,31 +65,47 @@
   }
   function pruefen(e) {
     blaetter.forEach(function (b) {
-      var treffer; try { treffer = e.matches(b.an); } catch (x) { return; }
-      if (!treffer) return;
+      var t; try { t = e.matches(b.an); } catch (x) { return; }
+      if (!t) return;
       var jetzt = istSichtbar(e), vorher = sichtbar.get(e) || false;
       sichtbar.set(e, jetzt);
-      if (jetzt && !vorher) { var ziel = b.innen ? e.querySelector(b.innen) : e; if (ziel) blaettern(ziel); }
+      if (jetzt && !vorher) { var z = b.innen ? e.querySelector(b.innen) : e; if (z) blaettern(z); }
     });
   }
   function beobachten() {
     if (!blaetter.length || !window.MutationObserver) return;
     blaetter.forEach(function (b) { try { d.querySelectorAll(b.an).forEach(function (e) { sichtbar.set(e, istSichtbar(e)); }); } catch (x) {} });
-    new MutationObserver(function (ms) {
-      for (var i = 0; i < ms.length; i++) { var t = ms[i].target; if (t.nodeType === 1) pruefen(t); }
-    }).observe(d.body, { subtree: true, attributes: true, attributeFilter: ["hidden", "open", "class"] });
+    new MutationObserver(function (ms) { for (var i = 0; i < ms.length; i++) { var t = ms[i].target; if (t.nodeType === 1) pruefen(t); } })
+      .observe(d.body, { subtree: true, attributes: true, attributeFilter: ["hidden", "open", "class"] });
   }
 
   /* ── Eingang ──────────────────────────────────────────────────────────────── */
   function heute() { var t = new Date(); return t.getFullYear() + "-" + (t.getMonth() + 1) + "-" + t.getDate(); }
   var KEY = "trickfilmwelt:" + APP;
   function lade(src) { return new Promise(function (ok) { if (!src) return ok(null); var i = new Image(); i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; }); }
+  function ease(x) { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); }
+  function seg(t, a, b) { return Math.max(0, Math.min(1, (t - a) / (b - a))); }
+  function zufall(n) { var s = n * 9301 + 49297; return function () { s = (s * 9301 + 49297) % 233280; return s / 233280; }; }
+
+  /* ein gemalter Stein: Wasserfarbe mit dunklerem Rand und Bleistiftlinie */
+  function stein(w, h, farbe, nr) {
+    var c = d.createElement("canvas"); c.width = w; c.height = h;
+    var x = c.getContext("2d"), r = zufall(nr + 3), i;
+    x.globalAlpha = .55; x.fillStyle = farbe; rund(x, 3, 3, w - 6, h - 6, 7); x.fill();
+    for (i = 0; i < 7; i++) { var g = x.createRadialGradient(r() * w, r() * h, 1, r() * w, r() * h, w * (.25 + r() * .35));
+      g.addColorStop(0, farbe); g.addColorStop(1, "rgba(255,255,255,0)"); x.globalAlpha = .18 + r() * .2; x.fillStyle = g; x.fillRect(0, 0, w, h); }
+    x.globalAlpha = .35; x.strokeStyle = farbe; x.lineWidth = 3; rund(x, 4, 4, w - 8, h - 8, 7); x.stroke();
+    x.globalAlpha = .45; x.strokeStyle = FARBE.tinte; x.lineWidth = 1;
+    x.beginPath(); x.moveTo(5 + r() * 2, 4 + r() * 2); x.lineTo(w - 5 - r() * 2, 5 + r() * 2); x.lineTo(w - 4 - r() * 2, h - 5 - r() * 2); x.lineTo(4 + r() * 2, h - 4 - r() * 2); x.closePath(); x.stroke();
+    return c;
+  }
+  function rund(x, a, b, w, h, r) { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); }
 
   var ov = null, laeuft = false;
   function eingang(modus) {
     if (laeuft) return; laeuft = true;
     ov = d.createElement("div"); ov.id = "tfw-eingang"; ov.setAttribute("aria-hidden", "true");
-    ov.style.cssText = "position:fixed;inset:0;z-index:2147482900;background:" + (NACHT ? "#070b1c" : "#0b0d18") + ";cursor:pointer;touch-action:none";
+    ov.style.cssText = "position:fixed;inset:0;z-index:2147482900;background:" + FARBE.papier + ";cursor:pointer;touch-action:none";
     var cv = d.createElement("canvas"); ov.appendChild(cv);
     var schatten = d.createElement("i"); schatten.className = "tfw-seitenschatten"; ov.appendChild(schatten);
     var tx = null;
@@ -96,18 +115,17 @@
     function groesse() { W = innerWidth; H = innerHeight; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); cv.style.width = W + "px"; cv.style.height = H + "px"; }
     groesse(); addEventListener("resize", groesse);
 
-    var fertig = false, t0 = 0, raf = 0;
+    var fertig = false, raf = 0;
     function ende(schnell) {
       if (fertig) return; fertig = true;
       ov.classList.add(schnell || RUHIG ? "tfw-weg-sanft" : "tfw-umblaettern");
-      setTimeout(function () { cancelAnimationFrame(raf); removeEventListener("resize", groesse); ov.remove(); ov = null; laeuft = false;
-        try { window.dispatchEvent(new CustomEvent("trickfilmwelt-fertig", { detail: { app: APP } })); } catch (e) {} }, schnell || RUHIG ? 420 : modus === "kurz" ? 620 : 900);
+      setTimeout(function () { cancelAnimationFrame(raf); removeEventListener("resize", groesse); if (ov) ov.remove(); ov = null; laeuft = false;
+        try { window.dispatchEvent(new CustomEvent("trickfilmwelt-fertig", { detail: { app: APP } })); } catch (e) {} },
+        schnell || RUHIG ? 420 : modus === "kurz" ? 620 : 900);
     }
-    /* Tippen überspringt; trifft es einen App-Knopf (z.B. Musik), wird der danach auch ausgelöst */
     ov.addEventListener("pointerdown", function (e) {
-      var x = e.clientX, y = e.clientY;
+      var x = e.clientX, y = e.clientY, k = null;
       ov.style.pointerEvents = "none";
-      var k = null;
       q(ds.knoepfe || ".kimu").forEach(function (s) {
         if (k) return;
         try { d.querySelectorAll(s).forEach(function (b) { var r = b.getBoundingClientRect(); if (!k && x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) k = b; }); } catch (x2) {}
@@ -117,214 +135,145 @@
     });
     addEventListener("keydown", function f(e) { if (e.key === "Escape" || e.key === "Enter" || e.key === " ") { removeEventListener("keydown", f); ende(true); } });
 
-    Promise.all([lade(BASIS + "wand.webp"), lade(ds.buch), lade(ds.figur), lade(BASIS + "netz.webp")]).then(function (b) {
-      var wand = b[0], buch = b[1], fig = b[2], netz = b[3];
+    Promise.all([lade(ds.buch), lade(ds.welt), lade(ds.figur)]).then(function (b) {
+      var buch = b[0], hg = b[1], fig = b[2];
       if (!buch) { ende(true); return; }
-      if (modus === "voll" && (!wand || !fig)) modus = "kurz";
-      if (tx) setTimeout(function () { if (tx) tx.classList.add("an"); }, modus === "voll" ? 7300 : 60);
-      var DAUER = modus === "voll" ? 10200 : modus === "ruhig" ? 1300 : 380;
+      if (modus === "voll" && !fig) modus = "kurz";
       if (modus === "kurz") ov.classList.add("tfw-kurz");
-      var silh = fig ? schattenriss(fig) : null;
-      var staub = []; for (var i = 0; i < 46; i++) staub.push({ x: Math.random(), y: Math.random(), r: .6 + Math.random() * 1.8, v: .004 + Math.random() * .01, p: Math.random() * 6.3 });
-      t0 = performance.now();
+      if (tx) setTimeout(function () { if (tx) tx.classList.add("an"); }, modus === "voll" ? 6400 : 60);
+      var DAUER = modus === "voll" ? 9000 : modus === "ruhig" ? 1300 : 380;
+      var steine = FARBE.stein.map(function (f, i) { return [0, 1, 2].map(function (j) { return stein(120, 96, f, i * 3 + j); }); });
+      var funken = []; var rz = zufall(11);
+      for (var i = 0; i < 26; i++) funken.push({ x: rz(), y: rz(), r: 1 + rz() * 2.2, v: .01 + rz() * .02, p: rz() * 6.3, f: ["246,201,211", "249,227,154", "188,214,238"][i % 3] });
+      var t0 = performance.now();
       function bild(now) {
         if (fertig) return;
         var t = (now - t0) / 1000;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        ctx.fillStyle = NACHT ? "#070b1c" : "#0b0d18"; ctx.fillRect(0, 0, W, H);
-        if (modus === "voll") voll(t); else buchSzene(t + 2, 1, modus === "ruhig" ? 1 : Math.min(1, t / .25));
+        ctx.fillStyle = FARBE.papier; ctx.fillRect(0, 0, W, H);
+        if (modus === "voll") voll(t); else buchSzene(9, modus === "ruhig" ? 1 : Math.min(1, t / .25));
         if (t * 1000 >= DAUER) { ende(false); return; }
         raf = requestAnimationFrame(bild);
       }
       raf = requestAnimationFrame(bild);
 
-      /* Figur als Schattenriss mit Gegenlicht (von hinten gesehen, wie die Frau vor der Wand im Film) */
-      function schattenriss(img) {
-        var c = d.createElement("canvas"), g = d.createElement("canvas");
-        c.width = g.width = img.naturalWidth; c.height = g.height = img.naturalHeight;
-        var x = c.getContext("2d"); x.drawImage(img, 0, 0); x.globalCompositeOperation = "source-atop"; x.fillStyle = NACHT ? "rgba(20,26,58,.74)" : "rgba(40,26,40,.72)"; x.fillRect(0, 0, c.width, c.height);
-        var y = g.getContext("2d"); y.drawImage(img, 0, 0); y.globalCompositeOperation = "source-in"; y.fillStyle = NACHT ? "#dfe8ff" : "#ffd98a"; y.fillRect(0, 0, g.width, g.height);
-        return { dunkel: c, licht: g, w: c.width, h: c.height };
+      function papierGrund(a) {
+        if (!hg) return;
+        var k = Math.max(W / hg.naturalWidth, H / hg.naturalHeight);
+        ctx.globalAlpha = a; ctx.drawImage(hg, (W - hg.naturalWidth * k) / 2, (H - hg.naturalHeight * k) / 2, hg.naturalWidth * k, hg.naturalHeight * k); ctx.globalAlpha = 1;
       }
-      function ease(x) { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); }
-      function seg(t, a, b) { return Math.max(0, Math.min(1, (t - a) / (b - a))); }
-
-      /* Wand-Koordinaten (Filmbild 1280×720, Tür = 3×8 Glassteine um x 646) */
-      var PX = 65, PY = 54, TX0 = 549, TY0 = 160, SP = 3, ZE = 8;
+      /* Wand: 5 Spalten über die Breite, 7 Reihen; Tür = mittlere 3×4 unten */
+      function wandMasse() {
+        var sw = Math.min(W / 4.6, 110), sh = sw * .8, sp = Math.ceil(W / sw) + 2, ze = 7;
+        var boden = H * .7, oben = boden - ze * sh, x0 = W / 2 - sp * sw / 2;
+        return { sw: sw, sh: sh, sp: sp, ze: ze, boden: boden, oben: oben, x0: x0, tuer: { c0: Math.floor(sp / 2) - 1, c1: Math.floor(sp / 2) + 1, r0: ze - 5, r1: ze - 1 } };
+      }
       function voll(t) {
-        var s = Math.max(W / 1280, H / 720), ox = W / 2 - 646 * s, oy = (H - 720 * s) / 2;
-        var tuerX = ox + (TX0 + PX * SP / 2) * s, tuerY = oy + (TY0 + PY * ZE / 2) * s;
-        var zoom = 1 + Math.pow(ease(seg(t, 5.6, 7.1)), 2) * 3.4;
-        ctx.save();
-        ctx.translate(tuerX, tuerY); ctx.scale(zoom, zoom); ctx.translate(-tuerX, -tuerY);
-        ctx.globalAlpha = ease(seg(t, 0, .6));
-        /* Licht hinter der Tür */
-        var auf = seg(t, 4.1, 6.0), glut = ease(seg(t, 3.5, 4.6));
-        var lx = ox + TX0 * s, ly = oy + TY0 * s, lw = PX * SP * s, lh = PY * ZE * s;
-        var gr = ctx.createRadialGradient(tuerX, tuerY - lh * .1, 4, tuerX, tuerY, lh * .75);
-        if (NACHT) { gr.addColorStop(0, "#fffbe8"); gr.addColorStop(.35, "#f3e2a6"); gr.addColorStop(1, "#5a6aa8"); }
-        else { gr.addColorStop(0, "#fffaf0"); gr.addColorStop(.35, "#ffdf9a"); gr.addColorStop(1, "#d88c3a"); }
-        ctx.fillStyle = gr; ctx.fillRect(lx, ly, lw, lh);
-        if (buch && auf > .3) { ctx.save(); ctx.globalAlpha *= ease(seg(t, 5.2, 6.4)) * .9; ctx.beginPath(); ctx.rect(lx, ly, lw, lh); ctx.clip();
-          var bs = lh * 1.1 / 720; ctx.drawImage(buch, tuerX - 640 * bs, tuerY - 380 * bs, 1280 * bs, 720 * bs); ctx.restore(); }
-        /* Wand: zuerst ganz, dann die Türsteine einzeln */
-        ctx.save(); ctx.beginPath(); ctx.rect(-1e4, -1e4, 3e4, 3e4); ctx.rect(lx + lw, ly, -lw, lh); ctx.clip("evenodd");
-        ctx.drawImage(wand, ox, oy, 1280 * s, 720 * s); ctx.restore();
-        if (NACHT) { ctx.save(); ctx.globalAlpha *= .38; ctx.fillStyle = "#101a4a"; ctx.fillRect(ox, oy, 1280 * s, 720 * s); ctx.restore(); }
-        var hand = handPunkte(t, s, ox, oy);
-        var mx = (hand[0][0] + hand[1][0]) / 2, my = (hand[0][1] + hand[1][1]) / 2, maxD = Math.hypot(lw, lh);
-        for (var cx = 0; cx < SP; cx++) for (var cy = 0; cy < ZE; cy++) {
-          var sx = TX0 + cx * PX, sy = TY0 + cy * PY, dx = ox + sx * s, dy = oy + sy * s, w = PX * s, h = PY * s;
-          var dist = Math.hypot(dx + w / 2 - mx, dy + h / 2 - my) / maxD;
-          var p = ease(seg(t, 4.1 + dist * 1.3, 4.1 + dist * 1.3 + .75));
+        var M = wandMasse(), T = M.tuer;
+        var tl = M.x0 + T.c0 * M.sw, tt = M.oben + T.r0 * M.sh, tw = (T.c1 - T.c0 + 1) * M.sw, th = (T.r1 - T.r0 + 1) * M.sh;
+        var tcx = tl + tw / 2, tcy = tt + th / 2;
+        var zoom = 1 + Math.pow(ease(seg(t, 5.3, 6.7)), 2) * 3.2;
+        ctx.save(); ctx.globalAlpha = ease(seg(t, 0, .5));
+        ctx.translate(tcx, tcy); ctx.scale(zoom, zoom); ctx.translate(-tcx, -tcy);
+        papierGrund(1);
+        /* warmes Licht und das Buch hinter der Tür */
+        var auf = seg(t, 3.7, 5.4), glut = ease(seg(t, 3.0, 4.0));
+        ctx.save(); ctx.beginPath(); ctx.rect(tl, tt, tw, th); ctx.clip();
+        var g = ctx.createRadialGradient(tcx, tcy, 2, tcx, tcy, th);
+        g.addColorStop(0, "rgba(" + FARBE.licht + ",1)"); g.addColorStop(1, "rgba(" + FARBE.licht + ",.55)");
+        ctx.fillStyle = g; ctx.fillRect(tl, tt, tw, th);
+        if (auf > .2) { var bk = tw * 1.15 / 1200; ctx.globalAlpha = ease(seg(t, 4.4, 5.6)); ctx.drawImage(buch, tcx - 600 * bk, tcy - 390 * bk, 1200 * bk, 780 * bk); }
+        ctx.restore();
+        /* Boden-Wasserfarbe unter der Wand */
+        ctx.save(); ctx.globalAlpha = .5; ctx.fillStyle = NACHT ? "#c9bfe2" : "#b9d99a";
+        ctx.beginPath(); ctx.ellipse(W / 2, M.boden + 10, W * .7, 26, 0, 0, 7); ctx.fill(); ctx.restore();
+        /* Steine */
+        var hand = handPunkte(t, M);
+        var mx = (hand[0][0] + hand[1][0]) / 2, my = (hand[0][1] + hand[1][1]) / 2, maxD = Math.hypot(tw, th);
+        for (var c = 0; c < M.sp; c++) for (var r = 0; r < M.ze; r++) {
+          var x = M.x0 + c * M.sw + (r % 2 ? M.sw * .5 : 0) * 0, y = M.oben + r * M.sh;
+          var s = steine[(c + r) % 3][(c * 7 + r) % 3];
+          var inTuer = c >= T.c0 && c <= T.c1 && r >= T.r0 && r <= T.r1, p = 0;
+          if (inTuer) { var dist = Math.hypot(x + M.sw / 2 - mx, y + M.sh / 2 - my) / maxD; p = ease(seg(t, 3.7 + dist * 1.2, 3.7 + dist * 1.2 + .8)); }
           if (p >= 1) continue;
           ctx.save(); ctx.globalAlpha *= 1 - p;
-          var k = 1 - .22 * p; ctx.translate(dx + w / 2, dy + h / 2 - p * h * .3); ctx.scale(k, k);
-          ctx.drawImage(wand, sx, sy, PX, PY, -w / 2, -h / 2, w, h);
-          if (NACHT) { ctx.globalAlpha *= .38; ctx.fillStyle = "#101a4a"; ctx.fillRect(-w / 2, -h / 2, w, h); }
+          /* löst sich wie nasse Farbe: wird weich, grösser, rinnt ein wenig nach unten */
+          var k = 1 + .12 * p; ctx.translate(x + M.sw / 2, y + M.sh / 2 + p * M.sh * .35); ctx.scale(k, k);
+          ctx.drawImage(s, -M.sw / 2, -M.sh / 2, M.sw, M.sh);
+          if (p > 0) { ctx.globalAlpha *= .4; ctx.drawImage(s, -M.sw / 2 + 2, -M.sh / 2 + 3, M.sw, M.sh); }
           ctx.restore();
         }
-        /* Glut an den Händen und in den Fugen */
+        /* Licht an den Händen */
         if (glut > 0) {
           ctx.save(); ctx.globalCompositeOperation = "lighter";
-          hand.forEach(function (hp) { var g = ctx.createRadialGradient(hp[0], hp[1], 1, hp[0], hp[1], 70 * s * (1 + auf));
-            g.addColorStop(0, NACHT ? "rgba(235,240,255,.85)" : "rgba(255,226,150,.85)"); g.addColorStop(1, "rgba(255,190,90,0)");
-            ctx.globalAlpha = glut * (1 - auf * .6); ctx.fillStyle = g; ctx.fillRect(hp[0] - 200 * s, hp[1] - 200 * s, 400 * s, 400 * s); });
-          var g2 = ctx.createRadialGradient(tuerX, tuerY, 10, tuerX, tuerY, lh * (.6 + auf * .8));
-          g2.addColorStop(0, NACHT ? "rgba(220,230,255,.5)" : "rgba(255,210,130,.55)"); g2.addColorStop(1, "rgba(255,170,60,0)");
-          ctx.globalAlpha = glut * (.5 + auf * .5); ctx.fillStyle = g2; ctx.fillRect(0, 0, W * 2, H * 2); ctx.restore();
+          hand.forEach(function (hp) { var gg = ctx.createRadialGradient(hp[0], hp[1], 1, hp[0], hp[1], 46 + auf * 60);
+            gg.addColorStop(0, "rgba(" + FARBE.licht + ",.7)"); gg.addColorStop(1, "rgba(" + FARBE.licht + ",0)");
+            ctx.globalAlpha = glut * (1 - auf * .5); ctx.fillStyle = gg; ctx.fillRect(hp[0] - 120, hp[1] - 120, 240, 240); });
+          ctx.restore();
         }
-        /* Lichtband (wie im Film: goldene Spur, die durch die Öffnung zieht) */
-        band(t, hand, tuerX, tuerY, lh, s);
-        /* Figur */
-        figur(t, s, ox, oy, auf);
+        goldlinie(t, hand[1], tcx, tt);
+        figur(t, M);
         ctx.restore();
-        /* Technik: das Netz aus dem Film leuchtet beim Durchgehen kurz auf */
-        var nz = seg(t, 5.9, 6.6) * (1 - seg(t, 6.9, 7.4));
-        if (netz && nz > 0) { ctx.save(); ctx.globalCompositeOperation = "screen"; ctx.globalAlpha = nz * .55; deckend(netz); ctx.restore(); }
-        /* Übergang ins Buch durch warmes Licht */
-        var weiss = ease(seg(t, 6.3, 7.1)) * (1 - ease(seg(t, 7.1, 7.9)));
-        if (t > 7.0) buchSzene(t, ease(seg(t, 7.0, 7.6)), 1);
-        if (weiss > 0) { ctx.globalAlpha = weiss; ctx.fillStyle = NACHT ? "#eef2ff" : "#fff3dc"; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; }
-        staubZeichnen(t, ease(seg(t, 3.8, 5)) * (1 - seg(t, 6.2, 6.8)));
+        /* durch das Licht ins Buch */
+        var hell = ease(seg(t, 5.9, 6.6)) * (1 - ease(seg(t, 6.6, 7.3)));
+        if (t > 6.5) buchSzene(t, ease(seg(t, 6.5, 7.1)));
+        if (hell > 0) { ctx.globalAlpha = hell; ctx.fillStyle = "rgb(" + FARBE.licht + ")"; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; }
+        funkeln(t, ease(seg(t, 3.4, 4.4)) * (1 - seg(t, 5.8, 6.4)));
       }
-      function deckend(img) { var k = Math.max(W / img.naturalWidth, H / img.naturalHeight); ctx.drawImage(img, (W - img.naturalWidth * k) / 2, (H - img.naturalHeight * k) / 2, img.naturalWidth * k, img.naturalHeight * k); }
-
-      /* Laufweg: von vorne unten bis an die Tür; Hände heben sich bei 3.2 s */
-      var ARME = ds.arme === "1", HAENDE = zahlen(ds.haende || "0.15,0.42;0.85,0.42");
-      function figurLage(t, s, ox, oy) {
-        var g = ease(seg(t, .3, 3.2));
-        var hEnde = 214 * s, hStart = Math.min(H * .36, hEnde * 1.55);
-        var h = hStart + (hEnde - hStart) * g;
-        var fussY0 = H + hStart * .18, fussY1 = oy + 592 * s;
-        var fuss = fussY0 + (fussY1 - fussY0) * g;
-        var x = W / 2 + (1 - g) * W * .1 + Math.sin(g * Math.PI) * -W * .08;
+      function lage(t, M) {
+        var g = ease(seg(t, .3, 3.0));
+        var hEnde = M.sh * 3.1, hStart = hEnde * 1.45, h = hStart + (hEnde - hStart) * g;
+        var fuss = (H + hStart * .1) + (M.boden - (H + hStart * .1)) * g;
+        var x = W / 2 + (1 - g) * W * .14 - Math.sin(g * Math.PI) * W * .06;
         var laufen = g > 0 && g < 1 ? 1 : 0;
-        var hub = laufen * Math.abs(Math.sin(t * Math.PI * 2.6)) * h * .035;
-        var kipp = laufen * Math.sin(t * Math.PI * 2.6) * .05;
-        var lehnen = ease(seg(t, 3.2, 3.7)) * .03, hinein = ease(seg(t, 4.9, 5.9));
-        h *= 1 - .22 * hinein;
-        return { h: h, w: h * silh.w / silh.h, x: x, y: fuss - hub - lehnen * h - hinein * h * .1, kipp: kipp, sicht: 1 - hinein };
+        var hub = laufen * Math.abs(Math.sin(t * Math.PI * 2.6)) * h * .04, kipp = laufen * Math.sin(t * Math.PI * 2.6) * .05;
+        var hinein = ease(seg(t, 4.6, 5.6)); h *= 1 - .25 * hinein;
+        return { h: h, w: h * fig.naturalWidth / fig.naturalHeight, x: x, y: fuss - hub - hinein * h * .12, kipp: kipp, sicht: 1 - hinein };
       }
-      function armWinkel(t) { return ease(seg(t, 3.1, 3.7)); }
-      function handPunkte(t, s, ox, oy) {
-        if (!silh) return [[W / 2 - 30, H / 2], [W / 2 + 30, H / 2]];
-        var L = figurLage(t, s, ox, oy), top = L.y - L.h, left = L.x - L.w / 2;
-        if (ARME) { var a = armWinkel(t), r = L.h * .26;
-          return [-1, 1].map(function (sg) { var th = -sg * a * 2.0;
-            return [L.x + sg * L.w * .28 - Math.sin(th) * r, L.y - L.h * .42 + Math.cos(th) * r]; }); }
-        return HAENDE.map(function (p) { return [left + p[0] * L.w, top + p[1] * L.h]; });
-      }
-      function figur(t, s, ox, oy, auf) {
-        if (!silh) return;
-        var L = figurLage(t, s, ox, oy);
-        if (L.sicht <= 0) return;
+      function handPunkte(t, M) { var L = lage(t, M); return [[L.x - L.w * .42, L.y - L.h * .55], [L.x + L.w * .42, L.y - L.h * .55]]; }
+      function figur(t, M) {
+        var L = lage(t, M); if (L.sicht <= 0) return;
+        ctx.save(); ctx.globalAlpha *= .3 * L.sicht; ctx.fillStyle = FARBE.tinte;
+        ctx.beginPath(); ctx.ellipse(L.x, L.y, L.w * .38, L.h * .045, 0, 0, 7); ctx.fill(); ctx.restore();
         ctx.save(); ctx.globalAlpha *= L.sicht; ctx.translate(L.x, L.y); ctx.rotate(L.kipp);
-        var rim = .25 + ease(seg(t, 3.4, 5.2)) * .75;
-        /* Gegenlicht-Saum: das helle Bild etwas grösser, mehrfach weich dahinter */
-        ctx.globalAlpha = .22 * rim;
-        for (var i = 0; i < 6; i++) { var k = 1.02 + i * .012, a = i * 1.05;
-          ctx.drawImage(silh.licht, -L.w * k / 2 + Math.cos(a) * 2, -L.h * k + Math.sin(a) * 2, L.w * k, L.h * k); }
-        ctx.globalAlpha = 1;
-        if (ARME) arme(L, armWinkel(t));
-        ctx.drawImage(silh.dunkel, -L.w / 2, -L.h, L.w, L.h);
-        ctx.restore();
-        /* weicher Schatten am Boden, zur Kamera hin (Licht kommt von der Tür) */
-        ctx.save(); ctx.globalAlpha = .35 * rim * L.sicht; ctx.fillStyle = "#000";
-        ctx.beginPath(); ctx.ellipse(L.x, L.y + L.h * .02, L.w * .42, L.h * .05, 0, 0, 7); ctx.fill(); ctx.restore();
+        ctx.drawImage(fig, -L.w / 2, -L.h, L.w, L.h); ctx.restore();
       }
-      function arme(L, a) {
-        ctx.fillStyle = NACHT ? "#252c4e" : "#3a2a34";
-        [-1, 1].forEach(function (sg) {
-          ctx.save(); ctx.translate(sg * L.w * .28, -L.h * .42); ctx.rotate(-sg * a * 2.0);
-          ctx.beginPath(); ctx.ellipse(0, L.h * .12, L.h * .065, L.h * .14, 0, 0, 7); ctx.fill(); ctx.restore();
-        });
+      function goldlinie(t, a, tx2, ty) {
+        var p = seg(t, 3.6, 5.8); if (p <= 0) return;
+        var pts = [], i;
+        for (i = 0; i <= 40; i++) { var u = i / 40;
+          pts.push([a[0] + (tx2 - a[0]) * u + Math.sin(u * 6.3 + t) * 22 * (1 - u), a[1] + (ty - a[1]) * u - Math.sin(u * Math.PI) * 60]); }
+        var kopf = Math.floor(ease(p) * 40), schwanz = Math.max(0, kopf - 24); if (kopf - schwanz < 2) return;
+        ctx.save(); ctx.lineCap = "round"; ctx.strokeStyle = "rgba(" + FARBE.gold + ",.85)"; ctx.lineWidth = 1.6;
+        ctx.beginPath(); ctx.moveTo(pts[schwanz][0], pts[schwanz][1]); for (i = schwanz + 1; i <= kopf; i++) ctx.lineTo(pts[i][0], pts[i][1]); ctx.stroke(); ctx.restore();
       }
-      function band(t, hand, tx, ty, lh, s) {
-        var p = seg(t, 3.9, 6.4); if (p <= 0) return;
-        var a = hand[0], pts = [];
-        for (var i = 0; i <= 40; i++) { var u = i / 40;
-          var x = a[0] + (tx - a[0]) * u + Math.sin(u * 6.3 + t * 1.5) * 40 * s * (1 - u) + Math.sin(u * 3) * 60 * s;
-          var y = a[1] + (ty - lh * .2 - a[1]) * u - Math.sin(u * Math.PI) * 80 * s; pts.push([x, y]); }
-        var kopf = Math.floor(ease(p) * 40), schwanz = Math.max(0, kopf - 22);
-        if (kopf - schwanz < 2) return;
-        ctx.save(); ctx.globalCompositeOperation = "lighter"; ctx.lineCap = "round"; ctx.lineJoin = "round";
-        [[10, .12], [4, .35], [1.6, .9]].forEach(function (st) {
-          ctx.beginPath(); ctx.moveTo(pts[schwanz][0], pts[schwanz][1]);
-          for (var j = schwanz + 1; j <= kopf; j++) ctx.lineTo(pts[j][0], pts[j][1]);
-          ctx.lineWidth = st[0] * Math.max(1, s); ctx.strokeStyle = NACHT ? "rgba(225,235,255," + st[1] + ")" : "rgba(255,214,140," + st[1] + ")"; ctx.stroke();
-        });
-        ctx.restore();
-      }
-      function staubZeichnen(t, a) {
+      function funkeln(t, a) {
         if (a <= 0) return;
-        ctx.save(); ctx.globalCompositeOperation = "lighter";
-        staub.forEach(function (p) {
-          var y = ((p.y - t * p.v * 6) % 1 + 1) % 1, x = p.x + Math.sin(t * .6 + p.p) * .01;
-          ctx.globalAlpha = a * (.35 + .25 * Math.sin(t * 1.2 + p.p));
-          ctx.fillStyle = NACHT ? "#e8eeff" : "#ffe6b0"; ctx.beginPath(); ctx.arc(x * W, y * H, p.r, 0, 7); ctx.fill();
+        ctx.save();
+        funken.forEach(function (p) {
+          var y = ((p.y - t * p.v) % 1 + 1) % 1, x = p.x + Math.sin(t * .7 + p.p) * .012;
+          ctx.globalAlpha = a * (.45 + .2 * Math.sin(t * 1.1 + p.p)); ctx.fillStyle = "rgb(" + p.f + ")";
+          ctx.beginPath(); ctx.arc(x * W, y * H, p.r, 0, 7); ctx.fill();
         });
         ctx.restore();
       }
-      /* Buch-Szene: das offene Buch in der dunklen Halle (Film 0:10), die Seiten zeigen die Welt der App */
-      function buchSzene(t, alpha, licht) {
-        var bw = 760, bx = 260;
-        var k = Math.min(W * 1.22 / bw, H * .62 / 520);
-        var dauer = Math.max(0, t - 7);
-        k *= 1 + Math.min(1, dauer / 2.6) * .07;
-        var iw = 1280 * k, ih = 720 * k, x = W / 2 - (bx + bw / 2) * k, y = H * .46 - 380 * k;
+      /* das offene Bilderbuch füllt das Bild */
+      function buchSzene(t, alpha) {
         ctx.save(); ctx.globalAlpha = alpha;
-        ctx.fillStyle = NACHT ? "#070b1c" : "#0b0d18"; ctx.fillRect(0, 0, W, H);
-        var hg = ctx.createRadialGradient(W / 2, y + 380 * k, 10, W / 2, y + 380 * k, H * .55);
-        hg.addColorStop(0, NACHT ? "rgba(120,140,220,.35)" : "rgba(200,140,70,.35)"); hg.addColorStop(1, "rgba(0,0,0,0)");
-        ctx.fillStyle = hg; ctx.fillRect(0, 0, W, H);
-        if (netz) { ctx.save(); ctx.globalCompositeOperation = "screen"; ctx.globalAlpha = alpha * .22; deckend(netz); ctx.restore(); }
-        /* Buch aus dem Film, oben und unten weich in die Halle auslaufend */
-        var by0 = y + 60 * k, by1 = y + 700 * k;
-        ctx.save(); ctx.beginPath(); ctx.rect(0, by0, W, by1 - by0); ctx.clip();
-        ctx.drawImage(buch, x, y, iw, ih); ctx.restore();
-        var fe = 70 * k;
-        [[by0, by0 + fe, 1, 0], [by1 - fe, by1, 0, 1]].forEach(function (f) {
-          var g = ctx.createLinearGradient(0, f[0], 0, f[1]);
-          var c = NACHT ? "7,11,28" : "11,13,24";
-          g.addColorStop(0, "rgba(" + c + "," + f[2] + ")"); g.addColorStop(1, "rgba(" + c + "," + f[3] + ")");
-          ctx.fillStyle = g; ctx.fillRect(0, f[0], W, f[1] - f[0]);
-        });
-        var gl = ctx.createRadialGradient(W / 2, y + 380 * k, 10, W / 2, y + 380 * k, 520 * k);
-        gl.addColorStop(0, NACHT ? "rgba(225,232,255,.16)" : "rgba(255,214,140,.18)"); gl.addColorStop(1, "rgba(255,200,120,0)");
-        ctx.globalCompositeOperation = "lighter"; ctx.globalAlpha = alpha * licht; ctx.fillStyle = gl; ctx.fillRect(0, 0, W, H);
+        ctx.fillStyle = FARBE.papier; ctx.fillRect(0, 0, W, H);
+        papierGrund(alpha * .9);
+        var dauer = Math.max(0, t - 6.5), k = Math.min(W * 1.04 / 1200, H * .62 / 780) * (1 + Math.min(1, dauer / 2.5) * .05);
+        var bw = 1200 * k, bh = 780 * k, bx = W / 2 - bw / 2, by = H * .44 - bh / 2;
+        /* weicher Schatten unter dem Buch, wie auf einem Tisch */
+        ctx.save(); ctx.globalAlpha = alpha * .22; ctx.fillStyle = FARBE.tinte;
+        ctx.beginPath(); ctx.ellipse(W / 2, by + bh + 6, bw * .48, 12, 0, 0, 7); ctx.fill(); ctx.restore();
+        ctx.drawImage(buch, bx, by, bw, bh);
+        /* feines Gold am Bundsteg */
+        var gl = ctx.createRadialGradient(W / 2, by + bh / 2, 2, W / 2, by + bh / 2, bh * .7);
+        gl.addColorStop(0, "rgba(" + FARBE.licht + ",.28)"); gl.addColorStop(1, "rgba(" + FARBE.licht + ",0)");
+        ctx.fillStyle = gl; ctx.fillRect(bx, by, bw, bh);
         ctx.restore();
-        if (modus === "voll") {
-          /* goldenes Band kreist ums Buch */
-          var u0 = (t - 7) * .5; if (u0 > 0) {
-            ctx.save(); ctx.globalCompositeOperation = "lighter"; ctx.lineCap = "round";
-            [[8, .12], [3, .35], [1.4, .9]].forEach(function (st) { ctx.beginPath();
-              for (var i = 0; i <= 30; i++) { var u = u0 + i / 30 * .9, wx = W / 2 + Math.cos(u * 4) * W * .46, wy = y + 380 * k + Math.sin(u * 4) * 210 * k + Math.sin(u * 9) * 8;
-                if (i) ctx.lineTo(wx, wy); else ctx.moveTo(wx, wy); }
-              ctx.lineWidth = st[0]; ctx.strokeStyle = NACHT ? "rgba(225,235,255," + st[1] * alpha + ")" : "rgba(255,214,140," + st[1] * alpha + ")"; ctx.stroke(); });
-            ctx.restore(); }
-          staubZeichnen(t, alpha * .8);
-        }
+        if (modus === "voll") funkeln(t, alpha * .8);
       }
     });
   }
@@ -332,20 +281,18 @@
   function start() {
     welt();
     if (d.readyState === "loading") d.addEventListener("DOMContentLoaded", function () { karten(); beobachten(); }); else { karten(); beobachten(); }
+    if (/[?&]tfw=aus/.test(location.search)) return;
     var modus;
     if (RUHIG) modus = "ruhig";
     else {
-      var gestern = null; try { gestern = localStorage.getItem(KEY); } catch (e) {}
-      modus = gestern === heute() ? "kurz" : "voll";
+      var vorher = null; try { vorher = localStorage.getItem(KEY); } catch (e) {}
+      modus = vorher === heute() ? "kurz" : "voll";
       if (/[?&]tfw=voll/.test(location.search)) modus = "voll";
       try { localStorage.setItem(KEY, heute()); } catch (e) {}
     }
-    if (/[?&]tfw=aus/.test(location.search)) return;
     eingang(modus);
   }
-  window.Trickfilmwelt = { abspielen: function (m) { if (d.body) eingang(m || "voll"); }, ueberspringen: function () { if (ov) ov.dispatchEvent(new PointerEvent("pointerdown", { clientX: -1, clientY: -1 })); } };
-
-  /* Vor dem Eingang: App sofort verdecken (kein Aufblitzen), ausser die NDA-Sperre ist offen */
+  window.Trickfilmwelt = { abspielen: function (m) { if (d.body) eingang(m || "voll"); } };
   function bereit() {
     if (html.classList.contains("nda-zu")) {
       var mo = new MutationObserver(function () { if (!html.classList.contains("nda-zu")) { mo.disconnect(); start(); } });

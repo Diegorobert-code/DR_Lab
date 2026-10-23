@@ -501,7 +501,7 @@
 </style>
 </head>
 <body>
-<script src="../trickfilmwelt/trickfilmwelt.js" data-app="otti" data-buch="trickfilm/buch.webp" data-welt="trickfilm/welt.webp" data-figur="trickfilm/figur.webp" data-arme="1" data-text="Otti wartet im Mondschein-Wald" data-karten=".buehne;.feld" data-blaetter=".blatt>.blattinnen;.eltern;.feier" data-knoepfe=".kimu"></script>
+<script src="../trickfilmwelt/trickfilmwelt.js" data-app="otti" data-buch="trickfilm/buch.webp" data-welt="trickfilm/welt.webp" data-figur="trickfilm/figur.webp" data-css="trickfilm/buchwelt.css" data-text="Otti wartet im Mondschein-Wald" data-karten=".buehne;.feld" data-blaetter=".blatt>.blattinnen;.eltern>.karte;.feier>.karte" data-knoepfe=".kimu"></script>
 <div class="sterne" aria-hidden="true"></div>
 
 <header class="kopf">
@@ -653,7 +653,7 @@
 
 <div class="eltern tour" id="tour" hidden role="dialog" aria-modal="true" aria-label="So geht Otti">
   <div class="karte">
-    <img src="posen/anruf.jpg" alt="Otti" loading="lazy">
+    <img src="trickfilm/posen/anruf.webp" alt="Otti" loading="lazy">
     <h2 id="tourH" style="margin-top:16px"></h2>
     <p id="tourT"></p>
     <div class="punkte" id="tourP" aria-hidden="true"></div>
@@ -716,7 +716,7 @@
   /* ================= Die Puppe (nova/puppe.js): Otti atmet, blinzelt, schaut, winkt, redet ================= */
   var puppe = null, zustandT = 0;
   // Ebenen-Modus: Otti aus Tinkos Teilen (Körper, Kopf, Arme, Lider, Ausdrücke, 9 Mundformen); ohne Teile → Ein-Bild-Modus mit otti-3d.jpg
-  try { puppe = Puppe.erstelle($('puppe'), { figur: 'otti', bild: 'otti-3d.jpg', ordner: '../nova/puppe/otti/', neigenKnopf: false, ruhig: true }); } catch (e) {}
+  try { puppe = Puppe.erstelle($('puppe'), { figur: 'otti', bild: 'otti-3d.jpg', ordner: 'trickfilm/puppe/', neigenKnopf: false, ruhig: true }); } catch (e) {}
   /* Ruhe-Prinzip (Diego 20.10.): ruhige Bilder regen die Fantasie an. In Ruhe steht Otti fast still: sanft atmen,
      selten blinzeln, die Augen wandern kaum. Bewegung nur als Antwort aufs Tippen und Sprechen (winken, Mund, freuen).
      Gesteuert nur von hier aus, nova/puppe.js bleibt unverändert. */
@@ -1316,10 +1316,10 @@
 
   /* ================= Posen: Tinkos Bilder in posen/<pose>.jpg (Liste posen/index.json) ================= */
   var POSEN = {}, poseT = 0;
-  fetch('posen/index.json').then(function (r) { return r.ok ? r.json() : []; }).then(function (l) {
+  fetch('trickfilm/posen/index.json').then(function (r) { return r.ok ? r.json() : []; }).then(function (l) {
     (Array.isArray(l) ? l : []).forEach(function (p) {
       p = String(p).replace(/[^a-z0-9-]/g, ''); if (!p) return;
-      var im = new Image(); im.onload = function () { POSEN[p] = im.src; }; im.src = 'posen/' + p + '.jpg';
+      var im = new Image(); im.onload = function () { POSEN[p] = im.src; }; im.src = 'trickfilm/posen/' + p + '.webp';
     });
   }).catch(function () {});
   function pose(p, ms) {
@@ -2245,7 +2245,7 @@
       }
       function gutNacht() {
         f.innerHTML = ''; $('feldzahl').textContent = '🌙'; s.ziel = null;
-        var k = el('div', 'endkarte'); var fb = el('img', 'abendbild'); fb.alt = 'Otti sitzt am Fenster und schaut zum Mond'; fb.src = 'posen/fenster.jpg'; k.appendChild(fb); k.appendChild(el('span', 'pokal', '🌙'));
+        var k = el('div', 'endkarte'); var fb = el('img', 'abendbild'); fb.alt = 'Otti sitzt am Fenster und schaut zum Mond'; fb.src = 'trickfilm/posen/fenster.webp'; k.appendChild(fb); k.appendChild(el('span', 'pokal', '🌙'));
         var n = kindName(), t = 'Gute Nacht' + (n ? ', ' + n : '') + '. Schlaf schön und träum etwas Liebes.';
         k.appendChild(el('div', 'endzeile', 'Gute Nacht' + (n ? ', ' + n : '') + '!'));
         var st = stickerDazu(); if (st) { var sn = el('div', 'stickerneu'); sn.appendChild(el('span', '', 'Neuer Sticker für Ottis Zimmer:')); sn.appendChild(el('b', '', st)); k.appendChild(sn); }
