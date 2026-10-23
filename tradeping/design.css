@@ -36,6 +36,11 @@ html header.top .brand img,html .figur-logo{width:30px!important;height:30px!imp
 html header.top h1{font-family:var(--m-font-title);font-weight:400;font-size:36px;letter-spacing:-.01em;line-height:1;color:var(--m-ink)}
 html header.top p{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--m-ink3)}
 html .stand{font-size:12px}
+/* Schmale Handys: Titel behält seine Breite, der Verbindungs-Hinweis bricht um statt den Titel zu überdecken */
+html header.top{position:relative}/* die Reiter-Leiste klebt oben; ein zweiter klebender Kopf darunter wurde von ihr halb verdeckt */
+html header.top .brand{flex:none}
+html header.top .brand p{width:0;min-width:100%}
+html header.top .stand{flex:1 1 auto;min-width:0;max-width:none}
 html .r8-thema{border-radius:2px!important;background:transparent!important;border:1px solid var(--m-line2)!important}
 
 /* Reiter: leise Textreihe mit Unterstrich statt Pillen */
@@ -89,3 +94,7 @@ html .wrap .lesson h1,html .wrap>section h1{font-family:var(--m-font-title);font
 html .wrap .lesson h3{font-size:21px!important;margin-top:18px}
 html .wrap :is(.opt,.les,.box,.weg,.bubble,.hinweis,.chip,.scale button,details,.merk,.hero,.zurapp){border-radius:var(--d-r)!important}
 html .wrap :is(.opt,.les,.box,.weg){box-shadow:none!important}
+/* «Neu für dich»-Kacheln: Grossbuchstaben mit Sperrung dürfen die Spalte nicht sprengen (v. a. mit grosser Schrift) */
+@media (min-width:360px){html .r7-neu-gitter{grid-template-columns:repeat(2,minmax(0,1fr))}}
+html .r7-neu-k{min-width:0}
+html .r7-neu-k :is(b,small){max-width:100%;overflow-wrap:break-word;hyphens:auto}
