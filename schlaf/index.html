@@ -330,6 +330,7 @@ button{min-height:44px}
 @keyframes tippen{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-6px)}}
 .say.bubble{position:relative;background:rgba(14,24,56,.72);border:1px solid var(--line);border-radius:var(--r3);padding:12px 20px;max-width:340px;min-height:0;font-size:1.25rem;line-height:1.35;box-shadow:0 8px 30px rgba(0,0,0,.25)}
 body.sheetauf .nova-btn,body.sheetauf .fb-btn.float{display:none!important}
+body:has(#onb:not([hidden]),#film:not([hidden]),.fb-veil.on) :is(.nova-btn,.nova-pille,.fb-btn.float){display:none!important}
 .say.bubble:empty{visibility:hidden}
 /* Jetzt dran: der eine klare Schritt */
 .jetzt{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:var(--r2);padding:16px 20px;min-height:80px;border-radius:var(--r3);
@@ -1644,6 +1645,9 @@ function geschwisterUrl(ordner,zweig,meinZweig){const m=location.pathname.match(
   if(NATIV||location.protocol==='file:')return'https://diegorobert-code.github.io/DR_Lab/'+ordner+'/';
   return'../'+ordner+'/index.html'}
 document.querySelectorAll('[data-geschwister]').forEach(a=>{a.href=geschwisterUrl('fia-kosmos','fia-koerperkosmos','fiasnest-ideen-2026-10-19');a.addEventListener('click',()=>lernen('weg','kosmos'))});
+/* Fia Körperkosmos liegt bisher nur auf ihrem eigenen Zweig (githack). Überall sonst gäbe es eine leere Seite:
+   dort die Karte ausblenden. Sobald fia-kosmos/ auf main liegt, diese Zeile entfernen. */
+if(!/githack\.com$/.test(location.hostname)||!/^https:/.test((document.querySelector('[data-geschwister]')||{getAttribute:()=>''}).getAttribute('href')||''))document.querySelectorAll('[data-geschwister]').forEach(a=>a.hidden=true);
 
 /* Bild fehlt? Dann zeigt Fias Nest das Fia-Bild, nie ein kaputtes Symbol */
 document.addEventListener('error',e=>{const i=e.target;if(i&&i.tagName==='IMG'&&!i.dataset.ersatz){i.dataset.ersatz=1;i.src='figuren/fia.jpg'}},true);
