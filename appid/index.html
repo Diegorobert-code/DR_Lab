@@ -382,7 +382,7 @@ body{background:#f7f6f1}
   <button class="btn" id="save">Speichern</button>
   <button class="btn ghost" id="cancel">Verwerfen</button>
 </div>
-<div class="sheet" id="sheet2"><div class="grab"></div><div id="s2"></div></div>
+<div class="sheet" id="sheet2"><div class="grab"></div><button type="button" class="s2zu" id="s2zu" aria-label="Schliessen">✕</button><div id="s2"></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -827,7 +827,13 @@ $("#addact").onclick=()=>{
   };draw();
 };
 $("#save").onclick=()=>{const t=today();pending.forEach(i=>t.push(i));save();closeSheet();$("#txt").value="";$("#live").textContent="";const k=fmt(sum(pending).kcal),a=sumAct(pending);toast(document.body.classList.contains("flo-sanft")?"Gespeichert. Schön, dass du es mir erzählt hast.":`Gespeichert · Richtwert ca. ${k} kcal`+(a?` · Bewegung −${fmt(a)}`:""));render();if(window.floFeier)floFeier(pending.length)};
-$("#cancel").onclick=closeSheet;$("#sheetbg").onclick=closeSheet;
+$("#cancel").onclick=closeSheet;$("#sheetbg").onclick=closeSheet;$("#s2zu").onclick=closeSheet;
+/* Esc schliesst die eigenen Blätter und Fenster der App */
+document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;
+  if($("#sheet").classList.contains("on")||$("#sheet2").classList.contains("on")){closeSheet();return}
+  const f=document.querySelector(".flofrage.on");if(f){f.classList.remove("on");return}
+  const z=document.querySelector(".sp-blase.on .sp-zu");if(z){z.click();return}
+  const h=document.querySelector(".r6-hoer");if(h)h.click()});
 
 /* ---------- Eingabe ---------- */
 $("#send").onclick=()=>{const v=$("#txt").value;if(v.trim())openSheet(v)};
@@ -1101,6 +1107,14 @@ button:not(.mic):active,.chip:active,.pill:active,.flo-chip:active{transform:sca
 .figur-hero img.r3-hops{animation:r3hops .7s cubic-bezier(.3,1.6,.5,1)!important}
 @keyframes r3hops{35%{transform:translateY(-12px) scale(1.06,.94) rotate(-4deg)}65%{transform:translateY(0) scale(1.04,.96)}}
 @media (prefers-reduced-motion:reduce){.mic::before,.mic::after{animation:none!important}.figur-hero img.r3-hops{animation:none!important}}
+/* ✕ oben rechts in jedem unteren Blatt (Bewegung, Rezept, Einkauf …) */
+.s2zu{position:sticky;top:0;float:right;z-index:2;width:44px;height:44px;margin:-4px -8px 0 8px;border:0;border-radius:50%;background:rgba(31,42,37,.07);color:inherit;font-size:20px;line-height:1;cursor:pointer}
+/* Unten genug Platz, damit die schwebenden Flo-Knöpfe rechts nie den letzten Inhalt verdecken */
+.app{padding-bottom:calc(var(--sab) + 256px)}
+/* Schmale Handys: Mikrofon etwas kleiner und leicht nach rechts, der Ring wächst weniger.
+   So bleibt der Lichtkranz frei zwischen der Lernen-Pille links und den Flo-Knöpfen rechts. */
+@keyframes ringKlein{from{transform:scale(1);opacity:.9}to{transform:scale(1.1);opacity:0}}
+@media (max-width:440px){.micwrap .mic{width:132px;height:132px;margin-left:24px}.micwrap .mic::before,.micwrap .mic::after{animation-name:ringKlein}}
 </style>
 <script>
 /* Runde 3: kleine Feiern beim Erfassen (Funken, Früchte, kurze Vibration). Nichts verlässt das Gerät. */
