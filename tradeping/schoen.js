@@ -19,7 +19,11 @@
   }
   function pruefe(img) {
     if (img.dataset.schAva === '1') {
-      if ((img.getAttribute('src') || '') !== img.dataset.schSrc && istFigur(img)) { tausche(img); }
+      var jetzt = img.getAttribute('src') || '';
+      if (jetzt === img.dataset.schSrc || img.dataset.schFest === '1') return;
+      /* Die App setzt ihr Bild an dieser Stelle selbst zurück: Bild lassen, nur die Form behalten (kein Hin und Her). */
+      if (jetzt === img.dataset.schOrig) { img.dataset.schFest = '1'; return; }
+      if (istFigur(img)) tausche(img);
       return;
     }
     if (!istFigur(img) || geschuetzt(img)) return;
@@ -30,6 +34,7 @@
   }
   function tausche(img) {
     img.dataset.schAva = '1';
+    img.dataset.schOrig = img.getAttribute('src') || '';
     img.removeAttribute('srcset');
     img.setAttribute('src', AVA);
     img.dataset.schSrc = img.getAttribute('src');
