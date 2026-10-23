@@ -31,7 +31,7 @@
   function bau() {
     if (root) return;
     var c = C();
-    root = d.createElement('div'); root.className = 'sp'; root.hidden = true; root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true');
+    root = d.createElement('div'); root.className = 'sprich-ov'; root.hidden = true; root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true');
     root.setAttribute('aria-label', 'Sprich mit ' + c.figur);
     root.innerHTML = '<div class="sp-kopf"><button type="button" class="sp-rund" data-sp="zu" aria-label="Schliessen">✕</button>' +
       '<span class="sp-wer">' + (c.bild ? '<img src="' + esc(c.bild) + '" alt="">' : '<span class="sp-e">' + esc(c.e || '💬') + '</span>') + '<b>' + esc(c.figur) + '</b></span>' +
