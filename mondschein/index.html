@@ -69,6 +69,10 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .fig .blink{transform-box:fill-box;transform-origin:center;animation:blink 5.5s infinite}
 @keyframes blink{0%,91%,97%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}}
 .wave{transform-origin:154px 152px;transform-box:view-box;animation:wave .9s ease-in-out infinite alternate}
+@keyframes tanz{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)}}
+#mvStage.tanzt .fig{animation:tanz .9s ease-in-out infinite}
+.putzkarte{display:grid;grid-template-columns:1fr 1fr;gap:6px}.putzkarte span{padding:6px 4px;font-size:13px;border-radius:12px;background:var(--mint,#e6f6ef);text-align:center;font-weight:700;font-size:14px;opacity:.55;transition:all .3s}.putzkarte span.an{opacity:1;background:#ffd76b;transform:scale(1.04);box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.noten{font-size:22px;letter-spacing:6px;opacity:.75;text-align:center;min-height:28px}
 @keyframes wave{from{transform:rotate(-14deg)}to{transform:rotate(16deg)}}
 .kwave{transform-origin:146px 130px;transform-box:view-box;animation:wave .8s ease-in-out infinite alternate}
 .flap{transform-box:view-box;animation:flap 1.8s ease-in-out infinite alternate}
@@ -446,6 +450,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 <section class="screen" id="s-move" aria-label="Bewegungsspiel">
   <div class="topbar"><button class="btn back" data-go="games" aria-label="Zurück zu den Spielen">←</button><h2 id="mvTitle">Spiel</h2><span style="width:58px"></span></div>
   <div class="stage" id="mvStage"></div>
+  <div class="noten" id="mvNoten" aria-hidden="true"></div>
   <div class="card">
     <div class="move-step" id="mvText">Bereit?</div>
     <div class="count" id="mvCount" aria-live="polite"></div>
@@ -455,6 +460,17 @@ h3.ch{font-size:19px;margin-bottom:10px}
       <button class="btn primary" id="mvPlay">▶ Los geht's</button>
       <button class="btn nav" id="mvNext" aria-label="Nächster Schritt">▶</button>
     </div>
+  </div>
+  <div class="card putz" id="mvPutz" hidden>
+    <div class="putzkarte" id="putzKarte" aria-label="Putzkarte: wo gerade geputzt wird">
+      <span data-z="ol">oben links</span><span data-z="or">oben rechts</span>
+      <span data-z="ul">unten links</span><span data-z="ur">unten rechts</span>
+      <span data-z="ko">Kauflächen oben</span><span data-z="ku">Kauflächen unten</span>
+      <span data-z="in">innen</span><span data-z="vo">vorne und Zunge</span>
+    </div>
+    <p class="small muted" id="putzStand" style="margin:10px 0 0;text-align:center"></p>
+    <button class="btn wide holdbtn hold" id="mvOk" hidden style="margin-top:10px" aria-label="Für Eltern: gut geputzt bestätigen, 3 Sekunden halten">🦷 Eltern: gut geputzt (3 Sek. halten)</button>
+    <p class="small muted" style="margin:8px 0 0;text-align:center">3 Monate morgens und abends putzen hilft, dass es zur Gewohnheit wird. Nach 90 vollen Tagen gibt es die goldene Zahnmedaille.</p>
   </div>
   <button class="btn wide" data-go="games">🎲 Anderes Spiel</button>
 </section>
@@ -883,7 +899,7 @@ function bockSVG(o={}){
 </svg>`;
 }
 const FIG = {sunny:sunnySVG, nova:novaSVG, kiki:kikiSVG, moon:moonSVG, mush:mushSVG, fly:flySVG,
-  hase:filmFig('hase.jpg','Hoppel, der Hase'), fuchs:filmFig('fuchs.jpg','Flori, der Fuchs'), fompa:fompaSVG, prinz:prinzSVG, bock:bockSVG};
+  hase:filmFig('hase.jpg','Hoppel, der Hase'), fuchs:filmFig('fuchs.jpg','Flori, der Fuchs'), fompa:fompaSVG, prinz:prinzSVG, bock:filmFig('zahnboecklein.jpg','Das Zahnböcklein, die kleine Geiss mit Feenflügeln und blauer Zahnbürste')};
 
 /* ---------- Nachtmodus ---------- */
 function isNight(){ if (S.night==='on') return true; if (S.night==='off') return false; const h=new Date().getHours(); return h>=19 || h<7; }
@@ -1739,6 +1755,18 @@ const MOVES = [
   ['Und die Kauflächen unten. Tsch, tsch, tsch.', 15],
   ['Zum Schluss die Innenseiten, ganz sanft vom Zahnfleisch weg nach unten und oben fegen.', 15],
   ['Ausspucken, nicht schlucken. Fertig! Deine Zähne glänzen wie Sterne. Das erzähle ich heute Nacht der Zahnfee. Mäh!', 5]]},
+ {id:'zahnlied', title:'Zahnputzlied mit dem Zahnböcklein', fig:'bock', song:true, sub:'Drei Minuten singen und putzen.', steps:[
+  ['Mäh! Jetzt singen wir das Zahnputzlied, drei Minuten lang. Zahnbürste bereit, Zahnpasta so gross wie eine Erbse. Los geht\'s!', 4],
+  ['Oben rechts, da fangen wir an, Kreis um Kreis, so gut ich kann. Schrubbel, schrubbel, rundherum, mein Zahn macht leise brumm, brumm, brumm.', 14, 'or'],
+  ['Oben links, da wandern wir hin, mit kleinen Kreisen mittendrin. Schrubbel, schrubbel, hin und her, Zähneputzen ist nicht schwer.', 14, 'ol'],
+  ['Unten links, jetzt bist du dran, jeder Zahn kommt einmal dran. Mäh, mäh, das Zahnböcklein singt mit, Kreis um Kreis und Schritt für Schritt.', 14, 'ul'],
+  ['Unten rechts, wir sind fast rum, die Bürste tanzt ganz flink herum. Schrubbel, schrubbel, glänzt wie ein Stern, Zähneputzen hab ich gern.', 14, 'ur'],
+  ['Kauflächen oben, tsch, tsch, tsch, die kleine Lokomotive fährt, husch, husch. Hin und her, vor und zurück, jeder Zahn hat heute Glück.', 14, 'ko'],
+  ['Kauflächen unten, tsch, tsch, tsch, da wo wir beissen, wird es frisch. Hin und her, vor und zurück, die Zahnfee lacht vor lauter Glück.', 14, 'ku'],
+  ['Jetzt die Innenseiten, sanft und sacht, vom Zahnfleisch weg, ganz gut gemacht. Fegen, fegen, wie ein Besen, das ist ein schönes Putzen gewesen.', 14, 'in'],
+  ['Und vorne die Zähnchen, zeig mal her, ein grosses Lächeln, bitte sehr! Ganz sanft die Zunge, ganz zum Schluss, und dann ein dicker Zahnfee-Kuss.', 12, 'vo'],
+  ['Ausspucken, nicht schlucken! Drei Minuten geschafft. Deine Zähne glänzen wie Sterne. Das erzähle ich heute Nacht der Zahnfee. Mäh!', 3]]},
+ {id:'putzgeschichte', title:'Putz-Geschichte mit dem Zahnböcklein', fig:'bock', song:true, putz:true, sub:'Drei Minuten putzen, jedes Mal geht die Geschichte weiter.', steps:[]},
  {id:'rollen', title:'Rollen wie Otti', fig:'sunny', sub:'Klein machen, rollen, strecken.', steps:[
   ['Hallo, ich bin Otti! Wir machen uns ganz klein, wie eine Igelkugel. Kopf runter, Arme um die Knie.', 8],
   ['Jetzt rollen wir ganz sanft hin und her. Hin … und her.', 10],
@@ -1795,12 +1823,102 @@ function renderGames(){
 }
 $('#glist').addEventListener('click', e => { const b = e.target.closest('[data-move]'); if (b) startMove(MOVES[+b.dataset.move]); });
 
+/* Spieluhr-Melodie fürs Zahnputzlied: im Handy erzeugt, keine Datei, nichts geladen. Leise, damit man das Zahnböcklein hört. */
+const MUSIK = {
+  ctx:null, t:null, n:0,
+  // eigene kleine Melodie (Pentatonik), Halbtöne über C5; null = Pause
+  noten:[0,4,7,4, 9,7,4,null, 2,4,2,0, 4,null,null,null, 7,9,12,9, 7,4,7,null, 9,7,4,2, 0,null,null,null],
+  start(){
+    if (this.t) return;
+    try{ this.ctx = this.ctx || new (window.AudioContext || window.webkitAudioContext)(); this.ctx.resume && this.ctx.resume(); }catch(e){ return; }
+    this.t = setInterval(() => this.ton(), 330);
+  },
+  ton(){
+    const h = this.noten[this.n++ % this.noten.length], c = this.ctx;
+    $('#mvNoten').textContent = h == null ? '' : ['♪','♫','♩'][this.n % 3].repeat(1 + this.n % 3);
+    if (h == null || !c) return;
+    const o = c.createOscillator(), g = c.createGain(), t = c.currentTime, v = 0.05 * (S.vol || 1);
+    o.type = 'triangle'; o.frequency.value = 523.25 * Math.pow(2, h / 12);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + 0.32);
+  },
+  stop(){ clearInterval(this.t); this.t = null; if ($('#mvNoten')) $('#mvNoten').textContent = ''; }
+};
+function mvLied(){ const an = !!(MV.game && MV.game.song && MV.running); an ? MUSIK.start() : MUSIK.stop(); $('#mvStage').classList.toggle('tanzt', an); }
+/* ---------- Putzen: Fortsetzungsgeschichte, Putzkarte, Zahnsterne (alles nur auf diesem Handy) ---------- */
+const PUTZ_ZONEN = {or:'Oben rechts, kleine Kreise.', ol:'Jetzt oben links.', ul:'Unten links.', ur:'Unten rechts.', ko:'Kauflächen oben, hin und her.', ku:'Kauflächen unten, hin und her.', in:'Innenseiten, ganz sanft fegen.', vo:'Vorne die Zähnchen, und ganz sanft die Zunge.'};
+const PUTZ_FOLGEN = [
+ {t:'Der verlorene Glitzerstern', s:[
+  'Die Zahnfee hat ihren Glitzerstern verloren. Ohne ihn findet sie nachts den Weg nicht. «Mäh, wir helfen dir!», ruft das Zahnböcklein.',
+  'Sie fliegen über den Mondschein-Wald. Unten schläft Otti zusammengerollt im Moos.',
+  'Bei der alten Eiche fragt das Zahnböcklein die Eule: «Hast du einen Stern gesehen?» «Huhu, frag den Bach», sagt die Eule.',
+  'Der Bach glitzert im Mondlicht. Aber das ist nur das Wasser, kein Stern.',
+  'Da hören sie ein leises Klingeln im Gras. Klingeling.',
+  'Ein Glühwürmchen hält den Stern ganz fest. «Ich wollte nur schauen, wie er leuchtet», flüstert es.',
+  '«Du darfst ihn heute Nacht mittragen», sagt die Zahnfee. Das Glühwürmchen strahlt.',
+  'Zusammen fliegen sie heim. Wie es weitergeht, hörst du beim nächsten Zähneputzen.']},
+ {t:'Die Zahnbürsten-Brücke', s:[
+  'In der nächsten Nacht stehen die Zahnfee und das Zahnböcklein vor einem breiten Bach. «Wie kommen wir hinüber?»',
+  'Das Zahnböcklein schaut in sein Täschchen. Da ist die blaue Zahnbürste.',
+  '«Mäh! Ich habe eine Idee.» Es legt die Zahnbürste über zwei Steine.',
+  'Hoppel, der Hase, hüpft als Erster hinüber. Die Borsten kitzeln seine Pfoten. «Hihi!»',
+  'Dann tapst Flori, der Fuchs, ganz vorsichtig hinterher.',
+  'Zum Schluss geht die Zahnfee darüber, obwohl sie ja fliegen kann. «Es macht einfach Spass», lacht sie.',
+  'Auf der anderen Seite wartet ein kleiner Biber mit einem wackelnden Zahn.',
+  '«Morgen fällt er raus», sagt der Biber. Was die Zahnfee ihm sagt, hörst du beim nächsten Zähneputzen.']},
+ {t:'Der Biber und der Wackelzahn', s:[
+  '«Ein Wackelzahn ist etwas Schönes», sagt die Zahnfee zum Biber. «Er macht Platz für einen neuen, starken Zahn.»',
+  'Der Biber ist trotzdem ein bisschen nervös. Das Zahnböcklein setzt sich neben ihn.',
+  '«Weisst du, was hilft?», fragt es. «Tief einatmen … und ausatmen.»',
+  'Der Biber atmet ganz ruhig. Sein Bauch hebt und senkt sich.',
+  'Da macht es plopp! Der Zahn liegt in seiner Pfote. «Das hat gar nicht weh getan!»',
+  'Die Zahnfee legt den Zahn in ein kleines Kästchen aus Mondlicht.',
+  'Unter sein Kissen legt sie ein glänzendes Ahornblatt. Der Biber kichert im Schlaf.',
+  'Doch am Himmel zieht eine dunkle Wolke auf. Was das bedeutet, hörst du beim nächsten Zähneputzen.']},
+ {t:'Die müde Wolke', s:[
+  'Die dunkle Wolke ist gar nicht böse. Sie ist nur müde und ein bisschen traurig.',
+  '«Ich habe so lange geregnet», seufzt die Wolke. «Jetzt mag ich nicht mehr.»',
+  'Das Zahnböcklein singt ihr das Zahnputzlied vor. Schrubbel, schrubbel, rundherum.',
+  'Die Wolke muss lachen. Dabei wird sie ganz hell und flauschig.',
+  'Nova, der kleine Roboter, piepst von unten: «Piep! Die Wolke ist wieder weiss!»',
+  'Die Wolke bedankt sich und lässt einen kleinen Regenbogen fallen.',
+  'Darauf rutschen alle nach Hause, die Zahnfee vorne, das Zahnböcklein hinterher.',
+  'Und beim nächsten Zähneputzen beginnt eine neue Reise. Mäh!']}
+];
+function putzFolge(n){
+  const f = PUTZ_FOLGEN[n % PUTZ_FOLGEN.length], z = Object.keys(PUTZ_ZONEN);
+  return [[`Mäh! Zahnbürste bereit? Heute erzähle ich dir Folge ${n % PUTZ_FOLGEN.length + 1}: ${f.t}. Wir putzen und hören zu.`, 3]]
+    .concat(f.s.map((t, i) => [PUTZ_ZONEN[z[i]] + ' ' + t, 12, z[i]]))
+    .concat([['Ausspucken, nicht schlucken! Drei Minuten geschafft. Mäh!', 2]]);
+}
+const PUTZ_ZIEL = 90;
+const heuteKey = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
+function putzStand(){ const log = store.get('putzlog', {}); return { log, tage: Object.values(log).filter(x => x.m && x.a).length, sterne: store.get('zahnsterne', 0) }; }
+function renderPutz(zone){
+  const on = !!(MV.game && MV.game.song); $('#mvPutz').hidden = !on; if (!on) return;
+  $$('#putzKarte [data-z]').forEach(el => el.classList.toggle('an', el.dataset.z === zone));
+  const st = putzStand();
+  $('#putzStand').textContent = `⭐ ${st.sterne} ${st.sterne === 1 ? "Zahnstern" : "Zahnsterne"} · 📅 ${Math.min(st.tage, PUTZ_ZIEL)} von ${PUTZ_ZIEL} Tagen morgens und abends`;
+}
+function putzBestaetigt(){
+  const k = heuteKey(), teil = new Date().getHours() < 14 ? 'm' : 'a', st = putzStand();
+  const tag = st.log[k] || {};
+  if (tag[teil]){ toast(teil === 'm' ? 'Heute Morgen ist schon eingetragen.' : 'Heute Abend ist schon eingetragen.'); return; }
+  tag[teil] = 1; st.log[k] = tag; store.set('putzlog', st.log);
+  store.set('zahnsterne', st.sterne + 1);
+  $('#mvOk').hidden = true;
+  const neu = putzStand();
+  let say = `Mäh! Ein Zahnstern für dich${S.name ? ', '+S.name : ''}. Jetzt hast du ${neu.sterne}.`;
+  if (neu.tage >= PUTZ_ZIEL && !store.get('putzpreis', '')){ store.set('putzpreis', k); say = `Mäh! ${PUTZ_ZIEL} Tage morgens und abends geputzt! Du bekommst die goldene Zahnmedaille und das Zauberzahn-Abzeichen. Und im KI-Verse wartet jetzt dein eigenes Häuschen.`; }
+  $('#mvText').textContent = '⭐ ' + say; renderPutz(''); TTS.speak(say, {pitch:TALKERS.bock.pitch});
+}
 const MV = { game:null, i:-1, left:0, timer:null, running:false, done:false };
-function stopMove(){ clearInterval(MV.timer); MV.timer = null; MV.running = false; if ($('#mvPlay')) mvButtons(); }
+function stopMove(){ clearInterval(MV.timer); MV.timer = null; MV.running = false; if ($('#mvPlay')) { mvButtons(); mvLied(); } }
 function startMove(g){
   go('move');
   if (current !== 'move') return;
-  MV.game = g; MV.i = -1; MV.done = false;
+  if (g.putz) g.steps = putzFolge(store.get('putzfolge', 0));
+  MV.game = g; MV.i = -1; MV.done = false; $('#mvOk').hidden = true; renderPutz('');
   $('#mvTitle').textContent = g.title;
   const pics = g.fig === 'moon' ? ['sunny-wave','moon'] : [g.fig + (g.fig==='kiki'||g.fig==='nova' ? '-wave' : '-wave')];
   $('#mvStage').classList.toggle('two', pics.length > 1);
@@ -1816,6 +1934,7 @@ function mvProg(){
 }
 function mvButtons(){
   const b = $('#mvPlay');
+  mvLied();
   b.textContent = MV.running ? '⏸ Pause' : (MV.done ? '↺ Nochmal' : (MV.i < 0 ? '▶ Los geht\'s' : '▶ Weiter'));
   $('#mvNext').disabled = MV.done || !MV.game;
 }
@@ -1824,7 +1943,8 @@ function mvStep(i){
   const steps = MV.game.steps;
   if (i >= steps.length){ mvFinish(); return; }
   MV.i = i; MV.running = true; MV.done = false;
-  const [text, sec] = steps[i];
+  const [text, sec, zone] = steps[i];
+  renderPutz(zone || '');
   $('#mvText').textContent = text; MV.left = sec;
   $('#mvCount').textContent = '⏱ ' + sec;
   mvProg(); mvButtons();
@@ -1843,7 +1963,12 @@ function mvStep(i){
 }
 function mvFinish(){
   clearInterval(MV.timer); MV.running = false; MV.done = true;
-  const say = `Geschafft${S.name ? ', '+S.name : ''}! Das hast du toll gemacht.`;
+  let say = `Geschafft${S.name ? ', '+S.name : ''}! Das hast du toll gemacht.`;
+  if (MV.game.song){
+    say += ' Zeig deine Zähne Mama oder Papa. Wenn sie blitzen, gibt es einen Zahnstern.';
+    $('#mvOk').hidden = false; renderPutz('');
+    if (MV.game.putz) store.set('putzfolge', store.get('putzfolge', 0) + 1);
+  }
   $('#mvText').textContent = '🎉 ' + say; $('#mvCount').textContent = '';
   mvProg(); mvButtons();
   TTS.speak(say);
@@ -1855,6 +1980,7 @@ $('#mvPlay').addEventListener('click', () => {
   mvStep(MV.i);
 });
 $('#mvNext').addEventListener('click', () => { if (MV.game && !MV.done) mvStep(MV.i + 1); });
+holdButton($('#mvOk'), putzBestaetigt);
 $('#mvAgain').addEventListener('click', () => { if (MV.game) mvStep(0); });
 
 /* Spiel ausdenken: Idee -> spielbare Variante aus Vorlagen */
@@ -2686,6 +2812,7 @@ window.MS_TEXTE = () => {
     add(f.pre + f.hi + ' Was möchtest du mir erzählen?', o); add(f.pre + f.me, o); add(f.pre + f.joke, o); add(f.pre + f.fav + ' Und du, was magst du am liebsten?', o);
   });
   MOVES.forEach(m => m.steps.forEach(([t]) => add(t, {pitch:(TALKERS[m.fig] && TALKERS[m.fig].pitch) || OTTI.pitch})));
+  PUTZ_FOLGEN.forEach((f, n) => putzFolge(n).forEach(([t]) => add(t, {pitch:TALKERS.bock.pitch})));
   (window.MS_LITERALE || []).forEach(t => add(t));
   return [...out.values()];
 };
