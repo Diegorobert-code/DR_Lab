@@ -40,7 +40,7 @@
     '.gs-seg button[aria-pressed="true"]{background:var(--text,#161412);color:var(--card,#fff)}' +
     '.gs-kontrast{border:2px solid var(--gs-rand,#a8957c)!important;border-radius:999px!important;background:var(--card,#fff)!important;gap:6px;font-size:17px}' +
     '.gs-kontrast[aria-pressed="true"]{background:#000!important;color:#fff!important;border-color:#000!important}' +
-    '.gs-kontrast i{font-style:normal;font-size:20px}' +
+    '.gs-kontrast i{font-style:normal;font-size:0;display:inline-block;flex:none;width:20px;height:20px;box-sizing:border-box;border:2px solid currentColor;border-radius:50%;background:linear-gradient(90deg,currentColor 50%,transparent 50%)}' +
     '.gs-leiste button:focus-visible{outline:3px solid #1d4ed8;outline-offset:2px}' +
     /* Kontrast */
     'html.gk,html.gk body{background:#fff!important;--bg:#fff;--card:#fff;--text:#000;--soft:#000;--gs-rand:#000}' +
