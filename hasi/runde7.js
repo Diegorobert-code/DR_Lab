@@ -202,7 +202,7 @@ window.R7_CFG = {
   var FILTER = [['alle', 'Alle'], ['gratis', 'Gratis'], ['einmal', 'Einmalig'], ['abo', 'Im Abo'], ['anfrage', 'Auf Anfrage']];
   function art(p) { p = String(p || '').toLowerCase(); if (/^gratis/.test(p)) return 'gratis'; if (/anfrage/.test(p)) return 'anfrage'; if (/pro monat|abo|monat/.test(p)) return 'abo'; if (/einmal|chf/.test(p)) return 'einmal'; if (/gratis/.test(p)) return 'gratis'; return 'anfrage'; }
   var sk = el('<section class="r7 r7-karte" aria-labelledby="r7s-t"><p class="r7-eb">Alle Regale auf einmal</p><h2 id="r7s-t">🔎 Hasi sucht mit</h2>' +
-    '<div style="display:flex;gap:16px;align-items:center;margin-bottom:16px"><img class="r7-figur" src="posen/lupe.jpg" alt="Hasi schaut mit einer grossen Lupe" loading="lazy" width="72" height="72"><p class="r7-p" style="margin:0">Hasi nimmt die Lupe und schaut alle Regale für dich durch.</p></div>' +
+    '<div style="display:flex;gap:16px;align-items:center;margin-bottom:16px"><img class="r7-figur" src="posen/lupe.jpg" alt="Hasi schaut mit einer grossen Lupe" width="72" height="72"><p class="r7-p" style="margin:0">Hasi nimmt die Lupe und schaut alle Regale für dich durch.</p></div>' +
     '<label class="r7-vh" for="r7s-q">Wonach suchst du?</label><input id="r7s-q" type="search" placeholder="z. B. Termine, Hund, Kinder" autocomplete="off" style="width:100%">' +
     '<div class="r7-reihe r7-s-f" role="radiogroup" aria-label="Preis"></div><ul class="r7-s-l" style="list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px"></ul>' +
     '<p class="r7-leise r7-s-n" aria-live="polite"></p></section>');

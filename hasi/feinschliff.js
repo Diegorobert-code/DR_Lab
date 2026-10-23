@@ -66,7 +66,7 @@
   /* Bilder: Platzhalter beim Laden, weich einblenden */
   function bild(img) {
     if (img.__fs) return; img.__fs = 1;
-    if (img.complete && img.naturalWidth) return;
+    if (img.complete) return; // schon geladen oder schon kaputt: kein Platzhalter, der nie mehr weggeht
     img.classList.add('fs-lade');
     function fertig() { img.classList.remove('fs-lade'); if (img.naturalWidth) img.classList.add('fs-da'); }
     img.addEventListener('load', fertig, { once: true });

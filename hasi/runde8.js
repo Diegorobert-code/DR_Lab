@@ -641,7 +641,7 @@ window.R8_CFG = {"k":"hasi","offlineText":"Offline. Hasis Laden bleibt offen."};
     zeigen();
   }
   var fk = el('<section class="r7 r7-karte r8-finder-k" aria-labelledby="r8f-t"><p class="r7-eb">In einer Minute</p><h2 id="r8f-t">🧭 Was brauchst du wirklich?</h2>' +
-    '<div style="display:flex;gap:16px;align-items:center"><img class="r7-figur" src="posen/lupe.jpg" alt="Hasi mit Lupe" loading="lazy" width="72" height="72"><p class="r7-p" style="margin:0">Drei kurze Fragen, dann stellt Hasi dir die drei passendsten Werkzeuge hin, mit Grund, Preis und Vergleich.</p></div>' +
+    '<div style="display:flex;gap:16px;align-items:center"><img class="r7-figur" src="posen/lupe.jpg" alt="Hasi mit Lupe" width="72" height="72"><p class="r7-p" style="margin:0">Drei kurze Fragen, dann stellt Hasi dir die drei passendsten Werkzeuge hin, mit Grund, Preis und Vergleich.</p></div>' +
     '<button type="button" class="r7-btn voll gross r8-finder-los" style="margin-top:16px">🧭 Finder starten</button>' +
     '<button type="button" class="r7-btn gross r8-merk-los" style="margin-top:8px">♡ Merkliste <span class="r8-merk-n"></span></button></section>');
   function merkZahl() { var n = kasten().length; fk.querySelector('.r8-merk-n').textContent = n ? '(' + n + ')' : ''; }
