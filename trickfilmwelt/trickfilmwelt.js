@@ -17,7 +17,16 @@
        data-nacht="1"                    (Abendfarben: Lavendel und Mondlicht)
        data-knoepfe=".kimu">             (Knöpfe, die ein Tippen während des Eingangs trotzdem erreicht)
    Ganz beim ersten Öffnen am Tag, sonst 1 Sekunde. Tippen überspringt. prefers-reduced-motion: nur Ein- und Ausblenden.
-   Wartet, solange die NDA-Sperre offen ist. Kein Ton. Kein Blitzen. ?tfw=voll zeigt den ganzen Eingang, ?tfw=aus keinen. */
+   Wartet, solange die NDA-Sperre offen ist. Kein Ton. Kein Blitzen. ?tfw=voll zeigt den ganzen Eingang, ?tfw=aus keinen.
+
+   Stil «Aura» (Diego 23.10. 10:10): data-stil="aura" macht aus dem Bilderbuch eine 3D-Trickfilm-Nacht: weiches, leuchtendes
+   Licht, warme Nachtszene, violetter Schein um die Figur, schwebende Lichtpunkte. Statt Papier und Buch:
+       data-szene="aura/nacht.webp"   (Nachtszene des Eingangs, quadratisch)
+       data-welt="aura/welt.webp"     (bleibender, weicher Nachthintergrund der App)
+       data-figur="aura/idle.webp"    (Figur freigestellt, 3D)
+       data-posen="aura/winkt.webp;aura/lacht.webp" (winkt, dann lacht sie)
+   Eingang: ein Lichtfunke schwebt durch den Wald, landet, die Figur leuchtet auf, winkt und lacht, warmes Licht öffnet die App.
+   Bei «weniger Bewegung» nur das ruhige Bild und sanftes Ausblenden. */
 (function () {
   "use strict";
   if (window.Trickfilmwelt) return;
@@ -27,6 +36,7 @@
   var BASIS = (me && me.src ? me.src : location.href).replace(/[^\/]*([?#].*)?$/, "");
   var APP = ds.app || location.pathname;
   var NACHT = ds.nacht === "1";
+  var AURA = ds.stil === "aura";
   var RUHIG = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
   var FARBE = NACHT
     ? { papier: "#f3eee6", stein: ["#c9bfe2", "#b9cbe8", "#d9cfe9"], licht: "255,240,205", gold: "214,178,106", tinte: "#4a4060" }
@@ -35,17 +45,25 @@
   function abs(u) { return new URL(u, location.href).href; }
 
   /* ── Bleibende Bilderbuch-Welt ───────────────────────────────────────────── */
-  html.classList.add("tfw");
-  if (NACHT) html.classList.add("tfw-nacht");
-  [BASIS + "trickfilmwelt.css", ds.css && abs(ds.css)].forEach(function (h) {
+  html.classList.add(AURA ? "tfw-aura" : "tfw");
+  if (NACHT && !AURA) html.classList.add("tfw-nacht");
+  [BASIS + (AURA ? "aura.css" : "trickfilmwelt.css"), ds.css && abs(ds.css)].forEach(function (h) {
     if (!h) return; var l = d.createElement("link"); l.rel = "stylesheet"; l.href = h; (d.head || html).appendChild(l);
   });
-  html.style.setProperty("--tfw-papier", 'url("' + BASIS + 'papier.webp")');
+  if (!AURA) html.style.setProperty("--tfw-papier", 'url("' + BASIS + 'papier.webp")');
   if (ds.welt) html.style.setProperty("--tfw-welt-bild", 'url("' + abs(ds.welt) + '")');
 
   function welt() {
     if (d.getElementById("tfw-welt")) return;
     var w = d.createElement("div"); w.id = "tfw-welt"; w.setAttribute("aria-hidden", "true");
+    if (AURA) {
+      /* Aura: weicher Nachtschein und ein paar schwebende Lichtpunkte (nur transform und opacity) */
+      var h = '<i class="tfw-schein"></i>';
+      for (var i = 0; i < 14; i++) h += '<i class="tfw-licht" style="--x:' + ((i * 37 + 11) % 100) + '%;--y:' + (40 + (i * 23) % 58) + '%;--d:' + (9 + (i * 7) % 9) + 's;--v:-' + ((i * 13) % 9) + 's;--s:' + (3 + i % 3) + 'px"></i>';
+      w.innerHTML = h;
+      d.body.insertBefore(w, d.body.firstChild);
+      return;
+    }
     /* feine goldene Lichtlinie wie im Film, ganz leise */
     w.innerHTML = '<svg class="tfw-band" viewBox="0 0 400 800" preserveAspectRatio="none"><path d="M-20 700 C 90 620, 150 730, 240 610 S 360 490, 430 530" fill="none" stroke="rgb(' + FARBE.gold + ')" stroke-width="1.6" stroke-linecap="round" opacity=".45"/></svg>';
     d.body.insertBefore(w, d.body.firstChild);
@@ -105,7 +123,7 @@
   function eingang(modus) {
     if (laeuft) return; laeuft = true;
     ov = d.createElement("div"); ov.id = "tfw-eingang"; ov.setAttribute("aria-hidden", "true");
-    ov.style.cssText = "position:fixed;inset:0;z-index:2147482900;background:" + FARBE.papier + ";cursor:pointer;touch-action:none";
+    ov.style.cssText = "position:fixed;inset:0;z-index:2147482900;background:" + (AURA ? "#060b1f" : FARBE.papier) + ";cursor:pointer;touch-action:none";
     var cv = d.createElement("canvas"); ov.appendChild(cv);
     var schatten = d.createElement("i"); schatten.className = "tfw-seitenschatten"; ov.appendChild(schatten);
     var tx = null;
@@ -118,10 +136,10 @@
     var fertig = false, raf = 0;
     function ende(schnell) {
       if (fertig) return; fertig = true;
-      ov.classList.add(schnell || RUHIG ? "tfw-weg-sanft" : "tfw-umblaettern");
+      ov.classList.add(schnell || RUHIG ? "tfw-weg-sanft" : AURA ? "tfw-weg-licht" : "tfw-umblaettern");
       setTimeout(function () { cancelAnimationFrame(raf); removeEventListener("resize", groesse); if (ov) ov.remove(); ov = null; laeuft = false;
         try { window.dispatchEvent(new CustomEvent("trickfilmwelt-fertig", { detail: { app: APP } })); } catch (e) {} },
-        schnell || RUHIG ? 420 : modus === "kurz" ? 620 : 900);
+        schnell || RUHIG ? 420 : AURA ? 760 : modus === "kurz" ? 620 : 900);
     }
     ov.addEventListener("pointerdown", function (e) {
       var x = e.clientX, y = e.clientY, k = null;
@@ -135,6 +153,7 @@
     });
     addEventListener("keydown", function f(e) { if (e.key === "Escape" || e.key === "Enter" || e.key === " ") { removeEventListener("keydown", f); ende(true); } });
 
+    if (AURA) { auraEingang(modus, ctx, function () { return [W, H, dpr]; }, ende, tx, function () { return fertig; }, function (r) { raf = r; }); return; }
     Promise.all([lade(ds.buch), lade(ds.welt), lade(ds.figur)]).then(function (b) {
       var buch = b[0], hg = b[1], fig = b[2];
       if (!buch) { ende(true); return; }
@@ -274,6 +293,128 @@
         ctx.fillStyle = gl; ctx.fillRect(bx, by, bw, bh);
         ctx.restore();
         if (modus === "voll") funkeln(t, alpha * .8);
+      }
+    });
+  }
+
+  /* ── Aura-Eingang: Nacht, Lichtfunke, die Figur leuchtet auf, winkt, lacht, warmes Licht ─────────── */
+  function auraEingang(modus, ctx, mass, ende, tx, istFertig, setRaf) {
+    var posen = q(ds.posen);
+    Promise.all([lade(ds.szene || ds.welt), lade(ds.figur)].concat(posen.map(lade))).then(function (b) {
+      var hg = b[0], fig = b[1], weitere = b.slice(2).filter(Boolean);
+      if (!hg || !fig) { ende(true); return; }
+      var bilder = [fig].concat(weitere).map(leuchtend);
+      var DAUER = modus === "voll" ? 7600 : modus === "ruhig" ? 1300 : 700;
+      if (tx) setTimeout(function () { if (tx) tx.classList.add("an"); }, modus === "voll" ? 3700 : 60);
+      var rz = zufall(23), licht = [];
+      for (var i = 0; i < 42; i++) licht.push({ x: rz(), y: rz(), r: .8 + rz() * 2.2, v: .006 + rz() * .018, p: rz() * 6.3, f: i % 4 === 0 ? "196,160,255" : "255,214,130" });
+      var t0 = performance.now();
+      function bild(now) {
+        if (istFertig()) return;
+        var m = mass(), W = m[0], H = m[1], dpr = m[2], t = (now - t0) / 1000;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.fillStyle = "#060b1f"; ctx.fillRect(0, 0, W, H);
+        if (modus === "voll") voll(t, W, H); else still(t, W, H);
+        if (t * 1000 >= DAUER) { ende(false); return; }
+        setRaf(requestAnimationFrame(bild));
+      }
+      setRaf(requestAnimationFrame(bild));
+
+      /* Figur einmal mit violettem und warmem Schein vorzeichnen (spart Rechenzeit pro Bild) */
+      function leuchtend(img) {
+        var pad = Math.round(img.naturalHeight * .12), c = d.createElement("canvas");
+        c.width = img.naturalWidth + pad * 2; c.height = img.naturalHeight + pad * 2;
+        var x = c.getContext("2d");
+        x.shadowColor = "rgba(178,132,255,.85)"; x.shadowBlur = pad * .9; x.drawImage(img, pad, pad);
+        x.shadowColor = "rgba(255,214,150,.55)"; x.shadowBlur = pad * .3; x.drawImage(img, pad, pad);
+        /* unten kein Schein: die Füsse stehen auf dem Boden */
+        var f = x.createLinearGradient(0, pad + img.naturalHeight * .86, 0, pad + img.naturalHeight);
+        f.addColorStop(0, "rgba(0,0,0,0)"); f.addColorStop(1, "rgba(0,0,0,1)");
+        x.shadowColor = "transparent"; x.shadowBlur = 0; x.globalCompositeOperation = "destination-out";
+        x.fillStyle = f; x.fillRect(0, pad + img.naturalHeight * .86, c.width, c.height);
+        x.globalCompositeOperation = "source-over"; x.drawImage(img, pad, pad);
+        return { c: c, pad: pad, w: img.naturalWidth, h: img.naturalHeight };
+      }
+      function szene(W, H, zoom, a) {
+        var k = Math.max(W / hg.naturalWidth, H / hg.naturalHeight) * zoom;
+        ctx.globalAlpha = a; ctx.drawImage(hg, (W - hg.naturalWidth * k) / 2, (H - hg.naturalHeight * k) * .42, hg.naturalWidth * k, hg.naturalHeight * k); ctx.globalAlpha = 1;
+      }
+      function lage(W, H) { var fh = Math.min(H * .34, W * .7 * 1.22); return { x: W / 2, y: H * .86, h: fh }; }
+      function figur(L, nr, a, s, glanz) {
+        var B = bilder[Math.min(nr, bilder.length - 1)], k = L.h / B.h * s;
+        ctx.save(); ctx.globalAlpha = a; ctx.translate(L.x, L.y); ctx.scale(k, k);
+        ctx.drawImage(B.c, -B.w / 2 - B.pad, -B.h - B.pad);
+        ctx.restore();
+        if (glanz > 0) halo(L, glanz);
+      }
+      function halo(L, a) {
+        ctx.save(); ctx.globalCompositeOperation = "lighter";
+        var cx = L.x, cy = L.y - L.h * .5, r = L.h * .9, g = ctx.createRadialGradient(cx, cy, 1, cx, cy, r);
+        g.addColorStop(0, "rgba(190,150,255," + (.35 * a) + ")"); g.addColorStop(.5, "rgba(255,200,140," + (.12 * a) + ")"); g.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = g; ctx.fillRect(cx - r, cy - r, r * 2, r * 2); ctx.restore();
+      }
+      function boden(L, a) {
+        var r = L.h * .42; ctx.save(); ctx.globalAlpha = a * .6; ctx.translate(L.x, L.y - r * .05); ctx.scale(1, .2);
+        var g = ctx.createRadialGradient(0, 0, 1, 0, 0, r);
+        g.addColorStop(0, "rgba(4,6,20,.9)"); g.addColorStop(1, "rgba(4,6,20,0)"); ctx.fillStyle = g;
+        ctx.fillRect(-r, -r, r * 2, r * 2); ctx.restore();
+      }
+      function funkeln(t, W, H, a) {
+        if (a <= 0) return;
+        ctx.save(); ctx.globalCompositeOperation = "lighter";
+        licht.forEach(function (p) {
+          var y = ((p.y - t * p.v) % 1 + 1) % 1, x = p.x + Math.sin(t * .6 + p.p) * .015, f = .5 + .5 * Math.sin(t * 2.1 + p.p * 3);
+          var g = ctx.createRadialGradient(x * W, y * H, 0, x * W, y * H, p.r * 4);
+          g.addColorStop(0, "rgba(" + p.f + "," + (a * (.35 + .55 * f)) + ")"); g.addColorStop(1, "rgba(" + p.f + ",0)");
+          ctx.fillStyle = g; ctx.fillRect(x * W - p.r * 4, y * H - p.r * 4, p.r * 8, p.r * 8);
+        });
+        ctx.restore();
+      }
+      function funke(x, y, r, a) {
+        ctx.save(); ctx.globalCompositeOperation = "lighter";
+        var g = ctx.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0, "rgba(255,250,235," + a + ")"); g.addColorStop(.25, "rgba(214,180,255," + (a * .8) + ")"); g.addColorStop(1, "rgba(150,110,255,0)");
+        ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2); ctx.restore();
+      }
+      function voll(t, W, H) {
+        var L = lage(W, H);
+        szene(W, H, 1 + .07 * ease(seg(t, 0, 7.6)), ease(seg(t, 0, 1.1)));
+        funkeln(t, W, H, ease(seg(t, .3, 1.6)));
+        /* Lichtfunke: schwebt von links oben in einem Bogen zum Boden */
+        var u = ease(seg(t, .7, 2.7));
+        if (t < 3.3) {
+          var fx = -W * .08 + (L.x + W * .08) * u + Math.sin(u * Math.PI * 2) * W * .08, fy = H * .3 + (L.y - L.h * .45 - H * .3) * u - Math.sin(u * Math.PI) * H * .12;
+          var wachsen = ease(seg(t, 2.5, 3.0)), weg = ease(seg(t, 2.9, 3.3));
+          for (var s = 1; s <= 6; s++) { var uu = Math.max(0, u - s * .025); funke(-W * .08 + (L.x + W * .08) * uu + Math.sin(uu * Math.PI * 2) * W * .08, H * .3 + (L.y - L.h * .45 - H * .3) * uu - Math.sin(uu * Math.PI) * H * .12, 10 - s, (1 - weg) * .35 * (1 - s / 7) * seg(t, .7, 1)); }
+          funke(fx, fy, 22 + wachsen * L.h * .7, (1 - weg) * Math.min(1, seg(t, .7, 1)));
+        }
+        /* die Figur erscheint im Licht */
+        var da = ease(seg(t, 2.7, 3.4)), sp = 1 + Math.sin(Math.PI * seg(t, 2.7, 3.6)) * .05 - (1 - da) * .1;
+        var atem = 1 + Math.sin(t * 2.2) * .008;
+        if (da > 0) {
+          boden(L, da);
+          var w1 = ease(seg(t, 3.7, 4.0)), w2 = ease(seg(t, 5.1, 5.4));
+          var glanz = (.6 + .4 * Math.sin(t * 2.4)) * da + Math.sin(Math.PI * seg(t, 2.7, 3.6)) * 1.2;
+          /* Überblenden: die neue Pose legt sich über die alte, nichts scheint durch */
+          var nr = w2 >= 1 ? 2 : w1 >= 1 ? 1 : 0, neu = w2 > 0 && w2 < 1 ? 2 : w1 > 0 && w1 < 1 ? 1 : -1, wn = neu === 2 ? w2 : w1;
+          if (neu > 0) nr = neu - 1;
+          figur(L, nr, da, sp * atem, 0);
+          if (neu > 0) figur(L, neu, wn * da, sp * atem, 0);
+          halo(L, glanz);
+        }
+        /* warmes Licht öffnet die App */
+        var hell = ease(seg(t, 6.4, 7.6));
+        if (hell > 0) {
+          ctx.save(); ctx.globalCompositeOperation = "lighter";
+          var cx = L.x, cy = L.y - L.h * .5, r = Math.hypot(W, H) * (.2 + hell), g = ctx.createRadialGradient(cx, cy, 1, cx, cy, r);
+          g.addColorStop(0, "rgba(255,214,150," + (hell * .7) + ")"); g.addColorStop(.55, "rgba(170,130,255," + (hell * .38) + ")"); g.addColorStop(1, "rgba(120,90,220,0)");
+          ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.restore();
+        }
+      }
+      function still(t, W, H) {
+        var L = lage(W, H), a = modus === "ruhig" ? 1 : ease(seg(t, 0, .25));
+        szene(W, H, 1.02, a); funkeln(modus === "ruhig" ? 0 : t, W, H, a);
+        boden(L, a); figur(L, 0, a, 1, 0); halo(L, a * .8);
       }
     });
   }

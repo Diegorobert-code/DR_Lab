@@ -502,7 +502,8 @@
 </style>
 </head>
 <body>
-<script src="../trickfilmwelt/trickfilmwelt.js" data-app="otti" data-buch="trickfilm/buch.webp" data-welt="trickfilm/welt.webp" data-figur="trickfilm/figur.webp" data-css="trickfilm/buchwelt.css" data-text="Otti wartet im Mondschein-Wald" data-karten=".buehne;.feld" data-blaetter=".blatt>.blattinnen;.eltern>.karte;.feier>.karte" data-knoepfe=".kimu"></script>
+<script src="../trickfilmwelt/trickfilmwelt.js" data-app="otti" data-stil="aura" data-szene="aura/nacht.webp" data-welt="aura/welt.webp" data-figur="aura/idle.webp" data-posen="aura/winkt.webp;aura/lacht.webp" data-css="aura/aura.css" data-text="Otti wartet im Mondschein-Wald" data-karten=".buehne;.feld" data-blaetter=".blatt>.blattinnen;.eltern>.karte;.feier>.karte" data-knoepfe=".kimu"></script>
+<script src="aura/aura-figur.js" defer></script>
 <div class="sterne" aria-hidden="true"></div>
 
 <header class="kopf">
@@ -654,7 +655,7 @@
 
 <div class="eltern tour" id="tour" hidden role="dialog" aria-modal="true" aria-label="So geht Otti">
   <div class="karte">
-    <img src="trickfilm/posen/anruf.webp" alt="Otti" loading="lazy">
+    <img src="aura/winkt.webp" alt="Otti" loading="lazy" style="object-fit:contain">
     <h2 id="tourH" style="margin-top:16px"></h2>
     <p id="tourT"></p>
     <div class="punkte" id="tourP" aria-hidden="true"></div>
@@ -1315,12 +1316,12 @@
   // Tastatur: der Knopf .buehne-tipp löst den Klick aus (Runde 7: keine verschachtelten Knöpfe mehr)
   function tippWeg() { $('tipp').hidden = true; }
 
-  /* ================= Posen: Tinkos Bilder in posen/<pose>.jpg (Liste posen/index.json) ================= */
+  /* ================= Posen: Aura-Bilder in aura/<pose>.webp (Liste aura/posen.json); sichtbar macht sie aura/aura-figur.js ================= */
   var POSEN = {}, poseT = 0;
-  fetch('trickfilm/posen/index.json').then(function (r) { return r.ok ? r.json() : []; }).then(function (l) {
+  fetch('aura/posen.json').then(function (r) { return r.ok ? r.json() : []; }).then(function (l) {
     (Array.isArray(l) ? l : []).forEach(function (p) {
       p = String(p).replace(/[^a-z0-9-]/g, ''); if (!p) return;
-      var im = new Image(); im.onload = function () { POSEN[p] = im.src; }; im.src = 'trickfilm/posen/' + p + '.webp';
+      var im = new Image(); im.onload = function () { POSEN[p] = im.src; }; im.src = 'aura/' + p + '.webp';
     });
   }).catch(function () {});
   function pose(p, ms) {
@@ -2246,7 +2247,7 @@
       }
       function gutNacht() {
         f.innerHTML = ''; $('feldzahl').textContent = '🌙'; s.ziel = null;
-        var k = el('div', 'endkarte'); var fb = el('img', 'abendbild'); fb.alt = 'Otti sitzt am Fenster und schaut zum Mond'; fb.src = 'trickfilm/posen/fenster.webp'; k.appendChild(fb); k.appendChild(el('span', 'pokal', '🌙'));
+        var k = el('div', 'endkarte'); var fb = el('img', 'abendbild'); fb.alt = 'Otti schläft im Mondschein'; fb.src = 'aura/schlaeft.webp'; k.appendChild(fb); k.appendChild(el('span', 'pokal', '🌙'));
         var n = kindName(), t = 'Gute Nacht' + (n ? ', ' + n : '') + '. Schlaf schön und träum etwas Liebes.';
         k.appendChild(el('div', 'endzeile', 'Gute Nacht' + (n ? ', ' + n : '') + '!'));
         var st = stickerDazu(); if (st) { var sn = el('div', 'stickerneu'); sn.appendChild(el('span', '', 'Neuer Sticker für Ottis Zimmer:')); sn.appendChild(el('b', '', st)); k.appendChild(sn); }
