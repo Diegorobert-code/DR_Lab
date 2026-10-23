@@ -414,7 +414,8 @@
     var x = hol('hs_live'); if (!x || Date.now() - x.t > 15 * 60000) return '';
     return 'Jetzt läuft in Human Sparks: ' + (x.stueck ? '«' + x.stueck + '» (' + x.farbe + ')' + (x.praxis ? ', Praxis-Musik' : ', Beat-Reise') : '«' + (x.song || 'ein Song') + '»') + ', Minute ' + x.min +
       (x.wer === 'klient' ? '. Gerade tippt die Klientin oder der Klient selbst (anonym).' : x.praxis ? '. Diego tippt, was er bei der Person beobachtet (anonym).' : '.') +
-      (x.zuletzt && x.zuletzt.length ? '\nZuletzt angetippt: ' + x.zuletzt.join(', ') : '\nNoch nichts angetippt.');
+      (x.zuletzt && x.zuletzt.length ? '\nZuletzt angetippt: ' + x.zuletzt.join(', ') : '\nNoch nichts angetippt.') +
+      (x.messung && x.messung.length ? '\nKörper-Messung pro Stück (1 eng/flach bis 5 weit/tief, erster→letzter Wert): ' + x.messung.join(' | ') : '');
   }
   function messwerte() {
     var l = messListe(), live = liveZeile();
