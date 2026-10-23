@@ -3,6 +3,19 @@
    Neue Einträge unten anhängen: { id, b, t, k, x: [Absätze], s: [Schritte] } */
 window.INHALT = {
   app: 'fiasnest',
+  figur: 'Fia',
+  absichten: [
+    { w: /(geschichte|erzähl|erzaehl)/, b: 'geschichten', a: 'Gern. Mach es dir bequem:' },
+    { w: /(einschlafen|nicht schlafen|schlafe schlecht|wach|aufgewacht|grübel)/, b: 'nachts', a: 'Das kennen viele. Probier das:' },
+    { w: /(nickerchen|mittagsschlaf|power ?nap)/, t: 'Das gute Mittagsnest', a: 'Dazu weiss ich etwas:' },
+    { w: /(ritual|abends|vor dem schlafen|runterfahren)/, b: 'abend', a: 'Ein schönes Abendritual:' }
+  ],
+  gruss: 'Hallo, ich bin Fia. Möchtest du eine Geschichte hören oder etwas über Schlaf wissen?',
+  sprichGrenze: 'Fia erklärt und begleitet. Keine Diagnose, keine Medikamente, keine Heilversprechen.',
+  beispielFragen: ['Ich kann nicht einschlafen', 'Erzähl mir eine Geschichte', 'Wie lange darf ein Nickerchen sein?'],
+  grenzen: [
+    { w: /(schlafmittel|schlaftablette|tablette|medikament|melatonin|diagnose|apnoe|krank)/, a: 'Zu Medikamenten und Diagnosen kann ich nichts sagen. Das gehört zur Hausärztin oder in die Apotheke. Ich zeige dir gern Rituale und Wissen zum Schlaf.', weiter: true }
+  ],
   titel: 'Fias Nestbuch',
   titelKurz: 'Ganzes Nestbuch',
   heuteLabel: 'Heute im Nestbuch',
