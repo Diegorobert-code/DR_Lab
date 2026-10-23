@@ -24,7 +24,7 @@
     'Erinnerung': 'nova', 'Fotowissen': 'nova', 'Sense Engine': 'nova', 'Transkript': 'fompa',
     'Fompa': 'fompa', 'Food and Flow': 'flo', 'Kiki': 'kiki', 'Fias Nest': 'fia', 'Mama Affe': 'mama affe',
     'Wäf Wäf': 'wäf wäf', 'KI-Verse': 'sunny', 'Sunny': 'sunny', 'Coin Maker': 'coin maker',
-    'Granny': 'granny', 'Carmencita': 'carmencita'
+    'Granny': 'granny', 'Rosa': 'granny', 'Carmencita': 'carmencita'
   };
   var FIGUR = String(attr('data-nova-figur', FIGUREN[APP] || 'nova')).toLowerCase();
   var NAME = FIGUR.replace(/(^|[\s.])([a-zäöü])/g, function (m, a, b) { return a + b.toUpperCase(); });
