@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-23-05">
+<meta name="stand" content="2026-10-23-06">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -77,6 +77,8 @@
   .knopf.aktiv { background:#d6304a; color:#fff; }
   .knopf:focus-visible { outline:3px solid #fff; outline-offset:4px; }
   .hinweis { color:var(--leise); font-size:13px; margin-top:8px; text-align:center; min-height:18px; }
+  .hoeren { margin-top:10px; border:1px solid var(--leise); border-radius:999px; background:none; color:inherit; font:15px system-ui, sans-serif; padding:7px 14px; cursor:pointer; }
+  body.hoermodus .hoeren { background:#1f6f5c; border-color:#1f6f5c; color:#fff; }
   .vergessen { margin-top:6px; background:none; border:0; color:var(--leise); font:13px system-ui, sans-serif; text-decoration:underline; cursor:pointer; opacity:.8; }
   @media (prefers-reduced-motion: reduce) { .atmen { animation:none; } }
 .buehne .leinwand{position:absolute;inset:0;width:100%;height:100%;display:none;z-index:2;background:#f6efe0}.buehne.malt .leinwand{display:block}.buehne .gemalt{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:1}.buehne.zeigt .gemalt{display:block}
@@ -167,6 +169,7 @@
 
 <form class="schreiben" id="schreiben" autocomplete="off"><input id="eingabe" type="text" enterkeyhint="send" placeholder="Schreiben …" aria-label="Nachricht schreiben"><button type="button" class="malen" id="foto" aria-label="Foto an Nova schicken">📷</button><input id="fotoWahl" type="file" accept="image/*" hidden><button type="button" class="malen" id="malen" aria-label="Nova zeichnet">🎨</button><button type="submit" aria-label="Senden">➤</button></form>
 <button class="knopf" id="knopf" type="button" aria-label="Gespräch starten">🎙</button>
+<button class="hoeren" id="hoeren" type="button" hidden aria-pressed="false">👂 Nur zuhören</button>
 <div class="hinweis" id="hinweis"></div>
 <label class="lernen" id="lernenBox"><input type="checkbox" id="lernen"> Nova darf aus diesem Gespräch lernen <small>(nur Diego und Team, auf unserem Server in der Schweiz)</small></label>
 <button class="vergessen" id="vergessen" type="button" hidden><span id="vname">Otti</span> vergisst alles</button>
@@ -531,7 +534,8 @@
         // Auf der Bühne nimmt Nova ab wie am Telefon; nach einer abgerissenen Verbindung ist sie still wieder da, bis Diego sie anspricht (nach 30 Min. verbindet sie still neu, siehe unten).
         overrides: BUEHNE.an && !nurText ? { agent: { firstMessage: begruessung() } } : weg ? { agent: { firstMessage: weiterBegr() } } : undefined,
         onConnect: function () { if (BUEHNE.an) abgenommen = true;
-          if (weg) setTimeout(function () { if (conv) try { conv.sendContextualUpdate('Diego war nur kurz weg (' + Math.max(1, Math.round((Date.now() - weg.zeit) / 60000)) + ' Min.). Kein neues Hallo, keine Vorstellung: einfach weitermachen, wo ihr wart. Zuletzt gesagt:\n' + weg.zeilen.join('\n')); } catch (x) {} }, 300); status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); hopsen(); },
+          if (weg) setTimeout(function () { if (conv) try { conv.sendContextualUpdate('Diego war nur kurz weg (' + Math.max(1, Math.round((Date.now() - weg.zeit) / 60000)) + ' Min.). Kein neues Hallo, keine Vorstellung: einfach weitermachen, wo ihr wart. Zuletzt gesagt:\n' + weg.zeilen.join('\n')); } catch (x) {} }, 300); status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); hopsen();
+          if (HOER.an) setTimeout(function () { hoerLaut(false); ansichtSagen(HOER_AN); }, 400); },
         onDisconnect: function () {
           if (nr === sitzung && maltSeit) { maltSeit = 0; ende('Verbindung weg, das Bild kam nicht an. Nochmal 🎨'); return; }
           // Bühne: reisst die Verbindung, ist Nova nach zwei Sekunden still wieder da. Der Film läuft weiter.
@@ -546,7 +550,8 @@
         onError: function (m) { hinweis.textContent = 'Fehler: ' + (m || 'unbekannt'); },
         onMessage: function (m) {
           if (m && m.source === 'user' && eigene.indexOf(m.message) >= 0) { eigene.splice(eigene.indexOf(m.message), 1); return; }
-          if (m && m.source === 'user') { $('chips').innerHTML = ''; weiterVersuche = 0; ansichtBefehl(m.message); }
+          if (m && m.source === 'user') { $('chips').innerHTML = ''; weiterVersuche = 0; if (!hoerBefehl(m.message)) ansichtBefehl(m.message); }
+          if (HOER.an && m && m.message) hoerMit(m.source === 'user' ? 'Diego' : 'Nova', m.message);
           if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message);
           if (BUEHNE.an && m && m.message && m.source !== 'user') BUEHNE.untertitel(m.message); },
         onModeChange: function (m) {
@@ -703,6 +708,35 @@
     if (/design\s*-?\s*vorschl|designs\b/.test(t)) ansichtAuf('designs');
     else if (/\bthreads?\b|\btrets?\b/.test(t)) ansichtAuf('threads');
     else if (ansichtArt && /\b(zurück|zurueck|schliess|schließ|zu machen|weg damit|nova)\b/.test(t)) ansichtZu();
+  }
+
+  // Hör-Modus (nur Nova, nie auf der Bühne): Nova hört mit und antwortet erst, wenn Diego «Nova» sagt.
+  // Doppelt gesichert: Nova bekommt die Regel als Meldung, und die App stellt ihren Ton stumm, bis er sie ruft.
+  var HOER = { an: false, zeilen: [] };
+  var HOER_AN = 'HÖRMODUS AN. Diego will nur reden, Musik hören und erzählen; du hörst nur zu. Bei jedem Satz, in dem er dich nicht mit «Nova» anspricht, rufst du skip_turn auf und sagst nichts, auch kein «Mhm». Spricht er dich mit «Nova» an, antwortest du ganz kurz und bist danach wieder still. Zeichnen, Knöpfe und Bewegen nur, wenn er es ausdrücklich will. Das gilt, bis «HÖRMODUS AUS» kommt.';
+  var NOVA_RUF = /\b(nova|novita|noah|nora|dova)\b/i;
+  function hoerLaut(ja) { if (conv) try { conv.setVolume({ volume: ja ? 1 : 0 }); } catch (e) {} }
+  function hoerMit(wer, text) { HOER.zeilen.push(wer + ': ' + text); if (HOER.zeilen.length > 400) HOER.zeilen.shift(); }
+  function hoerSetzen(an) {
+    if (KEY !== 'nova' || BUEHNE.an || HOER.an === an) return;
+    HOER.an = an;
+    document.body.classList.toggle('hoermodus', an);
+    $('hoeren').setAttribute('aria-pressed', String(an));
+    $('hoeren').textContent = an ? '👂 Hört nur zu · tippen = aus' : '👂 Nur zuhören';
+    if (an) { HOER.zeilen = []; hoerLaut(false); ansichtSagen(HOER_AN); return; }
+    hoerLaut(true);
+    var mit = HOER.zeilen.join('\n'); if (mit.length > 3000) mit = mit.slice(-3000);
+    ansichtSagen('HÖRMODUS AUS. Du sprichst wieder normal.' + (mit ? ' Gib die Mitschrift jetzt still an Claude für den Hip-Hop-Thread: nova_server, was = auftrag, text = «Hör-Modus-Mitschrift für den Hip-Hop-Thread:» und darunter die Mitschrift. Dann sagst du nur kurz «Hab alles mitgeschrieben.». Mitschrift:\n' + mit : ''));
+  }
+  // true, wenn der Satz ein Hör-Modus-Befehl war.
+  function hoerBefehl(text) {
+    if (KEY !== 'nova' || BUEHNE.an) return false;
+    var t = String(text || '').toLowerCase();
+    if (HOER.an && /h(ö|oe)r\s*-?\s*modus\s*(aus|beenden|stopp|fertig)|darfst wieder reden|rede wieder|wieder normal/.test(t)) { hoerSetzen(false); return true; }
+    if (!HOER.an && /h(ö|oe)r\s*-?\s*modus|h(ö|oe)r (mir )?(einfach |nur )+zu|nur zuh(ö|oe)ren/.test(t)) { hoerSetzen(true); return true; }
+    // Im Hör-Modus ist Nova nur zu hören, wenn Diego sie ruft; beim nächsten Satz ohne «Nova» wird sie wieder stumm.
+    if (HOER.an) hoerLaut(NOVA_RUF.test(t));
+    return false;
   }
 
   var BUEHNE = (function () {
@@ -1079,6 +1113,7 @@
     if (e.data.typ === 'start' && !conv && !startet) starten();
     if (e.data.typ === 'stopp') { vonHand = true; if (conv) { var c = conv; ende('Bis gleich.'); c.endSession().catch(function () {}); } }
   });
+  if (KEY === 'nova' && !BUEHNE.an) { $('hoeren').hidden = false; $('hoeren').addEventListener('click', function () { hoerSetzen(!HOER.an); }); }
   // Auf Otti tippen: er hüpft vor Freude.
   buehne.addEventListener('click', function () { if (buehne.classList.contains('zeigt')) buehne.classList.remove('zeigt'); else hopsen(); });
 
