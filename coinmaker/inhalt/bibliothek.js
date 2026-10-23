@@ -119,7 +119,7 @@
   function neueAbzeichen() {
     var neu = [];
     AB.forEach(function (a) { var h = hat(a); if (h && !vorher[a.id]) neu.push(a); vorher[a.id] = h; });
-    if (neu.length) toast(neu[0].emoji + ' Neu in deiner ' + WORT.sammlung + ': ' + neu[0].name);
+    if (neu.length) toast(neu[0].emoji + ' Neues Abzeichen: ' + neu[0].name);
   }
 
   /* ---------- Stil (Farben kommen aus dem Design der App) ---------- */
@@ -237,12 +237,19 @@
     karte.innerHTML =
       '<div class="ib-oben"><span>' + esc((C.heuteLabel || WORT.heute) + ' · ' + datumText()) + '</span><span class="ib-chip">' + esc(emoji(a) + ' ' + bereichName(a)) + '</span></div>' +
       '<h3>' + esc(a.t) + '</h3><p>' + esc(a.k) + '</p>' +
-      '<div class="ib-zeile"><button type="button" class="ib-k ib-voll" data-ib="heute">' + esc(D.gelesen[a.id] ? (C.wortNochmal || 'Nochmals lesen') : (C.wortLesen || 'Jetzt lesen')) + (D.gelesen[a.id] ? ' ✓' : '') + '</button>' +
+      (C.einfach ? '<div class="ib-zeile"><button type="button" class="ib-k ib-voll" data-ib="vor">🔊 ' + esc(C.wortVorlesen || 'Vorlesen') + '</button><button type="button" class="ib-k" data-ib="heute">' + esc(C.wortLesen || 'Ansehen') + '</button></div>' : '') +
+      '<div class="ib-zeile"' + (C.einfach ? ' style="margin-top:10px"' : '') + '>' + (C.einfach ? '' : '<button type="button" class="ib-k ib-voll" data-ib="heute">' + esc(D.gelesen[a.id] ? (C.wortNochmal || 'Nochmals lesen') : (C.wortLesen || 'Jetzt lesen')) + (D.gelesen[a.id] ? ' ✓' : '') + '</button>') +
       '<button type="button" class="ib-k" data-ib="bib">' + esc(C.titelKurz || WORT.bibliothek) + ' · ' + tot + '</button></div>' +
       (function () { var v = vorschlag(a.id); return v && (D.zuletzt || Object.keys(D.gemerkt).length) ? '<button type="button" class="ib-fuer" data-ib="fuer" data-id="' + esc(v.a.id) + '"><small>' + esc(v.warum) + ':</small><b>' + esc(emoji(v.a) + ' ' + v.a.t) + ' →</b></button>' : ''; })() +
       '<div class="ib-balken" aria-hidden="true"><i style="width:' + Math.round(n / tot * 100) + '%"></i></div>' +
       '<div class="ib-mini">' + n + ' von ' + tot + ' ' + esc(WORT.gelesen.toLowerCase()) + ' · ' + anzahlAbzeichen() + ' von ' + AB.length + ' Abzeichen' + (serie() > 1 ? ' · ' + serie() + ' Tage am Stück' : '') + '</div>';
-    karte.querySelector('[data-ib=heute]').addEventListener('click', function () { oeffne('artikel', a.id); });
+    [].forEach.call(karte.querySelectorAll('[data-ib=heute]'), function (b) { b.addEventListener('click', function () { oeffne('artikel', a.id); }); });
+    var vk = karte.querySelector('[data-ib=vor]');
+    if (vk) vk.addEventListener('click', function () {
+      if (!D.gelesen[a.id]) { D.gelesen[a.id] = iso(); markiereTag(); sichern(); neueAbzeichen(); }
+      D.offen[a.id] = (D.offen[a.id] || 0) + 1; D.zuletzt = a.id; sichern();
+      if (!vorlesen([a.t, a.k].concat(a.x || [], a.s || []).join('. '), function () { karteFuellen(); })) oeffne('artikel', a.id);
+    });
     karte.querySelector('[data-ib=bib]').addEventListener('click', function () { oeffne('bibliothek'); });
     var fu = karte.querySelector('[data-ib=fuer]'); if (fu) fu.addEventListener('click', function () { oeffne('artikel', fu.getAttribute('data-id')); });
   }
@@ -306,7 +313,7 @@
     if (q) {
       var tq = D.quiz.tag[iso()];
       h += '<div class="ib-karte" id="ibTagesfrage"><h4>' + esc(C.wortTagesfrage || 'Frage des Tages') + '</h4><p>' + esc(q.f) + '</p>' +
-        q.a.map(function (o, i) {
+        reihe(q.a.length, tagNr()).map(function (i) { var o = q.a[i];
           var kl = tq != null ? (i === q.r ? ' ib-richtig' : (i === tq ? ' ib-falsch' : '')) : '';
           return '<button type="button" class="ib-opt' + kl + '" data-tf="' + i + '"' + (tq != null ? ' disabled' : '') + '>' + esc(o) + '</button>';
         }).join('') + (tq != null && q.e ? '<p class="ib-erkl">' + esc(q.e) + '</p>' : '') + '</div>';
@@ -375,7 +382,7 @@
       '<h3>' + esc(a.t) + '</h3><p class="ib-lead">' + esc(a.k) + '</p>' +
       (a.x || []).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') +
       (a.s && a.s.length ? '<h4>' + esc(a.sTitel || C.wortSchritte || 'So gehst du vor') + '</h4><ol class="ib-schritte">' + a.s.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol>' : '') +
-      (a.h || C.hinweis ? '<p class="ib-hinweis">' + esc(a.h || C.hinweis) + '</p>' : '') +
+      ((a.h || C.hinweis) && (C.ohneHinweis || []).indexOf(a.b) < 0 ? '<p class="ib-hinweis">' + esc(a.h || C.hinweis) + '</p>' : '') +
       '<div class="ib-zeile">' +
       '<button type="button" class="ib-k ib-voll" data-ok>' + (D.gelesen[a.id] ? esc(WORT.gelesen) + ' ✓' : 'Als ' + esc(WORT.gelesen.toLowerCase()) + ' markieren') + '</button>' +
       '<button type="button" class="ib-k" data-merk aria-pressed="' + !!D.gemerkt[a.id] + '">' + (D.gemerkt[a.id] ? '🔖 Gemerkt' : '🔖 Merken') + '</button>' +
@@ -399,15 +406,26 @@
       try {
         if (speechSynthesis.speaking) { stumm(); vb.textContent = '🔊 Vorlesen'; return; }
         var u = new SpeechSynthesisUtterance([a.t, a.k].concat(a.x || [], a.s || []).join('. '));
-        u.lang = 'de-CH'; u.rate = 0.95;
+        u.lang = C.sprache || 'de-CH'; u.rate = C.tempo || 0.95;
         u.onend = function () { vb.textContent = '🔊 Vorlesen'; };
         speechSynthesis.speak(u); vb.textContent = '⏹ Stopp';
       } catch (e) {}
     });
   }
+  function vorlesen(text, fertig) {
+    try {
+      if (!('speechSynthesis' in window)) return false;
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text); u.lang = C.sprache || 'de-CH'; u.rate = C.tempo || 0.95;
+      var st = (speechSynthesis.getVoices ? speechSynthesis.getVoices() : []).filter(function (v) { return v.lang && v.lang.slice(0, 2) === 'de'; })[0]; if (st) u.voice = st;
+      if (fertig) u.onend = fertig;
+      speechSynthesis.speak(u); return true;
+    } catch (e) { return false; }
+  }
   function stumm() { try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) {} }
 
   /* ---------- Quiz: Runden zu 5 Fragen ---------- */
+  function reihe(n, d) { var r = []; for (var i = 0; i < n; i++) r.push((i + d) % n); return r; }
   function mischen(l) { l = l.slice(); for (var i = l.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = l[i]; l[i] = l[j]; l[j] = t; } return l; }
   function zeigeQuiz() {
     quizRunde = null;
@@ -419,15 +437,15 @@
   function frage() {
     var R = quizRunde, q = R.fragen[R.i]; nachOben();
     inhaltEl.innerHTML = '<div class="ib-karte"><div class="ib-stand"><span>Frage ' + (R.i + 1) + ' von ' + R.fragen.length + '</span><span>' + R.punkte + ' richtig</span></div>' +
-      '<h4>' + esc(q.f) + '</h4>' + q.a.map(function (o, i) { return '<button type="button" class="ib-opt" data-o="' + i + '">' + esc(o) + '</button>'; }).join('') + '<div data-nach></div></div>';
+      '<h4>' + esc(q.f) + '</h4>' + mischen(reihe(q.a.length, 0)).map(function (i) { return '<button type="button" class="ib-opt" data-o="' + i + '">' + esc(q.a[i]) + '</button>'; }).join('') + '<div data-nach></div></div>';
     [].forEach.call(inhaltEl.querySelectorAll('[data-o]'), function (b) {
       b.addEventListener('click', function () {
         var i = +b.getAttribute('data-o'), ok = i === q.r;
         if (ok) { R.punkte++; D.quiz.richtig++; }
-        var sp = inhaltEl.querySelector('.ib-stand span:last-child'); if (sp) sp.textContent = R.punkte + ' ib-richtig';
+        var sp = inhaltEl.querySelector('.ib-stand span:last-child'); if (sp) sp.textContent = R.punkte + ' richtig';
         [].forEach.call(inhaltEl.querySelectorAll('[data-o]'), function (x) { x.disabled = true; var j = +x.getAttribute('data-o'); if (j === q.r) x.classList.add('ib-richtig'); else if (j === i) x.classList.add('ib-falsch'); });
         var nach = inhaltEl.querySelector('[data-nach]');
-        nach.innerHTML = '<p class="ib-erkl"><b>' + (ok ? 'Richtig. ' : 'Nicht ganz. ') + '</b>' + esc(q.e || '') + '</p><div class="ib-zeile" style="margin-top:12px"><button type="button" class="ib-k ib-voll" data-weiter>' + (R.i + 1 < R.fragen.length ? 'Weiter' : 'Auswertung') + '</button></div>';
+        nach.innerHTML = '<p class="ib-erkl"><b>' + (ok ? (C.wortRichtig || 'Richtig. ') : (C.wortFalsch || 'Nicht ganz. ')) + '</b>' + esc(q.e || '') + '</p><div class="ib-zeile" style="margin-top:12px"><button type="button" class="ib-k ib-voll" data-weiter>' + (R.i + 1 < R.fragen.length ? 'Weiter' : 'Auswertung') + '</button></div>';
         sichern();
         nach.querySelector('[data-weiter]').addEventListener('click', function () { R.i++; if (R.i < R.fragen.length) frage(); else ende(); });
         nach.querySelector('[data-weiter]').focus({ preventScroll: false });

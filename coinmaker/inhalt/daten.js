@@ -11,6 +11,7 @@ window.INHALT = {
   wortBeitrag: 'Karte', wortBeitraege: 'Karten',
   wortSchritte: 'Probier es aus',
   wortTipp: 'Der Coin Maker schlägt vor',
+  ohneHinweis: ['funken'],
   hinweis: 'Lernkarte zum Nachdenken. Coins sind Punkte ohne Geldwert. Bei Geld-, Steuer- oder Rechtsfragen eine Fachperson fragen.',
   sammlungText: 'Deine Karten und Abzeichen bleiben nur auf diesem Gerät, wie deine Ideen.',
   farben: {
