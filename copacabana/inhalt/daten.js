@@ -3,6 +3,17 @@
    Neue Beiträge unten anhängen: { id, b, t, k, x: [Absätze], s: [Schritte] } */
 window.INHALT = {
   app: 'copacabana',
+  figur: 'Copa',
+  absichten: [
+    { w: /(einpack|verpack|packe|schleife)/, t: 'Sauber einpacken in fünf Schritten', a: 'So wird es schön:' },
+    { w: /(party|fest|kindergeburtstag|feiern)/, b: 'party', a: 'Juhu, ein Fest! Eine Idee:' }
+  ],
+  gruss: 'Olá, ich bin Copa! Für wen suchst du ein Geschenk?',
+  sprichGrenze: 'Copa hat Geschenkideen und Kartensprüche. Alles bleibt auf deinem Handy.',
+  beispielFragen: ['Geschenk für meine Mutter', 'Ein Spruch zum Geburtstag', 'Wie packe ich schön ein?'],
+  grenzen: [
+    { w: /(adresse|öffnungszeit|\boffen\b|\bladen\b|wo seid|wo ist der|wo ist euer|wo finde ich euch|bezahlen|zahlung|twint|kreditkarte|lieferung|versand)/, a: 'Adresse, Öffnungszeiten und Zahlungsarten kommen bald hier in die App. Bis dahin helfe ich dir gern mit Ideen.', weiter: true }
+  ],
   titel: 'Copas Geschenk-Ideen',
   titelKurz: 'Alle Ideen',
   heuteLabel: 'Copas Idee heute',
