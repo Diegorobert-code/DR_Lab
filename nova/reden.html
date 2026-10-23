@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-23-08">
+<meta name="stand" content="2026-10-23-09">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -219,14 +219,19 @@
     lumo: { name: 'Lumo', agent: 'agent_2801m5jwgs8reptvpjpkjjpwswfn', bild: 'figuren/lumo.jpg',
       mund: { linie: [[446, 488], [470, 496], [494, 488]], lippe: 506, kinn: 522, max: 10, innen: [60, 25, 20] } },
     granny: { name: 'Rosa', agent: 'agent_3601m5jv6vcpetpsnckmvqtgs1s2', bild: 'figuren/granny.jpg',
-      mund: { linie: [[372, 612], [400, 642], [430, 668], [490, 692], [540, 696], [590, 688], [630, 666]], lippe: 730, kinn: 800, max: 20, innen: [110, 40, 45] } }
+      mund: { linie: [[372, 612], [400, 642], [430, 668], [490, 692], [540, 696], [590, 688], [630, 666]], lippe: 730, kinn: 800, max: 20, innen: [110, 40, 45] } },
+    fia: { name: 'Fia', agent: 'agent_3601m5n1x1nqexnb952z9qbakq23', bild: 'figuren/fia.jpg' },
+    zahnboecklein: { name: 'Zahnböcklein', agent: 'agent_6701m5n1x4ejeprvkg1tg4n8qy3z', bild: 'figuren/zahnboecklein.jpg' },
+    waefwaef: { name: 'Wäf Wäf', agent: 'agent_3201m5n1x70rfcsbbm8b1me8r5wx', bild: 'figuren/waefwaef.jpg' }
   };
   var BILDCHEN = { nova: 'nova-3d.jpg', tropfi: 'figuren/tropfi-klein.jpg', otti: '../otti/icon-180.png', kiki: '../kiki/icon-180.png', jackie: '../jackie/icon-180.png', 'mr. ping': '../tradeping/icon-180.png',
     sparky: 'figuren/sparky-klein.jpg', 'coin maker': 'figuren/coinmaker-klein.jpg', flo: 'figuren/flo-klein.jpg', fompa: 'figuren/fompa-klein.jpg', sunny: 'figuren/sunny-klein.jpg',
     carmencita: 'figuren/carmencita-klein.jpg', ava: 'figuren/ava-klein.jpg',
-    'mama affe': 'figuren/mamaaffe-klein.jpg', lumo: 'figuren/lumo-klein.jpg', granny: 'figuren/granny-klein.jpg' };
+    'mama affe': 'figuren/mamaaffe-klein.jpg', lumo: 'figuren/lumo-klein.jpg', granny: 'figuren/granny-klein.jpg',
+    fia: 'figuren/fia-klein.jpg', zahnboecklein: 'figuren/zahnboecklein-klein.jpg', waefwaef: 'figuren/waefwaef-klein.jpg' };
   var KEY = (new URLSearchParams(location.search).get('f') || 'otti').toLowerCase();
   if (KEY === 'rosa') KEY = 'granny'; // Granny heisst seit 23.10. Rosa, alte Links bleiben gültig.
+  KEY = { 'zahnböcklein': 'zahnboecklein', 'wäf wäf': 'waefwaef', 'waef waef': 'waefwaef', 'wäf': 'waefwaef' }[KEY] || KEY;
   var F = FIGUREN[KEY] || FIGUREN.otti, NAME = F.name, AGENT = F.agent, RUHE = F.ruhe || 0;
   document.title = NAME;
   // Home-Bildschirm-Symbol: das Gesicht der Figur, die gerade spricht.
