@@ -189,12 +189,15 @@ h1{color:#F2C14E}
       <label class="lbl" for="mSong">Welcher Song?</label>
       <input id="mSong" class="inp" maxlength="80" autocomplete="off" placeholder="Titel – Künstler">
       <button class="btn primary" id="mStart">▶ Song läuft jetzt</button>
+      <button class="btn primary" id="mReise">🎧 Beat-Reise: Human Sparks spielt 12 Beats</button>
+      <div class="muted" style="font-size:13px">Beat-Reise: Ton an und Stummschalter aus, je 30 Sekunden, ganz verschiedene Stile. Du tippst nur, was sie in dir auslösen.</div>
       <a class="btn ghost" href="../nova/reden.html?f=sparky" style="display:block;text-align:center;text-decoration:none">🦊 Mit Sparky reden</a>
       <button class="btn ghost" id="mFinger">☝️ Finger drauf: Puls und HRV dazu messen</button>
     </div>
     <div class="box hidden" id="mRunBox">
       <div class="phase" id="mTitel">Song</div>
       <div class="clock" id="mClock">0:00</div>
+      <button class="btn ghost hidden" id="mWeiter">⏭ Nächster Beat</button>
       <div class="muted">Tipp, was du gerade fühlst. Mehrmals tippen ist gut.</div>
       <div class="chips" id="mGefuehle"></div>
       <div class="noteline"><input id="mText" class="inp" placeholder="Oder in Worten: jetzt fühle ich …" autocomplete="off" enterkeyhint="send"><button class="btn ghost" id="mTextAdd" aria-label="Satz hinzufügen">+</button></div>
@@ -1872,11 +1875,12 @@ var M_GEF = [['ruhig','😌'],['offen','💛'],['Kraft','🔥'],['Freude','😄'
 var mLauf = null;
 function mZeit(s){ s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
 function mBox(id){ ['mStartBox','mRunBox','mOutBox'].forEach(function(b){ $(b).classList.toggle('hidden', b !== id); }); window.scrollTo(0, 0); }
-function mJetzt(){ return mLauf ? (Date.now() - mLauf.t0) / 1000 : 0; }
+function mJetzt(){ return mLauf ? (Date.now() - (mLauf.reise ? mLauf.beatT0 : mLauf.t0)) / 1000 : 0; }
+function mWann(x){ return (x.b ? x.b + ' ' : '') + mZeit(x.t); }
 function mFeed(){
-  $('mFeed').innerHTML = mLauf.stamps.slice().reverse().map(function(x){ return '<div><b>' + mZeit(x.t) + '</b> ' + esc(x.k ? x.k : '«' + x.text + '»') + '</div>'; }).join('');
+  $('mFeed').innerHTML = mLauf.stamps.slice().reverse().map(function(x){ return '<div><b>' + esc(mWann(x)) + '</b> ' + esc(x.k ? x.k : '«' + x.text + '»') + '</div>'; }).join('');
 }
-function mStempel(o){ if (!mLauf) return; o.t = Math.round(mJetzt()); mLauf.stamps.push(o); mFeed(); }
+function mStempel(o){ if (!mLauf) return; o.t = Math.round(mJetzt()); if (mLauf.reise) o.b = BEATS[beatNr].n; mLauf.stamps.push(o); mFeed(); }
 $('mGefuehle').innerHTML = M_GEF.map(function(g){ return '<button class="chip" data-g="' + g[0] + '">' + g[1] + ' ' + g[0] + '</button>'; }).join('');
 $('mGefuehle').addEventListener('click', function(ev){
   var b = ev.target.closest('[data-g]'); if (!b) return;
@@ -1885,6 +1889,63 @@ $('mGefuehle').addEventListener('click', function(ev){
 function mText(){ var v = $('mText').value.trim(); if (!v) return; mStempel({text:v.slice(0, 300)}); $('mText').value = ''; }
 $('mTextAdd').addEventListener('click', mText);
 $('mText').addEventListener('keydown', function(ev){ if (ev.key === 'Enter'){ ev.preventDefault(); mText(); } });
+/* Beat-Reise: 12 Beats direkt im Handy erzeugt (WebAudio, eigene Muster, keine fremde Musik) */
+var BEATS = [
+  {n:'Boom-Bap', bpm:88, sw:.18, k:'x.....x...x.....', s:'....x.......x...', h:'x.x.x.x.x.x.x.x.', b:[0,,,,,,7,,,,3,,,,,], key:41, pad:[0,3,7,10]},
+  {n:'Trap', bpm:140, k:'x......x..x.....', s:'........x.......', h:'xxxxxxxxxxxxx.xx', b:[0,,,,,,,,,,,,-2,,,], key:36, w:'sine', lang:true, pad:[0,3,7]},
+  {n:'Lo-Fi', bpm:72, sw:.22, k:'x.......x.x.....', s:'....x.......x...', h:'x.x.x.x.x.x.x.x.', b:[0,,,,5,,,,3,,,,,,,], key:45, pad:[0,4,7,11], weich:true},
+  {n:'House', bpm:124, k:'x...x...x...x...', s:'....x.......x...', h:'..x...x...x...x.', b:[0,,0,,,,0,,0,,,,0,,12,], key:41, pad:[0,3,7,10]},
+  {n:'Techno', bpm:132, k:'x...x...x...x...', s:'................', h:'..x...x...x...x.', b:[0,0,,0,0,,0,,0,0,,0,0,,0,], key:33, w:'sawtooth'},
+  {n:'Afro', bpm:104, k:'x.....x...x.....', s:'...x..x....x..x.', h:'x.xx.x.xx.xx.x.x', b:[0,,,7,,,5,,,,7,,,3,,], key:43, pad:[0,4,7]},
+  {n:'Reggaeton', bpm:94, k:'x...x...x...x...', s:'...x..x....x..x.', h:'x.x.x.x.x.x.x.x.', b:[0,,,,,,,,5,,,,,,,], key:38},
+  {n:'Drum & Bass', bpm:172, k:'x.........x.....', s:'....x.......x...', h:'x.xxx.xxx.xxx.xx', b:[0,,,,,,,,,,-5,,,,,], key:31, w:'sine', lang:true},
+  {n:'Ambient', bpm:60, k:'................', s:'................', h:'................', b:[], key:48, pad:[0,7,14,16], gross:true},
+  {n:'Funk', bpm:108, sw:.12, k:'x..x..x...x.....', s:'....x..x.x..x...', h:'xxxxxxxxxxxxxxxx', b:[0,,12,,0,,10,,0,,7,,5,,3,], key:40},
+  {n:'Dub', bpm:70, k:'x.......x.......', s:'........x.......', h:'..x...x...x...x.', b:[0,,,,,,,,-2,,,,,,,], key:36, w:'sine', lang:true, pad:[0,3,7], echo:true},
+  {n:'Herzschlag', bpm:60, k:'x.x.............', s:'................', h:'................', b:[], key:45, pad:[0,5,9], gross:true}
+];
+var BEAT_SEK = 30, ac = null, beatNr = -1, beatTimer = null, nextStep = 0, stepNr = 0, beatOut = null;
+function noise(){ var b = ac.createBuffer(1, ac.sampleRate * .5, ac.sampleRate), d = b.getChannelData(0); for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; }
+var rauschen = null;
+function env(g, t, a, peak, dec){ g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + dec); }
+function kick(t){ var o = ac.createOscillator(), g = ac.createGain(); o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(45, t + .25); env(g, t, .005, .9, .45); o.connect(g).connect(beatOut); o.start(t); o.stop(t + .5); }
+function rausch(t, typ, f, peak, dec){ var n = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain(); n.buffer = rauschen; fl.type = typ; fl.frequency.value = f; env(g, t, .002, peak, dec); n.connect(fl).connect(g).connect(beatOut); n.start(t); n.stop(t + dec + .02); }
+function ton(t, midi, dauer, w, peak, cut){ var o = ac.createOscillator(), fl = ac.createBiquadFilter(), g = ac.createGain(); o.type = w; o.frequency.value = 440 * Math.pow(2, (midi - 69) / 12); fl.type = 'lowpass'; fl.frequency.value = cut; env(g, t, .01, peak, dauer); o.connect(fl).connect(g).connect(beatOut); o.start(t); o.stop(t + dauer + .05); }
+function beatSchritt(B, i, t){
+  if (B.k[i] === 'x') kick(t);
+  if (B.s[i] === 'x') rausch(t, 'bandpass', 1800, B.weich ? .25 : .45, .18);
+  if (B.h[i] === 'x') rausch(t, 'highpass', 7000, B.weich ? .06 : .12, .05);
+  if (B.b[i] != null) ton(t, B.key + B.b[i], B.lang ? .9 : .28, B.w || 'triangle', .35, B.w === 'sawtooth' ? 900 : 600);
+  if (B.echo && B.s[i] === 'x') [.375, .75].forEach(function(d, j){ rausch(t + d * 60 / B.bpm * 2, 'bandpass', 1500, .2 / (j + 1), .2); });
+  if (B.pad && i % 16 === 0 && stepNr % 32 === 0) B.pad.forEach(function(x){ ton(t, B.key + 24 + x, B.gross ? 7 : 3.5, 'triangle', B.gross ? .07 : .045, 1800); });
+}
+function beatPlaner(){
+  var B = BEATS[beatNr]; if (!B || !ac) return;
+  var schritt = 60 / B.bpm / 4;
+  while (nextStep < ac.currentTime + .15){
+    var i = stepNr % 16, t = nextStep + (B.sw && i % 2 ? schritt * B.sw : 0);
+    beatSchritt(B, i, t);
+    nextStep += schritt; stepNr++;
+  }
+}
+function beatSpielen(n){
+  beatNr = n; stepNr = 0;
+  if (beatOut){ var alt = beatOut; alt.gain.setTargetAtTime(0, ac.currentTime, .15); setTimeout(function(){ alt.disconnect(); }, 800); }
+  beatOut = ac.createGain(); beatOut.gain.value = .8; beatOut.connect(ac.destination);
+  nextStep = ac.currentTime + .1;
+  if (mLauf){ mLauf.beatT0 = Date.now(); $('mTitel').textContent = '🎧 Beat ' + (n + 1) + '/12 · ' + BEATS[n].n + ' · ' + BEATS[n].bpm + ' BPM'; }
+}
+function beatStopp(){ clearInterval(beatTimer); beatTimer = null; beatNr = -1; if (beatOut){ beatOut.gain.setTargetAtTime(0, ac.currentTime, .1); beatOut = null; } }
+$('mReise').addEventListener('click', function(){
+  try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); rauschen = rauschen || noise(); } catch(e){ uiAlert('Ton geht auf diesem Gerät nicht.'); return; }
+  mLauf = {id:uid(), t:Date.now(), t0:Date.now(), song:'Beat-Reise', reise:true, stamps:[], timer:null};
+  $('mFeed').innerHTML = ''; $('mWeiter').classList.remove('hidden');
+  beatSpielen(0);
+  beatTimer = setInterval(function(){ beatPlaner(); if (mLauf && mLauf.reise && Date.now() - mLauf.beatT0 > BEAT_SEK * 1000){ if (beatNr < BEATS.length - 1) beatSpielen(beatNr + 1); else $('mStop').click(); } }, 25);
+  mLauf.timer = setInterval(function(){ $('mClock').textContent = mZeit(mJetzt()); }, 500);
+  mBox('mRunBox');
+});
+$('mWeiter').addEventListener('click', function(){ if (mLauf && mLauf.reise){ if (beatNr < BEATS.length - 1) beatSpielen(beatNr + 1); else $('mStop').click(); } });
 $('mStart').addEventListener('click', function(){
   mLauf = {id:uid(), t:Date.now(), t0:Date.now(), song:$('mSong').value.trim().slice(0, 80), stamps:[], timer:null};
   $('mTitel').textContent = '🎵 ' + (mLauf.song || 'Song läuft');
@@ -1893,10 +1954,10 @@ $('mStart').addEventListener('click', function(){
   try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function(l){ if (mLauf) mLauf.wl = l; else l.release(); }).catch(function(){}); } catch(e){}
   mBox('mRunBox');
 });
-function mEnde(){ if (!mLauf) return null; clearInterval(mLauf.timer); try { if (mLauf.wl) mLauf.wl.release(); } catch(e){} var l = mLauf; mLauf = null; return l; }
+function mEnde(){ if (!mLauf) return null; if (mLauf.reise) beatStopp(); $('mWeiter').classList.add('hidden'); clearInterval(mLauf.timer); try { if (mLauf.wl) mLauf.wl.release(); } catch(e){} var l = mLauf; mLauf = null; return l; }
 $('mAbbruch').addEventListener('click', function(){ mEnde(); mBox('mStartBox'); });
 function mZeile(e){
-  return '«' + (e.song || 'Song') + '» · ' + mZeit(e.dur) + (e.stamps.length ? ': ' + e.stamps.map(function(x){ return mZeit(x.t) + ' ' + (x.k || '«' + x.text + '»'); }).join(', ') : ', nichts angetippt');
+  return '«' + (e.song || 'Song') + '» · ' + mZeit(e.dur) + (e.stamps.length ? ': ' + e.stamps.map(function(x){ return mWann(x) + ' ' + (x.k || '«' + x.text + '»'); }).join(', ') : ', nichts angetippt');
 }
 var mLetzter = null;
 function mZeigen(e){
@@ -1905,13 +1966,13 @@ function mZeigen(e){
   var zahl = {}; e.stamps.forEach(function(x){ if (x.k) zahl[x.k] = (zahl[x.k] || 0) + 1; });
   var oben = Object.keys(zahl).sort(function(a, b){ return zahl[b] - zahl[a]; }).slice(0, 3);
   $('mOut').innerHTML = '<p class="muted">' + mZeit(e.dur) + ' gehört · ' + e.stamps.length + ' Gefühle festgehalten' + (oben.length ? ' · am meisten: ' + esc(oben.join(', ')) : '') + '</p>' +
-    (e.stamps.length ? '<div class="tl">' + e.stamps.map(function(x){ return '<div><b>' + mZeit(x.t) + '</b>' + esc(x.k ? x.k : '«' + x.text + '»') + '</div>'; }).join('') + '</div>' : '');
+    (e.stamps.length ? '<div class="tl">' + e.stamps.map(function(x){ return '<div><b>' + esc(mWann(x)) + '</b> ' + esc(x.k ? x.k : '«' + x.text + '»') + '</div>'; }).join('') + '</div>' : '');
   $('mKopie').textContent = '🎵 Gefühle für die Song-Analyse kopieren';
   mBox('mOutBox');
 }
 $('mStop').addEventListener('click', function(){
   var l = mEnde(); if (!l) return;
-  var e = {id:l.id, t:l.t, type:'musik', song:l.song, dur:Math.round((Date.now() - l.t0) / 1000), stamps:l.stamps};
+  var e = {id:l.id, t:l.t, type:'musik', song:l.song, reise:!!l.reise, dur:Math.round((Date.now() - l.t0) / 1000), stamps:l.stamps};
   addEntry(e); mZeigen(e);
 });
 $('mFinger').addEventListener('click', function(){ showTab('messen'); });
@@ -1919,7 +1980,7 @@ $('mNeu').addEventListener('click', function(){ $('mSong').value = ''; mBox('mSt
 // Für die Höranalyse (hoeranalyse.py worte.json): [{t, text}] mit Song-Sekunde
 $('mKopie').addEventListener('click', function(){
   if (!mLetzter) return;
-  var t = JSON.stringify(mLetzter.stamps.map(function(x){ return {t:x.t, text:x.k || x.text}; })), b = $('mKopie');
+  var t = JSON.stringify(mLetzter.stamps.map(function(x){ var o = {t:x.t, text:x.k || x.text}; if (x.b) o.beat = x.b; return o; })), b = $('mKopie');
   var ok = function(){ b.textContent = 'Kopiert ✓ – mit dem Song zusammen schicken'; };
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function(){ uiAlert(t); });
   else uiAlert(t);
