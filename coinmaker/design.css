@@ -1,0 +1,51 @@
+/* design.css – Coin Maker im Look «Banknote» (Design-Umbau 23.10.2026).
+   Wertig wie ein Geldschein: Tannengrün mit Gold auf Notenpapier, DM Serif Display für Titel
+   und Beträge, IBM Plex Sans für Text. Oben ein grünes Band wie der Rand einer Banknote.
+   Nur Optik, als letztes Stylesheet geladen. */
+html:root{
+  --m-bg:#F4EBD0;--m-surface:#FBF6E6;--m-surface2:#F1E6C6;--m-soft:#EADBB0;
+  --m-ink:#1E2A22;--m-ink2:#3E4A40;--m-ink3:#55604F;--m-line:#E2D4AA;--m-line2:#CDBB86;
+  --m-accent:#0F3B2E;--m-on-accent:#F4EBD0;--m-accent-ink:#0F3B2E;--m-focus:#0F3B2E;
+  --m-shadow:0 1px 2px rgba(15,59,46,.06),0 10px 24px -16px rgba(15,59,46,.35);
+  --m-font-title:"DM Serif Display",Georgia,"Times New Roman",serif;
+  --m-font-body:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --d-gruen:#0F3B2E;--d-gold:#D9B45A;--d-gold-ink:#7A5A14;--d-papier:#F4EBD0;--d-r:4px;
+  --fs-r-l:var(--d-r);--fs-r-m:var(--d-r);--fs-r-s:var(--d-r);
+}
+html body{background:var(--m-bg)!important;font-family:var(--m-font-body)!important;color:var(--m-ink)}
+html body :where(button,input,select,textarea){font-family:var(--m-font-body)}
+html .wrap :is(h1,h2,h3){font-family:var(--m-font-title)!important;font-weight:400!important;letter-spacing:0!important}
+
+/* Kopf als grünes Banknoten-Band, Text in Notenpapier */
+html header#werk.werk{padding-top:0!important}
+html .werk-kopf{background:var(--d-gruen);color:var(--d-papier);margin:-20px -16px 0;padding:calc(env(safe-area-inset-top,0px) + 18px) 16px 48px;border-radius:0 0 var(--d-r) var(--d-r);position:relative;
+  background-image:repeating-linear-gradient(135deg,rgba(217,180,90,.08) 0 2px,transparent 2px 9px)}
+html .werk-kopf::after{content:"";position:absolute;left:12px;right:12px;bottom:12px;height:1px;background:linear-gradient(90deg,transparent,var(--d-gold),transparent);opacity:.8}
+html .werk-kopf h1{color:var(--d-papier)!important;font-family:var(--m-font-title)!important;font-weight:400!important;font-size:clamp(2.2rem,10vw,2.8rem)!important;letter-spacing:0!important}
+html .werk-kopf :is(span,small,b,em){color:var(--d-papier)!important}
+html .werk-kopf>div>*:not(h1),html .werk-kopf>span,html .werk-kopf>button{background:rgba(244,235,208,.12)!important;color:var(--d-papier)!important;border:1px solid rgba(217,180,90,.5)!important}
+/* Sprechblase als Notenpapier-Blatt, das über das Band ragt */
+html .werk-buehne{background:var(--m-surface)!important;border:1px solid var(--m-line2)!important;border-radius:var(--d-r)!important;box-shadow:var(--m-shadow)!important;margin:-34px 4px 8px!important;position:relative;z-index:1}
+html .werk-buehne .bubble,html .werk-buehne .bubble *{color:var(--m-ink)!important}
+html .werk-buehne .cm-fig{box-shadow:0 0 0 2px var(--d-gold)!important;border-radius:50%}
+
+/* Karten: Notenpapier, feiner Goldrand, fast eckig */
+html .wrap :is(section,.card,.machine,.r6,.r7-neu,.r8-plan,.r8-wm,.sogehts){border-radius:var(--d-r)!important;background:var(--m-surface)!important;border:1px solid var(--m-line)!important;box-shadow:var(--m-shadow)!important}
+html .wrap :is(.info,.fs-leer,.r6-wahl,.r6-ue,.r6-satz,.r6-bs,.screen-in,.consent,.r7-neu-k,.tag,details,.chute-hole,textarea,input,select){border-radius:var(--d-r)!important}
+html .wrap .r7-neu-k{background:var(--m-surface2)!important;border:1px solid var(--m-line)!important}
+html .wrap .screen-in{background:var(--d-gruen)!important;color:var(--d-papier)!important}
+html .wrap .screen-in :is(.k,.r,.v,span,b){color:var(--d-papier)!important}
+html .wrap .screen-in .v{font-family:var(--m-font-title)!important;font-weight:400!important;color:var(--d-gold)!important}
+
+/* Beträge und Coins in der Serife */
+html .wrap :is(.big,#resCoins){font-family:var(--m-font-title)!important;font-weight:400!important;color:var(--d-gruen)!important;letter-spacing:0}
+
+/* Knöpfe: Gold mit grüner Schrift als Hauptknopf, Pille wie im Entwurf */
+html .wrap :is(.pull,#pull,#wiegen){background:var(--d-gold)!important;color:var(--d-gruen)!important;border-radius:999px!important;font-weight:700!important;border:0!important;box-shadow:0 3px 0 #B8923A!important}
+html .wrap .wk{border-radius:999px!important;background:var(--m-surface)!important;color:var(--d-gruen)!important;border:1px solid var(--m-line2)!important}
+html .wrap #filmBtn.wk{background:var(--d-gruen)!important;color:var(--d-papier)!important;border-color:var(--d-gruen)!important}
+html .wrap :is(.r7-knopf,.btn,.r7-reihe button){border-radius:999px!important}
+html .wrap .types button[aria-pressed="true"],html .wrap .types .on{background:var(--d-gruen)!important;color:var(--d-papier)!important;border-color:var(--d-gruen)!important}
+html .lever .knob{background:var(--d-gold)!important;border-color:#B8923A!important}
+html .wrap .pips i,html .wrap .pips b,html .wrap .pips span{background:var(--d-gold)}
+html .wrap #r8WmH{font-family:var(--m-font-body)!important;font-weight:700!important;font-size:11px!important;letter-spacing:.1em!important;text-transform:uppercase;color:var(--d-gold-ink)!important}
