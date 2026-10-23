@@ -3,6 +3,22 @@
    Neue Beiträge unten anhängen: { id, b, t, k, x: [Absätze], s: [Schritte] } */
 window.INHALT = {
   app: 'coinmaker',
+  figur: 'Coin Maker',
+  absichten: [
+    { w: /(teste|testen|prüfe|pruefe|gut genug|funktioniert)/, b: 'pruefen', a: 'So prüfst du sie:' },
+    { w: /(kundschaft|kunden|käufer|wer kauft)/, b: 'kunden', a: 'Gute Frage. Fang so an:' },
+    { w: /(keine idee|ideen finden|inspiration|funke)/, b: 'funken', a: 'Ein Funke für dich:' },
+    { w: /(angst|mut|aufgeben|nein bekommen|traue mich)/, b: 'mut', a: 'Das gehört dazu. Probier das:' }
+  ],
+  live: '../nova/reden.html?f=coin%20maker',
+  gruss: 'Willkommen in der Werkstatt! Erzähl mir deine Idee oder frag mich, wie du sie prüfst.',
+  sprichGrenze: 'Der Coin Maker hilft beim Denken. Keine Steuer-, Rechts- oder Finanzberatung. Coins sind Punkte ohne Geldwert.',
+  beispielFragen: ['Wie teste ich meine Idee?', 'Wie finde ich Kundschaft?', 'Wie setze ich den Preis?'],
+  grenzen: [
+    { w: /(aktie|krypto|bitcoin|investier|anlegen|börse|boerse|trading|reich werden)/, a: 'Anlagetipps gebe ich nicht. Ich bin für eigene Ideen da: wie du sie prüfst, Kundschaft findest und den Preis setzt.', weiter: false },
+    { w: /(steuer|rechtsform|gmbh|vertrag|anwalt|kredit|darlehen)/, a: 'Für Steuer-, Rechts- und Kreditfragen frag bitte eine Fachperson. Ich helfe dir, die Idee zu prüfen.', weiter: true },
+    { w: /(auszahl|echtes geld|coins? .*wert|coins? .*franken)/, a: 'Coins sind Punkte ohne Geldwert. Sie zeigen, wie viel deine Ideen schon wert sind, aber man kann sie nicht auszahlen.', weiter: false }
+  ],
   titel: 'Ideen-Schule',
   titelKurz: 'Alle Karten',
   heuteLabel: 'Heute in der Werkstatt',
