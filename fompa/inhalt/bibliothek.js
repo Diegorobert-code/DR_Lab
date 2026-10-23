@@ -75,7 +75,7 @@
     if (bw <= 0) { var start = tagNr() % REIHE.length; for (var i = 1; i <= REIHE.length; i++) { var c = REIHE[(start + i) % REIHE.length]; if (!D.gelesen[c.id] && c.id !== ohne) return { a: c, warum: C.wortTipp || 'Tipp für dich' }; } return { a: offen[0], warum: C.wortTipp || 'Tipp für dich' }; }
     var grund = null;
     Object.keys(D.gemerkt).forEach(function (id) { if (ART[id] && ART[id].b === best.b) grund = grund || ('Weil du «' + ART[id].t + '» gemerkt hast'); });
-    if (!grund && D.zuletzt && ART[D.zuletzt] && ART[D.zuletzt].b === best.b) grund = D.zuletzt === ohne ? 'Passt zu dem, was du gerade liest' : 'Weil du «' + ART[D.zuletzt].t + '» gelesen hast';
+    if (!grund && D.zuletzt && ART[D.zuletzt] && ART[D.zuletzt].b === best.b) grund = D.zuletzt === ohne ? 'Passt zu dem, was du gerade liest' : 'Weil du «' + ART[D.zuletzt].t + '» ' + (D.gelesen[D.zuletzt] ? 'gelesen' : 'angeschaut') + ' hast';
     if (!grund) grund = 'Weil dich «' + bereichName(best) + '» interessiert';
     return { a: best, warum: grund };
   }
