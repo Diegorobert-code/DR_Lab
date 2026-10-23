@@ -89,20 +89,21 @@
   function markiereTag() { D.tage[iso()] = 1; }
 
   /* ---------- Abzeichen ---------- */
+  var GL = WORT.gelesen.toLowerCase();
   var AB = (C.abzeichen || [
-    { id: 'start', emoji: '🌱', name: 'Erster Schritt', text: 'Den ersten ' + WORT.beitrag + ' gelesen.', art: 'gelesen', n: 1 },
-    { id: 'fuenf', emoji: '📖', name: 'Neugierig', text: 'Fünf ' + WORT.beitraege + ' gelesen.', art: 'gelesen', n: 5 },
-    { id: 'fuenfzehn', emoji: '📚', name: 'Dranbleiberin', text: 'Fünfzehn ' + WORT.beitraege + ' gelesen.', art: 'gelesen', n: 15 },
-    { id: 'alle', emoji: '🏆', name: 'Ganze ' + WORT.bibliothek, text: 'Alles gelesen.', art: 'gelesen', n: 'alle' },
+    { id: 'start', emoji: '🌱', name: 'Erster Schritt', text: '1 ' + WORT.beitrag + ' ' + GL + '.', art: 'gelesen', n: 1 },
+    { id: 'fuenf', emoji: '📖', name: 'Neugierig', text: '5 ' + WORT.beitraege + ' ' + GL + '.', art: 'gelesen', n: 5 },
+    { id: 'fuenfzehn', emoji: '📚', name: 'Dranbleiben', text: '15 ' + WORT.beitraege + ' ' + GL + '.', art: 'gelesen', n: 15 },
+    { id: 'alle', emoji: '🏆', name: 'Alles entdeckt', text: 'Alle ' + WORT.beitraege + ' ' + GL + '.', art: 'gelesen', n: 'alle' },
     { id: 'tage3', emoji: '🔥', name: 'Drei Tage', text: 'An drei Tagen vorbeigeschaut.', art: 'tage', n: 3 },
     { id: 'tage7', emoji: '✨', name: 'Eine Woche', text: 'An sieben Tagen vorbeigeschaut.', art: 'tage', n: 7 },
     { id: 'quiz1', emoji: '🎯', name: 'Quiz gewagt', text: 'Eine Quizrunde gespielt.', art: 'runden', n: 1 },
     { id: 'quiz25', emoji: '🧠', name: 'Wissensschatz', text: '25 Quizfragen richtig.', art: 'richtig', n: 25 },
-    { id: 'merk', emoji: '🔖', name: 'Sammlerin', text: 'Drei ' + WORT.beitraege + ' gemerkt.', art: 'gemerkt', n: 3 }
+    { id: 'merk', emoji: '🔖', name: 'Sammelglück', text: '3 ' + WORT.beitraege + ' gemerkt.', art: 'gemerkt', n: 3 }
   ]).slice();
   (C.bereiche || []).forEach(function (b) {
     if (C.artikel.some(function (a) { return a.b === b.id; }))
-      AB.push({ id: 'b-' + b.id, emoji: b.emoji || '⭐', name: b.name, text: 'Alles aus «' + b.name + '» gelesen.', art: 'bereich', b: b.id });
+      AB.push({ id: 'b-' + b.id, emoji: b.emoji || '⭐', name: b.name, text: 'Alles aus «' + b.name + '» ' + GL + '.', art: 'bereich', b: b.id });
   });
   function hat(a) {
     if (a.art === 'gelesen') return anzahlGelesen() >= (a.n === 'alle' ? C.artikel.length : a.n);
@@ -133,7 +134,7 @@
     '.ib-heute p{margin:0 0 14px;font-size:15.5px;line-height:1.5;color:var(--ib-i2)}',
     '.ib-zeile{display:flex;gap:10px;flex-wrap:wrap}',
     '.ib-k{appearance:none;-webkit-appearance:none;border:1px solid var(--ib-l);background:var(--ib-s2);color:var(--ib-i);min-height:46px;padding:0 16px;border-radius:999px;font:600 15px var(--ib-fb);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;touch-action:manipulation}',
-    '.ib-k.voll{background:var(--ib-a);color:var(--ib-on);border-color:transparent}',
+    '.ib-k.ib-voll{background:var(--ib-a);color:var(--ib-on);border-color:transparent}',
     '.ib-k:focus-visible,.ib-root button:focus-visible,.ib-root input:focus-visible{outline:3px solid var(--ib-ai);outline-offset:2px}',
     '.ib-balken{height:6px;border-radius:99px;background:var(--ib-s2);overflow:hidden;margin-top:14px}',
     '.ib-balken i{display:block;height:100%;background:var(--ib-a);border-radius:99px}',
@@ -143,7 +144,7 @@
     '.ib-mini{font-size:12.5px;color:var(--ib-i2);margin-top:6px}',
     /* Vollbild */
     '.ib-root{position:fixed;inset:0;z-index:2147483200;background:var(--ib-bg);color:var(--ib-i);font-family:var(--ib-fb);display:flex;flex-direction:column;opacity:0;transform:translateY(12px);transition:opacity .22s ease,transform .22s ease}',
-    '.ib-root.auf{opacity:1;transform:none}',
+    '.ib-root.ib-auf{opacity:1;transform:none}',
     '.ib-root *{box-sizing:border-box}',
     '.ib-kopf{flex:0 0 auto;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 0;background:var(--ib-bg);border-bottom:1px solid var(--ib-l)}',
     '.ib-kz{display:flex;align-items:center;gap:10px}',
@@ -183,23 +184,23 @@
     '.ib-ok{flex:0 0 auto;font-size:13px;font-weight:700;color:var(--ib-ai)}',
     '.ib-leer{text-align:center;color:var(--ib-i2);padding:24px 0}',
     '.ib-opt{display:block;width:100%;text-align:left;margin:0 0 8px;padding:13px 14px;min-height:48px;border-radius:12px;border:1px solid var(--ib-l);background:var(--ib-s2);color:var(--ib-i);font:500 15.5px/1.4 var(--ib-fb);cursor:pointer}',
-    '.ib-opt.richtig{border-color:#2e7d4f;background:#e3f4ea;color:#14532d}',
-    '.ib-opt.falsch{border-color:#b3412f;background:#fbe7e3;color:#6b1d12}',
+    '.ib-opt.ib-richtig{border-color:#2e7d4f;background:#e3f4ea;color:#14532d}',
+    '.ib-opt.ib-falsch{border-color:#b3412f;background:#fbe7e3;color:#6b1d12}',
     '.ib-erkl{margin:6px 0 0;padding:12px 14px;border-radius:12px;background:var(--ib-soft);font-size:15px;line-height:1.5}',
     '.ib-stand{display:flex;justify-content:space-between;font-size:13.5px;color:var(--ib-i2);margin-bottom:10px}',
     '.ib-gitter{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}',
     '.ib-ab{border:1px solid var(--ib-l);border-radius:14px;padding:14px 12px;background:var(--ib-s);text-align:center}',
-    '.ib-ab .e{font-size:30px;line-height:1;display:block;margin-bottom:6px}',
+    '.ib-ab .ib-abe{font-size:30px;line-height:1;display:block;margin-bottom:6px}',
     '.ib-ab b{display:block;font-size:14.5px;line-height:1.3}',
     '.ib-ab small{display:block;font-size:12.5px;color:var(--ib-i2);margin-top:4px;line-height:1.35}',
-    '.ib-ab.zu{opacity:.5}',
-    '.ib-ab.zu .e{filter:grayscale(1)}',
+    '.ib-ab.ib-gesperrt{opacity:.5}',
+    '.ib-ab.ib-gesperrt .ib-abe{filter:grayscale(1)}',
     '.ib-zahlen{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}',
     '.ib-zahlen div{background:var(--ib-s);border:1px solid var(--ib-l);border-radius:14px;padding:12px 6px;text-align:center}',
     '.ib-zahlen b{display:block;font:600 24px var(--ib-ft)}',
     '.ib-zahlen small{font-size:12px;color:var(--ib-i2)}',
     '.ib-toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:2147483300;background:var(--ib-i);color:var(--ib-bg);padding:12px 18px;border-radius:14px;font:600 14.5px var(--ib-fb);box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:calc(100% - 32px);text-align:center;pointer-events:none;opacity:0;transition:opacity .2s}',
-    '.ib-toast.an{opacity:1}',
+    '.ib-toast.ib-an{opacity:1}',
     '@media (prefers-reduced-motion:reduce){.ib-root{transition:none;transform:none}}',
     C.css || ''
   ].join('\n');
@@ -209,8 +210,8 @@
   var toastEl = null, toastT = 0;
   function toast(t) {
     if (!toastEl) { toastEl = document.createElement('div'); toastEl.className = 'ib-toast'; toastEl.setAttribute('role', 'status'); document.body.appendChild(toastEl); }
-    toastEl.textContent = t; toastEl.classList.add('an');
-    clearTimeout(toastT); toastT = setTimeout(function () { toastEl.classList.remove('an'); }, 2600);
+    toastEl.textContent = t; toastEl.classList.add('ib-an');
+    clearTimeout(toastT); toastT = setTimeout(function () { toastEl.classList.remove('ib-an'); }, 2600);
   }
   function emoji(a) { return a.e || (BEREICH[a.b] && BEREICH[a.b].emoji) || '•'; }
   function bereichName(a) { return (BEREICH[a.b] && BEREICH[a.b].name) || ''; }
@@ -236,7 +237,7 @@
     karte.innerHTML =
       '<div class="ib-oben"><span>' + esc((C.heuteLabel || WORT.heute) + ' · ' + datumText()) + '</span><span class="ib-chip">' + esc(emoji(a) + ' ' + bereichName(a)) + '</span></div>' +
       '<h3>' + esc(a.t) + '</h3><p>' + esc(a.k) + '</p>' +
-      '<div class="ib-zeile"><button type="button" class="ib-k voll" data-ib="heute">' + esc(D.gelesen[a.id] ? (C.wortNochmal || 'Nochmals lesen') : (C.wortLesen || 'Jetzt lesen')) + (D.gelesen[a.id] ? ' ✓' : '') + '</button>' +
+      '<div class="ib-zeile"><button type="button" class="ib-k ib-voll" data-ib="heute">' + esc(D.gelesen[a.id] ? (C.wortNochmal || 'Nochmals lesen') : (C.wortLesen || 'Jetzt lesen')) + (D.gelesen[a.id] ? ' ✓' : '') + '</button>' +
       '<button type="button" class="ib-k" data-ib="bib">' + esc(C.titelKurz || WORT.bibliothek) + ' · ' + tot + '</button></div>' +
       (function () { var v = vorschlag(a.id); return v && (D.zuletzt || Object.keys(D.gemerkt).length) ? '<button type="button" class="ib-fuer" data-ib="fuer" data-id="' + esc(v.a.id) + '"><small>' + esc(v.warum) + ':</small><b>' + esc(emoji(v.a) + ' ' + v.a.t) + ' →</b></button>' : ''; })() +
       '<div class="ib-balken" aria-hidden="true"><i style="width:' + Math.round(n / tot * 100) + '%"></i></div>' +
@@ -271,16 +272,16 @@
     }
     root.style.display = 'flex';
     document.documentElement.style.overflow = 'hidden';
-    requestAnimationFrame(function () { root.classList.add('auf'); });
+    requestAnimationFrame(function () { root.classList.add('ib-auf'); });
     if (was === 'artikel') zeigeArtikel(id); else zeige(was || 'heute');
     setTimeout(function () { var z = root.querySelector('.ib-zu'); if (z) z.focus({ preventScroll: true }); }, 30);
   }
   function schliesse() {
     if (!root) return;
     stumm();
-    root.classList.remove('auf');
+    root.classList.remove('ib-auf');
     document.documentElement.style.overflow = '';
-    setTimeout(function () { if (root && !root.classList.contains('auf')) root.style.display = 'none'; }, 230);
+    setTimeout(function () { if (root && !root.classList.contains('ib-auf')) root.style.display = 'none'; }, 230);
     karteFuellen();
     if (zuletzt && zuletzt.focus) try { zuletzt.focus({ preventScroll: true }); } catch (e) {}
   }
@@ -301,12 +302,12 @@
     var a = heuteArtikel(), q = heuteFrage();
     var h = '<div class="ib-karte"><div class="ib-oben"><span>' + esc(datumText()) + '</span><span class="ib-chip">' + esc(emoji(a) + ' ' + bereichName(a)) + '</span></div>' +
       '<h3>' + esc(a.t) + '</h3><p class="ib-lead">' + esc(a.k) + '</p>' +
-      '<button type="button" class="ib-k voll" data-auf="' + esc(a.id) + '">' + (D.gelesen[a.id] ? 'Nochmals lesen ✓' : 'Lesen') + '</button></div>';
+      '<button type="button" class="ib-k ib-voll" data-auf="' + esc(a.id) + '">' + (D.gelesen[a.id] ? 'Nochmals lesen ✓' : 'Lesen') + '</button></div>';
     if (q) {
       var tq = D.quiz.tag[iso()];
       h += '<div class="ib-karte" id="ibTagesfrage"><h4>' + esc(C.wortTagesfrage || 'Frage des Tages') + '</h4><p>' + esc(q.f) + '</p>' +
         q.a.map(function (o, i) {
-          var kl = tq != null ? (i === q.r ? ' richtig' : (i === tq ? ' falsch' : '')) : '';
+          var kl = tq != null ? (i === q.r ? ' ib-richtig' : (i === tq ? ' ib-falsch' : '')) : '';
           return '<button type="button" class="ib-opt' + kl + '" data-tf="' + i + '"' + (tq != null ? ' disabled' : '') + '>' + esc(o) + '</button>';
         }).join('') + (tq != null && q.e ? '<p class="ib-erkl">' + esc(q.e) + '</p>' : '') + '</div>';
     }
@@ -376,7 +377,7 @@
       (a.s && a.s.length ? '<h4>' + esc(a.sTitel || C.wortSchritte || 'So gehst du vor') + '</h4><ol class="ib-schritte">' + a.s.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol>' : '') +
       (a.h || C.hinweis ? '<p class="ib-hinweis">' + esc(a.h || C.hinweis) + '</p>' : '') +
       '<div class="ib-zeile">' +
-      '<button type="button" class="ib-k voll" data-ok>' + (D.gelesen[a.id] ? esc(WORT.gelesen) + ' ✓' : 'Als ' + esc(WORT.gelesen.toLowerCase()) + ' markieren') + '</button>' +
+      '<button type="button" class="ib-k ib-voll" data-ok>' + (D.gelesen[a.id] ? esc(WORT.gelesen) + ' ✓' : 'Als ' + esc(WORT.gelesen.toLowerCase()) + ' markieren') + '</button>' +
       '<button type="button" class="ib-k" data-merk aria-pressed="' + !!D.gemerkt[a.id] + '">' + (D.gemerkt[a.id] ? '🔖 Gemerkt' : '🔖 Merken') + '</button>' +
       (('speechSynthesis' in window) && C.vorlesen !== false ? '<button type="button" class="ib-k" data-vor>🔊 Vorlesen</button>' : '') +
       '</div></div>' +
@@ -412,7 +413,7 @@
     quizRunde = null;
     inhaltEl.innerHTML = '<div class="ib-karte"><h3>' + esc(C.quizTitel || WORT.quiz) + '</h3><p class="ib-lead">' + esc(C.quizText || ('Fünf Fragen pro Runde, aus ' + QUIZ.length + ' im Topf. Kein Druck: Bei jeder Antwort gibt es eine kurze Erklärung.')) + '</p>' +
       '<div class="ib-zahlen"><div><b>' + D.quiz.runden + '</b><small>Runden</small></div><div><b>' + D.quiz.richtig + '</b><small>richtig</small></div><div><b>' + D.quiz.beste + '/5</b><small>beste Runde</small></div></div>' +
-      '<button type="button" class="ib-k voll" data-los>Runde starten</button></div>';
+      '<button type="button" class="ib-k ib-voll" data-los>Runde starten</button></div>';
     inhaltEl.querySelector('[data-los]').addEventListener('click', function () { quizRunde = { fragen: mischen(QUIZ).slice(0, 5), i: 0, punkte: 0 }; frage(); });
   }
   function frage() {
@@ -423,10 +424,10 @@
       b.addEventListener('click', function () {
         var i = +b.getAttribute('data-o'), ok = i === q.r;
         if (ok) { R.punkte++; D.quiz.richtig++; }
-        var sp = inhaltEl.querySelector('.ib-stand span:last-child'); if (sp) sp.textContent = R.punkte + ' richtig';
-        [].forEach.call(inhaltEl.querySelectorAll('[data-o]'), function (x) { x.disabled = true; var j = +x.getAttribute('data-o'); if (j === q.r) x.classList.add('richtig'); else if (j === i) x.classList.add('falsch'); });
+        var sp = inhaltEl.querySelector('.ib-stand span:last-child'); if (sp) sp.textContent = R.punkte + ' ib-richtig';
+        [].forEach.call(inhaltEl.querySelectorAll('[data-o]'), function (x) { x.disabled = true; var j = +x.getAttribute('data-o'); if (j === q.r) x.classList.add('ib-richtig'); else if (j === i) x.classList.add('ib-falsch'); });
         var nach = inhaltEl.querySelector('[data-nach]');
-        nach.innerHTML = '<p class="ib-erkl"><b>' + (ok ? 'Richtig. ' : 'Nicht ganz. ') + '</b>' + esc(q.e || '') + '</p><div class="ib-zeile" style="margin-top:12px"><button type="button" class="ib-k voll" data-weiter>' + (R.i + 1 < R.fragen.length ? 'Weiter' : 'Auswertung') + '</button></div>';
+        nach.innerHTML = '<p class="ib-erkl"><b>' + (ok ? 'Richtig. ' : 'Nicht ganz. ') + '</b>' + esc(q.e || '') + '</p><div class="ib-zeile" style="margin-top:12px"><button type="button" class="ib-k ib-voll" data-weiter>' + (R.i + 1 < R.fragen.length ? 'Weiter' : 'Auswertung') + '</button></div>';
         sichern();
         nach.querySelector('[data-weiter]').addEventListener('click', function () { R.i++; if (R.i < R.fragen.length) frage(); else ende(); });
         nach.querySelector('[data-weiter]').focus({ preventScroll: false });
@@ -437,7 +438,7 @@
     var R = quizRunde; D.quiz.runden++; if (R.punkte > D.quiz.beste) D.quiz.beste = R.punkte;
     markiereTag(); sichern(); neueAbzeichen(); nachOben();
     var satz = R.punkte === 5 ? 'Alles richtig. Stark!' : R.punkte >= 3 ? 'Schön gemacht. Du weisst schon viel.' : 'Jede Runde bringt etwas Neues. Gut, dass du dranbleibst.';
-    inhaltEl.innerHTML = '<div class="ib-karte"><h3>' + R.punkte + ' von ' + R.fragen.length + '</h3><p class="ib-lead">' + esc(satz) + '</p><div class="ib-zeile"><button type="button" class="ib-k voll" data-nochmal>Neue Runde</button><button type="button" class="ib-k" data-gehe="sammlung">Zur ' + esc(WORT.sammlung) + '</button></div></div>';
+    inhaltEl.innerHTML = '<div class="ib-karte"><h3>' + R.punkte + ' von ' + R.fragen.length + '</h3><p class="ib-lead">' + esc(satz) + '</p><div class="ib-zeile"><button type="button" class="ib-k ib-voll" data-nochmal>Neue Runde</button><button type="button" class="ib-k" data-gehe="sammlung">Zur ' + esc(WORT.sammlung) + '</button></div></div>';
     binde();
     inhaltEl.querySelector('[data-nochmal]').addEventListener('click', function () { quizRunde = { fragen: mischen(QUIZ).slice(0, 5), i: 0, punkte: 0 }; frage(); });
   }
@@ -450,7 +451,7 @@
         return '<div style="margin:0 0 12px"><div class="ib-stand" style="margin:0 0 4px;color:var(--ib-i)"><span>' + esc((b.emoji || '') + ' ' + b.name) + '</span><span>' + g + '/' + alle.length + '</span></div><div class="ib-balken" style="margin:0"><i style="width:' + Math.round(g / alle.length * 100) + '%"></i></div></div>';
       }).join('') + '</div>' +
       '<h4 style="margin:18px 0 10px;font:600 17px var(--ib-fb)">Abzeichen · ' + anzahlAbzeichen() + ' von ' + AB.length + '</h4><div class="ib-gitter">' +
-      AB.map(function (a) { var ok = hat(a); return '<div class="ib-ab' + (ok ? '' : ' zu') + '"><span class="e" aria-hidden="true">' + esc(a.emoji) + '</span><b>' + esc(a.name) + '</b><small>' + esc(a.text) + (ok ? '' : ' (noch offen)') + '</small></div>'; }).join('') + '</div>';
+      AB.map(function (a) { var ok = hat(a); return '<div class="ib-ab' + (ok ? '' : ' ib-gesperrt') + '"><span class="ib-abe" aria-hidden="true">' + esc(a.emoji) + '</span><b>' + esc(a.name) + '</b><small>' + esc(a.text) + (ok ? '' : ' (noch offen)') + '</small></div>'; }).join('') + '</div>';
     inhaltEl.innerHTML = h;
   }
 
