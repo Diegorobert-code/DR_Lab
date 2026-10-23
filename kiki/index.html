@@ -790,6 +790,9 @@ function showMicError(e){
   box.hidden = false;
   if (!navigator.mediaDevices || !window.isSecureContext) box.innerHTML = '<b>🙉 Hier darf Kiki nicht zuhören.</b><br>Bitte die Seite in Safari öffnen.';
   else box.innerHTML = '<b>🙉 Oh, Kiki hört dich noch nicht.</b><br>Bitte das Mikrofon erlauben: iPhone <b>Einstellungen › Apps › Safari › Mikrofon</b> auf «Fragen» stellen, dann nochmal auf «Los, wir singen!» tippen.';
+  // Ohne Mikrofon nicht festsitzen: Lieder hören, Lied erfinden und Sternenweg gehen auch so
+  box.insertAdjacentHTML('beforeend', '<br><button class="btn soft small" type="button" id="ohneMic" style="margin-top:10px">Ohne Mikrofon weiter</button>');
+  $('ohneMic').onclick = () => { box.hidden = true; go('menu'); };
   go('home');
 }
 const wait = ms => new Promise(r => setTimeout(r, ms));
