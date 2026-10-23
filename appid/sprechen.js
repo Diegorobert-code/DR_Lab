@@ -8,6 +8,7 @@
      data-stimme-handy="mann"   Handystimme männlich wählen (bis MP3 da sind); data-tempo / data-hoehe fein einstellen
      data-handystimme="nein"   ohne Audio-Datei nicht mit der Handystimme vorlesen
      data-saetze='{"gruss":["…"]}' eigene feste Sätze pro Kategorie (Fallback, solange keine Audios da sind)
+     window.SPRECHEN_EIGEN = text => ({text}) | null  eigene Antwort der App zuerst (z. B. Essen erkennen)
      data-stil="sprachnachricht" Antwort als Sprachnachricht (Abspielknopf + Wellen, Text als Untertitel)
    Verlauf bleibt auf dem Gerät. Ohne Endpunkt geht nichts weg. Keine Schlüssel in der App. */
 (() => {
@@ -74,6 +75,9 @@
   async function antwort(text){
     const k = art(text);
     if (k === 'notfall') return {text:'Das klingt sehr ernst, und du bist nicht allein. Bitte ruf jetzt an: Die Dargebotene Hand 143, für Jugendliche 147, Polizei 117, Sanität 144.', notfall:true};
+    if (typeof window.SPRECHEN_EIGEN === 'function'){
+      try{ const e = window.SPRECHEN_EIGEN(text); if (e && e.text) return e; }catch(x){}
+    }
     if (ENDPOINT){
       try{
         const c = new AbortController(); const to = setTimeout(() => c.abort(), 9000);
@@ -93,33 +97,33 @@
 
   // Aussehen
   const css = `
-  .sp-knopf{position:fixed;right:16px;bottom:calc(${UNTEN}px + env(safe-area-inset-bottom));z-index:9000;width:66px;height:66px;border-radius:50%;border:3px solid #F2C14E;padding:0;background:#0E1838 center/cover;box-shadow:0 10px 26px -8px rgba(0,0,0,.6),0 0 0 6px rgba(242,193,78,.15);cursor:pointer;animation:spSchweben 4.6s ease-in-out infinite}
-  .sp-knopf::after{content:"🎙";position:absolute;right:-4px;bottom:-4px;width:26px;height:26px;border-radius:50%;background:#F2C14E;color:#0E1838;font-size:14px;line-height:26px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+  .sp-knopf{position:fixed;right:16px;bottom:calc(${UNTEN}px + env(safe-area-inset-bottom));z-index:9000;width:66px;height:66px;border-radius:50%;border:3px solid #c2461f;padding:0;background:#f6f4ef center/cover;box-shadow:0 10px 26px -8px rgba(0,0,0,.6),0 0 0 6px rgba(194,70,31,.15);cursor:pointer;animation:spSchweben 4.6s ease-in-out infinite}
+  .sp-knopf::after{content:"🎙";position:absolute;right:-4px;bottom:-4px;width:26px;height:26px;border-radius:50%;background:#c2461f;color:#ffffff;font-size:14px;line-height:26px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.35)}
   .sp-knopf.hoert{animation:spPuls 1.1s ease-in-out infinite}
   .sp-knopf.spricht{animation:spReden .5s ease-in-out infinite alternate}
-  .sp-blase{box-sizing:border-box;position:fixed;right:16px;left:16px;max-width:440px;margin-left:auto;bottom:calc(${UNTEN + 80}px + env(safe-area-inset-bottom));z-index:9001;background:linear-gradient(160deg,#1d2c66,#0f1b3d);color:#f6efe0;border:1px solid rgba(242,193,78,.55);border-radius:22px 22px 6px 22px;padding:14px 16px 12px;font:16px/1.45 -apple-system,system-ui,sans-serif;box-shadow:0 18px 40px -12px rgba(0,0,0,.6);display:none}
+  .sp-blase{box-sizing:border-box;position:fixed;right:16px;left:16px;max-width:440px;margin-left:auto;bottom:calc(${UNTEN + 80}px + env(safe-area-inset-bottom));z-index:9001;background:linear-gradient(160deg,#f1eee6,#f6f4ef);color:#1f2a25;border:1px solid rgba(194,70,31,.55);border-radius:22px 22px 6px 22px;padding:14px 16px 12px;font:16px/1.45 -apple-system,system-ui,sans-serif;box-shadow:0 18px 40px -12px rgba(0,0,0,.6);display:none}
   .sp-blase.on{display:block;animation:spAuf .35s ease-out both}
   .sp-kopf{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-  .sp-kopf b{flex:1;color:#F2C14E;font-size:15px}
-  .sp-kopf button{min-width:40px;min-height:40px;border-radius:99px;border:1px solid rgba(255,255,255,.18);background:transparent;color:inherit;font-size:16px;cursor:pointer}
-  .sp-du{color:#c9d2ee;font-size:14px;font-style:italic;min-height:1em}
+  .sp-kopf b{flex:1;color:#b5401c;font-size:15px}
+  .sp-kopf button{min-width:40px;min-height:40px;border-radius:99px;border:1px solid rgba(31,42,37,.18);background:transparent;color:inherit;font-size:16px;cursor:pointer}
+  .sp-du{color:#4b5852;font-size:14px;font-style:italic;min-height:1em}
   .sp-sie{margin-top:6px;font-size:17px}
-  .sp-sie.notfall{color:#ffd0c4;font-weight:600}
+  .sp-sie.notfall{color:#a8372b;font-weight:600}
   .sp-ein{display:flex;gap:8px;margin-top:10px}
-  .sp-ein input{flex:1;min-width:0;box-sizing:border-box;min-height:46px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:inherit;font:inherit;padding:0 12px}
-  .sp-ein button{min-width:46px;min-height:46px;border-radius:14px;border:0;background:#F2C14E;color:#0E1838;font-size:18px;font-weight:700;cursor:pointer}
-  .sp-ein .sp-mic{background:rgba(255,255,255,.1);color:inherit}
+  .sp-ein input{flex:1;min-width:0;box-sizing:border-box;min-height:46px;border-radius:14px;border:1px solid rgba(31,42,37,.18);background:rgba(31,42,37,.07);color:inherit;font:inherit;padding:0 12px}
+  .sp-ein button{min-width:46px;min-height:46px;border-radius:14px;border:0;background:#c2461f;color:#ffffff;font-size:18px;font-weight:700;cursor:pointer}
+  .sp-ein .sp-mic{background:rgba(31,42,37,.1);color:inherit}
   .sp-ein .sp-mic.rec{background:#d6413b;color:#fff}
-  .sp-sn{display:flex;align-items:center;gap:10px;margin-top:8px;background:rgba(255,255,255,.08);border-radius:18px 18px 18px 6px;padding:8px 12px 8px 8px}
-  .sp-sn button{flex:none;width:42px;height:42px;border-radius:50%;border:0;background:#F2C14E;color:#0E1838;font-size:16px;cursor:pointer;padding:0}
-  .sp-sn img{flex:none;width:34px;height:34px;border-radius:50%;border:2px solid #F2C14E;object-fit:cover}
+  .sp-sn{display:flex;align-items:center;gap:10px;margin-top:8px;background:rgba(31,42,37,.08);border-radius:18px 18px 18px 6px;padding:8px 12px 8px 8px}
+  .sp-sn button{flex:none;width:42px;height:42px;border-radius:50%;border:0;background:#c2461f;color:#ffffff;font-size:16px;cursor:pointer;padding:0}
+  .sp-sn img{flex:none;width:34px;height:34px;border-radius:50%;border:2px solid #c2461f;object-fit:cover}
   .sp-welle{flex:1;display:flex;align-items:center;gap:2px;height:30px}
-  .sp-welle i{flex:1;border-radius:2px;background:rgba(255,255,255,.35)}
-  .sp-welle i.an{background:#F2C14E}
-  .sp-zeit{flex:none;font-size:12px;color:#c9d2ee;font-variant-numeric:tabular-nums;min-width:30px;text-align:right}
+  .sp-welle i{flex:1;border-radius:2px;background:rgba(31,42,37,.35)}
+  .sp-welle i.an{background:#c2461f}
+  .sp-zeit{flex:none;font-size:12px;color:#4b5852;font-variant-numeric:tabular-nums;min-width:30px;text-align:right}
   .sp-sn.notfall{background:rgba(214,65,59,.25)}
-  .sp-sn + .sp-sie{font-size:14px;color:#c9d2ee;margin-top:6px}
-  .sp-klein{margin-top:8px;font-size:12px;color:#9aa6c8}
+  .sp-sn + .sp-sie{font-size:14px;color:#4b5852;margin-top:6px}
+  .sp-klein{margin-top:8px;font-size:12px;color:#5d6a63}
   @keyframes spSchweben{50%{transform:translateY(-5px)}}
   @keyframes spPuls{50%{box-shadow:0 0 0 12px rgba(214,65,59,.25),0 0 30px rgba(214,65,59,.5)}}
   @keyframes spReden{to{transform:scale(1.07) rotate(-3deg)}}
@@ -136,7 +140,7 @@
   blase.innerHTML = `<div class="sp-kopf"><b>${NAME}</b><button type="button" class="sp-ton" aria-label="Ton"></button><button type="button" class="sp-zu" aria-label="Schliessen">✕</button></div>
     <div class="sp-du"></div><div class="sp-sie" aria-live="polite"></div>
     <div class="sp-ein"><button type="button" class="sp-mic" aria-label="Sprechen">🎙</button><input type="text" enterkeyhint="send" placeholder="Oder schreib es hier"><button type="button" class="sp-los" aria-label="Senden">→</button></div>
-    <div class="sp-klein">${ENDPOINT ? 'Antworten kommen vom DR-Lab-Server.' : 'Bleibt auf deinem Handy. ' + NAME + ' antwortet mit festen Sätzen, freie Antworten folgen.'}</div>`;
+    <div class="sp-klein">${ENDPOINT ? 'Antworten kommen von Flos Server.' : 'Bleibt auf deinem Handy. ' + NAME + ' antwortet mit festen Sätzen, freie Antworten folgen.'}</div>`;
   const $ = s => blase.querySelector(s);
   const du = $('.sp-du'), sie = $('.sp-sie'), feld = $('input'), mic = $('.sp-mic'), ton = $('.sp-ton');
   const zeigeTon = () => { ton.textContent = stumm ? '🔇' : '🔊'; };
