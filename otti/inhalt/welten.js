@@ -120,7 +120,7 @@
     root.innerHTML = '<div class="wt-ansicht"></div>';
     d.body.appendChild(root); ansicht = root.firstChild;
     root.addEventListener('click', klick);
-    d.addEventListener('keydown', function (e) { if (!root.hidden && e.key === 'Escape') zurueck(); });
+    d.addEventListener('keydown', function (e) { if (root.hidden) return; if (e.key === 'Escape') zurueck(); if (e.key === 'Enter' && e.target.matches && e.target.matches('[data-wt-in]')) waehle(e.target.getAttribute('data-wt-in'), e.target.value); });
     return root;
   }
   function oeffnen(weltId) {
@@ -132,7 +132,9 @@
   function zurueck() {
     still(); zustand.vorlesen = false;
     var a = root && root.getAttribute('data-ansicht');
-    if (a === 'lesen' || a === 'erfinden') zeigWelt(zustand.welt.id);
+    if (a === 'erfinden' && entwurf.schritt > 0) { entwurf.schritt--; formular(); }
+    else if (a === 'erfinden' && entwurf.von === 'wald') zeigWald();
+    else if (a === 'lesen' || a === 'erfinden') zeigWelt(zustand.welt.id);
     else if (a === 'welt') rausfliegen();
     else schliessen();
   }
@@ -153,7 +155,7 @@
     ansicht.className = 'wt-ansicht wt-wald';
     ansicht.innerHTML = '<div class="wt-bg">' + kulisse('wald') + '</div>' +
       kopf('Zauberwald') +
-      '<div class="wt-scroll"><p class="wt-intro">Im Zauberwald stehen Tore. Tipp ein Tor an, und es geht auf.</p>' +
+      '<div class="wt-scroll">' + tippHTML() + '<p class="wt-intro">Im Zauberwald stehen Tore. Tipp ein Tor an, und es geht auf.</p>' +
       '<div class="wt-tore">' + ws.map(torHTML).join('') + '</div>' +
       '<div class="wt-pass" aria-label="Weltenpass: ' + n + ' von ' + ws.length + ' Welten besucht"><b>Weltenpass</b><span>' +
       ws.map(function (w) { return '<i class="' + ((pass[w.id] || []).length ? 'an' : '') + '" title="' + esc(w.name) + '">' + w.e + '</i>'; }).join('') + '</span><small>' + n + ' von ' + ws.length + ' Welten</small></div>' +
@@ -161,11 +163,34 @@
     var b = ansicht.querySelector('[data-wt="zurueck"]'); if (b) b.focus({ preventScroll: true });
   }
 
+  /* ---- Lernt mit: Lieblinge und Vorschlag «Weil du … mochtest» ---- */
+  function alle() { var o = []; D().WELTEN.forEach(function (w) { w.geschichten.forEach(function (g) { o.push({ w: w, g: g }); }); }); return o; }
+  function finde(id) { var a = alle(); for (var i = 0; i < a.length; i++) if (a[i].g.id === id) return a[i]; return null; }
+  function gehoert(id) { var p = hol().pass || {}; for (var k in p) if (p[k].indexOf(id) >= 0) return true; return false; }
+  function magToggle(id) { var v = hol(), m = v.mag = v.mag || [], i = m.indexOf(id); if (i >= 0) m.splice(i, 1); else m.unshift(id); leg(v); return i < 0; }
+  function empfehlung() {
+    var v = hol(), basis = null, grund = '';
+    if ((v.mag || []).length && finde(v.mag[0])) { basis = finde(v.mag[0]); grund = 'Weil du «' + basis.g.titel + '» mochtest'; }
+    else if (v.zuletzt && finde(v.zuletzt)) { basis = finde(v.zuletzt); grund = 'Weil du «' + basis.g.titel + '» gehört hast'; }
+    var neu = alle().filter(function (x) { return !gehoert(x.g.id); });
+    var tipp = (basis && neu.filter(function (x) { return x.w.id === basis.w.id; })[0]) || null;
+    if (!tipp && basis) tipp = neu.filter(function (x) { return x.g.cast.some(function (c) { return basis.g.cast.indexOf(c) >= 0; }); })[0] || null;
+    if (!tipp) { var h = heute(); tipp = neu.filter(function (x) { return x.w.id === h.id; })[0] || neu[0] || null; if (!basis) grund = 'Heute offen: ' + h.tor; else if (tipp) grund = grund + ': etwas Neues'; }
+    if (!tipp && basis) { tipp = basis; grund = 'Deine Lieblingsgeschichte'; }
+    return tipp ? { w: tipp.w, g: tipp.g, grund: grund } : null;
+  }
+  function tippHTML() {
+    var t = empfehlung(); if (!t) return '';
+    return '<button type="button" class="wt-fuerdich" data-wt-tipp="' + t.w.id + '/' + t.g.id + '" style="--c:' + t.w.farbe + '"><span class="wt-cast">' + t.g.cast.slice(0, 2).map(function (k) { return figur(k); }).join('') + '</span>' +
+      '<span class="wt-karte-tx"><small>' + esc(t.grund) + '</small><b>▶ ' + esc(t.g.titel) + '</b><small>' + t.w.e + ' ' + esc(t.w.name) + '</small></span></button>';
+  }
+
   /* ---- Flug durchs Tor ---- */
-  function reinfliegen(id) {
+  function reinfliegen(id, storyId) {
     var w = welt(id); if (!w) return;
+    var nachher = function () { if (!storyId) return; w.geschichten.forEach(function (g) { if (g.id === storyId) lies(g); }); };
     var tor = ansicht.querySelector('[data-wt-tor="' + id + '"] .wt-blick');
-    if (RUHIG || !tor || !tor.animate) { zeigWelt(id, true); return; }
+    if (RUHIG || !tor || !tor.animate) { zeigWelt(id, true); nachher(); return; }
     var r = tor.getBoundingClientRect(), vw = innerWidth, vh = innerHeight;
     var flug = d.createElement('div'); flug.className = 'wt-flug'; flug.innerHTML = kulisse(w.bg); root.appendChild(flug);
     var sx = r.width / vw, sy = r.height / vh, tx = r.left + r.width / 2 - vw / 2, ty = r.top + r.height / 2 - vh / 2;
@@ -177,7 +202,7 @@
       { transform: 'translate(' + tx + 'px,' + ty + 'px) scale(' + sx + ',' + sy + ')', borderRadius: '45% 45% 12px 12px' },
       { transform: 'translate(0,0) scale(1)', borderRadius: '0' }
     ], { duration: 900, easing: 'cubic-bezier(.5,0,.2,1)', fill: 'forwards' });
-    a.onfinish = function () { wald.getAnimations().forEach(function (x) { x.cancel(); }); wald.style.transformOrigin = ''; zeigWelt(id, true); flug.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300 }).onfinish = function () { flug.remove(); }; };
+    a.onfinish = function () { wald.getAnimations().forEach(function (x) { x.cancel(); }); wald.style.transformOrigin = ''; zeigWelt(id, true); nachher(); flug.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300 }).onfinish = function () { flug.remove(); }; };
   }
   function rausfliegen() {
     if (RUHIG || !ansicht.animate) { zeigWald(); return; }
@@ -237,6 +262,7 @@
       box.innerHTML = '<div class="wt-ende"><span class="wt-stempel-gross' + (neuStempel ? ' neu' : '') + '" aria-hidden="true">' + w.e + '</span><h3>Ende</h3>' +
         (g.lehre ? '<p>' + esc(g.lehre) + '</p>' : '') + '<p class="wt-klein">' + (neuStempel ? 'Neuer Stempel im Weltenpass: ' + esc(w.name) + '!' : 'Stempel für ' + esc(w.name) + ' ist schon im Weltenpass.') + '</p>' +
         '<div class="wt-reihe"><button type="button" class="wt-knopf" data-wt="nochmal">↺ Nochmal</button><button type="button" class="wt-knopf primaer" data-wt="welt">' + w.e + ' Mehr aus ' + esc(w.name) + '</button></div>' +
+        (zustand.eigen ? '' : (function () { var m = (hol().mag || []).indexOf(g.id) >= 0; return '<button type="button" class="wt-mag" data-wt="mag" aria-pressed="' + m + '">' + (m ? '❤️ Lieblingsgeschichte' : '🤍 Mag ich') + '</button>'; })()) +
         (zustand.eigen ? '<button type="button" class="wt-link" data-wt="loeschen">Diese Geschichte löschen</button>' : '') + '</div>';
       if (neuStempel) { var a = api(); if (a.stern) try { a.stern(); } catch (e) {} }
     } else if (p.frage) {
@@ -265,41 +291,44 @@
     still(); zustand.seite = n; seite();
   }
   function merkGehoert(wid, sid) {
-    var v = hol(); v.pass = v.pass || {}; var l = v.pass[wid] = v.pass[wid] || [];
+    var v = hol(); v.zuletzt = sid; v.pass = v.pass || {}; var l = v.pass[wid] = v.pass[wid] || [];
     var neuWelt = l.length === 0; if (l.indexOf(sid) < 0) l.push(sid); leg(v); return neuWelt;
   }
 
-  /* ---- Erfinden mit Mila ---- */
-  var entwurf = {};
-  function chips(name, liste, wert, label) {
-    return '<div class="wt-chips" role="group" aria-label="' + esc(label) + '">' + liste.map(function (k) {
-      var f = fig(k), t = f ? f.e + ' ' + (f.kurz || f.n) : k;
-      return '<button type="button" class="wt-chip' + (wert === k ? ' sel' : '') + '" data-wt-chip="' + name + '" data-wert="' + esc(k) + '" aria-pressed="' + (wert === k) + '">' + esc(t) + '</button>'; }).join('') + '</div>';
+  /* ---- Erfinden mit Mila: eine Frage pro Bildschirm, ein Tipp und weiter ---- */
+  var entwurf = {}, SCHRITTE = [];
+  var FRAGEN = { held: 'Wer ist der Held?', welt: 'Wohin geht die Reise?', problem: 'Was ist passiert?', freund: 'Wer hilft?', loesung: 'Wie klappt es?' };
+  function optionen(k) {
+    var E = D().ERFINDEN, w = welt(entwurf.welt);
+    if (k === 'welt') return D().WELTEN.map(function (x) { return { w: x.id, t: x.e + ' ' + x.name }; });
+    var l = k === 'held' ? E.helden : k === 'freund' ? E.freunde : k === 'problem' ? w.probleme : E.loesungen;
+    return l.map(function (x) { var f = fig(x); return { w: x, t: f ? f.e + ' ' + (f.kurz || f.n) : gross(x) }; });
   }
-  function zeigErfinden() {
+  function zeigErfinden(von) {
     still(); root.setAttribute('data-ansicht', 'erfinden');
-    var ws = D().WELTEN, E = D().ERFINDEN;
+    var ausWelt = von === 'welt' && zustand.welt;
     if (!zustand.welt) zustand.welt = heute();
-    entwurf = { welt: zustand.welt.id, held: 'otti', freund: 'kometli', problem: '', loesung: E.loesungen[0], titel: '' };
+    entwurf = { welt: zustand.welt.id, von: ausWelt ? 'welt' : 'wald', schritt: 0 };
+    SCHRITTE = ausWelt ? ['held', 'problem', 'freund', 'loesung'] : ['held', 'welt', 'problem', 'freund', 'loesung'];
     ansicht.className = 'wt-ansicht wt-erfinden';
     ansicht.innerHTML = '<div class="wt-bg">' + kulisse(zustand.welt.bg) + '</div>' + kopf('Erfinden mit Mila') + '<div class="wt-scroll"><div class="wt-form"></div></div>';
     formular();
   }
   function formular() {
-    var E = D().ERFINDEN, w = welt(entwurf.welt), box = ansicht.querySelector('.wt-form');
-    var heldFrei = entwurf.held && !fig(entwurf.held), freundFrei = entwurf.freund && !fig(entwurf.freund);
-    box.innerHTML = '<p class="wt-intro">Fünf Fragen, dann ist eure Geschichte fertig. Alles bleibt auf diesem Handy.</p>' +
-      '<section><h3><i>1</i> Wer ist der Held?</h3>' + chips('held', E.helden, entwurf.held, 'Held') + '<input class="wt-in" data-wt-in="held" maxlength="30" placeholder="oder eigener Name, z. B. Mila" value="' + (heldFrei ? esc(entwurf.held) : '') + '"></section>' +
-      '<section><h3><i>2</i> In welcher Welt?</h3><div class="wt-chips">' + D().WELTEN.map(function (x) { return '<button type="button" class="wt-chip' + (x.id === entwurf.welt ? ' sel' : '') + '" data-wt-chip="welt" data-wert="' + x.id + '" aria-pressed="' + (x.id === entwurf.welt) + '">' + x.e + ' ' + esc(x.name) + '</button>'; }).join('') + '</div></section>' +
-      '<section><h3><i>3</i> Was ist das Problem?</h3>' + chips('problem', w.probleme, entwurf.problem, 'Problem') + '<input class="wt-in" data-wt-in="problem" maxlength="80" placeholder="oder selber erfinden …" value="' + (w.probleme.indexOf(entwurf.problem) < 0 ? esc(entwurf.problem) : '') + '"></section>' +
-      '<section><h3><i>4</i> Wer hilft als Freund?</h3>' + chips('freund', E.freunde, entwurf.freund, 'Freund') + '<input class="wt-in" data-wt-in="freund" maxlength="30" placeholder="oder eigener Freund" value="' + (freundFrei ? esc(entwurf.freund) : '') + '"></section>' +
-      '<section><h3><i>5</i> Wie lösen sie es?</h3>' + chips('loesung', E.loesungen, entwurf.loesung, 'Lösung') + '<input class="wt-in" data-wt-in="loesung" maxlength="80" placeholder="oder eigene Lösung …" value="' + (E.loesungen.indexOf(entwurf.loesung) < 0 ? esc(entwurf.loesung) : '') + '"></section>' +
-      '<section><h3><i>✨</i> Titel (darf leer bleiben)</h3><input class="wt-in" data-wt-in="titel" maxlength="50" placeholder="' + esc(titelVorschlag()) + '" value="' + esc(entwurf.titel) + '"></section>' +
-      '<p class="wt-fehler" hidden>Bitte noch ein Problem wählen oder aufschreiben.</p>' +
-      '<button type="button" class="wt-gross-knopf" data-wt="speichern">📖 Geschichte machen</button>';
-    box.querySelectorAll('[data-wt-in]').forEach(function (inp) {
-      inp.addEventListener('input', function () { var k = inp.getAttribute('data-wt-in'), v = inp.value.trim(); if (k === 'titel') { entwurf.titel = v; return; } if (v) { entwurf[k] = v; box.querySelectorAll('[data-wt-chip="' + k + '"]').forEach(function (c) { c.classList.remove('sel'); c.setAttribute('aria-pressed', 'false'); }); } });
-    });
+    var box = ansicht.querySelector('.wt-form'), i = entwurf.schritt, k = SCHRITTE[i];
+    box.innerHTML = '<div class="wt-schritte" aria-label="Frage ' + (i + 1) + ' von ' + SCHRITTE.length + '">' + SCHRITTE.map(function (_, j) { return '<i class="' + (j < i ? 'ok' : j === i ? 'jetzt' : '') + '"></i>'; }).join('') + '</div>' +
+      '<h3 class="wt-frage-gross">' + esc(FRAGEN[k]) + '</h3>' +
+      '<div class="wt-gross-chips">' + optionen(k).map(function (o) { return '<button type="button" class="wt-chip gross" data-wt-chip="' + k + '" data-wert="' + esc(o.w) + '">' + esc(o.t) + '</button>'; }).join('') + '</div>' +
+      (k === 'welt' ? '' : '<div class="wt-eigen"><input class="wt-in" data-wt-in="' + k + '" maxlength="' + (k === 'held' || k === 'freund' ? 30 : 80) + '" placeholder="' + (k === 'held' ? 'Eigener Name, z. B. Mila' : 'Eigene Idee …') + '"><button type="button" class="wt-knopf primaer" data-wt="eigen-ok">OK</button></div>');
+    var sc = ansicht.querySelector('.wt-scroll'); if (sc) sc.scrollTop = 0;
+  }
+  function waehle(k, v) {
+    v = String(v || '').trim(); if (!v) return;
+    entwurf[k] = v;
+    if (k === 'welt') { zustand.welt = welt(v); ansicht.querySelector('.wt-bg').innerHTML = kulisse(zustand.welt.bg); }
+    entwurf.schritt++;
+    if (entwurf.schritt >= SCHRITTE.length) return speichern();
+    formular();
   }
   function nameVon(k) { return fig(k) ? figName(k) : String(k || '').trim(); }
   function titelVorschlag() { return nameVon(entwurf.held) + ' und ' + nameVon(entwurf.freund) + ' ' + ((welt(entwurf.welt) || {}).im || ''); }
@@ -319,9 +348,8 @@
     return { id: e.id, titel: e.titel || titelVorschlag(), kurz: 'Erfunden von euch', cast: [fig(e.held) ? e.held : 'otti', fig(e.freund) ? e.freund : 'kometli'], seiten: s, lehre: 'Eure Ideen machen die Welten grösser.' };
   }
   function speichern() {
-    if (!entwurf.problem) { var f = ansicht.querySelector('.wt-fehler'); if (f) f.hidden = false; return; }
     var v = hol(); v.eigene = v.eigene || [];
-    var heute_ = new Date(), e = { id: 'e' + Date.now().toString(36), welt: entwurf.welt, held: entwurf.held || 'otti', freund: entwurf.freund || 'kometli', problem: entwurf.problem, loesung: entwurf.loesung || D().ERFINDEN.loesungen[0], titel: entwurf.titel || titelVorschlag(), datum: heute_.getDate() + '.' + (heute_.getMonth() + 1) + '.' };
+    var heute_ = new Date(), e = { id: 'e' + Date.now().toString(36), welt: entwurf.welt, held: entwurf.held || 'otti', freund: entwurf.freund || 'kometli', problem: entwurf.problem, loesung: entwurf.loesung || D().ERFINDEN.loesungen[0], titel: titelVorschlag(), datum: heute_.getDate() + '.' + (heute_.getMonth() + 1) + '.' };
     v.eigene.push(e); if (v.eigene.length > 60) v.eigene.shift(); leg(v);
     zustand.welt = welt(e.welt); zeigWelt(e.welt);
     var k = ansicht.querySelector('[data-wt-eigen="' + e.id + '"]'); if (k) { k.classList.add('neu'); k.scrollIntoView({ block: 'center', behavior: RUHIG ? 'auto' : 'smooth' }); }
@@ -335,13 +363,12 @@
     if (t.hasAttribute('data-wt-story')) { var id = t.getAttribute('data-wt-story'); zustand.welt.geschichten.forEach(function (g) { if (g.id === id) lies(g); }); return; }
     if (t.hasAttribute('data-wt-eigen')) { var eid = t.getAttribute('data-wt-eigen'); eigene().forEach(function (g) { if (g.id === eid) lies(machGeschichte(g), true); }); return; }
     if (t.hasAttribute('data-wt-wahl')) { var p = zustand.seq[zustand.seite]; zustand.wahl[p.nr] = p.wahl[+t.getAttribute('data-wt-wahl')]; still(); zustand.seite++; seite(); return; }
-    if (t.hasAttribute('data-wt-chip')) {
-      var k = t.getAttribute('data-wt-chip'); entwurf[k] = t.getAttribute('data-wert');
-      if (k === 'welt') { zustand.welt = welt(entwurf.welt); entwurf.problem = ''; ansicht.querySelector('.wt-bg').innerHTML = kulisse(zustand.welt.bg); }
-      var y = ansicht.querySelector('.wt-scroll').scrollTop; formular(); ansicht.querySelector('.wt-scroll').scrollTop = y; return;
-    }
+    if (t.hasAttribute('data-wt-chip')) return waehle(t.getAttribute('data-wt-chip'), t.getAttribute('data-wert'));
+    if (a === 'eigen-ok') { var inp = ansicht.querySelector('[data-wt-in]'); if (inp) waehle(inp.getAttribute('data-wt-in'), inp.value); return; }
+    if (t.hasAttribute('data-wt-tipp')) { var tp = t.getAttribute('data-wt-tipp').split('/'); return reinfliegen(tp[0], tp[1]); }
+    if (a === 'mag') { var m = magToggle(zustand.story.id); t.setAttribute('aria-pressed', String(m)); t.textContent = m ? '❤️ Lieblingsgeschichte' : '🤍 Mag ich'; return; }
     if (a === 'zurueck') return zurueck();
-    if (a === 'erfinden') return zeigErfinden();
+    if (a === 'erfinden') return zeigErfinden(root.getAttribute('data-ansicht'));
     if (a === 'speichern') return speichern();
     if (a === 'vor') return blaettern(-1);
     if (a === 'weiter') return blaettern(1);
