@@ -58,11 +58,14 @@
     function bauen() {
       var host = document.createElement('div');
       host.setAttribute('data-drlab-lernen', '');
+      host.style.pointerEvents = 'none'; // nur Pille und offenes Fenster nehmen Tipper an, nie der Rahmen
       var root = host.attachShadow ? host.attachShadow({ mode: 'open' }) : host;
       var u = 'calc(' + UNTEN + 'px + env(safe-area-inset-bottom,0px))';
       root.innerHTML =
         '<style>' +
-        ':host{all:initial}' +
+        ':host{all:initial;pointer-events:none}' +
+        '.pill,.bg,.sheet{pointer-events:auto}' +
+        '.pill.weg{visibility:hidden;pointer-events:none}' +
         '*{box-sizing:border-box;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}' +
         '.pill{position:fixed;left:16px;bottom:' + u + ';z-index:2147482990;border:0;border-radius:999px;padding:10px 16px;font-size:15px;font-weight:600;background:#fff8ec;color:#4a3410;box-shadow:0 4px 14px rgba(60,40,10,.25);cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}' +
         '.pill.kind{opacity:.6;font-size:13px;padding:8px 12px}' +
@@ -114,7 +117,8 @@
         $('.stat').textContent = ok ? 'verbunden' : 'noch nicht verbunden';
       }
       function oeffnen() { status(); msg.textContent = ''; setOffen(true); setTimeout(function () { try { ta.focus(); } catch (e) {} }, 50); }
-      function setOffen(o) { [$('.bg'), $('.sheet')].forEach(function (el) { el.style.display = o ? 'block' : 'none'; }); }
+      var offen = false;
+      function setOffen(o) { offen = o; if (o) pill.classList.remove('weg'); [$('.bg'), $('.sheet')].forEach(function (el) { el.style.display = o ? 'block' : 'none'; }); if (!o) pruefen(); }
       function schliessen() { setOffen(false); stopMic(); }
       $('.zu').onclick = schliessen; $('.bg').onclick = schliessen;
 
@@ -134,15 +138,113 @@
       [0, 1500, 4000].forEach(function (ms) { setTimeout(ausweichen, ms); });
       window.addEventListener('resize', ausweichen);
 
+      // Fenster der App (Dialog, Blatt, Erststart) haben Vorrang: solange eines offen ist oder die Pille
+      // verdeckt, wird sie unsichtbar und nimmt keine Tipper an. Danach kommt sie zurueck.
+      function sichtbar(el) {
+        try {
+          if (!el.getClientRects().length) return false;
+          var cs = getComputedStyle(el);
+          return cs.visibility !== 'hidden' && cs.display !== 'none' && parseFloat(cs.opacity) > 0.05;
+        } catch (e) { return false; }
+      }
+      function fremd(el) { return el && el !== host && !(el.closest && el.closest('.nova-pille,.nova-btn,[class*="musik"],[id*="musik"]')); }
+      var MODAL = 'dialog[open],[aria-modal="true"]';
+      // Erstes Element an einem Punkt, das nicht unseres ist.
+      function oben(x, y) {
+        var l = document.elementsFromPoint ? document.elementsFromPoint(x, y) : [];
+        for (var i = 0; i < l.length; i++) if (l[i] !== host) return l[i];
+        return null;
+      }
+      // Ein Fenster gilt als offen, wenn es sichtbar im Bild liegt und in seiner Mitte wirklich oben liegt
+      // (geschlossene Blaetter haengen oft unsichtbar oder ausserhalb des Bildes im Dokument).
+      function offenesFenster(el, wirt) {
+        if (!fremd(wirt || el) || !sichtbar(el)) return false;
+        var r = el.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight;
+        var l = Math.max(0, r.left), t = Math.max(0, r.top), rr = Math.min(vw, r.right), b = Math.min(vh, r.bottom);
+        if (rr - l < 4 || b - t < 4) return false;
+        var o = oben((l + rr) / 2, (t + b) / 2);
+        return !!o && (o === (wirt || el) || el.contains(o));
+      }
+      function modalIn(r, wirt) {
+        var l = r.querySelectorAll(MODAL);
+        for (var i = 0; i < l.length; i++) if (offenesFenster(l[i], wirt)) return true;
+        return false;
+      }
+      // Liegt an diesem Punkt eine grosse feste Ebene (Hintergrund eines Fensters, Vollbild-Blatt)?
+      function ebene(el) {
+        var vw = window.innerWidth || 1, vh = window.innerHeight || 1;
+        for (var n = el, i = 0; n && n.nodeType === 1 && n !== document.body && n !== document.documentElement && i < 25; n = n.parentElement, i++) {
+          if (!fremd(n)) return false;
+          if (n.shadowRoot && modalIn(n.shadowRoot, n)) return true;
+          var cs = getComputedStyle(n);
+          if (n.tagName === 'DIALOG' || n.getAttribute('role') === 'dialog' || n.getAttribute('role') === 'alertdialog') return sichtbar(n);
+          if (cs.position !== 'fixed') continue;
+          if (parseFloat(cs.opacity) <= 0.05 || cs.visibility === 'hidden') return false;
+          var z = parseInt(cs.zIndex, 10), r = n.getBoundingClientRect();
+          var gross = (r.width * r.height) / (vw * vh) >= 0.3 || (r.height >= vh * 0.3 && r.width >= vw * 0.6);
+          return gross && z > 0;
+        }
+        return false;
+      }
+      function verdeckt() {
+        if (modalIn(document)) return true;
+        var r = pill.getBoundingClientRect();
+        if (!r.width) return false;
+        var el = oben(r.left + r.width / 2, r.top + r.height / 2); // nur das oberste fremde Element zaehlt
+        if (!el || el === document.body || el === document.documentElement) return false;
+        return ebene(el);
+      }
+      var zuletzt = 0, geplant = null;
+      function pruefen() {
+        try {
+          if (offen) { pill.classList.remove('weg'); return; }
+          pill.classList.toggle('weg', verdeckt());
+        } catch (e) {}
+      }
+      function bald() {
+        if (geplant || document.hidden) return;
+        var warte = Math.max(0, 500 - (Date.now() - zuletzt));
+        geplant = setTimeout(function () { geplant = null; zuletzt = Date.now(); pruefen(); }, warte);
+      }
+      try {
+        if (window.MutationObserver) new MutationObserver(function (ms) {
+          for (var i = 0; i < ms.length; i++) if (!host.contains(ms[i].target)) { bald(); return; }
+        }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['open', 'hidden', 'class', 'style', 'aria-modal', 'aria-hidden'] });
+      } catch (e) {}
+      var takt = null;
+      function takten() {
+        if (takt) { clearInterval(takt); takt = null; }
+        if (!document.hidden) { takt = setInterval(pruefen, 700); pruefen(); }
+      }
+      document.addEventListener('visibilitychange', takten);
+      window.addEventListener('resize', bald);
+      ['animationend', 'transitionend'].forEach(function (n) { document.addEventListener(n, bald, true); });
+      takten();
+      // Falls die Pille trotzdem einen Tipper abbekommt, der einem Fenster gilt: weiterreichen.
+      function durchreichen(e) {
+        if (offen || !verdeckt()) return false;
+        pill.classList.add('weg');
+        if (e && e.preventDefault) e.preventDefault();
+        if (e && e.stopPropagation) e.stopPropagation();
+        try {
+          var r = pill.getBoundingClientRect();
+          var x = e && e.clientX != null ? e.clientX : r.left + r.width / 2, y = e && e.clientY != null ? e.clientY : r.top + r.height / 2;
+          var ziel = document.elementFromPoint(x, y);
+          if (ziel && ziel !== host && e.type === 'click' && ziel.click) ziel.click();
+        } catch (x2) {}
+        return true;
+      }
+
       if (KIND) {
         var tm = null;
-        var start = function (e) { if (e && e.preventDefault) e.preventDefault(); pill.classList.add('halten'); tm = setTimeout(function () { tm = null; pill.classList.remove('halten'); oeffnen(); }, 2000); };
+        var start = function (e) { if (durchreichen(e)) return; if (e && e.preventDefault) e.preventDefault(); pill.classList.add('halten'); tm = setTimeout(function () { tm = null; pill.classList.remove('halten'); oeffnen(); }, 2000); };
         var stop = function () { pill.classList.remove('halten'); if (tm) { clearTimeout(tm); tm = null; } };
         pill.addEventListener('pointerdown', start);
         ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (n) { pill.addEventListener(n, stop); });
         pill.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+        pill.addEventListener('click', durchreichen);
       } else {
-        pill.onclick = oeffnen;
+        pill.onclick = function (e) { if (!durchreichen(e)) oeffnen(); };
       }
 
       var SR = window.SpeechRecognition || window.webkitSpeechRecognition, rec = null;
