@@ -342,6 +342,14 @@ h3.ch{font-size:19px;margin-bottom:10px}
 /* Figuren-Look */
 #figurStart{background:radial-gradient(45% 30% at 72% 22%,rgba(255,214,107,.30),transparent 70%),radial-gradient(60% 30% at 50% 100%,rgba(196,120,52,.25),transparent 70%),radial-gradient(1.5px 1.5px at 12% 8%,rgba(255,233,168,.7),transparent),radial-gradient(1px 1px at 84% 14%,rgba(255,233,168,.6),transparent),radial-gradient(1.5px 1.5px at 66% 40%,rgba(255,233,168,.35),transparent),radial-gradient(1px 1px at 30% 62%,rgba(255,233,168,.4),transparent),radial-gradient(120% 80% at 50% 0%,#1B2C6B 0%,#0E1838 60%,#060A1C 100%)}
 #figurStart h1{font-family:var(--font)}
+.emofig{display:inline-flex;align-items:center;justify-content:center;font-size:64px;line-height:1;filter:drop-shadow(0 4px 6px rgba(29,42,79,.18))}
+.ic .emofig{font-size:44px}
+.weiter{display:flex;align-items:center;gap:12px;width:100%;margin:12px 0 0;padding:12px 14px;border-radius:22px;border:2px solid #ffd66b;background:linear-gradient(135deg,#2a2f6b,#5b3f8f);color:#fff;text-align:left;box-shadow:var(--shadow)}
+.weiter .we{font-size:40px;line-height:1}.weiter b{display:block;font-family:"Fredoka",var(--font);font-size:18px}.weiter small{color:#ffe9b0;font-size:14px}
+.welt-k{position:relative}.welt-k .lieb{position:absolute;top:8px;right:10px;font-size:13px;font-weight:700;background:#fff;border-radius:999px;padding:2px 8px;border:1.5px solid #1d2a4f}
+.bande{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0 4px}
+.bande button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px;border-radius:18px;border:2px solid #1d2a4f33;background:#fffaf0;font-size:12px;font-weight:700;color:#1d2a4f}
+.bande button span{font-size:32px;line-height:1}.bande button.sel{border-color:#f2b43a;background:#fff1c9;color:#1d2a4f}
 </style>
 </head>
 <body>
@@ -378,6 +386,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
     <button class="sunnybtn" id="homeSunny" aria-label="Otti sagt Hallo"></button>
   </div>
   <button class="letterbtn" id="homeLetter" hidden><span class="env" aria-hidden="true"><svg viewBox="0 0 64 48"><rect x="3" y="5" width="58" height="40" rx="8" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M5 9 L32 29 L59 9" fill="none" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M32 22 C27 18 26 14 29 13 C31 12.5 32 14.5 32 15 C32 14.5 33 12.5 35 13 C38 14 37 18 32 22 Z" fill="#ff7c9c"/></svg></span><span><b id="homeLetterT">Ein Brief für dich</b><small>Otti liest dir eine Gutenachtgeschichte vor</small></span></button>
+  <button class="weiter" id="homeWeiter" hidden><span class="we" aria-hidden="true" id="homeWeiterE">🚪</span><span><b id="homeWeiterT">Weiter</b><small id="homeWeiterS">Otti weiss noch, wo ihr wart.</small></span></button>
   <button class="btn wide callbtn" data-go="call"><span class="ph" aria-hidden="true">📞</span><span>Otti anrufen<small>Videoanruf: mit Otti reden</small></span></button>
   <button class="btn wide cambtn" id="homeCam" data-go="cam" hidden>📷 Zeig Otti etwas</button>
   <div class="tiles">
@@ -954,8 +963,10 @@ function bockSVG(o={}){
   </g>${o.sleep ? ZZ : ''}
 </svg>`;
 }
+// Superhelden-Bande (Diego 23.10.): vorerst als Emoji, bis die Aura-Bilder da sind.
+function emoFig(e, name){ return o => `<span class="emofig${o && o.sleep ? ' schlaf' : ''}" role="img" aria-label="${name}">${e}</span>`; }
 const FIG = {sunny:sunnySVG, nova:novaSVG, kiki:kikiSVG, moon:moonSVG, mush:mushSVG, fly:flySVG,
-  hase:filmFig('hase.jpg','Hoppel, der Hase'), fuchs:filmFig('fuchs.jpg','Flori, der Fuchs'), fompa:fompaSVG, prinz:prinzSVG, bock:filmFig('zahnboecklein.jpg','Das Zahnböcklein, die kleine Geiss mit Feenflügeln und blauer Zahnbürste')};
+  hase:filmFig('hase.jpg','Hoppel, der Hase'), fuchs:filmFig('fuchs.jpg','Flori, der Fuchs'), fompa:fompaSVG, prinz:prinzSVG, zippi:emoFig('🐿️','Zippi'), bolt:emoFig('🤖','Bolt'), luma:emoFig('✨','Luma'), tiko:emoFig('🐨','Tiko'), pip:emoFig('🐭','Pip'), bock:filmFig('zahnboecklein.jpg','Das Zahnböcklein, die kleine Geiss mit Feenflügeln und blauer Zahnbürste')};
 
 /* ---------- Nachtmodus ---------- */
 function isNight(){ if (S.night==='on') return true; if (S.night==='off') return false; const h=new Date().getHours(); return h>=19 || h<7; }
@@ -1249,7 +1260,19 @@ function renderHome(){
   $('#homeLetter').hidden = !L;
   if (L) $('#homeLetterT').textContent = 'Ein Brief von ' + L.from;
   $('#homeCam').hidden = !S.cam;
+  renderWeiter();
 }
+// Otti merkt sich, wohin das Kind am liebsten reist (nur auf dem Handy).
+function memWelt(id){ const m = mem(); m.welten = m.welten || {}; m.welten[id] = (m.welten[id]||0) + 1; m.letzteWelt = id; memSet(m); }
+function lieblingsWelt(){ const e = Object.entries(mem().welten || {}).sort((a,b) => b[1]-a[1])[0]; return e && e[1] >= 3 ? e[0] : ''; }
+function renderWeiter(){
+  const id = mem().letzteWelt, w = id && alleWelten().find(x => x.id === id);
+  $('#homeWeiter').hidden = !w; if (!w) return;
+  $('#homeWeiterE').textContent = w.e;
+  $('#homeWeiterT').textContent = `Weiter in ${w.name}`;
+  $('#homeWeiterS').textContent = lieblingsWelt() === id ? 'Eure Lieblingswelt. Das Tor ist offen.' : 'Da wart ihr zuletzt. Das Tor ist offen.';
+}
+$('#homeWeiter').addEventListener('click', () => { const id = mem().letzteWelt; if (!id) return; W.cur = id; W.wahl = {}; go('welt'); });
 const sunnyLines = ['Na, wollen wir eine Geschichte hören?', 'Ich bin Otti. Meine Stacheln sind ganz weich – fast.', 'Kiki und Nova warten schon auf dich!', 'Weisst du, was ich am liebsten mag? Walderdbeeren!', 'Hihi, das kitzelt!'];
 let sunnyIdx = 0;
 $('#homeLetter').addEventListener('click', () => { const L = letterSel(); if (L) openLetter(L, 'home'); });
@@ -1544,8 +1567,19 @@ const WELTEN = [
     after:'{weg}. «Geschafft!», jubelt Otti.', pic:['sunny','nova']},
    {t:'Hinter den Meteoriten schwebt etwas Kleines. Eine Sternenkatze! Sie hat sich verirrt und miaut ganz leise. Nova öffnet die Luke, und Otti fängt sie mit einer Kuscheldecke auf. «Keine Angst, wir bringen dich heim.»', pic:['sunny','moon']},
    {t:'Die Sternenkatze zeigt mit der Pfote auf einen hellen Stern. Dort wohnt ihre Familie. Funkel landet sanft, und alle Sternenkatzen schnurren vor Freude. Dann fliegen Otti und Nova langsam zurück durchs Tor in den Zauberwald. Gute Nacht, kleine Raumfahrer.', pic:['sunny-sleep','moon']}]}},
- {id:'heldenstadt', name:'Heldenstadt', e:'🦸‍♀️', farbe:'#ffd2d2', sub:'Superheldin Sternschnuppe', ort:'Hinter dem Tor liegt Heldenstadt, mit hohen Türmen und bunten Lichtern.', ruf:'Sternschnuppen-Kraft, los!', fahrt:'quer über die Dächer von Heldenstadt', hindernis:'Ein starker Wind pfeift um die Türme, huiii!', abend:'auf dem höchsten Dach von Heldenstadt', pic:['kiki','sunny'],
+ {id:'heldenstadt', name:'Heldenstadt', e:'🦸‍♀️', farbe:'#ffd2d2', sub:'Sternschnuppe und die Bande', bande:true, ort:'Hinter dem Tor liegt Heldenstadt, mit hohen Türmen und bunten Lichtern.', ruf:'Sternschnuppen-Kraft, los!', fahrt:'quer über die Dächer von Heldenstadt', hindernis:'Ein starker Wind pfeift um die Türme, huiii!', abend:'auf dem höchsten Dach von Heldenstadt', pic:['kiki','sunny'],
   probleme:['Das Riesenrad steckt fest','Alle Ampeln in der Stadt sind ausgegangen','Ein kleiner Drache hat sich auf dem Turm verirrt'],
+  story2:{id:'w-bande', title:'Die Bande und der müde Mond', sub:'Zippi, Bolt, Luma, Tiko und Pip helfen zusammen.', pic:['luma','zippi'], parts:[
+   {t:'In Heldenstadt gehen fünf Kinder zusammen zur Schule. Zippi, Bolt, Luma, Tiko und Pip. Sie sind ganz normale Kinder. Nur haben sie jedes eine kleine Superkraft. Darum nennen alle sie: die Bande.', pic:['zippi','bolt']},
+   {t:'Heute Abend ist etwas komisch. Der Mond über Heldenstadt leuchtet nur noch ganz schwach. «Er sieht so müde aus», sagt Luma leise.', pic:['luma','moon']},
+   {t:'Tiko setzt seinen Weltraumhelm auf und schwebt hinauf. Dann ruft er: «Der Mond hat sein Licht verloren! Ein Stück davon ist runtergefallen, in den Stadtpark.»', pic:['tiko','moon']},
+   {q:'Wer findet das Mondlicht im Park?', opts:[
+     {e:'🐿️', l:'Zippi saust los', k:['zippi','schnell'], v:{finder:'Zippi saust mit dem Raketen-Rucksack einmal um den ganzen Park, wusch, und entdeckt etwas Glitzerndes unter einer Bank'}},
+     {e:'🐭', l:'Pip fragt die Tiere', k:['pip','tiere','maus'], v:{finder:'Pip wird winzig klein und fragt die Igel, Vögel und Käfer. Ein kleiner Käfer zeigt mit dem Fühler: «Dort unten, im Gras!»'}},
+     {e:'🤖', l:'Bolt hebt den Stein', k:['bolt','magnet','stein'], v:{finder:'Bolt hebt mit seinen Magnet-Händen einen grossen Stein hoch. Darunter liegt etwas, das ganz zart leuchtet'}}],
+    after:'{finder}. Es ist das verlorene Mondlicht, so klein wie eine Murmel.', pic:['bolt','pip']},
+   {t:'Luma macht eine Schutzblase um das Mondlicht, damit es nicht zerbricht. Tiko trägt die Blase vorsichtig hinauf, ganz langsam, bis zum Mond. Und plopp: Der Mond leuchtet wieder hell und rund.', pic:['luma','tiko']},
+   {t:'Die Bande sitzt auf der Parkbank und schaut nach oben. «Allein hätte es keiner geschafft», sagt Zippi. «Aber zusammen schon.» Der Mond zwinkert ihnen zu. Gute Nacht, Bande. Gute Nacht, Heldenstadt.', pic:['moon']}]},
   story:{id:'w-sternschnuppe', title:'Sternschnuppe rettet das Riesenrad', sub:'Eine Superheldin mit Sternen-Umhang.', pic:['kiki','sunny'], parts:[
    {t:'In Heldenstadt wohnt ein Mädchen, das ein Geheimnis hat. Wenn es seinen Sternen-Umhang anzieht, wird es zur Superheldin Sternschnuppe. Sie kann Lichtfäden werfen und daran von Turm zu Turm schwingen. Swusch!', pic:['kiki']},
    {t:'Heute ist Jahrmarkt. Otti fährt mit dem Riesenrad, ganz nach oben. Doch plötzlich, rumms! Das Riesenrad bleibt stehen. Otti sitzt ganz oben fest. «Hilfe!», ruft er.', pic:['sunny']},
@@ -1611,6 +1645,12 @@ const WELTEN = [
    {t:'Mama Dino wacht auf und staunt. Sie gibt Otti einen grossen Dino-Kuss, schmatz! Dann kuscheln sich alle ins warme Nest. Otti winkt und geht zurück durchs Tor. Gute Nacht, Dino-Insel.', pic:['sunny-sleep','moon']}]}}
 ];
 const W_HELFER = [['sunny','Otti'],['nova','Nova'],['kiki','Kiki'],['hase','Hoppel'],['fuchs','Flori'],['prinz','Milou'],['bock','Zahnböcklein']];
+const BANDE = [
+ {k:'zippi', n:'Zippi', e:'🐿️', kraft:'mit dem Raketen-Rucksack superschnell sausen'},
+ {k:'bolt', n:'Bolt', e:'🤖', kraft:'mit Magnet-Händen alles hochheben'},
+ {k:'luma', n:'Luma', e:'✨', kraft:'leuchten und Schutzblasen machen'},
+ {k:'tiko', n:'Tiko', e:'🐨', kraft:'im Weltraumhelm schweben'},
+ {k:'pip', n:'Pip', e:'🐭', kraft:'winzig klein werden und mit allen Tieren sprechen'}];
 const W_KRAFT = ['fliegen','superschnell rennen','mit Tieren sprechen','leuchten wie ein Stern','unsichtbar werden','Riesen-Seifenblasen zaubern'];
 const W = { cur:null, wahl:{} };
 function eigeneWelten(){ return store.get('eigeneWelten', []).map(x => ({id:x.id, name:x.name, e:x.e || '✨', farbe:'#fff1c9', sub:'Eure eigene Welt', ort:`Hinter dem Tor liegt ${x.name}.`, ruf:'Abenteuer, los!', fahrt:`quer durch ${x.name}`, hindernis:'Doch plötzlich wird es ganz schwierig, und niemand weiss weiter.', abend:`am schönsten Platz von ${x.name}`, pic:['sunny','kiki'], probleme:['Jemand hat sich verirrt','Etwas Wichtiges ist verschwunden','Ein neuer Freund braucht Hilfe'], eigen:true})); }
@@ -1624,7 +1664,7 @@ function renderTor(){
 }
 function zeigeWelten(sofort){
   const g = $('#weltenGrid');
-  g.innerHTML = alleWelten().map(w => `<button class="welt-k" data-welt="${esc(w.id)}" style="background:${w.farbe}"><span class="we" aria-hidden="true">${esc(w.e)}</span><b>${esc(w.name)}</b><small>${esc(w.sub)}</small></button>`).join('') +
+  g.innerHTML = alleWelten().map(w => `<button class="welt-k" data-welt="${esc(w.id)}" style="background:${w.farbe}"><span class="we" aria-hidden="true">${esc(w.e)}</span><b>${esc(w.name)}</b><small>${esc(w.sub)}</small>${lieblingsWelt() === w.id ? '<span class="lieb">⭐ Liebling</span>' : ''}</button>`).join('') +
     `<button class="welt-k leer" data-welt="+"><span class="we" aria-hidden="true">➕</span><b>Eigene Welt</b><small>Erfindet sie zusammen.</small></button>`;
   if (sofort){ $('#torSzene').hidden = true; g.hidden = false; return; }
   $('#torTor').classList.add('offen'); $('#torHinweis').textContent = 'Das Tor geht auf …';
@@ -1648,24 +1688,26 @@ $('#ewGo').addEventListener('click', () => {
 });
 function renderWelt(){
   const w = alleWelten().find(x => x.id === W.cur); if (!w){ go('tor'); return; }
+  memWelt(w.id);
   $('#weltTitel').textContent = w.name;
   $('#weltKopf').style.background = w.farbe;
-  $('#weltKopf').innerHTML = `<div class="we" aria-hidden="true">${esc(w.e)}</div><p>${esc(w.ort)}</p>`;
+  $('#weltKopf').innerHTML = `<div class="we" aria-hidden="true">${esc(w.e)}</div><p>${esc(w.ort)}</p>` +
+    (w.bande ? `<p class="small" style="margin:8px 0 0"><b>Die Bande:</b> fünf Kinder mit Superkräften. Tippe eins an, dann hilft es in eurer Geschichte.</p><div class="bande">${BANDE.map(b => `<button data-grp="helfer" data-v="${b.k}" class="${W.wahl.helfer === b.k ? 'sel' : ''}" aria-label="${b.n}: ${b.kraft}"><span aria-hidden="true">${b.e}</span>${b.n}</button>`).join('')}</div>` : '');
   $('#s-welt').classList.remove('flug'); void $('#s-welt').offsetWidth; $('#s-welt').classList.add('flug');
   const eig = weltGeschichten(w.id);
-  $('#weltListe').innerHTML = (w.story ? `<button class="sitem" data-ws="start"><span class="ic">${figHTML(w.story.pic[0])}</span><span><b>${esc(w.story.title)}</b><span class="sub">${esc(w.story.sub)}</span></span></button>` : '') +
+  $('#weltListe').innerHTML = [['start', w.story], ['start2', w.story2]].filter(x => x[1]).map(([k, st]) => `<button class="sitem" data-ws="${k}"><span class="ic">${figHTML(st.pic[0])}</span><span><b>${esc(st.title)}</b><span class="sub">${esc(st.sub)}</span></span></button>`).join('') +
     eig.map((st, i) => `<button class="sitem" data-ws="${i}"><span class="ic" style="background:var(--mint)"><span style="font-size:40px" aria-hidden="true">⭐</span></span><span><b>${esc(st.title)}</b><span class="sub">Von euch erfunden</span></span></button>`).join('') +
     (eig.length || w.story ? '' : `<p class="small muted" style="text-align:center">Hier ist noch Platz für eure erste Geschichte.</p>`);
   if (!$('#eHeld').value) $('#eHeld').value = S.name || '';
   const chip = (grp, v, l) => `<button class="chip ${W.wahl[grp] === v ? 'sel' : ''}" data-grp="${grp}" data-v="${esc(v)}">${esc(l)}</button>`;
-  $('#eHelfer').innerHTML = W_HELFER.map(([k, l]) => chip('helfer', k, l)).join('');
+  $('#eHelfer').innerHTML = W_HELFER.concat(w.bande ? BANDE.map(b => [b.k, b.n]) : []).map(([k, l]) => chip('helfer', k, l)).join('');
   $('#eProblem').innerHTML = w.probleme.map(p => chip('problem', p, p)).join('');
   $('#eKraft').innerHTML = W_KRAFT.map(k => chip('kraft', k, k)).join('');
 }
 $('#weltListe').addEventListener('click', e => {
   const b = e.target.closest('[data-ws]'); if (!b) return;
   const w = alleWelten().find(x => x.id === W.cur);
-  const st = b.dataset.ws === 'start' ? w.story : weltGeschichten(w.id)[+b.dataset.ws];
+  const st = b.dataset.ws === 'start' ? w.story : b.dataset.ws === 'start2' ? w.story2 : weltGeschichten(w.id)[+b.dataset.ws];
   if (st){ st.back = 'welt'; openStory(st); }
 });
 $('#s-welt').addEventListener('click', e => {
@@ -1674,7 +1716,7 @@ $('#s-welt').addEventListener('click', e => {
   $$(`[data-grp="${c.dataset.grp}"]`).forEach(x => x.classList.toggle('sel', x.dataset.v === W.wahl[c.dataset.grp]));
 });
 function weltErfinden(w, H, fk, P, K){
-  const F = (W_HELFER.find(x => x[0] === fk) || W_HELFER[0])[1];
+  const F = (W_HELFER.concat(BANDE.map(b => [b.k, b.n])).find(x => x[0] === fk) || W_HELFER[0])[1];
   return {title:`${H} in ${w.name}`, sub:'Von euch erfunden', pic:[fk, w.pic[1] || 'moon'], back:'welt', mine:true, parts:[
    {t:`${w.ort} Dort lebt ${H}. Und ${H} hat ein Geheimnis: ${H} kann ${K}.`, pic:[w.pic[0]]},
    {t:`Eines Tages kommt ${F} angerannt, ganz ausser Atem. «Schnell, ${H}! ${P}!»`, pic:[fk]},
