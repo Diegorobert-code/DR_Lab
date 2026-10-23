@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-23-06">
+<meta name="stand" content="2026-10-23-07">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -94,6 +94,9 @@
   body.bmodus .buehne { width:min(58vh, 46vw); z-index:3; transition:width .6s ease, right .6s ease, bottom .6s ease; }
   body.bmodus.film .buehne { position:fixed; right:2.5vw; bottom:3vh; width:min(24vh, 18vw); box-shadow:0 10px 30px #000a, 0 0 0 3px #f5c54255; }
   body.bmodus.film .buehne.spricht { box-shadow:0 10px 30px #000a, 0 0 0 4px var(--gold), 0 0 34px #f5c54288; }
+  /* Bühne: Nova lebt als Video (clips/), Schleifen und Gesten blenden weich ineinander. */
+  .buehne video.lebt { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .35s; pointer-events:none; }
+  .buehne video.lebt.zeigt { opacity:1; }
   body.bmodus .status { position:fixed; left:2.5vw; bottom:2vh; margin:0; font-size:14px; opacity:.55; z-index:3; text-align:left; }
   body.bmodus .knopf { position:fixed; left:2.5vw; top:3vh; width:44px; height:44px; font-size:18px; margin:0; opacity:.35; z-index:4; cursor:pointer; }
   body.bmodus .hinweis { position:fixed; left:0; right:0; top:2vh; z-index:4; }
@@ -553,7 +556,8 @@
           if (m && m.source === 'user') { $('chips').innerHTML = ''; weiterVersuche = 0; if (!hoerBefehl(m.message)) ansichtBefehl(m.message); }
           if (HOER.an && m && m.message) hoerMit(m.source === 'user' ? 'Diego' : 'Nova', m.message);
           if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message);
-          if (BUEHNE.an && m && m.message && m.source !== 'user') BUEHNE.untertitel(m.message); },
+          if (BUEHNE.an && m && m.message && m.source !== 'user') BUEHNE.untertitel(m.message);
+          if (BUEHNE.an && m && m.source === 'user' && LEBT) LEBT.geste('nicken'); },
         onModeChange: function (m) {
           var sp = m && m.mode === 'speaking';
           if (conv) conv.__spricht = sp;
@@ -860,6 +864,7 @@
     function spricht(ja) { if (rolle === 'telefon' && beamerDa) return; video.volume = ja ? laut * 0.2 : laut; }
     function untertitel(t) {
       if (rolle === 'telefon' && beamerDa) { funk({ typ: 'text', t: String(t) }); return; }
+      if (LEBT) LEBT.text(t);
       ut.textContent = t; ut.classList.add('an'); clearTimeout(utUhr);
       utUhr = setTimeout(function () { ut.classList.remove('an'); }, Math.min(12000, 2500 + t.length * 70));
     }
@@ -1113,6 +1118,35 @@
     if (e.data.typ === 'start' && !conv && !startet) starten();
     if (e.data.typ === 'stopp') { vonHand = true; if (conv) { var c = conv; ende('Bis gleich.'); c.endSession().catch(function () {}); } }
   });
+  // Bühne: Nova lebt als Video (nova/clips/). Zuhören und Sprechen laufen als Schleife, dazu ab und zu eine Geste.
+  // Die Schleife folgt der Klasse «spricht» auf der Bühne, so klappt es auch am Beamer, wenn Nova übers Telefon spricht.
+  var LEBT = BUEHNE.an ? (function () {
+    var v = {}, jetzt = '', geste = '', zuletzt = 0;
+    ['zuhoeren', 'sprechen', 'winken', 'nicken', 'staunen', 'freuen'].forEach(function (n) {
+      var e = document.createElement('video');
+      e.className = 'lebt'; e.muted = true; e.playsInline = true; e.setAttribute('playsinline', ''); e.preload = 'auto';
+      e.loop = n === 'zuhoeren' || n === 'sprechen'; e.src = 'clips/' + n + '.mp4';
+      if (!e.loop) e.addEventListener('ended', function () { geste = ''; zeigen(schleife()); });
+      buehne.insertBefore(e, buehne.querySelector('.glanz')); v[n] = e;
+    });
+    function schleife() { return buehne.classList.contains('spricht') ? 'sprechen' : 'zuhoeren'; }
+    function zeigen(n) {
+      if (n === jetzt) return;
+      var neu = v[n], alt = v[jetzt];
+      if (!neu.loop) neu.currentTime = 0;
+      neu.play().catch(function () {});
+      neu.classList.add('zeigt'); jetzt = n;
+      if (alt) { alt.classList.remove('zeigt'); setTimeout(function () { if (!alt.classList.contains('zeigt')) alt.pause(); }, 400); }
+    }
+    new MutationObserver(function () { if (!geste) zeigen(schleife()); }).observe(buehne, { attributes: true, attributeFilter: ['class'] });
+    zeigen('zuhoeren');
+    // Gesten nicht zu oft: höchstens alle 12 Sekunden eine.
+    function machGeste(n) { if (!v[n] || geste || Date.now() - zuletzt < 12000) return; zuletzt = Date.now(); geste = n; zeigen(n); }
+    var REGELN = [[/\b(hallo|hoi|grüezi|willkommen|tschüss|tschau|ciao|bis bald)\b/i, 'winken'], [/\b(wow|unglaublich|stell dir vor|wahnsinn|krass)\b/i, 'staunen'],
+      [/(freu|super|toll|wunderbar|danke|juhu|bravo)/i, 'freuen'], [/^(ja|genau|richtig|stimmt|klar)\b/i, 'nicken']];
+    function text(t) { t = String(t || ''); for (var i = 0; i < REGELN.length; i++) if (REGELN[i][0].test(t)) { machGeste(REGELN[i][1]); return; } }
+    return { geste: machGeste, text: text };
+  })() : null;
   if (KEY === 'nova' && !BUEHNE.an) { $('hoeren').hidden = false; $('hoeren').addEventListener('click', function () { hoerSetzen(!HOER.an); }); }
   // Auf Otti tippen: er hüpft vor Freude.
   buehne.addEventListener('click', function () { if (buehne.classList.contains('zeigt')) buehne.classList.remove('zeigt'); else hopsen(); });
