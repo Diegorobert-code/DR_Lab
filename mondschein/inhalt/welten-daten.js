@@ -11,7 +11,7 @@
   var FIGUREN = {
     otti:    { e: '🦔', n: 'Otti', was: 'der kleine Igel mit dem gelben Halstuch' },
     nova:    { e: '🤖', n: 'Nova', was: 'der kleine blaue Roboter' },
-    fompa:   { e: '🐒', n: 'Fompa', was: 'das Löwenäffchen mit der runden Brille' },
+    fompa:   { e: '☁️', n: 'Traumli', was: 'das flauschige Traumwesen, das verlorene Träume sammelt' },
     kiki:    { e: '🐨', n: 'Kiki', was: 'der Koala mit dem goldenen Mikrofon' },
     zahn:    { e: '🐐', n: 'Zahnböcklein', was: 'die kleine Geiss mit den Feenflügeln' },
     hasi:    { e: '🐰', n: 'Hasi', was: 'der stille Hase' },
@@ -23,6 +23,11 @@
     flocke:  { e: '🐈', n: 'Flocke', was: 'das weisse Kätzchen' },
     knopf:   { e: '🐈‍⬛', n: 'Knopf', was: 'das schwarze Kätzchen' },
     /* neu */
+    zippi:   { e: '🐿️', n: 'Zippi', was: 'das Streifenhörnchen-Mädchen mit dem Raketen-Rucksack', neu: true },
+    bolt:    { e: '🤖', n: 'Bolt', was: 'der kleine Roboter-Junge mit den Magnet-Händen', neu: true },
+    luma:    { e: '✨', n: 'Luma', was: 'das Glühwürmchen-Mädchen, das leuchtet und Schutzblasen macht', neu: true },
+    tiko:    { e: '🐨', n: 'Tiko', was: 'der Koala-Junge mit dem Weltraumhelm, der schweben kann', neu: true },
+    pip:     { e: '🐭', n: 'Pip', was: 'das Mäuschen, das winzig klein wird und mit allen Tieren spricht', neu: true },
     flinka:  { e: '🦸‍♀️', n: 'Flinka Funkenherz', kurz: 'Flinka', was: 'die Superheldin mit dem Umhang aus Morgenlicht', neu: true },
     kometli: { e: '🚀', n: 'Kometli', was: 'das kleine runde Raumschiff mit dem Glöckchen', neu: true },
     perla:   { e: '🐠', n: 'Perla', was: 'das Glitzerfischchen aus dem Korallenreich', neu: true },
@@ -74,12 +79,12 @@
           id: 'ww-ring', titel: 'Der Ringplanet hat Schluckauf', kurz: 'Ein Planet hickst, und seine Ringe purzeln.',
           cast: ['nova', 'kometli', 'fompa'],
           seiten: [
-            '«Hicks!» Was war das? Fompa schaut durch seine runde Brille aus dem Bullauge. Dort draussen dreht sich ein grosser Planet mit bunten Ringen. «Hicks!», macht er wieder.',
+            '«Hicks!» Was war das? Traumli drückt die flauschige Nase ans Bullauge. Dort draussen dreht sich ein grosser Planet mit bunten Ringen. «Hicks!», macht er wieder.',
             'Bei jedem Hicks hüpfen die Ringe. Rot, gelb und violett wackeln sie hin und her. «Der Ringplanet hat Schluckauf», sagt Nova. «Das kenne ich. Ich habe manchmal Piep-Schluckauf.»',
-            '«Was hilft gegen Schluckauf?», fragt Kometli. Fompa rechnet. «Langsam atmen, etwas Lustiges oder einen Schreck. Aber einen Schreck wollen wir ihm nicht machen.»',
+            '«Was hilft gegen Schluckauf?», fragt Kometli. Traumli überlegt. «Langsam atmen, etwas Lustiges oder einen Schreck. Aber einen Schreck wollen wir ihm nicht machen.»',
             { frage: 'Was probieren sie?', wahl: [
               { e: '🌬️', l: 'Atmen', t: '«Atme mit uns», ruft Nova. «Ein … und aus.» Der Planet atmet ganz langsam. Seine Wolken ziehen sich zusammen und dehnen sich wieder aus. Ein … und aus.' },
-              { e: '🤡', l: 'Witz', t: 'Fompa erzählt seinen besten Witz: «Warum sind Sterne nie müde? Weil sie die ganze Nacht schlafen könnten, aber lieber funkeln!» Der Planet kichert so sehr, dass er das Hicksen vergisst.' }
+              { e: '🤡', l: 'Witz', t: 'Traumli erzählt seinen besten Witz: «Warum sind Sterne nie müde? Weil sie die ganze Nacht schlafen könnten, aber lieber funkeln!» Der Planet kichert so sehr, dass er das Hicksen vergisst.' }
             ] },
             'Sie warten. Und warten. Kometli zählt leise bis zehn. Kein Hicks mehr!',
             'Die Ringe drehen sich wieder schön rund und ruhig. Zum Dank lässt der Planet einen kleinen Regenbogen aus Sternenstaub regnen. Er glitzert auf Kometlis Dach.',
@@ -144,20 +149,38 @@
             'Der Bus fährt langsam hinüber. Die Kinder winken aus allen Fenstern. «Danke, Rettungsteam!» Und das Team winkt zurück, bis der Bus ganz klein ist.'
           ],
           lehre: 'Jeder kann etwas anderes gut. Zusammen sind wir ein Team.'
+        },
+        {
+          id: 'sh-bande', titel: 'Die Bande und der müde Mond', kurz: 'Fünf Kinder mit Superkräften helfen zusammen.',
+          cast: ['luma', 'zippi', 'bolt', 'tiko', 'pip'],
+          seiten: [
+            'In der Glitzerstadt gehen fünf Kinder zusammen zur Schule: Zippi, Bolt, Luma, Tiko und Pip. Ganz normale Kinder. Nur hat jedes eine kleine Superkraft. Darum nennen alle sie: die Bande.',
+            'Heute Abend ist etwas komisch. Der Mond über der Glitzerstadt leuchtet nur noch ganz schwach. «Er sieht so müde aus», sagt Luma leise.',
+            'Tiko setzt seinen Weltraumhelm auf und schwebt hinauf. Dann ruft er: «Der Mond hat ein Stück Licht verloren! Es ist in den Stadtpark gefallen.»',
+            { frage: 'Wer findet das Mondlicht im Park?', wahl: [
+              { e: '🐿️', l: 'Zippi', t: 'Zippi saust mit dem Raketen-Rucksack einmal um den ganzen Park, wusch, und entdeckt etwas Glitzerndes unter einer Bank.' },
+              { e: '🐭', l: 'Pip', t: 'Pip wird winzig klein und fragt die Käfer im Gras. Ein kleiner Käfer zeigt mit dem Fühler: «Dort, unter dem Blatt!»' },
+              { e: '🤖', l: 'Bolt', t: 'Bolt hebt mit seinen Magnet-Händen einen grossen Stein hoch. Darunter liegt etwas, das ganz zart leuchtet.' }
+            ] },
+            'Es ist das verlorene Mondlicht, so klein wie eine Murmel. Luma macht eine Schutzblase darum, damit es nicht zerbricht.',
+            'Tiko trägt die Blase ganz langsam hinauf bis zum Mond. Und plopp: Der Mond leuchtet wieder hell und rund.',
+            'Die Bande sitzt auf der Parkbank und schaut nach oben. «Allein hätte es keiner geschafft», sagt Zippi. «Aber zusammen schon.» Der Mond zwinkert ihnen zu. Gute Nacht, Bande.'
+          ],
+          lehre: 'Zusammen schaffen wir, was allein zu schwer ist.'
         }
       ]
     },
     {
       id: 'piraten', bild: '', der: 'die Pirateninsel', im: 'auf der Pirateninsel', name: 'Pirateninsel', tor: 'Muscheltor', e: '🏴‍☠️', bg: 'piraten', farbe: '#ffd27a',
-      kurz: 'Mit Käpt\'n Fompa und dem Schiff «Muschelmöwe» über das glitzernde Meer.',
+      kurz: 'Mit Käpt\'n Traumli und dem Schiff «Muschelmöwe» über das glitzernde Meer.',
       probleme: ['die Schatzkarte ist ins Wasser gefallen', 'der Wind ist eingeschlafen', 'eine Möwe hat ihr Nest verloren'],
       geschichten: [
         {
           id: 'pi-schatz', titel: 'Der Schatz der Glitzerbucht', kurz: 'Eine alte Karte, ein X und eine Überraschung.',
           cast: ['fompa', 'otti', 'kiki'],
           seiten: [
-            'Hinter dem Muscheltor rauscht das Meer. Am Steg schaukelt die «Muschelmöwe», ein kleines Piratenschiff mit gestreiften Segeln. Am Steuer steht Käpt\'n Fompa mit Hut und Brille.',
-            '«Ahoi, Matrosen!», ruft Fompa. «Ich habe eine Schatzkarte gefunden.» Auf der Karte ist eine Bucht gemalt und ein grosses rotes X.',
+            'Hinter dem Muscheltor rauscht das Meer. Am Steg schaukelt die «Muschelmöwe», ein kleines Piratenschiff mit gestreiften Segeln. Am Steuer steht Käpt\'n Traumli mit einem viel zu grossen Hut.',
+            '«Ahoi, Matrosen!», ruft Traumli. «Ich habe eine Schatzkarte gefunden.» Auf der Karte ist eine Bucht gemalt und ein grosses rotes X.',
             'Otti zieht das Segel hoch. Kiki singt ein Seemannslied ins goldene Mikrofon: «Hoch die Segel, ho-ho-ho!» Der Wind bläst, und die Muschelmöwe saust los.',
             { frage: 'Welchen Weg nehmen sie?', wahl: [
               { e: '🐬', l: 'Mit Delfinen', t: 'Drei Delfine springen neben dem Schiff. «Folgt uns!», schnattern sie und zeigen den schnellsten Weg durch die Wellen.' },
@@ -173,16 +196,16 @@
           id: 'pi-flasche', titel: 'Die Flaschenpost vom Leuchtturm', kurz: 'Jemand auf einer Insel fühlt sich allein.',
           cast: ['fompa', 'eule', 'hasi'],
           seiten: [
-            'Eine Flasche schaukelt auf den Wellen. Käpt\'n Fompa fischt sie mit dem Netz heraus. Darin steckt ein Brief, sauber gerollt.',
-            'Fompa liest vor: «Ich wohne im Leuchtturm auf der kleinen Felseninsel. Mein Licht hilft allen Schiffen. Aber niemand kommt mich besuchen. Liebe Grüsse, Frau Eule.»',
+            'Eine Flasche schaukelt auf den Wellen. Käpt\'n Traumli fischt sie mit dem Netz heraus. Darin steckt ein Brief, sauber gerollt.',
+            'Traumli liest vor: «Ich wohne im Leuchtturm auf der kleinen Felseninsel. Mein Licht hilft allen Schiffen. Aber niemand kommt mich besuchen. Liebe Grüsse, Frau Eule.»',
             'Hasi sagt nichts. Aber Hasi zeigt sofort zum Horizont. Dort blinkt ein Licht: an, aus, an, aus. Der Leuchtturm!',
             { frage: 'Was bringen sie Frau Eule mit?', wahl: [
-              { e: '🧁', l: 'Kuchen', t: 'Fompa backt im Schiffsofen einen Muschelkuchen mit Zuckerguss. Das ganze Schiff duftet nach Vanille.' },
+              { e: '🧁', l: 'Kuchen', t: 'Traumli backt im Schiffsofen einen Muschelkuchen mit Zuckerguss. Das ganze Schiff duftet nach Vanille.' },
               { e: '🐚', l: 'Muscheln', t: 'Hasi sammelt die schönsten Muscheln und fädelt sie zu einer Kette auf. Jede Muschel schimmert anders.' }
             ] },
             'Frau Eule steht schon an der Tür. Sie hat die Muschelmöwe kommen sehen. «Besuch!», ruft sie und plustert sich vor Freude ganz rund auf.',
             'Sie trinken Tee hoch oben im Leuchtturm. Von dort sieht man das ganze Meer. Frau Eule erzählt Geschichten von Schiffen, die sie sicher nach Hause geleitet hat.',
-            'Beim Abschied verspricht Fompa: «Wir kommen jeden Sonntag.» Und seitdem blinkt der Leuchtturm sonntags ein bisschen fröhlicher.'
+            'Beim Abschied verspricht Traumli: «Wir kommen jeden Sonntag.» Und seitdem blinkt der Leuchtturm sonntags ein bisschen fröhlicher.'
           ],
           lehre: 'Ein Besuch kann ein ganzes Herz hell machen.'
         }
@@ -315,8 +338,8 @@
 
   /* Vorschläge fürs «Erfinden mit Mila» */
   var ERFINDEN = {
-    helden: ['otti', 'flinka', 'nova', 'kiki', 'zahn', 'hasi', 'lunara', 'mimi', 'brummi', 'fompa'],
-    freunde: ['otti', 'kometli', 'flocke', 'knopf', 'glimmbot', 'perla', 'eule', 'flori', 'tilda', 'hasi'],
+    helden: ['otti', 'flinka', 'zippi', 'bolt', 'luma', 'tiko', 'pip', 'nova', 'kiki', 'zahn', 'hasi', 'lunara', 'mimi', 'brummi', 'fompa'],
+    freunde: ['otti', 'kometli', 'zippi', 'bolt', 'luma', 'tiko', 'pip', 'flocke', 'knopf', 'glimmbot', 'perla', 'eule', 'flori', 'tilda', 'hasi'],
     loesungen: [
       'sie fragen freundlich um Hilfe',
       'sie halten zusammen und probieren es gemeinsam',
