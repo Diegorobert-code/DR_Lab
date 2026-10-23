@@ -349,6 +349,7 @@ function mount(root, opts){
   function say(t){
     if(!state.voice || !t) return;
     const N = window.NovaStimme;
+    MUSIK.duck(Math.min(12000, 1200 + t.length*75));
     try{ if(N && N.aktiv && N.aktiv()){ N.sprich(t, {figur:'mama affe'}); return; } }catch(e){}
     if(!('speechSynthesis' in window)) return;
     try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); if(VOICE) u.voice = VOICE; u.lang = VOICE ? VOICE.lang : 'de-CH'; u.rate = .95; u.pitch = 1.1; speechSynthesis.speak(u); }catch(e){}
@@ -403,9 +404,52 @@ function mount(root, opts){
     try{ const r = root.getBoundingClientRect(); if(r.top < 0) root.scrollIntoView({block:'start'}); }catch(e){}
   }
   function go(v){ stopSay(); clearTimers(); if(v.split(':')[0]!==view.split(':')[0]){ kr={n:0,cur:null}; kiS=null; memS=null; wS=null; } view = v; render(); toTop(); }
+
+  /* ---------- Kinder-Musik «Ava & Carmen» (leise, zuschaltbar, 23.10.) ----------
+     Aus per Standard. Wahl wird gemerkt, startet aber erst bei der nächsten Berührung.
+     Pause bei verstecktem Tab, im Elternbereich und solange ein Mikrofon offen ist (Nova, Lernen). */
+  const MUSIK = (()=>{
+    const ZIEL = .25;
+    let el = null, an = !!store.get('musik', false), mic = 0, duckBis = 0, fadeT = null, wartet = an, duckT = null;
+    function audio(){ if(!el){ el = document.createElement('audio'); el.src = BASE + 'musik/kinder-beat.mp3'; el.loop = true; el.preload = 'none'; el.setAttribute('playsinline',''); el.hidden = true; el.volume = 0; root.appendChild(el); } return el; }
+    const erlaubt = ()=> an && mode==='kind' && !document.hidden && mic===0;
+    const ziel = ()=> Date.now() < duckBis ? ZIEL*.35 : ZIEL;
+    function fade(to, ms, fertig){ const a = audio(); clearInterval(fadeT); const von = a.volume, n = Math.max(1, Math.round(ms/50)); let i = 0;
+      fadeT = setInterval(()=>{ i++; a.volume = Math.max(0, Math.min(1, von + (to-von)*i/n)); if(i>=n){ clearInterval(fadeT); fertig && fertig(); } }, 50); }
+    function sync(){
+      if(!el && !an) return;
+      const a = audio();
+      if(erlaubt() && !wartet){ if(a.paused){ const p = a.play(); if(p && p.then) p.then(()=>fade(ziel(), 1500)).catch(()=>{ wartet = true; }); } else fade(ziel(), 400); }
+      else if(!a.paused) fade(0, 400, ()=>a.pause());
+    }
+    function umschalten(){ an = !an; store.set('musik', an); wartet = false; sync(); return an; }
+    function duck(ms){ duckBis = Date.now() + ms; sync(); clearTimeout(duckT); duckT = setTimeout(sync, ms + 50); }
+    function micAuf(){ mic++; sync(); }
+    function micZu(){ mic = Math.max(0, mic-1); sync(); }
+    /* Erste Berührung startet die gemerkte Musik (Browser erlauben Ton erst nach einer Berührung). */
+    root.addEventListener('pointerdown', ()=>{ if(wartet){ wartet = false; sync(); } }, true);
+    document.addEventListener('visibilitychange', sync);
+    /* Mikrofon erkennen: getUserMedia und Spracherkennung */
+    try{
+      const md = navigator.mediaDevices;
+      if(md && md.getUserMedia && !md.__maMusik){
+        const orig = md.getUserMedia.bind(md); md.__maMusik = true;
+        md.getUserMedia = function(c){ return orig(c).then(st=>{
+          if(c && c.audio){ micAuf(); let zu = false; const ende = ()=>{ if(!zu && st.getAudioTracks().every(t=>t.readyState==='ended')){ zu = true; micZu(); } };
+            st.getAudioTracks().forEach(t=>{ t.addEventListener('ended', ende); const stop = t.stop.bind(t); t.stop = ()=>{ stop(); ende(); }; }); }
+          return st; }); };
+      }
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if(SR && !SR.prototype.__maMusik){
+        const start = SR.prototype.start; SR.prototype.__maMusik = true;
+        SR.prototype.start = function(){ if(!this.__maOffen){ this.__maOffen = true; micAuf(); const self = this; this.addEventListener('end', function zu(){ self.removeEventListener('end', zu); self.__maOffen = false; micZu(); }); } return start.apply(this, arguments); };
+      }
+    }catch(e){}
+    return {sync, umschalten, duck, an:()=>an};
+  })();
   function topBar(title){
     return `<header class="top"><img src="${FIG}" alt=""><div class="t">${esc(title)}</div>
-    ${mode==='kind' ? `<button class="iconbtn" data-go="schule" aria-label="Zur Landkarte">🗺️</button>` : ''}
+    ${mode==='kind' ? `<button class="iconbtn" data-go="schule" aria-label="Zur Landkarte">🗺️</button><button class="iconbtn${MUSIK.an()?' on':''}" data-act="musik" aria-pressed="${MUSIK.an()}" aria-label="Musik ${MUSIK.an()?'aus':'an'}">🎵</button>` : ''}
     <button class="iconbtn" data-act="voice" aria-label="Stimme">${state.voice?'🔊':'🔇'}</button>
     ${mode==='kind' ? `<button class="iconbtn hold" data-hold="home" aria-label="Für Eltern lange drücken">🏠<span class="bar"></span></button>` : `<button class="iconbtn" data-act="home" aria-label="Start">🏠</button>`}</header>`;
   }
@@ -1406,7 +1450,7 @@ function mount(root, opts){
       h = (map[v] || (mode==='eltern'?vHeute:vSchule))();
     }
     root.classList.toggle('ma-kind', mode==='kind'); // Ruhe-Prinzip im Kinderbereich (bereich.css)
-    app.innerHTML = h; tabs(); typeBubbles();
+    app.innerHTML = h; tabs(); typeBubbles(); MUSIK.sync();
   }
   function setMode(m, to){
     mode = m; store.set('mode', m);
@@ -1476,6 +1520,7 @@ function mount(root, opts){
       learnUp(l=>{ l.lvl = rechnen.lvl; });
       later(()=>{ rechnen.cur=null; if(rechnen.n>=blockLen()){ rechnen.n=0; celebrate(); toast('⭐ Stern im Rechen-Zimmer'); movePause(()=>go('schule')); } else render(); },1400); return; }
     switch(d.act){
+      case 'musik': { const an = MUSIK.umschalten(); toast(an?'🎵 Musik an (leise)':'Musik aus'); render(); break; }
       case 'voice': state.voice=!state.voice; store.set('voice', state.voice); if(!state.voice) stopSay(); render(); break;
       case 'home': mode=null; store.set('mode', null); view='home'; stopSay(); clearTimers(); render(); toTop(); break;
       case 'resetMood': state.mood=null; render(); break;
