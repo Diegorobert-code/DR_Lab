@@ -336,6 +336,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 <script src="../trickfilmwelt/trickfilmwelt.js" data-app="mondschein" data-stil="aura" data-ruhe="1" data-szene="aura/nacht.webp" data-welt="aura/welt.webp" data-figur="aura/figur-idle.webp" data-posen="aura/figur-winkt.webp" data-css="aura/aura.css" data-text="Willkommen im Mondschein-Wald" data-karten=".card;#figurStart img" data-blaetter=".win>.card;#tour;#hoeren;#figurStart" data-knoepfe=".kimu"></script>
 <link rel="stylesheet" href="../nova/puppe.css">
 <link rel="stylesheet" href="grafik.css">
+<link rel="stylesheet" href="inhalt/welten.css">
 <script src="../nova/puppe.js"></script>
 <div id="figurStart" role="dialog" aria-label="Otti"><img src="figur-gross.jpg" alt="Otti"><h1>Otti</h1><p>Gutenachtgeschichten aus dem Mondschein-Land.</p><button type="button" id="figurStartGo">Los geht's</button></div>
 <script>(function(){var s=document.getElementById('figurStart');try{if(sessionStorage.getItem('figurStart')||localStorage.getItem('ms_figurStart')||location.hash==='#gutenacht')s.hidden=true;}catch(e){}document.getElementById('figurStartGo').onclick=function(){s.hidden=true;try{sessionStorage.setItem('figurStart','1');}catch(e){}};})();</script>
@@ -375,6 +376,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
   <button class="btn wide gnbtn hoerbtn" id="homeHoeren" type="button"><span class="mo" aria-hidden="true">🎧</span><span>Nur hören<small>Geschichten wie ein Hörspiel, Bildschirm aus</small></span></button>
   <button class="btn wide callbtn" data-go="call"><span class="ph" aria-hidden="true">📞</span><span>Otti anrufen<small>Videoanruf: mit Otti reden</small></span></button>
   <button class="btn wide cambtn" id="homeCam" data-go="cam" hidden>📷 Zeig Otti etwas</button>
+  <button class="btn wide gnbtn torbtn" id="homeTore" type="button" data-welten=""><span class="mo" aria-hidden="true">🚪</span><span>Zauberwald-Tore<small data-welten-heute>Weltraum, Superheldin, Piraten und mehr</small></span></button>
   <div class="tiles">
     <button class="tile t2 big4" data-go="games"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="12" r="7" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3"/><path d="M32 20v18M32 38l-10 16M32 38l10 16M32 26l-14-8M32 26l14-8" stroke="#1d2a4f" stroke-width="4.5" stroke-linecap="round" fill="none"/><path d="M8 58h48" stroke="#5fb26b" stroke-width="4" stroke-linecap="round"/></svg>Spiele<small>bewegen &amp; Memory</small></button>
     <button class="tile t1 big4" data-go="stories"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 16q12-6 24 2v36q-12-8-24-2z" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M56 16q-12-6-24 2v36q12-8 24-2z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M47 22a7 7 0 1 0 5 10 5.5 5.5 0 1 1-5-10z" fill="#f2b43a"/></svg>Geschichten<small>hören &amp; erfinden</small></button>
@@ -388,6 +390,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 <!-- GESCHICHTEN -->
 <section class="screen" id="s-stories" aria-label="Geschichten">
   <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>Geschichten</h2><button class="btn round" data-night-toggle aria-label="Nachtmodus umschalten">🌙</button></div>
+  <button class="btn wide gnbtn torbtn" type="button" data-welten="" style="margin-bottom:12px"><span class="mo" aria-hidden="true">🚪</span><span>Zauberwald-Tore<small>6 Welten · eigene Geschichten erfinden</small></span></button>
   <div class="slist" id="slist"></div>
   <p class="foot">DR Lab · Testphase</p>
 </section>
@@ -2736,6 +2739,9 @@ renderHome();
 if (limitReached()) go('night');
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(()=>{});
 window.__ms = { go, STORIES, game, S, R, FIG };
+// Zauberwald-Tore (inhalt/welten.js): Bilder unserer Figuren und Ottis Vorlese-Stimme mitbenutzen
+window.WELTEN_CFG = { bilder:{ otti:'figur.jpg', nova:'nova.jpg', fompa:'fompa-affe.jpg', kiki:'kiki-koala.jpg', zahn:'zahnboecklein.jpg', eule:'eule.jpg', flori:'fuchs.jpg' },
+  sprechen:(t, f) => { if (!TTS.ok){ if (f) setTimeout(f, 400); return; } TTS.speak(splitSentences(t), { onEnd:f }); }, stopp:() => TTS.stop() };
 /* ---------- Zeig Otti etwas (Kamera, Erkennen nur auf dem Handy) ---------- */
 // Eltern schalten es frei. Das Modell (COCO-SSD, 80 Alltagsdinge) liegt in kamera/ und läuft im Handy; kein Bild verlässt das Gerät.
 const CAM_DE = {person:'dich',bicycle:'ein Velo',car:'ein Auto',motorcycle:'ein Töff',airplane:'ein Flugzeug',bus:'einen Bus',train:'einen Zug',truck:'einen Lastwagen',boat:'ein Boot','traffic light':'eine Ampel','fire hydrant':'einen Hydranten','stop sign':'ein Stoppschild','parking meter':'eine Parkuhr',bench:'eine Bank',bird:'einen Vogel',cat:'eine Katze',dog:'einen Hund',horse:'ein Pferd',sheep:'ein Schaf',cow:'eine Kuh',elephant:'einen Elefanten',bear:'einen Bären',zebra:'ein Zebra',giraffe:'eine Giraffe',backpack:'einen Rucksack',umbrella:'einen Regenschirm',handbag:'eine Tasche',tie:'eine Krawatte',suitcase:'einen Koffer',frisbee:'ein Frisbee',skis:'Skier',snowboard:'ein Snowboard','sports ball':'einen Ball',kite:'einen Drachen','baseball bat':'einen Schläger','baseball glove':'einen Handschuh',skateboard:'ein Skateboard',surfboard:'ein Surfbrett','tennis racket':'einen Tennisschläger',bottle:'eine Flasche','wine glass':'ein Glas',cup:'eine Tasse',fork:'eine Gabel',knife:'ein Messer',spoon:'einen Löffel',bowl:'eine Schüssel',banana:'eine Banane',apple:'einen Apfel',sandwich:'ein Sandwich',orange:'eine Orange',broccoli:'einen Broccoli',carrot:'ein Rüebli',"hot dog":'einen Hotdog',pizza:'eine Pizza',donut:'einen Donut',cake:'einen Kuchen',chair:'einen Stuhl',couch:'ein Sofa','potted plant':'eine Pflanze',bed:'ein Bett','dining table':'einen Tisch',toilet:'eine Toilette',tv:'einen Fernseher',laptop:'einen Laptop',mouse:'eine Computermaus',remote:'eine Fernbedienung',keyboard:'eine Tastatur','cell phone':'ein Handy',microwave:'eine Mikrowelle',oven:'einen Backofen',toaster:'einen Toaster',sink:'ein Lavabo',refrigerator:'einen Kühlschrank',book:'ein Buch',clock:'eine Uhr',vase:'eine Vase',scissors:'eine Schere','teddy bear':'einen Teddybären','hair drier':'einen Föhn',toothbrush:'eine Zahnbürste'};
@@ -3872,5 +3878,7 @@ html.hoermodus .nova-btn,html.hoermodus .nova-pille,html.hoermodus .nova-panel,h
 </style>
 <script src="lernen.js" data-app="Mondschein" data-figur="otti" data-name="Mondschein" data-kind="1" data-unten="16" defer></script>
 <script src="musik.js" data-app="mondschein" defer></script>
+<script src="inhalt/welten-daten.js" defer></script>
+<script src="inhalt/welten.js" data-app="mondschein" defer></script>
 </body>
 </html>
