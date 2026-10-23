@@ -80,6 +80,7 @@ section.panel.on{display:block}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
 .chip{border:1px solid #c9dcd8;background:#fff;color:var(--navy);border-radius:99px;padding:8px 12px;min-height:40px;font:600 14px/1.1 var(--font);cursor:pointer}
 .chip small{display:block;font-weight:500;font-size:11px;color:var(--muted)}
+.palgr{display:flex;flex-wrap:wrap;gap:6px}.palsub{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;padding:10px;border-radius:14px;background:rgba(242,176,78,.08);border:1px solid rgba(242,176,78,.35)}
 #mGefuehle.gross .chip{font-size:18px;min-height:58px;padding:12px 16px}
 .chip[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
 .chip[aria-pressed="true"] small{color:#d6e2e8}
@@ -201,6 +202,7 @@ h1{color:#F2C14E}
       <div class="phase" id="mTitel">Song</div>
       <div class="clock" id="mClock">0:00</div>
       <button class="btn ghost hidden" id="mWeiter">⏭ Nächstes Stück</button>
+      <button class="btn ghost hidden" id="mAntwort">🦊 Sparky antwortet mit einem Stück</button>
       <button class="btn ghost hidden" id="mWer">👤 Klient:in tippt selbst</button>
       <div class="muted" id="mHinweis">Tipp, was du gerade fühlst. Mehrmals tippen ist gut.</div>
       <div class="chips" id="mGefuehle"></div>
@@ -1905,7 +1907,36 @@ $('mSparky').addEventListener('click', function(){
 // Studie: was Diego bei der Person beobachtet (anonym, ohne Namen)
 var M_KLIENT = [['ruhig','😌'],['warm','☀️'],['leicht','🪶'],['weit','🌌'],['berührt','🥹'],['Freude','😊'],['müde','😴'],['schwer','🌧'],['traurig','💧'],['Kribbeln','✨']];
 var M_BEOB = [['entspannt','😌'],['atmet tiefer','🌬'],['seufzt','💨'],['Tränen','💧'],['lacht','😄'],['wird still','🤫'],['erzählt','💬'],['unruhig','⚡'],['schläft ein','😴'],['Gewebe weich','🫳']];
-function mChips(l){ $('mGefuehle').innerHTML = l.map(function(g){ return '<button class="chip" data-g="' + g[0] + '">' + g[1] + ' ' + g[0] + '</button>'; }).join(''); }
+// Grosse Gefühlspalette: Hauptgruppe antippen, dann das genaue Gefühl (oder gleich die Gruppe selbst)
+var PALETTE = [
+  ['Ruhe','😌',['ruhig','entspannt','still','geborgen','sicher','schläfrig','angekommen']],
+  ['Weite','🌌',['weit','frei','offen','schwebend','Bodennebel','Raum','Horizont']],
+  ['Freude','😊',['Freude','leicht','verspielt','dankbar','warm','Lachen','Hoffnung']],
+  ['Kraft','🔥',['Kraft','geerdet','mutig','wach','aufrecht','Energie','Stolz']],
+  ['Berührt','🥹',['berührt','Gänsehaut','Sehnsucht','Liebe','Nähe','Tränen','Zärtlichkeit']],
+  ['Schwere','🌧',['schwer','müde','leer','dumpf','Druck','festgehalten','erschöpft']],
+  ['Trauer','💧',['traurig','Verlust','Heimweh','einsam','Abschied','Melancholie','Schmerz']],
+  ['Angst','🌀',['unruhig','eng','Angst','nervös','unsicher','Schreck','ausgeliefert']],
+  ['Reibung','⚡',['Wut','gereizt','Knirschen','Streit','Widerstand','genervt','Ohnmacht']],
+  ['Körper','🫀',['Kribbeln','Wärme','Kälte','Herz','Bauch','Atem tiefer','Kiefer locker','Schultern sinken']],
+  ['Bilder','🖼',['Erinnerung','Kindheit','Natur','Wasser','Licht','Dunkel','Familie','Ort von früher']]
+];
+var mGruppe = null, mPalAn = false;
+function mPalette(){
+  var h = '<div class="palgr">' + PALETTE.map(function(g){ return '<button class="chip" data-gruppe="' + g[0] + '" aria-pressed="' + (mGruppe === g[0]) + '">' + g[1] + ' ' + g[0] + '</button>'; }).join('') + '</div>';
+  var G = PALETTE.filter(function(g){ return g[0] === mGruppe; })[0];
+  if (G) h += '<div class="palsub"><button class="chip" data-g="' + G[0] + '">' + G[1] + ' einfach ' + G[0] + '</button>' + G[2].map(function(u){ return '<button class="chip" data-g="' + G[0] + ' › ' + u + '">' + u + '</button>'; }).join('') + '</div>';
+  $('mGefuehle').innerHTML = h;
+}
+function mChips(l){
+  mPalAn = (l === M_GEF || l === M_KLIENT);
+  if (mPalAn){ mGruppe = null; mPalette(); return; }
+  $('mGefuehle').innerHTML = l.map(function(g){ return '<button class="chip" data-g="' + g[0] + '">' + g[1] + ' ' + g[0] + '</button>'; }).join('');
+}
+$('mGefuehle').addEventListener('click', function(ev){
+  var b = ev.target.closest('[data-gruppe]'); if (!b) return;
+  mGruppe = mGruppe === b.dataset.gruppe ? null : b.dataset.gruppe; mPalette();
+});
 mChips(M_GEF);
 $('mGefuehle').addEventListener('click', function(ev){
   var b = ev.target.closest('[data-g]'); if (!b) return;
@@ -2014,7 +2045,7 @@ function reiseStart(liste, sek, name){
   try { tonEntsperren(); ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); if (!ac.haupt){ ac.haupt = ac.createDynamicsCompressor(); ac.haupt.threshold.value = -24; ac.haupt.ratio.value = 4; var mg = ac.createGain(); mg.gain.value = 1.6; ac.haupt.connect(mg).connect(ac.destination); } rauschen = rauschen || noise(); if (!hall){ hall = ac.createConvolver(); var len = ac.sampleRate * 3, ir = ac.createBuffer(2, len, ac.sampleRate); for (var c = 0; c < 2; c++){ var dd = ir.getChannelData(c); for (var k = 0; k < len; k++) dd[k] = (Math.random() * 2 - 1) * Math.pow(1 - k / len, 3); } hall.buffer = ir; var hg = ac.createGain(); hg.gain.value = .45; hall.connect(hg).connect(ac.haupt || ac.destination); } } catch(e){ uiAlert('Ton geht auf diesem Gerät nicht.'); return; }
   LISTE = liste; BEAT_SEK = sek; mChips(liste === PRAXIS ? M_BEOB : M_GEF); mWerSetzen(liste === PRAXIS ? 'diego' : null);
   mLauf = {id:uid(), t:Date.now(), t0:Date.now(), song:name, reise:true, praxis:liste === PRAXIS, wer:liste === PRAXIS ? 'diego' : null, stamps:[], timer:null};
-  $('mFeed').innerHTML = ''; $('mWeiter').classList.remove('hidden');
+  $('mFeed').innerHTML = ''; $('mWeiter').classList.remove('hidden'); $('mAntwort').classList.toggle('hidden', liste !== PRAXIS);
   beatSpielen(0);
   beatTimer = setInterval(function(){ beatPlaner(); if (mLauf && mLauf.reise && Date.now() - mLauf.beatT0 > BEAT_SEK * 1000){ if (beatNr < LISTE.length - 1) beatSpielen(beatNr + 1); else $('mStop').click(); } }, 25);
   mLauf.timer = setInterval(function(){ $('mClock').textContent = mZeit(mJetzt()); }, 500);
@@ -2023,6 +2054,23 @@ function reiseStart(liste, sek, name){
 }
 $('mReise').addEventListener('click', function(){ reiseStart(BEATS, 30, 'Beat-Reise'); });
 $('mPraxis').addEventListener('click', function(){ reiseStart(PRAXIS, 180, 'Praxis-Musik (Studie)'); });
+// Sparky antwortet: auf das letzte Gefühl abwechselnd ein bestätigendes Stück (gleiche Farbe)
+// oder ein Gegenstück (andere Farbe). Was danach getippt wird, zeigt, was gut tut.
+var GEGEN = {Ruhe:['emotional','hell'], Weite:['erdig','warm'], Freude:['dunkel','traumhaft'], Kraft:['traumhaft','hell'], 'Berührt':['hell','warm'], Schwere:['hell','warm'], Trauer:['warm','hell'], Angst:['erdig','traumhaft'], Reibung:['erdig','warm'], 'Körper':['traumhaft','warm'], Bilder:['hell','erdig']};
+$('mAntwort').addEventListener('click', function(){
+  if (!mLauf || LISTE !== PRAXIS) return;
+  var letzt = mLauf.stamps.filter(function(x){ return x.k; }).slice(-1)[0];
+  if (!letzt){ uiAlert('Tipp zuerst ein Gefühl an, dann antwortet Sparky.'); return; }
+  var gr = letzt.k.split(' › ')[0], jetzt = LISTE[beatNr];
+  mLauf.antworten = mLauf.antworten || {}; var nr = mLauf.antworten[gr] = (mLauf.antworten[gr] || 0) + 1;
+  var art = nr % 2 ? 'gegenteil' : 'bestaetigen';
+  var farben = art === 'bestaetigen' ? [jetzt.farbe] : (GEGEN[gr] || ['hell']).filter(function(f){ return f !== jetzt.farbe; });
+  var wahl = LISTE.map(function(B, i){ return i; }).filter(function(i){ return i !== beatNr && farben.indexOf(LISTE[i].farbe) >= 0; });
+  if (!wahl.length) wahl = LISTE.map(function(B, i){ return i; }).filter(function(i){ return i !== beatNr; });
+  var n = wahl[Math.floor(Math.random() * wahl.length)];
+  mLauf.stamps.push({t:Math.round(mJetzt()), b:jetzt.n, antwort:art, auf:letzt.k, neu:LISTE[n].n, text:'Sparky antwortet auf «' + letzt.k + '» ' + (art === 'gegenteil' ? 'mit einem Gegenstück' : 'bestätigend') + ': ' + LISTE[n].n + ' (' + LISTE[n].farbe + ')'});
+  beatSpielen(n); mFeed(); mLive();
+});
 $('mWeiter').addEventListener('click', function(){ if (mLauf && mLauf.reise){ if (beatNr < LISTE.length - 1) beatSpielen(beatNr + 1); else $('mStop').click(); } });
 function mWerSetzen(w){
   $('mWer').classList.toggle('hidden', !w); $('mGefuehle').classList.toggle('gross', w === 'klient');
@@ -2039,7 +2087,7 @@ $('mStart').addEventListener('click', function(){
   try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function(l){ if (mLauf) mLauf.wl = l; else l.release(); }).catch(function(){}); } catch(e){}
   mBox('mRunBox');
 });
-function mEnde(){ if (!mLauf) return null; if (mLauf.reise) beatStopp(); $('mWeiter').classList.add('hidden'); clearInterval(mLauf.timer); try { if (mLauf.wl) mLauf.wl.release(); } catch(e){} var l = mLauf; mLauf = null; mLive(); return l; }
+function mEnde(){ if (!mLauf) return null; if (mLauf.reise) beatStopp(); $('mWeiter').classList.add('hidden'); $('mAntwort').classList.add('hidden'); clearInterval(mLauf.timer); try { if (mLauf.wl) mLauf.wl.release(); } catch(e){} var l = mLauf; mLauf = null; mLive(); return l; }
 $('mAbbruch').addEventListener('click', function(){ mEnde(); mBox('mStartBox'); });
 function mZeile(e){
   return '«' + (e.song || 'Song') + '» · ' + mZeit(e.dur) + (e.stamps.length ? ': ' + e.stamps.map(function(x){ return mWann(x) + ' ' + (x.k || '«' + x.text + '»'); }).join(', ') : ', nichts angetippt');
