@@ -1,0 +1,36 @@
+/* Copacabana · Design-Runde «schön» (Tropenprint: sonnig, ein Hibiskus-Akzent). Als letztes Stylesheet geladen. */
+/* ---- Figur als kleines lebendiges Icon (schoen.js setzt .sch-ava) ---- */
+/* ---- Figur als kleines lebendiges Icon (schoen.js setzt .sch-ava) ---- */
+@keyframes schAtem{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+@keyframes schFreut{0%{transform:scale(1)}30%{transform:translateY(-3px) scale(1.12) rotate(-5deg)}65%{transform:scale(.97) rotate(2deg)}100%{transform:scale(1)}}
+html img.sch-ava{border-radius:50%!important;object-fit:cover!important;object-position:50% 50%!important;animation:schAtem 5.2s ease-in-out infinite;transform-origin:50% 80%;filter:none!important;opacity:1!important;background:var(--sch-ring-bg,#f4ead8)}
+html img.sch-ava.sch-freut{animation:schFreut .72s cubic-bezier(.3,.7,.3,1)}
+@media (prefers-reduced-motion:reduce){html img.sch-ava,html img.sch-ava.sch-freut{animation:none}}
+html{--sch-ring-bg:#FFE7C2}
+html img.sch-ava{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--d-mango,#FFB23F),0 6px 14px -8px rgba(15,61,46,.45)!important;border:0!important}
+html body .wrap :is(h1,h2,h3,b,.name){text-wrap:balance}
+html body .wrap p{text-wrap:pretty}
+
+/* Copa grüsst: Sprechblase als ruhige Karte, Copa oben bündig daneben */
+html body .copa-gruss{display:grid!important;grid-template-columns:56px minmax(0,1fr);gap:12px;align-items:start}
+html body .copa-gruss #copaBild{margin-top:4px}
+html body .copa-gruss .bubble{background:var(--m-surface,#fff)!important;border:1px solid var(--m-line,#F6E2CB)!important;border-radius:4px 20px 20px 20px!important;padding:12px 16px!important;font-size:15.5px;line-height:1.5;color:var(--m-ink2,#2F5446);box-shadow:var(--m-shadow)}
+html body .copa-gruss .bubble b{color:var(--m-accent-ink,#B8234F)}
+
+/* Wächst mit dir: Zahlenzeile ruhig, Knöpfe gleich breit */
+html body section.r8-wm .zahl{text-wrap:balance}
+html body section.r8-wm .unten{display:grid!important;grid-template-columns:1fr 1fr;gap:8px}
+html body section.r8-wm .unten .r7-knopf{width:100%;min-width:0;justify-content:center;white-space:normal;text-align:center}
+
+/* Schwebeknöpfe: nur Nova (rund) und Korb, keine zusätzliche Nova-Pille über dem Inhalt */
+html body .nova-pille{display:none!important}
+html body .nova-btn{filter:none!important}
+html body .korbknopf{min-height:48px;padding:0 18px!important;font-weight:700}
+html body .wrap{padding-bottom:calc(152px + env(safe-area-inset-bottom,0px))!important}
+
+/* Fundkiste: Copa statt Emoji als kleines Zeichen */
+html body .r6-ue-e{font-size:0!important;width:40px;height:40px;flex:none;border-radius:50%;background:url(ava.webp) 50% 50%/cover #FFE7C2;box-shadow:0 0 0 2px #fff,0 0 0 4px var(--d-mango,#FFB23F);animation:schAtem 5.2s ease-in-out infinite;transform-origin:50% 80%}
+@media (prefers-reduced-motion:reduce){html body .r6-ue-e{animation:none}}
+
+/* Musik-Knopf: bleibt oben rechts neben dem Kopf, scrollt mit und liegt so nie über Inhalt */
+html body .copa-musik{position:absolute!important}
