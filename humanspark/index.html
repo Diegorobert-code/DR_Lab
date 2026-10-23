@@ -190,6 +190,7 @@ h1{color:#F2C14E}
       <input id="mSong" class="inp" maxlength="80" autocomplete="off" placeholder="Titel – Künstler">
       <button class="btn primary" id="mStart">▶ Song läuft jetzt</button>
       <a class="btn ghost" href="../nova/reden.html?f=sparky" style="display:block;text-align:center;text-decoration:none">🦊 Mit Sparky reden</a>
+      <button class="btn ghost" id="mFinger">☝️ Finger drauf: Puls und HRV dazu messen</button>
     </div>
     <div class="box hidden" id="mRunBox">
       <div class="phase" id="mTitel">Song</div>
@@ -1913,6 +1914,7 @@ $('mStop').addEventListener('click', function(){
   var e = {id:l.id, t:l.t, type:'musik', song:l.song, dur:Math.round((Date.now() - l.t0) / 1000), stamps:l.stamps};
   addEntry(e); mZeigen(e);
 });
+$('mFinger').addEventListener('click', function(){ showTab('messen'); });
 $('mNeu').addEventListener('click', function(){ $('mSong').value = ''; mBox('mStartBox'); });
 // Für die Höranalyse (hoeranalyse.py worte.json): [{t, text}] mit Song-Sekunde
 $('mKopie').addEventListener('click', function(){
