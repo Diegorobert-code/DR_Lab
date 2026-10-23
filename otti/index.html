@@ -16,6 +16,7 @@
 <link rel="preload" as="image" href="otti-3d.jpg">
 <link rel="stylesheet" href="../nova/puppe.css">
 <link rel="stylesheet" href="grafik.css">
+<link rel="stylesheet" href="abenteuer/abenteuer.css">
 <style>
   /* Raster 8 px. Schrift: 28 Titel · 20 Überschrift · 17 Text · 16 Neben. Animiert wird nur transform und opacity. */
   :root { --nacht:#0b1a3a; --nacht2:#16306b; --gold:#f5c542; --gold2:#e0a91f; --text:#f4f1e8; --leise:#c3cce6;
@@ -558,10 +559,11 @@
   <div class="blattinnen">
     <div class="griff" aria-hidden="true"></div>
     <h2>Was spielen wir?</h2>
-    <h3 class="kapitel">Ottis Filme</h3>
+    <h3 class="kapitel">Ottis Filme &amp; Abenteuer</h3>
     <div class="spielkarten">
       <button class="sk film" style="--c:#7fd4ff" type="button" data-film="ny"><span class="neu">NEU</span><img src="../mondschein/film/otti-ny.jpg" alt="" loading="lazy"><b>Otti in New York</b><small>Trickfilm · 3½ Min.</small></button>
       <button class="sk film" style="--c:#b59bff" type="button" data-film="katzen"><span class="neu">NEU</span><img src="../mondschein/film/otti-katzen.jpg" alt="" loading="lazy"><b>Der Katzenplanet</b><small>Trickfilm · 3 Min.</small></button>
+      <button class="sk ab-karte" type="button" data-abenteuer><span class="neu">NEU</span><span class="e" aria-hidden="true">🚀</span><span class="ab-karte-tx"><b>Abenteuer</b><small>5 Missionen mit Otti und neuen Helden</small></span></button>
     </div>
     <h3 class="kapitel">Suchen &amp; bewegen</h3>
     <div class="spielkarten">
@@ -716,6 +718,8 @@
 <script src="runde9.js" defer></script>
 <script src="grafik.js" data-modus="weich" defer></script>
 <script src="huepf.js" defer></script>
+<script src="abenteuer/geschichten.js" defer></script>
+<script src="abenteuer/abenteuer.js" defer></script>
 <script>
 (function () {
   // Live-Gespräch mit Otti: ElevenLabs Agent. Nur von dieser Adresse aus erreichbar, mit Tageslimit.
@@ -2641,6 +2645,8 @@
       try { stimmeStopp(); schlafen(true); } catch (e) {}
     }
   };
+  // Abenteuer (abenteuer/abenteuer.js): Ottis Stimme, Klänge, Sterne und Sticker der App mitbenutzen
+  window.OTTI_API.abenteuer = { sprechen: sprechen, stimmeStopp: stimmeStopp, klang: klang, sternDazu: sternDazu, stickerDazu: stickerDazu, spielBeenden: spielBeenden, tippWeg: tippWeg };
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
 })();
 </script>
