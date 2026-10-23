@@ -206,6 +206,8 @@ button.ghost{min-height:48px}
   @keyframes plopp{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
 }
 @media (orientation:landscape) and (max-height:500px){.stage{gap:12px}.goat{width:min(34vh,200px)}button.haupt{min-height:72px}}
+/* QA 23.10.: unten Platz für Eltern-Pille und Nova, sonst lag «Für Eltern: 3 Sekunden drücken» dauerhaft darunter */
+.stage{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
 </style>
 
 <script src="../trickfilmwelt/trickfilmwelt.js" data-app="zahnboecklein" data-stil="aura" data-szene="aura/nacht.webp" data-welt="aura/welt.webp" data-figur="aura/figur-idle.webp" data-posen="aura/figur-winkt.webp;aura/figur-lacht.webp" data-css="aura/aura.css" data-text="Das Zahnböcklein wartet im Mondschein" data-karten=".extras;.trip"></script>
@@ -304,7 +306,7 @@ button.ghost{min-height:48px}
 </main>
 <main id="kino" class="stage" hidden>
   <h1 id="kinoTitle" style="font-size:2rem">Film</h1>
-  <div class="vidwrap"><video id="vid" controls playsinline preload="metadata"></video><div class="laed" id="kinoLaed" hidden><span class="laedpunkte" aria-hidden="true"><b></b><b></b><b></b></span>Film lädt …</div></div>
+  <div class="vidwrap"><video id="vid" controls playsinline preload="none"></video><div class="laed" id="kinoLaed" hidden><span class="laedpunkte" aria-hidden="true"><b></b><b></b><b></b></span>Film lädt …</div></div>
   <button id="kinoPlay" class="big playbig" type="button" hidden>▶ Film ab!</button>
   <button class="ghost" id="kinoBack" type="button">Zurück</button>
 </main>
@@ -616,7 +618,7 @@ $("topBack").addEventListener("click",()=>{const now=["brush","kino","done","bab
  if(now==="baby"){$("bBack").click();return}
  if(now==="brush"){running=false;paused=false;$("pause").textContent="Pause";musicStop();hush();camStop()}
  show("start")});
-$("film1").addEventListener("click",()=>kino("film/zahnfee.mp4","Das Zahnböcklein und die Zahnfee","bilder/poster-fee.jpg"));
+$("film1").addEventListener("click",()=>kino("film/zahnfee.mp4","Das Zahnböcklein und die Zahnfee","bilder/poster-zahn.jpg"));
 $("film2").addEventListener("click",()=>kino("film/tanzfilm.mp4","Putz-Tanz mit dem Zahnböcklein","bilder/poster-tanz.jpg"));
 $("kinoBack").addEventListener("click",()=>{const v=$("vid");v.pause();if(intro){introEnd();return}show("start")});
 $("vid").addEventListener("ended",()=>{if(intro){introEnd();return}const n=getStars()+1;if($("kinoTitle").textContent.startsWith("Putz")){setStars(n);showStars()}});
@@ -656,7 +658,7 @@ document.addEventListener("visibilitychange",()=>{if(document.hidden&&running&&!
 if("serviceWorker" in navigator&&!window.Capacitor&&location.protocol==="https:"&&!/claude|claudeusercontent/.test(location.host)){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 // Vorschau: Putz-Szene mit Beispiel-Monstern zeichnen, damit die App nicht leer wirkt
 makeMonsters();
-if(pref("zb-film",true)&&!/#kurz|#ohnefilm/.test(location.hash)){intro=true;$("kinoBack").textContent="Überspringen";kino("film/zahnfee.mp4","Das Zahnböcklein und die Zahnfee","bilder/poster-fee.jpg")}
+if(pref("zb-film",true)&&!/#kurz|#ohnefilm/.test(location.hash)){intro=true;$("kinoBack").textContent="Überspringen";kino("film/zahnfee.mp4","Das Zahnböcklein und die Zahnfee","bilder/poster-zahn.jpg")}
 })();
 </script>
 <script src="../nova/nova.js" data-nova-app="Zahnböcklein" data-nova-kind="1" defer></script>
