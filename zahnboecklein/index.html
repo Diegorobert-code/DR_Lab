@@ -208,6 +208,9 @@ button.ghost{min-height:48px}
 @media (orientation:landscape) and (max-height:500px){.stage{gap:12px}.goat{width:min(34vh,200px)}button.haupt{min-height:72px}}
 /* QA 23.10.: unten Platz für Eltern-Pille und Nova, sonst lag «Für Eltern: 3 Sekunden drücken» dauerhaft darunter */
 .stage{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
+/* Schlaflied: keine Knöpfe über dem Nachtbild */
+body.schlaf [data-drlab-lernen],body.schlaf .nova-btn,body.schlaf .nova-pille,body.schlaf .nova-panel{display:none!important}
+.kino button.filmneu{background:var(--gold);color:#161b45}
 </style>
 
 <script src="../trickfilmwelt/trickfilmwelt.js" data-app="zahnboecklein" data-stil="aura" data-szene="aura/nacht.webp" data-welt="aura/welt.webp" data-figur="aura/figur-idle.webp" data-posen="aura/figur-winkt.webp;aura/figur-lacht.webp" data-css="aura/aura.css" data-text="Das Zahnböcklein wartet im Mondschein" data-karten=".extras;.trip"></script>
@@ -247,7 +250,7 @@ button.ghost{min-height:48px}
     <h2>Für Eltern</h2>
     <p>Zweimal täglich putzen, abends am gründlichsten. Kinderzahnpasta mit Fluorid: bis 6 Jahre erbsengross. Danach nur ausspucken, nicht ausspülen. Bis etwa 8 Jahre nachputzen. Sanft putzen, nicht drücken. Fragen? Eure Zahnärztin oder euer Zahnarzt hilft gern.</p>
     <h2>Einstellungen</h2>
-    <label class="toggle" for="filmOpen"><input id="filmOpen" type="checkbox" checked> Zahnfee-Film beim Öffnen zeigen</label>
+    <label class="toggle" for="filmOpen"><input id="filmOpen" type="checkbox" checked> Zahnfee-Film einmal am Tag beim Öffnen zeigen</label>
     <label class="toggle" for="camOk"><input id="camOk" type="checkbox"> Zauberspiegel (Kamera) beim Putzen</label>
     <p style="font-size:.85rem;color:var(--muted)">Mit der Kamera-Hilfe sieht das Zahnböcklein, ob euer Kind vor dem Gerät sitzt, den Mund öffnet und die Bürste bewegt, und gibt dazu Tipps. Das Bild wird nur auf diesem Gerät ausgewertet: nichts wird aufgenommen, gespeichert oder gesendet. Ausschalten jederzeit hier oder mit «Kamera aus». Welche Zahnzone gerade geputzt wird, kann die Kamera nicht sicher erkennen; die Zonen sagt das Zahnböcklein an.</p>
     <p style="font-size:.85rem;color:var(--muted)">Im Zauberspiegel sieht sich euer Kind selbst. Das Zahnböcklein winkt zurück, erkennt Nicken, ein breites Lächeln und die erhobene Bürste und lobt beim Putzen. Es beurteilt nur das Putzen, nicht die Gesundheit der Zähne.</p>
@@ -587,7 +590,7 @@ let bTimer=null,bSleep=null;
 function bGet(k,d){try{return JSON.parse(localStorage.getItem(k)||"null")??d}catch(e){return d}}
 function bSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 function babyMusic(){const old=LIED;LIED="spieluhr";musicStart();LIED=old}
-function babyStop(){clearInterval(bTimer);bTimer=null;if(bSleep){bSleep.remove();bSleep=null}musicStop()}
+function babyStop(){clearInterval(bTimer);bTimer=null;if(bSleep){bSleep.remove();bSleep=null}document.body.classList.remove("schlaf");musicStop()}
 function bOpen(v){babyStop();$("bMenu").hidden=!!v;$("bIntro").hidden=!!v;$("bView").hidden=!v;if(v)({freund:bFreund,putzen:bPutzen,tagebuch:bTagebuch,zahnen:bZahnen})[v]();window.scrollTo(0,0)}
 function bFreund(i){const done=bGet("zb-baby-schritte",0);if(i==null)i=Math.min(done,BSCHRITTE.length-1);const S=BSCHRITTE[i],V=$("bView");
  V.innerHTML='<div class="bsteps">'+BSCHRITTE.map((_,k)=>'<b class="'+(k<done?"ok":"")+(k===i?" on":"")+'">'+(k<done?"★":k+1)+'</b>').join("")+'</div><img class="bimg wiggle" src="bilder/tanz/'+S.img+'.jpg" alt="Zahnböcklein mit Zahnbürste"><div class="bsay"></div><div class="btip"></div><button type="button" id="bOk">Geschafft ⭐</button>'+(i<BSCHRITTE.length-1?'<button class="ghost" type="button" id="bNext">Nächster Schritt ›</button>':"");
@@ -609,7 +612,7 @@ function bTagebuch(){const V=$("bView"),Z=bGet("zb-baby-zaehne",{});const n=Obje
  $("bzInfo").textContent=first?"Erstes Zähnchen: "+new Date(first).toLocaleDateString("de-CH",{day:"numeric",month:"long",year:"numeric"}):"Noch kein Zähnchen eingetragen. Die ersten kommen meist unten in der Mitte.";
  V.querySelectorAll(".jaw button").forEach(b=>b.addEventListener("click",()=>{const id=b.dataset.z;if(Z[id]){if(!confirm("Zähnchen wieder austragen?"))return;delete Z[id]}else{Z[id]=new Date().toISOString().slice(0,10);pop();if(!n)say("lob1",true)}bSet("zb-baby-zaehne",Z);bTagebuch()}))}
 function bZahnen(){const V=$("bView");V.innerHTML='<img class="bimg breathe" src="bilder/tanz/wiegen-4.jpg" alt="Zahnböcklein schläft"><button type="button" id="bzLied">🌙 Schlaflied starten</button><div class="btip"><b>Was oft gut tut</b><ul class="blist"><li>Ein kühler Beissring aus dem Kühlschrank (nicht aus dem Tiefkühler)</li><li>Das Zahnfleisch mit sauberem Finger sanft massieren</li><li>Viel Nähe: kuscheln, tragen, leise singen</li><li>Sabber sanft abtupfen, damit die Haut ruhig bleibt</li></ul></div><div class="btip">Bei Fieber, Durchfall, grossem Unwohlsein oder wenn du unsicher bist: bitte die Kinderärztin fragen. Diese App ersetzt keine Beratung.</div>';
- $("bzLied").addEventListener("click",()=>{babyMusic();bSleep=document.createElement("div");bSleep.className="sleep";bSleep.innerHTML='<img class="breathe" src="bilder/tanz/wiegen-4.jpg" alt=""><div class="bsay">Schlaf gut, kleine Zähnchen.</div><button class="ghost" type="button">Lied aus</button>';document.body.appendChild(bSleep);bSleep.querySelector("button").addEventListener("click",()=>{babyStop()})})}
+ $("bzLied").addEventListener("click",()=>{babyMusic();bSleep=document.createElement("div");bSleep.className="sleep";bSleep.innerHTML='<img class="breathe" src="bilder/tanz/wiegen-4.jpg" alt=""><div class="bsay">Schlaf gut, kleine Zähnchen.</div><button class="ghost" type="button">Lied aus</button>';document.body.appendChild(bSleep);document.body.classList.add("schlaf");bSleep.querySelector("button").addEventListener("click",()=>{babyStop()})})}
 $("babyGo").addEventListener("click",()=>{show("baby");bOpen(null)});
 $("bMenu").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>bOpen(b.dataset.v)));
 $("bBack").addEventListener("click",()=>{if(!$("bView").hidden)bOpen(null);else show("start")});
@@ -658,7 +661,10 @@ document.addEventListener("visibilitychange",()=>{if(document.hidden&&running&&!
 if("serviceWorker" in navigator&&!window.Capacitor&&location.protocol==="https:"&&!/claude|claudeusercontent/.test(location.host)){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 // Vorschau: Putz-Szene mit Beispiel-Monstern zeichnen, damit die App nicht leer wirkt
 makeMonsters();
-if(pref("zb-film",true)&&!/#kurz|#ohnefilm/.test(location.hash)){intro=true;$("kinoBack").textContent="Überspringen";kino("film/zahnfee.mp4","Das Zahnböcklein und die Zahnfee","bilder/poster-zahn.jpg")}
+// Begrüssungsfilm nur beim ersten Öffnen am Tag, danach ein Knopf «Film ansehen»
+const filmTag=new Date().toLocaleDateString("sv");let filmGesehen=null;try{filmGesehen=localStorage.getItem("zb-film-tag")}catch(e){}
+if(pref("zb-film",true)&&filmGesehen!==filmTag&&!/#kurz|#ohnefilm/.test(location.hash)){try{localStorage.setItem("zb-film-tag",filmTag)}catch(e){}intro=true;$("kinoBack").textContent="Überspringen";kino("film/zahnfee.mp4","Das Zahnböcklein und die Zahnfee","bilder/poster-zahn.jpg")}
+else{$("film1").textContent="🧚 Film ansehen";$("film1").classList.add("filmneu")}
 })();
 </script>
 <script src="../nova/nova.js" data-nova-app="Zahnböcklein" data-nova-kind="1" defer></script>
