@@ -150,7 +150,7 @@
     $('fbSend').onclick = send;
     $('fbOk').onchange = () => { store.set('ok', $('fbOk').checked); render(); };
 
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SR = null; // Keine Browser-Spracherkennung (Chrome und Safari können Audio an Server schicken). Diktieren geht über die Tastatur.
     $('fbDict').onclick = () => {
       if (!SR){ $('fbMsg').textContent = 'Sprechen: im Textfeld das Mikrofon auf der iPhone-Tastatur antippen.'; $('fbText').focus(); return; }
       if (rec){ stopDict(); return; }
