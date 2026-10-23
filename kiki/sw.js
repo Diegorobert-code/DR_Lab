@@ -1,5 +1,5 @@
 // Kiki singt – Offline-Cache (nur eigene Dateien, keine Daten)
-const CACHE = 'kiki-v26';
+const CACHE = 'kiki-v27';
 const FILES = ['./inhalt/sprich.js', './inhalt/sprich-daten.js', './inhalt/sprich.css', './inhalt/homescreen.js', './icon-maskable-192.png', './icon-maskable-512.png', './', './index.html', './musik.js', './musik/ava-carmen.m4a', './manifest.webmanifest', './icon.svg', './icon-180.png', './icon-192.png', './icon-512.png', './feedback.js', './inhalt/inhalt.css', './inhalt/inhalt.js', './inhalt/daten.js', './inhalt/lieder.js', './figur.jpg', './figur-gross.jpg', './kiki-3d.jpg', './posen/index.json', './posen/hallo.jpg', './posen/singt.jpg', './posen/hoert.jpg', './posen/freut.jpg', './posen/verbeugt.jpg', './posen/tanzt.jpg', './posen/zusammen.jpg', './posen/schlaflied.jpg', './stimme/index.json', './stimme/saetze.json', '../trickfilmwelt/trickfilmwelt.js', '../trickfilmwelt/aura.css', './aura/aura.css', './aura/nacht.webp', './aura/welt.webp', './aura/figur-idle.webp', './aura/figur-winkt.webp', './aura/figur-lacht.webp'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
