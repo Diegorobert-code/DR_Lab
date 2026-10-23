@@ -123,9 +123,9 @@
     d.addEventListener('keydown', function (e) { if (root.hidden) return; if (e.key === 'Escape') zurueck(); if (e.key === 'Enter' && e.target.matches && e.target.matches('[data-wt-in]')) waehle(e.target.getAttribute('data-wt-in'), e.target.value); });
     return root;
   }
-  function oeffnen(weltId) {
+  function oeffnen(weltId, storyId) {
     bauRoot(); root.hidden = false; d.documentElement.classList.add('wt-offen');
-    if (weltId && welt(weltId)) { zeigWald(); setTimeout(function () { reinfliegen(weltId); }, RUHIG ? 0 : 260); }
+    if (weltId && welt(weltId)) { zeigWald(); setTimeout(function () { reinfliegen(weltId, storyId); }, RUHIG ? 0 : 260); }
     else zeigWald();
   }
   function schliessen() { still(); zustand.vorlesen = false; if (root) root.hidden = true; d.documentElement.classList.remove('wt-offen'); markHeute(); }
@@ -155,7 +155,7 @@
     ansicht.className = 'wt-ansicht wt-wald';
     ansicht.innerHTML = '<div class="wt-bg">' + kulisse('wald') + '</div>' +
       kopf('Zauberwald') +
-      '<div class="wt-scroll">' + tippHTML() + '<p class="wt-intro">Im Zauberwald stehen Tore. Tipp ein Tor an, und es geht auf.</p>' +
+      '<div class="wt-scroll">' + tippHTML() + profilHTML() + '<p class="wt-intro">Im Zauberwald stehen Tore. Tipp ein Tor an, und es geht auf.</p>' +
       '<div class="wt-tore">' + ws.map(torHTML).join('') + '</div>' +
       '<div class="wt-pass" aria-label="Weltenpass: ' + n + ' von ' + ws.length + ' Welten besucht"><b>Weltenpass</b><span>' +
       ws.map(function (w) { return '<i class="' + ((pass[w.id] || []).length ? 'an' : '') + '" title="' + esc(w.name) + '">' + w.e + '</i>'; }).join('') + '</span><small>' + n + ' von ' + ws.length + ' Welten</small></div>' +
@@ -175,9 +175,25 @@
     var neu = alle().filter(function (x) { return !gehoert(x.g.id); });
     var tipp = (basis && neu.filter(function (x) { return x.w.id === basis.w.id; })[0]) || null;
     if (!tipp && basis) tipp = neu.filter(function (x) { return x.g.cast.some(function (c) { return basis.g.cast.indexOf(c) >= 0; }); })[0] || null;
+    var lw = profil().lieblingsWelt; if (!tipp && lw) { tipp = neu.filter(function (x) { return x.w.id === lw.id; })[0] || null; if (tipp && !basis) grund = 'Deine Lieblingswelt: ' + lw.name; }
     if (!tipp) { var h = heute(); tipp = neu.filter(function (x) { return x.w.id === h.id; })[0] || neu[0] || null; if (!basis) grund = 'Heute offen: ' + h.tor; else if (tipp) grund = grund + ': etwas Neues'; }
     if (!tipp && basis) { tipp = basis; grund = 'Deine Lieblingsgeschichte'; }
     return tipp ? { w: tipp.w, g: tipp.g, grund: grund } : null;
+  }
+  /* Lern-Profil (nur auf diesem Handy): Stempel, eigene Geschichten und «Mag ich» ergeben die Stufe.
+     Stufe 1: Mila fragt weniger (ohne «Wer hilft?», Otti hilft). Vorschläge kommen zuerst aus der Lieblingswelt. */
+  var STUFEN = [[0, 'Neu im Wald', '🌱'], [2, 'Torfinderin', '🗝️'], [5, 'Weltenreisende', '🧭'], [9, 'Geschichtenheldin', '⭐'], [14, 'Zauberwald-Meisterin', '👑']];
+  function profil() {
+    var v = hol(), p = v.pass || {}, n = 0, best = null, bestN = 0;
+    for (var k in p) { n += p[k].length; if (p[k].length > bestN) { bestN = p[k].length; best = k; } }
+    var m = (v.mag || []).map(finde).filter(Boolean); if (m.length) best = m[0].w.id;
+    var pk = n + 2 * (v.eigene || []).length + (v.mag || []).length, i = 0;
+    while (i < STUFEN.length - 1 && pk >= STUFEN[i + 1][0]) i++;
+    return { punkte: pk, stufe: i + 1, name: STUFEN[i][1], e: STUFEN[i][2], bis: i < STUFEN.length - 1 ? STUFEN[i + 1][0] - pk : 0, naechsteName: i < STUFEN.length - 1 ? STUFEN[i + 1][1] : '', lieblingsWelt: best ? welt(best) : null, geschichten: n };
+  }
+  function profilHTML() {
+    var pf = profil();
+    return '<p class="wt-profil"><span aria-hidden="true">' + pf.e + '</span> Stufe ' + pf.stufe + ' · ' + esc(pf.name) + (pf.bis ? '<small>Noch ' + pf.bis + ' bis «' + esc(pf.naechsteName) + '»</small>' : '') + '</p>';
   }
   function tippHTML() {
     var t = empfehlung(); if (!t) return '';
@@ -310,6 +326,7 @@
     if (!zustand.welt) zustand.welt = heute();
     entwurf = { welt: zustand.welt.id, von: ausWelt ? 'welt' : 'wald', schritt: 0 };
     SCHRITTE = ausWelt ? ['held', 'problem', 'freund', 'loesung'] : ['held', 'welt', 'problem', 'freund', 'loesung'];
+    if (profil().stufe <= 1) { SCHRITTE = SCHRITTE.filter(function (k) { return k !== 'freund'; }); entwurf.freund = 'otti'; }
     ansicht.className = 'wt-ansicht wt-erfinden';
     ansicht.innerHTML = '<div class="wt-bg">' + kulisse(zustand.welt.bg) + '</div>' + kopf('Erfinden mit Mila') + '<div class="wt-scroll"><div class="wt-form"></div></div>';
     formular();
@@ -335,6 +352,7 @@
   function gross(s) { s = String(s || '').trim(); return s.charAt(0).toUpperCase() + s.slice(1); }
   function satz(s) { s = gross(s); return /[.!?»]$/.test(s) ? s : s + '.'; }
   function machGeschichte(e) {
+    if (e.freund === e.held) e.freund = e.held === 'otti' ? 'kometli' : 'otti';
     var w = welt(e.welt), H = nameVon(e.held), F = nameVon(e.freund), hasiF = e.freund === 'hasi', hasiH = e.held === 'hasi';
     var hf = fig(e.held), ff = fig(e.freund);
     var s = [
@@ -349,6 +367,7 @@
   }
   function speichern() {
     var v = hol(); v.eigene = v.eigene || [];
+    if ((entwurf.held || 'otti') === entwurf.freund) entwurf.freund = entwurf.freund === 'otti' ? 'kometli' : 'otti';
     var heute_ = new Date(), e = { id: 'e' + Date.now().toString(36), welt: entwurf.welt, held: entwurf.held || 'otti', freund: entwurf.freund || 'kometli', problem: entwurf.problem, loesung: entwurf.loesung || D().ERFINDEN.loesungen[0], titel: titelVorschlag(), datum: heute_.getDate() + '.' + (heute_.getMonth() + 1) + '.' };
     v.eigene.push(e); if (v.eigene.length > 60) v.eigene.shift(); leg(v);
     zustand.welt = welt(e.welt); zeigWelt(e.welt);
@@ -393,5 +412,5 @@
   function start() { markHeute(); if (/^#tore\b/.test(location.hash)) oeffnen(location.hash.split('-')[1] || ''); }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', start); else start();
 
-  window.Welten = { oeffnen: oeffnen, schliessen: schliessen, heute: heute, _geschichte: machGeschichte };
+  window.Welten = { oeffnen: oeffnen, schliessen: schliessen, heute: heute, profil: profil, empfehlung: empfehlung, _geschichte: machGeschichte };
 })();
