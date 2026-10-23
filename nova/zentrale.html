@@ -55,6 +55,20 @@
   .blatt b { color:var(--gold); font-size:18px; margin-bottom:4px; }
   .blatt button, .blatt a { display:block; text-align:left; border:0; border-radius:14px; padding:14px; background:#ffffff10; color:var(--text); font:inherit; text-decoration:none; }
   .blatt .klein { color:var(--leise); font-size:13px; margin-top:6px; }
+  /* Drei App-Designs vorne, Threads aufklappbar mit letzter Zusammenfassung und To-dos. */
+  .designs { width:100%; max-width:480px; display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin:10px 0 2px; }
+  .designs:empty { display:none; }
+  .designs figure { margin:0; border-radius:14px; overflow:hidden; background:#ffffff10; }
+  .designs img { width:100%; aspect-ratio:3/4; object-fit:cover; display:block; }
+  .designs figcaption { font-size:11px; color:var(--leise); padding:4px 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  details.karte { display:block; padding:0; }
+  details.karte summary { display:flex; align-items:center; gap:12px; padding:14px; list-style:none; cursor:pointer; }
+  details.karte summary::-webkit-details-marker { display:none; }
+  details.karte .mehr { padding:0 14px 14px 52px; color:var(--leise); font-size:14px; }
+  details.karte .mehr ul { margin:6px 0; padding-left:0; list-style:none; }
+  details.karte .mehr li.erledigt { text-decoration:line-through; opacity:.6; }
+  details.karte .mehr li .n { color:var(--gold); font-size:12px; margin-left:4px; }
+  details.karte .mehr a { color:var(--gold); }
   #druck { display:none; }
   @media print {
     body { background:#fff; color:#000; overflow:visible; height:auto; }
@@ -71,6 +85,7 @@
     <h1>Nova Zentrale</h1>
     <p class="tipp">Wisch nach links: jede KI hört dich sofort.</p>
     <div class="kis" id="kis"></div>
+    <div class="designs" id="designs"></div>
     <div class="liste" id="liste"><div class="leer">Threads werden geladen …</div></div>
   </section>
 </div>
@@ -179,6 +194,32 @@
   var m = location.hash.match(/liste=([^&]+)/), quelle = m ? decodeURIComponent(m[1]) : '';
   try { if (quelle) { localStorage.setItem('zentrale.quelle', quelle); history.replaceState(null, '', location.pathname + location.search); } else quelle = localStorage.getItem('zentrale.quelle') || ''; } catch (e) {}
   function karte(t, zeichen) {
+    // Mit Zusammenfassung oder To-dos (vom Server): aufklappbar, sonst wie bisher ein direkter Link.
+    var todos = t.todos || [];
+    if (t.zusammenfassung || todos.length) {
+      var d = document.createElement('details'); d.className = 'karte' + (t.wichtig ? ' wichtig' : '');
+      var su = document.createElement('summary');
+      var z0 = document.createElement('span'); z0.className = 'zeichen'; z0.textContent = zeichen;
+      var t0 = document.createElement('span'); t0.className = 'titel'; t0.textContent = t.titel || '';
+      su.append(z0, t0);
+      var offen = todos.filter(function (x) { return !x.erledigt; }).length;
+      if (t.neu) { var n0 = document.createElement('span'); n0.className = 'neu'; n0.textContent = t.status === 'wartet auf Diego' ? 'Wartet auf dich' : 'Änderung, wichtig'; su.appendChild(n0); }
+      else if (offen) { var o0 = document.createElement('span'); o0.className = 'neu'; o0.textContent = offen + ' offen'; su.appendChild(o0); }
+      var m = document.createElement('div'); m.className = 'mehr';
+      if (t.zusammenfassung) { var p0 = document.createElement('div'); p0.textContent = t.zusammenfassung; m.appendChild(p0); }
+      if (todos.length) {
+        var ul = document.createElement('ul');
+        todos.slice().sort(function (a, b) { return (a.erledigt ? 1 : 0) - (b.erledigt ? 1 : 0); }).forEach(function (x) {
+          var li = document.createElement('li'); li.textContent = (x.erledigt ? '✓ ' : '○ ') + (x.text || '');
+          if (x.erledigt) li.className = 'erledigt';
+          if (x.neu && !x.erledigt) { var s0 = document.createElement('span'); s0.className = 'n'; s0.textContent = 'neu'; li.appendChild(s0); }
+          ul.appendChild(li);
+        });
+        m.appendChild(ul);
+      }
+      if (t.link) { var l0 = document.createElement('a'); l0.href = t.link; l0.target = '_blank'; l0.rel = 'noopener'; l0.textContent = 'Öffnen ↗'; m.appendChild(l0); }
+      d.append(su, m); return d;
+    }
     var a = document.createElement(t.link || t.url ? 'a' : 'div'); a.className = 'karte' + (t.wichtig ? ' wichtig' : '');
     if (t.link || t.url) { a.href = t.link || t.url; a.target = '_blank'; a.rel = 'noopener'; }
     var z = document.createElement('span'); z.className = 'zeichen'; z.textContent = zeichen;
@@ -235,7 +276,8 @@
     if (!l.length) return '<p>Keine offenen Threads geladen.</p>';
     return '<ul>' + l.map(function (t) {
       return '<li><b>' + esc(t.titel) + '</b>' + (t.status === 'wartet auf Diego' ? ' (wartet auf dich)' : t.wichtig ? ' (wichtig)' : '') +
-        (t.was ? '<br>' + esc(t.was) : '') + (t.link ? '<br><a href="' + esc(t.link) + '">' + esc(t.link) + '</a>' : '') + '</li>';
+        (t.zusammenfassung || t.was ? '<br>' + esc(t.zusammenfassung || t.was) : '') +
+        ((t.todos || []).length ? '<ul>' + t.todos.map(function (x) { return '<li>' + (x.erledigt ? '✓ ' : '○ ') + esc(x.text) + (x.neu && !x.erledigt ? ' (neu)' : '') + '</li>'; }).join('') + '</ul>' : '') + (t.link ? '<br><a href="' + esc(t.link) + '">' + esc(t.link) + '</a>' : '') + '</li>';
     }).join('') + '</ul>';
   }
   function designsHtml(ds) {
@@ -269,10 +311,20 @@
   });
   $('blatt').addEventListener('click', function (e) { if (e.target === $('blatt')) blattZu(); });
 
+  function designsVorne() {
+    designsHolen().then(function (ds) {
+      var box = $('designs'); box.innerHTML = '';
+      ds.slice(0, 3).forEach(function (x) {
+        var f = document.createElement('figure'); var im = document.createElement('img'); im.src = x.bild; im.alt = x.titel || ''; im.loading = 'lazy';
+        var c = document.createElement('figcaption'); c.textContent = x.app || x.titel || ''; f.append(im, c); box.appendChild(f);
+      });
+    });
+  }
+
   function laden() {
     if (!quelle) { zeigen({}, 'Threads: einmal in der Nova-App auf «🎛 Zentrale» tippen.'); return; }
     fetch(quelle + (quelle.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now(), { cache: 'no-store' })
-      .then(function (r) { return r.json(); }).then(function (d) { letzte = d; zeigen(d); })
+      .then(function (r) { return r.json(); }).then(function (d) { letzte = d; zeigen(d); designsVorne(); })
       .catch(function () { zeigen({}, 'Threads gerade nicht erreichbar.'); });
   }
   laden();
