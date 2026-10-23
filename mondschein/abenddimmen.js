@@ -1,4 +1,4 @@
-/* Abenddimmen (Design 23.10.): ab 19 Uhr wird Mondschein langsam wärmer und etwas dunkler,
+/* Abenddimmen (Design 23.10.): ab 18:30 Uhr wird Mondschein langsam wärmer und etwas dunkler,
    und je länger der Abend-Besuch dauert, desto ruhiger. Ein warmer Schleier im Multiplizieren-Modus
    liegt über allem (keine Tipper, kein Einfluss auf Knöpfe). Blau wird stärker gedämpft als Rot.
    Höchststärke so gewählt, dass auch die leise Nebenschrift über 4.5:1 Kontrast bleibt
@@ -50,7 +50,7 @@
     var karte = seg.closest('.card'); if (!karte) return;
     var k = document.createElement('div'); k.className = 'card';
     k.innerHTML = '<h3 class="ch">Abenddimmen</h3><div class="seg" id="segDimm" role="group" aria-label="Abenddimmen"></div>' +
-      '<p class="small muted" style="margin:10px 0 0">Ab 19 Uhr werden die Farben langsam wärmer und ruhiger, je länger ihr lest. Texte bleiben gut lesbar.</p>';
+      '<p class="small muted" style="margin:10px 0 0">Ab halb sieben am Abend werden die Farben langsam wärmer und ruhiger, je länger ihr lest. Texte bleiben gut lesbar.</p>';
     karte.parentNode.insertBefore(k, karte.nextSibling);
     var g = k.querySelector('#segDimm');
     function zeichnen() {
@@ -67,9 +67,9 @@
 
   function los() {
     document.body.appendChild(sch);
-    schalter(); anwenden();
-    // erster Wert sofort, ohne lange Überblendung
-    setTimeout(anwenden, 50);
+    schalter();
+    // erster Wert sofort, ohne lange Überblendung (sonst blendet der Schleier beim Öffnen 20 s lang ein)
+    sch.style.transition = 'none'; anwenden(); void sch.offsetWidth; sch.style.transition = '';
     setInterval(anwenden, 30000);
     document.addEventListener('visibilitychange', function () { if (!document.hidden) anwenden(); });
   }
