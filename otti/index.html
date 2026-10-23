@@ -425,6 +425,9 @@
   .sk .neu { position:absolute; right:10px; top:10px; font-size:11px; font-weight:900; letter-spacing:.6px; background:var(--gold); color:#2a1d00; border-radius:999px; padding:2px 8px; }
   .sk .pokale { position:absolute; right:10px; bottom:8px; font-size:13px; color:var(--gold); font-weight:800; }
   .sk .pokale:empty { display:none; }
+  .sk.film { padding:10px; min-height:0; }
+  .sk.film img { width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:14px; display:block; background:#0b1636; }
+  .kinovid { width:100%; aspect-ratio:16/9; border-radius:18px; background:#000; display:block; margin-top:8px; }
 
   /* Ebenen von unten: Zimmer, Gefühle */
   .blattinnen h2 small { display:block; font-size:15px; color:var(--leise); font-weight:600; margin-top:4px; }
@@ -555,6 +558,11 @@
   <div class="blattinnen">
     <div class="griff" aria-hidden="true"></div>
     <h2>Was spielen wir?</h2>
+    <h3 class="kapitel">Ottis Filme</h3>
+    <div class="spielkarten">
+      <button class="sk film" style="--c:#7fd4ff" type="button" data-film="ny"><span class="neu">NEU</span><img src="../mondschein/film/otti-ny.jpg" alt="" loading="lazy"><b>Otti in New York</b><small>Trickfilm · 3½ Min.</small></button>
+      <button class="sk film" style="--c:#b59bff" type="button" data-film="katzen"><span class="neu">NEU</span><img src="../mondschein/film/otti-katzen.jpg" alt="" loading="lazy"><b>Der Katzenplanet</b><small>Trickfilm · 3 Min.</small></button>
+    </div>
     <h3 class="kapitel">Suchen &amp; bewegen</h3>
     <div class="spielkarten">
       <button class="sk" style="--c:#9be37c" type="button" data-spiel="verstecken"><span class="e" aria-hidden="true">🙈</span><b>Verstecken</b><small>Findest du Otti?</small><span class="pokale"></span></button>
@@ -577,6 +585,15 @@
       <button class="sk zwei" type="button" data-spiel="quiz"><span class="e" aria-hidden="true">🏆</span><b>Otti-Quiz</b><small>Wer weiss mehr?</small><span class="pokale"></span></button>
     </div>
     <button class="nein" id="wahlZu" type="button">Zurück</button>
+  </div>
+</div>
+
+<div class="blatt" id="kino" hidden role="dialog" aria-modal="true" aria-label="Ottis Kino">
+  <div class="blattinnen">
+    <div class="griff" aria-hidden="true"></div>
+    <h2 id="kinoTitel">Ottis Kino</h2>
+    <video id="kinoVid" class="kinovid" playsinline controls preload="none" poster="../mondschein/film/otti-ny.jpg"></video>
+    <button class="nein" id="kinoZu" type="button">Zurück zu Otti</button>
   </div>
 </div>
 
@@ -1466,8 +1483,22 @@
   });
   $('feldZu').addEventListener('click', function () { klang('whoosh'); spielBeenden(); spielWahl(); });
   $('wahlZu').addEventListener('click', function () { $('spielwahl').hidden = true; });
+  /* Ottis Kino: die zwei Trickfilme (nicht im Offline-Speicher, zu gross) */
+  var FILME = { ny: ['Otti geht nach New York', 'otti-ny'], katzen: ['Der Katzenplanet', 'otti-katzen'] };
+  function kinoZu() { var v = $('kinoVid'); try { v.pause(); } catch (e) {} $('kino').hidden = true; }
+  function kinoAuf(k) {
+    var f = FILME[k], v = $('kinoVid'); if (!f) return;
+    stimmeStopp(); $('spielwahl').hidden = true;
+    $('kinoTitel').textContent = f[0];
+    v.poster = '../mondschein/film/' + f[1] + '.jpg'; v.src = '../mondschein/film/' + f[1] + '.mp4';
+    $('kino').hidden = false;
+    var pl = v.play(); if (pl && pl.catch) pl.catch(function () {});
+  }
+  $('kinoZu').addEventListener('click', kinoZu);
+  $('kino').addEventListener('click', function (e) { if (e.target === this) kinoZu(); });
   $('spielwahl').addEventListener('click', function (e) {
     if (e.target === this) { this.hidden = true; return; }
+    var fb = e.target.closest('[data-film]'); if (fb) { kinoAuf(fb.dataset.film); return; }
     var b = e.target.closest('[data-spiel]'); if (b) spielStarten(b.dataset.spiel);
   });
   // Keine toten Momente: wartet Otti zu lange auf einen Tipp, stupst er an und zeigt mit dem Finger.
@@ -2546,6 +2577,7 @@
   document.addEventListener('drlab-feedback-open', function () { spielBeenden(); });
   addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
+    if (!$('kino').hidden) { $('kinoZu').click(); return; }
     ['feier', 'spielwahl', 'zimmer', 'gefuehle', 'tour', 'eltern', 'ebereich'].some(function (id) { if (!$(id).hidden) { if (id === 'feier') $('feierZu').click(); else $(id).hidden = true; return true; } });
   });
 

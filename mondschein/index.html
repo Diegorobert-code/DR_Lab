@@ -147,6 +147,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .star{color:var(--moon2);font-size:18px}
 /* Leser */
 .stage{display:flex;justify-content:center;align-items:flex-end;gap:4px;min-height:170px;background:linear-gradient(var(--sky),transparent);border-radius:28px;padding:10px 6px 0;margin-bottom:12px}
+.rfilm{padding:10px}.rfilm video{width:100%;aspect-ratio:16/9;border-radius:16px;background:#000;display:block}.rfilm p{margin:8px 4px 0;font-weight:700}
 .stage svg{width:150px;height:158px}
 .stage.two svg{width:124px;height:132px}
 .story-text{font-size:21px;line-height:1.6;min-height:150px}
@@ -395,6 +396,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 <section class="screen" id="s-reader" aria-label="Geschichte">
   <div class="topbar"><button class="btn back" id="readerBack" aria-label="Zurück">←</button><h2 id="rTitle">Geschichte</h2><button class="btn round" data-night-toggle aria-label="Nachtmodus umschalten">🌙</button></div>
   <div id="rBody">
+    <div class="card rfilm" id="rFilm" hidden><video id="rFilmVid" playsinline controls preload="none" poster="film/otti-ny.jpg"></video><p>🎬 Der ganze Trickfilm. Oder lies die Geschichte unten.</p></div>
     <div class="stage" id="rStage"></div>
     <div class="card">
       <div id="rContent"></div>
@@ -1270,6 +1272,7 @@ function listen(onText, btn, opt = {}){
 let current = 'home';
 function go(id){
   TTS.stop();
+  { const fv = document.getElementById('rFilmVid'); if (fv) try{ fv.pause(); }catch(e){} }
   if (rec){ try{ rec.abort(); }catch(e){} }
   if (typeof stopLong === 'function') stopLong();
   if (typeof stopMove === 'function') stopMove();
@@ -1491,7 +1494,7 @@ const STORIES = [
   {t:'Am Abend wurde der Himmel rosa und orange. Die Sonne ging langsam im Meer schlafen. Die drei Freunde legten sich auf eine weiche Decke. Schschsch, sang das Meer. Schschsch.', pic:['kiki','moon']},
   {t:'Über dem Wasser ging der Mond auf, rund und hell. «Ferien sind schön», flüsterte Otti. «Am schönsten mit Freunden.» Dann fielen ihm die Augen zu. Gute Nacht, Otti. Gute Nacht, Tropfi und Nova. Gute Nacht, liebes Meer.', pic:['sunny-sleep','moon']}
  ]},
- { id:'newyork', film:1, sz:'wald', title:'Otti geht nach New York', sub:'🎬 Trickfilm · Ein Kinderwunsch ruft über das Meer.', pic:['sunny','affe'], parts:[
+ { id:'newyork', film:1, video:'film/otti-ny', sz:'wald', title:'Otti geht nach New York', sub:'🎬 Trickfilm · Ein Kinderwunsch ruft über das Meer.', pic:['sunny','affe'], parts:[
   {t:'Im Mondschein-Land war es still. Die Glühwürmchen leuchteten im Moos, und der Mond war rund und gelb. Nur Otti, der kleine Igel mit dem gelben Halstuch, konnte nicht schlafen. Er sass auf einem Baumstrunk und schaute hinauf. «Hinter dem Meer gibt es eine Stadt, die niemals schläft», flüsterte er. «Genau wie ich heute.»', pic:['sunny','moon'], sz:'wald', bild:2},
   {t:'Da tanzte ein kleiner goldener Lichtpunkt durch die Bäume und landete genau auf Ottis Nase. «Hatschi!», machte Otti. «Oh. Du bist ja ganz warm.» Es war kein Glühwürmchen. Es war ein Kinderwunsch.', pic:['sunny','fly'], sz:'wald', bild:3},
   {t:'Da schwang sich Fompa vom Ast, das kleine Löwenäffchen mit der goldenen Mähne und der runden Brille. Er zeigte ganz aufgeregt auf den Lichtpunkt. «Der Wunsch ist nicht verloren», rief Fompa. «Er ruft aus New York! Ich habe es nachgerechnet.» Otti sprang vom Strunk. «Dann folgen wir ihm. Los!»', pic:['affe','sunny-wave'], sz:'wald', bild:4},
@@ -1520,7 +1523,7 @@ const STORIES = [
   {t:'Dann stiegen Otti und Fompa wieder auf den Mondstrahl, und Nova und Tropfi winkten vom Dachgarten. Ein kleiner Lichtpunkt flog mit. «Weisst du, was ich gelernt habe, Nova?», fragte Otti. «Dass eine Wurst kein Hund ist?», piepste Nova. Otti lachte. «Auch. Und dass jede Fantasie einen Wert hat.»', pic:['sunny-wave','affe'], sz:'meer', bild:18},
   {t:'Zu Hause im Mondschein-Land kuschelte sich Otti ins Moos und schlief sofort ein. Der Mond schien ganz ruhig über das Meer und die Stadt. Deine Fantasie hat einen Wert. Von dir. Mit dir. Für dich. Fortsetzung folgt: Ottis Reisen 2, der Katzenplanet.', pic:['sunny-sleep','moon'], sz:'wald', bild:19}
  ]},
- { id:'katzen', film:1, sz:'weltall', title:'Ottis Reisen 2: Der Katzenplanet', sub:'🎬 Trickfilm · Ein Planet, der blinzelt, und Kiki, der Koala.', pic:['sunny','koala'], parts:[
+ { id:'katzen', film:1, video:'film/otti-katzen', sz:'weltall', title:'Ottis Reisen 2: Der Katzenplanet', sub:'🎬 Trickfilm · Ein Planet, der blinzelt, und Kiki, der Koala.', pic:['sunny','koala'], parts:[
   {t:'Nach New York wollte Otti noch weiter reisen. Viel weiter. Mit dem kleinen runden Raumschiff Mondschein flogen Otti, Nova, Tropfi und Kiki durch die Sterne. Kiki ist ein kleiner grauer Koala mit grossen runden Ohren, einem goldenen Stern im Fell und einem goldenen Mikrofon. «Nova, wohin fliegen wir?», fragte Otti. «Dorthin, wo noch keiner war», sagte Nova. «Ich habe es ausgerechnet. Ungefähr.»', pic:['sunny','koala'], sz:'weltall', bild:1},
   {t:'Vor ihnen schimmerte ein orange-violetter Planet. Mal war er da, mal war er fast durchsichtig. Alle drückten die Nasen ans Fenster. «Der Planet macht Blinzeln!», rief Tropfi. «Er springt durch die Zeit», erklärte Nova. «Dort vergehen Jahre, bei uns nur Minuten.»', pic:['kiki','nova'], sz:'weltall', bild:2},
   {t:'Sie landeten auf weichem Gras zwischen grossen Kissenblumen. Überall waren Katzen. Sie schliefen, streckten sich und spielten mit Wollknäueln. Häuser gab es keine. «Lauter Katzen», staunte Otti. «Und sie machen … nichts.» Kiki lächelte. «Sie machen Pause. Das können sie richtig gut.»', pic:['sunny','koala'], sz:'katzen', bild:3},
@@ -1719,6 +1722,10 @@ function openStory(story, autoplay=true){
 }
 function renderPart(){
   const p = R.seq[R.idx];
+  const fv = $('#rFilmVid'), mitFilm = !!(R.story.video && R.idx === 0);
+  if (!mitFilm){ try{ fv.pause(); }catch(e){} }
+  else if (!fv.src.endsWith(R.story.video + '.mp4')){ fv.poster = R.story.video + '.jpg'; fv.src = R.story.video + '.mp4'; }
+  $('#rFilm').hidden = !mitFilm;
   const pics = (p.pic || R.story.pic || ['sunny']);
   const st = $('#rStage');
   st.classList.toggle('two', pics.length > 1);
@@ -1781,6 +1788,9 @@ $('#rPlay').addEventListener('click', () => {
   if (R.reading){ R.reading = false; TTS.stop(); updatePlay(); }
   else { R.reading = true; playCurrent(); }
 });
+// Film und Vorlesen nie gleichzeitig
+$('#rFilmVid').addEventListener('play', () => { if (R.reading){ R.reading = false; TTS.stop(); updatePlay(); } });
+$('#rPlay').addEventListener('click', () => { if (R.reading) try{ $('#rFilmVid').pause(); }catch(e){} });
 function nav(d){
   TTS.stop(); R.sent = 0;
   const n = R.seq.length;
