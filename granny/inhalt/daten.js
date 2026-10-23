@@ -3,6 +3,22 @@
    Neue Einträge unten anhängen: { id, b, t, k, x: [Absätze], s: [Schritte] } */
 window.INHALT = {
   app: 'granny',
+  figur: 'Rosa',
+  absichten: [
+    { w: /(geschichte|erzähl|erzaehl)/, b: 'erzaehlt', a: 'Gern, hör mal:' },
+    { w: /(früher|frueher|erinnerung|weisch no|weisst du noch)/, b: 'weischno', a: 'Weisch no?' },
+    { w: /(bewegen|turnen|übung|steif|gymnastik)/, b: 'bewegen', a: 'Komm, wir bewegen uns ein bisschen:' },
+    { w: /(langweil|traurig|allein|einsam|müde)/, b: 'gut', a: 'Ich bin da. Probier das:' }
+  ],
+  ohneMikroKnopf: '#reden',
+  gruss: 'Hallo, mein Schatz. Ich bin Rosa. Was möchtest du hören?',
+  sprichGrenze: 'Rosa erzählt und hilft. Bei Gesundheit: Hausarzt. Im Notfall: 144.',
+  beispielFragen: ['Erzähl mir eine Geschichte', 'Ein Witz bitte', 'Jemand will Geld am Telefon'],
+  weissNicht: 'Hm, das weiss ich nicht. Aber hör mal:',
+  grenzen: [
+    { w: /(tablette|medikament|schmerz|arzt|doktor|krank)/, a: 'Bei Gesundheitsfragen hilft dein Hausarzt. Im Notfall ruf 144. Du kannst auch die Familie anrufen, mit dem grossen Knopf.', weiter: false },
+    { w: /(geld|bank|code|pin|passwort|gewonnen)/, a: 'Gib nie Geld oder einen Code am Telefon weiter. Wenn etwas komisch ist: auflegen und die Familie anrufen.', weiter: true }
+  ],
   titel: 'Rosas Tagesfreude',
   titelKurz: 'Alle Freuden',
   heuteLabel: 'Rosas Freude für heute',

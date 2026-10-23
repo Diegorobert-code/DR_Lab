@@ -29,7 +29,7 @@
     var d = null;
     try { d = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
     d = d && typeof d === 'object' ? d : {};
-    d.gelesen = d.gelesen || {}; d.gemerkt = d.gemerkt || {}; d.tage = d.tage || {}; d.offen = d.offen || {};
+    d.gelesen = d.gelesen || {}; d.gemerkt = d.gemerkt || {}; d.tage = d.tage || {}; d.offen = d.offen || {}; d.fragen = d.fragen || {};
     d.quiz = d.quiz || { runden: 0, richtig: 0, beste: 0, tag: {} };
     d.quiz.tag = d.quiz.tag || {};
     return d;
@@ -65,6 +65,7 @@
       if (w) p[a.b] = (p[a.b] || 0) + w;
     });
     if (D.zuletzt && ART[D.zuletzt]) p[ART[D.zuletzt].b] = (p[ART[D.zuletzt].b] || 0) + 2;
+    for (var fb in D.fragen) if (BEREICH[fb]) p[fb] = (p[fb] || 0) + 2 * D.fragen[fb];
     return p;
   }
   function vorschlag(ohne) {
@@ -79,6 +80,11 @@
     if (!grund) grund = 'Weil dich «' + bereichName(best) + '» interessiert';
     return { a: best, warum: grund };
   }
+  /* Stufe: wächst mit Lesen, Quiz und Tagen. Steuert, wie Jackie & Co. dich ansprechen. */
+  var STUFEN = C.stufen || ['Neu dabei', 'Am Entdecken', 'Gut unterwegs', 'Kennt sich aus', 'Ganz zuhause'];
+  var GRENZE = [0, 5, 15, 35, 60];
+  function punkte() { return anzahlGelesen() * 2 + D.quiz.richtig + anzahlTage() + Object.keys(D.gemerkt).length; }
+  function stufe() { var p = punkte(), i = 0; while (i + 1 < GRENZE.length && p >= GRENZE[i + 1]) i++; return { nr: i + 1, name: STUFEN[i], naechste: GRENZE[i + 1] ? GRENZE[i + 1] - p : 0 }; }
   function anzahlTage() { return Object.keys(D.tage).length; }
   function serie() {
     var n = 0, d = new Date();
@@ -141,6 +147,8 @@
     '.ib-fuer{display:block;width:100%;text-align:left;margin-top:14px;padding:12px 14px;border-radius:12px;border:1px dashed var(--ib-l);background:var(--ib-s2);color:var(--ib-i);font-family:var(--ib-fb);cursor:pointer}',
     '.ib-fuer small{display:block;font-size:12.5px;color:var(--ib-i2);margin-bottom:3px}',
     '.ib-fuer b{display:block;font-size:15px;line-height:1.35}',
+    '.ib-stufe{margin:0 0 10px!important;font-size:14.5px!important;color:var(--ib-i2)!important}',
+    '.ib-sprich{width:100%;margin-top:12px;border-style:dashed}',
     '.ib-mini{font-size:12.5px;color:var(--ib-i2);margin-top:6px}',
     /* Vollbild */
     '.ib-root{position:fixed;inset:0;z-index:2147483200;background:var(--ib-bg);color:var(--ib-i);font-family:var(--ib-fb);display:flex;flex-direction:column;opacity:0;transform:translateY(12px);transition:opacity .22s ease,transform .22s ease}',
@@ -201,6 +209,24 @@
     '.ib-zahlen small{font-size:12px;color:var(--ib-i2)}',
     '.ib-toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:2147483300;background:var(--ib-i);color:var(--ib-bg);padding:12px 18px;border-radius:14px;font:600 14.5px var(--ib-fb);box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:calc(100% - 32px);text-align:center;pointer-events:none;opacity:0;transition:opacity .2s}',
     '.ib-toast.ib-an{opacity:1}',
+    '.ib-sgrenze{margin:8px 0 10px;font-size:13px;color:var(--ib-i2);line-height:1.4}',
+    '.ib-verlauf{flex:1 1 auto;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}',
+    '.ib-blase{max-width:86%;padding:12px 14px;border-radius:18px;font-size:16px;line-height:1.5}',
+    '.ib-blase p{margin:0}',
+    '.ib-blase .ib-k{margin-top:10px;min-height:40px;font-size:14px}',
+    '.ib-sie{align-self:flex-start;background:var(--ib-s);border:1px solid var(--ib-l);border-bottom-left-radius:6px}',
+    '.ib-ich{align-self:flex-end;background:var(--ib-a);color:var(--ib-on);border-bottom-right-radius:6px}',
+    '.ib-sfuss{flex:0 0 auto;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--ib-l);background:var(--ib-bg)}',
+    '.ib-sform{display:flex;gap:8px;align-items:center}',
+    '.ib-sform input{flex:1;min-width:0;min-height:48px;border-radius:999px;border:1px solid var(--ib-l);background:var(--ib-s);color:var(--ib-i);padding:0 16px;font:16px var(--ib-fb)}',
+    '.ib-mic{flex:0 0 56px;width:56px;height:56px;border-radius:50%;border:0;background:var(--ib-a);color:var(--ib-on);font-size:24px;cursor:pointer}',
+    '.ib-mic.ib-hoert{box-shadow:0 0 0 6px var(--ib-soft);animation:ibPuls 1.2s ease-in-out infinite}',
+    '@keyframes ibPuls{50%{box-shadow:0 0 0 12px var(--ib-soft)}}',
+    '.ib-vorschl{display:flex;gap:6px;overflow-x:auto;margin-bottom:8px;scrollbar-width:none}',
+    '.ib-vorschl button{flex:0 0 auto;min-height:38px;padding:0 12px;border-radius:999px;border:1px solid var(--ib-l);background:var(--ib-s);color:var(--ib-i);font:500 13.5px var(--ib-fb);cursor:pointer;white-space:nowrap}',
+    '.ib-shinweis{margin:0 0 8px;font-size:13.5px;color:var(--ib-i2)}',
+    '.ib-live{display:block;text-align:center;margin-top:10px;font-size:14px;color:var(--ib-ai);font-weight:600}',
+    '.ib-kz .ib-ton{margin-right:2px}',
     '@media (prefers-reduced-motion:reduce){.ib-root{transition:none;transform:none}}',
     C.css || ''
   ].join('\n');
@@ -241,8 +267,9 @@
       '<div class="ib-zeile"' + (C.einfach ? ' style="margin-top:10px"' : '') + '>' + (C.einfach ? '' : '<button type="button" class="ib-k ib-voll" data-ib="heute">' + esc(D.gelesen[a.id] ? (C.wortNochmal || 'Nochmals lesen') : (C.wortLesen || 'Jetzt lesen')) + (D.gelesen[a.id] ? ' ✓' : '') + '</button>') +
       '<button type="button" class="ib-k" data-ib="bib">' + esc(C.titelKurz || WORT.bibliothek) + ' · ' + tot + '</button></div>' +
       (function () { var v = vorschlag(a.id); return v && (D.zuletzt || Object.keys(D.gemerkt).length) ? '<button type="button" class="ib-fuer" data-ib="fuer" data-id="' + esc(v.a.id) + '"><small>' + esc(v.warum) + ':</small><b>' + esc(emoji(v.a) + ' ' + v.a.t) + ' →</b></button>' : ''; })() +
+      (C.figur ? '<button type="button" class="ib-k ib-sprich" data-ib="sprich">🎙 Sprich mit ' + esc(C.figur) + '</button>' : '') +
       '<div class="ib-balken" aria-hidden="true"><i style="width:' + Math.round(n / tot * 100) + '%"></i></div>' +
-      '<div class="ib-mini">' + n + ' von ' + tot + ' ' + esc(WORT.gelesen.toLowerCase()) + ' · ' + anzahlAbzeichen() + ' von ' + AB.length + ' Abzeichen' + (serie() > 1 ? ' · ' + serie() + ' Tage am Stück' : '') + '</div>';
+      '<div class="ib-mini">Stufe ' + stufe().nr + ' · ' + esc(stufe().name) + ' · ' + n + ' von ' + tot + ' ' + esc(WORT.gelesen.toLowerCase()) + ' · ' + anzahlAbzeichen() + ' von ' + AB.length + ' Abzeichen' + (serie() > 1 ? ' · ' + serie() + ' Tage am Stück' : '') + '</div>';
     [].forEach.call(karte.querySelectorAll('[data-ib=heute]'), function (b) { b.addEventListener('click', function () { oeffne('artikel', a.id); }); });
     var vk = karte.querySelector('[data-ib=vor]');
     if (vk) vk.addEventListener('click', function () {
@@ -251,6 +278,7 @@
       if (!vorlesen([a.t, a.k].concat(a.x || [], a.s || []).join('. '), function () { karteFuellen(); })) oeffne('artikel', a.id);
     });
     karte.querySelector('[data-ib=bib]').addEventListener('click', function () { oeffne('bibliothek'); });
+    var sk = karte.querySelector('[data-ib=sprich]'); if (sk) sk.addEventListener('click', function () { sprich(); });
     var fu = karte.querySelector('[data-ib=fuer]'); if (fu) fu.addEventListener('click', function () { oeffne('artikel', fu.getAttribute('data-id')); });
   }
 
@@ -318,12 +346,14 @@
           return '<button type="button" class="ib-opt' + kl + '" data-tf="' + i + '"' + (tq != null ? ' disabled' : '') + '>' + esc(o) + '</button>';
         }).join('') + (tq != null && q.e ? '<p class="ib-erkl">' + esc(q.e) + '</p>' : '') + '</div>';
     }
+    if (C.figur) h += '<button type="button" class="ib-k ib-sprich" style="margin:0 0 14px" data-sprich>🎙 Sprich mit ' + esc(C.figur) + '</button>';
     var vh = vorschlag(a.id);
     if (vh) h += '<div class="ib-karte"><h4>Für dich</h4><button type="button" class="ib-fuer" style="margin-top:0" data-auf="' + esc(vh.a.id) + '"><small>' + esc(vh.warum) + ':</small><b>' + esc(emoji(vh.a) + ' ' + vh.a.t) + ' →</b></button></div>';
     if (C.heuteExtra) h += C.heuteExtra;
     h += '<div class="ib-karte"><h4>Dein Stand</h4>' + zahlen() + '<div class="ib-zeile"><button type="button" class="ib-k" data-gehe="bibliothek">Alle ' + esc(WORT.beitraege) + '</button>' + (QUIZ.length ? '<button type="button" class="ib-k" data-gehe="quiz">' + esc(WORT.quiz) + ' starten</button>' : '') + '</div></div>';
     inhaltEl.innerHTML = h;
     binde();
+    var sp2 = inhaltEl.querySelector('[data-sprich]'); if (sp2) sp2.addEventListener('click', function () { sprich(); });
     [].forEach.call(inhaltEl.querySelectorAll('[data-tf]'), function (b) {
       b.addEventListener('click', function () {
         if (D.quiz.tag[iso()] != null) return;
@@ -335,7 +365,8 @@
     });
   }
   function zahlen() {
-    return '<div class="ib-zahlen"><div><b>' + anzahlGelesen() + '</b><small>' + esc(WORT.gelesen) + '</small></div><div><b>' + anzahlAbzeichen() + '</b><small>Abzeichen</small></div><div><b>' + serie() + '</b><small>Tage am Stück</small></div></div>';
+    var st = stufe();
+    return '<p class="ib-stufe">Stufe ' + st.nr + ' von ' + STUFEN.length + ': <b>' + esc(st.name) + '</b>' + (st.naechste ? ' · noch ' + st.naechste + ' Punkte bis zur nächsten' : '') + '</p>' + '<div class="ib-zahlen"><div><b>' + anzahlGelesen() + '</b><small>' + esc(WORT.gelesen) + '</small></div><div><b>' + anzahlAbzeichen() + '</b><small>Abzeichen</small></div><div><b>' + serie() + '</b><small>Tage am Stück</small></div></div>';
   }
   function binde() {
     [].forEach.call(inhaltEl.querySelectorAll('[data-auf]'), function (b) { b.addEventListener('click', function () { zeigeArtikel(b.getAttribute('data-auf')); }); });
@@ -473,9 +504,145 @@
     inhaltEl.innerHTML = h;
   }
 
-  /* Öffentlich, damit andere Teile der App die Bibliothek öffnen können. */
-  window.DRLAB_INHALT = { oeffne: oeffne, schliesse: schliesse, heute: heuteArtikel };
+  /* ---------- Sprich mit der Figur: lokal, gratis, offline ----------
+     Mikrofon (de-CH, sonst de-DE) oder Tippen. Antworten kommen aus den eigenen Beiträgen der App,
+     mit festen Grenzen (Notfall, Gesundheit, Geld, Steuern). Nichts verlässt das Handy. */
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var sheet = null, verlauf = null, eingabe = null, micBtn = null, ton = true, erkenner = null;
+  function wortListe(t) { return String(t).toLowerCase().replace(/[^a-zäöüéèàß0-9 ]/g, ' ').split(/\s+/).filter(function (w) { return w.length > 3; }); }
+  var STOPP = ' aber alle auch dann dass dein deine denn dich dies diese doch eine einen einer etwas habe haben hast hier immer kann mein meine mich nach nicht noch oder schon sehr sein sind soll über und viel wann warum weil wenn werde wie wird wieso wo wurde zum zur ich mir was wer welche welcher gibt geht machen mache macht';
+  var STOPW = {}; STOPP.split(' ').forEach(function (w) { if (w) STOPW[w] = 1; });
+  function treffer(frage) {
+    var ws = wortListe(frage).filter(function (w) { return !STOPW[w]; });
+    if (!ws.length) return null;
+    var best = null, bw = 0;
+    var stamm = function (q) { var r = q.replace(/(en|er|e|n|s)$/, ''); return r.length >= 4 ? r : q; };
+    C.artikel.forEach(function (a) {
+      var tt = a.t.toLowerCase(), kk = a.k.toLowerCase(), xx = ((a.x || []).join(' ') + ' ' + (a.s || []).join(' ')).toLowerCase(), w = 0;
+      ws.forEach(function (q) { var st = stamm(q); if (tt.indexOf(st) >= 0) w += 4; else if (kk.indexOf(st) >= 0) w += 2; else if (xx.indexOf(st) >= 0) w += 1; });
+      if (w > bw) { bw = w; best = a; }
+    });
+    return bw >= 2 ? best : null;
+  }
+  function antwort(frage) {
+    var f = String(frage).toLowerCase(), teile = [], art = null;
+    var NOT = C.notfallWorte || /(suizid|umbringen|nicht mehr leben|sterben will|selbstmord|notfall|in gefahr|schlägt mich|bedroht mich|blutet|bewusstlos)/;
+    if (NOT.test(f)) return { text: C.notfallText || 'Das klingt ernst. Wenn du in Gefahr bist, ruf sofort an: 144 Sanität, 117 Polizei. Die Dargebotene Hand hört zu, Tag und Nacht: 143.' };
+    if (/^\s*(hallo|hoi|hey|grüezi|gruezi|salü|salut|guten (morgen|tag|abend))\b/.test(f) && f.length < 25) {
+      var v0 = vorschlag(); return { text: (C.gruss || 'Hallo! Schön, dass du da bist.') + (v0 ? ' ' + v0.warum + ': «' + v0.a.t + '». Magst du?' : ''), art: v0 && v0.a };
+    }
+    if (/(danke|merci)/.test(f) && f.length < 30) return { text: 'Gern geschehen. Ich bin da, wenn du mich brauchst.' };
+    var gr = null;
+    (C.grenzen || []).forEach(function (g) { if (!gr && g.w.test(f)) gr = g; });
+    if (gr) { teile.push(gr.a); if (!gr.weiter) return { text: gr.a, art: treffer(frage) }; var tg = treffer(frage); if (!tg) return { text: gr.a, art: null }; }
+    var ab = null;
+    (C.absichten || []).forEach(function (x) { if (!ab && x.w.test(f)) ab = x; });
+    if (ab) {
+      var pool = C.artikel.filter(function (a) { return ab.t ? a.t === ab.t : a.b === ab.b; });
+      var neu = pool.filter(function (a) { return !D.gelesen[a.id]; });
+      if (!neu.length) neu = pool;
+      if (neu.length) {
+        D.absicht = (D.absicht || 0) + 1;
+        art = neu[(tagNr() + D.absicht) % neu.length];
+        if (BEREICH[art.b]) D.fragen[art.b] = (D.fragen[art.b] || 0) + 1;
+        teile.push((ab.a || 'Gern.') + ' «' + art.t + '». ' + art.k);
+        sichern();
+        return { text: teile.join(' '), art: art };
+      }
+    }
+    art = treffer(frage);
+    if (art) {
+      if (BEREICH[art.b]) D.fragen[art.b] = (D.fragen[art.b] || 0) + 1;
+      teile.push('Dazu habe ich etwas: «' + art.t + '». ' + art.k + (art.s && art.s[0] ? ' Ein erster Schritt: ' + art.s[0] : ''));
+    } else {
+      var v = vorschlag();
+      teile.push((C.weissNicht || 'Das weiss ich noch nicht genau.') + (v ? ' Vielleicht hilft dir das: «' + v.a.t + '».' : ''));
+      art = v && v.a;
+    }
+    sichern();
+    return { text: teile.join(' '), art: art };
+  }
+  function blase(wer, text, art) {
+    var d = document.createElement('div'); d.className = 'ib-blase ' + (wer === 'ich' ? 'ib-ich' : 'ib-sie');
+    d.innerHTML = '<p>' + esc(text) + '</p>' + (art ? '<button type="button" class="ib-k" data-auf2="' + esc(art.id) + '">' + esc(emoji(art) + ' Ganz lesen') + '</button>' : '');
+    verlauf.appendChild(d);
+    var b = d.querySelector('[data-auf2]'); if (b) b.addEventListener('click', function () { schliesseSprich(); oeffne('artikel', b.getAttribute('data-auf2')); });
+    verlauf.scrollTop = verlauf.scrollHeight;
+  }
+  function stelleFrage(t) {
+    t = String(t || '').trim(); if (!t) return;
+    blase('ich', t);
+    var a = antwort(t);
+    markiereTag(); sichern();
+    setTimeout(function () { blase('sie', a.text, a.art); if (ton) vorlesen(a.text); karteFuellen(); }, 350);
+  }
+  function hoeren() {
+    if (!SR) { eingabe.focus(); return; }
+    stumm();
+    if (erkenner) { try { erkenner.stop(); } catch (e) {} return; }
+    var versuch = function (lang, zweit) {
+      var r = new SR(); erkenner = r; r.lang = lang; r.interimResults = false; r.maxAlternatives = 1;
+      micBtn.classList.add('ib-hoert'); micBtn.setAttribute('aria-label', 'Ich höre zu. Tippen zum Stoppen');
+      r.onresult = function (e) { var t = e.results[0][0].transcript; stelleFrage(t); };
+      r.onerror = function (e) {
+        erkenner = null; micBtn.classList.remove('ib-hoert');
+        if (!zweit && (e.error === 'language-not-supported' || e.error === 'no-speech')) return versuch('de-DE', true);
+        hinweis(e.error === 'not-allowed' ? 'Das Mikrofon ist gesperrt. Schreib mir einfach.' : 'Ich habe nichts gehört. Schreib mir einfach.');
+        eingabe.focus();
+      };
+      r.onend = function () { erkenner = null; micBtn.classList.remove('ib-hoert'); micBtn.setAttribute('aria-label', 'Sprechen'); };
+      try { r.start(); } catch (e) { erkenner = null; micBtn.classList.remove('ib-hoert'); hinweis('Das Mikrofon geht hier nicht. Schreib mir einfach.'); eingabe.focus(); }
+    };
+    versuch('de-CH', false);
+  }
+  function hinweis(t) { var h = sheet.querySelector('.ib-shinweis'); h.textContent = t; h.hidden = !t; }
+  function sprich() {
+    if (!sheet) {
+      sheet = document.createElement('div');
+      sheet.className = 'ib-root ib-sheet'; sheet.setAttribute('role', 'dialog'); sheet.setAttribute('aria-modal', 'true'); sheet.setAttribute('aria-label', 'Sprich mit ' + C.figur);
+      sheet.innerHTML = '<div class="ib-kopf"><div class="ib-kz"><h2>Sprich mit ' + esc(C.figur) + '</h2><button type="button" class="ib-zu ib-ton" aria-label="Vorlesen an oder aus" aria-pressed="true">🔊</button><button type="button" class="ib-zu ib-szu" aria-label="Schliessen">✕</button></div>' +
+        (C.notruf ? '<div class="ib-notruf" role="region" aria-label="Notruf">' + C.notruf + '</div>' : '') + '<p class="ib-sgrenze">' + esc(C.sprichGrenze || 'Ich antworte aus dem Wissen dieser App. Alles bleibt auf deinem Handy.') + '</p></div>' +
+        '<div class="ib-verlauf" aria-live="polite"></div>' +
+        '<div class="ib-sfuss"><p class="ib-shinweis" hidden></p><div class="ib-vorschl"></div><form class="ib-sform" autocomplete="off">' +
+        (SR ? '<button type="button" class="ib-mic" aria-label="Sprechen">🎙</button>' : '') +
+        '<input type="text" enterkeyhint="send" placeholder="' + esc(SR ? 'Oder schreib hier …' : 'Schreib mir hier …') + '" aria-label="Nachricht an ' + esc(C.figur) + '"><button type="submit" class="ib-k ib-voll">Senden</button></form>' +
+        (C.live ? '<a class="ib-live" href="' + esc(C.live) + '">📞 Live-Gespräch mit ' + esc(C.figur) + ' (braucht Internet)</a>' : '') + '</div>';
+      document.body.appendChild(sheet);
+      verlauf = sheet.querySelector('.ib-verlauf'); eingabe = sheet.querySelector('input'); micBtn = sheet.querySelector('.ib-mic');
+      sheet.querySelector('.ib-szu').addEventListener('click', schliesseSprich);
+      sheet.querySelector('.ib-ton').addEventListener('click', function () { ton = !ton; this.textContent = ton ? '🔊' : '🔈'; this.setAttribute('aria-pressed', ton); if (!ton) stumm(); });
+      sheet.addEventListener('keydown', function (e) { if (e.key === 'Escape') schliesseSprich(); });
+      sheet.querySelector('form').addEventListener('submit', function (e) { e.preventDefault(); var t = eingabe.value; eingabe.value = ''; stelleFrage(t); });
+      if (micBtn) micBtn.addEventListener('click', hoeren);
+      var vs = (C.beispielFragen || []).slice(0, 3);
+      sheet.querySelector('.ib-vorschl').innerHTML = vs.map(function (q) { return '<button type="button">' + esc(q) + '</button>'; }).join('');
+      [].forEach.call(sheet.querySelectorAll('.ib-vorschl button'), function (b) { b.addEventListener('click', function () { stelleFrage(b.textContent); }); });
+      var v = vorschlag();
+      blase('sie', (C.gruss || 'Hallo! Schön, dass du da bist.') + ' ' + (SR ? 'Tipp aufs Mikrofon oder schreib mir.' : 'Schreib mir einfach.') + (v && (D.zuletzt || Object.keys(D.gemerkt).length) ? ' ' + v.warum + ': «' + v.a.t + '».' : ''), v && (D.zuletzt || Object.keys(D.gemerkt).length) ? v.a : null);
+      if (!SR) hinweis('Sprechen geht in diesem Browser nicht. Schreiben geht immer.');
+    }
+    var live = sheet.querySelector('.ib-live'); if (live) live.hidden = navigator.onLine === false;
+    sheet.style.display = 'flex'; document.documentElement.style.overflow = 'hidden';
+    requestAnimationFrame(function () { sheet.classList.add('ib-auf'); });
+    setTimeout(function () { (micBtn || eingabe).focus({ preventScroll: true }); }, 50);
+  }
+  function schliesseSprich() {
+    stumm(); if (erkenner) try { erkenner.abort(); } catch (e) {}
+    sheet.classList.remove('ib-auf'); document.documentElement.style.overflow = '';
+    setTimeout(function () { if (!sheet.classList.contains('ib-auf')) sheet.style.display = 'none'; }, 230);
+    karteFuellen();
+  }
 
-  function los() { karteBauen(); }
+  /* Öffentlich, damit andere Teile der App die Bibliothek öffnen können. */
+  window.DRLAB_INHALT = { oeffne: oeffne, schliesse: schliesse, heute: heuteArtikel, sprich: sprich, antwort: antwort, stufe: stufe };
+
+  function los() {
+    karteBauen();
+    /* Ohne Mikrofon im Browser: der bestehende Sprech-Knopf der App öffnet das Gespräch mit Texteingabe. */
+    if (C.ohneMikroKnopf && !SR) {
+      var k = document.querySelector(C.ohneMikroKnopf);
+      if (k) k.addEventListener('click', function (e) { e.preventDefault(); e.stopImmediatePropagation(); sprich(); }, true);
+    }
+  }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', los); else los();
 })();
