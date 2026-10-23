@@ -1,6 +1,6 @@
 /* Hasis Laden · Finder-Fragen (23.10.2026)
    Erweitert den bestehenden Werkzeug-Finder aus runde8.js (3 Fragen) statt ihn zu verdoppeln:
-   - Einstieg «Was brauche ich?» direkt auf dem Startbildschirm (im Kopf, unter dem Untertitel)
+   - Ein einziger Einstieg oben auf dem Startbildschirm: Finder-Karte mit 5 Fragen, Merkliste und «Oder direkt» (Problemliste)
    - 5 Tipp-Fragen statt 3: Was willst du machen? Für wen? Wie oft? Budget? Erfahrung?
    - Ergebnis: 1 bis 3 Werkzeuge aus Hasis bestehendem Regal (window.HasiLaden.W), je mit «Weil du …»
    - Zurück, Neu beginnen, «Ansehen» springt zum Werkzeug im Laden, «Merken» nutzt die bestehende Merkliste
@@ -104,9 +104,14 @@
   }
 
   var css = [
-    '.fi-start{display:flex;margin:14px 0 0}',
-    '.fi-start .btn{font-size:17px;padding:12px 22px;min-height:52px}',
-    '@media (max-width:420px){.fi-start .btn{width:100%}.fi-mehr{display:none}}',
+    '.r8-finder-k .fi-text{margin:0}',
+    '.fi-direkt{margin-top:14px;border-top:1px solid var(--dz-line,rgba(255,255,255,.14));padding-top:6px}',
+    '.fi-direkt summary{cursor:pointer;min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:700;list-style:none}',
+    '.fi-direkt summary::-webkit-details-marker{display:none}',
+    '.fi-direkt summary::after{content:"›";font-size:24px;line-height:1;transition:transform .2s}',
+    '.fi-direkt[open] summary::after{transform:rotate(90deg)}',
+    '.fi-direkt-in{display:grid;gap:10px;padding-top:6px}',
+    '.fi-direkt-in label{font-weight:600}',
     '.fi-weil{margin:10px 0 0;font-size:16px;line-height:1.45}',
     '.fi-unten{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-top:16px}',
     /* Offenes Blatt: auch den Lernen-Knopf (unten links) ausblenden, wie Nova (runde7.js) */
@@ -177,17 +182,28 @@
     if ($('fiStart')) return;
     if ((!window.R7 || !document.querySelector('.r8-finder-k')) && versuche++ < 20) { setTimeout(start, 100); return; }
     var st = document.createElement('style'); st.id = 'fi-stil'; st.textContent = css; document.head.appendChild(st);
-    /* 1) Einstieg auf dem Startbildschirm */
-    var knopf = el('<div class="fi-start"><button class="btn an" id="fiStart" type="button" aria-haspopup="dialog">🧭 Was brauche ich?<span class="fi-mehr">· 5 kurze Fragen</span></button></div>');
-    knopf.querySelector('button').addEventListener('click', oeffnen);
-    var kopfSub = document.querySelector('.kopf .sub'), zeile = document.querySelector('.wrap > .zeile');
-    if (kopfSub) kopfSub.after(knopf); else if (zeile) zeile.after(knopf); else document.body.prepend(knopf);
-    /* 2) Bestehende Finder-Karte aus Runde 8 übernimmt die neue Fassung */
+    /* Ein Einstieg statt drei (23.10.): die Finder-Karte aus Runde 8 steht oben auf dem Startbildschirm,
+       mit den 5 Fragen, der Merkliste und darunter «Oder direkt» mit Hasis Problemliste (#probleme, eigenes Suchen, Treffer)
+       aus dem alten Abschnitt «Was brauchst du?». Der alte Abschnitt und der Leisten-Reiter «Problem» fallen weg. */
     var fk = document.querySelector('.r8-finder-k');
-    if (fk) {
-      var los = fk.querySelector('.r8-finder-los'); if (los) los.onclick = oeffnen;
-      var p = fk.querySelector('.r7-p'); if (p) p.textContent = 'Fünf kurze Tipp-Fragen, dann stellt Hasi dir 1 bis 3 passende Werkzeuge hin, jedes mit einem kurzen Grund.';
+    if (!fk) return;
+    var h = fk.querySelector('h2'); if (h) h.textContent = '🧭 Was brauchst du?';
+    var bildZeile = fk.querySelector('.r7-figur'); bildZeile = bildZeile && bildZeile.parentNode;
+    if (bildZeile && bildZeile !== fk) bildZeile.outerHTML = '<p class="r7-p fi-text">Fünf kurze Tipp-Fragen, dann stellt Hasi dir 1 bis 3 passende Werkzeuge hin, jedes mit einem kurzen Grund.</p>';
+    var los = fk.querySelector('.r8-finder-los');
+    if (los) { los.onclick = oeffnen; los.id = 'fiStart'; los.setAttribute('aria-haspopup', 'dialog'); los.textContent = '🧭 5 kurze Fragen'; }
+    var ber = $('berater');
+    if (ber) {
+      var d = el('<details class="fi-direkt"><summary>Oder direkt: Tipp auf dein Problem</summary><div class="fi-direkt-in"></div></details>'), inn = d.querySelector('.fi-direkt-in');
+      Array.prototype.slice.call(ber.children).forEach(function (k) { if (k.tagName !== 'H2' && !k.classList.contains('sub')) inn.appendChild(k); });
+      fk.appendChild(d);
+      /* Treffer sichtbar halten: Klappe öffnet sich, sobald Hasi etwas hinlegt */
+      var tr = $('treffer'); if (tr && window.MutationObserver) new MutationObserver(function () { if (tr.children.length) d.open = true; }).observe(tr, { childList: true });
+      ber.hidden = true;
+      var reiter = document.querySelector('.r8-leiste a[href="#berater"]'); if (reiter) reiter.remove();
     }
+    var kopf = document.querySelector('.kopf');
+    if (kopf) kopf.after(fk);
   }
 
   window.HasiFinder = { oeffnen: oeffnen, auswerten: auswerten, FRAGEN: FRAGEN };
