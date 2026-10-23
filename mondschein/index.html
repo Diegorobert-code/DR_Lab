@@ -137,6 +137,24 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .hold:before{content:"";position:absolute;inset:0;background:conic-gradient(rgba(29,42,79,.22) calc(var(--p)*1turn),transparent 0);pointer-events:none}
 /* Geschichten-Liste */
 .slist{display:grid;gap:12px}
+.sitem.tor-btn{background:linear-gradient(135deg,#2a2f6b,#5b3f8f);color:#fff;border-color:#ffd66b}.sitem.tor-btn .sub{color:#ffe9b0}
+.tor-szene{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;padding:18px 0 8px;transition:transform 1.1s ease-in,opacity 1.1s ease-in;transform-origin:50% 45%}
+.tor-szene.flug{transform:scale(3.2);opacity:0}
+.tor{position:relative;width:220px;height:270px;border-radius:110px 110px 14px 14px;background:radial-gradient(circle at 50% 55%,#fff6c9 0%,#ffd66b 35%,#8f6bd6 75%,#2a2f6b 100%);box-shadow:0 0 0 10px #6b4b2a,0 0 0 16px #3f7a3c,0 0 40px rgba(255,214,107,.7);perspective:700px;overflow:hidden;cursor:pointer}
+.tor .tuer{position:absolute;top:0;bottom:0;width:50%;background:repeating-linear-gradient(90deg,#8b5a2b 0 18px,#7a4d24 18px 20px);transition:transform 1s ease-in-out;box-shadow:inset 0 0 18px rgba(0,0,0,.35)}
+.tor .tuer.l{left:0;transform-origin:left center;border-radius:110px 0 0 0}.tor .tuer.r{right:0;transform-origin:right center;border-radius:0 110px 0 0}
+.tor .tuer::after{content:'';position:absolute;top:52%;width:12px;height:12px;border-radius:50%;background:#ffd66b}.tor .tuer.l::after{right:10px}.tor .tuer.r::after{left:10px}
+.tor.offen .tuer.l{transform:rotateY(-105deg)}.tor.offen .tuer.r{transform:rotateY(105deg)}
+.tor-blatt{font-size:30px;letter-spacing:8px}
+.welten{display:grid;grid-template-columns:1fr 1fr;gap:12px;animation:fade .6s}
+.welt-k{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:128px;padding:12px 8px;border-radius:24px;border:2px solid var(--line);box-shadow:var(--shadow);text-align:center;color:#1d2a4f}
+.welt-k .we{font-size:46px;line-height:1}.welt-k b{font-size:16px}.welt-k small{font-size:12.5px;opacity:.8}
+.welt-k.leer{background:var(--card);border-style:dashed;color:var(--ink,inherit)}
+.welt-kopf{border-radius:28px;padding:22px 16px;text-align:center;color:#1d2a4f;box-shadow:var(--shadow)}
+.welt-kopf .we{font-size:64px;line-height:1}.welt-kopf p{margin:8px 0 0;font-weight:600}
+#s-welt.flug .welt-kopf{animation:einflug 1s ease-out}
+@keyframes einflug{from{transform:scale(.35);opacity:0;filter:blur(6px)}to{transform:none;opacity:1;filter:none}}
+.chips.wahl .chip.sel{background:var(--moon);border-color:var(--moon2)}
 .sitem{display:flex;align-items:center;gap:14px;text-align:left;width:100%;padding:12px 14px;min-height:96px;border-radius:24px;background:var(--card);border:2px solid var(--line);box-shadow:var(--shadow)}
 .sitem .ic{width:72px;height:72px;flex:none;border-radius:20px;background:var(--sky);display:grid;place-items:center;overflow:hidden}
 .sitem .ic svg{width:70px;height:70px}
@@ -377,6 +395,44 @@ h3.ch{font-size:19px;margin-bottom:10px}
   <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>Geschichten</h2><button class="btn round" data-night-toggle aria-label="Nachtmodus umschalten">🌙</button></div>
   <div class="slist" id="slist"></div>
   <p class="foot">DR Lab · Testphase</p>
+</section>
+
+<!-- TOR IM ZAUBERWALD -->
+<section class="screen" id="s-tor" aria-label="Das Tor im Zauberwald">
+  <div class="topbar"><button class="btn back" data-go="stories" aria-label="Zurück zu den Geschichten">←</button><h2>Das Tor im Zauberwald</h2><span style="width:58px"></span></div>
+  <div class="tor-szene" id="torSzene">
+    <div class="tor-blatt" aria-hidden="true">🌿🍄🌿</div>
+    <div class="tor" id="torTor" role="button" tabindex="0" aria-label="Das Tor öffnen"><div class="tuer l"></div><div class="tuer r"></div></div>
+    <p class="small muted" id="torHinweis" style="margin:0">Tippe auf das Tor.</p>
+  </div>
+  <div class="welten" id="weltenGrid" hidden></div>
+  <div class="card" id="eigeneWeltCard" hidden style="margin-top:12px">
+    <label class="l" for="ewName">Eure eigene Welt</label>
+    <div class="row"><input class="in" id="ewName" maxlength="28" autocomplete="off" placeholder="z. B. Regenbogen-Planet"><input class="in" id="ewZeichen" maxlength="4" autocomplete="off" placeholder="🌈" style="max-width:72px;text-align:center"></div>
+    <button class="btn primary wide" id="ewGo" style="margin-top:10px">✨ Welt erschaffen</button>
+  </div>
+  <p class="foot">DR Lab · Eure Geschichten bleiben auf diesem Handy.</p>
+</section>
+
+<!-- EINE WELT -->
+<section class="screen" id="s-welt" aria-label="Welt">
+  <div class="topbar"><button class="btn back" data-go="tor" aria-label="Zurück zum Tor">←</button><h2 id="weltTitel">Welt</h2><span style="width:58px"></span></div>
+  <div class="welt-kopf" id="weltKopf"></div>
+  <div class="slist" id="weltListe" style="margin-top:14px"></div>
+  <div class="card" style="margin-top:14px">
+    <h3 class="ch">✨ Mit Mila erfinden</h3>
+    <label class="l" for="eHeld">Wer ist die Heldin oder der Held?</label>
+    <div class="row"><input class="in" id="eHeld" maxlength="24" autocomplete="off" placeholder="z. B. Mila"><button class="btn round mic-btn" data-mic="eHeld" aria-label="Namen sagen">🎤</button></div>
+    <div class="l" style="margin-top:12px">Wer hilft?</div>
+    <div class="chips wahl" id="eHelfer"></div>
+    <div class="l" style="margin-top:12px">Was passiert?</div>
+    <div class="chips wahl" id="eProblem"></div>
+    <input class="in" id="eProblemText" maxlength="80" autocomplete="off" placeholder="oder selber erfinden" style="margin-top:6px">
+    <div class="l" style="margin-top:12px">Welche Superkraft?</div>
+    <div class="chips wahl" id="eKraft"></div>
+    <input class="in" id="eKraftText" maxlength="40" autocomplete="off" placeholder="oder selber: kann …" style="margin-top:6px">
+    <button class="btn big primary wide" id="eGo" style="margin-top:12px">🚪 Geschichte erfinden</button>
+  </div>
 </section>
 
 <!-- LESER -->
@@ -1160,6 +1216,8 @@ function go(id){
   window.scrollTo(0,0);
   if (id==='home') renderHome();
   if (id==='stories') renderStoryList();
+  if (id==='tor') renderTor();
+  if (id==='welt') renderWelt();
   if (id==='game' && !game.cards.length) newGame();
   if (id==='games') renderGames();
   if (id==='mystory') renderMyStory();
@@ -1458,6 +1516,7 @@ function renderStoryList(){
       <span class="ic"><svg viewBox="0 0 64 48" style="width:52px;height:40px" aria-hidden="true"><rect x="3" y="5" width="58" height="40" rx="8" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M5 9 L32 29 L59 9" fill="none" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M32 22 C27 18 26 14 29 13 C31 12.5 32 14.5 32 15 C32 14.5 33 12.5 35 13 C38 14 37 18 32 22 Z" fill="#ff7c9c"/></svg></span>
       <span><b>${esc('Ein Brief von '+L.from)}</b><span class="sub">Eine Gutenachtgeschichte nur für dich.</span></span>
     </button>` : '') + `
+    <button class="sitem tor-btn" data-go="tor"><span class="ic" style="background:#3b2f6b"><span style="font-size:42px" aria-hidden="true">🚪</span></span><span><b>Das Tor im Zauberwald</b><span class="sub">Raumschiff, Superheldin, Piraten und mehr.</span></span></button>
     <button class="sitem" data-go="mystory"><span class="ic" style="background:var(--peach)"><span style="font-size:42px" aria-hidden="true">🗣️</span></span><span><b>Meine Geschichte</b><span class="sub">Du fängst an – Otti erzählt weiter.</span></span></button>
     <button class="sitem" data-go="idea"><span class="ic" style="background:var(--mint)"><span style="font-size:42px" aria-hidden="true">⭐</span></span><span><b>Meine Idee</b><span class="sub">Name, Lieblingsding, Freund und Ort wählen.</span></span></button>` + STORIES.map((s,i) => `
     <button class="sitem" data-story="${i}">
@@ -1470,6 +1529,171 @@ $('#slist').addEventListener('click', e => {
   const b=e.target.closest('[data-story]'); if (b) openStory(STORIES[+b.dataset.story]);
 });
 
+/* ---------- Das Tor im Zauberwald: Welten mit Action-Geschichten (eigene Figuren) ---------- */
+const WELTEN = [
+ {id:'sternenhafen', name:'Sternenhafen', e:'🚀', farbe:'#cfe0ff', sub:'Das kleine Raumschiff Funkel', ort:'Hoch über dem Zauberwald, zwischen den Sternen, liegt der Sternenhafen.', ruf:'Funkel, Triebwerke an!', fahrt:'im kleinen Raumschiff Funkel mitten durch die Sterne', hindernis:'Ein Schwarm Meteoriten saust heran, wumm, wumm!', abend:'im Sternenhafen und schauen auf die Erde hinunter', pic:['sunny','nova'],
+  probleme:['Eine kleine Sternenkatze treibt allein durchs All','Der Mond hat sein Licht verloren','Ein Komet hat sich verirrt'],
+  story:{id:'w-funkel', title:'Das kleine Raumschiff Funkel', sub:'Meteoritenregen und eine Sternenkatze.', pic:['sunny','nova'], parts:[
+   {t:'Hinter dem Tor im Zauberwald glitzert der Sternenhafen. Dort wartet ein kleines rundes Raumschiff mit grossen Fenstern. Es heisst Funkel. «Piep! Alle einsteigen!», ruft Nova. Otti zieht seinen Sternenhelm an.', pic:['nova','sunny']},
+   {t:'«Drei, zwei, eins … los!» Wuuusch! Funkel schiesst nach oben, an den Wolken vorbei, bis der Himmel ganz schwarz ist und voller Sterne. Otti drückt die Nase ans Fenster. «Juhui, wir fliegen!»', pic:['sunny','moon']},
+   {t:'Da piepst das Radar. Piep, piep, piep! «Achtung, ein Meteoritenregen!», ruft Nova. Grosse Steinbrocken sausen heran. Wumm! Wumm!', pic:['nova']},
+   {q:'Wie fliegt Funkel durch die Meteoriten?', opts:[
+     {e:'↪️', l:'Im Zickzack', k:['zickzack','links','rechts'], v:{weg:'Otti steuert im Zickzack, links, rechts, links, ganz flink an jedem Stein vorbei'}},
+     {e:'🛡️', l:'Schutzschild an', k:['schild','schutz'], v:{weg:'Nova drückt den grossen blauen Knopf, und ein glitzernder Schutzschild legt sich um Funkel. Die Steine prallen einfach ab, bong, bong'}},
+     {e:'🔼', l:'Ganz nach oben', k:['oben','hoch'], v:{weg:'Funkel fliegt ganz hoch hinauf, über den ganzen Meteoritenregen hinweg'}}],
+    after:'{weg}. «Geschafft!», jubelt Otti.', pic:['sunny','nova']},
+   {t:'Hinter den Meteoriten schwebt etwas Kleines. Eine Sternenkatze! Sie hat sich verirrt und miaut ganz leise. Nova öffnet die Luke, und Otti fängt sie mit einer Kuscheldecke auf. «Keine Angst, wir bringen dich heim.»', pic:['sunny','moon']},
+   {t:'Die Sternenkatze zeigt mit der Pfote auf einen hellen Stern. Dort wohnt ihre Familie. Funkel landet sanft, und alle Sternenkatzen schnurren vor Freude. Dann fliegen Otti und Nova langsam zurück durchs Tor in den Zauberwald. Gute Nacht, kleine Raumfahrer.', pic:['sunny-sleep','moon']}]}},
+ {id:'heldenstadt', name:'Heldenstadt', e:'🦸‍♀️', farbe:'#ffd2d2', sub:'Superheldin Sternschnuppe', ort:'Hinter dem Tor liegt Heldenstadt, mit hohen Türmen und bunten Lichtern.', ruf:'Sternschnuppen-Kraft, los!', fahrt:'quer über die Dächer von Heldenstadt', hindernis:'Ein starker Wind pfeift um die Türme, huiii!', abend:'auf dem höchsten Dach von Heldenstadt', pic:['kiki','sunny'],
+  probleme:['Das Riesenrad steckt fest','Alle Ampeln in der Stadt sind ausgegangen','Ein kleiner Drache hat sich auf dem Turm verirrt'],
+  story:{id:'w-sternschnuppe', title:'Sternschnuppe rettet das Riesenrad', sub:'Eine Superheldin mit Sternen-Umhang.', pic:['kiki','sunny'], parts:[
+   {t:'In Heldenstadt wohnt ein Mädchen, das ein Geheimnis hat. Wenn es seinen Sternen-Umhang anzieht, wird es zur Superheldin Sternschnuppe. Sie kann Lichtfäden werfen und daran von Turm zu Turm schwingen. Swusch!', pic:['kiki']},
+   {t:'Heute ist Jahrmarkt. Otti fährt mit dem Riesenrad, ganz nach oben. Doch plötzlich, rumms! Das Riesenrad bleibt stehen. Otti sitzt ganz oben fest. «Hilfe!», ruft er.', pic:['sunny']},
+   {t:'Sternschnuppe hört es sofort. «Sternschnuppen-Kraft, los!» Sie wirft einen Lichtfaden, swusch, und schwingt über die Dächer zum Jahrmarkt.', pic:['kiki-wave']},
+   {q:'Wie hilft Sternschnuppe?', opts:[
+     {e:'✨', l:'Lichtfaden-Seil', k:['seil','faden'], v:{hilfe:'Sie spannt ein Seil aus Licht vom Riesenrad bis zum Boden, und Otti rutscht daran hinunter wie auf einer Rutschbahn'}},
+     {e:'🔧', l:'Riesenrad reparieren', k:['reparieren','repar'], v:{hilfe:'Sie saust zum Motor, findet das lose Kabel und steckt es wieder fest. Brrrm, das Riesenrad dreht sich wieder'}},
+     {e:'🎈', l:'Ballons holen', k:['ballon'], v:{hilfe:'Sie bindet zehn bunte Ballons zusammen, und Otti schwebt daran ganz sanft nach unten'}}],
+    after:'{hilfe}. Alle Leute klatschen.', pic:['kiki','sunny']},
+   {t:'«Danke, Sternschnuppe!», ruft Otti. «Wie kann ich dir danken?» Sternschnuppe lacht. «Sei einfach selber ein Held. Hilf jemandem, wenn du kannst. Das ist die grösste Superkraft.»', pic:['kiki','sunny']},
+   {t:'Am Abend sitzen die beiden auf dem höchsten Dach. Die Lichter der Stadt funkeln. Dann zieht Sternschnuppe ihren Umhang aus und ist wieder ein ganz normales Mädchen, das müde gähnt. Gute Nacht, Heldenstadt.', pic:['sunny-sleep','moon']}]}},
+ {id:'retter', name:'Retter-Station', e:'🐾', farbe:'#d6f2d6', sub:'Die Pfoten-Retter', ort:'Hinter dem Tor steht die Retter-Station, mit einem roten Turm und vielen Flitzern.', ruf:'Pfoten hoch, wir helfen!', fahrt:'mit Blaulicht und Tatütata', hindernis:'Es fängt an zu stürmen, und der Weg ist voller Äste.', abend:'in der Retter-Station bei einem warmen Kakao', pic:['hase','fuchs'],
+  probleme:['Ein Kätzchen sitzt hoch oben im Baum','Die Brücke über den Bach ist kaputt','Ein Schaf ist von der Herde weggelaufen'],
+  story:{id:'w-pfoten', title:'Die Pfoten-Retter und der Sturm', sub:'Hoppel, Flori und ein Kätzchen im Baum.', pic:['hase','fuchs'], parts:[
+   {t:'In der Retter-Station wohnen die Pfoten-Retter. Hoppel, der Hase, fährt den schnellen Rettungsflitzer. Flori, der Fuchs, fährt das rote Feuerwehrauto mit der langen Leiter. Ihr Ruf ist: «Pfoten hoch, wir helfen!»', pic:['hase','fuchs']},
+   {t:'Da klingelt der Alarm. Ring, ring! Otti ist am Funk. «Hilfe! Ein kleines Kätzchen sitzt ganz oben im Baum, und gleich kommt ein Sturm!»', pic:['sunny']},
+   {t:'«Pfoten hoch, wir helfen!», rufen Hoppel und Flori. Tatütata! Die Flitzer sausen los, durch den Wald, über die Brücke, um die Kurve.', pic:['hase','fuchs']},
+   {q:'Wer holt das Kätzchen herunter?', opts:[
+     {e:'🪜', l:'Flori mit der Leiter', k:['flori','fuchs','leiter'], v:{held:'Flori fährt die lange Leiter aus, klettert hinauf und holt das Kätzchen ganz vorsichtig herunter'}},
+     {e:'🐇', l:'Hoppel mit dem Trampolin', k:['hoppel','hase','trampolin'], v:{held:'Hoppel spannt ein weiches Sprungtuch auf, und das Kätzchen springt mutig hinein. Plopp!'}},
+     {e:'🤝', l:'Alle zusammen', k:['alle','zusammen'], v:{held:'Alle helfen zusammen: Flori hält die Leiter, Hoppel klettert, Otti hält die Decke bereit'}}],
+    after:'{held}. Gerade rechtzeitig, denn jetzt pfeift der Wind. Huiii!', pic:['fuchs','hase']},
+   {t:'Das Kätzchen kuschelt sich in die Decke und schnurrt. Seine Mama kommt angerannt und leckt ihm über die Ohren. «Danke, Pfoten-Retter!»', pic:['hase','sunny']},
+   {t:'Zurück in der Retter-Station gibt es warmen Kakao. Draussen stürmt es, drinnen ist es gemütlich. «Kein Problem ist zu gross, wenn wir zusammenhalten», sagt Flori. Und alle schlafen zufrieden ein.', pic:['fuchs','moon']}]}},
+ {id:'wolkenstein', name:'Schloss Wolkenstein', e:'🏰', farbe:'#ead9ff', sub:'Prinzessin Milou und ihr Amulett', ort:'Hinter dem Tor schwebt Schloss Wolkenstein auf einer weichen Wolke.', ruf:'Amulett, zeig mir den Weg!', fahrt:'auf einem Regenbogen-Pferd über die Wolken', hindernis:'Ein dichter Nebel zieht auf, man sieht kaum die eigene Hand.', abend:'auf dem Schlossbalkon unter den Sternen', pic:['prinz','sunny'],
+  probleme:['Der Drache im Tal ist ganz traurig','Die Krone der Königin ist verschwunden','Das Schlossfest fällt ins Wasser'],
+  story:{id:'w-milou', title:'Prinzessin Milou und der traurige Drache', sub:'Ein Amulett, das leuchtet, wenn jemand Hilfe braucht.', pic:['prinz','sunny'], parts:[
+   {t:'Auf Schloss Wolkenstein wohnt Prinzessin Milou. Sie trägt ein besonderes Amulett. Es leuchtet immer dann, wenn jemand Hilfe braucht.', pic:['prinz']},
+   {t:'Eines Morgens leuchtet das Amulett ganz hell. «Jemand braucht mich», sagt Milou. Otti, ihr bester Freund, ist sofort dabei. «Amulett, zeig mir den Weg!»', pic:['prinz','sunny']},
+   {t:'Das Licht führt sie hinunter ins Tal. Dort sitzt ein grosser grüner Drache und weint dicke Tränen. Platsch, platsch. «Alle laufen vor mir weg», schluchzt er. «Dabei will ich nur mitspielen.»', pic:['prinz','sunny']},
+   {q:'Was macht Milou?', opts:[
+     {e:'🎉', l:'Ein Fest feiern', k:['fest','feier'], v:{idee:'Milou lädt den Drachen zum Schlossfest ein, und er darf die Kerzen auf dem Kuchen anzünden, mit einem winzigen, warmen Feuerhauch'}},
+     {e:'⚽', l:'Zusammen spielen', k:['spiel','ball'], v:{idee:'Milou holt einen grossen Ball, und sie spielen alle zusammen. Der Drache ist der beste Torhüter der Welt'}},
+     {e:'🫂', l:'Ihn umarmen', k:['umarm','drück'], v:{idee:'Milou umarmt den Drachen ganz fest. Dann stellt sie ihn allen Kindern vor: «Das ist mein Freund. Er ist ganz lieb»'}}],
+    after:'{idee}. Der Drache strahlt über das ganze Gesicht.', pic:['prinz']},
+   {t:'Ab jetzt laufen die Kinder nicht mehr weg. Sie reiten auf seinem Rücken und rutschen seinen Schwanz hinunter. «Ich habe Freunde», flüstert der Drache glücklich.', pic:['prinz','sunny']},
+   {t:'Am Abend steht Milou auf dem Schlossbalkon. Das Amulett leuchtet jetzt ganz sanft, wie ein kleines Nachtlicht. «Jeder braucht einen Freund», sagt Milou leise. Gute Nacht, Schloss Wolkenstein.', pic:['prinz','moon']}]}},
+ {id:'piraten', name:'Piratenbucht', e:'🏴‍☠️', farbe:'#cfeef0', sub:'Kapitänin Kiki und ihre Crew', ort:'Hinter dem Tor rauscht das Meer, und in der Piratenbucht schaukelt ein Schiff.', ruf:'Segel setzen, ahoi!', fahrt:'mit vollen Segeln über die Wellen', hindernis:'Eine riesige Welle rollt heran, platsch!', abend:'an Deck unter dem Sternenhimmel', pic:['kiki','sunny'],
+  probleme:['Die Schatzkarte ist ins Wasser gefallen','Ein Wal hat sich in einem Netz verfangen','Der Papagei hat den Schlüssel geklaut'],
+  story:{id:'w-kiki-pirat', title:'Kapitänin Kiki und der geheime Schatz', sub:'Ahoi! Eine Schatzkarte mit Überraschung.', pic:['kiki','sunny'], parts:[
+   {t:'In der Piratenbucht schaukelt ein kleines Piratenschiff mit einer Fahne voller Sterne. Die Kapitänin ist Kiki. Ihre Crew: Otti, der Schiffsjunge, und Nova, der Steuermann. «Segel setzen, ahoi!»', pic:['kiki','sunny']},
+   {t:'In einer Flaschenpost finden sie eine Schatzkarte. Ein grosses rotes X ist darauf, mitten auf der Insel Kokosnuss. «Ein Schatz!», ruft Otti. «Volle Fahrt voraus!»', pic:['sunny','kiki']},
+   {t:'Doch dann rollt eine riesige Welle heran. Platsch! Das Schiff schaukelt hin und her. «Alle gut festhalten!», ruft Kiki und hält das Steuer ganz fest.', pic:['kiki']},
+   {q:'Wo graben sie auf der Insel?', opts:[
+     {e:'🌴', l:'Unter der Palme', k:['palme'], v:{ort:'unter der grössten Palme'}},
+     {e:'🪨', l:'Beim grossen Stein', k:['stein','fels'], v:{ort:'neben dem grossen runden Stein'}},
+     {e:'🏖️', l:'Im Sand am Meer', k:['sand','strand','meer'], v:{ort:'im weichen Sand, ganz nah am Meer'}}],
+    after:'Sie graben {ort}. Buddel, buddel, buddel. Und dann, klong! Eine kleine Holzkiste.', pic:['sunny','kiki']},
+   {t:'In der Kiste liegt kein Gold. Da liegen drei Muschelketten und ein Zettel: «Der grösste Schatz sind Freunde, mit denen man Abenteuer erlebt.» Kiki lacht. «Den Schatz haben wir ja schon!» Und alle hängen sich eine Muschelkette um.', pic:['kiki','nova']},
+   {t:'Am Abend liegt die Crew an Deck und schaut in die Sterne. Das Schiff schaukelt ganz sanft, wie eine Wiege. Ahoi, und gute Nacht.', pic:['sunny-sleep','moon']}]}},
+ {id:'dino', name:'Dino-Insel', e:'🦕', farbe:'#ffe7b8', sub:'Das Dino-Baby Tapsi', ort:'Hinter dem Tor liegt die Dino-Insel, mit Riesenfarnen und dampfenden Quellen.', ruf:'Dino-Power, stampf, stampf!', fahrt:'auf dem Rücken eines freundlichen Langhals-Dinos', hindernis:'Ein Vulkan rumpelt und blubbert, blubb, blubb!', abend:'im warmen Dino-Nest', pic:['sunny','mush'],
+  probleme:['Ein Dino-Ei ist ins Rollen gekommen','Der Fluss ist ausgetrocknet','Ein kleiner Flugsaurier hat Angst vor dem Fliegen'],
+  story:{id:'w-tapsi', title:'Otti und das Dino-Baby Tapsi', sub:'Ein Ei rollt davon.', pic:['sunny','mush'], parts:[
+   {t:'Hinter dem Tor liegt die Dino-Insel. Riesige Farne wachsen hier, und es riecht nach warmem Regen. Ein kleiner grüner Dino kommt angestapft. Stampf, stampf. «Ich bin Tapsi», sagt er. «Und ich habe ein Problem.»', pic:['sunny']},
+   {t:'«Das Ei von meinem kleinen Geschwisterchen ist aus dem Nest gerollt!», sagt Tapsi. «Mama schläft noch, und ich finde es nicht.» Otti nickt. «Wir suchen zusammen. Dino-Power, stampf, stampf!»', pic:['sunny','mush']},
+   {t:'Sie folgen der Spur im Sand. Sie führt an einem Vulkan vorbei, der leise blubbert. Blubb, blubb. Dann über eine Wiese voller riesiger Pilze.', pic:['mush','sunny']},
+   {q:'Wo liegt das Ei?', opts:[
+     {e:'🍄', l:'Unter einem Pilz', k:['pilz'], v:{wo:'unter einem riesigen roten Pilz, wie unter einem Schirm'}},
+     {e:'💧', l:'Beim Bach', k:['bach','wasser','fluss'], v:{wo:'ganz am Rand vom Bach, kurz bevor es ins Wasser gerollt wäre'}},
+     {e:'🌿', l:'In den Farnen', k:['farn','gras','busch'], v:{wo:'mitten in den weichen Farnen, gut versteckt'}}],
+    after:'Da liegt es, {wo}. Und plötzlich: knack! Das Ei bekommt einen Riss.', pic:['sunny']},
+   {t:'Knack, knack! Ein winziger Dino schaut heraus und sagt: «Piep?» Tapsi springt vor Freude. «Mein Geschwisterchen!» Ganz vorsichtig tragen sie es zurück ins Nest.', pic:['sunny','mush']},
+   {t:'Mama Dino wacht auf und staunt. Sie gibt Otti einen grossen Dino-Kuss, schmatz! Dann kuscheln sich alle ins warme Nest. Otti winkt und geht zurück durchs Tor. Gute Nacht, Dino-Insel.', pic:['sunny-sleep','moon']}]}}
+];
+const W_HELFER = [['sunny','Otti'],['nova','Nova'],['kiki','Kiki'],['hase','Hoppel'],['fuchs','Flori'],['prinz','Milou'],['bock','Zahnböcklein']];
+const W_KRAFT = ['fliegen','superschnell rennen','mit Tieren sprechen','leuchten wie ein Stern','unsichtbar werden','Riesen-Seifenblasen zaubern'];
+const W = { cur:null, wahl:{} };
+function eigeneWelten(){ return store.get('eigeneWelten', []).map(x => ({id:x.id, name:x.name, e:x.e || '✨', farbe:'#fff1c9', sub:'Eure eigene Welt', ort:`Hinter dem Tor liegt ${x.name}.`, ruf:'Abenteuer, los!', fahrt:`quer durch ${x.name}`, hindernis:'Doch plötzlich wird es ganz schwierig, und niemand weiss weiter.', abend:`am schönsten Platz von ${x.name}`, pic:['sunny','kiki'], probleme:['Jemand hat sich verirrt','Etwas Wichtiges ist verschwunden','Ein neuer Freund braucht Hilfe'], eigen:true})); }
+function alleWelten(){ return WELTEN.concat(eigeneWelten()); }
+function weltGeschichten(id){ return (store.get('weltGeschichten', {})[id] || []); }
+function renderTor(){
+  $('#torTor').classList.remove('offen'); $('#torSzene').classList.remove('flug'); $('#torSzene').hidden = false;
+  $('#torHinweis').textContent = 'Tippe auf das Tor.';
+  $('#weltenGrid').hidden = true; $('#eigeneWeltCard').hidden = true;
+  if (store.get('torOffen', false)) zeigeWelten(true);
+}
+function zeigeWelten(sofort){
+  const g = $('#weltenGrid');
+  g.innerHTML = alleWelten().map(w => `<button class="welt-k" data-welt="${esc(w.id)}" style="background:${w.farbe}"><span class="we" aria-hidden="true">${esc(w.e)}</span><b>${esc(w.name)}</b><small>${esc(w.sub)}</small></button>`).join('') +
+    `<button class="welt-k leer" data-welt="+"><span class="we" aria-hidden="true">➕</span><b>Eigene Welt</b><small>Erfindet sie zusammen.</small></button>`;
+  if (sofort){ $('#torSzene').hidden = true; g.hidden = false; return; }
+  $('#torTor').classList.add('offen'); $('#torHinweis').textContent = 'Das Tor geht auf …';
+  TTS.speak('Das Tor geht auf. Wohin reisen wir heute?');
+  setTimeout(() => $('#torSzene').classList.add('flug'), 900);
+  setTimeout(() => { if (current !== 'tor') return; $('#torSzene').hidden = true; g.hidden = false; store.set('torOffen', true); }, 1900);
+}
+$('#torTor').addEventListener('click', () => zeigeWelten(false));
+$('#torTor').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); zeigeWelten(false); } });
+$('#weltenGrid').addEventListener('click', e => {
+  const b = e.target.closest('[data-welt]'); if (!b) return;
+  if (b.dataset.welt === '+'){ $('#eigeneWeltCard').hidden = false; $('#ewName').focus(); return; }
+  W.cur = b.dataset.welt; W.wahl = {}; go('welt');
+});
+$('#ewGo').addEventListener('click', () => {
+  const name = $('#ewName').value.trim(); if (!name){ toast('Wie heisst eure Welt?'); $('#ewName').focus(); return; }
+  const l = store.get('eigeneWelten', []); const id = 'eigen-' + Date.now();
+  l.push({id, name:name.slice(0,28), e:($('#ewZeichen').value.trim() || '✨').slice(0,4)}); store.set('eigeneWelten', l);
+  $('#ewName').value = ''; $('#ewZeichen').value = '';
+  W.cur = id; W.wahl = {}; go('welt');
+});
+function renderWelt(){
+  const w = alleWelten().find(x => x.id === W.cur); if (!w){ go('tor'); return; }
+  $('#weltTitel').textContent = w.name;
+  $('#weltKopf').style.background = w.farbe;
+  $('#weltKopf').innerHTML = `<div class="we" aria-hidden="true">${esc(w.e)}</div><p>${esc(w.ort)}</p>`;
+  $('#s-welt').classList.remove('flug'); void $('#s-welt').offsetWidth; $('#s-welt').classList.add('flug');
+  const eig = weltGeschichten(w.id);
+  $('#weltListe').innerHTML = (w.story ? `<button class="sitem" data-ws="start"><span class="ic">${figHTML(w.story.pic[0])}</span><span><b>${esc(w.story.title)}</b><span class="sub">${esc(w.story.sub)}</span></span></button>` : '') +
+    eig.map((st, i) => `<button class="sitem" data-ws="${i}"><span class="ic" style="background:var(--mint)"><span style="font-size:40px" aria-hidden="true">⭐</span></span><span><b>${esc(st.title)}</b><span class="sub">Von euch erfunden</span></span></button>`).join('') +
+    (eig.length || w.story ? '' : `<p class="small muted" style="text-align:center">Hier ist noch Platz für eure erste Geschichte.</p>`);
+  if (!$('#eHeld').value) $('#eHeld').value = S.name || '';
+  const chip = (grp, v, l) => `<button class="chip ${W.wahl[grp] === v ? 'sel' : ''}" data-grp="${grp}" data-v="${esc(v)}">${esc(l)}</button>`;
+  $('#eHelfer').innerHTML = W_HELFER.map(([k, l]) => chip('helfer', k, l)).join('');
+  $('#eProblem').innerHTML = w.probleme.map(p => chip('problem', p, p)).join('');
+  $('#eKraft').innerHTML = W_KRAFT.map(k => chip('kraft', k, k)).join('');
+}
+$('#weltListe').addEventListener('click', e => {
+  const b = e.target.closest('[data-ws]'); if (!b) return;
+  const w = alleWelten().find(x => x.id === W.cur);
+  const st = b.dataset.ws === 'start' ? w.story : weltGeschichten(w.id)[+b.dataset.ws];
+  if (st){ st.back = 'welt'; openStory(st); }
+});
+$('#s-welt').addEventListener('click', e => {
+  const c = e.target.closest('[data-grp]'); if (!c) return;
+  W.wahl[c.dataset.grp] = W.wahl[c.dataset.grp] === c.dataset.v ? null : c.dataset.v;
+  $$(`[data-grp="${c.dataset.grp}"]`).forEach(x => x.classList.toggle('sel', x.dataset.v === W.wahl[c.dataset.grp]));
+});
+function weltErfinden(w, H, fk, P, K){
+  const F = (W_HELFER.find(x => x[0] === fk) || W_HELFER[0])[1];
+  return {title:`${H} in ${w.name}`, sub:'Von euch erfunden', pic:[fk, w.pic[1] || 'moon'], back:'welt', mine:true, parts:[
+   {t:`${w.ort} Dort lebt ${H}. Und ${H} hat ein Geheimnis: ${H} kann ${K}.`, pic:[w.pic[0]]},
+   {t:`Eines Tages kommt ${F} angerannt, ganz ausser Atem. «Schnell, ${H}! ${P}!»`, pic:[fk]},
+   {t:`${H} zögert keine Sekunde. «${w.ruf}», ruft ${H}. Zusammen mit ${F} geht es los, ${w.fahrt}.`, pic:[fk, w.pic[0]]},
+   {t:`Doch das ist gar nicht so einfach. ${w.hindernis} ${H} atmet tief ein … und wieder aus. Da hat ${H} eine Idee. ${H} kann ja ${K}!`, pic:[w.pic[0]]},
+   {t:`Und wirklich: Weil ${H} ${K} kann, und weil ${F} hilft, schaffen sie es. Alle jubeln. «Wir sind ein Team!», ruft ${F}.`, pic:[fk, w.pic[0]]},
+   {t:`Am Abend sitzen ${H} und ${F} zusammen ${w.abend}. «Das war ein Abenteuer», sagt ${F}. «Und morgen?» ${H} lächelt. «Morgen öffnen wir das Tor wieder.» Gute Nacht, ${H}.`, pic:['moon']}]};
+}
+$('#eGo').addEventListener('click', () => {
+  const w = alleWelten().find(x => x.id === W.cur); if (!w) return;
+  const H = cleanName($('#eHeld').value || '').slice(0,24);
+  if (!H){ toast('Wer ist die Heldin oder der Held?'); $('#eHeld').focus(); return; }
+  const P = ($('#eProblemText').value.trim() || W.wahl.problem || w.probleme[0]).replace(/[.!?]+$/,'');
+  const K = ($('#eKraftText').value.trim().replace(/^kann\s+/i,'') || W.wahl.kraft || 'fliegen').replace(/[.!?]+$/,'');
+  const st = weltErfinden(w, H, W.wahl.helfer || 'sunny', P, K);
+  const all = store.get('weltGeschichten', {}); (all[w.id] ||= []).push(st); all[w.id] = all[w.id].slice(-20); store.set('weltGeschichten', all);
+  $('#eProblemText').value = ''; $('#eKraftText').value = '';
+  openStory(st);
+});
 const R = { story:null, seq:[], idx:0, vars:{}, sent:0, reading:false, started:false, sents:[] };
 function buildSeq(story){
   const seq=[];
