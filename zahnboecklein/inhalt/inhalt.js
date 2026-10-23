@@ -37,7 +37,7 @@
     if (!basisKey) return null;
     var p = basisKey.split('/'), r = regal(p[0]), b = r && item(r, p[1]); if (!b) return null;
     grund = ((v.mag || [])[0] === basisKey ? 'Weil du «' : 'Weil du zuletzt «') + titel(b) + (((v.mag || [])[0] === basisKey) ? '» mochtest' : '» hattest');
-    var kand = r.items.filter(function (it) { return it !== b && !gesehen(v, r, it) && !(r.typ === 'quiz'); });
+    var kand = (r.typ === 'quiz' || r.typ === 'album') ? [] : r.items.filter(function (it) { return it !== b && !gesehen(v, r, it); });
     var gleich = kand.filter(function (it) { return b.tag && it.tag === b.tag; });
     var x = gleich[0] || kand[0];
     if (!x) { var andere = I().regale.filter(function (q) { return q !== r && q.typ !== 'album' && q.typ !== 'quiz'; }); for (var i = 0; i < andere.length && !x; i++) { x = andere[i].items.filter(function (it) { return !gesehen(v, andere[i], it); })[0]; if (x) r = andere[i]; } }
