@@ -420,7 +420,7 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Rosa ist trotzdem da
     '.r8-ringe-satz{background:#fdeee0!important}',
     '.r8-ehrlich{background:#fff4e0!important;border-color:#e0b878!important;color:#4a3410!important}',
     '#figurStart{background:#f6f1ea!important;color:#161412!important}',
-    '#figurStart::before{display:none!important}',
+    '#figurStart::before,#figurStart::after{display:none!important}',
     '#figurStart img{width:min(44vw,180px)!important;height:min(44vw,180px)!important;border-radius:50%!important;border:6px solid #fff!important;box-shadow:0 8px 30px rgba(0,0,0,.15)!important;animation:none!important}',
     '#figurStart h1{background:none!important;-webkit-text-fill-color:#161412;color:#161412!important;animation:none!important;font-family:-apple-system,system-ui,sans-serif!important;font-weight:800!important}',
     '#figurStart p{color:#4a443d!important}#figurStart .gl-hallo{color:#8a3a0b!important}',
@@ -580,7 +580,7 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Rosa ist trotzdem da
     B.querySelector('.r8-pk-teilen').onclick = function () {
       var bl = B._blob, tipp = B.querySelector('.r8-pk-tipp');
       if (!bl) return;
-      var f = null; try { f = new File([bl], 'granny-postkarte.jpg', { type: 'image/jpeg' }); } catch (e) {}
+      var f = null; try { f = new File([bl], 'rosa-postkarte.jpg', { type: 'image/jpeg' }); } catch (e) {}
       if (f && navigator.canShare && navigator.canShare({ files: [f] })) {
         navigator.share({ files: [f], text: SAETZE[wahl.s] }).then(function () { Z.toast('Karte unterwegs 💌'); R.feier(B.querySelector('.r8-pk-vor'), 10); }).catch(function (e) { if (!e || e.name !== 'AbortError') tipp.textContent = 'Teilen geht hier nicht. Halte den Finger lange auf die Karte und wähle «Bild sichern».'; });
       } else { tipp.textContent = 'Halte den Finger lange auf die Karte und wähle «Bild sichern» oder «Teilen».'; R.feier(B.querySelector('.r8-pk-vor'), 6); }

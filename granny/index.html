@@ -312,6 +312,8 @@
       const v=speechSynthesis.getVoices().find(v=>v.lang.replace('_','-').startsWith(L().voice.slice(0,2)));if(v)u.voice=v;speechSynthesis.speak(u);}catch(e){}
   }
 
+  // Fehlt eine Nummer: Rosa sagt es und zeigt es unten gross an (die Sprechblase liegt weiter oben)
+  function fehltSag(text){ sag(text); if(window.GrannyGlanz) GrannyGlanz.hinweis(text); }
   function anrufen(nr){ if(nr) location.href='tel:'+nr.replace(/[^\d+]/g,''); }
   function sms(nr,text){ if(nr) location.href='sms:'+nr.replace(/[^\d+]/g,'')+'?&body='+encodeURIComponent(text); }
 
@@ -326,7 +328,7 @@
       const name=document.createElement('div'); name.textContent=p.n||'—';
       b.append(bild,name);
       if(!p.nr){const s=document.createElement('small');s.textContent=S.sprache==='es'?'aún vacío':'noch leer';b.appendChild(s);b.classList.add('leer')}
-      b.onclick=()=>{ if(!p.nr){sag(t.fehlt);return} if(window.GrannyPlus)GrannyPlus.zaehl('anruf',p.n,'winken'); sag(t.ruft(p.n)); setTimeout(()=>anrufen(p.nr),1200); };
+      b.onclick=()=>{ if(!p.nr){fehltSag(t.fehlt);return} if(window.GrannyPlus)GrannyPlus.zaehl('anruf',p.n,'winken'); sag(t.ruft(p.n)); setTimeout(()=>anrufen(p.nr),1200); };
       box.appendChild(b);
     });
     const zeilen=(S.heute||'').split('\n').map(s=>s.trim()).filter(Boolean);
@@ -341,9 +343,9 @@
   const erste=()=>S.leute.find(p=>p.nr)||null;
   $('hilfe').onclick=()=>{const t=L(); const e=erste(); const nr=S.hnr||(e&&e.nr); const n=S.hnr?(S.hname||S.leute[0].n):(e&&e.n);
     if(window.GrannyPlus)GrannyPlus.zaehl('hilfe');
-    if(!nr){sag(t.fehltNot);return} sag(t.hilfeSag(n)); setTimeout(()=>anrufen(nr),1500);};
+    if(!nr){fehltSag(t.fehltNot);return} sag(t.hilfeSag(n)); setTimeout(()=>anrufen(nr),1500);};
   $('klemmt').onclick=()=>{const t=L(); const e=erste(); const nr=S.pnr||(e&&e.nr); const n=S.pnr?(S.pname||S.leute[0].n):(e?e.n:S.leute[0].n);
-    if(window.GrannyPlus)GrannyPlus.zaehl('klemmt'); sag(t.klemmtSag(n)); if(nr) setTimeout(()=>sms(nr,t.klemmtSms(n)),2500);};
+    if(window.GrannyPlus)GrannyPlus.zaehl('klemmt'); if(!nr){fehltSag(t.fehlt);return} sag(t.klemmtSag(n)); setTimeout(()=>sms(nr,t.klemmtSms(n)),2500);};
 
   // Antwort: zuerst einfache Regeln, mit Server frei
   async function antworten(text){
