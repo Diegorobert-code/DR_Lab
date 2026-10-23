@@ -187,7 +187,7 @@ window.R7_CFG = {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
 
-/* Granny Runde 7: Nachttisch-Uhr, Erinnerungs-Diashow, Geburtstage. Alles bleibt auf dem Gerät. */
+/* Rosa Runde 7: Nachttisch-Uhr, Erinnerungs-Diashow, Geburtstage. Alles bleibt auf dem Gerät. */
 (function () {
   'use strict';
   var R = window.R7; if (!R) return;
@@ -215,17 +215,17 @@ window.R7_CFG = {
   function teil(h) { return h < 5 ? 'Nacht' : h < 11 ? 'Morgen' : h < 14 ? 'Mittag' : h < 18 ? 'Nachmittag' : h < 22 ? 'Abend' : 'Nacht'; }
   var ck = el('<section class="r7 r7-karte" aria-labelledby="r7u-t">' +
     '<p class="r7-eb">Für den Nachttisch</p><h2 id="r7u-t">🌙 Grosse Uhr</h2>' +
-    '<div style="display:flex;gap:16px;align-items:center"><img class="r7-figur r7-uhr-fig" src="figur.jpg" alt="Granny" loading="lazy" width="72" height="72">' +
+    '<div style="display:flex;gap:16px;align-items:center"><img class="r7-figur r7-uhr-fig" src="figur.jpg" alt="Rosa" loading="lazy" width="72" height="72">' +
     '<p class="r7-p" style="margin:0">Eine ruhige, grosse Uhr mit Tag und Datum. Gut für die Nacht, wenn das Handy am Ladekabel steht.</p></div>' +
     '<button type="button" class="r7-btn voll gross r7-uhr-los" style="margin-top:16px">🕰 Uhr zeigen</button></section>');
-  (function () { var h = new Date().getHours(); if (h >= 21 || h < 6) { var f = ck.querySelector('.r7-uhr-fig'); f.src = 'posen/kerze.jpg'; f.alt = 'Granny mit Kerze am Nachttisch'; } })();
+  (function () { var h = new Date().getHours(); if (h >= 21 || h < 6) { var f = ck.querySelector('.r7-uhr-fig'); f.src = 'posen/kerze.jpg'; f.alt = 'Rosa mit Kerze am Nachttisch'; } })();
   ck.querySelector('.r7-uhr-los').addEventListener('click', function () {
     var o = el('<div class="r7 r7-dia r7-uhr" role="dialog" aria-modal="true" aria-label="Grosse Uhr" style="background:#05070f;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;padding:24px">' +
-      '<img class="r7-uhr-kerze" src="posen/kerze.jpg" alt="Granny sitzt mit einer Kerze am Nachttisch" width="132" height="132" hidden style="width:132px;height:132px;border-radius:50%;object-fit:cover;border:2px solid #4a3d22;box-shadow:0 0 40px rgba(242,193,78,.25);margin-bottom:8px">' +
+      '<img class="r7-uhr-kerze" src="posen/kerze.jpg" alt="Rosa sitzt mit einer Kerze am Nachttisch" width="132" height="132" hidden style="width:132px;height:132px;border-radius:50%;object-fit:cover;border:2px solid #4a3d22;box-shadow:0 0 40px rgba(242,193,78,.25);margin-bottom:8px">' +
       '<p class="r7-uhr-teil" style="margin:0;font-size:22px;color:#c9a54a"></p>' +
       '<p class="r7-uhr-zeit" style="margin:0;font-size:min(30vw,40vh);line-height:1;font-weight:700;color:#e8c56a;font-variant-numeric:tabular-nums;letter-spacing:-.02em"></p>' +
       '<p class="r7-uhr-tag" style="margin:0;font-size:28px;color:#d8cfb8"></p>' +
-      '<button type="button" class="r7-btn r7-uhr-zu" style="margin-top:24px;background:transparent;color:#9a8f78;border:1px solid #3a3426">Zurück zu Granny</button></div>');
+      '<button type="button" class="r7-btn r7-uhr-zu" style="margin-top:24px;background:transparent;color:#9a8f78;border:1px solid #3a3426">Zurück zu Rosa</button></div>');
     document.body.appendChild(o);
     var wl = null;
     try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function (w) { wl = w; }).catch(function () {}); } catch (e) {}
@@ -249,9 +249,9 @@ window.R7_CFG = {
 
   /* ---------- 2) Erinnerungen – Diashow mit der Familie (Vorbild: Apple Fotos «Rückblicke», digitaler Bilderrahmen) ---------- */
   var dk = el('<section class="r7 r7-karte" aria-labelledby="r7d-t"><p class="r7-eb">Schauen und lächeln</p><h2 id="r7d-t">📷 Erinnerungen</h2>' +
-    '<p class="r7-p">Granny zeigt dir ganz langsam die Bilder deiner Liebsten. Einfach zuschauen.</p>' +
+    '<p class="r7-p">Rosa zeigt dir ganz langsam die Bilder deiner Liebsten. Einfach zuschauen.</p>' +
     '<button type="button" class="r7-btn voll gross r7-dia-los">▶ Erinnerungen ansehen</button></section>');
-  var EIGENE = [['posen/winken.jpg', 'Granny winkt dir zu', 'Schön, dass du da bist.'], ['posen/lachen.jpg', 'Granny lacht', 'Wer lacht, hat mehr vom Tag.'], ['posen/herz.jpg', 'Von Herzen', 'Granny denkt an dich.'], ['posen/trinken.jpg', 'Ein Glas Wasser', 'Granny trinkt mit dir.'], ['posen/suchen.jpg', 'Wo ist die Brille?', 'Auf dem Kopf, wie immer.']];
+  var EIGENE = [['posen/winken.jpg', 'Rosa winkt dir zu', 'Schön, dass du da bist.'], ['posen/lachen.jpg', 'Rosa lacht', 'Wer lacht, hat mehr vom Tag.'], ['posen/herz.jpg', 'Von Herzen', 'Rosa denkt an dich.'], ['posen/trinken.jpg', 'Ein Glas Wasser', 'Rosa trinkt mit dir.'], ['posen/suchen.jpg', 'Wo ist die Brille?', 'Auf dem Kopf, wie immer.']];
   function dias() {
     var l = leute().filter(function (p) { return p.bild; }).map(function (p) { return { bild: p.bild, titel: p.n, satz: p.wer || 'Ein lieber Mensch.', p: p }; });
     return l.length ? l.concat(EIGENE.slice(0, 2).map(function (e) { return { bild: e[0], titel: e[1], satz: e[2] }; })) : EIGENE.map(function (e) { return { bild: e[0], titel: e[1], satz: e[2] }; });
@@ -290,7 +290,7 @@ window.R7_CFG = {
     '<details class="r7-geb-neu" style="margin-top:16px"><summary class="r7-btn" style="list-style:none">＋ Geburtstag eintragen</summary>' +
     '<form style="display:grid;gap:12px;margin-top:12px"><label>Name<input name="n" required autocomplete="off" placeholder="z. B. Diego"></label>' +
     '<label>Geburtstag<input name="d" type="date" required></label><button class="r7-btn voll" type="submit">Merken</button></form></details>' +
-    '<p class="r7-leise">Granny zeigt es dir drei Tage vorher und am Tag selbst, wenn du sie öffnest. Bleibt nur auf diesem Gerät.</p></section>');
+    '<p class="r7-leise">Rosa zeigt es dir drei Tage vorher und am Tag selbst, wenn du sie öffnest. Bleibt nur auf diesem Gerät.</p></section>');
   function tageBis(md) {
     var h = new Date(); h.setHours(0, 0, 0, 0);
     var t = new Date(h.getFullYear(), +md.slice(0, 2) - 1, +md.slice(3, 5));
@@ -301,7 +301,7 @@ window.R7_CFG = {
     var L = R.hol('geb', []).map(function (g) { return { n: g.n, d: g.d, bis: tageBis(g.d) }; }).sort(function (a, b) { return a.bis - b.bis; });
     var ul = bk.querySelector('.r7-geb-liste'), hz = bk.querySelector('.r7-geb-heute');
     ul.innerHTML = ''; hz.innerHTML = '';
-    if (!L.length) { ul.appendChild(el('<li class="r7-leer"><img class="r7-figur" src="posen/suchen.jpg" alt="" loading="lazy" width="72" height="72"><p>Noch keine Geburtstage. Granny hält schon das Büchlein bereit.</p></li>')); return; }
+    if (!L.length) { ul.appendChild(el('<li class="r7-leer"><img class="r7-figur" src="posen/suchen.jpg" alt="" loading="lazy" width="72" height="72"><p>Noch keine Geburtstage. Rosa hält schon das Büchlein bereit.</p></li>')); return; }
     L.forEach(function (g, j) {
       var wann = g.bis === 0 ? 'Heute! 🎉' : g.bis === 1 ? 'Morgen' : 'in ' + g.bis + ' Tagen';
       var li = el('<li style="display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 12px;border-radius:16px;background:rgba(255,250,240,.07)"><span style="font-size:28px" aria-hidden="true">🎂</span><span style="flex:1"><b style="display:block;font-size:18px">' + esc(g.n) + '</b><small style="color:var(--r7-leise);font-size:15px">' + (+g.d.slice(3, 5)) + '. ' + MON[+g.d.slice(0, 2) - 1] + ' · ' + wann + '</small></span><button type="button" class="r7-btn" data-weg="' + j + '" aria-label="' + esc(g.n) + ' entfernen">✕</button></li>');

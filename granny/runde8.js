@@ -1,5 +1,5 @@
 /* Runde 8 (22.10.2026): polieren, interaktiv, Layout- und Technik-Ideen aus Top-Apps. Erzeugt aus kern8 + App-Teil. */
-window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem da."};
+window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Rosa ist trotzdem da."};
 /* Runde 8 – gemeinsamer Kern: Rückgängig-Toast, weiche Wechsel (View Transitions), Kategorienleiste, Wischen, Offline-Hinweis.
    Baut auf window.R7 auf (runde7.js). Nur lokal, keine Daten verlassen das Gerät. */
 (function () {
@@ -377,7 +377,7 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
 
-/* Granny Runde 8: «Mein Tag» als drei Ringe, Postkarte als Bild schicken, Rückgängig. Alles bleibt auf dem Gerät. */
+/* Rosa Runde 8: «Mein Tag» als drei Ringe, Postkarte als Bild schicken, Rückgängig. Alles bleibt auf dem Gerät. */
 (function () {
   'use strict';
   var R = window.R7, Z = window.R8; if (!R || !Z) return;
@@ -395,7 +395,7 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
   }
 
 
-  /* ---------- 4) Markt-Look (Vorbild: Apple «Assistive Access», Seniorenhandys): hell, grosse Kacheln, hoher Kontrast; Granny nur als kleines Maskottchen ---------- */
+  /* ---------- 4) Markt-Look (Vorbild: Apple «Assistive Access», Seniorenhandys): hell, grosse Kacheln, hoher Kontrast; Rosa nur als kleines Maskottchen ---------- */
   Z.thema({ bg: '#f6f1ea', karte: '#ffffff', rand: '#e6dccd', randS: '#a8957c', text: '#161412', leise: '#4a443d', akz: '#a8480f', akzT: '#8a3a0b', auf: '#ffffff', weich: '#fdeee0' }, [
     ':root{--bg:#f6f1ea;--card:#ffffff;--gold:#a8480f;--gold2:#8a3a0b;--text:#161412;--soft:#4a443d;--help:#b3261e;--ok:#1f7a4d}',
     'body{font-size:18px}',
@@ -446,9 +446,9 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
 
   /* ---------- 1) Mein Tag: drei Ringe (Vorbild: Apple Fitness-Ringe) ---------- */
   var RINGE = [
-    { k: 't', n: 'Trinken', e: '💧', ziel: 6, c: '#5ec8ff', knopf: 'Ein Glas getrunken', bild: 'posen/trinken.jpg', alt: 'Granny trinkt ein Glas Wasser', satz: ['Prost! Ein Glas Wasser.', 'Gut so. Wasser tut gut.', 'Noch ein Glas. Granny trinkt mit.'], fertig: 'Sechs Gläser! Der blaue Ring ist zu.' },
-    { k: 'b', n: 'Bewegen', e: '🚶', ziel: 3, c: '#8be08b', knopf: 'Eine kleine Runde', bild: 'posen/nicken.jpg', alt: 'Granny nickt zufrieden', satz: ['Schön, ein paar Schritte.', 'Eine Runde durch die Wohnung zählt auch.', 'Granny nickt: gut gemacht.'], fertig: 'Drei Runden! Der grüne Ring ist zu.' },
-    { k: 'r', n: 'Reden', e: '📞', ziel: 1, c: '#ff8fae', knopf: 'Mit jemandem geredet', bild: 'posen/lachen.jpg', alt: 'Granny lacht', satz: ['Wie schön, du hast mit jemandem geredet.'], fertig: 'Geredet! Der rosa Ring ist zu.' }
+    { k: 't', n: 'Trinken', e: '💧', ziel: 6, c: '#5ec8ff', knopf: 'Ein Glas getrunken', bild: 'posen/trinken.jpg', alt: 'Rosa trinkt ein Glas Wasser', satz: ['Prost! Ein Glas Wasser.', 'Gut so. Wasser tut gut.', 'Noch ein Glas. Rosa trinkt mit.'], fertig: 'Sechs Gläser! Der blaue Ring ist zu.' },
+    { k: 'b', n: 'Bewegen', e: '🚶', ziel: 3, c: '#8be08b', knopf: 'Eine kleine Runde', bild: 'posen/nicken.jpg', alt: 'Rosa nickt zufrieden', satz: ['Schön, ein paar Schritte.', 'Eine Runde durch die Wohnung zählt auch.', 'Rosa nickt: gut gemacht.'], fertig: 'Drei Runden! Der grüne Ring ist zu.' },
+    { k: 'r', n: 'Reden', e: '📞', ziel: 1, c: '#ff8fae', knopf: 'Mit jemandem geredet', bild: 'posen/lachen.jpg', alt: 'Rosa lacht', satz: ['Wie schön, du hast mit jemandem geredet.'], fertig: 'Geredet! Der rosa Ring ist zu.' }
   ];
   var RAD = [86, 64, 42], UMF = RAD.map(function (r) { return 2 * Math.PI * r; });
   function tagDaten(k) { var A = R.hol('ringe', {}); return A[k || R.heuteK()] || { t: 0, b: 0, r: 0 }; }
@@ -468,7 +468,7 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
   }
   var rk = el('<section class="r7 r7-karte r8-tag" aria-labelledby="r8r-t">' +
     '<p class="r7-eb">Ganz ohne Druck</p><h2 id="r8r-t">⭕ Mein Tag</h2>' +
-    '<div class="r8-ringe-oben"><div class="r8-ringe-bild" aria-hidden="true"></div><div class="r8-ringe-fig"><img src="figur.jpg" alt="Granny" width="96" height="96" loading="lazy"><p class="r8-ringe-satz" aria-live="polite">Tipp unten, was du heute gemacht hast. Granny füllt die Ringe.</p></div></div>' +
+    '<div class="r8-ringe-oben"><div class="r8-ringe-bild" aria-hidden="true"></div><div class="r8-ringe-fig"><img src="figur.jpg" alt="Rosa" width="96" height="96" loading="lazy"><p class="r8-ringe-satz" aria-live="polite">Tipp unten, was du heute gemacht hast. Rosa füllt die Ringe.</p></div></div>' +
     '<div class="r8-ringe-knoepfe"></div>' +
     '<div class="r8-woche" aria-label="Die letzten sieben Tage"></div>' +
     '<p class="r7-leise">Ein Tag mit leeren Ringen ist auch gut. Ruhetage gehören dazu.</p></section>');
@@ -508,7 +508,7 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
     rk.querySelector('.r8-ringe-satz').textContent = satz;
     fig.src = alleZu && !warZu ? 'posen/herz.jpg' : x.bild; fig.alt = x.alt;
     fig.classList.remove('r8-hops'); void fig.offsetWidth; fig.classList.add('r8-hops');
-    clearTimeout(figT); figT = setTimeout(function () { fig.src = 'figur.jpg'; fig.alt = 'Granny'; }, 4000);
+    clearTimeout(figT); figT = setTimeout(function () { fig.src = 'figur.jpg'; fig.alt = 'Rosa'; }, 4000);
     zeigeRinge(true);
     sag(satz);
     Z.licht('ring-' + x.k);
@@ -517,10 +517,10 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
   }
 
   /* ---------- 2) Postkarte als Bild (Vorbild: Instagram «Teilen als Bild») ---------- */
-  var MOTIVE = [['r8bilder/postkarte.jpg', 'Granny mit Postkarte'], ['posen/winken.jpg', 'Granny winkt'], ['posen/herz.jpg', 'Granny mit Herz'], ['posen/lachen.jpg', 'Granny lacht'], ['posen/kerze.jpg', 'Granny mit Kerze']];
+  var MOTIVE = [['r8bilder/postkarte.jpg', 'Rosa mit Postkarte'], ['posen/winken.jpg', 'Rosa winkt'], ['posen/herz.jpg', 'Rosa mit Herz'], ['posen/lachen.jpg', 'Rosa lacht'], ['posen/kerze.jpg', 'Rosa mit Kerze']];
   var SAETZE = ['Mir geht es gut.', 'Ich denke an dich.', 'Danke für deinen Besuch.', 'Ruf mich an, wenn du magst.', 'Gute Nacht, schlaf gut.'];
   var pk = el('<section class="r7 r7-karte" aria-labelledby="r8p-t"><p class="r7-eb">Ein Gruss für die Familie</p><h2 id="r8p-t">💌 Postkarte schicken</h2>' +
-    '<div style="display:flex;gap:16px;align-items:center"><img class="r7-figur" src="posen/herz.jpg" alt="Granny hält ein Herz" loading="lazy" width="72" height="72"><p class="r7-p" style="margin:0">Granny malt dir eine Karte mit einem lieben Satz. Dann schickst du sie mit einem Tipp.</p></div>' +
+    '<div style="display:flex;gap:16px;align-items:center"><img class="r7-figur" src="posen/herz.jpg" alt="Rosa hält ein Herz" loading="lazy" width="72" height="72"><p class="r7-p" style="margin:0">Rosa malt dir eine Karte mit einem lieben Satz. Dann schickst du sie mit einem Tipp.</p></div>' +
     '<button type="button" class="r7-btn voll gross r8-pk-los" style="margin-top:16px">💌 Karte machen</button></section>');
   var wahl = { m: 0, s: 0 };
   function laden(src) { return new Promise(function (ok) { var i = new Image(); i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; }); }
@@ -544,7 +544,7 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
       var n = daten().name, d = new Date();
       c.fillStyle = '#dfe5fb'; c.font = '400 44px system-ui, -apple-system, sans-serif';
       c.fillText((n ? 'Von ' + n + ' · ' : '') + d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear(), 540, 990 + z.length * 92 + 40);
-      c.fillStyle = '#f2c14e'; c.font = '700 34px system-ui, -apple-system, sans-serif'; c.fillText('🌹 Granny', 540, 1270);
+      c.fillStyle = '#f2c14e'; c.font = '700 34px system-ui, -apple-system, sans-serif'; c.fillText('🌹 Rosa', 540, 1270);
       return cv;
     });
   }
@@ -592,26 +592,26 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
 
   /* ---------- 3) Wächst mit dir (Vorbild: Finch) + SOS (Vorbild: Headspace) ---------- */
   var WCFG = {
-    k: 'granny', name: 'Granny', licht: 'Herzli', lichtE: '💗', bild: 'r8bilder/stufe-1.jpg', vorlesenAuto: true,
+    k: 'granny', name: 'Rosa', licht: 'Herzli', lichtE: '💗', bild: 'r8bilder/stufe-1.jpg', vorlesenAuto: true,
     stufenBilder: ['r8bilder/stufe-1.jpg', 'r8bilder/stufe-2.jpg', 'r8bilder/stufe-3.jpg', 'r8bilder/stufe-4.jpg', 'r8bilder/stufe-5.jpg'],
-    heimkehrBild: ['r8bilder/ausflug.jpg', 'Granny ist zurück vom Ausflug'],
-    stufen: [[0, 'Rosenknospe'], [5, 'Gartenfreundin'], [15, 'Dorf-Granny'], [35, 'Herzens-Granny'], [70, 'Goldene Granny']],
-    wie: 'Jedes Mal, wenn du etwas Kleines machst (einen Ring füllen, Granny etwas erzählen, Bilder anschauen, eine Karte schicken, einmal ruhig atmen), bekommt Granny ein Herzli. Mit genug Herzli wächst sie eine Stufe. Und einmal am Tag geht sie auf einen kleinen Ausflug und bringt dir eine Geschichte mit.',
+    heimkehrBild: ['r8bilder/ausflug.jpg', 'Rosa ist zurück vom Ausflug'],
+    stufen: [[0, 'Rosenknospe'], [5, 'Gartenfreundin'], [15, 'Dorf-Rosa'], [35, 'Herzens-Rosa'], [70, 'Goldene Rosa']],
+    wie: 'Jedes Mal, wenn du etwas Kleines machst (einen Ring füllen, Rosa etwas erzählen, Bilder anschauen, eine Karte schicken, einmal ruhig atmen), bekommt Rosa ein Herzli. Mit genug Herzli wächst sie eine Stufe. Und einmal am Tag geht sie auf einen kleinen Ausflug und bringt dir eine Geschichte mit.',
     schritte: [['#erzaehl', 'erzaehl'], ['#reden', 'reden'], ['.r7-dia-los', 'dia'], ['.r4-memo button', 'memo'], ['.r7-geb-neu button[type=submit]', 'geb']],
-    ausflugBilder: [['posen/winken.jpg', 'Granny winkt, zurück vom Ausflug'], ['posen/lachen.jpg', 'Granny lacht'], ['posen/herz.jpg', 'Granny mit Herz'], ['posen/trinken.jpg', 'Granny mit einem Glas'], ['posen/suchen.jpg', 'Granny sucht ihre Brille'], ['posen/nicken.jpg', 'Granny nickt']],
+    ausflugBilder: [['posen/winken.jpg', 'Rosa winkt, zurück vom Ausflug'], ['posen/lachen.jpg', 'Rosa lacht'], ['posen/herz.jpg', 'Rosa mit Herz'], ['posen/trinken.jpg', 'Rosa mit einem Glas'], ['posen/suchen.jpg', 'Rosa sucht ihre Brille'], ['posen/nicken.jpg', 'Rosa nickt']],
     ausflug: [
-      ['Auf dem Markt', '🍎', 'Granny war auf dem Markt. Die Marktfrau hat ihr den schönsten Apfel geschenkt, weil Granny so herzlich gelacht hat.'],
-      ['Im Park', '🦆', 'Granny hat die Enten gefüttert. Eine kleine Ente ist ihr bis zum Bänkli nachgewatschelt.'],
-      ['Beim Coiffeur', '💇', 'Granny war beim Coiffeur und hat dort ihre Brille gesucht. Sie war auf dem Kopf, wie immer.'],
-      ['Im Garten', '🌹', 'Die letzte Rose im Garten ist aufgegangen. Granny hat ihr leise «Grüezi» gesagt.'],
-      ['Beim Bäcker', '🥐', 'Granny hat ein Gipfeli geholt und dem Bäcker ein Rätsel erzählt. Er rätselt immer noch.'],
-      ['Am See', '🛶', 'Granny sass am See und hat den Schiffen zugewinkt. Eines hat zurückgehupt.'],
-      ['Auf dem Estrich', '📦', 'Granny hat eine alte Schachtel gefunden. Darin: Fotos vom Tanzabend von früher.'],
-      ['Im Café', '☕', 'Granny hat mit einer Freundin Kaffee getrunken. Sie haben so gelacht, dass der Kellner mitgelacht hat.'],
-      ['Beim Spazieren', '🍂', 'Granny hat das schönste Herbstblatt gesucht und für dich mitgebracht.'],
-      ['In der Bibliothek', '📚', 'Granny hat ein Buch mit grosser Schrift ausgeliehen. Spannend bis zur letzten Seite.'],
-      ['Auf dem Bänkli', '🐦', 'Ein Spatz hat sich neben Granny gesetzt. Zusammen haben sie die Sonne genossen.'],
-      ['Bei der Nachbarin', '🍰', 'Die Nachbarin hat Zwetschgenkuchen gebacken. Granny hat das Rezept für dich gemerkt.']
+      ['Auf dem Markt', '🍎', 'Rosa war auf dem Markt. Die Marktfrau hat ihr den schönsten Apfel geschenkt, weil Rosa so herzlich gelacht hat.'],
+      ['Im Park', '🦆', 'Rosa hat die Enten gefüttert. Eine kleine Ente ist ihr bis zum Bänkli nachgewatschelt.'],
+      ['Beim Coiffeur', '💇', 'Rosa war beim Coiffeur und hat dort ihre Brille gesucht. Sie war auf dem Kopf, wie immer.'],
+      ['Im Garten', '🌹', 'Die letzte Rose im Garten ist aufgegangen. Rosa hat ihr leise «Grüezi» gesagt.'],
+      ['Beim Bäcker', '🥐', 'Rosa hat ein Gipfeli geholt und dem Bäcker ein Rätsel erzählt. Er rätselt immer noch.'],
+      ['Am See', '🛶', 'Rosa sass am See und hat den Schiffen zugewinkt. Eines hat zurückgehupt.'],
+      ['Auf dem Estrich', '📦', 'Rosa hat eine alte Schachtel gefunden. Darin: Fotos vom Tanzabend von früher.'],
+      ['Im Café', '☕', 'Rosa hat mit einer Freundin Kaffee getrunken. Sie haben so gelacht, dass der Kellner mitgelacht hat.'],
+      ['Beim Spazieren', '🍂', 'Rosa hat das schönste Herbstblatt gesucht und für dich mitgebracht.'],
+      ['In der Bibliothek', '📚', 'Rosa hat ein Buch mit grosser Schrift ausgeliehen. Spannend bis zur letzten Seite.'],
+      ['Auf dem Bänkli', '🐦', 'Ein Spatz hat sich neben Rosa gesetzt. Zusammen haben sie die Sonne genossen.'],
+      ['Bei der Nachbarin', '🍰', 'Die Nachbarin hat Zwetschgenkuchen gebacken. Rosa hat das Rezept für dich gemerkt.']
     ]
   };
 
@@ -652,24 +652,24 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
     var h = document.getElementById('heute');
     if (h && h.parentNode) h.parentNode.insertBefore(rk, h.nextSibling); else R.einsetzen(rk);
     R.einsetzen(pk);
-    var wc = Z.waechst(WCFG), sb = Z.sos({ name: 'Granny', bild: 'r8bilder/atem.jpg', unter: 'Mit Granny atmen. Ein Tipp, sofort.', ende: 'Gut gemacht. Schön ruhig. Granny ist stolz auf dich.' });
+    var wc = Z.waechst(WCFG), sb = Z.sos({ name: 'Rosa', bild: 'r8bilder/atem.jpg', unter: 'Mit Rosa atmen. Ein Tipp, sofort.', ende: 'Gut gemacht. Schön ruhig. Rosa ist stolz auf dich.' });
     var rd = document.getElementById('reden');
     if (rd && rd.parentNode) { rd.parentNode.insertBefore(wc, rd.nextSibling); rd.parentNode.insertBefore(sb, rd.nextSibling); } else { R.einsetzen(sb); R.einsetzen(wc); }
     R.namen(wc);
     zeigeRinge(false);
-    /* Ehrlich: Erinnerungen mit Uhrzeit kommen nur, solange Granny offen ist */
+    /* Ehrlich: Erinnerungen mit Uhrzeit kommen nur, solange Rosa offen ist */
     var hz = String(daten().heute || '');
     if (h && /\b\d{1,2}([:.]\d{2}| ?Uhr)/.test(hz)) {
-      var ehrlich = el('<p class="r8-ehrlich">⏰ Granny gongt zur Uhrzeit, solange sie offen ist. Am besten am Ladekabel stehen lassen.</p>');
+      var ehrlich = el('<p class="r8-ehrlich">⏰ Rosa gongt zur Uhrzeit, solange sie offen ist. Am besten am Ladekabel stehen lassen.</p>');
       h.parentNode.insertBefore(ehrlich, h.nextSibling);
     }
     R.namen(rk); R.namen(pk);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(los, 0); }); else setTimeout(los, 0);
 })();
-/* Granny Runde 8b (22.10.2026): Medikamenten-Erinnerung.
-   Angehörige tragen Medikamente mit Uhrzeit ein, Granny zeigt die Tagesliste mit grossem «Genommen»-Knopf und Rückgängig.
-   Ehrlich: Erinnerung nur, solange Granny offen ist. Kein Rat zu Medikamenten oder Dosierung. Alles bleibt auf dem Gerät. */
+/* Rosa Runde 8b (22.10.2026): Medikamenten-Erinnerung.
+   Angehörige tragen Medikamente mit Uhrzeit ein, Rosa zeigt die Tagesliste mit grossem «Genommen»-Knopf und Rückgängig.
+   Ehrlich: Erinnerung nur, solange Rosa offen ist. Kein Rat zu Medikamenten oder Dosierung. Alles bleibt auf dem Gerät. */
 (function () {
   'use strict';
   var R = window.R7, Z = window.R8; if (!R || !Z) return;
@@ -743,7 +743,7 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
 
   var karte = el('<section class="r7 r7-karte r8m" id="r8Medi" aria-labelledby="r8m-t">' +
     '<p class="r7-eb">Jeden Tag</p><h2 id="r8m-t">💊 Meine Medikamente</h2>' +
-    '<p class="r8m-ehrlich">⏰ <b>Ehrlich gesagt:</b> Granny erinnert nur, solange sie offen ist. Was sicher klingeln muss, bitte zusätzlich im Wecker des Handys eintragen. Granny gibt keinen Rat zu Medikamenten oder Mengen. Das entscheiden Ärztin, Arzt oder Apotheke.</p>' +
+    '<p class="r8m-ehrlich">⏰ <b>Ehrlich gesagt:</b> Rosa erinnert nur, solange sie offen ist. Was sicher klingeln muss, bitte zusätzlich im Wecker des Handys eintragen. Rosa gibt keinen Rat zu Medikamenten oder Mengen. Das entscheiden Ärztin, Arzt oder Apotheke.</p>' +
     '<ul class="r8m-liste" aria-live="polite"></ul>' +
     '<details class="r8m-einr"><summary>Für Angehörige: Medikamente eintragen</summary>' +
     '<form class="r8m-form" novalidate><label>Name des Medikaments<input name="mname" maxlength="60" autocomplete="off" placeholder="z. B. Blutdruck-Tablette"></label>' +
@@ -813,7 +813,7 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Granny ist trotzdem 
     fN.focus();
   });
 
-  /* Erinnerung, solange Granny offen ist: Gong, Vorlesen, Karte leuchtet */
+  /* Erinnerung, solange Rosa offen ist: Gong, Vorlesen, Karte leuchtet */
   var gerufen = {};
   function pruefen() {
     var k = R.heuteK(), t = tag(), jetzt = jetztHM(), neu = false;

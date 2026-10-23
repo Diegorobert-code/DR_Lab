@@ -8,86 +8,86 @@
 (function () {
   'use strict';
   var C = {
-    k: 'granny', figur: 'Granny', bild: 'posen/lachen.jpg', zoom: 'main',
+    k: 'granny', figur: 'Rosa', bild: 'posen/lachen.jpg', zoom: 'main',
     nameHol: function () { try { return (JSON.parse(localStorage.getItem('granny.v1')) || {}).name || ''; } catch (e) { return ''; } },
     hallo: ['{gruss}, mein Schatz!', '{gruss}, {name}!'],
-    nameFrage: 'Wie darf Granny dich nennen?',
-    nameDank: 'Granny lacht: «{name}, was für ein schöner Name. Den vergesse ich nicht.»',
+    nameFrage: 'Wie darf Rosa dich nennen?',
+    nameDank: 'Rosa lacht: «{name}, was für ein schöner Name. Den vergesse ich nicht.»',
     tageszeit: {
-      morgen: 'Granny hat schon Kaffee aufgesetzt. Ein Glas Wasser dazu tut gut.',
-      mittag: 'Granny deckt den Tisch. Zeit für ein feines Zmittag.',
-      nachmittag: 'Granny strickt am Fenster und summt ein altes Lied.',
-      abend: 'Granny macht es sich gemütlich. Das Licht ist warm, der Tee auch.',
-      nacht: 'Granny hat das Nachtlicht angemacht. Schlaf gut, Granny ist da.'
+      morgen: 'Rosa hat schon Kaffee aufgesetzt. Ein Glas Wasser dazu tut gut.',
+      mittag: 'Rosa deckt den Tisch. Zeit für ein feines Zmittag.',
+      nachmittag: 'Rosa strickt am Fenster und summt ein altes Lied.',
+      abend: 'Rosa macht es sich gemütlich. Das Licht ist warm, der Tee auch.',
+      nacht: 'Rosa hat das Nachtlicht angemacht. Schlaf gut, Rosa ist da.'
     },
     saison: {
-      herbst: 'Die Blätter werden golden. Granny backt Apfelkuchen, das ganze Haus riecht danach.',
-      halloween: 'Noch {n} Tage bis Halloween. Granny hat schon Kürbissuppe auf dem Herd.',
-      halloweenTag: 'Halloween! Granny stellt Äpfel und Nüsse vor die Tür, für die Kinder aus dem Dorf.',
-      november: 'Grauer November. Granny zündet eine Kerze an und holt die warmen Socken.',
-      advent: 'Advent! Granny backt Guetzli. Heute ist das {n}. Türchen dran.',
-      weihnacht: 'Frohe Weihnachten! Granny hat für alle eine Kleinigkeit gestrickt.',
-      neujahr: 'Ein gutes neues Jahr! Granny wünscht dir Gesundheit und viele schöne Stunden.',
-      winter: 'Es ist kalt draussen. Granny sagt: warm anziehen und langsam gehen, es kann glatt sein.',
-      fruehling: 'Frühling! Granny hat die ersten Schneeglöckchen auf den Tisch gestellt.',
-      sommer: 'Sommer. Granny sitzt im Schatten und sagt: viel trinken, mein Schatz.'
+      herbst: 'Die Blätter werden golden. Rosa backt Apfelkuchen, das ganze Haus riecht danach.',
+      halloween: 'Noch {n} Tage bis Halloween. Rosa hat schon Kürbissuppe auf dem Herd.',
+      halloweenTag: 'Halloween! Rosa stellt Äpfel und Nüsse vor die Tür, für die Kinder aus dem Dorf.',
+      november: 'Grauer November. Rosa zündet eine Kerze an und holt die warmen Socken.',
+      advent: 'Advent! Rosa backt Guetzli. Heute ist das {n}. Türchen dran.',
+      weihnacht: 'Frohe Weihnachten! Rosa hat für alle eine Kleinigkeit gestrickt.',
+      neujahr: 'Ein gutes neues Jahr! Rosa wünscht dir Gesundheit und viele schöne Stunden.',
+      winter: 'Es ist kalt draussen. Rosa sagt: warm anziehen und langsam gehen, es kann glatt sein.',
+      fruehling: 'Frühling! Rosa hat die ersten Schneeglöckchen auf den Tisch gestellt.',
+      sommer: 'Sommer. Rosa sitzt im Schatten und sagt: viel trinken, mein Schatz.'
     },
-    charTitel: 'So ist Granny', satzKnopf: 'Noch etwas über Granny',
+    charTitel: 'So ist Rosa', satzKnopf: 'Noch etwas über Rosa',
     saetze: [
-      ['Lieblingsding', 'Grannys liebste Tasse hat einen kleinen Sprung. Sie trinkt trotzdem jeden Tag daraus. «Sie hat schon viel erlebt, wie ich.»'],
-      ['Macke', 'Granny sucht ihre Brille. Sie sitzt auf ihrem Kopf. Jedes Mal. Granny lacht jedes Mal.'],
-      ['Grannys Spruch', '«Langsam ist auch eine Geschwindigkeit.»'],
-      ['Grannys Spruch', '«Ein Telefonanruf ist wie ein kleiner Besuch.»'],
-      ['Geheimnis', 'Granny hat immer ein Guetzli in der Schürzentasche. Für Wäf Wäf. Und manchmal für sich selbst.'],
-      ['Lieblingslied', 'Granny summt beim Kochen immer dasselbe Lied. Den Text hat sie vergessen, die Melodie nie.'],
-      ['Mut', 'Granny hat mit 70 noch Velofahren gelernt. Mit Stützrädern. Und mit viel Lachen.'],
-      ['Grannys Spruch', '«Wer lacht, hat mehr vom Tag.»'],
-      ['Garten', 'Granny redet mit ihren Geranien. Sie sagt, darum blühen sie so schön.'],
-      ['Tipp von Granny', 'Wenn das Handy nicht will: tief atmen, Tee trinken, dann die Familie anrufen. Granny weiss, wie.'],
-      ['Freude', 'Grannys schönster Moment am Tag: wenn das Telefon klingelt und es jemand aus der Familie ist.'],
-      ['Macke', 'Granny schreibt Einkaufszettel und vergisst sie zu Hause. Dann kauft sie einfach Kuchen.'],
-      ['Grannys Spruch', '«Alles hat seine Zeit. Auch das Ausruhen.»'],
-      ['Herz', 'Granny hat für jedes Enkelkind ein eigenes Lied erfunden. Sie singt es nur, wenn niemand sonst zuhört.']
+      ['Lieblingsding', 'Rosas liebste Tasse hat einen kleinen Sprung. Sie trinkt trotzdem jeden Tag daraus. «Sie hat schon viel erlebt, wie ich.»'],
+      ['Macke', 'Rosa sucht ihre Brille. Sie sitzt auf ihrem Kopf. Jedes Mal. Rosa lacht jedes Mal.'],
+      ['Rosas Spruch', '«Langsam ist auch eine Geschwindigkeit.»'],
+      ['Rosas Spruch', '«Ein Telefonanruf ist wie ein kleiner Besuch.»'],
+      ['Geheimnis', 'Rosa hat immer ein Guetzli in der Schürzentasche. Für Wäf Wäf. Und manchmal für sich selbst.'],
+      ['Lieblingslied', 'Rosa summt beim Kochen immer dasselbe Lied. Den Text hat sie vergessen, die Melodie nie.'],
+      ['Mut', 'Rosa hat mit 70 noch Velofahren gelernt. Mit Stützrädern. Und mit viel Lachen.'],
+      ['Rosas Spruch', '«Wer lacht, hat mehr vom Tag.»'],
+      ['Garten', 'Rosa redet mit ihren Geranien. Sie sagt, darum blühen sie so schön.'],
+      ['Tipp von Rosa', 'Wenn das Handy nicht will: tief atmen, Tee trinken, dann die Familie anrufen. Rosa weiss, wie.'],
+      ['Freude', 'Rosas schönster Moment am Tag: wenn das Telefon klingelt und es jemand aus der Familie ist.'],
+      ['Macke', 'Rosa schreibt Einkaufszettel und vergisst sie zu Hause. Dann kauft sie einfach Kuchen.'],
+      ['Rosas Spruch', '«Alles hat seine Zeit. Auch das Ausruhen.»'],
+      ['Herz', 'Rosa hat für jedes Enkelkind ein eigenes Lied erfunden. Sie singt es nur, wenn niemand sonst zuhört.']
     ],
     vorliebe: {
       frage: 'Was magst du am liebsten?',
       optionen: [['kuchen', '🍰 Kuchen'], ['tee', '🍵 Tee'], ['garten', '🌷 Blumen'], ['musik', '🎵 Musik'], ['familie', '📞 Telefonieren']],
-      merk: 'Granny hat es sich in ihr Büchlein geschrieben: Du magst {x}. «Das merke ich mir, mein Schatz.»'
+      merk: 'Rosa hat es sich in ihr Büchlein geschrieben: Du magst {x}. «Das merke ich mir, mein Schatz.»'
     },
-    besuchTitel: 'Besuch bei Granny',
+    besuchTitel: 'Besuch bei Rosa',
     besuch: [
-      { name: 'Wäf Wäf', bild: 'besuch/waefwaef.jpg', satz: 'Wäf Wäf kratzt an der Tür und wedelt. Granny gibt ihm ein Guetzli aus der Schürzentasche.', morgen: 'Wäf Wäf will Granny seinen Ball zeigen.', link: '<a class="r6-btn" href="../waefwaef/">Zu Wäf Wäf 🐾</a>' },
+      { name: 'Wäf Wäf', bild: 'besuch/waefwaef.jpg', satz: 'Wäf Wäf kratzt an der Tür und wedelt. Rosa gibt ihm ein Guetzli aus der Schürzentasche.', morgen: 'Wäf Wäf will Rosa seinen Ball zeigen.', link: '<a class="r6-btn" href="../waefwaef/">Zu Wäf Wäf 🐾</a>' },
       { name: 'Jackie', bild: 'besuch/jackie.jpg', satz: 'Jackie kommt auf einen Tee vorbei. Die zwei lachen so laut, dass die Nachbarin anklopft.', morgen: 'Jackie bringt vielleicht Blumen.', link: '<a class="r6-btn" href="../jackie/">Zu Jackie 💚</a>' },
-      { name: 'Mama Affe', bild: 'besuch/mama-affe.jpg', satz: 'Mama Affe bringt Bananenbrot. Granny bringt ihr bei, wie man Socken strickt. Mit vier Händen geht es schneller.', morgen: 'Mama Affe will das Rezept für Grannys Apfelkuchen.', link: '<a class="r6-btn" href="../mama-affe/">Zu Mama Affe 🐒</a>' },
-      { name: 'Flo', bild: 'besuch/flo.jpg', satz: 'Flo joggt vorbei und winkt. Granny ruft: «Komm rein, es hat noch Suppe!» Flo bleibt gerne.', morgen: 'Flo will mit Granny einen kleinen Spaziergang machen.', link: '<a class="r6-btn" href="../appid/">Zu Flo 🏃</a>' }
+      { name: 'Mama Affe', bild: 'besuch/mama-affe.jpg', satz: 'Mama Affe bringt Bananenbrot. Rosa bringt ihr bei, wie man Socken strickt. Mit vier Händen geht es schneller.', morgen: 'Mama Affe will das Rezept für Rosas Apfelkuchen.', link: '<a class="r6-btn" href="../mama-affe/">Zu Mama Affe 🐒</a>' },
+      { name: 'Flo', bild: 'besuch/flo.jpg', satz: 'Flo joggt vorbei und winkt. Rosa ruft: «Komm rein, es hat noch Suppe!» Flo bleibt gerne.', morgen: 'Flo will mit Rosa einen kleinen Spaziergang machen.', link: '<a class="r6-btn" href="../appid/">Zu Flo 🏃</a>' }
     ],
-    uebTitel: 'Grannys Überraschung des Tages',
-    alleGesammelt: 'Granny backt dir zur Feier einen ganzen Kuchen.',
+    uebTitel: 'Rosas Überraschung des Tages',
+    alleGesammelt: 'Rosa backt dir zur Feier einen ganzen Kuchen.',
     ueberraschung: [
-      ['🍎', 'Ein roter Apfel aus Grannys Garten. «Einer am Tag, sagt man.»'],
-      ['🧶', 'Ein Wollknäuel in Himmelblau. Granny strickt daraus einen Schal.'],
+      ['🍎', 'Ein roter Apfel aus Rosas Garten. «Einer am Tag, sagt man.»'],
+      ['🧶', 'Ein Wollknäuel in Himmelblau. Rosa strickt daraus einen Schal.'],
       ['📞', 'Kleine Aufgabe: Ruf heute jemanden an, den du gern hast. Nur kurz Hallo sagen.'],
-      ['🌷', 'Eine Tulpe auf dem Fensterbrett. Granny hat sie für dich hingestellt.'],
-      ['🍵', 'Ein warmer Tee mit Honig. Granny sagt: «Schluck für Schluck.»'],
-      ['📷', 'Ein altes Foto. Granny erzählt: «Da war ich so alt wie du heute.»'],
-      ['💧', 'Kleine Aufgabe: Trink ein Glas Wasser. Granny trinkt eins mit.'],
-      ['🍪', 'Ein Mailänderli, noch warm. Das Rezept ist von Grannys Mutter.'],
-      ['🎵', 'Ein Lied im Radio. Granny wippt mit dem Fuss. Du auch?'],
+      ['🌷', 'Eine Tulpe auf dem Fensterbrett. Rosa hat sie für dich hingestellt.'],
+      ['🍵', 'Ein warmer Tee mit Honig. Rosa sagt: «Schluck für Schluck.»'],
+      ['📷', 'Ein altes Foto. Rosa erzählt: «Da war ich so alt wie du heute.»'],
+      ['💧', 'Kleine Aufgabe: Trink ein Glas Wasser. Rosa trinkt eins mit.'],
+      ['🍪', 'Ein Mailänderli, noch warm. Das Rezept ist von Rosas Mutter.'],
+      ['🎵', 'Ein Lied im Radio. Rosa wippt mit dem Fuss. Du auch?'],
       ['🪟', 'Kleine Aufgabe: Schau zwei Minuten aus dem Fenster. Was siehst du Schönes?'],
-      ['🧦', 'Warme Socken. Granny hat sie selbst gestrickt, die linke ist etwas länger.'],
-      ['🌻', 'Eine Sonnenblume. Granny sagt: «Immer dem Licht nach.»'],
-      ['✉️', 'Ein Brief vom Enkelkind, mit einer Zeichnung. Granny hängt ihn an den Kühlschrank.'],
+      ['🧦', 'Warme Socken. Rosa hat sie selbst gestrickt, die linke ist etwas länger.'],
+      ['🌻', 'Eine Sonnenblume. Rosa sagt: «Immer dem Licht nach.»'],
+      ['✉️', 'Ein Brief vom Enkelkind, mit einer Zeichnung. Rosa hängt ihn an den Kühlschrank.'],
       ['🚶', 'Kleine Aufgabe: Ein paar Schritte durch die Wohnung oder ums Haus. Ganz gemütlich.'],
-      ['🥧', 'Ein Stück Apfelkuchen. Granny fragt: «Mit Rahm?»'],
-      ['🕯️', 'Eine Kerze für einen gemütlichen Abend. Granny zündet sie mit dir an.'],
-      ['🧩', 'Ein Kreuzworträtsel. Granny weiss die schwierigste Antwort: «Edelweiss».'],
-      ['😄', 'Kleine Aufgabe: Erzähl jemandem einen Witz. Granny kennt nur einen, aber der ist gut.'],
-      ['🌰', 'Heisse Marroni aus der Tüte. Granny wärmt sich die Hände daran.'],
-      ['📖', 'Ein Buch mit grosser Schrift. Granny liest am liebsten Geschichten mit gutem Ende.'],
-      ['🌹', 'Eine Rose aus dem Garten. Granny riecht daran und lächelt.'],
-      ['🐦', 'Ein Vogel am Fenster. Granny streut ihm ein paar Körner.'],
+      ['🥧', 'Ein Stück Apfelkuchen. Rosa fragt: «Mit Rahm?»'],
+      ['🕯️', 'Eine Kerze für einen gemütlichen Abend. Rosa zündet sie mit dir an.'],
+      ['🧩', 'Ein Kreuzworträtsel. Rosa weiss die schwierigste Antwort: «Edelweiss».'],
+      ['😄', 'Kleine Aufgabe: Erzähl jemandem einen Witz. Rosa kennt nur einen, aber der ist gut.'],
+      ['🌰', 'Heisse Marroni aus der Tüte. Rosa wärmt sich die Hände daran.'],
+      ['📖', 'Ein Buch mit grosser Schrift. Rosa liest am liebsten Geschichten mit gutem Ende.'],
+      ['🌹', 'Eine Rose aus dem Garten. Rosa riecht daran und lächelt.'],
+      ['🐦', 'Ein Vogel am Fenster. Rosa streut ihm ein paar Körner.'],
       ['💌', 'Kleine Aufgabe: Denk an einen schönen Moment von früher. Erzähl ihn heute jemandem.'],
-      ['⭐', 'Ein Stern für dich. Granny sagt: «Schön, dass es dich gibt.»']
+      ['⭐', 'Ein Stern für dich. Rosa sagt: «Schön, dass es dich gibt.»']
     ],
     einsetzen: function (N) {
       var $ = function (id) { return document.getElementById(id); };
@@ -385,7 +385,7 @@
    Antippen bringt die lebendige Figur zurück; nach einer ruhigen Weile kommt das Saison-Bild wieder. */
 (function () {
   'use strict';
-  var ZIELE = ['#gfig img.pose-bild', '#figurStart > img'], ALT = {'halloweenTag': 'Granny mit einer lachenden Kürbislaterne an Halloween', 'advent': 'Granny bei Kerzenlicht im Advent'};
+  var ZIELE = ['#gfig img.pose-bild', '#figurStart > img'], ALT = {'halloweenTag': 'Rosa mit einer lachenden Kürbislaterne an Halloween', 'advent': 'Rosa bei Kerzenlicht im Advent'};
   function setze(im, s) {
     if (im.getAttribute('data-r6b')) return;
     im.setAttribute('data-r6b', '1');

@@ -1,5 +1,5 @@
-/* Granny – Runde 4 (21.10.2026)
-   1) Granny winkt zurück, wenn man sie antippt (nutzt Puppe.winkeZurueck, sobald es das gibt)
+/* Rosa – Runde 4 (21.10.2026)
+   1) Rosa winkt zurück, wenn man sie antippt (nutzt Puppe.winkeZurueck, sobald es das gibt)
    2) «Weisst du noch?» – eine Erinnerungsfrage pro Tag, Antworten kommen in die Familien-Schatzkiste (nur auf dem Gerät)
    3) «Mir geht es gut» – ein Tipp, und die Familie bekommt ein Lebenszeichen (Mama schickt es selbst über WhatsApp/SMS)
    4) Familien-Memory – drei Paare, grosse Karten, ganz ohne Zeitdruck
@@ -57,7 +57,7 @@
   function winke() {
     var f = $('gfig'); if (!f) return;
     var img = f.querySelector('img');
-    // Runde 5: Tinkos «Granny winkt» (Hand frei) – erst das Bild zeigen, dann schwingt genau diese Hand
+    // Runde 5: Tinkos «Rosa winkt» (Hand frei) – erst das Bild zeigen, dann schwingt genau diese Hand
     if (img && window.Puppe && window.FigurPosen) {
       FigurPosen.zeige(img, 'winken', 3600, ['lachen']).then(function (da) {
         if (!da || !puppeGruss(img, { figur: 'granny', gruss: 'lachen+winken', bild: 'posen/winken.jpg', augen: [[9, 9, 0.01, 0.01]], mund: { l: [9, 9], r: [9.1, 9], oben: 0, unten: 0, kinn: 0.01 }, arm: false, kopf: [0.52, 0.4, 0.3], gesicht: [0.52, 0.44, 0.2], winkArm: { x: 0.14, y: 0.64, r: 0.11, dx: 0.15, dy: 0.92, seite: 'links' } })) puppeGruss(img, { figur: 'granny', gruss: 'lachen+winken' });
@@ -80,10 +80,10 @@
   };
   var X = {
     de: { weisst: 'Weisst du noch?', erzaehl: '🎙 Erzähl es mir', schreib: '✏️ Schreiben', merk: 'In die Schatzkiste', danke: 'Wie schön! Das kommt in die Familien-Schatzkiste.', schon: 'Danke! Morgen frage ich dich etwas Neues.', schatz: function (n) { return n === 1 ? '1 Erinnerung in der Schatzkiste' : n + ' Erinnerungen in der Schatzkiste'; }, hoer: 'Ich höre dir zu …', feld: 'Hier hineinschreiben …',
-      gut: '☀️ Mir geht es gut', gutKlein: function (n) { return 'Ein Tipp, und ' + n + ' weiss Bescheid'; }, gutFertig: '💛 Heute schon gesagt. Danke!', gutText: function (n) { return 'Hallo ' + n + ', mir geht es gut. Liebe Grüsse von Granny 🌹'; }, gutSag: function (n) { return 'Schön! Ich sage ' + n + ', dass es dir gut geht.'; }, gutFehlt: 'Dafür braucht es noch eine Nummer. Deine Familie trägt sie ein.',
+      gut: '☀️ Mir geht es gut', gutKlein: function (n) { return 'Ein Tipp, und ' + n + ' weiss Bescheid'; }, gutFertig: '💛 Heute schon gesagt. Danke!', gutText: function (n) { return 'Hallo ' + n + ', mir geht es gut. Liebe Grüsse von Rosa 🌹'; }, gutSag: function (n) { return 'Schön! Ich sage ' + n + ', dass es dir gut geht.'; }, gutFehlt: 'Dafür braucht es noch eine Nummer. Deine Familie trägt sie ein.',
       spiel: 'Familien-Memory', spielInfo: 'Finde die Paare. Ganz in Ruhe.', paar: 'Ein Paar! Gut gemacht.', fertig: 'Alle gefunden! Du bist schneller als ich mit meiner Brille.', nochmal: 'Nochmal spielen' },
     es: { weisst: '¿Te acuerdas?', erzaehl: '🎙 Cuéntamelo', schreib: '✏️ Escribir', merk: 'Al cofre', danke: '¡Qué bonito! Lo guardo en el cofre de la familia.', schon: '¡Gracias! Mañana te pregunto otra cosa.', schatz: function (n) { return n === 1 ? '1 recuerdo en el cofre' : n + ' recuerdos en el cofre'; }, hoer: 'Te escucho …', feld: 'Escribe aquí …',
-      gut: '☀️ Estoy bien', gutKlein: function (n) { return 'Un toque y ' + n + ' lo sabe'; }, gutFertig: '💛 Hoy ya lo has dicho. ¡Gracias!', gutText: function (n) { return 'Hola ' + n + ', estoy bien. Un abrazo de Granny 🌹'; }, gutSag: function (n) { return '¡Qué bien! Le digo a ' + n + ' que estás bien.'; }, gutFehlt: 'Falta un número. Tu familia lo apunta.',
+      gut: '☀️ Estoy bien', gutKlein: function (n) { return 'Un toque y ' + n + ' lo sabe'; }, gutFertig: '💛 Hoy ya lo has dicho. ¡Gracias!', gutText: function (n) { return 'Hola ' + n + ', estoy bien. Un abrazo de Rosa 🌹'; }, gutSag: function (n) { return '¡Qué bien! Le digo a ' + n + ' que estás bien.'; }, gutFehlt: 'Falta un número. Tu familia lo apunta.',
       spiel: 'Memoria de la familia', spielInfo: 'Encuentra las parejas. Con calma.', paar: '¡Una pareja! Muy bien.', fertig: '¡Todas encontradas! Eres más rápida que yo con mis gafas.', nochmal: 'Jugar otra vez' }
   };
   function t() { return es() ? X.es : X.de; }

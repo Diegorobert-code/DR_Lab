@@ -1,7 +1,7 @@
-/* Granny Trickfilm-Ausbau (19.10.2026)
-   Bühne mit Tageszeit-Himmel und Dorf, Granny in Posen, Merkhilfe «Wo liegt was?», Termin-Gong,
+/* Rosa Trickfilm-Ausbau (19.10.2026)
+   Bühne mit Tageszeit-Himmel und Dorf, Rosa in Posen, Merkhilfe «Wo liegt was?», Termin-Gong,
    Trink-Erinnerung, Stimme der Familie (Aufnahmen nur auf dem Gerät), Akku-Wächter, Betrugs-Warnung,
-   Familienalbum «Wer ist das?», Nachtruhe, Bildschirm wach, grosse Schrift, «Was Granny sich merkt».
+   Familienalbum «Wer ist das?», Nachtruhe, Bildschirm wach, grosse Schrift, «Was Rosa sich merkt».
    Alles bleibt auf dem Gerät. Lern-Zahlen gehen nur mit Häkchen an den eigenen Server, nie Stimme oder Bild. */
 (function () {
   'use strict';
@@ -18,7 +18,7 @@
   /* ---------- Texte ---------- */
   var X = {
     de: {
-      merkTitel: 'Granny merkt sich', merkLeer: 'Sag mir zum Beispiel: «Der Schlüssel liegt in der Schublade.» Ich merke es mir für dich.',
+      merkTitel: 'Rosa merkt sich', merkLeer: 'Sag mir zum Beispiel: «Der Schlüssel liegt in der Schublade.» Ich merke es mir für dich.',
       merkKnopf: 'Merk dir etwas', gemerkt: function (d, o) { return 'Gut, ich merke es mir: ' + d + ', ' + o + '. Frag mich einfach später.'; },
       gefunden: function (d, o, w) { return 'Ich weiss es noch! ' + d + ': ' + o + '. Das hast du mir ' + w + ' gesagt.'; },
       nichtGemerkt: function (d) { return 'Das hast du mir noch nicht gesagt. Schau ruhig nach, und dann sag mir, wo ' + d + ' liegt.'; },
@@ -34,7 +34,7 @@
       akku: 'Ich werde müde, mein Akku ist fast leer. Bitte steck mich ans Ladekabel.',
       termin: function (t) { return 'Jetzt ist es Zeit: ' + t; },
       gesternRedet: function (n) { return ' Gestern hast du mit ' + n + ' geredet.'; },
-      erzaehlKnopf: '😄 Granny, erzähl mir was',
+      erzaehlKnopf: '😄 Rosa, erzähl mir was',
       geschichten: ['Weisst du, was mir heute passiert ist? Ich habe den Käse im Kühlschrank gesucht. Er war im Brotkasten! Und das Brot? Im Kühlschrank. Ha!',
         'Gestern wollte ich die Katze rufen. Dabei habe ich gar keine Katze. Aber die Nachbarin hat sich gefreut, dass ich so freundlich rufe.',
         'Ich habe meine Brille eine Stunde lang gesucht. Dann habe ich in den Spiegel geschaut: Da sass sie, in meinen Locken. Sie hat mich ausgelacht!',
@@ -42,7 +42,7 @@
         'Die Rose an meiner Bluse ist mein Knopf zum Reden. Sie welkt nie, auch wenn ich vergesse, sie zu giessen.',
         'Ein Witz: Sagt die eine Oma zur anderen: Ich vergesse alles. Sagt die andere: Seit wann? Sagt die erste: Seit wann was?'],
       offline: 'Ich bin gerade ohne Internet. Macht nichts, ich bin trotzdem da. Anrufen geht wie immer.',
-      startTitel: 'Willkommen bei Granny',
+      startTitel: 'Willkommen bei Rosa',
       startSchritte: ['Jemand aus der Familie tippt auf «Einrichten».', 'Namen, Nummern und Fotos eintragen.', 'Fertig. Ab dann reicht der grüne Knopf.'],
       startKnopf: 'Einrichten (2 Minuten)',
       letti: function (n) { return 'Letti, die Brieftaube, hat dir eine Nachricht von ' + n + ' gebracht. Drück auf den rosa Knopf.'; },
@@ -51,20 +51,20 @@
       keinMikro: 'Aufnehmen geht hier nicht (Mikrofon nicht erlaubt).',
       lernen: function (m) {
         var z = [];
-        z.push('Tage mit Granny: ' + m.tage.length);
-        var a = Object.keys(m.anruf); z.push('Anrufe über Granny: ' + (a.length ? a.map(function (k) { return k + ' ' + m.anruf[k] + '×'; }).join(', ') : 'noch keine'));
+        z.push('Tage mit Rosa: ' + m.tage.length);
+        var a = Object.keys(m.anruf); z.push('Anrufe über Rosa: ' + (a.length ? a.map(function (k) { return k + ' ' + m.anruf[k] + '×'; }).join(', ') : 'noch keine'));
         z.push('«Ich brauche Hilfe»: ' + m.hilfe + '× · «Passwort geht nicht»: ' + m.klemmt + '×');
-        z.push('Mit Granny geredet: ' + m.reden + '×');
+        z.push('Mit Rosa geredet: ' + m.reden + '×');
         var f = Object.keys(m.fragen).sort(function (x, y) { return m.fragen[y] - m.fragen[x]; });
         z.push('Häufigste Frage: ' + (f.length ? ({ merk: 'wo etwas liegt', datum: 'welcher Tag ist', brille: 'die Brille', betrug: 'Geld/Bank am Telefon', wer: 'wer jemand ist', trinken: 'Trinken', nacht: 'Nacht/Schlafen', erzaehlen: 'eine Geschichte', nachricht: 'Nachricht der Familie' }[f[0]] || f[0]) + ' (' + m.fragen[f[0]] + '×)' : '–'));
         var h = m.stunden.indexOf(Math.max.apply(null, m.stunden)); z.push('Meist aktiv: ' + (Math.max.apply(null, m.stunden) ? h + '–' + (h + 1) + ' Uhr' : '–'));
-        if (m.fragen.betrug) z.push('⚠ Granny hat ' + m.fragen.betrug + '× vor Telefon-Betrug gewarnt. Bitte nachfragen.');
+        if (m.fragen.betrug) z.push('⚠ Rosa hat ' + m.fragen.betrug + '× vor Telefon-Betrug gewarnt. Bitte nachfragen.');
         if (m.fragen.nacht > 2) z.push('Nachts oft wach (' + m.fragen.nacht + '×). Vielleicht mit dem Hausarzt besprechen.');
         return z;
       }
     },
     es: {
-      merkTitel: 'Granny se acuerda', merkLeer: 'Dime por ejemplo: «Las llaves están en el cajón.» Me lo apunto por ti.',
+      merkTitel: 'Rosa se acuerda', merkLeer: 'Dime por ejemplo: «Las llaves están en el cajón.» Me lo apunto por ti.',
       merkKnopf: 'Acuérdate de algo', gemerkt: function (d, o) { return 'Muy bien, me lo apunto: ' + d + ', ' + o + '. Pregúntame luego.'; },
       gefunden: function (d, o, w) { return '¡Me acuerdo! ' + d + ': ' + o + '. Me lo dijiste ' + w + '.'; },
       nichtGemerkt: function (d) { return 'Eso todavía no me lo has dicho. Busca con calma y luego dime dónde está ' + d + '.'; },
@@ -80,7 +80,7 @@
       akku: 'Estoy cansada, mi batería está casi vacía. Por favor, ponme a cargar.',
       termin: function (t) { return 'Ya es la hora: ' + t; },
       gesternRedet: function (n) { return ' Ayer hablaste con ' + n + '.'; },
-      erzaehlKnopf: '😄 Granny, cuéntame algo',
+      erzaehlKnopf: '😄 Rosa, cuéntame algo',
       geschichten: ['¿Sabes lo que me ha pasado hoy? Buscaba el queso en la nevera. ¡Estaba en la panera! ¿Y el pan? En la nevera. ¡Ja!',
         'Ayer quise llamar al gato. Pero si yo no tengo gato. La vecina se alegró de oírme tan amable.',
         'Busqué mis gafas una hora. Luego me miré al espejo: ahí estaban, en mis rizos. ¡Se reían de mí!',
@@ -230,7 +230,7 @@
     return function (text) {
       var S = G.S, seele = (window.NOVA_SEELEN || {})['Granny'] || '';
       var dinge = merkListe().map(function (x) { return x.d + ': ' + x.o; }).join('; ');
-      var sys = seele + ' Du sprichst als Granny, die liebe, lustige alte Dame aus dem Dorf, die selbst alles vergisst und darüber lacht. ' +
+      var sys = seele + ' Du sprichst als Rosa, die liebe, lustige alte Dame aus dem Dorf, die selbst alles vergisst und darüber lacht. ' +
         'Antworte auf ' + (es() ? 'Spanisch' : 'Deutsch') + ', höchstens zwei kurze, warme Sätze, einfache Wörter. ' +
         (S.name ? 'Die Person heisst ' + S.name + '. ' : '') + 'Heute ist ' + G.datumText() + '. ' +
         (S.heute ? 'Heute geplant: ' + S.heute.replace(/\n/g, '; ') + '. ' : '') +
@@ -460,7 +460,7 @@
     X.de.lernen(lern()).forEach(function (z) { var d = document.createElement('div'); d.textContent = z; box.appendChild(d); });
     var ml = merkListe(); if (ml.length) { var d = document.createElement('div'); d.textContent = 'Merkliste: ' + ml.map(function (x) { return x.d + ' (' + x.o + ')'; }).join(', '); box.appendChild(d); }
     var p = document.createElement('div'); p.style.cssText = 'color:#8e98c4;font-size:16px;margin-top:8px';
-    p.textContent = 'Gespeichert werden nur Zahlen und die Merkliste, nur auf diesem Gerät. Keine Stimme, keine Bilder. Granny lernt daraus: Sie erzählt beim Gruss, mit wem gestern geredet wurde, und zeigt Ihnen hier, wo es hakt.';
+    p.textContent = 'Gespeichert werden nur Zahlen und die Merkliste, nur auf diesem Gerät. Keine Stimme, keine Bilder. Rosa lernt daraus: Sie erzählt beim Gruss, mit wem gestern geredet wurde, und zeigt Ihnen hier, wo es hakt.';
     box.appendChild(p);
   }
   function einstOffen() {
@@ -555,7 +555,7 @@
       var k = schl(w[1]), f = merkListe().find(function (e) { return e.k === k || e.k.indexOf(k) === 0 || k.indexOf(e.k) === 0; });
       frage(/brill|gafa/.test(w[1]) ? 'brille' : 'merk');
       if (f) { pose('nicken'); G.sag(t.gefunden(f.d, f.o, t.wann(f.t))); return true; }
-      if (/brill|gafa/.test(w[1])) { pose('suchen'); return false; } // Grannys Brillen-Witz
+      if (/brill|gafa/.test(w[1])) { pose('suchen'); return false; } // Rosas Brillen-Witz
       pose('suchen'); G.sag(t.nichtGemerkt(w[1])); return true;
     }
     var wer = x.match(r.wer);
@@ -588,7 +588,7 @@
   /* ---------- Neu zeichnen ---------- */
   function gezeichnet() {
     buehneZeit(); merkZeigen(); albumZeigen(); nachrichtZeigen(); optSetzen(); startZeigen(); erzaehlKnopf(); offlineZeigen();
-    // Granny erinnert sich an gestern (aus den Lern-Zahlen)
+    // Rosa erinnert sich an gestern (aus den Lern-Zahlen)
     var m = lern(), b = $('blase');
     if (m.letzter && b && Date.now() - m.letzter.t > 6 * 3600 * 1000 && Date.now() - m.letzter.t < 48 * 3600 * 1000) b.textContent += T().gesternRedet(m.letzter.n);
     if (document.body.classList.contains('nacht') && b) b.textContent = T().nacht;

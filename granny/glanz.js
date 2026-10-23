@@ -1,4 +1,4 @@
-/* Granny – Glanz (Runde 3, 19.10.2026): erster Eindruck, kleine Feiern, Tap-Gefühl, schöne Hinweise.
+/* Rosa – Glanz (Runde 3, 19.10.2026): erster Eindruck, kleine Feiern, Tap-Gefühl, schöne Hinweise.
    Nur Ablauf und Optik. Keine Daten, nichts wird gesendet. */
 (function () {
   'use strict';
@@ -20,7 +20,7 @@
 
   function summ(ms) { try { if (navigator.vibrate) navigator.vibrate(ms || 10); } catch (e) {} }
 
-  // Konfetti in Grannys Farben (nur transform/opacity, 60 fps)
+  // Konfetti in Rosas Farben (nur transform/opacity, 60 fps)
   function feier(x, y, n) {
     if (ruhig) return;
     var farben = ['#F2C14E', '#E58FA8', '#8FD3A8', '#ffe08a', '#ffffff'];
@@ -51,14 +51,14 @@
   }
   window.alert = function (m) { hinweis(String(m)); };
 
-  // 1) Begrüssung nach Tageszeit, Granny winkt
+  // 1) Begrüssung nach Tageszeit, Rosa winkt
   var h = new Date().getHours();
   var gt = $('glHalloText');
   if (gt) gt.textContent = es() ? (h < 12 ? '¡Buenos días!' : h < 20 ? '¡Buenas tardes!' : '¡Buenas noches!') : (h < 5 ? 'Guten Abend!' : h < 11 ? 'Guten Morgen!' : h < 18 ? 'Grüezi!' : 'Guten Abend!');
   var go = $('figurStartGo');
   if (go) go.addEventListener('click', function () {
     summ(12);
-    // Granny redet sofort (im Tipp, damit das iPhone den Ton erlaubt)
+    // Rosa redet sofort (im Tipp, damit das iPhone den Ton erlaubt)
     var b = $('blase'); if (b && b.textContent) G.sag(b.textContent);
     setTimeout(function () { if (window.GrannyPlus) GrannyPlus.pose('winken'); }, 650);
   });
