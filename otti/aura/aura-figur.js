@@ -1,5 +1,6 @@
 /* aura-figur.js – Otti im Stil «Aura» auf der Bühne: 3D-Posen aus aura/*.webp (idle, winkt, lacht, schlaeft) als Ebenen.
-   Atmen (CSS), Blinzeln (Lider-Ebene über idle), Antippen mit Lichtblitz und Lichtpunkten, weiche Posenwechsel (0,3 s).
+   Atmen (CSS), Blinzeln (Lider-Ebene nur über idle), Antippen mit Lichtblitz und Lichtpunkten,
+   Posenwechsel als Schnitt mit Federn und Lichtschein (kein Überblenden: nie zwei Gesichter übereinander).
    Folgt der unsichtbar mitlaufenden Puppe (nova/puppe.js, Ereignis «puppe-zustand») und den Posen der App (#pose).
    Ändert nichts an der App-Logik. Nur aktiv mit html.tfw-aura (trickfilmwelt.js data-stil="aura"). */
 (function () {
@@ -26,7 +27,7 @@
     fw.insertBefore(fig, fw.firstChild);
 
     /* Welche Pose? App-Pose (#pose) vor Schlaf vor Puppen-Zustand */
-    var zustand = "ruhig", jetzt = "idle";
+    var zustand = "ruhig", jetzt = "idle", wechselT = 0;
     function ausPuppe(z) { return z === "winkt" ? "winkt" : z === "freut" ? "lacht" : z === "schlaeft" ? "schlaeft" : "idle"; }
     function ausApp() {
       if (!pose || pose.style.opacity !== "1") return null;
@@ -36,8 +37,11 @@
     function zeige() {
       var p = ausApp() || (buehne.classList.contains("schlaeft") ? "schlaeft" : ausPuppe(zustand));
       if (p === jetzt) return;
+      lider.classList.remove("zu");
       bilder[jetzt].classList.remove("an"); bilder[p].classList.add("an");
       jetzt = p; fig.dataset.pose = p;
+      fig.classList.remove("wechsel"); void fig.offsetWidth; fig.classList.add("wechsel");
+      clearTimeout(wechselT); wechselT = setTimeout(function () { fig.classList.remove("wechsel"); }, 520);
     }
     if (puppe) puppe.addEventListener("puppe-zustand", function (e) { zustand = (e.detail && e.detail.zustand) || "ruhig"; zeige(); });
     if (window.MutationObserver) {
@@ -76,5 +80,29 @@
       }
     }, { passive: true });
   }
-  if (d.readyState === "loading") d.addEventListener("DOMContentLoaded", los); else los();
+  /* «Für Eltern»-Pille von lernen.js: knapp über die untere Leiste (data-pille-ueber=".wege"), damit sie keine Beschriftung deckt.
+     lernen.js bleibt unverändert; nur die Lage dieser einen Pille in dieser App wird gesetzt. */
+  function pille() {
+    var ueber = me && me.dataset && me.dataset.pilleUeber; if (!ueber) return;
+    var beobachtet = null, meins = "";
+    function setze() {
+      var host = d.querySelector("[data-drlab-lernen]"), p = host && host.shadowRoot && host.shadowRoot.querySelector(".pill");
+      if (!p) return;
+      var leiste = d.querySelector(ueber), r = leiste && leiste.getClientRects().length ? leiste.getBoundingClientRect() : null;
+      var soll = r && r.top > 0 ? Math.round(innerHeight - r.top + 4) : 0;
+      /* lernen.js weicht selbst nach oben aus (Nova-Knopf): dann gilt der höhere Wert */
+      var ihr = p.style.bottom && p.style.bottom !== meins ? parseInt(p.style.bottom, 10) || 0 : 0;
+      var neu = Math.max(soll, ihr); meins = neu ? neu + "px" : "";
+      if (p.style.bottom !== meins) p.style.bottom = meins;
+      if (beobachtet !== p && window.MutationObserver) {
+        beobachtet = p;
+        new MutationObserver(function () { if (p.style.bottom !== meins) setTimeout(setze, 0); }).observe(p, { attributes: true, attributeFilter: ["style"] });
+      }
+    }
+    setze(); addEventListener("resize", function () { setTimeout(setze, 0); });
+    if (window.MutationObserver) new MutationObserver(setze).observe(d.body, { childList: true, attributes: true, attributeFilter: ["class"] });
+    var n = 0, iv = setInterval(function () { setze(); if (++n > 20) clearInterval(iv); }, 500);
+  }
+  function start() { los(); pille(); }
+  if (d.readyState === "loading") d.addEventListener("DOMContentLoaded", start); else start();
 })();

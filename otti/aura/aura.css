@@ -26,9 +26,9 @@ html.tfw-aura .fw .pose{display:none}
   background:radial-gradient(closest-side,rgba(3,5,18,.9),rgba(3,5,18,.55) 55%,rgba(3,5,18,0))}
 .aura-figur .aura-atem{position:absolute;inset:0;transform-origin:50% 100%;animation:auraAtem 3.6s ease-in-out infinite}
 .aura-figur .aura-pose{position:absolute;left:50%;bottom:0;height:100%;width:auto;max-width:none;transform:translateX(-50%);opacity:0;
-  transition:opacity .12s linear .28s;filter:drop-shadow(0 0 10px rgba(180,132,255,.55)) drop-shadow(0 0 2px rgba(255,226,170,.5))}
+  filter:drop-shadow(0 0 10px rgba(180,132,255,.55)) drop-shadow(0 0 2px rgba(255,226,170,.5))}
 .aura-figur .aura-pose[data-p="schlaeft"]{height:auto;width:118%}
-.aura-figur .aura-pose.an{opacity:1;z-index:2;transition:opacity .3s ease 0s}
+.aura-figur .aura-pose.an{opacity:1;z-index:2}
 @keyframes auraAtem{0%,100%{transform:scale(1,1)}50%{transform:scale(1.012,1.022)}}
 @keyframes auraPuls{0%,100%{opacity:.45;transform:scale(1)}50%{opacity:.8;transform:scale(1.05)}}
 .buehne.spricht .aura-figur .aura-atem{animation:auraRede .42s ease-in-out infinite alternate}
@@ -52,9 +52,15 @@ html.tfw-aura .knopf .rund{background:radial-gradient(circle at 40% 35%,#ffe9a8,
 html.tfw-aura .aktion .rund{box-shadow:0 0 14px rgba(180,132,255,.18)}
 @media (prefers-reduced-motion:reduce){
   .aura-figur .aura-atem,.aura-figur .aura-schein,.buehne.spricht .aura-figur .aura-atem{animation:none}
-  .aura-figur .aura-pose{transition:opacity .2s linear}
   .aura-funke{display:none}
 }
 .aura-figur .aura-pose.aura-lider{opacity:0;z-index:3;filter:none;transition:opacity .07s linear}
 .aura-figur[data-pose="idle"] .aura-pose.aura-lider.zu{opacity:1}
 html.tfw-aura .endkarte .abendbild{object-fit:contain;background:url("nacht.webp") center/cover}
+/* Lider nur über der Ruhepose; bei winkt, lacht und schläft liegt nichts über den Augen */
+.aura-figur:not([data-pose="idle"]) .aura-pose.aura-lider{opacity:0!important;transition:none}
+/* Posenwechsel: Schnitt mit kurzem Federn und Lichtschein (kein Überblenden, damit nie zwei Gesichter übereinander liegen) */
+.aura-figur.wechsel .aura-atem{animation:auraWechsel .26s cubic-bezier(.3,1.6,.5,1)}
+.aura-figur.wechsel .aura-schein{animation:auraBlitz .5s ease-out}
+@keyframes auraWechsel{0%{transform:scale(1.04,.95)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){.aura-figur.wechsel .aura-atem,.aura-figur.wechsel .aura-schein{animation:none}}

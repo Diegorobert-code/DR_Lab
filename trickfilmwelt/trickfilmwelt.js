@@ -393,13 +393,14 @@
         var atem = 1 + Math.sin(t * 2.2) * .008;
         if (da > 0) {
           boden(L, da);
-          var w1 = ease(seg(t, 3.7, 4.0)), w2 = ease(seg(t, 5.1, 5.4));
-          var glanz = (.6 + .4 * Math.sin(t * 2.4)) * da + Math.sin(Math.PI * seg(t, 2.7, 3.6)) * 1.2;
-          /* Überblenden: die neue Pose legt sich über die alte, nichts scheint durch */
-          var nr = w2 >= 1 ? 2 : w1 >= 1 ? 1 : 0, neu = w2 > 0 && w2 < 1 ? 2 : w1 > 0 && w1 < 1 ? 1 : -1, wn = neu === 2 ? w2 : w1;
-          if (neu > 0) nr = neu - 1;
-          figur(L, nr, da, sp * atem, 0);
-          if (neu > 0) figur(L, neu, wn * da, sp * atem, 0);
+          /* Posenwechsel kurz (0,16 s) und im Lichtschein, damit sich nie zwei Gesichter übereinander zeigen */
+          var w1 = ease(seg(t, 3.7, 3.86)), w2 = ease(seg(t, 5.1, 5.26));
+          var glanz = (.6 + .4 * Math.sin(t * 2.4)) * da + Math.sin(Math.PI * seg(t, 2.7, 3.6)) * 1.2
+            + Math.sin(Math.PI * seg(t, 3.6, 3.96)) * .9 + Math.sin(Math.PI * seg(t, 5.0, 5.36)) * .9;
+          /* Posenwechsel als Schnitt auf dem Höhepunkt des Lichtscheins (mit kleinem Federn): nie zwei Gesichter übereinander */
+          var nr = w2 >= .5 ? 2 : w1 >= .5 ? 1 : 0;
+          var feder = 1 - .035 * Math.sin(Math.PI * Math.max(seg(t, 3.78, 3.98), seg(t, 5.18, 5.38)));
+          figur(L, nr, da, sp * atem * feder, 0);
           halo(L, glanz);
         }
         /* warmes Licht öffnet die App */
