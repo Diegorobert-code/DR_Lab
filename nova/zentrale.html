@@ -45,6 +45,38 @@
   .punkte { position:fixed; left:0; right:0; bottom:calc(env(safe-area-inset-bottom) + 4px); display:flex; justify-content:center; gap:6px; pointer-events:none; z-index:6; }
   .punkte i { width:6px; height:6px; border-radius:50%; background:#ffffff40; }
   .punkte i.an { background:var(--gold); }
+  /* ⤓ oben rechts: Threads und Designvorschläge als PDF oder Word, Videos zum Speichern. */
+  .runter { position:fixed; top:calc(env(safe-area-inset-top) + 10px); right:12px; z-index:7; width:44px; height:44px; border:0; border-radius:50%;
+    background:#ffffff18; color:var(--gold); font-size:22px; }
+  .blatt { display:none; position:fixed; inset:0; z-index:9; background:#0008; align-items:flex-end; justify-content:center; }
+  .blatt.an { display:flex; }
+  .blatt .innen { width:100%; max-width:480px; background:var(--nacht); border-radius:22px 22px 0 0; padding:16px 16px calc(env(safe-area-inset-bottom) + 20px);
+    display:flex; flex-direction:column; gap:8px; box-shadow:0 -10px 40px #0009; max-height:80%; overflow-y:auto; }
+  .blatt b { color:var(--gold); font-size:18px; margin-bottom:4px; }
+  .blatt button, .blatt a { display:block; text-align:left; border:0; border-radius:14px; padding:14px; background:#ffffff10; color:var(--text); font:inherit; text-decoration:none; }
+  .blatt .klein { color:var(--leise); font-size:13px; margin-top:6px; }
+  /* Drei App-Designs vorne, Threads aufklappbar mit letzter Zusammenfassung und To-dos. */
+  .designs { width:100%; max-width:480px; display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin:10px 0 2px; }
+  .designs:empty { display:none; }
+  .designs figure { margin:0; border-radius:14px; overflow:hidden; background:#ffffff10; }
+  .designs img { width:100%; aspect-ratio:3/4; object-fit:cover; display:block; }
+  .designs figcaption { font-size:11px; color:var(--leise); padding:4px 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  details.karte { display:block; padding:0; }
+  details.karte summary { display:flex; align-items:center; gap:12px; padding:14px; list-style:none; cursor:pointer; }
+  details.karte summary::-webkit-details-marker { display:none; }
+  details.karte .mehr { padding:0 14px 14px 52px; color:var(--leise); font-size:14px; }
+  details.karte .mehr ul { margin:6px 0; padding-left:0; list-style:none; }
+  details.karte .mehr li.erledigt { text-decoration:line-through; opacity:.6; }
+  details.karte .mehr li .n { color:var(--gold); font-size:12px; margin-left:4px; }
+  details.karte .mehr a { color:var(--gold); }
+  #druck { display:none; }
+  @media print {
+    body { background:#fff; color:#000; overflow:visible; height:auto; }
+    body > *:not(#druck) { display:none !important; }
+    #druck { display:block; font:12pt/1.45 system-ui, -apple-system, sans-serif; }
+    #druck h1 { font-size:20pt; margin:0 0 4pt; } #druck .stand { color:#555; margin-bottom:12pt; }
+    #druck li { margin:0 0 6pt; } #druck img { max-width:100%; max-height:60vh; display:block; margin:6pt 0 14pt; page-break-inside:avoid; }
+  }
 </style>
 </head>
 <body>
@@ -53,6 +85,7 @@
     <h1>Nova Zentrale</h1>
     <p class="tipp">Wisch nach links: jede KI hört dich sofort.</p>
     <div class="kis" id="kis"></div>
+    <div class="designs" id="designs"></div>
     <div class="liste" id="liste"><div class="leer">Threads werden geladen …</div></div>
   </section>
 </div>
@@ -65,6 +98,9 @@
 </div>
 <audio id="ton" preload="none" playsinline></audio>
 <div class="punkte" id="punkte"></div>
+<button class="runter" id="runter" aria-label="Herunterladen">⤓</button>
+<div class="blatt" id="blatt"><div class="innen" id="blattInnen"></div></div>
+<div id="druck"></div>
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
@@ -110,7 +146,7 @@
         if (Math.abs(j - (n - 1)) > 1) { var alt = r.fenster; r.fenster = null; setTimeout(function () { alt.remove(); }, 800); }
       }
     });
-    vorne = n;
+    vorne = n; var rt = document.getElementById("runter"); if (rt) rt.style.display = n === 0 ? "" : "none";
     try { sessionStorage.setItem('zentrale.seite', n); } catch (e) {}
   }
   var uhr = 0;
@@ -158,6 +194,32 @@
   var m = location.hash.match(/liste=([^&]+)/), quelle = m ? decodeURIComponent(m[1]) : '';
   try { if (quelle) { localStorage.setItem('zentrale.quelle', quelle); history.replaceState(null, '', location.pathname + location.search); } else quelle = localStorage.getItem('zentrale.quelle') || ''; } catch (e) {}
   function karte(t, zeichen) {
+    // Mit Zusammenfassung oder To-dos (vom Server): aufklappbar, sonst wie bisher ein direkter Link.
+    var todos = t.todos || [];
+    if (t.zusammenfassung || todos.length) {
+      var d = document.createElement('details'); d.className = 'karte' + (t.wichtig ? ' wichtig' : '');
+      var su = document.createElement('summary');
+      var z0 = document.createElement('span'); z0.className = 'zeichen'; z0.textContent = zeichen;
+      var t0 = document.createElement('span'); t0.className = 'titel'; t0.textContent = t.titel || '';
+      su.append(z0, t0);
+      var offen = todos.filter(function (x) { return !x.erledigt; }).length;
+      if (t.neu) { var n0 = document.createElement('span'); n0.className = 'neu'; n0.textContent = t.status === 'wartet auf Diego' ? 'Wartet auf dich' : 'Änderung, wichtig'; su.appendChild(n0); }
+      else if (offen) { var o0 = document.createElement('span'); o0.className = 'neu'; o0.textContent = offen + ' offen'; su.appendChild(o0); }
+      var m = document.createElement('div'); m.className = 'mehr';
+      if (t.zusammenfassung) { var p0 = document.createElement('div'); p0.textContent = t.zusammenfassung; m.appendChild(p0); }
+      if (todos.length) {
+        var ul = document.createElement('ul');
+        todos.slice().sort(function (a, b) { return (a.erledigt ? 1 : 0) - (b.erledigt ? 1 : 0); }).forEach(function (x) {
+          var li = document.createElement('li'); li.textContent = (x.erledigt ? '✓ ' : '○ ') + (x.text || '');
+          if (x.erledigt) li.className = 'erledigt';
+          if (x.neu && !x.erledigt) { var s0 = document.createElement('span'); s0.className = 'n'; s0.textContent = 'neu'; li.appendChild(s0); }
+          ul.appendChild(li);
+        });
+        m.appendChild(ul);
+      }
+      if (t.link) { var l0 = document.createElement('a'); l0.href = t.link; l0.target = '_blank'; l0.rel = 'noopener'; l0.textContent = 'Öffnen ↗'; m.appendChild(l0); }
+      d.append(su, m); return d;
+    }
     var a = document.createElement(t.link || t.url ? 'a' : 'div'); a.className = 'karte' + (t.wichtig ? ' wichtig' : '');
     if (t.link || t.url) { a.href = t.link || t.url; a.target = '_blank'; a.rel = 'noopener'; }
     var z = document.createElement('span'); z.className = 'zeichen'; z.textContent = zeichen;
@@ -199,10 +261,70 @@
     gruppe('Hat noch Zeit', l.filter(function (t) { return !rang(t); }), function (t) { return t.bilder ? '🖼' : '🕊'; });
     gruppe('Links und Videos', links, function (t) { return t.video ? '🎬' : '🔗'; });
   }
+  // ⤓ Herunterladen: PDF über «Drucken › Sichern» (iPhone: Teilen-Blatt), Word als .doc-Datei, Videos zum Öffnen und Sichern.
+  var letzte = null, designs = null;
+  function designQuelle() { return quelle ? quelle.replace('threads-lesen', 'designs-lesen').replace('/zentrale/threads', '/zentrale/designs') : ''; }
+  function designsHolen() {
+    var q = designQuelle(); if (!q) return Promise.resolve([]);
+    return fetch(q + (q.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : {}; })
+      .then(function (d) { designs = (d.designs || []).slice(0, 5); return designs; }).catch(function () { return []; });
+  }
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function heute() { return new Date().toLocaleDateString('de-CH'); }
+  function threadsHtml() {
+    var l = ((letzte && letzte.threads) || []).filter(function (t) { return t.status !== 'fertig'; });
+    if (!l.length) return '<p>Keine offenen Threads geladen.</p>';
+    return '<ul>' + l.map(function (t) {
+      return '<li><b>' + esc(t.titel) + '</b>' + (t.status === 'wartet auf Diego' ? ' (wartet auf dich)' : t.wichtig ? ' (wichtig)' : '') +
+        (t.zusammenfassung || t.was ? '<br>' + esc(t.zusammenfassung || t.was) : '') +
+        ((t.todos || []).length ? '<ul>' + t.todos.map(function (x) { return '<li>' + (x.erledigt ? '✓ ' : '○ ') + esc(x.text) + (x.neu && !x.erledigt ? ' (neu)' : '') + '</li>'; }).join('') + '</ul>' : '') + (t.link ? '<br><a href="' + esc(t.link) + '">' + esc(t.link) + '</a>' : '') + '</li>';
+    }).join('') + '</ul>';
+  }
+  function designsHtml(ds) {
+    if (!ds.length) return '<p>Heute noch keine Designvorschläge.</p>';
+    return ds.map(function (x, i) { return '<h2>' + (i + 1) + '. ' + esc(x.titel) + (x.app ? ' · ' + esc(x.app) : '') + '</h2><img src="' + esc(x.bild) + '" alt="">'; }).join('');
+  }
+  function dokument(titel, inhalt) { return '<h1>' + esc(titel) + '</h1><div class="stand">DR Lab · ' + heute() + '</div>' + inhalt; }
+  function alsPdf(titel, inhalt) {
+    $('druck').innerHTML = dokument(titel, inhalt); blattZu();
+    var bilder = [].slice.call($('druck').querySelectorAll('img'));
+    Promise.all(bilder.map(function (im) { return im.complete ? 0 : new Promise(function (ok) { im.onload = im.onerror = ok; }); })).then(function () { setTimeout(function () { window.print(); }, 100); });
+  }
+  function alsWord(titel, inhalt, name) {
+    var html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>' + esc(titel) + '</title></head><body>' + dokument(titel, inhalt) + '</body></html>';
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff', html], { type: 'application/msword' }));
+    a.download = name + '-' + new Date().toISOString().slice(0, 10) + '.doc'; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000); blattZu();
+  }
+  function blattZu() { $('blatt').classList.remove('an'); }
+  function knopf(text, fn) { var b = document.createElement('button'); b.textContent = text; b.addEventListener('click', fn); $('blattInnen').appendChild(b); }
+  $('runter').addEventListener('click', function () {
+    var i = $('blattInnen'); i.innerHTML = '<b>Herunterladen</b>';
+    knopf('📄 Threads als PDF', function () { alsPdf('Threads', threadsHtml()); });
+    knopf('📝 Threads als Word', function () { alsWord('Threads', threadsHtml(), 'threads'); });
+    knopf('🎨 Designvorschläge als PDF', function () { designsHolen().then(function (ds) { alsPdf('Designvorschläge', designsHtml(ds)); }); });
+    knopf('📝 Designvorschläge als Word', function () { designsHolen().then(function (ds) { alsWord('Designvorschläge', designsHtml(ds), 'designvorschlaege'); }); });
+    var videos = ((letzte && letzte.links) || []).concat(FESTE_LINKS).filter(function (x) { return x.video; });
+    videos.forEach(function (v) { var a = document.createElement('a'); a.href = v.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '🎬 ' + v.titel; i.appendChild(a); });
+    var k = document.createElement('div'); k.className = 'klein'; k.textContent = 'PDF: im Teilen-Blatt «In Dateien sichern». Videos: öffnen, dann Teilen › Video sichern.'; i.appendChild(k);
+    $('blatt').classList.add('an');
+  });
+  $('blatt').addEventListener('click', function (e) { if (e.target === $('blatt')) blattZu(); });
+
+  function designsVorne() {
+    designsHolen().then(function (ds) {
+      var box = $('designs'); box.innerHTML = '';
+      ds.slice(0, 3).forEach(function (x) {
+        var f = document.createElement('figure'); var im = document.createElement('img'); im.src = x.bild; im.alt = x.titel || ''; im.loading = 'lazy';
+        var c = document.createElement('figcaption'); c.textContent = x.app || x.titel || ''; f.append(im, c); box.appendChild(f);
+      });
+    });
+  }
+
   function laden() {
     if (!quelle) { zeigen({}, 'Threads: einmal in der Nova-App auf «🎛 Zentrale» tippen.'); return; }
     fetch(quelle + (quelle.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now(), { cache: 'no-store' })
-      .then(function (r) { return r.json(); }).then(zeigen)
+      .then(function (r) { return r.json(); }).then(function (d) { letzte = d; zeigen(d); designsVorne(); })
       .catch(function () { zeigen({}, 'Threads gerade nicht erreichbar.'); });
   }
   laden();
