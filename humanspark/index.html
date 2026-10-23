@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
-<title>HumanSpark</title>
+<title>Human Sparks</title>
 <meta property="og:title" content="Sparky – Human Sparks"><meta property="og:description" content="Sparky begleitet dich durch kleine Körperübungen."><meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/humanspark/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://diegorobert-code.github.io/DR_Lab/humanspark/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <style>
 :root{
@@ -80,6 +80,7 @@ section.panel.on{display:block}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
 .chip{border:1px solid #c9dcd8;background:#fff;color:var(--navy);border-radius:99px;padding:8px 12px;min-height:40px;font:600 14px/1.1 var(--font);cursor:pointer}
 .chip small{display:block;font-weight:500;font-size:11px;color:var(--muted)}
+#mGefuehle.gross .chip{font-size:18px;min-height:58px;padding:12px 16px}
 .chip[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
 .chip[aria-pressed="true"] small{color:#d6e2e8}
 #breath{display:none;text-align:center;margin-top:10px}
@@ -156,34 +157,74 @@ h1{color:#F2C14E}
 </style>
 </head>
 <body>
-<script src="../nova/intro.js" data-art="funken" data-bild="../nova/figuren/sparky.jpg" data-text="Sparky ist da"></script>
+<script src="../nova/intro.js" data-art="funken" data-bild="figur-gross.jpg" data-text="Sparky ist da"></script>
 
 <div class="wrap">
   <header>
     <img class="figur-logo" src="figur.jpg" alt="">
-    <div><h1>HumanSpark</h1><p>Körper und Kosmos · DR Lab</p></div>
+    <div><h1>Human Sparks</h1><p>Musik-Spiegel · Körper und Gefühl</p></div>
   </header>
 
   <div id="nbHier"></div>
   <div class="intro">
     <span class="vision web-only">Entwicklungsvision von DR Lab</span>
     <p class="web-only">HumanSpark liest deinen Körper und übersetzt ihn in eine kurze Sprache für die KI.</p>
-    <p class="app-only">HumanSpark schätzt Puls und Ruhe über die Kamera und hält fest, wie es dir geht.</p>
+    <p class="app-only">Hör Musik und halte fest, was sie mit dir macht. Puls und Ruhe misst Human Sparks auf Wunsch dazu.</p>
     <p class="safe">Deine Daten bleiben auf deinem Handy. HumanSpark ist kein medizinisches Gerät und stellt keine Diagnosen.</p>
   </div>
 
   <nav class="tabs" role="tablist">
-    <button class="tab" role="tab" data-tab="messen" aria-selected="true">Messen</button>
+    <button class="tab" role="tab" data-tab="musik" aria-selected="true">🎵 Musik</button>
+    <button class="tab" role="tab" data-tab="messen" aria-selected="false">Messen</button>
     <button class="tab" role="tab" data-tab="sitzung" aria-selected="false">Sitzung</button>
     <button class="tab" role="tab" data-tab="reden" aria-selected="false">Reden</button>
     <button class="tab" role="tab" data-tab="verlauf" aria-selected="false">Verlauf</button>
     <button class="tab" role="tab" data-tab="ideen" aria-selected="false">Ideen</button>
   </nav>
 
+  <!-- MUSIK: Song hören, dabei antippen oder schreiben, was du fühlst; alles mit Song-Minute -->
+  <section class="panel on" id="p-musik">
+    <div class="box" id="mStartBox">
+      <h2>Musik-Spiegel</h2>
+      <p>Song in Spotify starten, hier mithören und antippen, was du fühlst. Die Musik läuft weiter, Human Sparks braucht kein Mikrofon und keine Kamera.</p>
+      <label class="lbl" for="mSong">Welcher Song?</label>
+      <input id="mSong" class="inp" maxlength="80" autocomplete="off" placeholder="Titel – Künstler">
+      <button class="btn primary" id="mStart">▶ Song läuft jetzt</button>
+      <button class="btn primary" id="mReise">🎧 Beat-Reise: Human Sparks spielt 12 Beats</button>
+      <button class="btn primary" id="mPraxis">🌿 Praxis-Musik: 20 ruhige Stücke + Studie</button>
+      <div class="muted" style="font-size:13px">Praxis-Musik läuft je 3 Minuten durch. Du tippst anonym, was du bei der Person beobachtest (keine Namen, nichts verlässt das Handy).</div>
+      <div class="muted" style="font-size:13px">Beat-Reise: Ton an und Stummschalter aus, je 30 Sekunden, ganz verschiedene Stile. Du tippst nur, was sie in dir auslösen.</div>
+      <a class="btn ghost" href="../nova/reden.html?f=sparky" style="display:block;text-align:center;text-decoration:none">🦊 Mit Sparky reden</a>
+      <button class="btn ghost" id="mFinger">☝️ Finger drauf: Puls und HRV dazu messen</button>
+    </div>
+    <div class="box hidden" id="mRunBox">
+      <div class="phase" id="mTitel">Song</div>
+      <div class="clock" id="mClock">0:00</div>
+      <button class="btn ghost hidden" id="mWeiter">⏭ Nächstes Stück</button>
+      <button class="btn ghost hidden" id="mWer">👤 Klient:in tippt selbst</button>
+      <div class="muted" id="mHinweis">Tipp, was du gerade fühlst. Mehrmals tippen ist gut.</div>
+      <div class="chips" id="mGefuehle"></div>
+      <div class="noteline"><input id="mText" class="inp" placeholder="Oder in Worten: jetzt fühle ich …" autocomplete="off" enterkeyhint="send"><button class="btn ghost" id="mTextAdd" aria-label="Satz hinzufügen">+</button></div>
+      <div class="muted" style="font-size:13px">Tastatur-Mikrofon geht auch, kann Spotify aber kurz anhalten.</div>
+      <div class="feed" id="mFeed"></div>
+      <button class="btn coral" id="mStop">■ Song fertig</button>
+      <button class="btn danger" id="mAbbruch">Abbrechen</button>
+    </div>
+    <div class="box hidden" id="mOutBox">
+      <h2 id="mOutTitel">Dein Song</h2>
+      <div id="mOut"></div>
+      <a class="btn primary" href="../nova/reden.html?f=sparky" style="display:block;text-align:center;text-decoration:none">🦊 Mit Sparky besprechen</a>
+      <div class="muted" style="font-size:13px">Sparky sieht diesen Song und deine Gefühle (geht an seine Stimme, ElevenLabs).</div>
+      <button class="btn ghost" id="mKopie">🎵 Gefühle für die Song-Analyse kopieren</button>
+      <button class="btn ghost" id="mNeu">Nächster Song</button>
+    </div>
+  </section>
+
   <!-- MESSEN -->
-  <section class="panel on" id="p-messen">
+  <section class="panel" id="p-messen">
     <div class="box" id="startBox">
       <h2 id="startTitle">Puls und Ruhe messen</h2>
+      <a class="btn ghost" id="sparkyReden" href="../nova/reden.html?f=sparky" style="display:block;text-align:center;text-decoration:none;margin-bottom:10px">🦊 Mit Sparky reden (sieht deine Messungen)</a>
       <div class="seg" id="modSeg">
         <button data-mod="hrv" aria-pressed="true">Ruhe (HRV)</button>
         <button data-mod="pulsbild" aria-pressed="false">Pulsbild</button>
@@ -1833,6 +1874,162 @@ document.addEventListener('click', function(ev){
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function(){ uiAlert(t); });
   else uiAlert(t);
 });
+/* ---------- Musik-Spiegel ---------- */
+var M_GEF = [['ruhig','😌'],['offen','💛'],['Kraft','🔥'],['Freude','😄'],['Gänsehaut','✨'],['berührt','🥹'],['geladen','⚡'],['schwer','🌧'],['traurig','💧'],['Wut','😤']];
+var mLauf = null;
+function mZeit(s){ s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+function mBox(id){ ['mStartBox','mRunBox','mOutBox'].forEach(function(b){ $(b).classList.toggle('hidden', b !== id); }); window.scrollTo(0, 0); }
+function mJetzt(){ return mLauf ? (Date.now() - (mLauf.reise ? mLauf.beatT0 : mLauf.t0)) / 1000 : 0; }
+function mWann(x){ return (x.w ? '👤 ' : '') + (x.b ? x.b + ' ' : '') + mZeit(x.t); }
+function mFeed(){
+  $('mFeed').innerHTML = mLauf.stamps.slice().reverse().map(function(x){ return '<div><b>' + esc(mWann(x)) + '</b> ' + esc(x.k ? x.k : '«' + x.text + '»') + '</div>'; }).join('');
+}
+function mStempel(o){ if (!mLauf) return; o.t = Math.round(mJetzt()); if (mLauf.wer === 'klient') o.w = 'k'; if (mLauf.reise) o.b = LISTE[beatNr].n; mLauf.stamps.push(o); mFeed(); }
+// Studie: was Diego bei der Person beobachtet (anonym, ohne Namen)
+var M_KLIENT = [['ruhig','😌'],['warm','☀️'],['leicht','🪶'],['weit','🌌'],['berührt','🥹'],['Freude','😊'],['müde','😴'],['schwer','🌧'],['traurig','💧'],['Kribbeln','✨']];
+var M_BEOB = [['entspannt','😌'],['atmet tiefer','🌬'],['seufzt','💨'],['Tränen','💧'],['lacht','😄'],['wird still','🤫'],['erzählt','💬'],['unruhig','⚡'],['schläft ein','😴'],['Gewebe weich','🫳']];
+function mChips(l){ $('mGefuehle').innerHTML = l.map(function(g){ return '<button class="chip" data-g="' + g[0] + '">' + g[1] + ' ' + g[0] + '</button>'; }).join(''); }
+mChips(M_GEF);
+$('mGefuehle').addEventListener('click', function(ev){
+  var b = ev.target.closest('[data-g]'); if (!b) return;
+  mStempel({k:b.dataset.g}); b.setAttribute('aria-pressed', 'true'); setTimeout(function(){ b.setAttribute('aria-pressed', 'false'); }, 250);
+});
+function mText(){ var v = $('mText').value.trim(); if (!v) return; mStempel({text:v.slice(0, 300)}); $('mText').value = ''; }
+$('mTextAdd').addEventListener('click', mText);
+$('mText').addEventListener('keydown', function(ev){ if (ev.key === 'Enter'){ ev.preventDefault(); mText(); } });
+/* Beat-Reise: 12 Beats direkt im Handy erzeugt (WebAudio, eigene Muster, keine fremde Musik) */
+var BEATS = [
+  {n:'Boom-Bap', bpm:88, sw:.18, k:'x.....x...x.....', s:'....x.......x...', h:'x.x.x.x.x.x.x.x.', b:[0,,,,,,7,,,,3,,,,,], key:41, pad:[0,3,7,10]},
+  {n:'Trap', bpm:140, k:'x......x..x.....', s:'........x.......', h:'xxxxxxxxxxxxx.xx', b:[0,,,,,,,,,,,,-2,,,], key:36, w:'sine', lang:true, pad:[0,3,7]},
+  {n:'Lo-Fi', bpm:72, sw:.22, k:'x.......x.x.....', s:'....x.......x...', h:'x.x.x.x.x.x.x.x.', b:[0,,,,5,,,,3,,,,,,,], key:45, pad:[0,4,7,11], weich:true},
+  {n:'House', bpm:124, k:'x...x...x...x...', s:'....x.......x...', h:'..x...x...x...x.', b:[0,,0,,,,0,,0,,,,0,,12,], key:41, pad:[0,3,7,10]},
+  {n:'Techno', bpm:132, k:'x...x...x...x...', s:'................', h:'..x...x...x...x.', b:[0,0,,0,0,,0,,0,0,,0,0,,0,], key:33, w:'sawtooth'},
+  {n:'Afro', bpm:104, k:'x.....x...x.....', s:'...x..x....x..x.', h:'x.xx.x.xx.xx.x.x', b:[0,,,7,,,5,,,,7,,,3,,], key:43, pad:[0,4,7]},
+  {n:'Reggaeton', bpm:94, k:'x...x...x...x...', s:'...x..x....x..x.', h:'x.x.x.x.x.x.x.x.', b:[0,,,,,,,,5,,,,,,,], key:38},
+  {n:'Drum & Bass', bpm:172, k:'x.........x.....', s:'....x.......x...', h:'x.xxx.xxx.xxx.xx', b:[0,,,,,,,,,,-5,,,,,], key:31, w:'sine', lang:true},
+  {n:'Ambient', bpm:60, k:'................', s:'................', h:'................', b:[], key:48, pad:[0,7,14,16], gross:true},
+  {n:'Funk', bpm:108, sw:.12, k:'x..x..x...x.....', s:'....x..x.x..x...', h:'xxxxxxxxxxxxxxxx', b:[0,,12,,0,,10,,0,,7,,5,,3,], key:40},
+  {n:'Dub', bpm:70, k:'x.......x.......', s:'........x.......', h:'..x...x...x...x.', b:[0,,,,,,,,-2,,,,,,,], key:36, w:'sine', lang:true, pad:[0,3,7], echo:true},
+  {n:'Herzschlag', bpm:60, k:'x.x.............', s:'................', h:'................', b:[], key:45, pad:[0,5,9], gross:true}
+];
+// 20 Praxis-Stücke: sanft und melodisch, je eine Farbe (hell, warm, traumhaft, emotional, dunkel, erdig)
+var SKALA = {hell:[0,2,4,7,9], warm:[0,2,4,5,7,9,11], traumhaft:[0,2,4,6,7,9,11], emotional:[0,2,3,5,7,9,10], dunkel:[0,2,3,5,7,8,10], erdig:[0,3,5,7,10]};
+var FOLGE = {hell:[0,3,1,2], warm:[0,5,3,4], traumhaft:[0,1,5,4], emotional:[0,3,6,4], dunkel:[0,5,2,6], erdig:[0,2,3,1]};
+function zufall(seed){ return function(){ seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }; }
+var PRAXIS = [['Morgenlicht','hell'],['Weiter Atem','traumhaft'],['Faszie','warm'],['Stiller See','dunkel'],['Erde','erdig'],['Warmes Wasser','warm'],['Abendrot','emotional'],['Wolke','traumhaft'],['Wurzeln','erdig'],['Sanfte Welle','hell'],['Bergwiese','hell'],['Herzraum','emotional'],['Mondlicht','dunkel'],['Gezeiten','emotional'],['Federleicht','traumhaft'],['Tiefer Boden','dunkel'],['Nebel','dunkel'],['Lichtung','warm'],['Heimkommen','warm'],['Stille','traumhaft']].map(function(x, i){
+  var r = zufall(i * 131 + 7), sk = SKALA[x[1]], motiv = [], d = sk.length;
+  for (var j = 0; j < 16; j++){ d = Math.max(sk.length - 2, Math.min(sk.length * 2 + 2, d + [-2,-1,-1,0,1,1,2][Math.floor(r() * 7)])); motiv.push(r() < (j % 4 === 0 ? .9 : .45) ? d : null); }
+  return {n:x[0], farbe:x[1], bpm:56 + (i * 5) % 18, key:[45,43,41,48,46,44,40,47][i % 8] - 12, skala:sk, folge:FOLGE[x[1]], motiv:motiv,
+    k:i % 3 === 1 ? 'x.x.............' : '................', s:'................', h:'................', b:[], sanft:true, melodie:true};
+});
+var hall = null, LISTE = BEATS, BEAT_SEK = 30, ac = null, beatNr = -1, beatTimer = null, nextStep = 0, stepNr = 0, beatOut = null;
+function noise(){ var b = ac.createBuffer(1, ac.sampleRate * .5, ac.sampleRate), d = b.getChannelData(0); for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; }
+var rauschen = null;
+function env(g, t, a, peak, dec){ g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + dec); }
+function kick(t, sanft){ var o = ac.createOscillator(), g = ac.createGain(); o.frequency.setValueAtTime(sanft ? 70 : 150, t); o.frequency.exponentialRampToValueAtTime(42, t + .25); env(g, t, sanft ? .04 : .005, sanft ? .18 : .9, sanft ? .6 : .45); o.connect(g).connect(beatOut); o.start(t); o.stop(t + .5); }
+function rausch(t, typ, f, peak, dec){ var n = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain(); n.buffer = rauschen; fl.type = typ; fl.frequency.value = f; env(g, t, .002, peak, dec); n.connect(fl).connect(g).connect(beatOut); n.start(t); n.stop(t + dec + .02); }
+function ton(t, midi, dauer, w, peak, cut){ var o = ac.createOscillator(), fl = ac.createBiquadFilter(), g = ac.createGain(); o.type = w; o.frequency.value = 440 * Math.pow(2, (midi - 69) / 12); fl.type = 'lowpass'; fl.frequency.value = cut; env(g, t, .01, peak, dauer); o.connect(fl).connect(g).connect(beatOut); o.start(t); o.stop(t + dauer + .05); }
+function stufe(B, d){ var n = B.skala.length, o = Math.floor(d / n); return B.key + 12 * o + B.skala[((d % n) + n) % n]; }
+function weich(t, midi, dauer, w, peak, cut, an){ var o = ac.createOscillator(), fl = ac.createBiquadFilter(), g = ac.createGain(); o.type = w; o.frequency.value = 440 * Math.pow(2, (midi - 69) / 12); fl.type = 'lowpass'; fl.frequency.value = cut; env(g, t, an, peak, dauer); o.connect(fl).connect(g).connect(beatOut); o.start(t); o.stop(t + dauer + .1); }
+function melodie(B, i, t){
+  var takt = 60 / B.bpm * 4, s = stepNr % 64;
+  if (s % 32 === 0){
+    var wurzel = B.folge[Math.floor(stepNr / 32) % B.folge.length], ak = B.skala.length === 5 ? [0,2,3] : [0,2,4];
+    weich(t, stufe(B, wurzel), takt * 2.2, 'sine', .22, 500, .4);
+    ak.forEach(function(x){ weich(t, stufe(B, wurzel + x) + 12, takt * 2.4, 'triangle', .05, 1400, 1.2); weich(t + .02, stufe(B, wurzel + x) + 12, takt * 2.4, 'sine', .04, 1400, 1.4); });
+  }
+  if (i % 2 === 0){
+    var runde = Math.floor(stepNr / 16) % 4, d = B.motiv[(stepNr / 2) % 16];
+    if (d != null && runde !== 3) weich(t, stufe(B, d + (runde === 2 ? 2 : 0)) + 12, takt * .6, 'triangle', .11, 1700, .05);
+  }
+}
+function beatSchritt(B, i, t){
+  if (B.melodie) melodie(B, i, t);
+  if (B.k[i] === 'x') kick(t, B.sanft);
+  if (B.s[i] === 'x') rausch(t, 'bandpass', 1800, B.weich ? .25 : .45, .18);
+  if (B.h[i] === 'x') rausch(t, 'highpass', 7000, B.weich ? .06 : .12, .05);
+  if (B.b[i] != null) ton(t, B.key + B.b[i], B.lang ? .9 : .28, B.w || 'triangle', .35, B.w === 'sawtooth' ? 900 : 600);
+  if (B.echo && B.s[i] === 'x') [.375, .75].forEach(function(d, j){ rausch(t + d * 60 / B.bpm * 2, 'bandpass', 1500, .2 / (j + 1), .2); });
+  if (B.pad && i % 16 === 0 && stepNr % 32 === 0) B.pad.forEach(function(x){ ton(t, B.key + 24 + x, B.gross ? 7 : 3.5, 'triangle', B.gross ? .07 : .045, 1800); });
+}
+function beatPlaner(){
+  var B = LISTE[beatNr]; if (!B || !ac) return;
+  var schritt = 60 / B.bpm / 4;
+  while (nextStep < ac.currentTime + .15){
+    var i = stepNr % 16, t = nextStep + (B.sw && i % 2 ? schritt * B.sw : 0);
+    beatSchritt(B, i, t);
+    nextStep += schritt; stepNr++;
+  }
+}
+function beatSpielen(n){
+  beatNr = n; stepNr = 0;
+  if (beatOut){ var alt = beatOut; alt.gain.setTargetAtTime(0, ac.currentTime, .15); setTimeout(function(){ alt.disconnect(); }, 800); }
+  beatOut = ac.createGain(); beatOut.gain.value = .8; beatOut.connect(ac.destination); if (hall && LISTE[n].melodie) beatOut.connect(hall);
+  nextStep = ac.currentTime + .1;
+  if (mLauf){ mLauf.beatT0 = Date.now(); $('mTitel').textContent = (LISTE === PRAXIS ? '🌿 ' : '🎧 ') + (n + 1) + '/' + LISTE.length + ' · ' + LISTE[n].n + ' · ' + (LISTE[n].farbe || LISTE[n].bpm + ' BPM'); }
+}
+function beatStopp(){ clearInterval(beatTimer); beatTimer = null; beatNr = -1; if (beatOut){ beatOut.gain.setTargetAtTime(0, ac.currentTime, .1); beatOut = null; } }
+function reiseStart(liste, sek, name){
+  try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); rauschen = rauschen || noise(); if (!hall){ hall = ac.createConvolver(); var len = ac.sampleRate * 3, ir = ac.createBuffer(2, len, ac.sampleRate); for (var c = 0; c < 2; c++){ var dd = ir.getChannelData(c); for (var k = 0; k < len; k++) dd[k] = (Math.random() * 2 - 1) * Math.pow(1 - k / len, 3); } hall.buffer = ir; var hg = ac.createGain(); hg.gain.value = .45; hall.connect(hg).connect(ac.destination); } } catch(e){ uiAlert('Ton geht auf diesem Gerät nicht.'); return; }
+  LISTE = liste; BEAT_SEK = sek; mChips(liste === PRAXIS ? M_BEOB : M_GEF); mWerSetzen(liste === PRAXIS ? 'diego' : null);
+  mLauf = {id:uid(), t:Date.now(), t0:Date.now(), song:name, reise:true, praxis:liste === PRAXIS, wer:liste === PRAXIS ? 'diego' : null, stamps:[], timer:null};
+  $('mFeed').innerHTML = ''; $('mWeiter').classList.remove('hidden');
+  beatSpielen(0);
+  beatTimer = setInterval(function(){ beatPlaner(); if (mLauf && mLauf.reise && Date.now() - mLauf.beatT0 > BEAT_SEK * 1000){ if (beatNr < LISTE.length - 1) beatSpielen(beatNr + 1); else $('mStop').click(); } }, 25);
+  mLauf.timer = setInterval(function(){ $('mClock').textContent = mZeit(mJetzt()); }, 500);
+  try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function(l){ if (mLauf) mLauf.wl = l; else l.release(); }).catch(function(){}); } catch(e){}
+  mBox('mRunBox');
+}
+$('mReise').addEventListener('click', function(){ reiseStart(BEATS, 30, 'Beat-Reise'); });
+$('mPraxis').addEventListener('click', function(){ reiseStart(PRAXIS, 180, 'Praxis-Musik (Studie)'); });
+$('mWeiter').addEventListener('click', function(){ if (mLauf && mLauf.reise){ if (beatNr < LISTE.length - 1) beatSpielen(beatNr + 1); else $('mStop').click(); } });
+function mWerSetzen(w){
+  $('mWer').classList.toggle('hidden', !w); $('mGefuehle').classList.toggle('gross', w === 'klient');
+  $('mHinweis').textContent = w === 'diego' ? 'Tipp, was du bei der Person beobachtest. Anonym, keine Namen.' : w === 'klient' ? 'Tipp einfach an, was du gerade spürst. Kein Name, nichts wird geteilt.' : 'Tipp, was du gerade fühlst. Mehrmals tippen ist gut.';
+  $('mWer').textContent = w === 'klient' ? '🌿 Zurück: ich beobachte' : '👤 Klient:in tippt selbst';
+}
+$('mWer').addEventListener('click', function(){ if (!mLauf) return; mLauf.wer = mLauf.wer === 'klient' ? 'diego' : 'klient'; mChips(mLauf.wer === 'klient' ? M_KLIENT : M_BEOB); mWerSetzen(mLauf.wer); });
+$('mStart').addEventListener('click', function(){
+  mChips(M_GEF); mWerSetzen(null);
+  mLauf = {id:uid(), t:Date.now(), t0:Date.now(), song:$('mSong').value.trim().slice(0, 80), stamps:[], timer:null};
+  $('mTitel').textContent = '🎵 ' + (mLauf.song || 'Song läuft');
+  $('mFeed').innerHTML = ''; $('mClock').textContent = '0:00';
+  mLauf.timer = setInterval(function(){ $('mClock').textContent = mZeit(mJetzt()); }, 500);
+  try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function(l){ if (mLauf) mLauf.wl = l; else l.release(); }).catch(function(){}); } catch(e){}
+  mBox('mRunBox');
+});
+function mEnde(){ if (!mLauf) return null; if (mLauf.reise) beatStopp(); $('mWeiter').classList.add('hidden'); clearInterval(mLauf.timer); try { if (mLauf.wl) mLauf.wl.release(); } catch(e){} var l = mLauf; mLauf = null; return l; }
+$('mAbbruch').addEventListener('click', function(){ mEnde(); mBox('mStartBox'); });
+function mZeile(e){
+  return '«' + (e.song || 'Song') + '» · ' + mZeit(e.dur) + (e.stamps.length ? ': ' + e.stamps.map(function(x){ return mWann(x) + ' ' + (x.k || '«' + x.text + '»'); }).join(', ') : ', nichts angetippt');
+}
+var mLetzter = null;
+function mZeigen(e){
+  mLetzter = e;
+  $('mOutTitel').textContent = '🎵 ' + (e.song || 'Dein Song');
+  var zahl = {}; e.stamps.forEach(function(x){ if (x.k) zahl[x.k] = (zahl[x.k] || 0) + 1; });
+  var oben = Object.keys(zahl).sort(function(a, b){ return zahl[b] - zahl[a]; }).slice(0, 3);
+  $('mOut').innerHTML = '<p class="muted">' + mZeit(e.dur) + ' gehört · ' + e.stamps.length + ' Gefühle festgehalten' + (oben.length ? ' · am meisten: ' + esc(oben.join(', ')) : '') + '</p>' +
+    (e.stamps.length ? '<div class="tl">' + e.stamps.map(function(x){ return '<div><b>' + esc(mWann(x)) + '</b> ' + esc(x.k ? x.k : '«' + x.text + '»') + '</div>'; }).join('') + '</div>' : '');
+  $('mKopie').textContent = '🎵 Gefühle für die Song-Analyse kopieren';
+  mBox('mOutBox');
+}
+$('mStop').addEventListener('click', function(){
+  var l = mEnde(); if (!l) return;
+  var e = {id:l.id, t:l.t, type:'musik', song:l.song, reise:!!l.reise, praxis:!!l.praxis, dur:Math.round((Date.now() - l.t0) / 1000), stamps:l.stamps};
+  addEntry(e); mZeigen(e);
+});
+$('mFinger').addEventListener('click', function(){ showTab('messen'); });
+$('mNeu').addEventListener('click', function(){ $('mSong').value = ''; mBox('mStartBox'); });
+// Für die Höranalyse (hoeranalyse.py worte.json): [{t, text}] mit Song-Sekunde
+$('mKopie').addEventListener('click', function(){
+  if (!mLetzter) return;
+  var t = JSON.stringify(mLetzter.stamps.map(function(x){ var o = {t:x.t, text:x.k || x.text}; if (x.b) o.beat = x.b; return o; })), b = $('mKopie');
+  var ok = function(){ b.textContent = 'Kopiert ✓ – mit dem Song zusammen schicken'; };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function(){ uiAlert(t); });
+  else uiAlert(t);
+});
+
 // Auswertung mit Sparky besprechen (Diegos Entscheid 21.10.: nur auf Tipp, Werte gehen an ElevenLabs)
 var SPARKY_AGENT = 'agent_7401m55j20jwek69gsh3gkfhaa77', spGespraech = null, spStartet = false, spAbschrift = [];
 function spKnopf(t){ var b = $('spSparky'); if (b) b.textContent = t || (spGespraech ? '■ Gespräch mit Sparky beenden' : '🦊 Mit Sparky besprechen'); }
@@ -1962,6 +2159,7 @@ function renderHistory(){
         '<button class="btn ghost" data-open="' + e.id + '" style="min-height:44px;margin-top:6px">Auswertung öffnen</button></div>';
     }
     var st = e.stage ? STAGES[e.stage-1] : null;
+    if (e.type === 'musik') return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · 🎵 Musik</span></div><div class="txt">' + esc(mZeile(e)) + '</div></div>';
     if (e.type === 'sensor') return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · Sensor · ' + esc(SN_MODI[e.modus] || e.modus) + '</span></div>' + snSvg(e) +
       '<div class="muted">' + esc(e.ort) + ' · ' + esc(snZeile(e)) + '</div></div>';
     if (e.type === 'pulsbild') return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · Pulsbild' + (e.demo ? ' · Demo' : '') + '</span></div>' + pbSvg(e.welle, 260, 70) +
@@ -2112,7 +2310,7 @@ sRefreshStart();
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>
-<script src="../nova/buehne.js" data-figur="sparky" data-name="Sparky" data-bild="../nova/figuren/sparky.jpg" data-satz="Kleine Körperübungen, ruhig und Schritt für Schritt." data-vor="#nbHier" defer></script>
+<script src="../nova/buehne.js" data-figur="sparky" data-name="Sparky" data-bild="figur.jpg" data-satz="Hör Musik, ich höre mit, wie sie dich bewegt." data-vor="#nbHier" defer></script>
 <script src="../nova/nova.js" data-nova-app="HumanSpark" data-nova-bild="figur.jpg" defer></script>
 <!-- Figuren-Film (Trickfilm-Look): Farben, Funken, Atmen, Tipp-Reaktion, Szenenwechsel. Nur Optik. -->
 <style id="figurFilmCss">
@@ -2226,6 +2424,22 @@ document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click
   }
 })();
 </script>
-<script src="../apps/sprechen/sprechen.js" data-figur="sparky" data-name="Sparky" data-bild="figur.jpg" data-audio="audio/sparky/" data-unten="18" data-saetze='{"gruss": ["Hey, ich bin Sparky! Lust auf eine kleine Übung?"], "lob": ["Wow, das hast du super gemacht! Ich wedle vor Freude mit dem Schwanz."], "mut": ["Ganz ruhig. Schultern runter, einmal tief atmen. Ich mache mit."], "frage": ["Tipp oben auf «Messen» oder «Sitzung», dann zeige ich dir alles Schritt für Schritt."]}' defer></script>
+<script src="../apps/sprechen/sprechen.js" data-figur="sparky" data-name="Sparky" data-bild="figur.jpg" data-audio="audio/sparky/" data-unten="18" data-saetze='{"gruss": ["Ja, ich bin da. Welcher Song läuft gerade?"], "lob": ["Wow, das hast du super gemacht! Ich wedle vor Freude mit dem Schwanz."], "mut": ["Ganz ruhig. Schultern runter, einmal tief atmen. Ich mache mit."], "frage": ["Starte deinen Song, tipp auf «Song läuft jetzt» und zeig mir, was du fühlst."]}' defer></script>
+<!-- Aura-Look (Diego 23.10.): Nacht-Städtchen, violettes Leuchten, warmes Laternenlicht; technisch wie Körperkosmos -->
+<style id="auraLook">
+:root{--bg:#0a0f2c;--card:rgba(22,28,72,.82);--line:#2c3378;--soft:#1a2160;--navy:#8b5cf6;--navy2:#6d42e0;--coral:#F2B04E;--coral2:#F29A4A;--fa1:#8b5cf6;--fa2:#5b7cff;--fgold:#F2B04E}
+html,body{background:linear-gradient(180deg,rgba(10,15,44,.55),rgba(10,15,44,.94) 55%,#0a0f2c),url(aura-nacht.jpg) center top/cover fixed,#0a0f2c}
+h1{color:#F2B04E;letter-spacing:.02em}
+.box{background:var(--card);border-color:var(--line);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.figur-logo{border-color:#b9a2ff;box-shadow:0 0 18px rgba(139,92,246,.7)}
+.tab[aria-selected="true"]{color:#F2B04E}
+#p-musik h2{font-family:ui-monospace,"SF Mono",Menlo,monospace;letter-spacing:.06em;text-transform:uppercase;font-size:17px;color:#cbb8ff}
+#mClock{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:64px;color:#fff;text-shadow:0 0 18px rgba(139,92,246,.9),0 0 42px rgba(91,124,255,.6)}
+#mTitel{color:#F2B04E}
+#mGefuehle .chip{background:rgba(139,92,246,.12);border-color:rgba(185,162,255,.45);color:#efeaff}
+#mGefuehle .chip[aria-pressed="true"]{background:#8b5cf6;border-color:#cbb8ff;box-shadow:0 0 16px rgba(139,92,246,.8)}
+#mStart,#p-musik .btn.primary{background:linear-gradient(90deg,#6d42e0,#8b5cf6 55%,#5b7cff);box-shadow:0 0 22px rgba(139,92,246,.45);color:#fff}
+#mFeed b,#mOut .tl b{font-family:ui-monospace,"SF Mono",Menlo,monospace;color:#F2B04E}
+</style>
 </body>
 </html>
