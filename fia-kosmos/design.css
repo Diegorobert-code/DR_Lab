@@ -1,0 +1,94 @@
+/* Fia Körperkosmos – Design «Fluss Atem» (23.10.): ruhig fliessend, Salbei und Ton,
+   die Tage als sanfter Pfad. Manrope, Radius 20, Knöpfe als Pillen. Nur Darstellung. */
+html:root{
+  --f-bg:#EEF0EA; --f-surface:#FAFAF6; --f-ink:#2E3A33; --f-muted:#56635B; --f-accent:#B7795C; --f-fill:#9C6047; --f-accent-text:#8E5539;
+  --f-sage:#DFE5DA; --f-sage2:#CBD5C5; --f-clay:#F2E6DE; --f-line:rgba(46,58,51,.11); --f-line2:rgba(46,58,51,.22);
+  --f-shadow:0 1px 2px rgba(46,58,51,.05),0 10px 26px -18px rgba(46,58,51,.4);
+  --f-font:"Manrope",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; --f-r:20px;
+  /* alte Variablen */
+  --nacht:var(--f-bg); --nacht2:var(--f-sage); --tief:var(--f-sage); --karte:var(--f-surface); --rand:var(--f-line);
+  --gold:var(--f-fill); --glut:var(--f-accent); --koralle:var(--f-accent); --creme:var(--f-clay); --text:var(--f-ink); --muted:var(--f-muted);
+  /* Runde-8-Tokens */
+  --t-bg:var(--f-bg); --t-text:var(--f-ink); --t-leise:var(--f-muted); --t-karte:var(--f-surface); --t-flaeche:var(--f-sage);
+  --t-rand:var(--f-line); --t-rand2:var(--f-line2); --t-primaer:var(--f-fill); --t-primaer-text-auf-hell:var(--f-accent-text);
+  --t-auf-primaer:#FFFFFF; --t-kopf:var(--f-ink); --t-akzent:var(--f-clay); --t-auf-akzent:var(--f-ink);
+  --t-primaer-zart:rgba(183,121,92,.14); --t-schatten:var(--f-shadow); --t-radius:var(--f-r); --t-toast:#2E3A33;
+  --t-sos:var(--f-surface); --t-feld:#FFFFFF; --t-knopf2:var(--f-surface); --t-fokus:var(--f-fill); --t-kopffont:var(--f-font);
+  --g9-akzent:var(--f-fill); --g9-fokus:var(--f-fill); --g9-auswahl:rgba(183,121,92,.22);
+  --g9-ico-bg:var(--f-sage); --g9-ico-fg:var(--f-ink); --g9-ico-rand:transparent;
+  color-scheme:light;
+}
+
+html body,html{background:var(--f-bg)!important;color:var(--f-ink)}
+html body{font-family:var(--f-font)}
+html body::before{background:radial-gradient(80% 40% at 100% 0%,#E3E8DE 0,transparent 70%),radial-gradient(70% 40% at 0% 100%,#EFE6DD 0,transparent 70%),var(--f-bg)!important}
+html body .himmel{display:none!important}
+html body h2{color:var(--f-ink)!important;font-family:var(--f-font);font-weight:800;letter-spacing:-.015em}
+html body h3{color:var(--f-ink)}
+html body .muted{color:var(--f-muted)}
+html body a{color:var(--f-accent-text)}
+
+/* Kopf: Titel links, Fia klein als Zeichen */
+html body header.kopf{background:rgba(238,240,234,.9)!important;border-bottom:1px solid var(--f-line)!important}
+html body header.kopf h1{color:var(--f-ink)!important;font-family:var(--f-font)!important;font-weight:800;font-size:18px;letter-spacing:-.015em}
+html body header.kopf small{color:var(--f-muted)}
+html body header.kopf img{width:36px;height:36px;border:2px solid var(--f-surface)!important;box-shadow:0 0 0 1.5px var(--f-accent);border-radius:50%!important}
+html body .rund{background:var(--f-surface);border-color:var(--f-line);color:var(--f-ink)}
+
+/* Karten */
+html body .box{background:var(--f-surface)!important;border:1px solid var(--f-line)!important;border-radius:var(--f-r)!important;box-shadow:var(--f-shadow)}
+html body .box.gold{background:var(--f-surface)!important;border-color:var(--f-line)!important}
+
+/* Hauptkarte: Fia klein, ihr Satz daneben */
+html body .buehnebox{padding:12px 14px!important}
+html body #buehneHeute .actor{--sz:56px!important}
+html body #buehneHeute .actor .body{border:2px solid var(--f-surface)!important;box-shadow:0 0 0 1.5px var(--f-accent)!important}
+html body #buehneHeute .bubble{background:var(--f-sage)!important;color:var(--f-ink)!important;border-radius:16px}
+html body #buehneHeute .bubble::before{border-right-color:var(--f-sage)!important}
+
+/* «Jetzt»: die nächste Station des Pfads */
+html body .jetzt{background:var(--f-surface)!important;border:1px solid var(--f-line)!important;border-radius:var(--f-r)!important;box-shadow:var(--f-shadow)!important}
+html body .jetzt *{color:var(--f-ink)!important}
+html body .jetzt small{color:var(--f-accent-text)!important;font-weight:700;letter-spacing:.08em}
+html body .jetzt em{color:var(--f-muted)!important}
+html body .jetzt .ic{background:var(--f-clay)!important;border-radius:50%}
+html body .jetzt::after{content:"";position:absolute;left:16px;right:16px;bottom:10px;height:4px;border-radius:9px;background:linear-gradient(90deg,var(--f-accent) 0 38%,var(--f-sage) 38% 100%);pointer-events:none}
+html body .jetzt{position:relative;padding-bottom:22px!important}
+
+/* Heute als sanfter Pfad: feine Linie links, ein Punkt pro Station */
+html body #p-heute{position:relative;padding-left:22px}
+html body #p-heute::before{content:"";position:absolute;left:6px;top:24px;bottom:28px;width:2px;border-radius:2px;background:var(--f-sage2)}
+html body #p-heute > :is(.box,.jetzt,.glutreihe,.welt,.r8-sosb,.r8-wachs,.r8-karte,.r7-karte,.r6-karte,.r7-was){position:relative}
+html body #p-heute > :is(.box,.jetzt,.glutreihe,.welt,.r8-sosb,.r8-wachs,.r8-karte,.r7-karte,.r6-karte,.r7-was)::before{content:"";position:absolute;left:-22px;top:22px;width:10px;height:10px;border-radius:50%;border:2px solid var(--f-accent);background:var(--f-bg);box-sizing:content-box}
+html body #p-heute > :is(.buehnebox,.jetzt)::before{background:var(--f-accent)}
+
+/* Knöpfe: Ton-Pillen */
+html body .btn{background:var(--f-fill)!important;color:#FFFFFF!important;border-radius:999px!important;box-shadow:none!important;font-family:var(--f-font);font-weight:700}
+html body .btn.ghost{background:var(--f-surface)!important;color:var(--f-accent-text)!important;border:1px solid var(--f-line2)!important}
+html body :is(.chip,.zgrid button,.egrid button,.tags span){background:var(--f-sage)!important;color:var(--f-ink)!important;border-color:transparent!important}
+html body .chip[aria-pressed="true"]{background:var(--f-fill)!important;color:#FFFFFF!important;border-color:var(--f-fill)!important}
+html body .zgrid button b{color:var(--f-accent-text)!important}
+html body :is(textarea,input[type=text],select){background:#FFFFFF!important;color:var(--f-ink)!important;border-color:var(--f-line2)!important;border-radius:14px}
+
+/* Unten: ruhige Tableiste */
+html body nav.tabs{background:rgba(250,250,246,.96)!important;border-top:1px solid var(--f-line)!important}
+html body .tab{color:var(--f-muted)!important;font-family:var(--f-font);font-weight:600}
+html body .tab[aria-selected="true"]{color:var(--f-accent-text)!important;background:var(--f-sage)!important;border-radius:16px}
+
+/* Kleinteile */
+html body :is(.zkarte,details){background:var(--f-surface)!important;border-color:var(--f-line)!important}
+html body .satz{color:var(--f-ink)!important;border-left-color:var(--f-accent)!important}
+html body .hinweis{background:var(--f-clay)!important;border-color:rgba(183,121,92,.35)!important;color:var(--f-ink)}
+html body table.tab2 th{color:var(--f-accent-text)!important}
+html body .glutreihe{background:var(--f-surface)!important;border-color:var(--f-line)!important;color:var(--f-ink)!important;border-radius:var(--f-r)}
+html body .chain span:not(.on):not(.pearl):not(.r8-feder):not(.r8-ruhe){background:var(--f-sage)!important}
+html body .rad-info{background:var(--f-sage)!important}
+html body .rad-info b.t{color:var(--f-accent-text)!important}
+html body .r8-ringe circle.h{stroke:var(--f-sage)!important}
+html body .zk b.sym{background:var(--f-clay);color:var(--f-accent-text)}
+
+/* Zugkarte: Ton und Salbei statt Nachtblau, Text gut lesbar */
+html body .zugkarte .seite{border-color:var(--f-accent)}
+html body .zugkarte .vorne{background:radial-gradient(circle at 50% 40%,var(--f-clay),#E2CFC2)}
+html body .zugkarte .hinten{background:linear-gradient(160deg,var(--f-surface),var(--f-clay));color:var(--f-ink)}
+html body .zugkarte .hinten *{color:var(--f-ink)}
