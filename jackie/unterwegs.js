@@ -15,7 +15,7 @@
     if (!leiste) return;
     var schutz = document.body.classList.contains('im-schutz');
     var vHome = $('vHome'), aufHome = vHome && !vHome.classList.contains('hide');
-    var an = !schutz && (blattOffen || !homeSichtbar || !aufHome);
+    var an = schutz || blattOffen || !homeSichtbar || !aufHome;
     leiste.classList.toggle('an', an);
     leiste.setAttribute('aria-hidden', an ? 'false' : 'true');
     leiste.querySelectorAll('a').forEach(function (a) { a.tabIndex = an ? 0 : -1; });
