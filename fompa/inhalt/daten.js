@@ -3,6 +3,15 @@
    Neue Beiträge unten anhängen: { id, b, t, k, x: [Absätze], s: [Schritte] } */
 window.INHALT = {
   app: 'fompa',
+  figur: 'Fompa',
+  live: '../nova/reden.html?f=fompa',
+  gruss: 'Hoi, ich bin Fompa. Frag mich zu Belegen, Rechnungen und Ordnung im Geld.',
+  sprichGrenze: 'Fompa erklärt einfach, berät aber nicht: keine Steuerberatung. Für deinen Fall: Treuhand fragen. Alles bleibt auf deinem Handy.',
+  beispielFragen: ['Wie lange muss ich Belege aufbewahren?', 'Was gehört auf eine Rechnung?', 'Wie mahne ich freundlich?'],
+  grenzen: [
+    { w: /(abziehen|absetzen|abzug|steuern? sparen|wie viel steuer|versteuern|steuererklärung ausfüllen|darf ich .*abziehen)/, a: 'Steuerberatung gebe ich nicht. Was du abziehen darfst, sagt dir deine Treuhand oder das Steueramt. Ich zeige dir, wie du alles sauber sammelst.', weiter: true },
+    { w: /(aktie|investier|anlegen|krypto)/, a: 'Anlageberatung gebe ich nicht. Ich helfe dir, Einnahmen und Ausgaben im Griff zu haben.', weiter: true }
+  ],
   titel: 'Fompas Wissensordner',
   titelKurz: 'Ganzer Ordner',
   heuteLabel: 'Fompa weiss heute',
