@@ -1,5 +1,5 @@
 /* Fias Nest offline: zuerst Netz, sonst Kopie aus dem Cache. Nur eigene Dateien, nie Server-Anfragen. */
-const CACHE = 'fiasnest-v25';
+const CACHE = 'fiasnest-v26';
 const KERN = ['grafik.css', 'grafik.js', 'design.css', 'design.js', 'ton-ios.js', 'nda-sperre.js', 'posen/notiz.jpg', 'posen/nickerchen.jpg', 'runde6.js', 'runde7.js', 'runde8.js', 'saison/halloween.jpg', 'besuch/otti.jpg', 'besuch/granny.jpg', 'besuch/waefwaef.jpg', 'besuch/hasi.jpg', 'besuch/mama-affe.jpg', 'saison/advent.jpg', './', 'index.html', 'lernen.js', 'manifest.webmanifest', 'cover.jpg', 'icon-192.png', 'icon-180.png',
   'posen/wach.jpg', 'posen/schlaeft.jpg', 'posen/atmet.jpg', 'posen/muede.jpg', 'posen/fliegt.jpg',
   'posen/freut.jpg', 'posen/hoert.jpg', 'posen/staedtchen-nacht.jpg', 'posen/winkt.jpg', 'posen/zeigt.jpg', 'posen/liegt.jpg', 'posen/geschichte.jpg',

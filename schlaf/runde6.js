@@ -58,7 +58,7 @@
     besuchTitel: 'Besuch am Nest',
     besuch: [
       { name: 'Otti', bild: 'besuch/otti.jpg', satz: 'Otti klettert den Berg hoch und erzählt Fia eine Gute-Nacht-Geschichte. Nach drei Sätzen schläft sie.', morgen: 'Otti hat eine neue Geschichte vom Mond.', link: '<a class="r6-btn" href="../otti/">Zu Otti 🦔</a>' },
-      { name: 'Granny', bild: 'besuch/granny.jpg', satz: 'Granny bringt Lindenblütentee und eine warme Decke. «Für die kühlen Nächte, Fia.»', morgen: 'Granny strickt Fia vielleicht ein Nestkissen.', link: '<a class="r6-btn" href="../granny/">Zu Granny 👵</a>' },
+      { name: 'Rosa', bild: 'besuch/granny.jpg', satz: 'Rosa bringt Lindenblütentee und eine warme Decke. «Für die kühlen Nächte, Fia.»', morgen: 'Rosa strickt Fia vielleicht ein Nestkissen.', link: '<a class="r6-btn" href="../granny/">Zu Rosa 👵</a>' },
       { name: 'Wäf Wäf', bild: 'besuch/waefwaef.jpg', satz: 'Wäf Wäf rollt sich unter dem Nest ein. Er dreht sich dreimal, genau wie Fia.', morgen: 'Wäf Wäf schläft morgen vielleicht wieder hier.', link: '<a class="r6-btn" href="../waefwaef/">Zu Wäf Wäf 🐾</a>' },
       { name: 'Hasi', bild: 'besuch/hasi.jpg', satz: 'Hasi hat seinen Kiosk geschlossen und schaut auf dem Heimweg vorbei. Er nickt Fia leise zu.', morgen: 'Hasi bringt Fia ein Säckchen Lavendel.', link: '<a class="r6-btn" href="../hasi/">Zu Hasi 🐰</a>' },
       { name: 'Mama Affe', bild: 'besuch/mama-affe.jpg', satz: 'Mama Affe gähnt so herzhaft, dass Fia mitgähnen muss. Gähnen ist ansteckend.', morgen: 'Mama Affe erzählt von ihrem Abendritual.', link: '<a class="r6-btn" href="../mama-affe/">Zu Mama Affe 🐒</a>' }
@@ -101,7 +101,7 @@
       ['❄️', 'Erster Schnee auf dem Berg. Draussen ist es ganz still.'],
       ['🌬️', 'Mini-Übung: Atme so langsam aus, dass die Kerze nur leicht flackert.'],
       ['🌲', 'Ein Tannenzweig im Zimmer. Der Duft beruhigt.'],
-      ['🧣', 'Ein warmer Schal von Granny für Fias Nest.'],
+      ['🧣', 'Ein warmer Schal von Rosa für Fias Nest.'],
       ['🌙', 'Die Nächte sind am längsten. Fia geniesst das viele Dunkel.'],
       ['🫖', 'Mini-Ritual: Wärmflasche ins Bett, zehn Minuten vor dem Schlafen.'],
       ['🔔', 'Ein Glöckchen. Hör zu, bis der Ton ganz verklungen ist.'],
