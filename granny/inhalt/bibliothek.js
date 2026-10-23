@@ -382,7 +382,7 @@
       '<h3>' + esc(a.t) + '</h3><p class="ib-lead">' + esc(a.k) + '</p>' +
       (a.x || []).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') +
       (a.s && a.s.length ? '<h4>' + esc(a.sTitel || C.wortSchritte || 'So gehst du vor') + '</h4><ol class="ib-schritte">' + a.s.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol>' : '') +
-      (a.h || C.hinweis ? '<p class="ib-hinweis">' + esc(a.h || C.hinweis) + '</p>' : '') +
+      ((a.h || C.hinweis) && (C.ohneHinweis || []).indexOf(a.b) < 0 ? '<p class="ib-hinweis">' + esc(a.h || C.hinweis) + '</p>' : '') +
       '<div class="ib-zeile">' +
       '<button type="button" class="ib-k ib-voll" data-ok>' + (D.gelesen[a.id] ? esc(WORT.gelesen) + ' ✓' : 'Als ' + esc(WORT.gelesen.toLowerCase()) + ' markieren') + '</button>' +
       '<button type="button" class="ib-k" data-merk aria-pressed="' + !!D.gemerkt[a.id] + '">' + (D.gemerkt[a.id] ? '🔖 Gemerkt' : '🔖 Merken') + '</button>' +

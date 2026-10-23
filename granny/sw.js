@@ -1,5 +1,5 @@
 // Rosa – Offline-Cache (nur eigene Dateien, keine Daten, keine Stimmen)
-const CACHE = 'granny-v27';
+const CACHE = 'granny-v28';
 const FILES = ['./inhalt/daten.js', './inhalt/bibliothek.js', './schoen.css', './schoen.js', './aura/aura.css', './aura/aura.js', './design.css', './design.js', './feinschliff.css', './feinschliff.js', './schrift.js', './ton-ios.js', './nda-sperre.js', './runde8.js', './runde7.js', './runde6.js', './saison/advent.jpg', './besuch/waefwaef.jpg', './besuch/jackie.jpg', './besuch/mama-affe.jpg', './besuch/flo.jpg', './', './index.html', './lernen.js', './granny-plus.js', './posen.js', './glanz.js', './runde4.js', './feedback.js', './figur.jpg', './figur-gross.jpg', './posen/suchen.jpg', './posen/nicken.jpg', './posen/lachen.jpg', './posen/winken.jpg', './posen/herz.jpg', './posen/trinken.jpg', './posen/kerze.jpg', './icon-180.png', './icon-192.png', './manifest.webmanifest', '../nova/nova.js', '../nova/puppe.js', '../nova/puppe.css', '../nova/seelen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(FILES.map(f => c.add(f).catch(() => {})))).then(() => self.skipWaiting()));

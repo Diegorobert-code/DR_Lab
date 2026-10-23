@@ -23,6 +23,7 @@ window.INHALT = {
   quizText: 'Rosa sagt den Anfang, du findest das Ende. Fünf Sprichwörter pro Runde. Es gibt kein Falsch, nur ein Fast.',
   sammlungTitel: 'Deine Rosen',
   sammlungText: 'Für jede Freude wächst eine Rose. Alles bleibt nur auf diesem Handy.',
+  ohneHinweis: ['erzaehlt', 'weischno', 'gut'],
   hinweis: 'Rosa gibt keine medizinischen Ratschläge. Bei Schmerzen oder Fragen zur Gesundheit: Hausarzt. Im Notfall: 144.',
   farben: {
     bg: 'var(--dz-bg,#F7EFE9)', surface: 'var(--dz-s,#fff)', surface2: 'var(--fs-surface2,#FBF4F0)', soft: 'var(--dz-weich,#F6E3DA)',
