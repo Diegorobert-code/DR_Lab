@@ -25,6 +25,23 @@
   function istMag(r, it) { return (hol().mag || []).indexOf(r.id + '/' + it.id) >= 0; }
   function magToggle(r, it) { var v = hol(), m = v.mag = v.mag || [], k = r.id + '/' + it.id, i = m.indexOf(k); if (i >= 0) m.splice(i, 1); else m.unshift(k); leg(v); return i < 0; }
 
+  /* Lern-Profil: nur auf diesem Handy. Punkte aus Gesehenem, Geschafftem und Rätselrunden ergeben die Stufe.
+     Die Stufe ändert die Schwierigkeit (Rätsel: Stufe 1 = 3 Fragen mit 2 Antworten, Stufe 2 = 4 Fragen, ab 3 = 5 Fragen)
+     und die Vorschläge (Übungen: zuerst die einfachen Gruppen, mit jeder Stufe eine Gruppe mehr). */
+  var STUFEN = [[0, 'Neu dabei', '🌱'], [12, 'Entdecker', '🔎'], [35, 'Kenner', '⭐'], [70, 'Profi', '🏅'], [120, 'Meister', '👑']];
+  function profil() {
+    var v = hol(), D = I(), pk = 0, g = 0, tags = {}, best = null, bestN = -1, st = D.stufen || STUFEN;
+    D.regale.forEach(function (r) { var n = anzahlGesehen(v, r); pk += n; if (r.typ !== 'album' && n / Math.max(1, r.items.length) > bestN) { bestN = n / Math.max(1, r.items.length); best = r; } });
+    for (var k in (v.geschafft || {})) g += v.geschafft[k];
+    pk += 2 * g + 3 * (v.runden || 0) + 5 * (v.perfekt || 0);
+    (v.mag || []).forEach(function (key) { var p = key.split('/'), r = regal(p[0]), it = r && item(r, p[1]); if (it && it.tag) tags[it.tag] = (tags[it.tag] || 0) + 1; });
+    var lt = null; for (var t in tags) if (!lt || tags[t] > tags[lt]) lt = t;
+    var i = 0; while (i < st.length - 1 && pk >= st[i + 1][0]) i++;
+    return { punkte: pk, stufe: i + 1, name: st[i][1], e: st[i][2], bis: i < st.length - 1 ? st[i + 1][0] - pk : 0, naechsteName: i < st.length - 1 ? st[i + 1][1] : '',
+      lieblingsTag: lt, lieblingsRegal: bestN > 0 ? best : null, mag: (v.mag || []).length, serie: v.serie || 0 };
+  }
+  function quizZahl() { var s = profil().stufe; return s <= 1 ? 3 : s === 2 ? 4 : 5; }
+
   /* Heute: jeden Tag ein anderes Element aus den Regalen, die mitmachen (heute !== false) */
   function heute() {
     var rs = I().regale.filter(function (r) { return r.heute !== false && r.typ !== 'album' && r.items.length; });
@@ -38,7 +55,7 @@
     var p = basisKey.split('/'), r = regal(p[0]), b = r && item(r, p[1]); if (!b) return null;
     grund = ((v.mag || [])[0] === basisKey ? 'Weil du «' : 'Weil du zuletzt «') + titel(b) + (((v.mag || [])[0] === basisKey) ? '» mochtest' : '» hattest');
     var kand = (r.typ === 'quiz' || r.typ === 'album') ? [] : r.items.filter(function (it) { return it !== b && !gesehen(v, r, it); });
-    var gleich = kand.filter(function (it) { return b.tag && it.tag === b.tag; });
+    var lt = b.tag || profil().lieblingsTag, gleich = kand.filter(function (it) { return lt && it.tag === lt; });
     var x = gleich[0] || kand[0];
     if (!x) { var andere = I().regale.filter(function (q) { return q !== r && q.typ !== 'album' && q.typ !== 'quiz'; }); for (var i = 0; i < andere.length && !x; i++) { x = andere[i].items.filter(function (it) { return !gesehen(v, andere[i], it); })[0]; if (x) r = andere[i]; } }
     return x ? { r: r, it: x, grund: grund } : null;
@@ -72,6 +89,9 @@
     jetzt = { ansicht: 'start' }; var D = I(), v = hol(), h = heute(), f = fuerDich();
     kopf(D.titel || 'Entdecken');
     var html = (D.intro ? '<p class="ih-intro">' + esc(D.intro) + '</p>' : '');
+    if (window.Sprich && window.SPRICH) html += '<button type="button" class="ih-sprich" data-ih="sprich"><span aria-hidden="true">💬</span> Sprich mit ' + esc(window.SPRICH.figur) + '</button>';
+    var pf = profil();
+    html += '<p class="ih-profil"><span aria-hidden="true">' + pf.e + '</span> Stufe ' + pf.stufe + ' · ' + esc(pf.name) + ' · ' + pf.punkte + ' Punkte' + (pf.bis ? '<small>Noch ' + pf.bis + ' bis «' + esc(pf.naechsteName) + '»</small>' : '') + '</p>';
     if (h) html += karteHTML(h.r, h.it, 'Heute', 'heute');
     if (f && !(h && f.it === h.it)) html += karteHTML(f.r, f.it, f.grund, 'fuerdich');
     html += '<div class="ih-regale">' + D.regale.map(function (r) {
@@ -99,14 +119,16 @@
     kopf(r.titel); var html = r.intro ? '<p class="ih-intro">' + esc(r.intro) + '</p>' : '';
     if (r.typ === 'quiz') {
       var n = anzahlGesehen(v, r);
-      html += '<div class="ih-quizstart"><span aria-hidden="true">' + r.e + '</span><p>' + n + ' von ' + r.items.length + ' Fragen schon richtig.</p><button type="button" class="ih-gross" data-ih="quiz">▶ 5 Fragen spielen</button></div>';
+      html += '<div class="ih-quizstart"><span aria-hidden="true">' + r.e + '</span><p>' + n + ' von ' + r.items.length + ' Fragen schon richtig.</p><button type="button" class="ih-gross" data-ih="quiz">▶ ' + quizZahl() + ' Fragen spielen</button></div>';
     } else if (r.typ === 'album') {
       var f = frei(r);
       html += '<p class="ih-intro">' + f + ' von ' + r.items.length + ' gesammelt.' + (r.wie ? ' ' + esc(r.wie) : '') + '</p><div class="ih-album">' + r.items.map(function (it, i) {
         return i < f ? '<button type="button" class="ih-sammel" data-ih-item="' + r.id + '/' + it.id + '"><span aria-hidden="true">' + it.e + '</span><b>' + esc(titel(it)) + '</b></button>'
           : '<span class="ih-sammel zu" aria-label="noch nicht gesammelt"><span aria-hidden="true">❔</span><b>Nr. ' + (i + 1) + '</b></span>'; }).join('') + '</div>';
     } else {
-      var naechstes = r.items.filter(function (it) { return !gesehen(v, r, it); })[0];
+      var gr = []; r.items.forEach(function (it) { var g = it.stufe || ''; if (gr.indexOf(g) < 0) gr.push(g); });
+      var erlaubt = r.typ === 'uebungen' ? gr.slice(0, profil().stufe + 1) : gr;
+      var naechstes = r.items.filter(function (it) { return !gesehen(v, r, it) && erlaubt.indexOf(it.stufe || '') >= 0; })[0] || r.items.filter(function (it) { return !gesehen(v, r, it); })[0];
       if (naechstes) html += karteHTML(r, naechstes, 'Als Nächstes', 'fuerdich');
       var gruppen = {}, reihen = [];
       r.items.forEach(function (it) { var g = it.stufe || it.tag || ''; if (!gruppen[g]) { gruppen[g] = []; reihen.push(g); } gruppen[g].push(it); });
@@ -152,12 +174,13 @@
 
   /* ---------------- Quiz ---------------- */
   function quiz(r) {
-    var v = hol(), offen = r.items.filter(function (q) { return !(v.richtig || {})[r.id + '/' + q.id]; }), pool = offen.length >= 5 ? offen : r.items.slice();
+    var v = hol(), offen = r.items.filter(function (q) { return !(v.richtig || {})[r.id + '/' + q.id]; }), n = quizZahl(), pool = offen.length >= n ? offen : r.items.slice();
     for (var i = pool.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = pool[i]; pool[i] = pool[j]; pool[j] = t; }
-    jetzt = { ansicht: 'quiz', r: r, fragen: pool.slice(0, 5), nr: 0, punkte: 0, direkt: jetzt.direkt }; frage();
+    jetzt = { ansicht: 'quiz', r: r, fragen: pool.slice(0, n), leicht: n === 3, nr: 0, punkte: 0, direkt: jetzt.direkt }; frage();
   }
   function frage() {
     var q = jetzt.fragen[jetzt.nr], ord = q.a.map(function (_, i) { return i; }); kopf(jetzt.r.titel);
+    if (jetzt.leicht && ord.length > 2) { var falsch = ord.filter(function (i) { return i !== q.r; }); ord = [q.r, falsch[Math.floor(Math.random() * falsch.length)]]; }
     for (var i = ord.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = ord[i]; ord[i] = ord[j]; ord[j] = t; }
     box.innerHTML = '<div class="ih-quiz"><div class="ih-punkte">' + jetzt.fragen.map(function (_, i) { return '<i class="' + (i < jetzt.nr ? 'ok' : i === jetzt.nr ? 'jetzt' : '') + '"></i>'; }).join('') + '</div>' +
       '<span class="ih-blatt-e" aria-hidden="true">' + (q.e || jetzt.r.e) + '</span><h3>' + esc(q.f) + '</h3><div class="ih-antworten">' +
@@ -175,7 +198,7 @@
     var v = hol(); v.runden = (v.runden || 0) + 1; if (jetzt.punkte === jetzt.fragen.length) v.perfekt = (v.perfekt || 0) + 1; leg(v);
     box.innerHTML = '<div class="ih-quiz ih-ende"><span class="ih-blatt-e" aria-hidden="true">' + (jetzt.punkte >= 4 ? '🏆' : '⭐') + '</span><h3>' + jetzt.punkte + ' von ' + jetzt.fragen.length + ' richtig</h3><p>' +
       (jetzt.punkte === jetzt.fragen.length ? 'Alles richtig. Wow!' : jetzt.punkte >= 3 ? 'Super gemacht!' : 'Gut probiert. Beim nächsten Mal klappt noch mehr.') + '</p>' +
-      '<button type="button" class="ih-gross" data-ih="quiz">↺ Noch 5 Fragen</button><button type="button" class="ih-knopf" data-ih="start">Zur Übersicht</button></div>';
+      '<button type="button" class="ih-gross" data-ih="quiz">↺ Noch eine Runde</button><button type="button" class="ih-knopf" data-ih="start">Zur Übersicht</button></div>';
     rein();
   }
 
@@ -188,6 +211,7 @@
     if (t.hasAttribute('data-ih-antwort')) return antwort(+t.getAttribute('data-ih-antwort'));
     if (a === 'zurueck') return zurueck();
     if (a === 'start') return start();
+    if (a === 'sprich') { if (window.Sprich) Sprich.oeffnen(); return; }
     if (a === 'quiz') return quiz(jetzt.r);
     if (a === 'qweiter') { if (jetzt.nr < jetzt.fragen.length - 1) { jetzt.nr++; frage(); } else quizEnde(); return; }
     if (a === 'vor') return zeigItem(jetzt.r, jetzt.it, jetzt.seite - 1);
@@ -204,5 +228,5 @@
   d.addEventListener('click', function (e) { var b = e.target.closest('[data-inhalt]'); if (!b || (root && root.contains(b))) return; e.preventDefault(); oeffnen(b.getAttribute('data-inhalt') || ''); });
   function los() { markHeute(); if (/^#entdecken\b/.test(location.hash)) oeffnen(location.hash.split('-')[1] || ''); }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', los); else los();
-  window.Inhalt = { oeffnen: oeffnen, schliessen: schliessen, heute: heute, fuerDich: fuerDich };
+  window.Inhalt = { oeffnen: oeffnen, schliessen: schliessen, heute: heute, fuerDich: fuerDich, profil: profil, titel: titel };
 })();
