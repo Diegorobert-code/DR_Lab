@@ -11,7 +11,7 @@ window.R6 = {
     'Kleine Macke von mir: Ich lache, bevor ich weine. Beides ist erlaubt.',
     'Schritt für Schritt. Niemand muss heute alles lösen.',
     'Der alte Schuhmacher sagt: Ein guter Schuh drückt nicht. Ein guter Mensch auch nicht.',
-    'Ich trinke meinen Tee viel zu süss. Granny schimpft jedes Mal.',
+    'Ich trinke meinen Tee viel zu süss. Rosa schimpft jedes Mal.',
     'Wenn du nicht weisst, wo anfangen: Atme aus. Dann erzähl mir den ersten Satz.',
     'Hilfe holen ist kein Versagen. Es ist das Mutigste, was ich kenne.',
     'Ich sammle schöne Wörter. Heute: «geborgen».',
@@ -49,7 +49,7 @@ window.R6 = {
     { e: '🪞', art: 'Mini-Aufgabe', t: 'Sag dir heute einmal: Ich mache das gut genug.' }
   ],
   besuch: [
-    { name: 'Granny', art: 'sie', bild: 'besuch/granny.jpg', satz: 'Kind, ich habe Tee mitgebracht. Und ich bleibe, bis du lachst.', pfad: '../granny/', url: 'https://claude.ai/artifact/QQaX3suADctBhojdzgS9j6' },
+    { name: 'Rosa', art: 'sie', bild: 'besuch/granny.jpg', satz: 'Kind, ich habe Tee mitgebracht. Und ich bleibe, bis du lachst.', pfad: '../granny/', url: 'https://claude.ai/artifact/QQaX3suADctBhojdzgS9j6' },
     { name: 'Otti', art: 'ihn', bild: 'besuch/otti.jpg', satz: 'Ich bin ganz leise da. Wenn du magst, atmen wir zusammen.', pfad: '../otti/', url: 'https://claude.ai/artifact/KUJmcyzcQZENmeVCrz8Ymc' },
     { name: 'Fia', art: 'sie', bild: 'besuch/fia.jpg', satz: 'Ich bringe dir eine Feder aus meinem Nest. Für weiche Gedanken.', pfad: '../schlaf/', url: 'https://claude.ai/artifact/PGGcJoXof3mvSyvPJX3mfq' }
   ],
