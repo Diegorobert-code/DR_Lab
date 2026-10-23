@@ -410,10 +410,22 @@
     var l = hol('hs_entries') || [];
     return l.filter(function (e) { return e && e.t && /^(messung|sitzung|pulsbild|sensor|eintrag|musik)$/.test(e.type); }).slice(-6);
   }
-  function messwerte() {
-    var l = messListe();
-    return l.length ? l.map(messZeile).join('\n') + '\nSchätzwerte vom Handy, keine Diagnose.' : 'Noch keine Messung auf diesem Handy.';
+  function liveZeile() {
+    var x = hol('hs_live'); if (!x || Date.now() - x.t > 15 * 60000) return '';
+    return 'Jetzt läuft in Human Sparks: ' + (x.stueck ? '«' + x.stueck + '» (' + x.farbe + ')' + (x.praxis ? ', Praxis-Musik' : ', Beat-Reise') : '«' + (x.song || 'ein Song') + '»') + ', Minute ' + x.min +
+      (x.wer === 'klient' ? '. Gerade tippt die Klientin oder der Klient selbst (anonym).' : x.praxis ? '. Diego tippt, was er bei der Person beobachtet (anonym).' : '.') +
+      (x.zuletzt && x.zuletzt.length ? '\nZuletzt angetippt: ' + x.zuletzt.join(', ') : '\nNoch nichts angetippt.');
   }
+  function messwerte() {
+    var l = messListe(), live = liveZeile();
+    return (live ? live + '\n\n' : '') + (l.length ? l.map(messZeile).join('\n') + '\nSchätzwerte vom Handy, keine Diagnose.' : 'Noch keine Messung auf diesem Handy.');
+  }
+  var liveZuletzt = '';
+  if (F.messwerte) window.addEventListener('storage', function (ev) {
+    if (ev.key !== 'hs_live' || !conv) return;
+    var z = liveZeile(); if (!z || z === liveZuletzt) return; liveZuletzt = z;
+    try { conv.sendContextualUpdate(z + '\nNimm das still auf. Sprich nur darüber, wenn Diego etwas sagt oder fragt, und dann kurz und warm.'); } catch (x) {}
+  });
   var messZuletzt = (messListe().slice(-1)[0] || {}).t || 0;
   if (F.messwerte) window.addEventListener('storage', function (ev) {
     if (ev.key !== 'hs_entries' || !conv) return;

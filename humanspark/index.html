@@ -206,6 +206,8 @@ h1{color:#F2C14E}
       <div class="chips" id="mGefuehle"></div>
       <div class="noteline"><input id="mText" class="inp" placeholder="Oder in Worten: jetzt fühle ich …" autocomplete="off" enterkeyhint="send"><button class="btn ghost" id="mTextAdd" aria-label="Satz hinzufügen">+</button></div>
       <div class="muted" style="font-size:13px">Tastatur-Mikrofon geht auch, kann Spotify aber kurz anhalten.</div>
+      <button class="btn ghost" id="mSparky">🦊 Sparky dazu holen: über die Musik reden</button>
+      <iframe id="mSparkyFrame" class="hidden" title="Sparky" allow="microphone; autoplay" style="width:100%;height:380px;border:0;border-radius:14px"></iframe>
       <div class="feed" id="mFeed"></div>
       <button class="btn coral" id="mStop">■ Song fertig</button>
       <button class="btn danger" id="mAbbruch">Abbrechen</button>
@@ -1884,7 +1886,22 @@ function mWann(x){ return (x.w ? '👤 ' : '') + (x.b ? x.b + ' ' : '') + mZeit(
 function mFeed(){
   $('mFeed').innerHTML = mLauf.stamps.slice().reverse().map(function(x){ return '<div><b>' + esc(mWann(x)) + '</b> ' + esc(x.k ? x.k : '«' + x.text + '»') + '</div>'; }).join('');
 }
-function mStempel(o){ if (!mLauf) return; o.t = Math.round(mJetzt()); if (mLauf.wer === 'klient') o.w = 'k'; if (mLauf.reise) o.b = LISTE[beatNr].n; mLauf.stamps.push(o); mFeed(); }
+function mStempel(o){ if (!mLauf) return; o.t = Math.round(mJetzt()); if (mLauf.wer === 'klient') o.w = 'k'; if (mLauf.reise) o.b = LISTE[beatNr].n; mLauf.stamps.push(o); mFeed(); mLive(); }
+// Was gerade läuft, für Sparky (gleiches Handy, bleibt lokal)
+function mLive(){
+  try {
+    if (!mLauf){ localStorage.removeItem('hs_live'); return; }
+    var B = mLauf.reise ? LISTE[beatNr] : null;
+    localStorage.setItem('hs_live', JSON.stringify({t:Date.now(), song:mLauf.song, stueck:B ? B.n : '', farbe:B ? (B.farbe || B.bpm + ' BPM') : '', praxis:!!mLauf.praxis, wer:mLauf.wer || '', min:mZeit(mJetzt()),
+      zuletzt:mLauf.stamps.slice(-5).map(function(x){ return mWann(x) + ' ' + (x.k || '«' + x.text + '»'); })}));
+  } catch(e){}
+}
+$('mSparky').addEventListener('click', function(){
+  var f = $('mSparkyFrame'), zu = f.classList.toggle('hidden');
+  if (!zu && !f.src) f.src = '../nova/reden.html?f=sparky&musik=1';
+  this.textContent = zu ? '🦊 Sparky dazu holen: über die Musik reden' : '🦊 Sparky ausblenden (redet weiter)';
+  mLive();
+});
 // Studie: was Diego bei der Person beobachtet (anonym, ohne Namen)
 var M_KLIENT = [['ruhig','😌'],['warm','☀️'],['leicht','🪶'],['weit','🌌'],['berührt','🥹'],['Freude','😊'],['müde','😴'],['schwer','🌧'],['traurig','💧'],['Kribbeln','✨']];
 var M_BEOB = [['entspannt','😌'],['atmet tiefer','🌬'],['seufzt','💨'],['Tränen','💧'],['lacht','😄'],['wird still','🤫'],['erzählt','💬'],['unruhig','⚡'],['schläft ein','😴'],['Gewebe weich','🫳']];
@@ -1966,7 +1983,7 @@ function beatSpielen(n){
   if (beatOut){ var alt = beatOut; alt.gain.setTargetAtTime(0, ac.currentTime, .15); setTimeout(function(){ alt.disconnect(); }, 800); }
   beatOut = ac.createGain(); beatOut.gain.value = .8; beatOut.connect(ac.destination); if (hall && LISTE[n].melodie) beatOut.connect(hall);
   nextStep = ac.currentTime + .1;
-  if (mLauf){ mLauf.beatT0 = Date.now(); $('mTitel').textContent = (LISTE === PRAXIS ? '🌿 ' : '🎧 ') + (n + 1) + '/' + LISTE.length + ' · ' + LISTE[n].n + ' · ' + (LISTE[n].farbe || LISTE[n].bpm + ' BPM'); }
+  if (mLauf){ mLauf.beatT0 = Date.now(); setTimeout(mLive, 0); $('mTitel').textContent = (LISTE === PRAXIS ? '🌿 ' : '🎧 ') + (n + 1) + '/' + LISTE.length + ' · ' + LISTE[n].n + ' · ' + (LISTE[n].farbe || LISTE[n].bpm + ' BPM'); }
 }
 function beatStopp(){ clearInterval(beatTimer); beatTimer = null; beatNr = -1; if (beatOut){ beatOut.gain.setTargetAtTime(0, ac.currentTime, .1); beatOut = null; } }
 function reiseStart(liste, sek, name){
@@ -1998,7 +2015,7 @@ $('mStart').addEventListener('click', function(){
   try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function(l){ if (mLauf) mLauf.wl = l; else l.release(); }).catch(function(){}); } catch(e){}
   mBox('mRunBox');
 });
-function mEnde(){ if (!mLauf) return null; if (mLauf.reise) beatStopp(); $('mWeiter').classList.add('hidden'); clearInterval(mLauf.timer); try { if (mLauf.wl) mLauf.wl.release(); } catch(e){} var l = mLauf; mLauf = null; return l; }
+function mEnde(){ if (!mLauf) return null; if (mLauf.reise) beatStopp(); $('mWeiter').classList.add('hidden'); clearInterval(mLauf.timer); try { if (mLauf.wl) mLauf.wl.release(); } catch(e){} var l = mLauf; mLauf = null; mLive(); return l; }
 $('mAbbruch').addEventListener('click', function(){ mEnde(); mBox('mStartBox'); });
 function mZeile(e){
   return '«' + (e.song || 'Song') + '» · ' + mZeit(e.dur) + (e.stamps.length ? ': ' + e.stamps.map(function(x){ return mWann(x) + ' ' + (x.k || '«' + x.text + '»'); }).join(', ') : ', nichts angetippt');
