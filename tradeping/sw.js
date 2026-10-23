@@ -1,5 +1,5 @@
 // TradePing – Offline-Cache (nur eigene Dateien, keine Kursdaten)
-const CACHE = 'tp-v25';
+const CACHE = 'tp-v26';
 const SERVER = 'https://sense-179-237-127-58.sslip.io/kursping';
 const FILES = ['./feinschliff.css', './feinschliff.js', './ton-ios.js', './nda-sperre.js', './runde8.js', './markt.css', './wm/ausflug.jpg', './wm/avatar-dunkel.jpg', './wm/avatar-hell.jpg', './wm/maskottchen.jpg', './wm/stufe-1.jpg', './wm/stufe-2.jpg', './wm/stufe-3.jpg', './wm/stufe-4.jpg', './wm/stufe-5.jpg', './schule.html', './runde7.js', './runde6.js', './saison/advent.jpg', './besuch/coinmaker.jpg', './besuch/fompa.jpg', './besuch/granny.jpg', './', './index.html', './lernen.js', './manifest.webmanifest', './icon.svg', './icon-180.png', './icon-192.png', './figur.jpg', './figur-gross.jpg', './ping-3d.jpg', './mrping.js', './mrping2.js', './spieltopf.js', './runde4.js', './posen/posen.json', './posen/ping.jpg', './posen/jubel.jpg', './posen/warn.jpg', './posen/schlaf.jpg', './posen/denk.jpg', './posen/denkt.jpg', './posen/winkt.jpg', './feedback.js'];
 self.addEventListener('install', e => {
