@@ -173,15 +173,47 @@ h1{color:#F2C14E}
   </div>
 
   <nav class="tabs" role="tablist">
-    <button class="tab" role="tab" data-tab="messen" aria-selected="true">Messen</button>
+    <button class="tab" role="tab" data-tab="musik" aria-selected="true">🎵 Musik</button>
+    <button class="tab" role="tab" data-tab="messen" aria-selected="false">Messen</button>
     <button class="tab" role="tab" data-tab="sitzung" aria-selected="false">Sitzung</button>
     <button class="tab" role="tab" data-tab="reden" aria-selected="false">Reden</button>
     <button class="tab" role="tab" data-tab="verlauf" aria-selected="false">Verlauf</button>
     <button class="tab" role="tab" data-tab="ideen" aria-selected="false">Ideen</button>
   </nav>
 
+  <!-- MUSIK: Song hören, dabei antippen oder schreiben, was du fühlst; alles mit Song-Minute -->
+  <section class="panel on" id="p-musik">
+    <div class="box" id="mStartBox">
+      <h2>Musik-Spiegel</h2>
+      <p>Song in Spotify starten, hier mithören und antippen, was du fühlst. Die Musik läuft weiter, Human Sparks braucht kein Mikrofon und keine Kamera.</p>
+      <label class="lbl" for="mSong">Welcher Song?</label>
+      <input id="mSong" class="inp" maxlength="80" autocomplete="off" placeholder="Titel – Künstler">
+      <button class="btn primary" id="mStart">▶ Song läuft jetzt</button>
+      <a class="btn ghost" href="../nova/reden.html?f=sparky" style="display:block;text-align:center;text-decoration:none">🦊 Mit Sparky reden</a>
+    </div>
+    <div class="box hidden" id="mRunBox">
+      <div class="phase" id="mTitel">Song</div>
+      <div class="clock" id="mClock">0:00</div>
+      <div class="muted">Tipp, was du gerade fühlst. Mehrmals tippen ist gut.</div>
+      <div class="chips" id="mGefuehle"></div>
+      <div class="noteline"><input id="mText" class="inp" placeholder="Oder in Worten: jetzt fühle ich …" autocomplete="off" enterkeyhint="send"><button class="btn ghost" id="mTextAdd" aria-label="Satz hinzufügen">+</button></div>
+      <div class="muted" style="font-size:13px">Tastatur-Mikrofon geht auch, kann Spotify aber kurz anhalten.</div>
+      <div class="feed" id="mFeed"></div>
+      <button class="btn coral" id="mStop">■ Song fertig</button>
+      <button class="btn danger" id="mAbbruch">Abbrechen</button>
+    </div>
+    <div class="box hidden" id="mOutBox">
+      <h2 id="mOutTitel">Dein Song</h2>
+      <div id="mOut"></div>
+      <a class="btn primary" href="../nova/reden.html?f=sparky" style="display:block;text-align:center;text-decoration:none">🦊 Mit Sparky besprechen</a>
+      <div class="muted" style="font-size:13px">Sparky sieht diesen Song und deine Gefühle (geht an seine Stimme, ElevenLabs).</div>
+      <button class="btn ghost" id="mKopie">🎵 Gefühle für die Song-Analyse kopieren</button>
+      <button class="btn ghost" id="mNeu">Nächster Song</button>
+    </div>
+  </section>
+
   <!-- MESSEN -->
-  <section class="panel on" id="p-messen">
+  <section class="panel" id="p-messen">
     <div class="box" id="startBox">
       <h2 id="startTitle">Puls und Ruhe messen</h2>
       <a class="btn ghost" id="sparkyReden" href="../nova/reden.html?f=sparky" style="display:block;text-align:center;text-decoration:none;margin-bottom:10px">🦊 Mit Sparky reden (sieht deine Messungen)</a>
@@ -1834,6 +1866,63 @@ document.addEventListener('click', function(ev){
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function(){ uiAlert(t); });
   else uiAlert(t);
 });
+/* ---------- Musik-Spiegel ---------- */
+var M_GEF = [['ruhig','😌'],['offen','💛'],['Kraft','🔥'],['Freude','😄'],['Gänsehaut','✨'],['berührt','🥹'],['geladen','⚡'],['schwer','🌧'],['traurig','💧'],['Wut','😤']];
+var mLauf = null;
+function mZeit(s){ s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+function mBox(id){ ['mStartBox','mRunBox','mOutBox'].forEach(function(b){ $(b).classList.toggle('hidden', b !== id); }); window.scrollTo(0, 0); }
+function mJetzt(){ return mLauf ? (Date.now() - mLauf.t0) / 1000 : 0; }
+function mFeed(){
+  $('mFeed').innerHTML = mLauf.stamps.slice().reverse().map(function(x){ return '<div><b>' + mZeit(x.t) + '</b> ' + esc(x.k ? x.k : '«' + x.text + '»') + '</div>'; }).join('');
+}
+function mStempel(o){ if (!mLauf) return; o.t = Math.round(mJetzt()); mLauf.stamps.push(o); mFeed(); }
+$('mGefuehle').innerHTML = M_GEF.map(function(g){ return '<button class="chip" data-g="' + g[0] + '">' + g[1] + ' ' + g[0] + '</button>'; }).join('');
+$('mGefuehle').addEventListener('click', function(ev){
+  var b = ev.target.closest('[data-g]'); if (!b) return;
+  mStempel({k:b.dataset.g}); b.setAttribute('aria-pressed', 'true'); setTimeout(function(){ b.setAttribute('aria-pressed', 'false'); }, 250);
+});
+function mText(){ var v = $('mText').value.trim(); if (!v) return; mStempel({text:v.slice(0, 300)}); $('mText').value = ''; }
+$('mTextAdd').addEventListener('click', mText);
+$('mText').addEventListener('keydown', function(ev){ if (ev.key === 'Enter'){ ev.preventDefault(); mText(); } });
+$('mStart').addEventListener('click', function(){
+  mLauf = {id:uid(), t:Date.now(), t0:Date.now(), song:$('mSong').value.trim().slice(0, 80), stamps:[], timer:null};
+  $('mTitel').textContent = '🎵 ' + (mLauf.song || 'Song läuft');
+  $('mFeed').innerHTML = ''; $('mClock').textContent = '0:00';
+  mLauf.timer = setInterval(function(){ $('mClock').textContent = mZeit(mJetzt()); }, 500);
+  try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function(l){ if (mLauf) mLauf.wl = l; else l.release(); }).catch(function(){}); } catch(e){}
+  mBox('mRunBox');
+});
+function mEnde(){ if (!mLauf) return null; clearInterval(mLauf.timer); try { if (mLauf.wl) mLauf.wl.release(); } catch(e){} var l = mLauf; mLauf = null; return l; }
+$('mAbbruch').addEventListener('click', function(){ mEnde(); mBox('mStartBox'); });
+function mZeile(e){
+  return '«' + (e.song || 'Song') + '» · ' + mZeit(e.dur) + (e.stamps.length ? ': ' + e.stamps.map(function(x){ return mZeit(x.t) + ' ' + (x.k || '«' + x.text + '»'); }).join(', ') : ', nichts angetippt');
+}
+var mLetzter = null;
+function mZeigen(e){
+  mLetzter = e;
+  $('mOutTitel').textContent = '🎵 ' + (e.song || 'Dein Song');
+  var zahl = {}; e.stamps.forEach(function(x){ if (x.k) zahl[x.k] = (zahl[x.k] || 0) + 1; });
+  var oben = Object.keys(zahl).sort(function(a, b){ return zahl[b] - zahl[a]; }).slice(0, 3);
+  $('mOut').innerHTML = '<p class="muted">' + mZeit(e.dur) + ' gehört · ' + e.stamps.length + ' Gefühle festgehalten' + (oben.length ? ' · am meisten: ' + esc(oben.join(', ')) : '') + '</p>' +
+    (e.stamps.length ? '<div class="tl">' + e.stamps.map(function(x){ return '<div><b>' + mZeit(x.t) + '</b>' + esc(x.k ? x.k : '«' + x.text + '»') + '</div>'; }).join('') + '</div>' : '');
+  $('mKopie').textContent = '🎵 Gefühle für die Song-Analyse kopieren';
+  mBox('mOutBox');
+}
+$('mStop').addEventListener('click', function(){
+  var l = mEnde(); if (!l) return;
+  var e = {id:l.id, t:l.t, type:'musik', song:l.song, dur:Math.round((Date.now() - l.t0) / 1000), stamps:l.stamps};
+  addEntry(e); mZeigen(e);
+});
+$('mNeu').addEventListener('click', function(){ $('mSong').value = ''; mBox('mStartBox'); });
+// Für die Höranalyse (hoeranalyse.py worte.json): [{t, text}] mit Song-Sekunde
+$('mKopie').addEventListener('click', function(){
+  if (!mLetzter) return;
+  var t = JSON.stringify(mLetzter.stamps.map(function(x){ return {t:x.t, text:x.k || x.text}; })), b = $('mKopie');
+  var ok = function(){ b.textContent = 'Kopiert ✓ – mit dem Song zusammen schicken'; };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function(){ uiAlert(t); });
+  else uiAlert(t);
+});
+
 // Auswertung mit Sparky besprechen (Diegos Entscheid 21.10.: nur auf Tipp, Werte gehen an ElevenLabs)
 var SPARKY_AGENT = 'agent_7401m55j20jwek69gsh3gkfhaa77', spGespraech = null, spStartet = false, spAbschrift = [];
 function spKnopf(t){ var b = $('spSparky'); if (b) b.textContent = t || (spGespraech ? '■ Gespräch mit Sparky beenden' : '🦊 Mit Sparky besprechen'); }
@@ -1963,6 +2052,7 @@ function renderHistory(){
         '<button class="btn ghost" data-open="' + e.id + '" style="min-height:44px;margin-top:6px">Auswertung öffnen</button></div>';
     }
     var st = e.stage ? STAGES[e.stage-1] : null;
+    if (e.type === 'musik') return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · 🎵 Musik</span></div><div class="txt">' + esc(mZeile(e)) + '</div></div>';
     if (e.type === 'sensor') return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · Sensor · ' + esc(SN_MODI[e.modus] || e.modus) + '</span></div>' + snSvg(e) +
       '<div class="muted">' + esc(e.ort) + ' · ' + esc(snZeile(e)) + '</div></div>';
     if (e.type === 'pulsbild') return '<div class="entry"><div class="top"><span>' + fmtTime(e.t) + ' · Pulsbild' + (e.demo ? ' · Demo' : '') + '</span></div>' + pbSvg(e.welle, 260, 70) +

@@ -347,6 +347,7 @@
   function messZeile(e) {
     var d = new Date(e.t), z = d.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' });
     var a = e.type === 'sitzung' ? (e.start || {}) : e, b = e.type === 'sitzung' ? (e.end || {}) : null;
+    if (e.type === 'musik') return z + ' Musik «' + (e.song || 'Song') + '» ' + Math.round((e.dur || 0) / 60) + ' Min, Gefühle mit Song-Minute: ' + ((e.stamps || []).map(function (x) { return Math.floor(x.t / 60) + ':' + String(x.t % 60).padStart(2, '0') + ' ' + (x.k || '«' + String(x.text).slice(0, 120) + '»'); }).join(', ') || 'keine');
     var t = z + ' ' + ({ messung: 'Messung', sitzung: 'Sitzung', pulsbild: 'Pulsbild', sensor: 'Sensor', eintrag: 'Notiz' }[e.type] || e.type) + (e.demo ? ' (Demo)' : '');
     if (a.bpm) t += ': Puls ' + Math.round(a.bpm) + (a.rmssd != null ? ', HRV ' + Math.round(a.rmssd) + ' ms' : '');
     if (b && b.bpm) t += ' → Ende Puls ' + Math.round(b.bpm) + (b.rmssd != null ? ', HRV ' + Math.round(b.rmssd) + ' ms' : '');
@@ -357,7 +358,7 @@
   }
   function messListe() {
     var l = hol('hs_entries') || [];
-    return l.filter(function (e) { return e && e.t && /^(messung|sitzung|pulsbild|sensor|eintrag)$/.test(e.type); }).slice(-6);
+    return l.filter(function (e) { return e && e.t && /^(messung|sitzung|pulsbild|sensor|eintrag|musik)$/.test(e.type); }).slice(-6);
   }
   function messwerte() {
     var l = messListe();
