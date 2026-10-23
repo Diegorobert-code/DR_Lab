@@ -33,7 +33,7 @@
       css: ".kimu.kimu-fest{top:calc(10px + env(safe-area-inset-top,0px));right:calc(10px + env(safe-area-inset-right,0px));width:56px;height:56px;font-size:26px;" +
         "background:rgba(255,255,255,.16);color:#fff;border:0;box-shadow:0 4px 14px rgba(0,0,0,.35);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}" +
         ".kimu.kimu-fest[aria-pressed=true]{background:rgba(246,196,83,.9);color:#2a1d05;box-shadow:0 0 0 3px rgba(246,196,83,.35),0 4px 16px rgba(246,196,83,.5)}" },
-    mondschein: { laut: "0.2", andere: "leiser", ausWenn: "#nachtlicht:not([hidden])", schlaf: "20" }
+    mondschein: { laut: "0.2", andere: "leiser", ausWenn: "#nachtlicht:not([hidden]), .r9-nacht", schlaf: "20" }
   };
   var C = {}, D = me.dataset || {}, V = VOR[(D.app || "").toLowerCase()] || {}, k0;
   for (k0 in V) C[k0] = V[k0];
@@ -53,6 +53,13 @@
   /* iOS ignoriert audio.volume: dann sanft über WebAudio-Gain, sonst direkt über volume */
   var gain = null, ctx = null, volOk = true;
   try { a.volume = 0.5; volOk = Math.abs(a.volume - 0.5) < 0.01; a.volume = 0; } catch (e) { volOk = false; }
+  /* Nur dieses Skript stellt die Musik-Lautstärke: fremde Griffe (z. B. Ausblenden der App) gehen ins Leere */
+  var VD = null;
+  try {
+    VD = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, "volume");
+    if (VD && VD.set && VD.get) Object.defineProperty(a, "volume", { configurable: true, get: function () { return VD.get.call(a); }, set: function () {} });
+    else VD = null;
+  } catch (e) { VD = null; }
   function graph() {
     if (volOk || gain) return;
     try {
@@ -65,12 +72,12 @@
   var pegel = 0;
   function setze(v) {
     pegel = v;
-    if (gain) { try { gain.gain.value = v; } catch (e) {} } else { try { a.volume = v; } catch (e) {} }
+    if (gain) { try { gain.gain.value = v; } catch (e) {} } else { try { if (VD) VD.set.call(a, v); else a.volume = v; } catch (e) {} }
   }
 
-  var an = false, grund = {}, timer = 0, leise = 0, spielzeit = 0, seit = 0;
+  var an = false, grund = {}, timer = 0, leise = 0, spielzeit = 0, seit = 0, faktor = 1;
   function blockiert() { for (var k in grund) if (grund[k]) return true; return false; }
-  function ziel() { return leise > 0 ? ZIEL * LEISE : ZIEL; }
+  function ziel() { return (leise > 0 ? ZIEL * LEISE : ZIEL) * faktor; }
   function rampe(z, dauer, fertig) {
     clearInterval(timer);
     var start = pegel, t0 = Date.now();
@@ -254,6 +261,11 @@
     if (C.ausWenn) { var w = false; try { w = !!d.querySelector(C.ausWenn); } catch (e) {} if (w && an) aus(false); }
     if (window.MS_HOEREN && MS_HOEREN.zustand) { try { var z = MS_HOEREN.zustand(); still("hoeren", !!(z.on && z.pause)); } catch (e) {} }
     if (SCHLAF && an && (spielzeit + (seit ? Date.now() - seit : 0)) >= SCHLAF) { spielzeit = 0; aus(false); }
+    /* Schlaf-Timer der App (Mondschein runde9.js): in den letzten 90 s mit ausblenden; ist er abgelaufen, zeigt die App .r9-nacht (ausWenn) */
+    if (window.MS_SCHLAF && MS_SCHLAF.rest) {
+      try { var r = MS_SCHLAF.rest(), f = r > 0 ? Math.min(1, r / 90000) : 1;
+        if (Math.abs(f - faktor) > 0.005) { faktor = f; if (an && !blockiert() && !a.paused) rampe(ziel(), 900); } } catch (e) {}
+    }
   }
 
   /* Aussehen: rund, gross genug für Kinderfinger, Notenbild 🎵; an = leuchtet und wippt */
@@ -289,7 +301,7 @@
     if (!C.wie) knopf.className += " kimu-eigen";
     an = gemerkt(); zeige();
     if (an) warteAufGeste();
-    if (C.stumm || C.ausWenn || SCHLAF || window.MS_HOEREN) { wache(); setInterval(wache, 1000); }
+    if (C.stumm || C.ausWenn || SCHLAF || window.MS_HOEREN || window.MS_SCHLAF) { wache(); setInterval(wache, 1000); }
   }
   window.KinderMusik = { an: function () { return an; }, aus: function () { aus(true); }, still: still, laeuft: function () { return !a.paused; } };
   if (d.body) los(); else d.addEventListener("DOMContentLoaded", los);
