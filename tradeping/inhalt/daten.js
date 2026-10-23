@@ -3,6 +3,19 @@
    Neue Beiträge unten anhängen: { id, b, t, k, x: [Absätze], s: [Schritte] } */
 window.INHALT = {
   app: 'tradeping',
+  figur: 'Mr. Ping',
+  absichten: [
+    { w: /(betrug|abzocke|scam|fake|gefälscht|falsche mail|zu schön)/, b: 'sicher', a: 'Gute Frage. Ein Warnzeichen:' },
+    { w: /(nervös|angst|stress|schlafe? schlecht|zu viel|süchtig|kann nicht aufhören)/, b: 'ruhe', a: 'Erst durchatmen. Das hilft vielen:' }
+  ],
+  live: '../nova/reden.html?f=mr.%20ping',
+  gruss: 'Grüezi, ich bin Mr. Ping. Frag mich, wie Börse funktioniert. Tipps zum Kaufen gebe ich nie.',
+  sprichGrenze: 'Mr. Ping erklärt, er berät nicht: keine Anlageberatung, keine Titel-Tipps. Alles bleibt auf deinem Handy.',
+  beispielFragen: ['Was ist ein Spread?', 'Wie erkenne ich Betrug?', 'Warum tun Verluste so weh?'],
+  grenzen: [
+    { w: /(soll ich|kaufen oder|welche aktie|welchen titel|welche krypto|tipp|empfiehl|empfehl|investier|lohnt sich|wird .*steigen|wird .*fallen|kursziel|was kaufen|reich werden)/, a: 'Da halte ich mich raus: Ich gebe keine Anlageberatung und sage nie, was du kaufen oder verkaufen sollst. Ich erkläre dir aber gern, wie etwas funktioniert.', weiter: false },
+    { w: /(steuer)/, a: 'Steuerfragen gehören zu deiner Treuhand oder zum Steueramt.', weiter: true }
+  ],
   titel: 'Mr. Pings Börsenwissen',
   titelKurz: 'Alles Wissen',
   heuteLabel: 'Börsenwissen heute',
