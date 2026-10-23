@@ -1,0 +1,54 @@
+/* design.css – Copacabana im Look «Tropenprint» (Design-Umbau 23.10.2026).
+   Sommerlich und bunt: Pfirsich-Grund, Tropengrün als Schrift, Hibiskus-Pink als Aktionsfarbe,
+   Produkte als wischbare Karten. Outfit für Titel und Text. Nur Optik, als letztes Stylesheet geladen.
+   Der Musik-Knopf (musik.js) bleibt unverändert sichtbar und bedienbar. */
+html:root{
+  --m-bg:#FFF6EA;--m-surface:#FFFFFF;--m-surface2:#FFEEDB;--m-soft:#FFE1E9;
+  --m-ink:#0F3D2E;--m-ink2:#2F5446;--m-ink3:#466457;--m-line:#F6E2CB;--m-line2:#EBCCA9;
+  --m-accent:#D02A5E;--m-on-accent:#FFFFFF;--m-accent-ink:#B8234F;--m-focus:#B8234F;--m-koralle:#D02A5E;
+  --m-shadow:0 1px 2px rgba(15,61,46,.05),0 12px 26px -16px rgba(15,61,46,.28);
+  --m-font-title:"Outfit",system-ui,-apple-system,"Segoe UI",sans-serif;--m-font-body:"Outfit",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --disp:var(--m-font-title);
+  --d-pink:#FF4F7B;--d-gruen:#1F7A55;--d-mango:#FFB23F;--d-r:20px;
+  --fs-r-l:var(--d-r);--fs-r-m:16px;--fs-r-s:12px;
+}
+html body{background:var(--m-bg)!important;font-family:var(--m-font-body)!important;color:var(--m-ink)}
+html body :where(button,input,select,textarea){font-family:var(--m-font-body)}
+html .wrap :is(h1,h2,h3){font-family:var(--m-font-title)!important;font-weight:700!important;letter-spacing:-.01em}
+
+/* Kopf als bunter Banner mit Tropen-Muster */
+html .szene{background:var(--m-accent)!important;border-radius:var(--d-r)!important;position:relative;overflow:hidden;
+  background-image:radial-gradient(circle at 92% 18%,var(--d-mango) 0 34px,transparent 35px),radial-gradient(circle at 100% 100%,var(--d-gruen) 0 70px,transparent 71px),radial-gradient(circle at 78% 112%,var(--d-pink) 0 46px,transparent 47px)!important}
+html .szene .schild h1,html .szene h1{color:#FFFFFF!important;font-weight:700!important;font-size:clamp(2rem,9vw,2.7rem)!important;line-height:1.05!important;max-width:15ch}
+html .szene p,html .szene .schild p{color:#FFFFFF!important;max-width:30ch}
+html .entwurf{border-radius:999px!important;background:var(--m-surface)!important;color:var(--m-ink2)!important;border:1px solid var(--m-line2)}
+html .copa-gruss img.copa{box-shadow:0 0 0 3px var(--d-mango)!important}
+
+/* Karten: weiss, rund, weicher Schatten */
+html .wrap :is(section.r8-wm,section.r7-neu,section.r6,section.r8-cc,section.r4-karte,.r7c-tipp){border-radius:var(--d-r)!important;background:var(--m-surface)!important;border:1px solid var(--m-line)!important;box-shadow:var(--m-shadow)!important}
+html .wrap .r7-neu-k{border-radius:16px!important;border:0!important;background:#FFE1E9!important}
+html .wrap .r7-neu-k:nth-child(3n+2){background:#FFEBCB!important}
+html .wrap .r7-neu-k:nth-child(3n+3){background:#DDF1E6!important}
+
+/* Kategorien als bunte Pillen */
+html .filter button.r8-kat{border-radius:999px!important;border:1px solid var(--m-line2)!important;background:var(--m-surface)!important;min-height:44px!important;flex-direction:row!important;gap:6px!important;padding:0 14px!important;margin-bottom:8px;color:var(--m-ink)!important;opacity:1!important}
+html .filter button.r8-kat[aria-pressed=true]{background:var(--m-ink)!important;color:#FFFFFF!important;border-color:var(--m-ink)!important}
+html .filter button.r8-kat i{font-size:18px!important}
+html .filter{gap:8px!important;border-bottom:0!important;background:var(--m-bg)!important}
+
+/* Regal: Produkte als wischbare Karten */
+html .wrap .regal{display:flex!important;gap:12px!important;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:4px 16px 14px;scroll-padding-inline:16px;scrollbar-width:none;overscroll-behavior-x:contain}
+html .wrap .regal::-webkit-scrollbar{display:none}
+html .wrap .regal>.ware{flex:0 0 min(64%,250px);scroll-snap-align:start;border-radius:var(--d-r)!important;border:0!important;box-shadow:var(--m-shadow)!important;background:var(--m-surface)!important}
+html .wrap .ware .bild{border-radius:var(--d-r) var(--d-r) 0 0;background:var(--d-gruen)!important}
+html .wrap .regal>.ware:nth-child(3n+2) .bild{background:var(--d-mango)!important}
+html .wrap .regal>.ware:nth-child(3n+3) .bild{background:var(--d-pink)!important}
+html .wrap .ware h3,html .wrap .ware .info b{color:var(--m-ink)!important}
+html .wrap .ware .info{font-family:var(--m-font-body)}
+
+/* Knöpfe: Pink als Pille */
+html .wrap :is(.knopf,.r7-knopf:not(.leise)),html .blatt .knopf{background:var(--m-accent)!important;color:var(--m-on-accent)!important;border-radius:999px!important;border:0!important;font-weight:700!important}
+html .wrap .r7-knopf.leise{border-radius:999px!important}
+html .korbknopf{background:var(--m-ink)!important;color:#FFFFFF!important;border-radius:999px!important}
+html .wrap :is(input,select,textarea){border-radius:14px!important}
+html .wrap .lad-video,html .wrap .lad-reihe figure img{border-radius:var(--d-r)!important}
