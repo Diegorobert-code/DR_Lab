@@ -157,7 +157,6 @@ h1{color:#F2C14E}
 </style>
 </head>
 <body>
-<script src="../nova/intro.js" data-art="funken" data-bild="figur-gross.jpg" data-text="Sparky ist da"></script>
 
 <div class="wrap">
   <header>
@@ -188,7 +187,8 @@ h1{color:#F2C14E}
       <h2>Musik-Spiegel</h2>
       <p>Song in Spotify starten, hier mithören und antippen, was du fühlst. Die Musik läuft weiter, Human Sparks braucht kein Mikrofon und keine Kamera.</p>
       <label class="lbl" for="mSong">Welcher Song?</label>
-      <input id="mSong" class="inp" maxlength="80" autocomplete="off" placeholder="Titel – Künstler">
+      <input id="mSong" class="inp" maxlength="200" autocomplete="off" placeholder="Titel – Künstler oder Spotify-Link">
+      <div class="muted hidden" id="mSongInfo" style="font-size:13px"></div>
       <button class="btn primary" id="mStart">▶ Song läuft jetzt</button>
       <button class="btn primary" id="mReise">🎧 Beat-Reise: Human Sparks spielt 12 Beats</button>
       <button class="btn primary" id="mPraxis">🌿 Praxis-Musik: 20 ruhige Stücke + Studie</button>
@@ -206,6 +206,8 @@ h1{color:#F2C14E}
       <div class="chips" id="mGefuehle"></div>
       <div class="noteline"><input id="mText" class="inp" placeholder="Oder in Worten: jetzt fühle ich …" autocomplete="off" enterkeyhint="send"><button class="btn ghost" id="mTextAdd" aria-label="Satz hinzufügen">+</button></div>
       <div class="muted" style="font-size:13px">Tastatur-Mikrofon geht auch, kann Spotify aber kurz anhalten.</div>
+      <button class="btn ghost" id="mSparky">🦊 Sparky dazu holen: über die Musik reden</button>
+      <iframe id="mSparkyFrame" class="hidden" title="Sparky" allow="microphone; autoplay" style="width:100%;height:380px;border:0;border-radius:14px"></iframe>
       <div class="feed" id="mFeed"></div>
       <button class="btn coral" id="mStop">■ Song fertig</button>
       <button class="btn danger" id="mAbbruch">Abbrechen</button>
@@ -1884,7 +1886,22 @@ function mWann(x){ return (x.w ? '👤 ' : '') + (x.b ? x.b + ' ' : '') + mZeit(
 function mFeed(){
   $('mFeed').innerHTML = mLauf.stamps.slice().reverse().map(function(x){ return '<div><b>' + esc(mWann(x)) + '</b> ' + esc(x.k ? x.k : '«' + x.text + '»') + '</div>'; }).join('');
 }
-function mStempel(o){ if (!mLauf) return; o.t = Math.round(mJetzt()); if (mLauf.wer === 'klient') o.w = 'k'; if (mLauf.reise) o.b = LISTE[beatNr].n; mLauf.stamps.push(o); mFeed(); }
+function mStempel(o){ if (!mLauf) return; o.t = Math.round(mJetzt()); if (mLauf.wer === 'klient') o.w = 'k'; if (mLauf.reise) o.b = LISTE[beatNr].n; mLauf.stamps.push(o); mFeed(); mLive(); }
+// Was gerade läuft, für Sparky (gleiches Handy, bleibt lokal)
+function mLive(){
+  try {
+    if (!mLauf){ localStorage.removeItem('hs_live'); return; }
+    var B = mLauf.reise ? LISTE[beatNr] : null;
+    localStorage.setItem('hs_live', JSON.stringify({t:Date.now(), song:mLauf.song, stueck:B ? B.n : '', farbe:B ? (B.farbe || B.bpm + ' BPM') : '', praxis:!!mLauf.praxis, wer:mLauf.wer || '', min:mZeit(mJetzt()),
+      zuletzt:mLauf.stamps.slice(-5).map(function(x){ return mWann(x) + ' ' + (x.k || '«' + x.text + '»'); })}));
+  } catch(e){}
+}
+$('mSparky').addEventListener('click', function(){
+  var f = $('mSparkyFrame'), zu = f.classList.toggle('hidden');
+  if (!zu && !f.src) f.src = '../nova/reden.html?f=sparky&musik=1';
+  this.textContent = zu ? '🦊 Sparky dazu holen: über die Musik reden' : '🦊 Sparky ausblenden (redet weiter)';
+  mLive();
+});
 // Studie: was Diego bei der Person beobachtet (anonym, ohne Namen)
 var M_KLIENT = [['ruhig','😌'],['warm','☀️'],['leicht','🪶'],['weit','🌌'],['berührt','🥹'],['Freude','😊'],['müde','😴'],['schwer','🌧'],['traurig','💧'],['Kribbeln','✨']];
 var M_BEOB = [['entspannt','😌'],['atmet tiefer','🌬'],['seufzt','💨'],['Tränen','💧'],['lacht','😄'],['wird still','🤫'],['erzählt','💬'],['unruhig','⚡'],['schläft ein','😴'],['Gewebe weich','🫳']];
@@ -1919,9 +1936,33 @@ function zufall(seed){ return function(){ seed = (seed * 9301 + 49297) % 233280;
 var PRAXIS = [['Morgenlicht','hell'],['Weiter Atem','traumhaft'],['Faszie','warm'],['Stiller See','dunkel'],['Erde','erdig'],['Warmes Wasser','warm'],['Abendrot','emotional'],['Wolke','traumhaft'],['Wurzeln','erdig'],['Sanfte Welle','hell'],['Bergwiese','hell'],['Herzraum','emotional'],['Mondlicht','dunkel'],['Gezeiten','emotional'],['Federleicht','traumhaft'],['Tiefer Boden','dunkel'],['Nebel','dunkel'],['Lichtung','warm'],['Heimkommen','warm'],['Stille','traumhaft']].map(function(x, i){
   var r = zufall(i * 131 + 7), sk = SKALA[x[1]], motiv = [], d = sk.length;
   for (var j = 0; j < 16; j++){ d = Math.max(sk.length - 2, Math.min(sk.length * 2 + 2, d + [-2,-1,-1,0,1,1,2][Math.floor(r() * 7)])); motiv.push(r() < (j % 4 === 0 ? .9 : .45) ? d : null); }
-  return {n:x[0], farbe:x[1], bpm:56 + (i * 5) % 18, key:[45,43,41,48,46,44,40,47][i % 8] - 12, skala:sk, folge:FOLGE[x[1]], motiv:motiv,
+  return {n:x[0], farbe:x[1], bpm:56 + (i * 5) % 18, key:[45,43,41,48,46,44,40,47][i % 8], skala:sk, folge:FOLGE[x[1]], motiv:motiv,
     k:i % 3 === 1 ? 'x.x.............' : '................', s:'................', h:'................', b:[], sanft:true, melodie:true};
 });
+// Spotify-Link: Titel holen (öffentliche Spotify-Vorschau), sonst Link behalten
+var mLink = '';
+$('mSong').addEventListener('input', function(){
+  var v = this.value.trim(), m = v.match(/https?:\/\/(open\.spotify\.com|spotify\.link)\/\S+/);
+  if (!m) return;
+  mLink = m[0].split('?')[0]; var info = $('mSongInfo'), feld = this;
+  info.classList.remove('hidden'); info.textContent = '🔗 Spotify-Link erkannt, hole den Titel …';
+  feld.value = 'Spotify-Song';
+  fetch('https://open.spotify.com/oembed?url=' + encodeURIComponent(mLink)).then(function(r){ return r.json(); }).then(function(d){
+    if (d && d.title){ feld.value = d.title.slice(0, 80); info.textContent = '🔗 Spotify: «' + d.title + '». Song in Spotify starten, dann «Song läuft jetzt».'; }
+    else throw 0;
+  }).catch(function(){ info.textContent = '🔗 Link gespeichert. Titel bitte kurz dazuschreiben (Spotify gibt ihn nicht her).'; feld.value = ''; feld.focus(); });
+});
+// iPhone: Ton auch bei Stummschalter (Wiedergabe-Modus) und nach Unterbruch wieder an
+var stilleAudio = null;
+function tonEntsperren(){
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch(e){}
+  try {
+    if (!stilleAudio){ stilleAudio = new Audio('data:audio/wav;base64,UklGRsQPAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YaAPAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA'); stilleAudio.loop = true; stilleAudio.setAttribute('playsinline', ''); }
+    var pr = stilleAudio.play(); if (pr && pr.catch) pr.catch(function(){});
+  } catch(e){}
+  if (ac && ac.state !== 'running') try { ac.resume(); } catch(e){}
+}
+document.addEventListener('visibilitychange', function(){ if (!document.hidden && beatTimer) tonEntsperren(); });
 var hall = null, LISTE = BEATS, BEAT_SEK = 30, ac = null, beatNr = -1, beatTimer = null, nextStep = 0, stepNr = 0, beatOut = null;
 function noise(){ var b = ac.createBuffer(1, ac.sampleRate * .5, ac.sampleRate), d = b.getChannelData(0); for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; }
 var rauschen = null;
@@ -1935,12 +1976,12 @@ function melodie(B, i, t){
   var takt = 60 / B.bpm * 4, s = stepNr % 64;
   if (s % 32 === 0){
     var wurzel = B.folge[Math.floor(stepNr / 32) % B.folge.length], ak = B.skala.length === 5 ? [0,2,3] : [0,2,4];
-    weich(t, stufe(B, wurzel), takt * 2.2, 'sine', .22, 500, .4);
-    ak.forEach(function(x){ weich(t, stufe(B, wurzel + x) + 12, takt * 2.4, 'triangle', .05, 1400, 1.2); weich(t + .02, stufe(B, wurzel + x) + 12, takt * 2.4, 'sine', .04, 1400, 1.4); });
+    weich(t, stufe(B, wurzel) - 12, takt * 2.2, 'triangle', .3, 700, .4);
+    ak.forEach(function(x){ weich(t, stufe(B, wurzel + x), takt * 2.4, 'triangle', .1, 1800, 1.2); weich(t + .02, stufe(B, wurzel + x) + 12, takt * 2.4, 'sine', .06, 2000, 1.4); });
   }
   if (i % 2 === 0){
     var runde = Math.floor(stepNr / 16) % 4, d = B.motiv[(stepNr / 2) % 16];
-    if (d != null && runde !== 3) weich(t, stufe(B, d + (runde === 2 ? 2 : 0)) + 12, takt * .6, 'triangle', .11, 1700, .05);
+    if (d != null && runde !== 3) weich(t, stufe(B, d + (runde === 2 ? 2 : 0)) + 12, takt * .6, 'triangle', .22, 2400, .05);
   }
 }
 function beatSchritt(B, i, t){
@@ -1964,13 +2005,13 @@ function beatPlaner(){
 function beatSpielen(n){
   beatNr = n; stepNr = 0;
   if (beatOut){ var alt = beatOut; alt.gain.setTargetAtTime(0, ac.currentTime, .15); setTimeout(function(){ alt.disconnect(); }, 800); }
-  beatOut = ac.createGain(); beatOut.gain.value = .8; beatOut.connect(ac.destination); if (hall && LISTE[n].melodie) beatOut.connect(hall);
+  beatOut = ac.createGain(); beatOut.gain.value = .8; beatOut.connect(ac.haupt || ac.destination); if (hall && LISTE[n].melodie) beatOut.connect(hall);
   nextStep = ac.currentTime + .1;
-  if (mLauf){ mLauf.beatT0 = Date.now(); $('mTitel').textContent = (LISTE === PRAXIS ? '🌿 ' : '🎧 ') + (n + 1) + '/' + LISTE.length + ' · ' + LISTE[n].n + ' · ' + (LISTE[n].farbe || LISTE[n].bpm + ' BPM'); }
+  if (mLauf){ mLauf.beatT0 = Date.now(); setTimeout(mLive, 0); $('mTitel').textContent = (LISTE === PRAXIS ? '🌿 ' : '🎧 ') + (n + 1) + '/' + LISTE.length + ' · ' + LISTE[n].n + ' · ' + (LISTE[n].farbe || LISTE[n].bpm + ' BPM'); }
 }
 function beatStopp(){ clearInterval(beatTimer); beatTimer = null; beatNr = -1; if (beatOut){ beatOut.gain.setTargetAtTime(0, ac.currentTime, .1); beatOut = null; } }
 function reiseStart(liste, sek, name){
-  try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); rauschen = rauschen || noise(); if (!hall){ hall = ac.createConvolver(); var len = ac.sampleRate * 3, ir = ac.createBuffer(2, len, ac.sampleRate); for (var c = 0; c < 2; c++){ var dd = ir.getChannelData(c); for (var k = 0; k < len; k++) dd[k] = (Math.random() * 2 - 1) * Math.pow(1 - k / len, 3); } hall.buffer = ir; var hg = ac.createGain(); hg.gain.value = .45; hall.connect(hg).connect(ac.destination); } } catch(e){ uiAlert('Ton geht auf diesem Gerät nicht.'); return; }
+  try { tonEntsperren(); ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); if (!ac.haupt){ ac.haupt = ac.createDynamicsCompressor(); ac.haupt.threshold.value = -24; ac.haupt.ratio.value = 4; var mg = ac.createGain(); mg.gain.value = 1.6; ac.haupt.connect(mg).connect(ac.destination); } rauschen = rauschen || noise(); if (!hall){ hall = ac.createConvolver(); var len = ac.sampleRate * 3, ir = ac.createBuffer(2, len, ac.sampleRate); for (var c = 0; c < 2; c++){ var dd = ir.getChannelData(c); for (var k = 0; k < len; k++) dd[k] = (Math.random() * 2 - 1) * Math.pow(1 - k / len, 3); } hall.buffer = ir; var hg = ac.createGain(); hg.gain.value = .45; hall.connect(hg).connect(ac.haupt || ac.destination); } } catch(e){ uiAlert('Ton geht auf diesem Gerät nicht.'); return; }
   LISTE = liste; BEAT_SEK = sek; mChips(liste === PRAXIS ? M_BEOB : M_GEF); mWerSetzen(liste === PRAXIS ? 'diego' : null);
   mLauf = {id:uid(), t:Date.now(), t0:Date.now(), song:name, reise:true, praxis:liste === PRAXIS, wer:liste === PRAXIS ? 'diego' : null, stamps:[], timer:null};
   $('mFeed').innerHTML = ''; $('mWeiter').classList.remove('hidden');
@@ -1991,14 +2032,14 @@ function mWerSetzen(w){
 $('mWer').addEventListener('click', function(){ if (!mLauf) return; mLauf.wer = mLauf.wer === 'klient' ? 'diego' : 'klient'; mChips(mLauf.wer === 'klient' ? M_KLIENT : M_BEOB); mWerSetzen(mLauf.wer); });
 $('mStart').addEventListener('click', function(){
   mChips(M_GEF); mWerSetzen(null);
-  mLauf = {id:uid(), t:Date.now(), t0:Date.now(), song:$('mSong').value.trim().slice(0, 80), stamps:[], timer:null};
+  mLauf = {id:uid(), t:Date.now(), t0:Date.now(), song:$('mSong').value.trim().slice(0, 80), link:mLink, stamps:[], timer:null};
   $('mTitel').textContent = '🎵 ' + (mLauf.song || 'Song läuft');
   $('mFeed').innerHTML = ''; $('mClock').textContent = '0:00';
   mLauf.timer = setInterval(function(){ $('mClock').textContent = mZeit(mJetzt()); }, 500);
   try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function(l){ if (mLauf) mLauf.wl = l; else l.release(); }).catch(function(){}); } catch(e){}
   mBox('mRunBox');
 });
-function mEnde(){ if (!mLauf) return null; if (mLauf.reise) beatStopp(); $('mWeiter').classList.add('hidden'); clearInterval(mLauf.timer); try { if (mLauf.wl) mLauf.wl.release(); } catch(e){} var l = mLauf; mLauf = null; return l; }
+function mEnde(){ if (!mLauf) return null; if (mLauf.reise) beatStopp(); $('mWeiter').classList.add('hidden'); clearInterval(mLauf.timer); try { if (mLauf.wl) mLauf.wl.release(); } catch(e){} var l = mLauf; mLauf = null; mLive(); return l; }
 $('mAbbruch').addEventListener('click', function(){ mEnde(); mBox('mStartBox'); });
 function mZeile(e){
   return '«' + (e.song || 'Song') + '» · ' + mZeit(e.dur) + (e.stamps.length ? ': ' + e.stamps.map(function(x){ return mWann(x) + ' ' + (x.k || '«' + x.text + '»'); }).join(', ') : ', nichts angetippt');
@@ -2020,7 +2061,7 @@ $('mStop').addEventListener('click', function(){
   addEntry(e); mZeigen(e);
 });
 $('mFinger').addEventListener('click', function(){ showTab('messen'); });
-$('mNeu').addEventListener('click', function(){ $('mSong').value = ''; mBox('mStartBox'); });
+$('mNeu').addEventListener('click', function(){ $('mSong').value = ''; mLink = ''; $('mSongInfo').classList.add('hidden'); mBox('mStartBox'); });
 // Für die Höranalyse (hoeranalyse.py worte.json): [{t, text}] mit Song-Sekunde
 $('mKopie').addEventListener('click', function(){
   if (!mLetzter) return;
@@ -2325,6 +2366,9 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 :root{--fa1:#E07B2E;--fa2:#F25C54;--fgold:#F2C14E}
 .film-funke{position:absolute;width:6px;height:6px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#fff 0,var(--c,#F2C14E) 45%,transparent 70%);opacity:0;animation:filmFunkeln var(--d,5s) var(--v,0s) ease-in-out infinite}
 .figur-hero{background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--fa1) 45%,#1d2c66) 0%,#0f1b3d 60%,color-mix(in srgb,var(--fa2) 35%,#0f1b3d) 100%)!important;isolation:isolate;animation:filmAuf .7s ease-out both}
+.nb-buehne .nb-unten{position:static;padding:14px 16px 18px;background:linear-gradient(#0b1636,#0a0f2c)}
+.nb-buehne img{max-height:44vh;object-position:50% 40%;animation:nbAtmen 4s ease-in-out infinite,hsGlanz 6s ease-in-out infinite}
+@keyframes hsGlanz{50%{filter:brightness(1.08) saturate(1.12) drop-shadow(0 0 18px rgba(242,176,78,.35))}}
 .figur-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:url(figur-gross.jpg) right center/60% auto no-repeat;opacity:.18;filter:blur(2px) saturate(1.4);mask-image:linear-gradient(90deg,transparent 20%,#000)}
 .figur-hero img{animation:filmSchweben 4.6s ease-in-out infinite;cursor:pointer;border-color:var(--fgold)!important;box-shadow:0 0 22px color-mix(in srgb,var(--fa1) 65%,transparent)!important}
 .figur-hero span.film-neu{animation:filmAuf .45s ease-out both}
