@@ -3,6 +3,16 @@
    Neue Beiträge einfach unten anhängen: { id, b (Bereich), t (Titel), k (kurz), x: [Absätze], s: [Schritte] } */
 window.INHALT = {
   app: 'jackie',
+  figur: 'Jackie',
+  live: '../nova/reden.html?f=jackie',
+  gruss: 'Hallo, ich bin Jackie. Erzähl mir, was dich beschäftigt.',
+  notfallText: 'Das klingt ernst. Bist du in Gefahr, ruf sofort an: 117 Polizei, 144 Sanität, 142 Opferhilfe. Die Dargebotene Hand hört zu: 143.',
+  sprichGrenze: 'Jackie antwortet aus ihrem Wissen in dieser App. Keine Diagnose, keine Rechtsberatung. Alles bleibt auf deinem Handy.',
+  beispielFragen: ['Meine Kinder streiten dauernd', 'Ich verstehe einen Amtsbrief nicht', 'Ich schlafe schlecht'],
+  grenzen: [
+    { w: /(diagnose|medikament|tablette|fieber|krankheit|bin ich krank)/, a: 'Eine Diagnose kann ich nicht stellen und keine Medikamente empfehlen. Das gehört zur Hausärztin oder Frauenärztin. Im Notfall: 144.', weiter: true },
+    { w: /(anwalt|klage|gericht|scheidung|rechtlich|sorgerecht)/, a: 'Rechtsberatung kann ich nicht geben. Die Opferhilfe (142) und Beratungsstellen helfen gratis weiter.', weiter: true }
+  ],
   titel: 'Jackies Wissen',
   titelKurz: 'Alle Beiträge',
   heuteLabel: 'Heute bei Jackie',
