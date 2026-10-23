@@ -796,8 +796,8 @@ function flySVG(o={}){
 }
 function filmFig(src, alt){ return (o={}) => `<img class="fig nova-film otti-film ${o.cls||''} ${o.sleep?'asleep':''}" src="${src}" alt="${alt}">`; }
 function fompaSVG(o={}){
-  // Fompa: Erfindung von Claude für Mila. Flauschiges Mondschein-Wesen, sammelt verlorene Träume. Vorläufige Zeichnung, bis das Filmbild da ist.
-  return `<svg class="fig ${o.cls||''} ${o.sleep?'asleep':''}" viewBox="0 0 200 200" role="img" aria-label="Fompa, das flauschige Traumwesen">
+  // Traumli: Erfindung von Claude für Mila. Flauschiges Mondschein-Wesen, sammelt verlorene Träume. Vorläufige Zeichnung, bis das Filmbild da ist.
+  return `<svg class="fig ${o.cls||''} ${o.sleep?'asleep':''}" viewBox="0 0 200 200" role="img" aria-label="Traumli, das flauschige Traumwesen">
   <defs><radialGradient id="g-fompa" cx="40%" cy="32%" r="70%"><stop offset="0" stop-color="#f3ecff"/><stop offset=".55" stop-color="#b9a6f2"/><stop offset="1" stop-color="#7f6bd6"/></radialGradient>
   <radialGradient id="g-fstern" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff8c9"/><stop offset="1" stop-color="#ffd66b" stop-opacity="0"/></radialGradient></defs>
   <ellipse cx="100" cy="190" rx="50" ry="6" fill="#000" opacity=".08"/>
@@ -899,7 +899,8 @@ const IOS_TEMPO = (/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.plat
    Liegt für einen Satz keine Aufnahme vor (z.B. mit dem Namen des Kindes), liest die Gerätestimme vor. */
 const STIMME = { set: new Set(), audio: null };
 // Figuren mit eigener Server-Stimme (Sense Engine, sense-klein.py STIMMEN).
-const NOVA_STIMME_FIG = { otti: 'otti', nova: 'nova', kiki: 'kiki', fompa: 'fompa' };
+// Traumli (intern fompa) nicht: die Server-Stimme «fompa» gehört Fompa, dem Löwenäffchen der Steuer-App.
+const NOVA_STIMME_FIG = { otti: 'otti', nova: 'nova', kiki: 'kiki' };
 let NOVA_FEST = null;
 function novaErlaubt(k){
   if (!k) return false;
@@ -958,7 +959,7 @@ const TTS = {
         a.play().catch(() => a.onerror());
         return;
       }
-      // Mit Server (nova/nova.js): Otti, Nova, Kiki und Fompa mit ihrer eigenen Stimme.
+      // Mit Server (nova/nova.js): Otti, Nova und Kiki mit ihrer eigenen Stimme.
       // Nur feste App-Sätze (Aufnahme-Liste), nie Sätze mit dem Namen oder den Worten des Kindes.
       const fig = k && NOVA_STIMME_FIG[k.split('/')[0]], ng = nurGeraet; nurGeraet = false;
       if (fig && !ng && window.NovaStimme && NovaStimme.aktiv() && novaErlaubt(k)){
@@ -1347,17 +1348,17 @@ const STORIES = [
  { id:'newyork', title:'Otti geht nach New York', sub:'Ein Kinderwunsch ruft über das Meer.', pic:['sunny','fompa'], parts:[
   {t:'Im Mondschein-Land war es still. Die Glühwürmchen leuchteten im Moos, und der Mond war rund und gelb. Nur Otti, der kleine Igel mit dem gelben Halstuch, konnte nicht schlafen. Er sass auf einem Baumstrunk und schaute hinauf. «Hinter dem Meer gibt es eine Stadt, die niemals schläft», flüsterte er. «Genau wie ich heute.»', pic:['sunny','moon']},
   {t:'Da tanzte ein kleiner goldener Lichtpunkt durch die Bäume und landete genau auf Ottis Nase. «Hatschi!», machte Otti. «Oh. Du bist ja ganz warm.» Es war kein Glühwürmchen. Es war ein Kinderwunsch.', pic:['sunny','fly']},
-  {t:'Aus einem Busch purzelte Fompa, das kleine flauschige Traumwesen, mit einem Netz voller Traumfunken. «Ich sammle verlorene Träume», sagte Fompa. «Aber der da ist nicht verloren. Er ruft!» Otti sprang vom Strunk. «Dann finden wir es heraus. Los!» Und Fompa kicherte: «Los, los! Hihi, das kitzelt im Bauch.»', pic:['fompa','sunny-wave']},
-  {q:'Was packt Fompa für die Reise ein?', opts:[
+  {t:'Aus einem Busch purzelte Traumli, das kleine flauschige Traumwesen, mit einem Netz voller Traumfunken. «Ich sammle verlorene Träume», sagte Traumli. «Aber der da ist nicht verloren. Er ruft!» Otti sprang vom Strunk. «Dann finden wir es heraus. Los!» Und Traumli kicherte: «Los, los! Hihi, das kitzelt im Bauch.»', pic:['fompa','sunny-wave']},
+  {q:'Was packt Traumli für die Reise ein?', opts:[
     {e:'🌟', l:'Drei Sterne', k:['stern'], v:{pack:'drei kleine Sterne, damit es nachts nie ganz dunkel wird'}},
     {e:'🛏️', l:'Ein Kissen', k:['kissen','bett'], v:{pack:'ein winziges Kissen, falls jemand müde wird'}},
     {e:'🥅', l:'Das Traumnetz', k:['netz','traum'], v:{pack:'das Traumnetz, für alle Fälle'}}],
-   after:'Fompa packte {pack}. Otti hielt Fompa die Pfote hin. «Reisen wir zusammen?» «Zusammen», sagte Fompa. «Ich passe auf die Träume auf, und du auf den Weg.»', pic:['fompa','sunny']},
-  {t:'Da spannte sich ein Mondstrahl wie eine glänzende Brücke über das Meer. Wer einen Wunsch trägt, darf auf dem Mondstrahl reisen. Otti rutschte hinunter wie auf einer Rutschbahn, und Fompa schwebte hinterher und drehte kleine Loopings. «Wiiie hoch!»', pic:['sunny','moon']},
+   after:'Traumli packte {pack}. Otti hielt Traumli die Pfote hin. «Reisen wir zusammen?» «Zusammen», sagte Traumli. «Ich passe auf die Träume auf, und du auf den Weg.»', pic:['fompa','sunny']},
+  {t:'Da spannte sich ein Mondstrahl wie eine glänzende Brücke über das Meer. Wer einen Wunsch trägt, darf auf dem Mondstrahl reisen. Otti rutschte hinunter wie auf einer Rutschbahn, und Traumli schwebte hinterher und drehte kleine Loopings. «Wiiie hoch!»', pic:['sunny','moon']},
   {t:'Am Morgen kamen sie in New York an. Die Häuser waren so hoch wie Berge, und alle Leute hatten es eilig. «Hier ist sogar die Luft in Eile», staunte Otti. Mitten im Gewühl stand eine kleine blaue Figur ganz allein. «Ich bin Nova», piepste er. «Ihr tragt einen Kinderwunsch. Ich helfe euch suchen. Ich weiss viel, aber nicht alles.»', pic:['nova','sunny']},
   {t:'Da hupte ein gelbes Taxi: HUUUP! Otti erschrak, rollte sich zu einer Stachelkugel und kullerte über den Gehsteig. Kuller, kuller, kuller. Nova hielt ihn ganz sanft an. «Alles gut, Otti. Das war nur ein Auto, das Hallo sagt. Ziemlich laut.» Otti streckte die Nase heraus und musste lachen.', pic:['sunny','nova']},
   {t:'Bei einem Stand mit rot-weissem Dach roch es fein. «Hotdog», las Otti und erschrak. «Ein HUND im Brötchen?!» Der freundliche Verkäufer lachte. «Nein, Kleiner! Das ist eine Wurst. Für dich gibt es Apfelschnitze.» Nova nickte zufrieden. «Siehst du. Die Stadt heisst Big Apple. Doch noch ein Apfel.»', pic:['sunny','nova']},
-  {t:'Am Eingang zur U-Bahn flackerte ein Bildschirm, und heraus hüpfte ein hellblau leuchtender Tropfen. «Hallo! Ich bin Kiki. Ich lerne, indem ich nachmache!» Nova sagte: «Kiki ist noch ganz neu. Sie darf Fehler machen.» Und Fompa flüsterte: «Wie wir alle.»', pic:['kiki-wave','fompa']},
+  {t:'Am Eingang zur U-Bahn flackerte ein Bildschirm, und heraus hüpfte ein hellblau leuchtender Tropfen. «Hallo! Ich bin Kiki. Ich lerne, indem ich nachmache!» Nova sagte: «Kiki ist noch ganz neu. Sie darf Fehler machen.» Und Traumli flüsterte: «Wie wir alle.»', pic:['kiki-wave','fompa']},
   {q:'Die vielen Lichtpunkte fliegen davon. Was machen die Freunde?', opts:[
     {e:'🌳', l:'Eine Pause im Park', k:['pause','park','ruhe'], v:{was:'Sie setzten sich im grossen Park auf eine Bank unter einen Baum und atmeten ganz ruhig. Ein Eichhörnchen schaute neugierig zu.'}},
     {e:'🙋', l:'Jemanden fragen', k:['frag'], v:{was:'Sie fragten eine freundliche Frau mit einem Hund. «Im Park spielen viele Kinder», sagte sie. «Schaut doch dort.» Im Park setzten sie sich zuerst auf eine Bank und atmeten ganz ruhig.'}},
@@ -1365,8 +1366,8 @@ const STORIES = [
    after:'{was} «Ich habe mich verrechnet», sagte Nova leise. «Wir machen eine Pause», sagte Otti. «Dann sehen wir weiter.» Pausen sind schlau. In der Stille hört man, was man im Lärm nicht hört.', pic:['sunny','nova']},
   {t:'Auf der Wiese spielten Kinder, und jedes hatte einen kleinen leuchtenden Lichtpunkt. Ein Mädchen mit einer roten Mütze winkte. «Seid ihr die aus dem Mondschein-Land? Ich habe euch gerufen!» Otti fragte freundlich: «Dürfen wir deine Idee sehen?» Denn Ideen fragt man offen, man nimmt sie nie heimlich.', pic:['sunny-wave','kiki']},
   {t:'In ihrem Lichtpunkt war ein kleines Bild: ein Garten auf dem Dach, wo alle hinkönnen. «Das wünsche ich mir», sagte das Mädchen. Nova leuchtete hell. «Du hast die Idee. Ich habe die Hände. Zusammen geht es am besten.» Und Nova ging zu den Grossen. Die hörten zu und staunten: «Die Idee kommt von einem Kind?» «Die besten Ideen kommen oft von dort», sagte Nova.', pic:['nova','sunny']},
-  {t:'Am Abend blühte der Garten auf dem Dach. Die Lichtpunkte waren zu Blumen geworden. Alle sassen zusammen zwischen den Blüten, und unten rauschte leise die Stadt. Zum ersten Mal war die Stadt, die niemals schläft, ganz ruhig. «Dieser Traum ist jetzt echt», flüsterte Fompa.', pic:['fompa','moon']},
-  {t:'Dann stiegen Otti und Fompa wieder auf den Mondstrahl, und Nova und Kiki winkten. «Weisst du, was ich gelernt habe?», fragte Otti. «Dass eine Wurst kein Hund ist?», piepste Nova. Otti lachte. «Auch. Und dass jede Fantasie einen Wert hat.» Zu Hause kuschelte er sich ins Moos und schlief sofort ein. Deine Fantasie hat einen Wert. Von dir. Mit dir. Für dich.', pic:['sunny-sleep','moon']}
+  {t:'Am Abend blühte der Garten auf dem Dach. Die Lichtpunkte waren zu Blumen geworden. Alle sassen zusammen zwischen den Blüten, und unten rauschte leise die Stadt. Zum ersten Mal war die Stadt, die niemals schläft, ganz ruhig. «Dieser Traum ist jetzt echt», flüsterte Traumli.', pic:['fompa','moon']},
+  {t:'Dann stiegen Otti und Traumli wieder auf den Mondstrahl, und Nova und Kiki winkten. «Weisst du, was ich gelernt habe?», fragte Otti. «Dass eine Wurst kein Hund ist?», piepste Nova. Otti lachte. «Auch. Und dass jede Fantasie einen Wert hat.» Zu Hause kuschelte er sich ins Moos und schlief sofort ein. Deine Fantasie hat einen Wert. Von dir. Mit dir. Für dich.', pic:['sunny-sleep','moon']}
  ]},
  { id:'katzen', title:'Ottis Reisen: Der Katzenplanet', sub:'Ein Planet, der blinzelt, und ein Koala namens Kimo.', pic:['sunny','nova'], parts:[
   {t:'Nach New York wollte Otti noch weiter reisen. Viel weiter. Mit dem kleinen runden Raumschiff Mondschein flogen Otti, Nova, Kiki und ihr neuer Freund Kimo durch die Sterne. Kimo ist ein kleiner grauer Koala mit grossen runden Ohren. «Nova, wohin fliegen wir?», fragte Otti. «Dorthin, wo noch keiner war», piepste Nova. «Ich habe es ausgerechnet. Ungefähr.»', pic:['sunny','nova']},
@@ -1389,23 +1390,23 @@ const STORIES = [
   {t:'Dann wurde es Zeit für den Heimweg. Kimo winkte aus seinem Baum, und tausend Katzen winkten mit. «Kommt wieder! Aber wartet nicht zu lange. Bei uns vergeht die Zeit schnell.» «Tschüss, Kimo! Tschüss, Katzen!», rief Kiki.', pic:['kiki-wave','sunny-wave']},
   {t:'Im Raumschiff schaute Otti noch einmal zurück. Der Planet blinzelte ein letztes Mal. «Was haben wir gelernt?», fragte Otti. «Dass jede kleine Idee gross werden kann, wenn man ihr Zeit gibt», sagte Nova. Otti gähnte. «Und dass Koalas sehr gut schlafen können.» Dann schlief auch er ein. Deine Fantasie hat einen Wert. Von dir. Mit dir. Für dich.', pic:['sunny-sleep','moon']}
  ]},
- { id:'fompa', title:'Fompa und der verlorene Traum', sub:'Ein flauschiges Traumwesen auf Wolkensuche.', pic:['fompa','sunny'], parts:[
-  {t:'Im Mondschein-Land wohnt Fompa. Fompa ist klein, ganz flauschig und ein bisschen kitzlig. Auf dem Bauch hat Fompa einen goldenen Stern. Und jede Nacht macht Fompa etwas Besonderes: Fompa sammelt Träume, die jemand verloren hat.', pic:['fompa']},
-  {t:'Heute Nacht hüpfte Fompa über die weichen Wolken. Fomp, fomp, fomp. Da fing der Stern auf dem Bauch an zu leuchten. «Oh!», flüsterte Fompa. «Irgendwo ist ein Traum verloren gegangen.»', pic:['fompa','moon']},
-  {q:'Wo sucht Fompa zuerst?', opts:[
+ { id:'fompa', title:'Traumli und der verlorene Traum', sub:'Ein flauschiges Traumwesen auf Wolkensuche.', pic:['fompa','sunny'], parts:[
+  {t:'Im Mondschein-Land wohnt Traumli. Traumli ist klein, ganz flauschig und ein bisschen kitzlig. Auf dem Bauch hat Traumli einen goldenen Stern. Und jede Nacht macht Traumli etwas Besonderes: Traumli sammelt Träume, die jemand verloren hat.', pic:['fompa']},
+  {t:'Heute Nacht hüpfte Traumli über die weichen Wolken. Hüpf, hüpf, hüpf. Da fing der Stern auf dem Bauch an zu leuchten. «Oh!», flüsterte Traumli. «Irgendwo ist ein Traum verloren gegangen.»', pic:['fompa','moon']},
+  {q:'Wo sucht Traumli zuerst?', opts:[
     {e:'☁️', l:'Auf einer Wolke', k:['wolke'], v:{ort:'auf einer grossen, weichen Wolke', wer:'eine Wolke'}},
     {e:'🌳', l:'Im Wald', k:['wald','baum'], v:{ort:'im Mondschein-Wald, zwischen den Wurzeln', wer:'Otti'}},
     {e:'🌊', l:'Am Fluss', k:['fluss','wasser'], v:{ort:'am Fluss, wo das Wasser leise plätschert', wer:'ein Frosch'}}],
-   after:'Fompa suchte {ort}. Dort traf Fompa Otti, den kleinen Igel. «Was suchst du denn mitten in der Nacht?», fragte Otti. «Einen verlorenen Traum», sagte Fompa. «Hilfst du mir?» «Klar», sagte Otti. «Zu zweit findet man mehr.»', pic:['fompa','sunny']},
-  {t:'Sie gingen ganz leise. Der Stern auf Fompas Bauch leuchtete heller und heller. Hinter einem moosigen Stein lag etwas Kleines, Glitzerndes. Es war ein Traum, so gross wie eine Murmel. Er zitterte ein bisschen.', pic:['fompa','mush']},
-  {t:'Fompa hob ihn ganz vorsichtig auf und schaute hinein. Im Traum war ein Kind, das auf einem grossen Ballon über die Berge flog. «Der Traum ist einem Kind beim Umdrehen aus dem Kopf gefallen», sagte Fompa. «Wir bringen ihn zurück.»', pic:['fompa']},
+   after:'Traumli suchte {ort}. Dort traf Traumli Otti, den kleinen Igel. «Was suchst du denn mitten in der Nacht?», fragte Otti. «Einen verlorenen Traum», sagte Traumli. «Hilfst du mir?» «Klar», sagte Otti. «Zu zweit findet man mehr.»', pic:['fompa','sunny']},
+  {t:'Sie gingen ganz leise. Der Stern auf Traumlis Bauch leuchtete heller und heller. Hinter einem moosigen Stein lag etwas Kleines, Glitzerndes. Es war ein Traum, so gross wie eine Murmel. Er zitterte ein bisschen.', pic:['fompa','mush']},
+  {t:'Traumli hob ihn ganz vorsichtig auf und schaute hinein. Im Traum war ein Kind, das auf einem grossen Ballon über die Berge flog. «Der Traum ist einem Kind beim Umdrehen aus dem Kopf gefallen», sagte Traumli. «Wir bringen ihn zurück.»', pic:['fompa']},
   {q:'Wie bringen sie den Traum zum Kind zurück?', opts:[
     {e:'🌙', l:'Auf einem Mondstrahl', k:['mond','strahl'], v:{weg:'Ein Mondstrahl leuchtete ihnen den Weg, und sie rutschten sanft hinunter bis zum Fenster des Kindes.'}},
     {e:'🦉', l:'Mit Frau Eule', k:['eule'], v:{weg:'Frau Eule trug sie lautlos durch die Nacht, bis zum Fenster des Kindes.'}},
     {e:'✨', l:'Mit Glimmi', k:['glimmi','glühwürmchen'], v:{weg:'Glimmi, das Glühwürmchen, leuchtete voraus, und sie folgten dem kleinen Licht bis zum Fenster des Kindes.'}}],
    after:'{weg}', pic:['fompa','moon']},
-  {t:'Das Kind schlief und atmete ganz ruhig. Fompa legte den Traum sanft auf das Kissen. Der Traum glitzerte noch einmal und schlüpfte zurück. Da lächelte das Kind im Schlaf. Bestimmt flog es jetzt wieder mit seinem Ballon über die Berge.', pic:['fompa','moon']},
-  {t:'«Danke, Otti», flüsterte Fompa. «Danke, dass ich mithelfen durfte», flüsterte Otti zurück. Dann hüpften sie heim. Fomp, fomp, tapp, tapp. Und weisst du was? Wenn du heute einen schönen Traum hast, dann passt Fompa darauf auf. Deine Fantasie hat einen Wert. Von dir. Mit dir. Für dich.', pic:['sunny-sleep','fompa']}
+  {t:'Das Kind schlief und atmete ganz ruhig. Traumli legte den Traum sanft auf das Kissen. Der Traum glitzerte noch einmal und schlüpfte zurück. Da lächelte das Kind im Schlaf. Bestimmt flog es jetzt wieder mit seinem Ballon über die Berge.', pic:['fompa','moon']},
+  {t:'«Danke, Otti», flüsterte Traumli. «Danke, dass ich mithelfen durfte», flüsterte Otti zurück. Dann hüpften sie heim. Hüpf, hüpf, tapp, tapp. Und weisst du was? Wenn du heute einen schönen Traum hast, dann passt Traumli darauf auf. Deine Fantasie hat einen Wert. Von dir. Mit dir. Für dich.', pic:['sunny-sleep','fompa']}
  ]},
  { id:'zahnfee', title:'Das Zahnböcklein und die Zahnfee', sub:'Wer hat heute schön geputzt?', pic:['bock','moon'], parts:[
   {t:'Das Zahnböcklein ist eine kleine weisse Geiss mit einer blauen Zahnbürste. Es wohnt in einer kleinen weissen Box. Und es hat eine allerbeste Freundin: die Zahnfee.', pic:['bock']},
@@ -1779,13 +1780,13 @@ const MOVES = [
   ['Jetzt machen wir uns ganz klein, wie Otti, wenn er erschrickt. Eine kleine Stachelkugel!', 5],
   ['Und wieder gross! Wir winken allen Leuten in New York zu. Hallo!', 6],
   ['HUUUP! Ein letztes Mal ganz still. Super, du bist ein echter Stadt-Profi!', 4]]},
- {id:'wolken', title:'Wolkenhüpfen mit Fompa', fig:'fompa', sub:'Fomp, fomp! Weich wie auf Wolken.', steps:[
-  ['Fomp! Ich bin Fompa. Wir hüpfen auf weichen Wolken. Ganz kleine, weiche Hüpfer, fomp, fomp.', 8],
+ {id:'wolken', title:'Wolkenhüpfen mit Traumli', fig:'fompa', sub:'Hüpf, hüpf! Weich wie auf Wolken.', steps:[
+  ['Huii! Ich bin Traumli. Wir hüpfen auf weichen Wolken. Ganz kleine, weiche Hüpfer, hüpf, hüpf.', 8],
   ['Jetzt ein grosser Hüpfer auf die nächste Wolke. Und noch einer!', 8],
   ['Oh, die Wolke wackelt! Breite die Arme aus und halte das Gleichgewicht.', 6],
   ['Jetzt fangen wir verlorene Träume: Greif ganz hoch in die Luft, links … und rechts.', 8],
   ['Leg die Träume ganz vorsichtig in dein Traumnetz, auf deinem Bauch.', 5],
-  ['Und zum Schluss setzen wir uns weich auf eine Wolke. Atme ein … und aus. Fomp!', 6]]}
+  ['Und zum Schluss setzen wir uns weich auf eine Wolke. Atme ein … und aus. Huii!', 6]]}
 ];
 function renderGames(){
   $('#glist').innerHTML = MOVES.map((g,i) => `
@@ -1959,7 +1960,7 @@ const TALKERS = {
   sunny:{l:'Otti', pitch:OTTI.pitch, pre:'', hi:'Hallo! Ich bin Otti, der kleine Igel. Schön, dass du mit mir redest.', me:'Ich bin Otti, ein kleiner Igel mit einem gelben Halstuch. Meine Stacheln sind ganz weich, fast.', fav:'Am liebsten mag ich Walderdbeeren und weiches Moos.', joke:'Weisst du, warum Igel nie streiten? Weil sie immer alles piksfein machen. Hihi!'},
   nova:{l:'Nova', pitch:1.3, pre:'Piep! ', hi:'Hallo! Ich bin Nova, der kleine blaue Roboter.', me:'Ich bin Nova, ein kleiner Roboter. Mein Bauch leuchtet hellblau, wenn ich mich freue.', fav:'Am liebsten tanze ich den Roboter-Tanz. Piep-piep!', joke:'Warum ist der Roboter so ruhig? Er hat gerade Pause. Piep, hihi.'},
   kiki:{l:'Kiki', pitch:1.8, pre:'Blink, blink! ', hi:'Hallo! Ich bin Kiki, die kleine leuchtende KI.', me:'Ich bin Kiki, eine kleine Spiel-KI. Ich lerne noch, und manchmal irre ich mich. Das ist okay.', fav:'Am liebsten zähle ich Sterne. Manchmal verzähle ich mich.', joke:'Was sagt ein Stern zum anderen? Du strahlst heute aber! Hihi.'},
-  fompa:{l:'Fompa', pitch:1.45, pre:'Fomp! ', hi:'Hallo! Ich bin Fompa, ganz flauschig und ein bisschen kitzlig.', me:'Ich bin Fompa. Ich wohne im Mondschein-Land und sammle Träume, die jemand verloren hat. Mein Stern am Bauch leuchtet, wenn ich einen finde.', fav:'Am liebsten hüpfe ich auf weichen Wolken. Fomp, fomp!', joke:'Was macht Fompa, wenn es regnet? Es wird ein Flausch-Schwamm! Hihi.'},
+  fompa:{l:'Traumli', pitch:1.45, pre:'Huii! ', hi:'Hallo! Ich bin Traumli, ganz flauschig und ein bisschen kitzlig.', me:'Ich bin Traumli. Ich wohne im Mondschein-Land und sammle Träume, die jemand verloren hat. Mein Stern am Bauch leuchtet, wenn ich einen finde.', fav:'Am liebsten hüpfe ich auf weichen Wolken. Hüpf, hüpf!', joke:'Was macht Traumli, wenn es regnet? Es wird ein Flausch-Schwamm! Hihi.'},
   prinz:{l:'Milou', pitch:1.25, pre:'', hi:'Hallo! Ich bin Milou, die Prinzessin aus dem Mondschein-Land.', me:'Ich bin Milou, die Wächterin der fünf Elemente: Holz, Feuer, Erde, Metall und Wasser. Meine Mama hat sie mir anvertraut. Im Mondschein-Land passt immer eine Prinzessin auf, auf unser Land und auch auf die Erde.', fav:'Am liebsten bin ich mit Otti unterwegs. Und abends schaue ich, ob alle fünf Elemente gut schlafen.', joke:'Warum trägt der Mond nie eine Krone? Weil er schon so hell strahlt! Hihi.'},
   hase:{l:'Hoppel', pitch:1.4, pre:'', hi:'Hallo! Ich bin Hoppel, der Hase. Ich bin Ottis Freund.', me:'Ich bin Hoppel. Meine Ohren sind so lang, dass ich sogar flüsternde Blätter höre.', fav:'Am liebsten esse ich knackige Rüebli und hüpfe über Pfützen.', joke:'Was sagt ein Hase im Winter? Hoppla, ist das kalt! Hihi.'},
   fuchs:{l:'Flori', pitch:1.2, pre:'', hi:'Hallo! Ich bin Flori, der Fuchs. Ich kenne jeden Weg im Wald.', me:'Ich bin Flori. Mein Schwanz ist buschig und warm, wie eine Decke.', fav:'Am liebsten finde ich Verstecke. Wer findet mich zuerst?', joke:'Warum ist der Fuchs so schlau? Weil er immer zuhört. Hihi.'},
