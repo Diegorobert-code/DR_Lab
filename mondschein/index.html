@@ -332,10 +332,10 @@ h3.ch{font-size:19px;margin-bottom:10px}
 </style>
 </head>
 <body>
+<script src="../trickfilmwelt/trickfilmwelt.js" data-app="mondschein" data-stil="aura" data-ruhe="1" data-szene="aura/nacht.webp" data-welt="aura/welt.webp" data-figur="aura/figur-idle.webp" data-posen="aura/figur-winkt.webp" data-css="aura/aura.css" data-text="Willkommen im Mondschein-Wald" data-karten=".card;#figurStart img" data-blaetter=".win>.card;#tour;#hoeren;#figurStart" data-knoepfe=".kimu"></script>
 <link rel="stylesheet" href="../nova/puppe.css">
 <link rel="stylesheet" href="grafik.css">
 <script src="../nova/puppe.js"></script>
-<script src="../nova/intro.js" data-art="funken" data-bild="figur-gross.jpg" data-text="Willkommen im Mondschein-Wald"></script>
 <div id="figurStart" role="dialog" aria-label="Otti"><img src="figur-gross.jpg" alt="Otti"><h1>Otti</h1><p>Gutenachtgeschichten aus dem Mondschein-Land.</p><button type="button" id="figurStartGo">Los geht's</button></div>
 <script>(function(){var s=document.getElementById('figurStart');try{if(sessionStorage.getItem('figurStart')||localStorage.getItem('ms_figurStart')||location.hash==='#gutenacht')s.hidden=true;}catch(e){}document.getElementById('figurStartGo').onclick=function(){s.hidden=true;try{sessionStorage.setItem('figurStart','1');}catch(e){}};})();</script>
 
@@ -2333,7 +2333,8 @@ const TK_RATES = [[0.85,'Ruhig'],[1.0,'Normal'],[1.15,'Flink']];
 // Otti grüsst flüssig zurück (Puppe aus #136: winken + Mund), ohne Puppe hüpft er kurz.
 function ottiGruesst(img, satz){
   if (!img) return;
-  if (window.Puppe && Puppe.winkeZurueck && /figur-gross|otti-3d|posen\/winkt/.test(img.src)){
+  // Aura-Bilder (23.10.): figur-gross.jpg und posen/*.jpg sind neue Szenen, die alten Puppen-Masse passen nicht mehr: dann hüpft Otti nur.
+  if (window.Puppe && Puppe.winkeZurueck && !document.documentElement.classList.contains('tfw-aura') && /figur-gross|otti-3d|posen\/winkt/.test(img.src)){
     try { Puppe.winkeZurueck(img, Object.assign({ figur:'otti', antippen:false }, /otti-3d/.test(img.src) ? {} : OTTI_WINK)).gruesse('winken+reden', { satz: satz || 'Hallo!', blase:false, ton:false }); return; } catch(e){}
   }
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;

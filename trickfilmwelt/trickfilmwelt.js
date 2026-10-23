@@ -24,7 +24,8 @@
        data-szene="aura/nacht.webp"   (Nachtszene des Eingangs, quadratisch)
        data-welt="aura/welt.webp"     (bleibender, weicher Nachthintergrund der App)
        data-figur="aura/idle.webp"    (Figur freigestellt, 3D)
-       data-posen="aura/winkt.webp;aura/lacht.webp" (winkt, dann lacht sie)
+       data-posen="aura/winkt.webp;aura/lacht.webp" (winkt, dann lacht sie; nur eine Pose: winkt und bleibt)
+       data-ruhe="1"                  (ruhigere Nacht: weniger Lichtpunkte, sanfteres Licht)
    Eingang: ein Lichtfunke schwebt durch den Wald, landet, die Figur leuchtet auf, winkt und lacht, warmes Licht öffnet die App.
    Bei «weniger Bewegung» nur das ruhige Bild und sanftes Ausblenden. */
 (function () {
@@ -37,6 +38,7 @@
   var APP = ds.app || location.pathname;
   var NACHT = ds.nacht === "1";
   var AURA = ds.stil === "aura";
+  var RUHE = AURA && ds.ruhe === "1"; /* ruhigere Nacht: weniger Lichtpunkte, sanfteres Licht (z. B. Mondschein, Gutenacht) */
   var RUHIG = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
   var FARBE = NACHT
     ? { papier: "#f3eee6", stein: ["#c9bfe2", "#b9cbe8", "#d9cfe9"], licht: "255,240,205", gold: "214,178,106", tinte: "#4a4060" }
@@ -46,6 +48,7 @@
 
   /* ── Bleibende Bilderbuch-Welt ───────────────────────────────────────────── */
   html.classList.add(AURA ? "tfw-aura" : "tfw");
+  if (RUHE) html.classList.add("tfw-ruhe");
   if (NACHT && !AURA) html.classList.add("tfw-nacht");
   [BASIS + (AURA ? "aura.css" : "trickfilmwelt.css"), ds.css && abs(ds.css)].forEach(function (h) {
     if (!h) return; var l = d.createElement("link"); l.rel = "stylesheet"; l.href = h; (d.head || html).appendChild(l);
@@ -59,7 +62,7 @@
     if (AURA) {
       /* Aura: weicher Nachtschein und ein paar schwebende Lichtpunkte (nur transform und opacity) */
       var h = '<i class="tfw-schein"></i>';
-      for (var i = 0; i < 14; i++) h += '<i class="tfw-licht" style="--x:' + ((i * 37 + 11) % 100) + '%;--y:' + (40 + (i * 23) % 58) + '%;--d:' + (9 + (i * 7) % 9) + 's;--v:-' + ((i * 13) % 9) + 's;--s:' + (3 + i % 3) + 'px"></i>';
+      for (var i = 0; i < (RUHE ? 8 : 14); i++) h += '<i class="tfw-licht" style="--x:' + ((i * 37 + 11) % 100) + '%;--y:' + (40 + (i * 23) % 58) + '%;--d:' + (9 + (i * 7) % 9) + 's;--v:-' + ((i * 13) % 9) + 's;--s:' + (3 + i % 3) + 'px"></i>';
       w.innerHTML = h;
       d.body.insertBefore(w, d.body.firstChild);
       return;
@@ -307,7 +310,7 @@
       var DAUER = modus === "voll" ? 7600 : modus === "ruhig" ? 1300 : 700;
       if (tx) setTimeout(function () { if (tx) tx.classList.add("an"); }, modus === "voll" ? 3700 : 60);
       var rz = zufall(23), licht = [];
-      for (var i = 0; i < 42; i++) licht.push({ x: rz(), y: rz(), r: .8 + rz() * 2.2, v: .006 + rz() * .018, p: rz() * 6.3, f: i % 4 === 0 ? "196,160,255" : "255,214,130" });
+      for (var i = 0; i < (RUHE ? 22 : 42); i++) licht.push({ x: rz(), y: rz(), r: .8 + rz() * 2.2, v: .006 + rz() * .018, p: rz() * 6.3, f: i % 4 === 0 ? "196,160,255" : "255,214,130" });
       var t0 = performance.now();
       function bild(now) {
         if (istFertig()) return;
@@ -408,7 +411,7 @@
         if (hell > 0) {
           ctx.save(); ctx.globalCompositeOperation = "lighter";
           var cx = L.x, cy = L.y - L.h * .5, r = Math.hypot(W, H) * (.2 + hell), g = ctx.createRadialGradient(cx, cy, 1, cx, cy, r);
-          g.addColorStop(0, "rgba(255,214,150," + (hell * .7) + ")"); g.addColorStop(.55, "rgba(170,130,255," + (hell * .38) + ")"); g.addColorStop(1, "rgba(120,90,220,0)");
+          g.addColorStop(0, "rgba(255,214,150," + (hell * (RUHE ? .5 : .7)) + ")"); g.addColorStop(.55, "rgba(170,130,255," + (hell * .38) + ")"); g.addColorStop(1, "rgba(120,90,220,0)");
           ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.restore();
         }
       }
