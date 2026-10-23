@@ -1,5 +1,5 @@
 // Food and Flow – Offline-Cache (nur eigene Dateien, keine Essensdaten)
-const CACHE = 'flo-v20';
+const CACHE = 'flo-v21';
 const FILES = ['design.css', 'design.js', 'grafik.css', 'grafik.js', 'mahlfarben.js', 'ton-ios.js', '../nova/intro.js', '../nova/buehne.js', '../nova/figuren/flo.jpg', './icon-192.png', './posen/ruhig.jpg', './posen/hoert.jpg', './posen/winkt.jpg', './posen/jubel.jpg', './posen/teller.jpg', './posen/horcht.jpg', './posen/wecker.jpg', './runde8.js', './einkauf.js', './runde7.js', './runde6.js', './saison/advent.jpg', './besuch/fompa.jpg', './besuch/granny.jpg', './besuch/mama-affe.jpg', './besuch/waefwaef.jpg', './', './index.html', './lernen.js', './flo.js', './flo2.js', './runde4.js', './sprechen.js', './feedback.js', './figur.jpg', './figur-gross.jpg', './icon-180.png', './manifest.webmanifest', './posen/posen.json', '../nova/nova.js', '../nova/puppe.js', '../nova/puppe.css', '../nova/seelen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

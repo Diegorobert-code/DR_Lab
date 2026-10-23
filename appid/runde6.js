@@ -38,7 +38,7 @@
       ['Flos Spruch', '«Essen ist Freude, keine Prüfung.»'],
       ['Flos Spruch', '«Kein Stress. Ein Glas Wasser, und weiter geht es.»'],
       ['Geheimnis', 'Flo hat eine Schublade nur für dunkle Schokolade. Ein Stück am Tag, mit Genuss.'],
-      ['Freunde', 'Flo besucht gern Granny. Sie hat immer Suppe auf dem Herd.'],
+      ['Freunde', 'Flo besucht gern Rosa. Sie hat immer Suppe auf dem Herd.'],
       ['Lieblingsfarbe', 'Flo findet, ein Teller sollte bunt sein wie ein Regenbogen. Je mehr Farben, desto fröhlicher.'],
       ['Macke', 'Flo gibt jedem Gemüse einen Namen. Die Rüebli heissen alle Rüdi.'],
       ['Flos Spruch', '«Hör auf deinen Bauch. Er weiss oft mehr als jede Zahl.»'],
@@ -56,7 +56,7 @@
     besuchTitel: 'Besuch bei Flo',
     besuch: [
       { name: 'Fompa', bild: 'besuch/fompa.jpg', satz: 'Fompa kommt mit seinem Rechenheft vorbei. Er und Flo zählen zusammen, wie viele Farben auf dem Teller sind.', morgen: 'Fompa will Flo beim Einkaufszettel helfen.', link: '<a class="r6-btn" href="../fompa/">Zu Fompa 🧮</a>' },
-      { name: 'Granny', bild: 'besuch/granny.jpg', satz: 'Granny bringt einen Topf Suppe. «Für dich, Flo. Du rennst so viel.» Flo isst zwei Teller.', morgen: 'Granny will das Rezept für Flos Apfel mit Zimt.', link: '<a class="r6-btn" href="../granny/">Zu Granny 👵</a>' },
+      { name: 'Rosa', bild: 'besuch/granny.jpg', satz: 'Rosa bringt einen Topf Suppe. «Für dich, Flo. Du rennst so viel.» Flo isst zwei Teller.', morgen: 'Rosa will das Rezept für Flos Apfel mit Zimt.', link: '<a class="r6-btn" href="../granny/">Zu Rosa 👵</a>' },
       { name: 'Mama Affe', bild: 'besuch/mama-affe.jpg', satz: 'Mama Affe fragt nach einem Zvieri für Kinder. Flo schlägt Apfelschnitze mit Nüssen vor.', morgen: 'Mama Affe bringt Bananenbrot.', link: '<a class="r6-btn" href="../mama-affe/">Zu Mama Affe 🐒</a>' },
       { name: 'Wäf Wäf', bild: 'besuch/waefwaef.jpg', satz: 'Wäf Wäf will mit Flo joggen. Nach einer Runde liegen beide glücklich im Gras.', morgen: 'Wäf Wäf wartet schon mit der Leine im Maul.', link: '<a class="r6-btn" href="../waefwaef/">Zu Wäf Wäf 🐾</a>' }
     ],

@@ -399,7 +399,7 @@ function woche(){
   let min=0,st=0;h.forEach(x=>x.list.forEach(i=>{if(i.act==="schritte")st+=i.steps;else if(i.act)min+=i.min}));
   const a=analyse();
   const s1=`Diese Woche hast du mir an ${tage.length} von 7 Tagen erzählt, was du isst.${top?` ${BYID[top[0]][1]} war dein treuer Begleiter (${top[1]} Mal).`:""}`;
-  const s2=best&&best.v>=1?`Am ${WT[best.x.d.getDay()]} gab es am meisten Farbe auf dem Teller: rund ${Math.round(best.v)} Portionen Gemüse und Früchte.`:"Gemüse und Früchte kamen diese Woche eher kurz. Eine Handvoll Rüebli zum Zmittag ist schon ein Anfang.";
+  const s2=best&&best.v>=1?`Am ${WT[best.x.d.getDay()]} gab es am meisten Farbe auf dem Teller: rund ${Math.round(best.v)} ${Math.round(best.v)===1?"Portion":"Portionen"} Gemüse und Früchte.`:"Gemüse und Früchte kamen diese Woche eher kurz. Eine Handvoll Rüebli zum Zmittag ist schon ein Anfang.";
   const s3=min||st?`Bewegt hast du dich ${min?fmt(min)+" Minuten":""}${min&&st?" und ":""}${st?"mit rund "+fmt(st)+" Schritten":""}. Dein Körper hat das gemerkt.`:"Bewegung kam diese Woche eher kurz. Ein Spaziergang zählt auch.";
   const vor=a.days>=5&&a.pMiss>=a.days*.5?proteinIdeas(a)[0]:a.days>=5&&a.fishDays<=1?"Einmal Fisch, zum Beispiel Ofenlachs mit Härdöpfeln.":best&&best.v<3?"Jeden Tag eine Portion Gemüse mehr, zum Beispiel Tomaten zum Brot.":"Mach einfach weiter so, ganz ohne Druck.";
   const mu=muster();
@@ -417,7 +417,7 @@ function merkt(){
   const z=Object.entries(zm).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>BYID[x[0]]&&BYID[x[0]][1]).filter(Boolean);
   const wo=Object.keys(EIGEN.alias).concat(EIGEN.foods.map(e=>e[1]));
   const Z=X.zahl,mu=muster(),s=srv();
-  const rows=[["📅","Erzählte Tage",tage?tage+" Tage":"noch keine"],["🍽️","Am liebsten",top.join(", ")||"–"],["☕","Typischer Zmorge",z.join(" und ")||"–"],
+  const rows=[["📅","Erzählte Tage",tage?tage+(tage===1?" Tag":" Tage"):"noch keine"],["🍽️","Am liebsten",top.join(", ")||"–"],["☕","Typischer Zmorge",z.join(" und ")||"–"],
     ["🧠","Neue Wörter gelernt",wo.length?wo.slice(-6).join(", "):"noch keine (bei Unbekanntem «Ähnlich wie …» wählen)"],
     ["💛","Befinden",X.mood.length?X.mood.length+" Antworten"+(mu.length?" · "+musterSatz(mu[0]):""):"noch keine"],
     ["🎙️","Wie du erzählst",`Mikrofon ${Z.mikrofon||0}× · getippt ${Z.text||0}× · wie gestern ${(Z.wiegestern||0)+(Z.liebling||0)}× · Wasser ${Z.wasser||0}×`]];
