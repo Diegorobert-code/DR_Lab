@@ -80,7 +80,7 @@
       }
     }, { passive: true });
   }
-  /* «Für Eltern»-Pille von lernen.js: knapp über die untere Leiste (data-pille-ueber=".wege"), damit sie keine Beschriftung deckt.
+  /* «Für Eltern»-Pille von lernen.js: knapp über die untere Leiste (data-pille-ueber=".wege;.aktionen", im Spiel die Knopfreihe), damit sie keine Beschriftung deckt.
      lernen.js bleibt unverändert; nur die Lage dieser einen Pille in dieser App wird gesetzt. */
   function pille() {
     var ueber = me && me.dataset && me.dataset.pilleUeber; if (!ueber) return;
@@ -88,7 +88,9 @@
     function setze() {
       var host = d.querySelector("[data-drlab-lernen]"), p = host && host.shadowRoot && host.shadowRoot.querySelector(".pill");
       if (!p) return;
-      var leiste = d.querySelector(ueber), r = leiste && leiste.getClientRects().length ? leiste.getBoundingClientRect() : null;
+      /* erste sichtbare Leiste (im Spiel ist .wege versteckt, dann die Knopfreihe darüber) */
+      var r = null;
+      ueber.split(";").some(function (s) { var l = d.querySelector(s.trim()); if (l && l.getClientRects().length) { var q = l.getBoundingClientRect(); if (q.height > 0 && q.top > 0) { r = q; return true; } } return false; });
       var soll = r && r.top > 0 ? Math.round(innerHeight - r.top + 4) : 0;
       /* lernen.js weicht selbst nach oben aus (Nova-Knopf): dann gilt der höhere Wert */
       var ihr = p.style.bottom && p.style.bottom !== meins ? parseInt(p.style.bottom, 10) || 0 : 0;
