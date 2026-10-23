@@ -98,3 +98,11 @@ html .wrap :is(.opt,.les,.box,.weg){box-shadow:none!important}
 @media (min-width:360px){html .r7-neu-gitter{grid-template-columns:repeat(2,minmax(0,1fr))}}
 html .r7-neu-k{min-width:0}
 html .r7-neu-k :is(b,small){max-width:100%;overflow-wrap:break-word;hyphens:auto}
+
+/* QA 23.10.: «Mit Mr. Ping reden» als runder Knopf statt breiter Pille (deckt weniger Inhalt ab),
+   Fusszeile frei, schwebende Knöpfe weg, solange ein App-Fenster offen ist */
+html body{padding-bottom:calc(170px + env(safe-area-inset-bottom,0px))}
+html .nova-pille{font-size:0!important;width:48px;height:48px;padding:0!important;display:grid;place-items:center;right:82px!important}
+html .nova-pille::before{content:"☎\FE0E";font-size:24px;line-height:1;color:#fff}
+html .nova-pille.an::before{content:"■";font-size:20px}
+html:has(.mp2-will.da, .scrim.show) :is(.nova-pille,.nova-btn,.sp-knopf){visibility:hidden!important;pointer-events:none!important}

@@ -1,5 +1,5 @@
 /* TradePing · Runde 7 (21.10.2026): Design, Verifizierung, drei neue Helfer. Keine Anlageberatung: nur Rechnen, Regeln, Ruhe.
-   1. «Gefühls-Check vor dem Kauf»: Wie fühlen Sie sich? Mr. Ping nennt die passende Regel (Vorbild: Tilt-Meter in Edgewonk, Check-in in Headspace).
+   1. «Gefühls-Check vor dem Kauf»: Wie fühlst du dich? Mr. Ping nennt die passende Regel (Vorbild: Tilt-Meter in Edgewonk, Check-in in Headspace).
    2. «Was wäre, wenn …?»: Der eigene Topf bei −50 % bis +50 % – Pause-Regel und Verlustgrenzen sichtbar (Vorbild: Stresstest bei Portfolio Visualizer).
    3. «Wochenkarte»: Pings, Trades, Lehren der Woche als Karte zum Teilen (Vorbild: Wochenrückblick in Apple Fitness, Spotify Wrapped).
    Alles nur auf diesem Gerät. */
@@ -44,11 +44,11 @@ window.R7 = {
     function wert(p) { return p.kauf && p.jetzt ? p.einsatz * p.jetzt / p.kauf : (p.einsatz || 0); }
     function geh(id) { R.zu(); var z = document.getElementById(id); if (z) setTimeout(function () { z.scrollIntoView({ behavior: R.ruhig() ? 'auto' : 'smooth', block: 'start' }); }, 340); }
     var G = {
-      ruhig: ['😌', 'Ruhig', 'Gute Voraussetzung. Prüfen Sie trotzdem vorher: Verlustgrenze und Ziel festlegen, Gebühren rechnen.', 'mpRechner', 'Zu «Prüfen»'],
-      fomo: ['🤩', 'Aufgeregt, alle kaufen', 'Wenn alle kaufen, ist der Zug oft schon abgefahren. Legen Sie die Idee auf den Merkzettel und schlafen Sie eine Nacht darüber.', 'r4Merk', 'Auf den Merkzettel'],
+      ruhig: ['😌', 'Ruhig', 'Gute Voraussetzung. Prüf trotzdem vorher: Verlustgrenze und Ziel festlegen, Gebühren rechnen.', 'mpRechner', 'Zu «Prüfen»'],
+      fomo: ['🤩', 'Aufgeregt, alle kaufen', 'Wenn alle kaufen, ist der Zug oft schon abgefahren. Leg die Idee auf den Merkzettel und schlaf eine Nacht darüber.', 'r4Merk', 'Auf den Merkzettel'],
       aerger: ['😠', 'Will Verlust zurück', 'Verluste zurückholen wollen ist der teuerste Gedanke an der Börse. Heute keine neuen Titel. Das ist eine Regel, keine Strafe.', 'mpJournal', 'Ins Journal schreiben'],
-      lang: ['🥱', 'Gelangweilt', 'Langeweile ist kein Kaufgrund. Lernen Sie lieber einen neuen Begriff, das bringt sicher etwas.', 'mpLexikon', 'Etwas lernen'],
-      angst: ['😟', 'Unsicher, ängstlich', 'Angst ist ein Signal. In den Spieltopf gehört nur, was Sie verlieren dürfen. Heute nichts tun ist auch ein Entscheid.', 'topf', 'Topf anschauen']
+      lang: ['🥱', 'Gelangweilt', 'Langeweile ist kein Kaufgrund. Lern lieber einen neuen Begriff, das bringt sicher etwas.', 'mpLexikon', 'Etwas lernen'],
+      angst: ['😟', 'Unsicher, ängstlich', 'Angst ist ein Signal. In den Spieltopf gehört nur, was du verlieren darfst. Heute nichts tun ist auch ein Entscheid.', 'topf', 'Topf anschauen']
     };
     // Zugänglichkeit: Dialog mit Namen, Ping-Tafel per Tastatur scrollbar
     function a11y() {
@@ -61,9 +61,9 @@ window.R7 = {
     var S = {
       gefuehl: function () {
         var log = R.hol('gefuehle', []);
-        var html = fig('Bevor Sie kaufen: Wie fühlen Sie sich gerade? Ehrlich ist hier ganz privat, nichts verlässt das Handy. Keine Anlageberatung, nur Ihre eigenen Regeln.') + '<div class="r7-gefuehle" role="group" aria-label="Gefühl wählen">' +
+        var html = fig('Bevor du kaufst: Wie fühlst du dich gerade? Ehrlich ist hier ganz privat, nichts verlässt das Handy. Keine Anlageberatung, nur deine eigenen Regeln.') + '<div class="r7-gefuehle" role="group" aria-label="Gefühl wählen">' +
           Object.keys(G).map(function (k) { return '<button type="button" data-g="' + k + '" aria-pressed="false"><span class="e" aria-hidden="true">' + G[k][0] + '</span>' + G[k][1] + '</button>'; }).join('') +
-          '</div><div id="r7GAnt" aria-live="polite"></div><h3>Ihre letzten 14 Tage</h3><div id="r7GLog"></div>';
+          '</div><div id="r7GAnt" aria-live="polite"></div><h3>Deine letzten 14 Tage</h3><div id="r7GLog"></div>';
         var inh = R.blatt({ titel: 'Gefühls-Check vor dem Kauf', html: html, bild: 'posen/denkt.jpg' });
         function zeigLog() {
           var grenze = Date.now() - 14 * 864e5, z = {};
@@ -90,7 +90,7 @@ window.R7 = {
         var beispiel = !topf.length;
         if (beispiel) topf = [{ name: 'Beispiel A', einsatz: 100, grenze: 15 }, { name: 'Beispiel B', einsatz: 100, grenze: 15 }];
         var ein = topf.reduce(function (a, p) { return a + (p.einsatz || 0); }, 0);
-        var html = (beispiel ? R.leer('Noch kein Titel im Topf. Ich rechne mit einem Beispiel: 2 × CHF 100.', 'posen/denkt.jpg') + '<p>Schieben Sie den Regler: So sähe Ihr Topf aus, wenn sich alles gleich stark bewegt. Nur Rechnen, keine Vorhersage, keine Anlageberatung.</p>' : fig('Schieben Sie den Regler: So sähe Ihr Topf aus, wenn sich alles gleich stark bewegt. Nur Rechnen, keine Vorhersage, keine Anlageberatung.')) +
+        var html = (beispiel ? R.leer('Noch kein Titel im Topf. Ich rechne mit einem Beispiel: 2 × CHF 100.', 'posen/denkt.jpg') + '<p>Schieb den Regler: So sähe dein Topf aus, wenn sich alles gleich stark bewegt. Nur Rechnen, keine Vorhersage, keine Anlageberatung.</p>' : fig('Schieb den Regler: So sähe dein Topf aus, wenn sich alles gleich stark bewegt. Nur Rechnen, keine Vorhersage, keine Anlageberatung.')) +
           '<label for="r7W">Bewegung aller Titel: <b id="r7WP">0 %</b></label><input type="range" id="r7W" min="-50" max="50" step="5" value="0">' +
           '<div class="r7-ww" aria-live="polite"><div class="r7-karte"><span class="r7-klein">Topf danach</span><div class="r7-zahl" id="r7WT"></div></div><div class="r7-karte" id="r7WDk"><span class="r7-klein">Seit Einsatz</span><div class="r7-zahl" id="r7WD"></div></div></div>' +
           '<div class="r7-karte" id="r7WR"></div><ul class="r7-tz" id="r7WL"></ul>';
@@ -175,7 +175,7 @@ window.R7 = {
   neu: [
     { id: 'gefuehl', e: '💭', titel: 'Gefühls-Check', text: 'Vor dem Kauf kurz ehrlich sein' },
     { id: 'wenn', e: '🎚️', titel: 'Was wäre, wenn …?', text: 'Topf bei −50 % bis +50 %' },
-    { id: 'woche', e: '🗓️', titel: 'Wochenkarte', text: 'Ihre Woche als Karte' }
+    { id: 'woche', e: '🗓️', titel: 'Wochenkarte', text: 'Deine Woche als Karte' }
   ]
 };
 

@@ -1,52 +1,52 @@
-/* Mr. Ping: höflich, mit Sie, Fliege und goldener Glocke. Keine Anlageberatung: nur Wörter, Regeln, Ruhe. */
+/* Mr. Ping: höflich, mit du, Fliege und goldener Glocke. Keine Anlageberatung: nur Wörter, Regeln, Ruhe. */
 window.R6 = {
   kuerzel: 'tp', figur: 'Mr. Ping', bild: 'posen/winkt.jpg',
   ort: '.ping-buehne', wo: 'nach', versatz: 3,
   morgen: 'Guten Morgen', mittag: 'Grüezi', nachmittag: 'Guten Tag', abend: 'Guten Abend', nacht: 'Gute Nacht',
-  nameFrage: 'Wie darf ich Sie nennen? Ich merke es mir nur auf diesem Handy.',
+  nameFrage: 'Wie darf ich dich nennen? Ich merke es mir nur auf diesem Handy.',
   nameDanke: 'Sehr erfreut, {n}. Ich läute nur, wenn es zählt.',
-  wiederDa: 'Schön, sind Sie wieder da.',
+  wiederDa: 'Schön, bist du wieder da.',
   saetze: [
     'Mein Lieblingsding? Meine goldene Glocke. Sie läutet nur, wenn es wirklich zählt.',
     'Kleine Macke: Ich poliere meine Glocke, wenn die Kurse zappeln. Das beruhigt.',
     'Mein Spruch: Geduld ist die feinste Strategie.',
     'Ich trage immer Fliege. Auch sonntags. Man weiss ja nie, wer anläutet.',
-    'Beraten darf ich nicht. Aber ich halte Wache, damit Sie nicht ständig schauen müssen.',
+    'Beraten darf ich nicht. Aber ich halte Wache, damit du nicht ständig schauen musst.',
     'Ein Verlust, der die Regel einhält, ist kein Fehler. Er ist Disziplin.',
     'Ich mag Abstand: Abstand zur Marke, Abstand zur Panik.',
     'Fompa sagt, ich sei zu förmlich. Ich sage: Höflichkeit kostet keine Gebühr.',
     'Spielgeld bleibt Spielgeld. Die Miete spielt nicht mit.',
-    'Wenn nichts läutet, ist alles ruhig. Gönnen Sie sich einen Kaffee.',
+    'Wenn nichts läutet, ist alles ruhig. Gönn dir einen Kaffee.',
     'Ich lese abends Kurstabellen wie andere Leute Krimis.',
     'Der schönste Ton? Ding. Einmal. Dann Stille.'
   ],
   vorliebe: {
-    frage: 'Wie mögen Sie Ihre Pings?',
+    frage: 'Wie magst du deine Pings?',
     wahl: { leise: '🔕 Selten und leise', klar: '🔔 Klar und deutlich' },
     antwort: { leise: 'Sehr gerne. Ich läute nur, wenn eine Marke erreicht ist.', klar: 'Verstanden. Ein klares Ding, dann Ruhe.' },
-    merk: { leise: 'Ich weiss noch: Sie mögen es leise.', klar: 'Ich weiss noch: Sie mögen ein klares Ding.' }
+    merk: { leise: 'Ich weiss noch: Du magst es leise.', klar: 'Ich weiss noch: Du magst ein klares Ding.' }
   },
   saison: {
-    halloween: 'Gruselige Kurven gibt es auch an der Börse. Ihre Regeln bleiben Ihre Regeln.',
+    halloween: 'Gruselige Kurven gibt es auch an der Börse. Deine Regeln bleiben deine Regeln.',
     herbst: 'Blätter fallen, Kurse manchmal auch. Ruhig bleiben.',
     vorAdvent: 'Ab 1. Dezember läute ich jeden Tag ein Türchen auf.',
     winter: 'Gut eingepackt, auch der Spieltopf.'
   },
   ueTitel: 'Mr. Pings Tageskarte', einsammeln: 'In die Westentasche',
   ueberraschungen: [
-    { e: '📘', art: 'Wort des Tages', t: 'Stop-Loss: eine Grenze, die Sie vor dem Kauf festlegen. Danach wird sie nie nach unten geschoben.' },
+    { e: '📘', art: 'Wort des Tages', t: 'Stop-Loss: eine Grenze, die du vor dem Kauf festlegst. Danach wird sie nie nach unten geschoben.' },
     { e: '🧘', art: 'Mini-Aufgabe', t: 'Heute einmal nicht auf die Kurse schauen. Ich halte Wache.' },
     { e: '📘', art: 'Wort des Tages', t: 'Volatilität: wie stark ein Kurs schwankt. Hoch heisst mehr Auf und Ab, nicht mehr Gewinn.' },
-    { e: '📝', art: 'Mini-Aufgabe', t: 'Schreiben Sie ins Journal, warum Sie Ihren letzten Titel gewählt haben. Ein Satz reicht.' },
+    { e: '📝', art: 'Mini-Aufgabe', t: 'Schreib ins Journal, warum du deinen letzten Titel gewählt hast. Ein Satz reicht.' },
     { e: '🔔', art: 'Spruch', t: 'Ein Ping ist eine Information, kein Befehl.' },
     { e: '📘', art: 'Wort des Tages', t: 'Gebühren: Kleine Spesen sind bei CHF 50 schnell ein paar Prozent. Vorher rechnen.' },
     { e: '🏦', art: 'Fundstück', t: 'Was im Tresor liegt, spielt nicht mehr mit.' },
     { e: '⏳', art: 'Spruch', t: 'Wer nicht muss, muss nicht handeln.' },
     { e: '📘', art: 'Wort des Tages', t: 'Diversifikation: nicht alles auf eine Karte. Darum vier Titel à CHF 50.' },
-    { e: '☕', art: 'Mini-Aufgabe', t: 'Vor jedem Klick einmal tief durchatmen. Ist es noch Ihre Regel?' },
-    { e: '📘', art: 'Wort des Tages', t: 'Limit-Order: Sie legen fest, zu welchem Preis höchstens gekauft oder mindestens verkauft wird.' },
+    { e: '☕', art: 'Mini-Aufgabe', t: 'Vor jedem Klick einmal tief durchatmen. Ist es noch deine Regel?' },
+    { e: '📘', art: 'Wort des Tages', t: 'Limit-Order: Du legst fest, zu welchem Preis höchstens gekauft oder mindestens verkauft wird.' },
     { e: '🎩', art: 'Spruch', t: 'Eleganz heisst: einen Plan haben und ihn langweilig befolgen.' },
-    { e: '📊', art: 'Mini-Aufgabe', t: 'Schauen Sie im Monats-Kalender nach: Wie viele ruhige Tage hatten Sie?' },
+    { e: '📊', art: 'Mini-Aufgabe', t: 'Schau im Monats-Kalender nach: Wie viele ruhige Tage hattest du?' },
     { e: '🛑', art: 'Spruch', t: 'Pause ab −25 % im Topf ist kein Aufgeben. Es ist Klugheit.' }
   ],
   besuch: [
@@ -58,7 +58,7 @@ window.R6 = {
   danke: 'Merci. Ich stecke es in meine Westentasche.',
   wocheVoll: 'Eine ganze Woche! Ding! Das verdient einen Glockenschlag.',
   advent24: 'Mr. Ping wünscht frohe Weihnachten. Heute läutet nur die Kirchenglocke.',
-  fein: 'Spielgeld, keine Anlageberatung. Sie entscheiden immer selbst.'
+  fein: 'Spielgeld, keine Anlageberatung. Du entscheidest immer selbst.'
 };
 
 /* Runde 6 (21.10.2026): «Noch mehr Eigenschaften»
