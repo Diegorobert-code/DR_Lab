@@ -1,0 +1,91 @@
+/* design.css – TradePing im Look «Stille Anlage» (Design-Umbau 23.10.2026).
+   Gelassen und erwachsen: ruhige Liste, grosse Serifen-Überschrift, Tannen-Petrol als einzige Farbe.
+   Nur Optik, wird als letztes Stylesheet geladen. Keine Funktion, keine Texte, keine IDs geändert. */
+html:root{
+  --m-bg:#EEEDE8;--m-surface:#F8F7F3;--m-surface2:#EFEDE6;--m-soft:#E0EAE7;
+  --m-ink:#1F2D2C;--m-ink2:#3F4C4A;--m-ink3:#56625F;--m-line:#DCD9D0;--m-line2:#C6C2B6;
+  --m-accent:#2F6F68;--m-on-accent:#FFFFFF;--m-accent-ink:#285F59;--m-focus:#285F59;
+  --m-plus:#2B6B3F;--m-minus:#A6352A;
+  --m-shadow:none;--m-shadow-s:none;
+  --m-font-title:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --m-font-body:"Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --sans:var(--m-font-body);
+  --fs-r-l:2px;--fs-r-m:2px;--fs-r-s:2px;
+  --d-r:2px;
+}
+html[data-thema=dunkel]:root{
+  --m-bg:#111716;--m-surface:#182120;--m-surface2:#1F2A28;--m-soft:#1C2E2B;
+  --m-ink:#E6ECE9;--m-ink2:#B9C5C1;--m-ink3:#9DABA6;--m-line:#27322F;--m-line2:#37443F;
+  --m-accent:#7CC2B8;--m-on-accent:#0E1615;--m-accent-ink:#8FD0C6;--m-focus:#8FD0C6;
+  --m-plus:#6FD39A;--m-minus:#FF8F84;
+}
+@media (prefers-color-scheme:dark){html:root:not([data-thema=hell]){
+  --m-bg:#111716;--m-surface:#182120;--m-surface2:#1F2A28;--m-soft:#1C2E2B;
+  --m-ink:#E6ECE9;--m-ink2:#B9C5C1;--m-ink3:#9DABA6;--m-line:#27322F;--m-line2:#37443F;
+  --m-accent:#7CC2B8;--m-on-accent:#0E1615;--m-accent-ink:#8FD0C6;--m-focus:#8FD0C6;
+  --m-plus:#6FD39A;--m-minus:#FF8F84;
+}}
+
+/* Grund: ruhiger Papierton, Manrope als Fliesstext */
+html body{background:var(--m-bg)!important;font-family:var(--m-font-body);color:var(--m-ink)}
+html body .wrap{font-family:var(--m-font-body)}
+
+/* Kopf: grosse Serifen-Überschrift, Mr. Ping nur als kleines Zeichen */
+html header.top{background:var(--m-bg);padding:10px 0 6px;align-items:flex-end}
+html header.top .brand img,html .figur-logo{width:30px!important;height:30px!important;border-radius:50%!important;box-shadow:0 0 0 1px var(--m-line2)!important}
+html header.top h1{font-family:var(--m-font-title);font-weight:400;font-size:36px;letter-spacing:-.01em;line-height:1;color:var(--m-ink)}
+html header.top p{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--m-ink3)}
+html .stand{font-size:12px}
+html .r8-thema{border-radius:2px!important;background:transparent!important;border:1px solid var(--m-line2)!important}
+
+/* Reiter: leise Textreihe mit Unterstrich statt Pillen */
+html .r4-nav{background:var(--m-bg)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;border-bottom:1px solid var(--m-line)!important;gap:2px!important}
+html .r4-nav a{border:0!important;border-radius:0!important;background:transparent!important;color:var(--m-ink3)!important;padding:0 10px!important;font-weight:600!important;font-size:13px!important;letter-spacing:.04em;text-transform:uppercase;box-shadow:inset 0 -2px 0 transparent}
+html .r4-nav a.an{color:var(--m-ink)!important;box-shadow:inset 0 -2px 0 var(--m-accent)!important;background:transparent!important}
+
+/* Überschriften in Instrument Serif (nur normale Stärke vorhanden) */
+html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) h2,html .wrap h3,html .r7-blatt h2,html .r8-menue h2{font-family:var(--m-font-title)!important;font-weight:400!important;letter-spacing:0!important;color:var(--m-ink)}
+html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) section>h2,html .wrap .st-kopf h2,html .wrap .sh h2{font-size:26px!important;line-height:1.1!important}
+html #r8WmH{font-family:var(--m-font-body)!important;font-size:11px!important;font-weight:700!important;letter-spacing:.1em!important;text-transform:uppercase;color:var(--m-ink3)!important}
+html .r8-wm .name,html .mp-blase b,html .ping-buehne .unten b,html .tp-schule b{font-family:var(--m-font-title);font-weight:400!important;font-size:22px!important;letter-spacing:0}
+
+/* Karten: flache Gruppen mit Haarlinie, fast eckig */
+html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) :is(section,.card,.topf,.ruhe,.radar-box,.mp-szene,.ping-buehne,.r8-tp,.r7-neu,.r6,.mp-karte,.r8-wm,li.item,.tp-schule){border-radius:var(--d-r)!important;box-shadow:none!important;border:1px solid var(--m-line)!important;background:var(--m-surface)!important}
+html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) :is(.info,.offen,.mp-ergebnis,.mp-tafel,.r8w-quote,.fs-leer,.st-tile,.st-regeln,.r6-wahl,.r6-ue,.r6-satz,.r6-kn,.r6-bs,.r6-sais-e,.r4-tresor,.mp-uhr>div,.sym,.pingcard,.tb,.seg button,.st-chip,.st-diff,.st){border-radius:var(--d-r)!important}
+html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) :is(input,select,textarea){border-radius:var(--d-r)!important;background:var(--m-surface)!important}
+html body .wrap a.tp-schule{background:var(--m-ink)!important;border-color:var(--m-ink)!important}
+html body .wrap a.tp-schule b{color:var(--m-surface)!important}
+
+/* Zeilen wie in einer Vermögensliste */
+html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) li.item{border-width:0 0 1px!important;background:transparent!important}
+html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) .st-tile{background:var(--m-surface2)!important;border:1px solid var(--m-line)!important;box-shadow:none!important}
+html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) .st-tile.leer{background:transparent!important;border:1px dashed var(--m-line2)!important}
+
+/* Grosse Zahl: Serife, tabellarisch */
+html .st-zahl b,html .r4-summe b{font-family:var(--m-font-title)!important;font-weight:400!important;letter-spacing:-.01em!important;font-variant-numeric:tabular-nums}
+html .st-zahl b{font-size:clamp(3rem,14vw,3.8rem)!important}
+html .st-chip{background:transparent!important;border:1px solid var(--m-line2)!important;color:var(--m-ink2)!important;font-size:11px!important;letter-spacing:.06em;text-transform:uppercase}
+
+/* Knöpfe: eckig, Versalien, gesperrt */
+html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) :is(.btn,.r7-knopf,.ping-an,.trade,#btnGo,.r6-ein,.r7-neu-k){border-radius:var(--d-r)!important;box-shadow:none!important;text-transform:uppercase;letter-spacing:.08em;font-size:12.5px!important;font-weight:700!important}
+html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) .btn.pri,html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) .btn:not(.ghost):not(.danger),html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) .btn.gold{background:var(--m-accent)!important;color:var(--m-on-accent)!important;border:0!important}
+html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) .btn.ghost,html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) .r7-knopf.leise{background:transparent!important;color:var(--m-ink)!important;border:1px solid var(--m-line2)!important}
+html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) .ping-an{background:var(--m-ink)!important;color:var(--m-surface)!important}
+html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) .add{border-radius:var(--d-r)!important}
+
+/* Fortschritt und Mr.-Ping-Avatar: ruhig */
+html :is(.wrap,.sheet,.st-sheet,.mp2-will,.r7-blatt,.r8-menue) .bar{border-radius:0!important}
+html .mp-szene .mp-ava img,html .ping-buehne>img{box-shadow:0 0 0 1px var(--m-line2)!important;border:0!important}
+
+/* Blätter und Menüs unten (an body gehängt) */
+html :is(.r7-blatt,.r8-menue,.sheet,.st-sheet){border-radius:6px 6px 0 0!important;font-family:var(--m-font-body)}
+html .mp2-will>div{background:var(--m-surface)!important;color:var(--m-ink)!important;border:1px solid var(--m-line2)!important;border-radius:var(--d-r)!important}
+html .mp2-will h2{font-size:28px!important}
+html .mp2-will img{border-color:var(--m-accent)!important}
+
+/* Mr. Pings Schule (schule.html) im gleichen Look */
+html .wrap section[data-view]{border:0!important;background:transparent!important;padding:0!important}
+html .wrap .lesson h1,html .wrap>section h1{font-family:var(--m-font-title);font-weight:400;font-size:34px;line-height:1.05;letter-spacing:0}
+html .wrap .lesson h3{font-size:21px!important;margin-top:18px}
+html .wrap :is(.opt,.les,.box,.weg,.bubble,.hinweis,.chip,.scale button,details,.merk,.hero,.zurapp){border-radius:var(--d-r)!important}
+html .wrap :is(.opt,.les,.box,.weg){box-shadow:none!important}
