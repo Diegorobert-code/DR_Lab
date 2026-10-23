@@ -1,0 +1,1524 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<script src="ton-ios.js"></script>
+<script src="nda-sperre.js" data-app="Körperkosmos"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Körperkosmos">
+<meta name="theme-color" content="#10183a">
+<meta name="description" content="Fia zeigt dir Atem, Körper und die fünf Spiegel: ruhiges Wissen und kleine Übungsreihen. Kein Arzt, keine Diagnose.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Fia Körperkosmos</title>
+<meta property="og:title" content="Fia Körperkosmos"><meta property="og:description" content="Fia, das kleine Phönix-Küken, zeigt dir Atem, Körper und die fünf Spiegel: ruhiges Wissen und kleine Übungsreihen."><meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/fia-kosmos/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://diegorobert-code.github.io/DR_Lab/fia-kosmos/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
+<style>
+:root{
+  --nacht:#10183a;--nacht2:#162050;--tief:#0a0f28;--karte:rgba(255,255,255,.065);--rand:rgba(255,255,255,.12);
+  --gold:#f2c14e;--glut:#ff8a3d;--koralle:#ff8a6b;--creme:#f5ecd8;--text:#f3efe6;--muted:#b4b8d6;
+  --holz:#7cc48a;--feuer:#ff7a59;--erde:#e5b65a;--metall:#c9d3e6;--wasser:#6aa8ff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--nacht);color:var(--text);overflow-x:hidden}
+body{font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;min-height:100vh;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(120% 60% at 50% 0%,#24306e 0%,var(--nacht) 55%,var(--tief) 100%)}
+.himmel{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.himmel i{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--gold);opacity:.6;animation:funkeln 4s ease-in-out infinite}
+.himmel b{position:absolute;bottom:-10px;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle,#ffd27a,#ff8a3d 60%,transparent 70%);opacity:0;animation:steigen 9s linear infinite}
+@keyframes funkeln{50%{opacity:.15;transform:scale(.6)}}
+@keyframes steigen{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:.8}100%{transform:translateY(-105vh) translateX(30px);opacity:0}}
+a{color:var(--gold)}
+h1,h2,h3{margin:0;line-height:1.2}
+h2{font-size:20px;color:var(--gold);margin-bottom:6px}
+h3{font-size:17px;margin:10px 0 4px}
+p{margin:6px 0}
+.muted{color:var(--muted)}
+.klein{font-size:13px}
+header.kopf{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;background:rgba(10,15,40,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--rand)}
+header.kopf img{width:40px;height:40px;border-radius:12px;border:2px solid var(--gold);object-fit:cover}
+header.kopf .titel{flex:1;min-width:0}
+header.kopf h1{font-size:19px;background:linear-gradient(90deg,var(--gold),var(--koralle));-webkit-background-clip:text;background-clip:text;color:transparent}
+header.kopf small{display:block;color:var(--muted);font-size:12px}
+.rund{min-width:44px;min-height:44px;border-radius:99px;border:1px solid var(--rand);background:rgba(255,255,255,.06);color:var(--text);font-size:19px;cursor:pointer;display:inline-grid;place-items:center;padding:0 10px}
+main{max-width:620px;margin:0 auto;padding:14px 16px calc(150px + env(safe-area-inset-bottom))}
+.panel{display:none;animation:herein .45s ease}
+.panel.an{display:block}
+@keyframes herein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.box{background:var(--karte);border:1px solid var(--rand);border-radius:20px;padding:16px;margin:0 0 14px;overflow-wrap:anywhere}
+.box.gold{border-color:rgba(242,193,78,.45);background:linear-gradient(160deg,rgba(242,193,78,.12),rgba(255,138,61,.05))}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px;padding:10px 16px;border-radius:14px;border:0;font:inherit;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--glut));color:#2a1505;margin:4px 6px 4px 0;max-width:100%;text-align:center}
+.btn.ghost{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--rand);font-weight:500}
+.btn.voll{width:100%;margin-right:0}
+.btn:active{transform:scale(.98)}
+.btn:focus-visible,.rund:focus-visible,.chip:focus-visible,.tab:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.reihe{display:flex;flex-wrap:wrap;gap:0;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{min-height:40px;padding:8px 13px;border-radius:99px;border:1px solid var(--rand);background:rgba(255,255,255,.06);color:var(--text);font:inherit;font-size:15px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--gold);color:#2a1505;border-color:var(--gold);font-weight:600}
+textarea,input[type=text],select{width:100%;font:inherit;font-size:16px;color:var(--text);background:rgba(255,255,255,.07);border:1px solid var(--rand);border-radius:14px;padding:11px 12px}
+select{width:auto;min-height:46px}
+textarea{min-height:70px;resize:vertical}
+label.check{display:flex;gap:10px;align-items:flex-start;margin:10px 0;font-size:14px;color:var(--muted)}
+label.check input{width:22px;height:22px;flex:0 0 22px;margin-top:1px;accent-color:var(--gold)}
+.hinweis{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(242,193,78,.12);border:1px solid rgba(242,193,78,.35);font-size:14px}
+.hinweis.warn{background:rgba(255,122,89,.14);border-color:rgba(255,122,89,.45)}
+.hidden{display:none!important}
+/* Tabs */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(5,1fr);background:rgba(10,15,40,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--rand);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+.tab{border:0;background:transparent;color:var(--muted);font:inherit;font-size:11.5px;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:54px;cursor:pointer;border-radius:12px;padding:4px 0}
+.tab span{font-size:22px;line-height:1}
+.tab[aria-selected="true"]{color:var(--gold);background:rgba(242,193,78,.1)}
+/* Bühne */
+.stage{position:relative;display:flex;flex-direction:column;align-items:center;padding:6px 0 4px}
+.actor{position:relative;width:var(--sz,160px);height:var(--sz,160px)}
+.actor .glow{position:absolute;inset:-18%;border-radius:50%;background:radial-gradient(circle,rgba(255,138,61,.45),rgba(242,193,78,.12) 50%,transparent 70%);animation:gluehen 4s ease-in-out infinite}
+.actor .shadow{position:absolute;left:18%;right:18%;bottom:-10px;height:14px;border-radius:50%;background:rgba(0,0,0,.4);filter:blur(4px)}
+.actor .body{position:absolute;inset:0;border-radius:28%;overflow:hidden;border:3px solid var(--gold);box-shadow:0 10px 40px rgba(255,138,61,.35);transform-origin:50% 90%}
+.actor .body img{width:100%;height:100%;object-fit:cover;display:block}
+.actor .prop{position:absolute;right:-8px;top:-6px;font-size:34px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.4))}
+@keyframes gluehen{50%{transform:scale(1.06);opacity:.75}}
+@keyframes schweben{50%{transform:translateY(-8px)}}
+@keyframes atmen{0%,100%{transform:scale(1)}45%{transform:scale(1.07)}}
+@keyframes winken{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+@keyframes hupfen{0%,100%{transform:translateY(0)}30%{transform:translateY(-16px) scale(1.03)}55%{transform:translateY(0) scale(.98,1.02)}}
+@keyframes neigen{50%{transform:rotate(-7deg) translateX(-4px)}}
+@keyframes tanzen{0%,100%{transform:rotate(0) translateX(0)}25%{transform:rotate(-8deg) translateX(-8px)}75%{transform:rotate(8deg) translateX(8px)}}
+@keyframes schlafen{50%{transform:translateY(3px) scale(.98)}}
+.actor.winkt .body{animation:winken 1.4s ease-in-out infinite}
+.actor.atmet .body{animation:atmen 6s ease-in-out infinite}
+.actor.freut .body{animation:hupfen 1.1s ease-in-out infinite}
+.actor.denkt .body,.actor.lauscht .body{animation:neigen 3s ease-in-out infinite}
+.actor.zeigt .body{animation:schweben 2.4s ease-in-out infinite}
+.actor.winkt .body{animation:schweben 3.2s ease-in-out infinite}
+.actor.tanzt .body{animation:tanzen 1.8s ease-in-out infinite}
+.actor.schlaeft .body{animation:schlafen 5s ease-in-out infinite;filter:saturate(.85)}
+.actor.ruht .body{animation:schweben 6s ease-in-out infinite}
+.actor.fliegt .body{animation:hupfen 1.6s ease-in-out infinite}
+.actor.wacht .body{animation:atmen 6s ease-in-out infinite}
+.bubble{position:relative;margin-top:16px;max-width:100%;background:var(--creme);color:#2b1c10;padding:11px 15px;border-radius:18px;font-size:16px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.bubble::before{content:"";position:absolute;top:-8px;left:50%;margin-left:-8px;border:8px solid transparent;border-top:0;border-bottom-color:var(--creme)}
+.bubble .cur{display:inline-block;width:2px;height:1em;background:#2b1c10;vertical-align:-2px;margin-left:2px;animation:funkeln 1s steps(2) infinite}
+/* Karten */
+.zkarte{margin-top:12px;border-radius:18px;padding:14px;background:rgba(10,15,40,.55);border:1px solid var(--rand);animation:herein .4s ease}
+.zk{display:flex;gap:12px;align-items:center}
+.zk b.sym{font-size:34px;width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:rgba(242,193,78,.15);color:var(--gold);flex:0 0 54px}
+.zk strong{display:block;font-size:18px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.tags span{font-size:12.5px;padding:4px 9px;border-radius:99px;background:rgba(255,255,255,.08);border:1px solid var(--rand)}
+dl{margin:8px 0;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:15px}
+dt{color:var(--muted)}dd{margin:0}
+.satz{margin:10px 0;padding:10px 12px;border-left:3px solid var(--gold);font-size:18px;font-style:italic;color:var(--creme)}
+ul.fragen{margin:6px 0 8px;padding-left:20px}
+.zgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.zgrid button{min-height:64px;border-radius:14px;border:1px solid var(--rand);background:rgba(255,255,255,.06);color:var(--text);font:inherit;font-size:13.5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 2px}
+.zgrid button b{font-size:22px;color:var(--gold)}
+.zgrid button[aria-pressed="true"]{border-color:var(--gold);background:rgba(242,193,78,.15)}
+.egrid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.egrid button{min-height:70px;border-radius:14px;border:2px solid transparent;background:rgba(255,255,255,.06);color:var(--text);font:inherit;font-size:12.5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 1px}
+.egrid button span{font-size:24px}
+.egrid button[aria-pressed="true"]{border-color:var(--ec,var(--gold));background:rgba(255,255,255,.12)}
+.ekarte{border-top:4px solid var(--ec,var(--gold))}
+table.tab2{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0}
+table.tab2 td,table.tab2 th{border-bottom:1px solid var(--rand);padding:7px 5px;text-align:left;vertical-align:top}
+table.tab2 th{color:var(--gold);font-weight:600}
+details{border:1px solid var(--rand);border-radius:16px;margin:0 0 10px;background:var(--karte);overflow:hidden}
+details summary{cursor:pointer;padding:14px 16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:50px}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"＋";color:var(--gold);font-size:20px}
+details[open] summary::after{content:"－"}
+details .inhalt{padding:0 16px 14px}
+/* Atemkreis */
+.atemkreis{position:relative;width:min(260px,72vw);height:min(260px,72vw);margin:10px auto 6px;display:grid;place-items:center}
+.atemkreis .ring{position:absolute;inset:0;border-radius:50%;border:2px dashed rgba(255,255,255,.15)}
+.atemkreis .kugel{width:42%;height:42%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3c4,var(--ec,var(--gold)) 45%,rgba(255,138,61,.4) 75%);box-shadow:0 0 50px var(--ec,var(--gold));transition:transform var(--dauer,1.5s) ease-in-out,background .8s,box-shadow .8s}
+.atemkreis .text{position:absolute;bottom:-4px;left:0;right:0;text-align:center;font-weight:600;color:var(--creme)}
+.atemkreis .e{position:absolute;font-size:22px;opacity:.45;transition:opacity .5s,transform .5s}
+.atemkreis .e.an{opacity:1;transform:scale(1.3)}
+/* Körperkarte */
+.karte-svg{width:100%;max-width:380px;display:block;margin:6px auto}
+.karte-svg .leib{fill:rgba(255,255,255,.08);stroke:rgba(242,193,78,.5);stroke-width:1.5}
+.karte-svg .hs circle{fill:var(--koralle);stroke:#fff;stroke-width:2;cursor:pointer;transition:r .2s}
+.karte-svg .hs circle.hit{fill:transparent;stroke:none}
+.karte-svg .hs circle.puls{fill:none;stroke:var(--gold);stroke-width:2;animation:puls 2.4s ease-out infinite;pointer-events:none}
+.karte-svg .hs.an circle:first-child{fill:var(--gold)}
+.karte-svg text{fill:var(--muted);font-size:12px}
+@keyframes puls{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(2.2)}}
+.karte-svg .hs circle.puls{transform-box:fill-box;transform-origin:center}
+/* Karte ziehen */
+.zugkarte{perspective:900px;width:min(240px,70vw);height:min(330px,96vw);margin:10px auto}
+.zugkarte .innen{position:relative;width:100%;height:100%;transition:transform .9s cubic-bezier(.3,.7,.3,1);transform-style:preserve-3d}
+.zugkarte.offen .innen{transform:rotateY(180deg)}
+.zugkarte .seite{position:absolute;inset:0;border-radius:20px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center;border:2px solid var(--gold)}
+.zugkarte .vorne{background:radial-gradient(circle,#2a3a86,#10183a);font-size:60px}
+.zugkarte .hinten{transform:rotateY(180deg);background:linear-gradient(160deg,#2a1a3e,#10183a);gap:6px}
+.zugkarte .hinten .tier{font-size:46px}
+/* Player */
+.overlay{position:fixed;inset:0;z-index:2147483100;background:rgba(5,8,25,.92);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));overflow-y:auto}
+.overlay .blatt{width:100%;max-width:480px;background:linear-gradient(170deg,#1c2766,#10183a);border:1px solid var(--rand);border-radius:24px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.5);max-height:100%;overflow-y:auto}
+.fort{height:8px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden;margin:12px 0}
+.fort i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--glut));transition:width .25s linear}
+.schritt{font-size:19px;line-height:1.45;min-height:5.5em;margin:6px 0 4px}
+input[type=range]{width:100%;accent-color:var(--gold);height:34px}
+.skala{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.punkte{display:flex;justify-content:center;gap:8px;margin:10px 0}
+.punkte i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.25)}
+.punkte i.an{background:var(--gold)}
+.liste-reihen{display:grid;gap:8px}
+.liste-reihen button{display:flex;align-items:center;gap:12px;text-align:left;border:1px solid var(--rand);background:rgba(255,255,255,.05);color:var(--text);border-radius:14px;padding:11px 12px;font:inherit;cursor:pointer;min-height:56px}
+.liste-reihen button span.ic{font-size:24px;width:34px;text-align:center;flex:0 0 34px}
+.liste-reihen button small{display:block;color:var(--muted);font-size:13px}
+.eintrag{padding:10px 0;border-bottom:1px solid var(--rand);font-size:15px}
+.eintrag small{color:var(--muted);display:block;font-size:12px}
+.links{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.links a{display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:var(--text);background:rgba(255,255,255,.06);border:1px solid var(--rand);border-radius:16px;padding:12px 8px;text-align:center;font-size:14px;min-height:96px;justify-content:center}
+.links a b{font-size:28px}
+.fb-slot{display:inline-flex}
+@media (max-width:360px){.egrid button{font-size:11px}.zgrid button{font-size:12.5px}}
+/* ===== Runde 3: erster Eindruck, Feinschliff nach Apple/Material (8-px-Raster, 44-px-Knöpfe, lesbare Schrift) ===== */
+:root{--ease:cubic-bezier(.2,.8,.2,1)}
+button,a,.chip,.tab{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+main{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+.klein{font-size:15px}
+header.kopf small{font-size:13px}
+.tab{font-size:12px;transition:color .2s,background-color .2s,transform .15s var(--ease)}
+.tab:active{transform:scale(.94)}
+.chip{min-height:44px;min-width:44px;transition:transform .15s var(--ease),background-color .2s}
+.chip:active,.links a:active,.liste-reihen button:active,.zgrid button:active,.egrid button:active{transform:scale(.97)}
+.btn{transition:transform .15s var(--ease),box-shadow .2s}
+.tags span{font-size:13px}
+.eintrag small,.skala{font-size:13px}
+label.check{font-size:15px}
+.hinweis{font-size:15px}
+table.tab2{font-size:15px}
+.zgrid button{font-size:14px}
+.liste-reihen button small{font-size:14px}
+.box{margin-bottom:16px}
+/* Fia-Bühne antippbar */
+.buehnebox{position:relative;padding-bottom:20px}
+#buehneHeute .actor{cursor:pointer}
+#buehneHeute:focus-visible{outline:3px solid var(--gold);outline-offset:4px;border-radius:16px}
+.tipp{position:absolute;top:136px;left:50%;transform:translateX(-50%);background:var(--gold);color:#2a1505;font-weight:600;font-size:15px;padding:6px 14px;border-radius:99px;box-shadow:0 6px 18px rgba(242,193,78,.35);white-space:nowrap;pointer-events:none;animation:tippen 2.4s var(--ease) infinite;z-index:2}
+@keyframes tippen{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-6px)}}
+.bubble{font-size:17px;line-height:1.4}
+/* Jetzt: der eine klare Schritt */
+.jetzt{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:16px;width:100%;padding:16px 20px;min-height:80px;margin:0 0 16px;border-radius:24px;
+  background:linear-gradient(135deg,#F7D27A,var(--gold) 55%,var(--glut));color:#2a1505;box-shadow:0 10px 34px rgba(242,193,78,.3),inset 0 1px 0 rgba(255,255,255,.5);transition:transform .18s var(--ease)}
+.jetzt:active{transform:scale(.97)}
+.jetzt:focus-visible,.welt:focus-visible{outline:3px solid var(--creme);outline-offset:3px}
+.jetzt .ic{font-size:28px;line-height:1;width:48px;height:48px;display:grid;place-items:center;background:rgba(255,255,255,.35);border-radius:50%;flex:none}
+.jetzt .txt{display:flex;flex-direction:column;flex:1;min-width:0}
+.jetzt small{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+.jetzt b{font-size:20px;line-height:1.25}
+.jetzt em{font-style:normal;font-size:15px;opacity:.85;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.jetzt .pfeil,.welt .pfeil{font-size:32px;line-height:1;opacity:.75;flex:none}
+/* Deine Woche: Glutpunkte wie in Fias Nest */
+.glutreihe{display:flex;align-items:center;gap:12px;padding:12px 16px;margin:0 0 16px;border:1px solid var(--rand);border-radius:20px;background:var(--karte)}
+.glutlabel{font-weight:600;font-size:15px;flex:none}
+.glutreihe .chain{display:flex;gap:6px;flex:1 1 auto;justify-content:center;min-width:0}
+.glutreihe{flex-wrap:wrap;row-gap:8px}.glutreihe .glutzahl{white-space:nowrap}
+.glutreihe .chain span{width:14px;height:14px;border-radius:50%;background:#26304f}
+.glutreihe .chain span.on{background:radial-gradient(circle,var(--gold),var(--glut) 60%,transparent 72%);box-shadow:0 0 10px var(--glut)}
+.glutreihe .chain span.heute{outline:2px solid rgba(242,193,78,.5);outline-offset:2px}
+.glutzahl{color:var(--gold);font-size:14px;font-variant-numeric:tabular-nums;flex:none}
+/* Fias Welt: Schwester-App */
+.welt{display:flex;align-items:center;gap:16px;padding:12px 16px;min-height:80px;margin:0 0 16px;box-sizing:border-box;border:1px solid rgba(242,193,78,.35);border-radius:24px;text-decoration:none;color:var(--text);
+  background:linear-gradient(135deg,rgba(106,168,255,.18),rgba(16,24,58,.6));transition:transform .18s var(--ease)}
+.welt:active{transform:scale(.97)}
+.welt[hidden]{display:none}
+.welt img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);flex:none}
+.welt span{display:flex;flex-direction:column;flex:1;min-width:0}
+.welt small{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.welt b{font-size:17px}
+.welt em{font-style:normal;color:var(--muted);font-size:15px}
+.welt .pfeil{color:var(--gold)}
+details.buchbox summary .muted{font-weight:400;margin-left:auto;margin-right:8px}
+/* Funken und Sterne beim Feiern */
+.stern,.funke{position:fixed;z-index:2147483200;pointer-events:none;transform:translate(-50%,-50%);animation:funkeFlug 1.1s var(--ease) both}
+.stern{color:#FFE6A6;font-size:18px;text-shadow:0 0 10px var(--glut)}
+.funke{width:7px;height:7px;border-radius:50%;background:radial-gradient(circle,#fff3c4,var(--glut) 60%,transparent 72%);box-shadow:0 0 10px var(--glut)}
+@keyframes funkeFlug{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}25%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1)}}
+@media (prefers-reduced-motion:reduce){.stern,.funke{display:none}}
+/* ===== Runde 4: Körperkosmos-Rad, Sternbild, Körperreise, Fia winkt zurück ===== */
+.actor .body.winkzurueck{animation:winkeZurueck 1.3s cubic-bezier(.3,.7,.3,1) 1!important}
+@keyframes winkeZurueck{0%{transform:rotate(0) translateY(0)}18%{transform:rotate(-7deg) translateY(-6px)}36%{transform:rotate(6deg) translateY(-8px)}54%{transform:rotate(-4deg) translateY(-4px)}72%{transform:rotate(2.5deg) translateY(-1px)}100%{transform:rotate(0) translateY(0)}}
+.actor .prop.wink{animation:winkHand 1.3s cubic-bezier(.3,.7,.3,1) both;transform-origin:70% 90%}
+@keyframes winkHand{0%{opacity:0;transform:scale(.4)}15%{opacity:1;transform:scale(1) rotate(-18deg)}35%{transform:rotate(16deg)}55%{transform:rotate(-12deg)}75%{transform:rotate(8deg)}100%{transform:rotate(0)}}
+.rad-box{background:radial-gradient(120% 90% at 50% 40%,rgba(42,58,134,.55),rgba(10,15,40,.4));border-color:rgba(242,193,78,.3)}
+.rad-kopf{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.rad-kopf h2{white-space:nowrap;min-width:0}
+.rad-zahl{font-size:14px;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+.rad{display:block;width:100%;max-width:340px;margin:4px auto 0;overflow:visible;touch-action:manipulation}
+.rad .bahn{fill:none;stroke:rgba(242,193,78,.18);stroke-width:1}
+.rad .fluss{fill:none;stroke:rgba(242,193,78,.55);stroke-width:1.6;stroke-dasharray:4 6;animation:fliessen 6s linear infinite}
+@keyframes fliessen{to{stroke-dashoffset:-60}}
+.rad .el{cursor:pointer}
+.rad .el circle.k{stroke-width:2;transition:transform .25s var(--ease),stroke-width .2s;transform-box:fill-box;transform-origin:center}
+.rad .el.an circle.k{stroke-width:3.5;transform:scale(1.12)}
+.rad .el.jetzt circle.halo{animation:puls 3s ease-out infinite;transform-box:fill-box;transform-origin:center}
+.rad .el text{font-size:20px;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.rad .el text.n{font-size:10.5px;fill:var(--creme);font-weight:600}
+.rad .st{cursor:pointer}
+.rad .st circle.p{fill:#2a3366;stroke:rgba(242,193,78,.35);stroke-width:1;transition:fill .6s,r .3s}
+.rad .st.hell circle.p{fill:#ffd27a;stroke:#fff3c4;filter:drop-shadow(0 0 5px #ff8a3d)}
+.rad .st.an circle.p{stroke:var(--gold);stroke-width:2.5}
+.rad .st text{font-size:12px;fill:var(--muted);text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.rad .st.hell text{fill:var(--gold)}
+.rad .st .hit,.rad .el .hit{fill:transparent}
+.rad .mitte{cursor:pointer}
+.rad .st.neu circle.p{animation:sternNeu 1.6s var(--ease) 2}
+@keyframes sternNeu{50%{r:9}}
+.rad-info{min-height:96px;margin-top:8px;padding:12px 14px;border-radius:16px;background:rgba(10,15,40,.5);border:1px solid var(--rand);animation:herein .35s ease}
+.rad-info b.t{display:block;font-size:17px;color:var(--gold);margin-bottom:2px}
+.rad-info p{margin:4px 0}
+.rad-info .reihe{margin-top:6px}
+.reise{margin-top:12px}
+.reisebild{position:fixed;inset:0;z-index:2147483150;background:#03050f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px;text-align:center}
+.reise-orb{width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(242,193,78,.5),rgba(255,138,61,.18) 50%,transparent 72%);transition:transform 5s ease-in-out,opacity 2s}
+.reise-ort{margin:0;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,193,78,.55)}
+.reise-text{margin:0;max-width:330px;min-height:4.5em;font-size:20px;line-height:1.45;color:#d9c9a8;transition:opacity .8s}
+.reise-hoer{display:none;font-size:13px;letter-spacing:.08em;color:#4a4060}
+.reisebild.hoeren .reise-text,.reisebild.hoeren .reise-ort{opacity:0}
+.reisebild.hoeren .reise-orb{opacity:.3}
+.reisebild.hoeren .reise-hoer{display:block}
+.reisebild .btn.ghost{color:#8a7a6a;border-color:#2a2440;background:transparent}
+.mehr-reihen{margin-top:8px}
+.ztag-kurz .satz{margin:10px 0 6px}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+<link rel="stylesheet" href="../nova/puppe.css">
+<link rel="stylesheet" href="grafik.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="design.css">
+<script src="../nova/intro.js" data-art="funken" data-bild="figur-gross.jpg" data-text="Fia öffnet den Körperkosmos"></script>
+</head>
+<body>
+<div class="himmel" id="himmel" aria-hidden="true"></div>
+
+<header class="kopf">
+  <img src="figur.jpg" alt="Fia">
+  <div class="titel"><h1>Fia Körperkosmos</h1><small>Atem, Körper und die fünf Spiegel</small></div>
+  <button class="rund" id="tonKnopf" type="button" aria-label="Fias Stimme an oder aus">🔈</button>
+  <div class="fb-slot" data-feedback-slot></div>
+</header>
+
+<main>
+  <!-- HEUTE -->
+  <section class="panel an" id="p-heute" aria-label="Heute">
+    <div class="box gold buehnebox">
+      <div id="buehneHeute" role="button" tabindex="0" aria-label="Fia antippen, dann sagt sie etwas"></div>
+      <span class="tipp" id="tippHint" aria-hidden="true">Tipp mich an</span>
+    </div>
+    <button class="jetzt" id="jetzt" type="button" data-reihe="oeffnung"><span class="ic" id="jetztIc">🌸</span><span class="txt"><small>Jetzt, 2 Minuten mit Fia</small><b id="jetztT">Die Öffnung</b><em id="jetztS">Ankommen, atmen, weit werden</em></span><span class="pfeil" aria-hidden="true">›</span></button>
+    <div class="glutreihe" aria-label="Deine Tage im Körperkosmos diese Woche"><span class="glutlabel">Deine Woche</span><span class="chain" id="woche"></span><span class="glutzahl" id="ketteZahl"></span></div>
+    <a class="welt" id="weltOben" data-geschwister hidden><img src="posen/wacht.jpg" alt="" width="56" height="56" loading="lazy" decoding="async"><span><small>Fias Welt · am Abend</small><b>Fias Nest</b><em>Ruhig werden und einschlafen mit Fia</em></span><span class="pfeil" aria-hidden="true">›</span></a>
+
+    <div class="box rad-box" id="radBox">
+      <div class="rad-kopf"><h2>Dein Körperkosmos</h2><span class="rad-zahl" id="radZahl"></span></div>
+      <p class="muted">Alles in einem Bild. Tipp ein Element oder einen Stern an.</p>
+      <svg class="rad" id="rad" viewBox="0 0 320 320" role="group" aria-label="Körperkosmos: fünf Elemente innen, zwölf Zeichen aussen"></svg>
+      <div class="rad-info" id="radInfo" aria-live="polite"></div>
+    </div>
+
+    <div class="box" id="dreiFragen">
+      <h2>Drei Fragen</h2>
+      <p class="muted">So beginnt jede Stunde im Körperkosmos. Tipp an, was passt. Es gibt kein Richtig.</p>
+      <h3>1 · Was ist gerade?</h3>
+      <div class="chips" id="fIst"></div>
+      <h3>2 · Was braucht es gerade?</h3>
+      <div class="chips" id="fBraucht"></div>
+      <h3>3 · Was brauchst du?</h3>
+      <textarea id="fDu" maxlength="300" placeholder="Ein Satz reicht. Bleibt nur auf diesem Handy."></textarea>
+      <button class="btn voll" id="fOk" type="button">Fia, was passt jetzt?</button>
+      <div id="fOut"></div>
+    </div>
+
+    <div class="box" id="kTag"></div>
+
+    <div class="box">
+      <h2>Eine Karte ziehen</h2>
+      <p class="muted">Ein Spiegel und ein Krafttier. Die Karte sagt nichts voraus. Die Bedeutung findest du: Was fällt dir dazu ein?</p>
+      <div class="zugkarte" id="zKarte"><div class="innen"><div class="seite vorne">🪶</div><div class="seite hinten" id="zHinten"></div></div></div>
+      <button class="btn voll" id="zZiehen" type="button">Karte ziehen</button>
+      <div id="zBedeutung" class="hidden">
+        <label class="klein muted" for="zText">Was bedeutet die Karte für dich?</label>
+        <textarea id="zText" maxlength="300"></textarea>
+        <button class="btn ghost" id="zMerk" type="button">Ins Spür-Buch</button>
+        <div class="hinweis hidden" id="zMsg"></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Frag Fia</h2>
+      <p class="muted">Zum Beispiel «Nacken», «Angst», «Atem», «Schlaf» oder «Löwe». Fia sucht im Körperkosmos-Wissen. Mit Sense Engine antwortet sie frei.</p>
+      <div class="reihe"><input type="text" id="qText" maxlength="200" placeholder="Wonach fragst du?" aria-label="Frage an Fia" style="flex:1;min-width:0"><button class="btn" id="qOk" type="button" style="margin:0 0 0 8px">Fragen</button></div>
+      <div id="qOut"></div>
+    </div>
+
+    <div class="box">
+      <h2>Körperkosmos hat drei Teile</h2>
+      <div class="links">
+        <a href="../schlaf/" id="lSchlaf" data-geschwister><b>🌙</b>Fias Nest<br><small class="muted">Schlaf, das Wasser der Methode</small></a>
+        <a href="../humanspark/" id="lSpark"><b>🦊</b>Human Sparks<br><small class="muted">Herz messen mit Sparky</small></a>
+      </div>
+      <p class="klein muted">Der dritte Teil sind die Schulungen (unter «Wissen»).</p>
+    </div>
+
+    <details class="buchbox" id="merkBox">
+      <summary>🪶 Was Fia sich merkt</summary>
+      <div class="inhalt">
+      <p class="klein muted">Nur Zahlen, nur auf diesem Handy. Keine Texte, keine Stimme, keine Bilder.</p>
+      <div id="memListe"></div>
+      <div class="hinweis" id="memTipp"></div>
+      <label class="check"><input type="checkbox" id="memOk"> <span>Ich bin einverstanden, dass die Lern-Zahlen (ohne Namen, ohne Texte) an Diego gehen, damit Fia besser wird.</span></label>
+      <div class="reihe"><button class="btn ghost" id="memTeilen" type="button">Zahlen weitergeben</button><button class="btn ghost" id="memVergessen" type="button">Vergessen</button></div>
+      <div class="hinweis hidden" id="memMsg"></div>
+      </div>
+    </details>
+
+    <details class="buchbox">
+      <summary>📓 Mein Spür-Buch <span class="muted" id="buchZahl"></span></summary>
+      <div class="inhalt">
+        <p class="klein muted">Deine Antworten und gemerkten Karten. Bleibt auf diesem Handy.</p>
+        <div id="buch"></div>
+      </div>
+    </details>
+    <a class="welt" data-geschwister><img src="posen/wacht.jpg" alt="" width="56" height="56" loading="lazy" decoding="async"><span><small>Fias Welt</small><b>Fias Nest</b><em>Am Abend: ausglühen, Sorgen-Nest, einschlafen</em></span><span class="pfeil" aria-hidden="true">›</span></a>
+  </section>
+
+  <!-- ATEM -->
+  <section class="panel" id="p-atem" aria-label="Atem">
+    <div class="box gold">
+      <h2>Ein Atemzug, fünf Elemente</h2>
+      <p>«So wie wir die Welt wahrnehmen, so atmen wir. Und so wie wir atmen, so spürt und entwickelt sich unser Körper.»</p>
+      <div class="atemkreis" id="aKreis" style="--ec:var(--gold)">
+        <div class="ring"></div>
+        <span class="e" data-e="Holz" style="top:2%;left:50%;margin-left:-11px">🌱</span>
+        <span class="e" data-e="Feuer" style="top:34%;right:0">🔥</span>
+        <span class="e" data-e="Erde" style="bottom:12%;right:12%">⛰️</span>
+        <span class="e" data-e="Metall" style="bottom:12%;left:12%">🪙</span>
+        <span class="e" data-e="Wasser" style="top:34%;left:0">💧</span>
+        <div class="kugel" id="aKugel"></div>
+        <div class="text" id="aText">Bereit</div>
+      </div>
+      <p class="muted klein" id="aSpiegel" style="text-align:center;min-height:1.5em">Einatmung setzt ein · Fülle · Wendepunkt · Ausatmung · Pause</p>
+      <div class="reihe"><button class="btn" id="aStart1" type="button">1 Minute ankommen</button><button class="btn ghost" id="aStart3" type="button">3 Minuten</button><button class="btn ghost hidden" id="aStopp" type="button">Stopp</button></div>
+      <p class="klein muted">Die Kugel zeigt nur einen Rhythmus. Atme so, wie es für dich passt.</p>
+    </div>
+
+    <div class="box">
+      <h2>Wo wird es weich?</h2>
+      <p>Die Frage der Methode: <b>In welcher Phase des Atems wird ein Gewebe weich?</b> Probier es an dir:</p>
+      <ol style="padding-left:20px;margin:6px 0">
+        <li>Leg beide Hände seitlich an die unteren Rippen, ohne Druck.</li>
+        <li>Drei, vier Atemzüge zuschauen, nichts verändern.</li>
+        <li>Wird es unter den Händen beim Einatmen weicher oder beim Ausatmen?</li>
+        <li>Wenn nichts kommt: einmal voll einatmen, dann einmal lang ausatmen. Nur je einmal.</li>
+      </ol>
+      <div class="chips" id="wwChips"></div>
+      <div id="wwOut"></div>
+      <p class="klein muted">Ein Bild zum Spüren, keine Aussage über dich. In der Praxis liest Diego das mit den Händen an vielen Stellen des Körpers.</p>
+    </div>
+
+    <div class="box">
+      <h2>Die Kette der Diaphragmen</h2>
+      <p class="muted">Vier quer liegende Böden tragen dich, von unten nach oben. Zusammen bilden sie die Schwerkraftlinie.</p>
+      <div class="liste-reihen" id="kette"></div>
+      <div id="ketteOut"></div>
+      <div class="reise">
+        <button class="btn voll" id="reiseGo" type="button">🎧 Reise durch die vier Böden (4 Min)</button>
+        <label class="check"><input type="checkbox" id="reiseHoeren"> <span><b>Nur hören:</b> Bildschirm schwarz, keine Schrift. Fia führt mit der Stimme, wie ein Hörbuch. Gut im Liegen.</span></label>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Die Öffnung</h2>
+      <p class="satz">«Erst wenn der Mensch offen ist, kann Veränderung entstehen.»</p>
+      <p>Der Atem findet seinen Rhythmus, das Herz wird weit, das Gewebe wird weich. Dann braucht es nur einfache Worte: «Lass es kommen.» «Was braucht es gerade?» «Es darf weit werden.»</p>
+      <div class="reihe"><button class="btn" type="button" data-reihe="oeffnung">Öffnung mit Fia (2 Min)</button><button class="btn ghost" id="oeffVor" type="button">Vorlesen</button></div>
+    </div>
+
+    <div class="hinweis warn"><b>Sicher üben.</b> Immer nur einzelne volle Atemzüge, nie eine Serie. Bei Schwindel oder Kribbeln: pausieren und normal weiteratmen. Kein Luftanhalten erzwingen. Atemnot ohne klare Ursache gehört ärztlich abgeklärt. Notfall: 144.</div>
+  </section>
+
+  <!-- KÖRPER -->
+  <section class="panel" id="p-koerper" aria-label="Körper">
+    <div class="box gold">
+      <h2>Körper fragen</h2>
+      <p class="muted">Wo spürst du gerade etwas? Tipp die Stelle an. Fia zeigt dir das Thema, das in der Methode dazugehört, und eine Frage.</p>
+      <svg class="karte-svg" id="kSvg" viewBox="0 0 360 430" role="group" aria-label="Körperkarte vorn und hinten"></svg>
+      <div class="chips" id="kfZonen"></div>
+      <div id="kfOut"></div>
+    </div>
+
+    <div class="box">
+      <h2>Mein Zeichen</h2>
+      <p class="muted">Dein Geburtstag (nur Tag und Monat). Fia zeigt dir dein Sonnenzeichen mit Thema, Fragen und Übungsreihe. Bleibt nur auf diesem Handy.</p>
+      <div class="reihe"><select id="kgTag" aria-label="Tag"></select>&nbsp;<select id="kgMonat" aria-label="Monat"></select></div>
+      <button class="btn voll" id="kgOk" type="button">Mein Zeichen zeigen</button>
+      <div id="kgOut"></div>
+    </div>
+
+    <div class="box">
+      <h2>Die zwölf Zeichen</h2>
+      <p class="muted">Zeichen, Organ aus der chinesischen Tradition, Planet, Element, Thema, Fragen, Satz und eine Reihe von zwei Minuten.</p>
+      <div class="zgrid" id="kZgrid"></div>
+      <div id="kZOut"></div>
+    </div>
+
+    <div class="box">
+      <h2>Übungsreihen mit Fia</h2>
+      <p class="muted">Jede Reihe hat fünf Schritte: wecken, öffnen, loslassen, bewegen, nachspüren. Etwa zwei Minuten. Davor und danach fragt Fia, wie es dir geht (0 bis 10).</p>
+      <div class="chips" id="rFilter"></div>
+      <div class="liste-reihen" id="rListe"></div>
+    </div>
+  </section>
+
+  <!-- SPIEGEL -->
+  <section class="panel" id="p-spiegel" aria-label="Spiegel">
+    <div class="box gold">
+      <h2>Die fünf Spiegel</h2>
+      <p>Das Herz der Methode. Jedes Element zeigt dir etwas wie ein Spiegel, und jedes stellt eine Frage. Die Antwort findest du selbst. Niemand deutet für dich.</p>
+      <div class="egrid" id="eGrid"></div>
+      <div id="eOut"></div>
+    </div>
+
+    <div class="box">
+      <h2>Töne summen</h2>
+      <p class="muted">Jedes Element hat einen Ton der Fünftonleiter und einen Laut. Summen «Mmm» ist der sanfteste Einstieg: Stimme ohne Worte, Füsse am Boden.</p>
+      <div class="chips" id="tonChips"></div>
+      <p class="klein muted" id="tonInfo">Tipp ein Element an: Das Handy spielt den Ton leise, du summst mit.</p>
+    </div>
+
+    <div class="box">
+      <h2>Der Elementefluss</h2>
+      <p>Alle fünf Elemente in einer Bewegung: wachsen, öffnen, wiegen, fallen lassen, ankommen. Fliessend, leicht, am Ende geerdet. Drei bis fünf Kreise genügen.</p>
+      <button class="btn voll" type="button" data-reihe="fluss">Elementefluss mit Fia</button>
+    </div>
+
+    <div class="box">
+      <h2>Krafttiere</h2>
+      <p class="muted">Das Krafttier gibt einem Thema ein Bild. Hier die Tiere der fünf Elemente.</p>
+      <div id="tiere"></div>
+    </div>
+  </section>
+
+  <!-- WISSEN -->
+  <section class="panel" id="p-wissen" aria-label="Wissen">
+    <div class="box gold">
+      <h2>Das Wissen im Körperkosmos</h2>
+      <p>Körperkosmos verbindet Körperarbeit (Strukturelle Integration, Kinesiologie), die fünf Elemente der chinesischen Tradition und die Bilder der Sternkunde. Zwei Säulen, eine Methode: <b>der Atem liest den Körper</b>, <b>die Spiegel sagen, was sich zeigt</b>.</p>
+    </div>
+    <div id="wissen"></div>
+    <div class="box">
+      <h2>Einstellungen</h2>
+      <div class="reihe"><button class="btn ghost" id="introNochmals" type="button">Einführung nochmals</button><button class="btn ghost" id="allesLoeschen" type="button">Alles löschen</button></div>
+      <div class="hinweis hidden" id="setMsg"></div>
+    </div>
+    <p class="klein muted">Die Bilder stammen aus der Überlieferung (chinesische Tradition, Sternkunde) und aus Diegos Praxis (Strukturelle Integration, Kinesiologie). Sie sind ein Gesprächs- und Spürwerkzeug, keine Diagnose und kein Heilversprechen, und ersetzen keine Behandlung. Bei Schmerz oder Schwindel: Übung beenden. Notfall 144 · Reden hilft 143.</p>
+  </section>
+</main>
+
+<nav class="tabs" role="tablist" aria-label="Bereiche">
+  <button class="tab" role="tab" data-tab="heute" aria-selected="true"><span>🪶</span>Heute</button>
+  <button class="tab" role="tab" data-tab="atem" aria-selected="false"><span>🌬️</span>Atem</button>
+  <button class="tab" role="tab" data-tab="koerper" aria-selected="false"><span>🧍</span>Körper</button>
+  <button class="tab" role="tab" data-tab="spiegel" aria-selected="false"><span>🪞</span>Spiegel</button>
+  <button class="tab" role="tab" data-tab="wissen" aria-selected="false"><span>📖</span>Wissen</button>
+</nav>
+
+<!-- Übungs-Player -->
+<div class="overlay hidden" id="player" role="dialog" aria-modal="true" aria-labelledby="plTitel">
+  <div class="blatt">
+    <div class="reihe" style="justify-content:space-between"><h2 id="plTitel" style="margin:0;flex:1;min-width:0">Reihe</h2><button class="rund" id="plX" type="button" aria-label="Schliessen">✕</button></div>
+    <div id="plBuehne"></div>
+    <div id="plVorher">
+      <p><b>Wie geht es dir gerade?</b> 0 = gar nicht gut, 10 = sehr gut.</p>
+      <input type="range" min="0" max="10" value="5" id="plV" aria-label="Befinden vorher"><div class="skala"><span>0</span><span id="plVz">5</span><span>10</span></div>
+      <button class="btn voll" id="plLos" type="button">Los geht's</button>
+      <button class="btn ghost voll" id="plOhne" type="button">Ohne Zahl beginnen</button>
+    </div>
+    <div id="plLauf" class="hidden">
+      <div class="punkte" id="plPunkte"></div>
+      <p class="schritt" id="plText" aria-live="polite"></p>
+      <div class="fort"><i id="plFort"></i></div>
+      <div class="reihe" style="justify-content:center"><button class="rund" id="plZur" type="button" aria-label="Schritt zurück">⏮</button>&nbsp;<button class="btn" id="plPause" type="button" style="min-width:120px">Pause</button>&nbsp;<button class="rund" id="plVor" type="button" aria-label="Nächster Schritt">⏭</button></div>
+    </div>
+    <div id="plNachher" class="hidden">
+      <p><b>Und jetzt?</b> Wie geht es dir nach der Reihe?</p>
+      <input type="range" min="0" max="10" value="5" id="plN" aria-label="Befinden nachher"><div class="skala"><span>0</span><span id="plNz">5</span><span>10</span></div>
+      <button class="btn voll" id="plFertig" type="button">Fertig</button>
+      <div class="hinweis hidden" id="plErg"></div>
+    </div>
+    <p class="klein muted" style="margin-top:10px">Nur so weit, wie der Körper antwortet. Bei Schmerz, Schwindel oder Taubheit: aufhören und eine Fachperson fragen.</p>
+  </div>
+</div>
+
+<!-- Körperreise: dunkel, ruhig, auf Wunsch nur hören -->
+<div class="reisebild hidden" id="reiseBild" role="dialog" aria-modal="true" aria-label="Reise durch die vier Böden">
+  <div class="reise-orb" id="reiseOrb"></div>
+  <p class="reise-ort" id="reiseOrt"></p>
+  <p class="reise-text" id="reiseText"></p>
+  <span class="reise-hoer">🎧 Nur hören</span>
+  <button class="btn ghost" id="reiseStopp" type="button">Beenden</button>
+</div>
+
+<!-- Einführung beim ersten Start -->
+<div class="overlay hidden" id="einf" role="dialog" aria-modal="true" aria-labelledby="einfTitel">
+  <div class="blatt" style="text-align:center">
+    <div id="einfBuehne"></div>
+    <h2 id="einfTitel" style="margin-top:10px">Willkommen</h2>
+    <p id="einfText"></p>
+    <div class="punkte" id="einfPunkte"></div>
+    <button class="btn voll" id="einfWeiter" type="button">Weiter</button>
+    <button class="btn ghost voll" id="einfSkip" type="button">Überspringen</button>
+  </div>
+</div>
+
+<noscript><p style="padding:16px">Fia Körperkosmos braucht JavaScript.</p></noscript>
+
+<script>
+(function(){
+'use strict';
+var $ = function(id){ return document.getElementById(id); };
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+var store = {
+  get: function(k, d){ try { var v = localStorage.getItem('fk_' + k); return v === null ? d : JSON.parse(v); } catch(e){ return d; } },
+  set: function(k, v){ try { localStorage.setItem('fk_' + k, JSON.stringify(v)); } catch(e){} },
+  del: function(k){ try { localStorage.removeItem('fk_' + k); } catch(e){} }
+};
+var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+var FIG = 'figur.jpg';
+
+/* ================= Wissen (Quelle: Diegos Methoden-Referenz Körper & Kosmos, Ergänzung Öffnung 14.10.) ================= */
+var ELEM = {
+  Holz:{e:'🌱', c:'var(--holz)', hex:'#7cc48a', spiegel:'Spiegel des Universums', zeigt:'Was nicht mehr zu mir gehört und was ich loslassen darf, damit Neues Platz hat. Der Blick in die Weite.',
+    fragen:['Was gehört nicht mehr zu dir?', 'Wofür willst du Platz schaffen?'], geist:'Hun, die Wanderseele (wohnt in der Leber): Vision, Traum, der Blick in die Weite',
+    atem:'Die Einatmung setzt ein', tag:'Wie fange ich den Tag an?', tagb:'Morgenlicht, Beginn, Beweglichkeit', laut:'«Xu» (schü)', ton:'E', hz:329.63, stimme:'Rufen', tiere:['Hirsch','Reh'], organe:['steinbock','widder'],
+    bew:['Überkreuz: langsam die Hand zum gegenüberliegenden Knie führen, im Wechsel. Fünfmal pro Seite.', 'Schulterblätter: zueinander ziehen und wieder weit werden lassen. Mit dem Atem.', 'Seitwärts gehen: Knie leicht gebeugt, ein paar Schritte zur Seite und zurück.', 'Augen wandern: Den Kopf ruhig lassen, nur die Augen langsam nach links, rechts, oben, unten.', 'Nachspüren: Stehen, Blick weit, einmal auf «schü» ausatmen.'],
+    kern:'Frei im Beginnen. Es ist Platz für Neues.'},
+  Feuer:{e:'🔥', c:'var(--feuer)', hex:'#ff7a59', spiegel:'Spiegel des Seelenwegs', zeigt:'Die eigene Bestimmung. Was ich lernen darf, die Lehre in dem, was mir begegnet. Ein Teil von mir, der zurückwill.',
+    fragen:['Wofür schlägt dein Herz?', 'Was will dich das lehren?', 'Welcher Teil von dir fehlt?'], geist:'Shen, der Geist (wohnt im Herzen): Bewusstsein, Gegenwart, das Leuchten in den Augen',
+    atem:'Die Fülle am Ende der Einatmung', tag:'Wofür schlägt mein Herz, und wie stark?', tagb:'Herz, Freude, Beziehungen', laut:'«He» (hö), Dreifacher Erwärmer «Xi» (schi)', ton:'G', hz:392.00, stimme:'Lachen', tiere:['Falke','Löwe'], organe:['loewe','krebs','wassermann','jungfrau'],
+    bew:['Arme öffnen: mit dem Einatmen die Arme langsam seitlich öffnen, mit dem Ausatmen sinken lassen.', 'Hände auflegen: eine Hand aufs Brustbein, eine auf den Bauch. Drei ruhige Atemzüge.', 'Fusswippe: im Stand langsam von den Fersen auf die Ballen wippen, die Waden arbeiten weich.', 'Arme pendeln: den Rumpf leicht drehen und die Arme locker mitschwingen lassen.', 'Nachspüren: beide Hände aufs Brustbein, einmal auf «hö» ausatmen.'],
+    kern:'Das Gewebe wartet darauf, dass du deinen ganzen Raum nimmst.'},
+  Erde:{e:'⛰️', c:'var(--erde)', hex:'#e5b65a', spiegel:'Situationsspiegel', zeigt:'Was sich wiederholt. Dieselbe Situation kommt wieder, bis sie gesehen wird.',
+    fragen:['Was kommt in deinem Leben immer wieder?', 'Was haben diese Situationen gemeinsam?'], geist:'Yi, das Denken (wohnt in der Milz): Absicht, Aufmerksamkeit, Erinnern',
+    atem:'Der Wendepunkt, oben und unten', tag:'Was nährt mich, und was wiederhole ich?', tagb:'Essen, Kraft, Regelmässigkeit', laut:'«Hu» (chu)', ton:'C', hz:261.63, stimme:'Singen', tiere:['Bär','Büffel'], organe:['stier','schuetze'],
+    bew:['Aufrichten: Becken über die Fersen, Brustkorb über das Becken, Kopf obenauf.', 'Wiegen: das Gewicht langsam von Fuss zu Fuss verlagern.', 'Nacken: mit dem Ausatmen den Kopf sanft nach rechts drehen, zurück, nach links.', 'Summen: auf «chu» oder «Mmm» summen und spüren, wo es vibriert.', 'Nachspüren: eine Hand auf den Oberbauch, lang ausatmen, das Gewicht sinken lassen.'],
+    kern:'Mitte und Übergang. Hier kehrt sich die Bewegung um.'},
+  Metall:{e:'🪙', c:'var(--metall)', hex:'#c9d3e6', spiegel:'Spiegel des Vergleichs', zeigt:'Woran ich mich messe und mit wem ich mich vergleiche. Dahinter liegt der eigene Wert.',
+    fragen:['Mit wem vergleichst du dich?', 'Was bist du wert, ohne Vergleich?'], geist:'Po, die Körperseele (wohnt in der Lunge): kommt und geht mit dem Atem, das Hier und Jetzt des Körpers',
+    atem:'Die Ausatmung', tag:'Kann ich gleichmässig atmen und abgeben?', tagb:'Atem, ruhige Ausdauer, Loslassen am Abend', laut:'«Si» (sss)', ton:'D', hz:293.66, stimme:'Weinen', tiere:['Adler','Kranich'], organe:['zwillinge','skorpion'],
+    bew:['Atemwelle: Hände an die unteren Rippen, auf «sss» ausatmen, bis es von selbst endet. Pause. Die Einatmung kommen lassen.', 'Vorbeugen mit Drehen: Knie weich, nach vorn sinken, Boden berühren, aufrichten, zur Seite drehen.', 'Arme hängen: Arme schwer hängen lassen und aus den Schultern pendeln.', 'Elefantengang: Hände und Füsse am Boden, Knie so gestreckt wie angenehm, zwei, drei kleine Schritte.', 'Nachspüren: Stehen, einmal lang auf «sss» ausatmen, die Pause abwarten.'],
+    kern:'Frei im eigenen Mass, ohne Vergleich.'},
+  Wasser:{e:'💧', c:'var(--wasser)', hex:'#6aa8ff', spiegel:'Spiegel der grössten Angst', zeigt:'Die tiefste Angst, und dahinter das Vertrauen. Zuerst Boden und Sicherheit im Körper, dann die Frage.',
+    fragen:['Wovor fürchtest du dich am meisten?', 'Was würdest du tun, wenn die Angst nicht wäre?'], geist:'Zhi, der Wille (wohnt in der Niere): Ausrichtung, Durchhalten, das Ja zum Leben',
+    atem:'Die Pause nach der Ausatmung', tag:'Lasse ich die Pause zu?', tagb:'Schlaf, Erholung, Reserven', laut:'«Chui» (tschui)', ton:'A', hz:220.00, stimme:'Stöhnen', tiere:['Schlange','Wolf'], organe:['waage','fische'],
+    bew:['Fusssohlen: Füsse spüren, mit dem Ausatmen die Zehen heben und wieder ablegen.', 'Schaukeln: im Vierfüsslerstand das Becken langsam Richtung Fersen schaukeln, in den Rücken atmen.', 'Wirbelwelle: im Vierfüsslerstand die Wirbelsäule als Welle bewegen, der Kopf macht mit.', 'Schultern: zu den Ohren ziehen und fallen lassen. Dreimal.', 'Nachspüren: still liegen oder sitzen, einmal auf «tschui» ausatmen, die Pause geniessen.'],
+    kern:'Die Freiheit liegt dort, wo es still wird.'}
+};
+var ELIST = ['Holz','Feuer','Erde','Metall','Wasser'];
+var TIER = {
+  'Falke':'Klarsicht und Weitblick, Fokus, handeln im richtigen Moment.', 'Löwe':'Mut, Würde, Herzenswärme, natürliche Führung.',
+  'Adler':'Weitsicht, Freiheit, über den Dingen stehen.', 'Kranich':'Anmut, Balance, Kraft für Übergänge.',
+  'Bär':'Innere Kraft, Bodenständigkeit, bewusster Rückzug zur Erholung.', 'Büffel':'Fülle, Ausdauer, Vertrauen, dass genug da ist.',
+  'Schlange':'Häutung alter Muster, Erneuerung, loslassen.', 'Wolf':'Instinkt, Intuition, Zugehörigkeit, klare Grenzen.',
+  'Hirsch':'Sanftmut, Wachsamkeit ohne Härte, Führung durch Güte.', 'Reh':'Feinfühligkeit, Zartheit, Verletzlichkeit als Kraft.'
+};
+var TIEREMO = {Falke:'🦅', Löwe:'🦁', Adler:'🦅', Kranich:'🕊️', Bär:'🐻', Büffel:'🐃', Schlange:'🐍', Wolf:'🐺', Hirsch:'🦌', Reh:'🦌'};
+var DUFT = {'Herz':'Orange süss','Perikard':'Lavendel fein','Lunge':'Eukalyptus radiata','Dünndarm':'Pfefferminze','Magen':'Rosengeranie','Niere':'Atlaszeder','Gallenblase':'Grapefruit','Leber':'Zypresse','Milz':'Mandarine rot','Blase':'Wacholderbeere','Dreifacher Erwärmer':'Bergamotte','Dickdarm':'Patchouli'};
+var KZ = [
+  {id:'widder', z:'Widder', s:'♈', von:[3,21], d:'21.3. bis 20.4.', pl:'Mars', org:'Gallenblase', te:'Holz', yy:'Yang', ses:5, h:1, laut:'«Xu» (schü)',
+   thema:'Entscheiden und Richtung', koerper:'Hüfte und Bein aussen, Kniekehle', zone:'Bein aussen', res:'Mut, Entschlusskraft', eng:'Zögern, Ärger, Härte gegen sich',
+   fragen:['Wofür entscheide ich mich gerade?', 'Wo halte ich Ärger zurück, statt einen Schritt zu machen?', 'Wie fühlt sich mein Stand auf einem Bein an?'],
+   satz:'Ich weiss, wohin ich gehe.', kern:'Die Seiten werden frei, der Körper findet seine Richtung.',
+   r:['Seiten wecken: Mit flachen Händen die Aussenseite der Beine von der Hüfte bis zum Knöchel abklopfen.', 'Seitbeuge: Einen Arm über den Kopf, zur Seite neigen, bis die Flanke lang wird. Drei Atemzüge pro Seite.', 'Drehen mit Blick: Füsse am Boden, langsam nach hinten drehen und mit den Augen einen Punkt suchen.', 'Schritt in eine Richtung: Einen Punkt im Raum wählen, einen klaren Schritt darauf zu machen, zurück.', 'Stehen und nachspüren: Den Blick weit werden lassen, Füsse spüren, einmal lang ausatmen.']},
+  {id:'stier', z:'Stier', s:'♉', von:[4,21], d:'21.4. bis 20.5.', pl:'Venus', org:'Magen', te:'Erde', yy:'Yang', ses:4, h:2, laut:'«Hu» (chu)',
+   thema:'Aufnehmen und genährt sein', koerper:'Hals vorn, Nacken, Schlüsselbein', zone:'Hals und Nacken', res:'Zufriedenheit, Genuss', eng:'Grübeln, nie genug',
+   fragen:['Was nährt mich wirklich?', 'Was kaue ich in Gedanken immer wieder?', 'Was darf ich hinunterlassen?'],
+   satz:'Ich bin versorgt. Es ist genug da.', kern:'Hals und Vorderseite werden lang, das Gewicht sinkt nach unten.',
+   r:['Nacken wecken: Das Ohr langsam zur Schulter sinken lassen, drei Atemzüge, dann die andere Seite.', 'Vorderseite öffnen: Hände ans Kreuzbein, das Brustbein leicht nach vorn und oben heben.', 'Schritt nach hinten: Einen Fuss gross nach hinten stellen, die Leiste vorn wird lang.', 'Kauen ohne Essen: Den Unterkiefer langsam und locker kauen lassen. Die Zunge liegt weich.', 'Stehen und nachspüren: Eine Hand auf den Oberbauch, lang ausatmen, das Gewicht in die Füsse sinken lassen.']},
+  {id:'zwillinge', z:'Zwillinge', s:'♊', von:[5,21], d:'21.5. bis 21.6.', pl:'Merkur', org:'Lunge', te:'Metall', yy:'Yin', ses:3, h:3, laut:'«Si» (sss)',
+   thema:'Austausch und Atem', koerper:'Seitlicher Brustkorb, Zwerchfell', zone:'Brustkorb seitlich', res:'Offenheit, Weite', eng:'Unausgesprochene Trauer, Vergleich',
+   fragen:['Was möchte ich aussprechen?', 'Mit wem vergleiche ich mich?', 'Wohin geht mein Atem, wenn ich nichts tue?'],
+   satz:'Ich nehme, was ich brauche, und lasse den Rest gehen.', kern:'Die Rippen bewegen sich frei, die Ausatmung geht zu Ende.',
+   r:['Rippen wecken: Hände seitlich an die unteren Rippen legen und fünf Atemzüge in die Hände atmen.', 'Arme nach vorn schieben: Arme auf Schulterhöhe nach vorn, die Schulterblätter gleiten mit, dann zurück.', 'Arme hängen und pendeln: Die Arme schwer hängen lassen und aus den Schultern pendeln.', 'Daumenlinie ausstreichen: Von der Schulter über die Innenseite des Arms bis zum Daumen streichen.', 'Stehen und nachspüren: Einmal lang auf «sss» ausatmen, die Pause abwarten.']},
+  {id:'krebs', z:'Krebs', s:'♋', von:[6,22], d:'22.6. bis 22.7.', pl:'Mond', org:'Perikard', te:'Feuer', yy:'Yin', ses:2, h:4, laut:'«Xi» (schi)',
+   thema:'Schutz und Nähe', koerper:'Becken, Gesäss, Leiste', zone:'Becken und Leiste', res:'Geborgenheit, Verbundenheit', eng:'Kontrolle, sich verschliessen',
+   fragen:['Wen lasse ich nah an mich heran?', 'Wo fühle ich mich getragen, zu Hause?', 'Was brauche ich, um mich zu öffnen?'],
+   satz:'Ich bin geschützt und darf nah sein.', kern:'Der Brustraum findet Ruhe, das Becken trägt mit.',
+   r:['Handmitte wecken: Mit dem Daumen die Mitte der anderen Handfläche kreisend drücken, dann wechseln.', 'Seitliches Wiegen: Das Gewicht langsam von einem Bein aufs andere wiegen.', 'Knie nach innen und aussen: Mit weichen Knien die Knie leicht nach innen sinken lassen und wieder öffnen.', 'Sich selbst halten: Arme vor der Brust kreuzen, Hände an die Oberarme, sanft runden und aufrichten.', 'Stehen und nachspüren: Eine Hand aufs Brustbein, eine auf den Unterbauch, lang ausatmen.']},
+  {id:'loewe', z:'Löwe', s:'♌', von:[7,23], d:'23.7. bis 23.8.', pl:'Sonne', org:'Herz', te:'Feuer', yy:'Yin', ses:1, h:5, laut:'«He» (hö)',
+   thema:'Freude und Mitte', koerper:'Brust, Achsel, vordere Schulter', zone:'Brust und Schulter vorn', res:'Freude, Selbstwert', eng:'Unruhe, fehlende Freude',
+   fragen:['Wofür schlägt mein Herz?', 'Wann habe ich zuletzt etwas nur aus Freude getan?', 'Darf ich gesehen werden?'],
+   satz:'Ich bin da, und es ist warm in mir.', kern:'Das Brustbein wird weich, die Arme hängen am Herzen.',
+   r:['Brustbein wecken: Eine Hand flach aufs Brustbein und fünf Atemzüge lang spüren, wie es sich hebt und senkt.', 'Arme öffnen und schliessen: Beim Einatmen die Arme seitlich öffnen, beim Ausatmen vor der Brust zusammenführen.', 'Arme pendeln: Den Rumpf leicht drehen und die Arme locker mitschwingen lassen.', 'Schulterblätter gleiten: Ellbogen an der Seite, Unterarme nach aussen und wieder nach innen drehen.', 'Stehen und nachspüren: Beide Hände aufs Brustbein, Füsse spüren, einmal lang ausatmen.']},
+  {id:'jungfrau', z:'Jungfrau', s:'♍', von:[8,24], d:'24.8. bis 23.9.', pl:'Merkur', org:'Dünndarm', te:'Feuer', yy:'Yang', ses:3, h:6, laut:'«He» (hö)',
+   thema:'Unterscheiden und ordnen', koerper:'Bauch, Oberschenkel vorn', zone:'Bauch', res:'Klarheit, Unterscheidungskraft', eng:'Überforderung, nicht wissen, was zu einem gehört',
+   fragen:['Was gehört zu mir, was darf weiter?', 'Welche Aufgabe im Alltag ist zu viel?', 'Was hilft mir, Ordnung zu finden?'],
+   satz:'Ich erkenne, was zu mir gehört.', kern:'Der Bauch wird weich, die Beine tragen von vorn.',
+   r:['Bauch wecken: Beide Hände um den Nabel. Die Bauchwand in die Hände kommen und wieder gehen lassen.', 'Becken kippen: Mit weichen Knien das Becken langsam nach vorn und nach hinten kippen, klein und ohne Kraft.', 'Knie heben im Wechsel: Langsam ein Knie heben, absetzen, das andere heben.', 'Rumpf drehen: Hände auf den Bauch, den Rumpf langsam nach links und rechts drehen.', 'Stehen und nachspüren: Hände am Bauch, Füsse spüren, einmal lang ausatmen.']},
+  {id:'waage', z:'Waage', s:'♎', von:[9,24], d:'24.9. bis 23.10.', pl:'Venus', org:'Niere', te:'Wasser', yy:'Yin', ses:4, h:7, laut:'«Chui» (tschui)',
+   thema:'Gleichgewicht und Reserven', koerper:'Psoas, Lende', zone:'Lende', res:'Vertrauen, Wille', eng:'Angst, leere Reserven',
+   fragen:['Wo gebe ich mehr, als ich habe?', 'Was gibt mir Halt in Beziehungen?', 'Was füllt meine Reserven wieder auf?'],
+   satz:'Der Boden trägt mich, ich darf loslassen.', kern:'Je mehr die Füsse den Boden finden, desto mehr darf der Körper loslassen.',
+   r:['Die Fusssohle wecken: Das Gewicht langsam durch die Sohle wandern lassen: Ferse, Aussenkante, Ballen, grosse Zehe.', 'Wirbel für Wirbel abrollen: Den Kopf schwer werden lassen und nach vorn sinken, bis die Hände hängen. Nur hängen.', 'Pendeln im Stand: Den ganzen Körper ganz leicht vor und zurück schaukeln, nur Millimeter.', 'Weiche Knie: Die Knie beugen, bis die Füsse anfangen zu tragen, beim Ausatmen sinken.', 'Stehen und nachspüren: Einfach stehen, die Füsse spüren, einmal lang ausatmen.']},
+  {id:'skorpion', z:'Skorpion', s:'♏', von:[10,24], d:'24.10. bis 22.11.', pl:'Pluto', org:'Dickdarm', te:'Metall', yy:'Yang', ses:10, h:8, laut:'«Si» (sss)',
+   thema:'Loslassen und Wandlung', koerper:'Lende, Oberschenkel hinten, Beckenboden', zone:'Beckenboden und Bein hinten', res:'Grosszügigkeit, Neubeginn', eng:'Festhalten, Schuld',
+   fragen:['Was darf zu Ende gehen?', 'Woran halte ich fest, obwohl es nicht mehr nährt?', 'Was kann aus dem Losgelassenen entstehen?'],
+   satz:'Meine Gedanken sind klar, konzentriert und konstruktiv.', kern:'Die Ausatmung geht zu Ende. Ein Gegenpol zum Gedankenkreisen.',
+   r:['Zeigefingerlinie wecken: Die Stelle zwischen Daumen und Zeigefinger kreisend drücken (nicht in der Schwangerschaft).', 'Becken kreisen: Hände an die Hüften, das Becken langsam kreisen, in jede Richtung.', 'Bein seitlich pendeln: Gewicht auf ein Bein, das andere locker seitlich pendeln, bei Bedarf an der Wand halten.', 'Zu Ende ausatmen: Auf «sss» ganz ausatmen und die Pause aushalten, bis die Einatmung von selbst kommt.', 'Stehen und nachspüren: Hände auf den Unterbauch, Füsse spüren, nichts mehr tun.']},
+  {id:'schuetze', z:'Schütze', s:'♐', von:[11,23], d:'23.11. bis 21.12.', pl:'Jupiter', org:'Milz', te:'Erde', yy:'Yin', ses:7, h:9, laut:'«Hu» (chu)',
+   thema:'Vertrauen und Sinn', koerper:'Seitlicher Rumpf, Rücken, Arm bis Daumen', zone:'Rumpf seitlich und Arm', res:'Vertrauen ins Leben, Selbstfürsorge', eng:'Sorge, Selbstzweifel',
+   fragen:['Worauf vertraue ich?', 'Was gibt meinem Leben Sinn?', 'Wie sorge ich für mich selbst?'],
+   satz:'Ich vertraue dem Leben. Ich sorge gut für mich.', kern:'Die Mitte trägt, die Arme hängen am Rücken.',
+   r:['Linke Flanke wecken: Die rechte Hand unter den linken Rippenbogen und fünf Atemzüge dort hinein atmen.', 'Arme lang nach unten: Die Hände nach unten schieben, als würden sie etwas Schweres zum Boden drücken.', 'Seitlich lang werden: Einen Arm nach oben strecken und aus der Flanke herauswachsen, den anderen nach unten.', 'Gehen am Ort: Ruhig am Ort gehen, die Arme schwingen gegengleich mit.', 'Stehen und nachspüren: Beide Hände auf den Bauch, lang ausatmen, die Mitte spüren.']},
+  {id:'steinbock', z:'Steinbock', s:'♑', von:[12,22], d:'22.12. bis 20.1.', pl:'Saturn', org:'Leber', te:'Holz', yy:'Yin', ses:6, h:10, laut:'«Xu» (schü)',
+   thema:'Struktur und Plan', koerper:'Oberer Rücken, Schulterblätter', zone:'Oberer Rücken', res:'Tatkraft, Wandlung', eng:'Frust, Feststecken',
+   fragen:['Welches Ziel trägt mich?', 'Wo fühle ich mich eingeengt?', 'Welche Grenze gibt mir Form?'],
+   satz:'Es fliesst. Ich habe Raum.', kern:'Schulterblätter und Rippenbogen bewegen sich, Ein und Aus werden geschmeidig.',
+   r:['Rippenbogen wecken: Die Finger unter den rechten Rippenbogen legen, beim Ausatmen leicht einsinken.', 'Schulterblätter zusammen und auseinander: Beim Einatmen zueinander ziehen, beim Ausatmen den oberen Rücken rund werden lassen.', 'Arme schwingen über Kreuz: Die Arme locker vor dem Körper kreuzen und wieder öffnen.', 'Gewicht verlagern: Füsse weit, das Gewicht langsam auf ein gebeugtes Bein schieben, das andere bleibt lang.', 'Stehen und nachspüren: Die Augen kurz schliessen, öffnen, weit schauen, lang ausatmen.']},
+  {id:'wassermann', z:'Wassermann', s:'♒', von:[1,21], d:'21.1. bis 19.2.', pl:'Uranus', org:'Dreifacher Erwärmer', te:'Feuer', yy:'Yang', ses:9, h:11, laut:'«Xi» (schi)',
+   thema:'Verbindung und Regulation', koerper:'Waden, Innenbein, hintere Schulter', zone:'Waden', res:'Leichtigkeit, Zusammenhang', eng:'Überlastung, sich verloren fühlen',
+   fragen:['Wo gehöre ich dazu?', 'Was bringt mich in Alarm, was wieder in Ruhe?', 'Was verbindet meine Lebensbereiche?'],
+   satz:'Alles in mir arbeitet zusammen.', kern:'Oben, Mitte und unten werden zu einer Welle.',
+   r:['Drei Etagen wecken: Die Hände nacheinander auf Brust, Oberbauch und Unterbauch legen und dorthin atmen.', 'Die Atemwelle: Einatmen füllt zuerst den Bauch, dann die Brust. Ausatmen leert zuerst die Brust, dann den Bauch.', 'Waden federn: Im Stand leicht in den Knöcheln federn, die Fersen heben kaum ab.', 'Aussenseite der Arme ausstreichen: Vom Ringfinger über den Handrücken bis hinter das Ohr streichen.', 'Stehen und nachspüren: Den ganzen Rumpf als einen Raum spüren, lang ausatmen.']},
+  {id:'fische', z:'Fische', s:'♓', von:[2,20], d:'20.2. bis 20.3.', pl:'Neptun', org:'Blase', te:'Wasser', yy:'Yang', ses:8, h:12, laut:'«Chui» (tschui)',
+   thema:'Vertrauen ins Grössere', koerper:'Rücken in ganzer Länge, Beinrückseite, Ferse', zone:'Rücken und Ferse', res:'Gelassenheit, Vertrauen', eng:'Furcht, festgehaltener Schreck',
+   fragen:['Was trägt mich, wenn ich nichts tun kann?', 'Wo halte ich einen alten Schreck fest?', 'Wann gönne ich mir Rückzug?'],
+   satz:'Ich lasse das Alte gehen. Ich stehe auf meinen Füssen.', kern:'Die lange Rückseite vom Kopf bis zum kleinen Zeh wird durchlässig.',
+   r:['Aussenkante wecken: Das Gewicht auf die Aussenkanten der Füsse rollen und zurück auf die ganze Sohle.', 'Fersen heben und senken: Auf die Fussballen hochkommen und die Fersen langsam absetzen, dabei ausatmen.', 'Rücken abklopfen: Mit lockeren Fäusten den unteren Rücken und die Rückseite der Beine bis zur Ferse abklopfen.', 'Katze im Stand: Hände auf die Oberschenkel, Knie weich. Ausatmen rund, einatmen lang.', 'Stehen und nachspüren: Den Atem in den Rücken kommen lassen, Füsse spüren, lang ausatmen.']}
+];
+function kFind(id){ for (var i = 0; i < KZ.length; i++) if (KZ[i].id === id) return KZ[i]; return null; }
+function kZeichenVon(tag, monat){
+  var best = null;
+  KZ.forEach(function(z){ var v = z.von; if (monat > v[0] || (monat === v[0] && tag >= v[1])) { if (!best || v[0] > best.von[0] || (v[0] === best.von[0] && v[1] > best.von[1])) best = z; } });
+  return best || kFind('steinbock');
+}
+function kTagZeichen(){ var d = new Date(), n = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5); return KZ[n % 12]; }
+
+/* Übungsreihen: je fünf Schritte (wecken, öffnen, loslassen, bewegen, nachspüren) */
+var RE = {};
+KZ.forEach(function(z){ RE['k_' + z.id] = {t:z.org + ' · ' + z.z, ic:z.s, cat:'Zeichen', steps:z.r.slice(0, 4).concat([z.r[4] + ' Sag innerlich: «' + z.satz + '»']), kern:z.kern}; });
+ELIST.forEach(function(k){ var e = ELEM[k]; RE['e_' + k] = {t:k + ' · ' + e.spiegel, ic:e.e, cat:'Atem & Stimme', steps:e.bew, kern:e.kern}; });
+var EXTRA = {
+  oeffnung:{t:'Die Öffnung', ic:'🌸', cat:'Atem & Stimme', kern:'Erst wenn der Mensch offen ist, kann Veränderung entstehen.', steps:[
+    'Ankommen: Füsse spüren, die Augen werden weich. Nichts muss passieren.', 'Atem beobachten: drei Atemzüge zuschauen, ohne etwas zu verändern.', 'Eine Hand aufs Brustbein, eine auf den Bauch. Spür, welche Hand sich mehr bewegt.', 'Innerlich ganz einfache Worte: «Lass es kommen.» «Was braucht es gerade?»', '«Es darf weit werden.» Nachspüren, nichts tun. Dein Inneres sucht selbst weiter.']},
+  fluss:{t:'Elementefluss', ic:'🌀', cat:'Bewegung', kern:'Fliessend, leicht, ruhig, und am Ende geerdet.', steps:[
+    'Wachsen (Holz): Gewicht pendelt von Fuss zu Fuss. Ein Arm wächst diagonal nach oben, der Blick folgt der Hand. Seitenwechsel im Pendeln.', 'Öffnen (Feuer): Beide Arme breiten sich weit aus, das Brustbein hebt sich. Wer mag, dreht sich einmal langsam um sich selbst.', 'Wiegen (Erde): Arme sinken auf Bauchhöhe, Knie weich, das Becken zeichnet eine liegende Acht.', 'Fallenlassen (Metall): Auf «sss» rollt der Oberkörper nach vorn, die Arme hängen, Kopf und Nacken lassen los.', 'Ankommen (Wasser): Die Hände tragen Gewicht, dann still werden. Langsam aufrollen, der Kopf kommt zuletzt. Füsse spüren, lang ausatmen.']},
+  fuesse:{t:'Zehen wecken', ic:'🦶', cat:'Boden & Füsse', kern:'Füsse finden den Boden. Nur so weit, wie der Fuss antwortet.', steps:[
+    'Fächer: Barfuss, die Zehen weit spreizen, fünf Sekunden halten, lösen. Fünfmal.', 'Zehen-Yoga: Die grosse Zehe heben, die kleinen bleiben unten. Dann umgekehrt.', 'Klavier: Alle Zehen heben und einzeln absetzen, von klein nach gross. Zuerst nur vorstellen, dann bewegen.', 'Greifen: Ein Tuch oder einen Stift mit den Zehen greifen und heben. Rechts, dann links.', 'Wurzeln: Stehen, Knie weich, Gewölbe leicht heben, Zehen bleiben lang. Füsse spüren, lang ausatmen.']},
+  gehen:{t:'Im Gehen üben', ic:'🚶', cat:'Boden & Füsse', kern:'Im Gehen kann man immer üben.', steps:[
+    'Abrollen: Ferse, Aussenkante, die grosse Zehe drückt ab. Zwanzig bewusste Schritte.', 'Zehen lang: Die Zehen weit lassen, nicht krallen, den Boden spüren.', 'Gegengleich: Rechter Fuss vor, linker Arm schwingt, und umgekehrt.', 'Überkreuz: Zehn Schritte, die Hand berührt das gegenüberliegende Knie.', 'Stehen bleiben: Füsse spüren, einmal lang ausatmen. Barfuss auf Gras, Sand oder Holz, wenn es geht.']},
+  beine:{t:'Leichte Beine', ic:'🍃', cat:'Bewegung', kern:'Wirbelsäule und Beine arbeiten zusammen. Wand in Reichweite.', steps:[
+    'Kippen und fangen: Aus den Fussgelenken nach vorn kippen, bis ein Schritt kommen muss. Weich in die Knie fangen, hochdrücken, zum vorderen Bein drehen.', 'Abrollen: Knie weich, Wirbel für Wirbel runter, hängen, ausatmen. Wirbel für Wirbel hoch.', 'Federn: Auf den Fussballen klein federn, Knie weich, Arme locker.', 'Pendelbein: Hand an der Wand, ein Bein locker aus der Hüfte pendeln, der Gegenarm schwingt.', 'Spiralschritt: Langsam gehen, bei jedem Schritt die Brust zum vorderen Bein drehen. Dann stehen und nachspüren.']},
+  kiefer:{t:'Kiefer und Mundboden', ic:'👄', cat:'Atem & Stimme', kern:'Mundboden, Zwerchfell und Füsse hängen zusammen.', steps:[
+    'Kiefer lösen: Den Unterkiefer locker hängen lassen, die Zunge liegt weich im Mund.', 'Gähnen erlauben: Wenn ein Gähnen kommt, lass es ganz zu.', 'Summen: Auf einem bequemen Ton «Mmm» summen. Wo vibriert es?', 'Summen und Füsse: Gewicht auf die Fersen, dann auf die Ballen, und weiter summen.', 'Nachspüren: Zunge weich, Füsse am Boden, einmal lang ausatmen.']},
+  lot:{t:'Stehen im Lot', ic:'⚖️', cat:'Boden & Füsse', kern:'Gewicht ist die Antwort der Erde.', steps:[
+    'Füsse hüftbreit, das Gewicht mittig auf beiden Sohlen.', 'Ganz klein vor und zurück pendeln, bis sich die Mitte von selbst findet.', 'Becken über die Fersen, Brustkorb über das Becken, Kopf obenauf.', 'Ausatmen und das Gewicht sinken lassen. Das Zwerchfell liegt quer, die Schwerkraft geht senkrecht.', 'Nachspüren: Gewicht ist die Antwort der Erde. Du wirst getragen.']},
+  yoga:{t:'Sanftes Yoga', ic:'🧘', cat:'Bewegung', kern:'Yoga und Körperkosmos: dieselben fünf Schritte.', steps:[
+    'Berg: Stehen, Fusssohlen breit, der Scheitel wird lang.', 'Arme heben: Mit dem Einatmen die Arme heben, mit dem Ausatmen sinken lassen. Dreimal.', 'Katze im Stand: Hände auf die Oberschenkel, ausatmen rund, einatmen lang.', 'Sanfte Vorbeuge: Knie weich, der Kopf hängt, die Arme hängen.', 'Nachspüren im Stand, oder auf dem Boden in der Kindhaltung.']}
+};
+Object.keys(EXTRA).forEach(function(k){ RE[k] = EXTRA[k]; });
+var RCATS = ['Alle', 'Zeichen', 'Atem & Stimme', 'Boden & Füsse', 'Bewegung'];
+
+/* ================= Stimme ================= */
+var tonAn = store.get('ton', true);
+function tonZeigen(){ $('tonKnopf').textContent = tonAn ? '🔈' : '🔇'; $('tonKnopf').setAttribute('aria-pressed', tonAn ? 'true' : 'false'); }
+function sag(text){
+  if (!tonAn || !text) return;
+  try {
+    if (window.NovaStimme && NovaStimme.sprich) { NovaStimme.sprich(text); return; }
+    if ('speechSynthesis' in window) {
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text); u.lang = 'de-CH'; u.rate = 0.92;
+      var v = speechSynthesis.getVoices().filter(function(x){ return /^de/i.test(x.lang); });
+      if (v.length) { u.voice = v.filter(function(x){ return /CH/i.test(x.lang); })[0] || v[0]; u.lang = u.voice.lang; }
+      speechSynthesis.speak(u);
+    }
+  } catch(e){}
+}
+function still(){ try { if (window.NovaStimme) NovaStimme.stopp(); } catch(e){} try { speechSynthesis.cancel(); } catch(e){} }
+$('tonKnopf').addEventListener('click', function(){ tonAn = !tonAn; store.set('ton', tonAn); if (!tonAn) still(); else sag('Ich bin da.'); tonZeigen(); });
+tonZeigen();
+
+/* ================= Bühne mit Posen ================= */
+var PROPS = {winkt:'👋', atmet:'🌬️', denkt:'💭', freut:'✨', zeigt:'👉', tanzt:'💫', lauscht:'👂', schlaeft:'🌙', ruht:'', fliegt:'', wacht:''};
+var POSEN_BILD = {};
+/* Posen: Nur Bilder aus dieser Liste werden geladen, sofort und ohne Anfragen ins Leere (keine 404).
+   Neues Fia-Bild: posen/<pose>.jpg ablegen (zeigt wirklich Fia, max. 120 KB), Namen hier und in posen/posen.json eintragen. */
+var POSEN_DA = ['fliegt', 'wacht', 'atmet', 'freut', 'schlaeft', 'lauscht', 'ruht', 'winkt', 'zeigt'];
+POSEN_DA.forEach(function(n){ if (n in PROPS) POSEN_BILD[n] = 'posen/' + n + '.jpg'; });
+/* Runde 5: echte Bilder für winkt und zeigt – kein Zusatz-Emoji, nur sanftes Schweben (Fia winkt im Bild selbst) */
+['winkt', 'zeigt'].forEach(function(n){ if (POSEN_BILD[n]) PROPS[n] = ''; });
+function bildFuer(p){ return POSEN_BILD[p] || FIG; }
+var tippTimer = null;
+function stage(pose, text, sz){
+  return '<div class="stage"><div class="actor ' + pose + '" style="--sz:' + (sz || 150) + 'px"><div class="glow"></div><div class="shadow"></div><div class="body"><img loading="lazy" decoding="async" src="' + bildFuer(pose) + '" alt="Fia"></div><span class="prop">' + (PROPS[pose] || '') + '</span></div>' +
+    (text ? '<div class="bubble" data-type="' + esc(text) + '">' + (reduced ? esc(text) : '') + '</div>' : '') + '</div>';
+}
+function tippen(root){
+  if (reduced) return;
+  (root || document).querySelectorAll('.bubble[data-type]').forEach(function(b){
+    var full = b.getAttribute('data-type'); b.removeAttribute('data-type'); var i = 0;
+    b.innerHTML = '<span></span><i class="cur"></i>'; var sp = b.firstChild;
+    var t = setInterval(function(){ if (!b.isConnected){ clearInterval(t); return; } i += 2; sp.textContent = full.slice(0, i); if (i >= full.length){ clearInterval(t); var c = b.querySelector('.cur'); if (c) c.remove(); } }, 24);
+  });
+}
+function zeig(el, pose, text, sz){ el.innerHTML = stage(pose, text, sz); tippen(el); }
+function pose(el, p, ms){
+  var a = el && el.querySelector('.actor'); if (!a) return;
+  var alt = a.className; a.className = 'actor ' + p; var pr = a.querySelector('.prop'); if (pr) pr.textContent = PROPS[p] || '';
+  var im = a.querySelector('.body img'); var altSrc = im ? im.getAttribute('src') : ''; if (im) im.setAttribute('src', bildFuer(p));
+  if (ms) setTimeout(function(){ if (a.isConnected){ a.className = alt; var q = alt.replace('actor', '').trim(); if (pr) pr.textContent = PROPS[q] || ''; if (im) im.setAttribute('src', altSrc); } }, ms);
+}
+function sprechblase(el, text){ var b = el.querySelector('.bubble'); if (!b) { el.querySelector('.stage').insertAdjacentHTML('beforeend', '<div class="bubble"></div>'); b = el.querySelector('.bubble'); } b.setAttribute('data-type', text); if (reduced) b.textContent = text; tippen(el); }
+
+/* Sternenhimmel und Funken */
+(function(){ var h = $('himmel'), s = ''; for (var i = 0; i < 40; i++) s += '<i style="left:' + (Math.random() * 100).toFixed(1) + '%;top:' + (Math.random() * 100).toFixed(1) + '%;animation-delay:' + (Math.random() * 4).toFixed(1) + 's"></i>';
+  for (var j = 0; j < 10; j++) s += '<b style="left:' + (Math.random() * 100).toFixed(1) + '%;animation-delay:' + (Math.random() * 9).toFixed(1) + 's;animation-duration:' + (7 + Math.random() * 6).toFixed(1) + 's"></b>'; h.innerHTML = s; })();
+
+/* ================= Was Fia sich merkt (nur Zahlen, nur auf dem Gerät) ================= */
+function memLaden(){ var m = store.get('mem', {}); m.tage = m.tage || []; m.re = m.re || {}; m.braucht = m.braucht || {}; return m; }
+function memTag(m){ var d = new Date().toISOString().slice(0, 10); if (m.tage.indexOf(d) < 0){ m.tage.push(d); if (m.tage.length > 120) m.tage.shift(); } }
+function memZahl(name){ var m = memLaden(); m[name] = (m[name] || 0) + 1; memTag(m); store.set('mem', m); }
+function memReihe(id, diff){ var m = memLaden(), x = m.re[id] || (m.re[id] = {n:0, d:[]}); x.n++; if (typeof diff === 'number'){ x.d.push(diff); if (x.d.length > 20) x.d.shift(); } memTag(m); store.set('mem', m); }
+function memBraucht(b){ var m = memLaden(); m.braucht[b] = (m.braucht[b] || 0) + 1; store.set('mem', m); }
+function memRender(){
+  var m = memLaden(), l = [], fav = null, fn = 0, gut = null, gv = -99;
+  Object.keys(m.re).forEach(function(k){ if (!RE[k]) return; if (m.re[k].n > fn){ fn = m.re[k].n; fav = k; } var d = m.re[k].d || []; if (d.length >= 2){ var a = d.reduce(function(s, v){ return s + v; }, 0) / d.length; if (a > gv){ gv = a; gut = k; } } });
+  var bm = null, bn = 0; Object.keys(m.braucht).forEach(function(k){ if (m.braucht[k] > bn){ bn = m.braucht[k]; bm = k; } });
+  if (m.tage.length) l.push('Im Körperkosmos an <b>' + m.tage.length + '</b> Tag' + (m.tage.length === 1 ? '' : 'en') + '.');
+  if (fav) l.push('Am häufigsten: <b>' + esc(RE[fav].t) + '</b> (' + fn + '×)');
+  if (gut && gv > 0) l.push('Nach <b>' + esc(RE[gut].t) + '</b> ging es dir meist besser (im Schnitt +' + gv.toFixed(1).replace('.', ',') + ').');
+  if (bm) l.push('Was es oft braucht: <b>' + esc(bm) + '</b> (' + bn + '×)');
+  ['zeichen:Zeichen angeschaut', 'spiegel:Spiegel angeschaut', 'karten:Karten gezogen', 'atem:Atemkreise', 'fragen:Fragen an Fia', 'checkin:Drei Fragen beantwortet'].forEach(function(p){ var a = p.split(':'); if (m[a[0]]) l.push(a[1] + ': ' + m[a[0]] + '×'); });
+  $('memListe').innerHTML = l.length ? l.join('<br>') : '<span class="muted">Noch nichts. Mach eine Reihe oder beantworte die drei Fragen, dann merkt sich Fia, was dir guttut.</span>';
+  var tipp = gut && gv > 0 ? gut : fav;
+  $('memTipp').innerHTML = tipp ? 'Fia schlägt vor: <b>' + esc(RE[tipp].t) + '</b>. <button class="btn ghost" type="button" data-reihe="' + tipp + '" style="margin:6px 0 0">Jetzt machen</button>' : 'Fia schlägt vor: Fang mit <b>Die Öffnung</b> an. <button class="btn ghost" type="button" data-reihe="oeffnung" style="margin:6px 0 0">Jetzt machen</button>';
+}
+function novaGet(k){ try { var v = localStorage.getItem(k); return v === null ? '' : JSON.parse(v); } catch(e){ return ''; } }
+function serverAdr(){ return String(novaGet('drlab-hermes-adresse') || '').trim().replace(/\/+$/, ''); }
+function serverBereit(){ return /^https:\/\//.test(serverAdr()) && !!novaGet('drlab-hermes-passwort'); }
+$('memVergessen').addEventListener('click', function(){ if (!confirm('Soll Fia alles vergessen, was sie sich gemerkt hat?')) return; store.del('mem'); memRender(); });
+$('memTeilen').addEventListener('click', function(){
+  var n = $('memMsg'); n.classList.remove('hidden');
+  if (!$('memOk').checked){ n.className = 'hinweis warn'; n.textContent = 'Bitte zuerst das Häkchen setzen. Ohne Häkchen geht nichts weg.'; return; }
+  var m = memLaden(), z = {app:'fia-kosmos', art:'Lern-Zahlen', datum:new Date().toISOString().slice(0, 10), tage:m.tage.length, reihen:{}, braucht:m.braucht};
+  ['zeichen','spiegel','karten','atem','fragen','checkin'].forEach(function(k){ z[k] = m[k] || 0; });
+  Object.keys(m.re).forEach(function(k){ z.reihen[k] = {anzahl:m.re[k].n, befindenDifferenz:m.re[k].d}; });
+  var txt = JSON.stringify(z);
+  function lokal(){
+    if (navigator.share){ navigator.share({title:'Fia Körperkosmos Lern-Zahlen', text:txt}).then(function(){ n.className = 'hinweis'; n.textContent = 'Danke! Weitergegeben (ohne Namen, ohne Texte).'; }).catch(function(){}); return; }
+    if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(function(){ n.className = 'hinweis'; n.textContent = 'In die Zwischenablage kopiert. Du kannst die Zahlen an Diego schicken.'; }, function(){ n.textContent = txt; }); return; }
+    n.className = 'hinweis'; n.textContent = txt;
+  }
+  if (serverBereit()){
+    n.className = 'hinweis'; n.textContent = 'Sende an Sense Engine …';
+    fetch(serverAdr() + '/erfahrung', {method:'POST', headers:{'Content-Type':'application/json', 'Authorization':'Bearer ' + novaGet('drlab-hermes-passwort')}, body:JSON.stringify({app:'fia-kosmos', art:'lern-zahlen', frage:txt, antwort:''})})
+      .then(function(r){ if (!r.ok) throw 0; n.textContent = 'Danke! Die Zahlen sind bei Sense Engine (ohne Namen, ohne Texte, ohne Stimme).'; }).catch(lokal);
+  } else lokal();
+});
+
+/* ================= Spür-Buch ================= */
+function buchLaden(){ return store.get('buch', []); }
+function buchNeu(art, text){ var b = buchLaden(); b.unshift({t:Date.now(), art:art, text:String(text).slice(0, 400)}); store.set('buch', b.slice(0, 200)); buchRender(); }
+function buchRender(){
+  var b = buchLaden();
+  $('buch').innerHTML = b.length ? b.slice(0, 30).map(function(e, i){ return '<div class="eintrag"><small>' + new Date(e.t).toLocaleString('de-CH', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}) + ' · ' + esc(e.art) + '</small>' + esc(e.text) + ' <button class="chip" type="button" data-buchweg="' + i + '" aria-label="Eintrag löschen" style="min-height:44px;min-width:44px;padding:2px 12px;font-size:14px">✕</button></div>'; }).join('') : '<p class="muted">Noch leer. Merk dir eine Karte oder beantworte die drei Fragen.</p>';
+}
+$('buch').addEventListener('click', function(ev){ var b = ev.target.closest('[data-buchweg]'); if (!b) return; var l = buchLaden(); l.splice(+b.dataset.buchweg, 1); store.set('buch', l); buchRender(); });
+
+/* ================= Karten (Zeichen, Element) ================= */
+function tierVon(te){ return ELEM[te].tiere[0]; }
+function kKarte(z){
+  var e = ELEM[z.te];
+  return '<div class="zkarte"><div class="zk"><b class="sym">' + z.s + '</b><div><strong>' + esc(z.z) + ' · ' + esc(z.org) + '</strong><small class="muted">' + esc(z.d) + '</small></div></div>' +
+    '<div class="tags"><span>Planet ' + esc(z.pl) + '</span><span>' + e.e + ' ' + esc(z.te) + '</span><span>' + esc(z.yy) + '</span><span>Sitzung ' + z.ses + ' von 10</span><span>' + z.h + '. Haus</span><span>' + (TIEREMO[tierVon(z.te)] || '') + ' ' + esc(ELEM[z.te].tiere.join(' / ')) + '</span><span>Duft ' + esc(DUFT[z.org] || '') + '</span></div>' +
+    '<h3>' + esc(z.thema) + '</h3>' +
+    '<dl><dt>Körper</dt><dd>' + esc(z.koerper) + '</dd><dt>Kraft</dt><dd>' + esc(z.res) + '</dd><dt>Wenn es eng wird</dt><dd>' + esc(z.eng) + '</dd><dt>Laut</dt><dd>' + esc(z.laut) + ' (ein Angebot, kein Muss)</dd><dt>Spiegel</dt><dd>' + esc(e.spiegel) + '</dd></dl>' +
+    '<div class="muted klein">Fragen als Einladung:</div><ul class="fragen">' + z.fragen.map(function(f){ return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' +
+    '<div class="satz">«' + esc(z.satz) + '»</div><p class="muted klein">' + esc(z.kern) + '</p>' +
+    '<button class="btn voll" type="button" data-reihe="k_' + z.id + '">Reihe mit Fia (2 Min)</button>' +
+    '<div class="reihe"><button class="btn ghost" type="button" data-kvor="' + z.id + '">Vorlesen</button><button class="btn ghost" type="button" data-kmerk="' + z.id + '">Ins Spür-Buch</button><button class="btn ghost" type="button" data-espiegel="' + z.te + '">Zum Spiegel</button></div>' +
+    '<div class="hinweis hidden" data-kmsg></div></div>';
+}
+function eKarte(k){
+  var e = ELEM[k];
+  return '<div class="zkarte ekarte" style="--ec:' + e.c + '"><div class="zk"><b class="sym" style="color:' + e.c + '">' + e.e + '</b><div><strong>' + esc(k) + ' · ' + esc(e.spiegel) + '</strong><small class="muted">' + esc(e.atem) + '</small></div></div>' +
+    '<p>' + esc(e.zeigt) + '</p>' +
+    '<div class="muted klein">Die Frage:</div><ul class="fragen">' + e.fragen.map(function(f){ return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' +
+    '<dl><dt>Im Atem</dt><dd>' + esc(e.atem) + '</dd><dt>Gestalt</dt><dd>' + esc(e.geist) + '</dd><dt>Im Tag</dt><dd>' + esc(e.tag) + ' <span class="muted">(' + esc(e.tagb) + ')</span></dd><dt>Laut</dt><dd>' + esc(e.laut) + '</dd><dt>Ton</dt><dd>' + esc(e.ton) + ' · Stimme: ' + esc(e.stimme) + '</dd><dt>Krafttiere</dt><dd>' + e.tiere.map(function(t){ return (TIEREMO[t] || '') + ' ' + esc(t); }).join(', ') + '</dd></dl>' +
+    '<div class="muted klein">Zeichen und Organe:</div><div class="chips">' + e.organe.map(function(id){ var z = kFind(id); return '<button class="chip" type="button" data-kzeig="' + id + '">' + z.s + ' ' + esc(z.z) + ' · ' + esc(z.org) + '</button>'; }).join('') + '</div>' +
+    '<div class="satz">' + esc(e.kern) + '</div>' +
+    '<button class="btn voll" type="button" data-reihe="e_' + k + '">Bewegung mit Fia (2 Min)</button>' +
+    '<div class="reihe"><button class="btn ghost" type="button" data-evor="' + k + '">Vorlesen</button><button class="btn ghost" type="button" data-eton="' + k + '">Ton ' + esc(e.ton) + ' summen</button>' +
+    (k === 'Wasser' ? '<a class="btn ghost" href="../schlaf/" data-geschwister>🌙 Fias Nest</a>' : '') + (k === 'Feuer' ? '<a class="btn ghost" href="../humanspark/">🦊 Herz messen</a>' : '') + '</div></div>';
+}
+function kVorlesen(z){ return z.z + '. ' + z.org + '. ' + z.thema + '. ' + z.fragen.join(' ') + ' Satz: ' + z.satz; }
+function eVorlesen(k){ var e = ELEM[k]; return k + '. ' + e.spiegel + '. ' + e.zeigt + ' ' + e.fragen.join(' '); }
+document.addEventListener('click', function(ev){
+  var r = ev.target.closest('[data-reihe]'); if (r){ starteReihe(r.dataset.reihe); return; }
+  var v = ev.target.closest('[data-kvor]'); if (v){ sag(kVorlesen(kFind(v.dataset.kvor))); return; }
+  var ev2 = ev.target.closest('[data-evor]'); if (ev2){ sag(eVorlesen(ev2.dataset.evor)); return; }
+  var m = ev.target.closest('[data-kmerk]');
+  if (m){ var z = kFind(m.dataset.kmerk); buchNeu('Zeichen', z.z + ' · ' + z.org + ': ' + z.thema + ' – ' + z.fragen[0]); var n = m.closest('.zkarte').querySelector('[data-kmsg]'); if (n){ n.textContent = 'Gemerkt, nur auf diesem Handy. Du findest es unter «Heute» im Spür-Buch.'; n.classList.remove('hidden'); } return; }
+  var sp = ev.target.closest('[data-espiegel]'); if (sp){ zeigeTab('spiegel'); eWaehle(sp.dataset.espiegel); return; }
+  var kz = ev.target.closest('[data-kzeig]'); if (kz){ zeigeTab('koerper'); kZeige(kz.dataset.kzeig); return; }
+  var et = ev.target.closest('[data-eton]'); if (et){ tonSpielen(et.dataset.eton); return; }
+});
+
+/* ================= Tabs ================= */
+var TABS = ['heute', 'atem', 'koerper', 'spiegel', 'wissen'];
+function zeigeTab(t){
+  if (TABS.indexOf(t) < 0) t = 'heute';
+  document.querySelectorAll('.tab').forEach(function(b){ b.setAttribute('aria-selected', b.dataset.tab === t ? 'true' : 'false'); });
+  TABS.forEach(function(x){ $('p-' + x).classList.toggle('an', x === t); });
+  store.set('tab', t);
+  try { window.scrollTo({top:0, behavior:'instant'}); } catch(e){ window.scrollTo(0, 0); }
+}
+document.querySelectorAll('.tab').forEach(function(b){ b.addEventListener('click', function(){ zeigeTab(b.dataset.tab); }); });
+
+/* ================= HEUTE ================= */
+function gruss(){
+  var h = new Date().getHours();
+  if (h < 5) return ['schlaeft', 'Es ist tief in der Nacht. Wenn du wach liegst, schau in Fias Nest. Hier ist es still.'];
+  if (h < 11) return ['wacht', 'Guten Morgen. Ich bin Fia. Wie fängst du den Tag an? Drei Atemzüge, dann schauen wir.'];
+  if (h < 17) return ['fliegt', 'Hallo, ich bin Fia. Wo spürst du dich gerade? Tipp unten die drei Fragen an.'];
+  if (h < 22) return ['atmet', 'Guten Abend. Die Ausatmung darf jetzt länger werden. Was braucht es gerade?'];
+  return ['ruht', 'Es wird Nacht. Eine kleine Reihe, dann ab ins Nest.'];
+}
+function heuteBuehne(){ var g = gruss(); zeig($('buehneHeute'), g[0], g[1], 150); }
+var IST = ['unruhig', 'müde', 'angespannt', 'traurig', 'ängstlich', 'wach', 'ruhig', 'weit', 'weiss nicht'];
+var BRAUCHT = {
+  'Boden':{re:'lot', e:'Wasser', satz:'Boden zuerst. Spür deine Füsse. Der Boden trägt dich.'},
+  'Weite':{re:'e_Feuer', e:'Feuer', satz:'Weite kommt über den Atem. Arme auf, Brustbein weich.'},
+  'Ruhe':{re:'oeffnung', e:'Wasser', satz:'Ruhe kommt in der Pause nach dem Ausatmen. Lass sie zu.'},
+  'Bewegung':{re:'fluss', e:'Holz', satz:'Bewegung weckt. Der Elementefluss nimmt alle fünf mit.'},
+  'Wärme':{re:'k_loewe', e:'Feuer', satz:'Wärme beginnt am Brustbein. Eine Hand drauf.'},
+  'Klarheit':{re:'k_jungfrau', e:'Erde', satz:'Klarheit heisst unterscheiden: Was gehört zu dir?'},
+  'Loslassen':{re:'k_skorpion', e:'Metall', satz:'Loslassen heisst zu Ende ausatmen. Auf «sss».'},
+  'Halt':{re:'k_waage', e:'Wasser', satz:'Halt kommt von unten. Je mehr die Füsse finden, desto mehr darf los.'}
+};
+var fWahl = {ist:null, braucht:null};
+$('fIst').innerHTML = IST.map(function(x){ return '<button class="chip" type="button" aria-pressed="false" data-ist="' + esc(x) + '">' + esc(x) + '</button>'; }).join('');
+$('fBraucht').innerHTML = Object.keys(BRAUCHT).map(function(x){ return '<button class="chip" type="button" aria-pressed="false" data-braucht="' + esc(x) + '">' + esc(x) + '</button>'; }).join('');
+$('fIst').addEventListener('click', function(ev){ var b = ev.target.closest('[data-ist]'); if (!b) return; fWahl.ist = b.dataset.ist; $('fIst').querySelectorAll('.chip').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); });
+$('fBraucht').addEventListener('click', function(ev){ var b = ev.target.closest('[data-braucht]'); if (!b) return; fWahl.braucht = b.dataset.braucht; $('fBraucht').querySelectorAll('.chip').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); });
+$('fOk').addEventListener('click', function(){
+  var b = fWahl.braucht || (fWahl.ist === 'unruhig' || fWahl.ist === 'ängstlich' ? 'Boden' : fWahl.ist === 'müde' ? 'Ruhe' : fWahl.ist === 'angespannt' ? 'Loslassen' : fWahl.ist === 'traurig' ? 'Wärme' : fWahl.ist === 'wach' ? 'Bewegung' : 'Ruhe');
+  var x = BRAUCHT[b], du = $('fDu').value.trim();
+  var text = (fWahl.ist === 'weiss nicht' ? 'Nicht wissen ist auch eine Antwort. ' : fWahl.ist ? 'Gerade ist es ' + fWahl.ist + '. ' : '') + x.satz;
+  $('fOut').innerHTML = '<div class="zkarte"><p><b>Fia:</b> ' + esc(text) + '</p><button class="btn voll" type="button" data-reihe="' + x.re + '">' + esc(RE[x.re].ic + ' ' + RE[x.re].t) + ' mit Fia</button><button class="btn ghost" type="button" data-espiegel="' + x.e + '">' + ELEM[x.e].e + ' ' + esc(ELEM[x.e].spiegel) + '</button></div>';
+  pose($('buehneHeute'), 'lauscht', 3500); sprechblase($('buehneHeute'), text); sag(text);
+  memZahl('checkin'); memBraucht(b);
+  buchNeu('Drei Fragen', 'Ist: ' + (fWahl.ist || '–') + ' · Braucht: ' + b + (du ? ' · Ich brauche: ' + du : ''));
+  memRender();
+});
+function kTagRender(){
+  var z = kTagZeichen(), e = ELEM[z.te];
+  $('kTag').innerHTML = '<h2>Zeichen des Tages</h2><p class="muted" style="margin:0">Jeden Tag ein anderes Bild aus dem Kreis. Heute:</p>' + kKarte(z) +
+    '<p class="muted klein" style="margin:8px 0 0">Frage des Elements ' + esc(z.te) + ': <b>' + esc(e.tag) + '</b></p>';
+}
+/* Karte ziehen */
+var KARTEN = []; ELIST.forEach(function(k){ ELEM[k].tiere.forEach(function(t){ KARTEN.push({e:k, t:t}); }); });
+var zGezogen = null;
+$('zZiehen').addEventListener('click', function(){
+  var k = $('zKarte');
+  function aufdecken(){
+    zGezogen = KARTEN[Math.floor(Math.random() * KARTEN.length)]; var e = ELEM[zGezogen.e];
+    $('zHinten').innerHTML = '<div class="tier">' + (TIEREMO[zGezogen.t] || '🪶') + '</div><strong style="font-size:20px;color:var(--gold)">' + esc(zGezogen.t) + '</strong><div class="klein">' + esc(TIER[zGezogen.t]) + '</div><div style="margin-top:8px">' + e.e + ' <b>' + esc(e.spiegel) + '</b></div><div class="klein muted">' + esc(e.fragen[0]) + '</div>';
+    k.classList.add('offen'); $('zBedeutung').classList.remove('hidden'); $('zText').value = ''; $('zMsg').classList.add('hidden');
+    $('zZiehen').textContent = 'Neue Karte ziehen'; memZahl('karten'); memRender();
+    sag(zGezogen.t + '. ' + TIER[zGezogen.t] + ' ' + e.spiegel + '. ' + e.fragen[0]);
+  }
+  if (k.classList.contains('offen')){ k.classList.remove('offen'); setTimeout(aufdecken, reduced ? 0 : 650); } else aufdecken();
+});
+$('zMerk').addEventListener('click', function(){ if (!zGezogen) return; buchNeu('Karte', zGezogen.t + ' · ' + ELEM[zGezogen.e].spiegel + (($('zText').value.trim()) ? ': ' + $('zText').value.trim() : '')); var n = $('zMsg'); n.textContent = 'Im Spür-Buch gemerkt.'; n.classList.remove('hidden'); });
+
+/* Frag Fia: lokal im Wissen suchen, mit Sense Engine frei antworten */
+function lokalAntwort(q){
+  var s = q.toLowerCase(), out = {text:'', knoepfe:''};
+  if (/brust.?schmerz|atemnot|ohnmacht|notfall|bewusstlos/.test(s)){ out.text = 'Das klingt nach einem Notfall. Bitte ruf sofort 144 an. Ich bin keine Ärztin.'; return out; }
+  if (/suizid|nicht mehr leben|umbringen|krise|verzweifel/.test(s)){ out.text = 'Danke, dass du es sagst. Bitte rede jetzt mit einem Menschen: Die Dargebotene Hand hört dir zu, Telefon 143, Tag und Nacht. Im Notfall 144.'; return out; }
+  if (/schlaf|nacht|einschlaf|müde|wach lieg/.test(s)){ out.text = 'Schlaf ist in der Methode das Wasser: die Pause nach der Ausatmung im grossen Massstab. Abends hilft Fias Nest mit Ritualen.'; out.knoepfe = '<a class="btn ghost" href="../schlaf/">🌙 Fias Nest öffnen</a><button class="btn ghost" type="button" data-espiegel="Wasser">💧 Wasser-Spiegel</button>'; return out; }
+  if (/herz.?rate|hrv|puls|messen|herzvariab/.test(s)){ out.text = 'Messen kann Sparky in Human Sparks: dein Herz beim Ruhigwerden, vorher und nachher.'; out.knoepfe = '<a class="btn ghost" href="../humanspark/">🦊 Human Sparks</a>'; return out; }
+  var treffer = [];
+  KZ.forEach(function(z){ var hay = (z.z + ' ' + z.org + ' ' + z.zone + ' ' + z.koerper + ' ' + z.thema + ' ' + z.res + ' ' + z.eng + ' ' + z.pl).toLowerCase(); var w = 0; s.split(/\s+/).forEach(function(t){ if (t.length > 2 && hay.indexOf(t.replace(/n$/, '')) >= 0) w++; }); if (w) treffer.push({z:z, w:w}); });
+  var eT = null;
+  ELIST.forEach(function(k){ var e = ELEM[k]; var hay = (k + ' ' + e.spiegel + ' ' + e.zeigt + ' ' + e.atem + ' ' + e.geist + ' ' + e.tagb).toLowerCase(); s.split(/\s+/).forEach(function(t){ if (t.length > 3 && hay.indexOf(t) >= 0 && !eT) eT = k; }); });
+  if (/angst|furcht|schreck/.test(s)) eT = 'Wasser'; else if (/vergleich|wert|trauer|loslass/.test(s)) eT = eT || 'Metall'; else if (/wiederhol|immer wieder|grübel/.test(s)) eT = 'Erde'; else if (/freude|herz|bestimm|seele/.test(s)) eT = eT || 'Feuer'; else if (/neu|anfang|platz|morgen/.test(s)) eT = eT || 'Holz';
+  if (/atem|zwerchfell|ausatm|einatm/.test(s)){ out.text = 'Die Frage der Methode: In welcher Phase des Atems wird ein Gewebe weich? Probier es im Reiter «Atem» an dir.'; out.knoepfe = '<button class="btn ghost" type="button" data-tabgo="atem">🌬️ Zum Atem</button>'; return out; }
+  if (/fuss|füsse|zehe|boden|erd/.test(s)){ out.text = 'Füsse zuerst. Je mehr die Füsse den Boden finden, desto mehr darf der Körper loslassen.'; out.knoepfe = '<button class="btn ghost" type="button" data-reihe="fuesse">🦶 Zehen wecken</button><button class="btn ghost" type="button" data-reihe="lot">⚖️ Stehen im Lot</button>'; return out; }
+  if (/kiefer|zähne|mund|summ/.test(s)){ out.text = 'Kiefer, Mundboden, Zwerchfell und Füsse hängen zusammen. Summen ist der sanfteste Weg.'; out.knoepfe = '<button class="btn ghost" type="button" data-reihe="kiefer">👄 Kiefer und Mundboden</button>'; return out; }
+  if (/yoga/.test(s)){ out.text = 'Yoga passt gut zum Körperkosmos: dieselben fünf Schritte, wecken bis nachspüren.'; out.knoepfe = '<button class="btn ghost" type="button" data-reihe="yoga">🧘 Sanftes Yoga</button>'; return out; }
+  if (/duft|riech|öl/.test(s)){ out.text = 'Jeder Meridian hat einen Duft. Ein Duft löst aus oder stärkt; in der Praxis wird das ausgetestet. Mehr unter «Wissen».'; out.knoepfe = '<button class="btn ghost" type="button" data-tabgo="wissen">📖 Wissen</button>'; return out; }
+  treffer.sort(function(a, b){ return b.w - a.w; });
+  if (treffer.length){ var z = treffer[0].z; out.text = 'Dazu passt ' + z.z + ' mit dem Organ ' + z.org + ': ' + z.thema + '. Die Frage: ' + z.fragen[0]; out.knoepfe = '<button class="btn ghost" type="button" data-kzeig="' + z.id + '">' + z.s + ' ' + esc(z.z) + ' ansehen</button><button class="btn ghost" type="button" data-reihe="k_' + z.id + '">Reihe mit Fia</button>'; return out; }
+  if (eT){ out.text = ELEM[eT].spiegel + ': ' + ELEM[eT].zeigt + ' Die Frage: ' + ELEM[eT].fragen[0]; out.knoepfe = '<button class="btn ghost" type="button" data-espiegel="' + eT + '">' + ELEM[eT].e + ' Zum Spiegel</button>'; return out; }
+  out.text = 'Dazu weiss ich im Körperkosmos noch nichts Genaues. Versuch es mit einer Körperstelle wie «Nacken» oder «Bauch», oder mit «Angst», «Atem», «Schlaf».'; return out;
+}
+function fragFia(){
+  var q = $('qText').value.trim(); if (!q) return;
+  memZahl('fragen');
+  var o = $('qOut');
+  function zeigLokal(){ var a = lokalAntwort(q); o.innerHTML = '<div class="zkarte"><p><b>Fia:</b> ' + esc(a.text) + '</p><div class="reihe">' + a.knoepfe + '</div></div>'; sag(a.text); pose($('buehneHeute'), 'denkt', 3000); memRender(); }
+  if (!serverBereit()) { zeigLokal(); return; }
+  o.innerHTML = '<p class="muted">Fia denkt …</p>';
+  var seele = ((window.NOVA_SEELEN || {})['fia-kosmos'] || '') + ' Antworte in höchstens vier kurzen Sätzen.';
+  fetch(serverAdr() + '/v1/chat/completions', {method:'POST', headers:{'Content-Type':'application/json', 'Authorization':'Bearer ' + novaGet('drlab-hermes-passwort'), 'X-Nova-App':'fia-kosmos'}, body:JSON.stringify({model:'sense-engine', messages:[{role:'system', content:seele}, {role:'user', content:q}]})})
+    .then(function(r){ if (!r.ok) throw 0; return r.json(); })
+    .then(function(j){ var a = j && j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content; if (!a) throw 0; var l = lokalAntwort(q); o.innerHTML = '<div class="zkarte"><p><b>Fia:</b> ' + esc(a) + '</p><div class="reihe">' + l.knoepfe + '</div></div>'; sag(a); pose($('buehneHeute'), 'freut', 2500); memRender(); })
+    .catch(zeigLokal);
+}
+$('qOk').addEventListener('click', fragFia);
+$('qText').addEventListener('keydown', function(e){ if (e.key === 'Enter') fragFia(); });
+document.addEventListener('click', function(ev){ var t = ev.target.closest('[data-tabgo]'); if (t) zeigeTab(t.dataset.tabgo); });
+
+/* ================= ATEM ================= */
+var PHASEN = [
+  {e:'Holz', t:'Einatmung setzt ein', ms:1600, s:1.15},
+  {e:'Feuer', t:'Fülle', ms:1400, s:1.45},
+  {e:'Erde', t:'Wendepunkt', ms:900, s:1.45},
+  {e:'Metall', t:'Ausatmung', ms:4200, s:.8},
+  {e:'Wasser', t:'Pause', ms:2200, s:.8}
+];
+var aLauf = null;
+function atemStopp(fertig){
+  if (aLauf){ clearTimeout(aLauf.t); aLauf = null; }
+  $('aStopp').classList.add('hidden'); $('aStart1').classList.remove('hidden'); $('aStart3').classList.remove('hidden');
+  $('aKugel').style.transform = 'scale(1)'; $('aText').textContent = fertig ? 'Gut gemacht' : 'Bereit';
+  document.querySelectorAll('#aKreis .e').forEach(function(x){ x.classList.remove('an'); });
+  if (fertig){ $('aSpiegel').textContent = 'Spür nach. Wo ist es weicher geworden?'; sag('Spür nach. Wo ist es weicher geworden?'); memZahl('atem'); memRender(); }
+}
+function atemStart(min){
+  atemStopp(); var ende = Date.now() + min * 60000, i = 0;
+  $('aStopp').classList.remove('hidden'); $('aStart1').classList.add('hidden'); $('aStart3').classList.add('hidden');
+  sag('Einatmen kommt von selbst. Ich zeige dir nur den Kreis.');
+  aLauf = {};
+  function schritt(){
+    if (!aLauf) return;
+    if (Date.now() > ende && i % 5 === 0){ atemStopp(true); return; }
+    var p = PHASEN[i % 5], e = ELEM[p.e];
+    var k = $('aKugel'); k.style.setProperty('--dauer', p.ms + 'ms'); $('aKreis').style.setProperty('--ec', e.hex); k.style.transform = 'scale(' + p.s + ')';
+    $('aText').textContent = p.t; $('aSpiegel').textContent = e.e + ' ' + p.e + ' · ' + e.spiegel;
+    document.querySelectorAll('#aKreis .e').forEach(function(x){ x.classList.toggle('an', x.dataset.e === p.e); });
+    i++; aLauf.t = setTimeout(schritt, p.ms);
+  }
+  schritt();
+}
+$('aStart1').addEventListener('click', function(){ atemStart(1); });
+$('aStart3').addEventListener('click', function(){ atemStart(3); });
+$('aStopp').addEventListener('click', function(){ atemStopp(false); });
+var WW = [
+  {l:'Beim Einatmen', e:'Holz', m:'Muster 1 · normales Einatmen', d:'Frei im Beginnen. Es ist Platz für Neues.'},
+  {l:'Beim Ausatmen', e:'Metall', m:'Muster 2 · normales Ausatmen', d:'Frei im eigenen Mass, ohne Vergleich.'},
+  {l:'Erst ganz voll eingeatmet', e:'Feuer', m:'Muster 3 · volle Einatmung', d:'Das Gewebe wartet darauf, dass du deinen ganzen Raum nimmst.'},
+  {l:'Erst ganz lang ausgeatmet', e:'Wasser', m:'Muster 4 · lange Ausatmung', d:'Die Freiheit liegt dort, wo es still wird. Davor steht manchmal die Angst.'},
+  {l:'Es stockt beim Wechsel', e:'Erde', m:'Stocken am Wendepunkt', d:'Die Wiederholung: immer an derselben Stelle.'},
+  {l:'Ich spüre nichts', e:null}
+];
+$('wwChips').innerHTML = WW.map(function(w, i){ return '<button class="chip" type="button" aria-pressed="false" data-ww="' + i + '">' + esc(w.l) + '</button>'; }).join('');
+$('wwChips').addEventListener('click', function(ev){
+  var b = ev.target.closest('[data-ww]'); if (!b) return;
+  $('wwChips').querySelectorAll('.chip').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+  var w = WW[+b.dataset.ww];
+  if (!w.e){ $('wwOut').innerHTML = '<div class="zkarte"><p>Das ist ganz in Ordnung. Spüren braucht Zeit. Probier es morgen nochmals, oder leg die Hände an eine andere Stelle: Bauch, Flanken, unterer Rücken.</p></div>'; sag('Das ist ganz in Ordnung. Spüren braucht Zeit.'); return; }
+  var e = ELEM[w.e];
+  $('wwOut').innerHTML = '<div class="zkarte ekarte" style="--ec:' + e.c + '"><p class="muted klein">' + esc(w.m) + '</p><p><b>' + e.e + ' ' + esc(w.e) + '</b> · ' + esc(e.spiegel) + '</p><p>' + esc(w.d) + '</p><p class="muted">Die Frage dazu: ' + esc(e.fragen[0]) + '</p><div class="reihe"><button class="btn" type="button" data-reihe="e_' + w.e + '">Bewegung mit Fia</button><button class="btn ghost" type="button" data-espiegel="' + w.e + '">Zum Spiegel</button></div></div>';
+  sag(w.d + ' ' + e.fragen[0]); memZahl('spiegel'); memRender();
+});
+var KETTE = [
+  {id:'fuss', ic:'🦶', t:'Fusssohle', d:'Der unterste Boden. Lass das Gewicht durch die Sohle wandern: Ferse, Aussenkante, Ballen, grosse Zehe.', re:'fuesse'},
+  {id:'becken', ic:'🫧', t:'Beckenboden', d:'Er schwingt mit dem Atem: beim Einatmen sinkt er leicht, beim Ausatmen hebt er sich. Nur beobachten.', re:'k_skorpion'},
+  {id:'zwerchfell', ic:'🌬️', t:'Zwerchfell', d:'Es vermittelt zwischen innen und aussen. Das Herz sitzt darauf und fährt bei jedem Atemzug mit.', re:'k_zwillinge'},
+  {id:'mund', ic:'👄', t:'Mundboden', d:'Unter der Zunge. Lass die Zunge weich liegen und summe. Er verbindet sich mit Zwerchfell und Füssen.', re:'kiefer'}
+];
+$('kette').innerHTML = KETTE.map(function(k){ return '<button type="button" data-kette="' + k.id + '"><span class="ic">' + k.ic + '</span><span><b>' + esc(k.t) + '</b><small>' + esc(k.d.split('.')[0]) + '.</small></span></button>'; }).join('');
+$('kette').addEventListener('click', function(ev){ var b = ev.target.closest('[data-kette]'); if (!b) return; var k = KETTE.filter(function(x){ return x.id === b.dataset.kette; })[0];
+  $('ketteOut').innerHTML = '<div class="zkarte"><p><b>' + k.ic + ' ' + esc(k.t) + '</b></p><p>' + esc(k.d) + '</p><button class="btn" type="button" data-reihe="' + k.re + '">' + esc(RE[k.re].t) + ' mit Fia</button></div>'; sag(k.t + '. ' + k.d); });
+$('oeffVor').addEventListener('click', function(){ sag('Erst wenn der Mensch offen ist, kann Veränderung entstehen. Lass es kommen. Was braucht es gerade? Es darf weit werden.'); });
+
+/* ================= KÖRPER ================= */
+var ZONEN = [
+  {id:'stier', x:90, y:74, l:'Hals und Nacken'}, {id:'loewe', x:68, y:104, l:'Brust und Schulter vorn'}, {id:'zwillinge', x:113, y:132, l:'Brustkorb seitlich'},
+  {id:'jungfrau', x:90, y:162, l:'Bauch'}, {id:'schuetze', x:44, y:160, l:'Rumpf seitlich und Arm'}, {id:'krebs', x:78, y:208, l:'Becken und Leiste'},
+  {id:'widder', x:114, y:262, l:'Bein aussen'},
+  {id:'steinbock', x:270, y:104, l:'Oberer Rücken'}, {id:'waage', x:270, y:176, l:'Lende'}, {id:'skorpion', x:282, y:246, l:'Beckenboden und Bein hinten'},
+  {id:'wassermann', x:258, y:330, l:'Waden'}, {id:'fische', x:284, y:402, l:'Rücken und Ferse'}
+];
+function leib(cx){
+  return '<g class="leib"><circle cx="' + cx + '" cy="38" r="24"/><rect x="' + (cx - 9) + '" y="58" width="18" height="16" rx="6"/>' +
+    '<path d="M' + (cx - 40) + ' 84 Q' + cx + ' 70 ' + (cx + 40) + ' 84 L' + (cx + 34) + ' 200 Q' + cx + ' 222 ' + (cx - 34) + ' 200 Z"/>' +
+    '<rect x="' + (cx - 58) + '" y="86" width="16" height="120" rx="8" transform="rotate(8 ' + (cx - 50) + ' 90)"/><rect x="' + (cx + 42) + '" y="86" width="16" height="120" rx="8" transform="rotate(-8 ' + (cx + 50) + ' 90)"/>' +
+    '<rect x="' + (cx - 32) + '" y="205" width="27" height="200" rx="13"/><rect x="' + (cx + 5) + '" y="205" width="27" height="200" rx="13"/>' +
+    '<ellipse cx="' + (cx - 20) + '" cy="410" rx="17" ry="8"/><ellipse cx="' + (cx + 20) + '" cy="410" rx="17" ry="8"/></g>';
+}
+$('kSvg').innerHTML = leib(90) + leib(270) + '<text x="90" y="428" text-anchor="middle">vorn</text><text x="270" y="428" text-anchor="middle">hinten</text>' +
+  ZONEN.map(function(z){ var k = kFind(z.id); return '<g class="hs" data-kzone="' + z.id + '" tabindex="0" role="button" aria-label="' + esc(z.l + ', ' + k.z) + '"><circle cx="' + z.x + '" cy="' + z.y + '" r="11"/><circle class="puls" cx="' + z.x + '" cy="' + z.y + '" r="11"/><circle class="hit" cx="' + z.x + '" cy="' + z.y + '" r="21"/></g>'; }).join('');
+$('kfZonen').innerHTML = ZONEN.map(function(z){ return '<button class="chip" type="button" aria-pressed="false" data-kzone="' + z.id + '">' + esc(z.l) + '</button>'; }).join('');
+function zoneWaehle(id){
+  document.querySelectorAll('[data-kzone]').forEach(function(x){ var an = x.dataset.kzone === id; if (x.tagName === 'BUTTON') x.setAttribute('aria-pressed', an ? 'true' : 'false'); else x.classList.toggle('an', an); });
+  var z = kFind(id);
+  $('kfOut').innerHTML = '<div class="zkarte" style="border-color:var(--gold)"><p><b>Fia fragt:</b> ' + esc(z.fragen[0]) + '</p></div>' + kKarte(z);
+  sag(z.fragen[0]); memZahl('zeichen'); memRender();
+}
+$('p-koerper').addEventListener('click', function(ev){ var b = ev.target.closest('[data-kzone]'); if (b) zoneWaehle(b.dataset.kzone); });
+$('kSvg').addEventListener('keydown', function(ev){ if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.closest('[data-kzone]')){ ev.preventDefault(); zoneWaehle(ev.target.closest('[data-kzone]').dataset.kzone); } });
+(function(){ var t = '', m = '', MON = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+  for (var i = 1; i <= 31; i++) t += '<option value="' + i + '">' + i + '.</option>';
+  MON.forEach(function(x, j){ m += '<option value="' + (j + 1) + '">' + x + '</option>'; });
+  $('kgTag').innerHTML = t; $('kgMonat').innerHTML = m;
+  var g = store.get('geburt', null); if (g){ $('kgTag').value = g.t; $('kgMonat').value = g.m; $('kgOut').innerHTML = kKarte(kZeichenVon(g.t, g.m)); }
+})();
+$('kgOk').addEventListener('click', function(){
+  var t = +$('kgTag').value, m = +$('kgMonat').value, maxT = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1];
+  if (t > maxT){ $('kgOut').innerHTML = '<div class="hinweis warn">Den ' + t + '. gibt es in diesem Monat nicht. Wähl bitte nochmals.</div>'; return; }
+  store.set('geburt', {t:t, m:m}); var z = kZeichenVon(t, m);
+  $('kgOut').innerHTML = kKarte(z); memZahl('zeichen'); memRender();
+  sag('Du bist ' + z.z + '. Dein Organ in der Methode: ' + z.org + '. Magst du die Reihe mit mir machen?');
+});
+$('kZgrid').innerHTML = KZ.map(function(x){ return '<button type="button" data-kz="' + x.id + '" aria-pressed="false"><b>' + x.s + '</b>' + esc(x.z) + '</button>'; }).join('');
+function kZeige(id){
+  $('kZgrid').querySelectorAll('[data-kz]').forEach(function(x){ x.setAttribute('aria-pressed', x.dataset.kz === id ? 'true' : 'false'); });
+  $('kZOut').innerHTML = kKarte(kFind(id)); memZahl('zeichen'); memRender();
+  setTimeout(function(){ $('kZOut').scrollIntoView({block:'nearest', behavior:reduced ? 'auto' : 'smooth'}); }, 30);
+}
+$('kZgrid').addEventListener('click', function(ev){ var b = ev.target.closest('[data-kz]'); if (b) kZeige(b.dataset.kz); });
+var rFilter = store.get('rfilter', 'Alle');
+function rRender(){
+  $('rFilter').innerHTML = RCATS.map(function(c){ return '<button class="chip" type="button" data-rf="' + esc(c) + '" aria-pressed="' + (c === rFilter) + '">' + esc(c) + '</button>'; }).join('');
+  var m = memLaden();
+  $('rListe').innerHTML = Object.keys(RE).filter(function(k){ return rFilter === 'Alle' || RE[k].cat === rFilter; }).map(function(k){ var r = RE[k], n = m.re[k] ? m.re[k].n : 0;
+    return '<button type="button" data-reihe="' + k + '"><span class="ic">' + r.ic + '</span><span><b>' + esc(r.t) + '</b><small>' + esc(r.kern) + (n ? ' · ' + n + '× gemacht' : '') + '</small></span></button>'; }).join('');
+}
+$('rFilter').addEventListener('click', function(ev){ var b = ev.target.closest('[data-rf]'); if (!b) return; rFilter = b.dataset.rf; store.set('rfilter', rFilter); rRender(); });
+
+/* ================= SPIEGEL ================= */
+$('eGrid').innerHTML = ELIST.map(function(k){ return '<button type="button" data-ew="' + k + '" aria-pressed="false" style="--ec:' + ELEM[k].c + '"><span>' + ELEM[k].e + '</span>' + k + '</button>'; }).join('');
+function eWaehle(k, ruhig){
+  $('eGrid').querySelectorAll('[data-ew]').forEach(function(x){ x.setAttribute('aria-pressed', x.dataset.ew === k ? 'true' : 'false'); });
+  $('eOut').innerHTML = eKarte(k); if (!ruhig){ memZahl('spiegel'); memRender(); }
+}
+$('eGrid').addEventListener('click', function(ev){ var b = ev.target.closest('[data-ew]'); if (b){ eWaehle(b.dataset.ew); sag(ELEM[b.dataset.ew].spiegel + '. ' + ELEM[b.dataset.ew].fragen[0]); } });
+/* Töne summen (WebAudio, leise, offline) */
+var ac = null, osz = null;
+function tonStopp(){ if (osz){ try { var o = osz; o.g.gain.setTargetAtTime(0, ac.currentTime, .15); setTimeout(function(){ try { o.o.stop(); o.o2.stop(); } catch(e){} }, 600); } catch(e){} osz = null; }
+  document.querySelectorAll('[data-tonk]').forEach(function(x){ x.setAttribute('aria-pressed', 'false'); }); }
+function tonSpielen(k){
+  var e = ELEM[k]; if (!e) return;
+  var war = osz && osz.k === k; tonStopp(); if (war){ $('tonInfo').textContent = 'Ton aus.'; return; }
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume();
+    var g = ac.createGain(); g.gain.value = 0; g.connect(ac.destination);
+    var o = ac.createOscillator(); o.type = 'sine'; o.frequency.value = e.hz; o.connect(g);
+    var o2 = ac.createOscillator(); o2.type = 'sine'; o2.frequency.value = e.hz / 2; var g2 = ac.createGain(); g2.gain.value = .35; o2.connect(g2); g2.connect(g);
+    o.start(); o2.start(); g.gain.setTargetAtTime(.08, ac.currentTime, .4);
+    osz = {o:o, o2:o2, g:g, k:k};
+    var b = document.querySelector('[data-tonk="' + k + '"]'); if (b) b.setAttribute('aria-pressed', 'true');
+    $('tonInfo').innerHTML = e.e + ' <b>' + esc(k) + '</b>: Ton ' + esc(e.ton) + ', Laut ' + esc(e.laut) + '. Summ mit, Füsse am Boden. Nochmals tippen = aus.';
+    setTimeout(function(){ if (osz && osz.k === k) tonStopp(); }, 60000);
+  } catch(err){ $('tonInfo').textContent = 'Dieses Handy kann den Ton nicht spielen. Summ einfach auf einem bequemen Ton.'; }
+}
+$('tonChips').innerHTML = ELIST.map(function(k){ return '<button class="chip" type="button" aria-pressed="false" data-tonk="' + k + '">' + ELEM[k].e + ' ' + k + ' · ' + ELEM[k].ton + '</button>'; }).join('') + '<button class="chip" type="button" id="tonAus">⏹ Stille</button>';
+$('tonChips').addEventListener('click', function(ev){ var b = ev.target.closest('[data-tonk]'); if (b) tonSpielen(b.dataset.tonk); if (ev.target.id === 'tonAus'){ tonStopp(); $('tonInfo').textContent = 'Ton aus.'; } });
+$('tiere').innerHTML = ELIST.map(function(k){ var e = ELEM[k]; return '<div class="eintrag"><b>' + e.e + ' ' + k + '</b><br>' + e.tiere.map(function(t){ return (TIEREMO[t] || '') + ' <b>' + esc(t) + '</b>: ' + esc(TIER[t]); }).join('<br>') + '</div>'; }).join('');
+
+/* ================= WISSEN ================= */
+var W = [
+  ['Der Grundsatz', '<p class="satz">«So wie wir die Welt wahrnehmen, so atmen wir. Und so wie wir atmen, so spürt und entwickelt sich unser Körper.»</p><p>Die fünf Elemente sind der Urboden. Aus ihnen entstehen die Meridiane, aus den Meridianen die Bilder der Sternkunde, und am Ende steht der Körper auf der Erde. Der Atem liest diesen Körper, die Spiegel sagen, was sich darin zeigt.</p>'],
+  ['Die Reihenfolge: Körper zuerst', '<ol style="padding-left:20px"><li><b>Der Körper zuerst.</b> Atem lesen: wo, wie hoch, in welcher Phase.</li><li><b>Bestätigen.</b> In der Praxis bestätigt ein kinesiologischer Muskeltest.</li><li><b>Vertiefen.</b> Zeichen und Planet geben dem Thema Bilder, nicht umgekehrt.</li><li><b>Der Spiegel</b> nennt die Frage.</li><li><b>Zurück zum Körper.</b> Bewegung und Laut in der Phase, in der es weich wird. Die Frage wird mitgegeben, nicht beantwortet.</li></ol>'],
+  ['Die Öffnung', '<p class="satz">«Erst wenn der Mensch offen ist, kann Veränderung entstehen.»</p><p>Woran man die Öffnung erkennt: Das Gewebe wird weich und gleitet. Der Atem findet seinen eigenen Rhythmus. Das Herz schwingt ruhig. Dann wenige, einfache Worte. Je einfacher, desto mehr Raum.</p><p class="muted klein">Dass ein ruhiges Nervensystem für Veränderung günstig ist, hat Entsprechungen in der Forschung zu Atmung und Herzrhythmus. Die Wirkung einfacher Worte im offenen Moment ist Erfahrung aus der Praxis.</p>'],
+  ['Der Atemzug als Kreis', '<table class="tab2"><tr><th>Phase</th><th>Element</th><th>Spiegel</th></tr>' + PHASEN.map(function(p){ return '<tr><td>' + esc(p.t) + '</td><td>' + ELEM[p.e].e + ' ' + p.e + '</td><td>' + esc(ELEM[p.e].spiegel) + '</td></tr>'; }).join('') + '</table><p class="muted klein">Es geht nicht um tiefes Atmen oder Bauchatmung, sondern darum, ob sich das Zwerchfell frei bewegen kann.</p>'],
+  ['Die sechs Atemmuster', '<table class="tab2"><tr><th>Muster</th><th>Wo es weich wird</th><th>Element</th></tr><tr><td>1</td><td>im normalen Einatmen</td><td>Holz</td></tr><tr><td>2</td><td>im normalen Ausatmen</td><td>Metall</td></tr><tr><td>3</td><td>erst in der vollen Einatmung</td><td>Feuer</td></tr><tr><td>4</td><td>erst in der langen Ausatmung</td><td>Wasser</td></tr><tr><td>5</td><td>nur im Bereich oben</td><td>Feuer und Holz</td></tr><tr><td>6</td><td>nur im Bereich unten</td><td>Wasser und Metall</td></tr><tr><td>–</td><td>der Wechsel stockt</td><td>Erde</td></tr></table>'],
+  ['Die zehn Sitzungen', '<p class="muted klein">Die Grundreihe der Strukturellen Integration, verbunden mit Planet, Organ und Zeichen.</p><table class="tab2"><tr><th>#</th><th>Planet</th><th>Organ</th><th>Zeichen</th></tr>' + [[1,'Sonne','Herz','Löwe'],[2,'Mond','Perikard','Krebs'],[3,'Merkur','Lunge, Dünndarm','Zwillinge, Jungfrau'],[4,'Venus','Magen, Niere','Stier, Waage'],[5,'Mars','Gallenblase','Widder'],[6,'Saturn','Leber','Steinbock'],[7,'Jupiter','Milz','Schütze'],[8,'Neptun','Blase','Fische'],[9,'Uranus','Dreifacher Erwärmer','Wassermann'],[10,'Pluto','Dickdarm','Skorpion']].map(function(r){ return '<tr><td>' + r.join('</td><td>') + '</td></tr>'; }).join('') + '</table>'],
+  ['Planet, Zeichen, Haus lesen', '<p><b>Planet</b> = Grundthema · <b>Zeichen</b> = wie es gelebt wird · <b>Haus</b> = Lebensbereich. Das Haus ist hier die natürliche Entsprechung (Widder = 1. Haus … Fische = 12. Haus), nicht die Stellung im persönlichen Horoskop.</p><p class="muted klein">Sternkunde ist hier symbolische Sprache, keine Vorhersage.</p>'],
+  ['Kette der Diaphragmen und Schwerkraftlinie', '<p>Fusssohle, Beckenboden, Zwerchfell, Mundboden: vier quer liegende Böden auf einer Linie. Für die Aufrichtung ist die Atmung das Wichtigste, danach der Psoas, danach der Kopfwender am Hals. Alle liegen auf einer Linie vor der Wirbelsäule.</p><p class="satz">«Gewicht ist die Antwort der Erde.»</p><p>Das Zwerchfell liegt quer, die Schwerkraft geht senkrecht. Im Lot muss der Körper weniger halten.</p>'],
+  ['Laute und Töne', '<table class="tab2"><tr><th>Element</th><th>Laut</th><th>Ton</th><th>Stimme</th></tr>' + ELIST.map(function(k){ var e = ELEM[k]; return '<tr><td>' + e.e + ' ' + k + '</td><td>' + esc(e.laut) + '</td><td>' + e.ton + '</td><td>' + e.stimme + '</td></tr>'; }).join('') + '</table><p>Laut eher hauchen als singen, sehr sanft. Stufenweg: Summen, Tönen, einzelne Worte («Ja», «Nein», «Ich»), Sätze. Immer mit den Füssen am Boden.</p>'],
+  ['Düfte', '<p>Der Geruch wirkt, bevor ein Wort gefallen ist. Jeder Meridian hat einen Duft. Ein Duft tut eines von beidem: er löst aus (am Anfang) oder er stärkt (am Schluss). In der Praxis wird das ausgetestet, nicht aus der Tabelle gelesen.</p><table class="tab2"><tr><th>Organ</th><th>Duft</th></tr>' + Object.keys(DUFT).map(function(o){ return '<tr><td>' + esc(o) + '</td><td>' + esc(DUFT[o]) + '</td></tr>'; }).join('') + '</table><p class="muted klein">Riechen statt sprühen: ein ruhiger Atemzug am Fläschchen. Nicht bei Asthma, Allergien, Migräne und in der Schwangerschaft. Pfefferminze und Eukalyptus nicht bei kleinen Kindern.</p>'],
+  ['Schlaf: das Wasser der Methode', '<p>Schlaf ist die Pause nach der Ausatmung im grossen Massstab: Ruhe, Tiefe, Bewahren. Morgenlicht (Holz), feste Aufstehzeit (Erde), Licht am späten Nachmittag (Metall), dunkel und kühl in der Nacht (Wasser).</p><a class="btn ghost" href="../schlaf/">🌙 Zu Fias Nest</a>'],
+  ['Herz messen', '<p>Die Öffnung zeigt sich auch im Herzen: ein ruhiger, schwingender Herzrhythmus. Vorher und nachher messen kannst du mit Sparky in Human Sparks.</p><a class="btn ghost" href="../humanspark/">🦊 Zu Human Sparks</a>'],
+  ['Yoga im Körperkosmos', '<p>Yoga und Körperkosmos teilen dieselben fünf Schritte: wecken, öffnen, loslassen, bewegen, nachspüren. Eine sanfte Reihe findest du unter «Körper».</p><button class="btn ghost" type="button" data-reihe="yoga">🧘 Sanftes Yoga mit Fia</button>'],
+  ['Schulungen', '<p>Körperkosmos gibt es auch als Weiterbildung über zwei Tage, mit Diego und Corina:</p><ul><li><b>M1 Grundlagen:</b> Atem lesen, Diaphragma, die fünf Spiegel, Schwerkraftlinie.</li><li><b>M2 Kosmos:</b> zehn Sitzungen, Planeten, Brücken zum Horoskop.</li><li><b>M3 Werkzeuge:</b> Muskeltest als Bestätigung, Laute, Düfte, Körperübungen.</li></ul><p class="muted klein">Teilnehmende erhalten eine Teilnahmebestätigung mit Stunden, keinen Titel. Fragen dazu stellst du Diego direkt in der Praxis.</p>'],
+  ['Grenzen', '<p>Fia ist keine Ärztin. Körperkosmos stellt keine Diagnose, verspricht keine Heilung und ersetzt keine Behandlung. Die Bilder sind ein Gesprächs- und Spürwerkzeug.</p><p>Bei Brustschmerz, Atemnot oder Ohnmacht: <b>144</b>. Wenn dir alles zu viel ist: Die Dargebotene Hand, <b>143</b>. Für Kinder und Jugendliche: <b>147</b>.</p><p class="muted klein">Alles, was du hier eingibst, bleibt auf diesem Handy. Nichts geht weg ohne dein Häkchen.</p>']
+];
+$('wissen').innerHTML = W.map(function(w){ return '<details><summary>' + esc(w[0]) + '</summary><div class="inhalt">' + w[1] + '</div></details>'; }).join('');
+$('allesLoeschen').addEventListener('click', function(){
+  if (!confirm('Alles löschen, was Fia Körperkosmos auf diesem Handy gespeichert hat?')) return;
+  try { Object.keys(localStorage).filter(function(k){ return k.indexOf('fk_') === 0; }).forEach(function(k){ localStorage.removeItem(k); }); } catch(e){}
+  memRender(); buchRender(); rRender(); $('kgOut').innerHTML = ''; var n = $('setMsg'); n.textContent = 'Gelöscht.'; n.classList.remove('hidden');
+});
+
+/* ================= Übungs-Player ================= */
+var pl = null, SCHRITT_MS = 24000;
+function starteReihe(id){
+  var r = RE[id]; if (!r) return;
+  tonStopp(); atemStopp(false);
+  pl = {id:id, r:r, i:0, t0:0, rest:SCHRITT_MS, pause:false, iv:null, vor:null};
+  $('plTitel').textContent = r.ic + ' ' + r.t;
+  zeig($('plBuehne'), 'winkt', r.kern, 120);
+  $('plVorher').classList.remove('hidden'); $('plLauf').classList.add('hidden'); $('plNachher').classList.add('hidden'); $('plErg').classList.add('hidden');
+  $('plV').value = 5; $('plVz').textContent = '5';
+  $('player').classList.remove('hidden'); document.body.style.overflow = 'hidden';
+  $('plLos').focus();
+}
+function plSchritt(){
+  var r = pl.r;
+  $('plPunkte').innerHTML = r.steps.map(function(_, i){ return '<i class="' + (i <= pl.i ? 'an' : '') + '"></i>'; }).join('');
+  $('plText').textContent = (pl.i + 1) + ' · ' + r.steps[pl.i];
+  var p = ['zeigt', 'atmet', 'lauscht', 'tanzt', 'wacht'][pl.i] || 'atmet';
+  var a = $('plBuehne').querySelector('.actor'); if (a){ a.className = 'actor ' + p; var pr = a.querySelector('.prop'); if (pr) pr.textContent = PROPS[p] || ''; var im = a.querySelector('.body img'); if (im) im.src = bildFuer(p); }
+  var b = $('plBuehne').querySelector('.bubble'); if (b) b.remove();
+  pl.rest = SCHRITT_MS; pl.t0 = Date.now();
+  sag(r.steps[pl.i]);
+}
+function plTakt(){
+  if (!pl || pl.pause) return;
+  var vergangen = Date.now() - pl.t0, rest = pl.rest - vergangen;
+  var gesamt = (pl.i + (SCHRITT_MS - rest) / SCHRITT_MS) / pl.r.steps.length;
+  $('plFort').style.width = Math.min(100, gesamt * 100).toFixed(1) + '%';
+  if (rest <= 0){ if (pl.i < pl.r.steps.length - 1){ pl.i++; plSchritt(); } else plEnde(); }
+}
+function plLos(mitZahl){
+  pl.vor = mitZahl ? +$('plV').value : null;
+  $('plVorher').classList.add('hidden'); $('plLauf').classList.remove('hidden');
+  pl.i = 0; pl.pause = false; $('plPause').textContent = 'Pause'; plSchritt();
+  clearInterval(pl.iv); pl.iv = setInterval(plTakt, 250);
+}
+function plEnde(){
+  clearInterval(pl.iv); still();
+  $('plLauf').classList.add('hidden'); $('plNachher').classList.remove('hidden');
+  $('plN').value = pl.vor == null ? 5 : pl.vor; $('plNz').textContent = $('plN').value;
+  var a = $('plBuehne').querySelector('.actor'); if (a){ a.className = 'actor fliegt'; var pr = a.querySelector('.prop'); if (pr) pr.textContent = PROPS.fliegt; var im = a.querySelector('.body img'); if (im) im.src = bildFuer('fliegt'); }
+  sag('Gut gemacht. Spür nach. Wie geht es dir jetzt?');
+}
+function plZu(){ if (pl) clearInterval(pl.iv); pl = null; still(); $('player').classList.add('hidden'); document.body.style.overflow = ''; rRender(); memRender(); }
+$('plV').addEventListener('input', function(){ $('plVz').textContent = this.value; });
+$('plN').addEventListener('input', function(){ $('plNz').textContent = this.value; });
+$('plLos').addEventListener('click', function(){ plLos(true); });
+$('plOhne').addEventListener('click', function(){ plLos(false); });
+$('plPause').addEventListener('click', function(){
+  if (!pl) return; pl.pause = !pl.pause;
+  if (pl.pause){ pl.rest -= Date.now() - pl.t0; this.textContent = 'Weiter'; still(); }
+  else { pl.t0 = Date.now(); this.textContent = 'Pause'; }
+});
+$('plVor').addEventListener('click', function(){ if (!pl) return; if (pl.i < pl.r.steps.length - 1){ pl.i++; pl.pause = false; $('plPause').textContent = 'Pause'; plSchritt(); } else plEnde(); });
+$('plZur').addEventListener('click', function(){ if (!pl) return; if (pl.i > 0) pl.i--; pl.pause = false; $('plPause').textContent = 'Pause'; plSchritt(); });
+$('plFertig').addEventListener('click', function(){
+  if (!pl) return;
+  var nach = +$('plN').value, diff = pl.vor == null ? undefined : nach - pl.vor;
+  memReihe(pl.id, diff);
+  var msg = pl.vor == null ? 'Gemerkt: ' + pl.r.t + ' gemacht.' : 'Vorher ' + pl.vor + ', nachher ' + nach + '. ' + (diff > 0 ? 'Schön, dass es leichter ist.' : diff < 0 ? 'Danke für deine Ehrlichkeit. Nicht jede Reihe passt jeden Tag.' : 'Gleich geblieben. Auch das ist eine Antwort.');
+  buchNeu('Reihe', pl.r.t + (pl.vor == null ? '' : ' · Befinden ' + pl.vor + ' → ' + nach));
+  var n = $('plErg'); n.textContent = msg; n.classList.remove('hidden'); sag(msg);
+  $('plFertig').classList.add('hidden');
+  setTimeout(function(){ $('plFertig').classList.remove('hidden'); plZu(); }, reduced ? 1500 : 2600);
+});
+$('plX').addEventListener('click', plZu);
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !$('player').classList.contains('hidden')) plZu(); });
+
+/* ================= Einführung beim ersten Start ================= */
+var EINF = [
+  ['winkt', 'Willkommen', 'Ich bin Fia, das kleine Phönix-Küken. Ich zeige dir den Körperkosmos: Atem, Körper und die fünf Spiegel.'],
+  ['atmet', 'Der Atem liest den Körper', 'In welcher Phase des Atems wird es bei dir weich? Unter «Atem» probierst du es selbst aus.'],
+  ['zeigt', 'Körper und Spiegel', 'Tipp eine Stelle am Körper an, wähl ein Element oder dein Zeichen. Jede Karte hat eine Frage und eine Reihe von zwei Minuten.'],
+  ['lauscht', 'Ruhig und ehrlich', 'Ich bin keine Ärztin und stelle keine Diagnose. Alles bleibt auf deinem Handy. Unten rechts kannst du mit mir reden.']
+];
+var eI = 0;
+function einfZeig(){ var s = EINF[eI]; zeig($('einfBuehne'), s[0], '', 130); $('einfTitel').textContent = s[1]; $('einfText').textContent = s[2];
+  $('einfPunkte').innerHTML = EINF.map(function(_, i){ return '<i class="' + (i === eI ? 'an' : '') + '"></i>'; }).join('');
+  $('einfWeiter').textContent = eI === EINF.length - 1 ? 'Los geht\'s' : 'Weiter'; }
+function einfStart(){ eI = 0; einfZeig(); $('einf').classList.remove('hidden'); document.body.style.overflow = 'hidden'; $('einfWeiter').focus(); }
+function einfEnde(){ $('einf').classList.add('hidden'); document.body.style.overflow = ''; store.set('intro', 1); sag('Schön, dass du da bist.'); }
+$('einfWeiter').addEventListener('click', function(){ sag(EINF[eI][2]); if (eI < EINF.length - 1){ eI++; einfZeig(); } else einfEnde(); });
+$('einfSkip').addEventListener('click', einfEnde);
+$('introNochmals').addEventListener('click', einfStart);
+
+/* ================= Runde 3: erster Eindruck (Fia antippen, Jetzt-Knopf, Woche, Feiern, Fias Welt) ================= */
+/* Feiern: kleine Funken und Sterne, kurzes Vibrieren (wo das Gerät es kann) */
+function haptik(m){ try { if (navigator.vibrate) navigator.vibrate(m || 12); } catch(e){} }
+function feiern(x, y, leise){
+  haptik(leise ? 8 : [10, 40, 16]);
+  if (reduced) return;
+  x = x == null ? innerWidth / 2 : x; y = y == null ? innerHeight / 2 : y;
+  var n = leise ? 8 : 14;
+  for (var i = 0; i < n; i++){
+    var s = document.createElement('span'); s.className = i % 3 ? 'funke' : 'stern'; s.textContent = i % 3 ? '' : (i % 2 ? '✦' : '✧'); s.setAttribute('aria-hidden', 'true');
+    var a = (i / n) * Math.PI * 2 + Math.random() * .6, r = (leise ? 40 : 60) + Math.random() * 50;
+    s.style.left = x + 'px'; s.style.top = y + 'px'; s.style.setProperty('--dx', (Math.cos(a) * r).toFixed(0) + 'px'); s.style.setProperty('--dy', (Math.sin(a) * r - 30).toFixed(0) + 'px'); s.style.animationDelay = (i * 25) + 'ms';
+    document.body.appendChild(s); (function(el){ setTimeout(function(){ el.remove(); }, 1500); })(s);
+  }
+}
+function mitte(el){ var r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + Math.min(r.height / 2, 120)]; }
+
+/* Fia antippen: sie freut sich, sagt etwas Kleines, und ein paar Funken steigen */
+var HALLO = {
+  morgen:['Guten Morgen. Spür kurz deine Füsse.', 'Drei Atemzüge, dann schauen wir.', 'Heute darfst du langsam anfangen.'],
+  tag:['Hallo du. Wo spürst du dich gerade?', 'Ein langer Atemzug aus, ganz ohne Eile.', 'Ich sammle Funken für dich.'],
+  abend:['Guten Abend. Die Ausatmung darf länger werden.', 'Später wartet mein Nest auf dich.', 'Lass die Schultern sinken. So, ja.'],
+  nacht:['Psst. Hier ist es still.', 'Du musst jetzt nichts lösen.', 'Mein Nest ist ganz nah.']
+};
+function tageszeit(){ var h = new Date().getHours(); return h < 5 || h >= 23 ? 'nacht' : h < 11 ? 'morgen' : h < 17 ? 'tag' : 'abend'; }
+var halloI = 0;
+function fiaHallo(){
+  var z = tageszeit(), L = HALLO[z], t = L[halloI++ % L.length], el = $('buehneHeute');
+  pose(el, z === 'nacht' ? 'atmet' : 'freut', 2600); sprechblase(el, t); sag(t);
+  var a = el.querySelector('.actor'); if (a){ var m = mitte(a); feiern(m[0], m[1], true); }
+  memZahl('fiahallo'); if (!store.get('getippt', 0)){ store.set('getippt', 1); } $('tippHint').hidden = true;
+}
+$('buehneHeute').addEventListener('click', function(ev){ if (ev.target.closest('.actor')) fiaHallo(); });
+$('buehneHeute').addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); fiaHallo(); } });
+$('tippHint').hidden = !!store.get('getippt', 0);
+
+/* Ein klarer erster Schritt: die Reihe, die Fia jetzt vorschlägt (was dir guttat, sonst passend zur Tageszeit) */
+function vorschlag(){
+  var m = memLaden(), fav = null, fn = 0, gut = null, gv = 0;
+  Object.keys(m.re).forEach(function(k){ if (!RE[k]) return; if (m.re[k].n > fn){ fn = m.re[k].n; fav = k; } var d = m.re[k].d || []; if (d.length >= 2){ var a = d.reduce(function(s, v){ return s + v; }, 0) / d.length; if (a > gv){ gv = a; gut = k; } } });
+  if (gut) return [gut, 'Hat dir gutgetan'];
+  if (fav) return [fav, 'Dein Liebling'];
+  var z = tageszeit(); return [z === 'morgen' ? 'lot' : z === 'tag' ? 'fluss' : 'oeffnung', ''];
+}
+function jetztRender(){
+  var v = vorschlag(), r = RE[v[0]]; if (!r) return;
+  $('jetzt').dataset.reihe = v[0]; $('jetztIc').textContent = r.ic || '🪶'; $('jetztT').textContent = r.t;
+  $('jetztS').textContent = v[1] ? v[1] + ' · ' + (r.kern || '') : (r.kern || '');
+  $('jetzt').setAttribute('aria-label', 'Jetzt zwei Minuten mit Fia: ' + r.t);
+}
+/* Deine Woche: ein Glutpunkt für jeden Tag im Körperkosmos (wie in Fias Nest) */
+function ketteRender(){
+  var m = memLaden(), h = '', n = 0;
+  for (var i = 6; i >= 0; i--){ var d = new Date(Date.now() - i * 864e5).toISOString().slice(0, 10), an = m.tage.indexOf(d) >= 0; if (an) n++;
+    h += '<span class="' + (an ? 'on' : '') + (i === 0 ? ' heute' : '') + '" title="' + new Date(Date.now() - i * 864e5).toLocaleDateString('de-CH', {weekday:'long'}) + '"></span>'; }
+  $('woche').innerHTML = h; $('ketteZahl').textContent = n + ' von 7';
+}
+var _memRender = memRender;
+memRender = function(){ _memRender(); jetztRender(); ketteRender(); };
+var _buchRender = buchRender;
+buchRender = function(){ _buchRender(); var n = buchLaden().length; $('buchZahl').textContent = n ? '(' + n + ')' : ''; };
+
+/* Am Abend zeigt Fia ihr Nest gleich oben */
+$('weltOben').hidden = !(new Date().getHours() >= 18 || new Date().getHours() < 5);
+
+/* Fias Welt: die Schwester-App. Auf GitHub Pages gleich nebenan, im Testlink auf ihrem eigenen Zweig. */
+function geschwisterUrl(ordner, zweig, meinZweig){
+  var m = location.pathname.match(/^\/[^/]+\/[^/]+\/([^/]+)\//);
+  if (/githack\.com$/.test(location.hostname) && m && m[1] === meinZweig) return 'https://raw.githack.com/Diegorobert-code/DR_Lab/' + zweig + '/' + ordner + '/index.html';
+  if (window.Capacitor || location.protocol === 'file:') return 'https://diegorobert-code.github.io/DR_Lab/' + ordner + '/';
+  return '../' + ordner + '/index.html';
+}
+var NEST_URL = geschwisterUrl('schlaf', 'fiasnest-ideen-2026-10-19', 'fia-koerperkosmos');
+document.querySelectorAll('[data-geschwister]').forEach(function(a){ a.href = NEST_URL; });
+document.addEventListener('click', function(ev){
+  var a = ev.target.closest('a[href^="../schlaf"]'); if (a) a.href = NEST_URL;
+  if (ev.target.closest('a[href="' + NEST_URL + '"]')) memZahl('nest');
+}, true);
+
+/* Feiern bei kleinen Erfolgen */
+$('plFertig').addEventListener('click', function(){ var m = mitte($('plErg').classList.contains('hidden') ? $('plNachher') : $('plErg')); feiern(m[0], m[1]); });
+$('zZiehen').addEventListener('click', function(){ setTimeout(function(){ var m = mitte($('zKarte')); feiern(m[0], m[1], true); }, reduced ? 0 : 1100); });
+$('fOk').addEventListener('click', function(){ var m = mitte($('fOk')); feiern(m[0], m[1] - 20, true); });
+/* Tippen fühlt sich an */
+document.addEventListener('click', function(ev){ if (ev.target.closest('.jetzt,.tab,#einfWeiter')) haptik(6); });
+/* Bild fehlt? Dann Fia statt kaputtem Symbol */
+document.addEventListener('error', function(e){ var i = e.target; if (i && i.tagName === 'IMG' && !i.dataset.ersatz){ i.dataset.ersatz = 1; i.src = FIG; } }, true);
+
+/* ================= Runde 4: Fia winkt zurück, Körperkosmos-Rad mit Sternbild, Zeichen des Tages kompakt, Körperreise ================= */
+/* Fia winkt zurück, sobald man sie antippt. Kommt nova/puppe.js mit Puppe.winkeZurueck, übernimmt die Puppe. */
+function winke(el){
+  var a = el && (el.classList && el.classList.contains('actor') ? el : el.querySelector('.actor')); if (!a) return;
+  /* Puppe (nova/puppe.js): Fia flattert flüssig zurück. Ohne Puppe: sanfte CSS-Animation wie bisher. */
+  /* Runde 5: Tinkos Winkebild (posen/winkt.jpg) – der Flügel im Bild schwingt echt, danach zurück zur Pose */
+  try { var im = a.querySelector('.body img');
+    if (im && window.Puppe && typeof Puppe.winkeZurueck === 'function'){ fiaWinktEcht(im); return; } } catch(e){}
+  var b = a.querySelector('.body'), pr = a.querySelector('.prop'); if (!b) return;
+  var im2 = a.querySelector('.body img'); if (im2 && POSEN_BILD.winkt){ var alt2 = im2.getAttribute('src'); im2.setAttribute('src', POSEN_BILD.winkt); setTimeout(function(){ if (im2.getAttribute('src') === POSEN_BILD.winkt && alt2 !== POSEN_BILD.winkt) im2.setAttribute('src', alt2); }, 1500); }
+  b.classList.remove('winkzurueck'); void b.offsetWidth; b.classList.add('winkzurueck');
+  if (pr){ var alt = pr.textContent; pr.textContent = '👋'; pr.classList.remove('wink'); void pr.offsetWidth; pr.classList.add('wink');
+    setTimeout(function(){ pr.classList.remove('wink'); if (pr.textContent === '👋') pr.textContent = alt; }, 1350); }
+  setTimeout(function(){ b.classList.remove('winkzurueck'); }, 1350);
+}
+window.winke = winke;
+/* Augen, Schnabel und Flügel an posen/winkt.jpg gemessen (Anteile 0..1) */
+var FIA_WINK = { arm:false, augenZu:false, augen:[[0.39,0.428,0.045,0.05],[0.578,0.443,0.055,0.058]],
+  mund:{ l:[0.43,0.527], r:[0.515,0.53], oben:0, unten:0, kinn:0.03, max:0.03 }, kopf:[0.51,0.40,0.22], hals:[0.52,0.62],
+  winkArm:{ x:0.29, y:0.55, r:0.16, dx:0.40, dy:0.62, seite:'links', winkel:20 } };
+function fiaWinktEcht(im){
+  var WB = POSEN_BILD.winkt; if (!WB){ var w0 = Puppe.winkeZurueck(im, {figur:'fia', gruss:'flattern', antippen:false, ton:false, blase:false}); if (w0 && w0.winke) w0.winke({gruss:'flattern'}); return; }
+  var vorher = im.getAttribute('src');
+  function los(){
+    if (im._puppeWinker && !im._fiaWink) im._puppeWinker.loese();
+    var w = Puppe.winkeZurueck(im, Object.assign({figur:'fia', gruss:'flattern', antippen:false, ton:false, blase:false}, FIA_WINK)); im._fiaWink = 1;
+    if (w && w.winke) w.winke({gruss:'flattern'});
+    clearTimeout(im._fiaZurueck);
+    if (vorher !== WB) im._fiaZurueck = setTimeout(function(){ if (im.isConnected && im.getAttribute('src') === WB) im.setAttribute('src', vorher); }, 2600);
+  }
+  if (vorher === WB && im.complete) los();
+  else { im.addEventListener('load', los, {once:true}); im.setAttribute('src', WB); }
+}
+$('buehneHeute').addEventListener('click', function(ev){ var a = ev.target.closest('.actor'); if (a) setTimeout(function(){ winke(a); }, 30); });
+$('buehneHeute').addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') setTimeout(function(){ winke($('buehneHeute')); }, 30); });
+/* Auch im Kopf und in der Einführung: Fia antippen, sie winkt */
+document.querySelector('header.kopf img').addEventListener('click', function(){ zeigeTab('heute'); setTimeout(function(){ winke($('buehneHeute')); haptik(8); }, 250); });
+document.querySelector('header.kopf img').style.cursor = 'pointer';
+$('einfBuehne').addEventListener('click', function(ev){ var a = ev.target.closest('.actor'); if (a){ winke(a); haptik(8); } });
+
+/* Zeichen des Tages: kurz und schön, alles Weitere auf Wunsch */
+kTagRender = function(){
+  var z = kTagZeichen(), e = ELEM[z.te];
+  $('kTag').innerHTML = '<h2>Zeichen des Tages</h2>' +
+    '<div class="zkarte ztag-kurz"><div class="zk"><b class="sym">' + z.s + '</b><div><strong>' + esc(z.z) + ' · ' + esc(z.org) + '</strong><small class="muted">' + e.e + ' ' + esc(z.te) + ' · ' + esc(z.thema) + '</small></div></div>' +
+    '<div class="satz">«' + esc(z.satz) + '»</div>' +
+    '<p class="muted klein" style="margin:0 0 8px">Frage des Elements: <b>' + esc(e.tag) + '</b></p>' +
+    '<button class="btn voll" type="button" data-reihe="k_' + z.id + '">Reihe mit Fia (2 Min)</button>' +
+    '<button class="btn ghost voll" type="button" id="kTagMehr" aria-expanded="false">Mehr zu ' + esc(z.z) + '</button><div id="kTagVoll"></div></div>';
+  $('kTagMehr').addEventListener('click', function(){ var v = $('kTagVoll'), auf = !v.innerHTML;
+    v.innerHTML = auf ? kKarte(z) : ''; this.setAttribute('aria-expanded', auf ? 'true' : 'false'); this.textContent = auf ? 'Weniger zeigen' : 'Mehr zu ' + z.z; });
+};
+
+/* Übungsreihen: erst die acht wichtigsten, alle auf Wunsch */
+var rAlle = false;
+var _rRender = rRender;
+rRender = function(){
+  _rRender();
+  var L = $('rListe'), kn = L.querySelectorAll('button[data-reihe]');
+  if (rFilter === 'Alle' && !rAlle && kn.length > 8){
+    var oben = ['oeffnung', 'fluss', 'lot', 'fuesse', 'kiefer', 'beine', 'gehen', 'yoga'];
+    kn.forEach(function(b){ if (oben.indexOf(b.dataset.reihe) < 0) b.classList.add('hidden'); });
+    oben.slice().reverse().forEach(function(id){ var b = L.querySelector('[data-reihe="' + id + '"]'); if (b) L.insertBefore(b, L.firstChild); });
+    L.insertAdjacentHTML('beforeend', '<button type="button" class="mehr-reihen" id="rMehr"><span class="ic">✨</span><span><b>Alle ' + kn.length + ' Reihen zeigen</b><small>Auch die zwölf Zeichen und fünf Elemente</small></span></button>');
+    $('rMehr').addEventListener('click', function(){ rAlle = true; rRender(); });
+  }
+};
+
+/* Körperkosmos-Rad: innen die fünf Elemente im Nährkreis, aussen die zwölf Zeichen als Sternbild.
+   Jede Zeichen-Reihe lässt ihren Stern leuchten (nur auf diesem Handy). */
+var RAD_EL_ZEIT = {Holz:'Morgen', Feuer:'Mittag', Erde:'Nachmittag', Metall:'Abend', Wasser:'Nacht'};
+function radJetzt(){ var h = new Date().getHours(); return h >= 5 && h < 11 ? 'Holz' : h < 14 ? 'Feuer' : h < 17 ? 'Erde' : h < 21 ? 'Metall' : 'Wasser'; }
+var radWahl = null, radHell = [];
+function radPunkt(r, i, n){ var w = (i / n) * Math.PI * 2 - Math.PI / 2; return [160 + r * Math.cos(w), 160 + r * Math.sin(w)]; }
+function radRender(){
+  var m = memLaden(), jetzt = radJetzt(), h = '';
+  var hell = KZ.filter(function(z){ return m.re['k_' + z.id]; }).map(function(z){ return z.id; });
+  h += '<defs><clipPath id="radClip"><circle cx="160" cy="160" r="33"/></clipPath><marker id="radPfeil" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="rgba(242,193,78,.75)"/></marker></defs>';
+  h += '<circle class="bahn" cx="160" cy="160" r="138"/><circle class="bahn" cx="160" cy="160" r="82"/>';
+  /* Nährkreis: Holz → Feuer → Erde → Metall → Wasser → Holz */
+  for (var i = 0; i < 5; i++){ var a = radPunkt(82, i + .22, 5), b = radPunkt(82, i + .78, 5);
+    h += '<path class="fluss" d="M' + a[0].toFixed(1) + ' ' + a[1].toFixed(1) + ' A82 82 0 0 1 ' + b[0].toFixed(1) + ' ' + b[1].toFixed(1) + '" marker-end="url(#radPfeil)"/>'; }
+  /* Zwölf Sterne */
+  KZ.forEach(function(z, i){ var p = radPunkt(138, i, 12), t = radPunkt(116, i, 12), an = hell.indexOf(z.id) >= 0;
+    h += '<g class="st' + (an ? ' hell' : '') + (radWahl === 'z:' + z.id ? ' an' : '') + (radHell.indexOf(z.id) >= 0 ? ' neu' : '') + '" data-rz="' + z.id + '" role="button" tabindex="0" aria-label="' + esc(z.z) + (an ? ', leuchtet' : '') + '">' +
+      '<circle class="hit" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="31"/><circle class="p" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="' + (an ? 6 : 4.5) + '"/>' +
+      '<text x="' + t[0].toFixed(1) + '" y="' + t[1].toFixed(1) + '">' + z.s + '</text></g>'; });
+  /* Fünf Elemente */
+  ELIST.forEach(function(k, i){ var e = ELEM[k], p = radPunkt(82, i, 5);
+    h += '<g class="el' + (radWahl === 'e:' + k ? ' an' : '') + (k === jetzt ? ' jetzt' : '') + '" data-re="' + k + '" role="button" tabindex="0" aria-label="' + k + ', ' + esc(e.spiegel) + '">' +
+      (k === jetzt ? '<circle class="halo" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="27" fill="none" stroke="' + e.hex + '" stroke-width="2"/>' : '') +
+      '<circle class="hit" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="30"/>' +
+      '<circle class="k" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="25" fill="rgba(10,15,40,.92)" stroke="' + e.hex + '"/>' +
+      '<text x="' + p[0].toFixed(1) + '" y="' + (p[1] - 5).toFixed(1) + '">' + e.e + '</text><text class="n" x="' + p[0].toFixed(1) + '" y="' + (p[1] + 13).toFixed(1) + '">' + k + '</text></g>'; });
+  /* Fia in der Mitte */
+  h += '<g class="mitte" id="radFia" role="button" tabindex="0" aria-label="Fia antippen"><circle cx="160" cy="160" r="37" fill="rgba(255,138,61,.25)"/><image href="' + bildFuer('fliegt') + '" x="127" y="127" width="66" height="66" clip-path="url(#radClip)" preserveAspectRatio="xMidYMid slice"/><circle cx="160" cy="160" r="33" fill="none" stroke="#f2c14e" stroke-width="2.5"/></g>';
+  $('rad').innerHTML = h; radHell = [];
+  $('radZahl').textContent = '✦ ' + hell.length + ' von 12 Sternen';
+  if (!radWahl) radInfo();
+}
+function radInfo(){
+  var jetzt = radJetzt();
+  $('radInfo').innerHTML = '<b class="t">So liest du das Bild</b><p>Innen die <b>fünf Elemente</b>. Sie nähren einander im Kreis, wie der Atem: Holz wird Feuer, Feuer wird Erde, Erde wird Metall, Metall wird Wasser.</p>' +
+    '<p>Aussen die <b>zwölf Zeichen</b>. Jede Zeichen-Reihe, die du machst, lässt ihren Stern leuchten. Jetzt ist ' + RAD_EL_ZEIT[jetzt] + ': <b>' + ELEM[jetzt].e + ' ' + jetzt + '-Zeit</b>.</p>';
+}
+function radElement(k){
+  var e = ELEM[k]; radWahl = 'e:' + k; radRender(); haptik(6);
+  $('radInfo').innerHTML = '<b class="t">' + e.e + ' ' + k + ' · ' + esc(e.spiegel) + '</b>' +
+    '<p class="klein muted">Im Atem: ' + esc(e.atem) + ' · Tageszeit: ' + esc(e.tagb) + '</p><p>' + esc(e.fragen[0]) + '</p>' +
+    '<div class="reihe"><button class="btn" type="button" data-reihe="e_' + k + '">Bewegung (2 Min)</button><button class="btn ghost" type="button" data-espiegel="' + k + '">Zum Spiegel</button></div>';
+  sag(k + '. ' + e.spiegel + '. ' + e.fragen[0]);
+}
+function radZeichen(id){
+  var z = kFind(id), m = memLaden(), an = !!m.re['k_' + id]; radWahl = 'z:' + id; radRender(); haptik(6);
+  $('radInfo').innerHTML = '<b class="t">' + z.s + ' ' + esc(z.z) + ' · ' + esc(z.org) + '</b>' +
+    '<p class="klein muted">' + ELEM[z.te].e + ' ' + esc(z.te) + ' · ' + esc(z.thema) + (an ? ' · ✦ leuchtet' : '') + '</p><p>' + esc(z.fragen[0]) + '</p>' +
+    '<div class="reihe"><button class="btn" type="button" data-reihe="k_' + id + '">' + (an ? 'Nochmals (2 Min)' : 'Stern anzünden (2 Min)') + '</button><button class="btn ghost" type="button" data-radz="' + id + '">Ganzes Zeichen</button></div>';
+}
+$('rad').addEventListener('click', function(ev){
+  var g = ev.target.closest('[data-re]'); if (g){ radElement(g.dataset.re); return; }
+  var s = ev.target.closest('[data-rz]'); if (s){ radZeichen(s.dataset.rz); return; }
+  if (ev.target.closest('#radFia')){ radWahl = null; radRender(); var f = $('radFia').getBoundingClientRect(); feiern(f.left + f.width / 2, f.top + f.height / 2, true); var t = 'Das ist dein Körperkosmos. Fang irgendwo an.'; sag(t); }
+});
+$('rad').addEventListener('keydown', function(ev){ if (ev.key !== 'Enter' && ev.key !== ' ') return; var g = ev.target.closest('[data-re],[data-rz]'); if (!g) return; ev.preventDefault(); if (g.dataset.re) radElement(g.dataset.re); else radZeichen(g.dataset.rz); });
+$('radInfo').addEventListener('click', function(ev){ var b = ev.target.closest('[data-radz]'); if (b){ zeigeTab('koerper'); setTimeout(function(){ kZeige(b.dataset.radz); }, 60); } });
+/* Neuer Stern: nach einer Zeichen-Reihe leuchtet er auf, mit kleiner Feier */
+$('plFertig').addEventListener('click', function(){
+  if (!pl || pl.id.indexOf('k_') !== 0) return; var id = pl.id.slice(2), m = memLaden();
+  var vorher = m.re[pl.id] ? m.re[pl.id].n : 0;
+  if (vorher === 0){ radHell.push(id); setTimeout(function(){ var n = KZ.filter(function(z){ return memLaden().re['k_' + z.id]; }).length; var hz = $('plErg'); if (hz) hz.textContent += ' ✦ Ein neuer Stern leuchtet in deinem Körperkosmos (' + n + ' von 12).'; }, 50); }
+}, true);
+var _memRenderR4 = memRender;
+memRender = function(){ _memRenderR4(); radRender(); if (radWahl && radWahl.indexOf('z:') === 0) radZeichen(radWahl.slice(2)); };
+
+/* Reise durch die vier Böden: im Liegen, dunkel, auf Wunsch nur hören (wie ein Hörbuch) */
+var REISE = [
+  ['', 'Leg dich bequem hin oder setz dich. Die Augen dürfen zugehen.', 6],
+  ['', 'Wir reisen von unten nach oben, durch die vier Böden, die dich tragen.', 6],
+  ['Fusssohle', 'Spür deine Fusssohlen. Ferse, Aussenkante, Ballen, grosse Zehe. Das Gewicht darf nach unten sinken.', 14],
+  ['Fusssohle', 'Gewicht ist die Antwort der Erde. Du musst dich nicht halten. Du wirst gehalten.', 12],
+  ['Beckenboden', 'Jetzt das Becken. Beim Einatmen sinkt der Beckenboden ein wenig, beim Ausatmen hebt er sich. Nur zuschauen.', 16],
+  ['Beckenboden', 'Er schwingt mit, ganz von allein, wie ein Tuch im Wind.', 12],
+  ['Zwerchfell', 'Weiter nach oben, unter die Rippen. Das Zwerchfell ist eine Kuppel, die sich mit jedem Atemzug bewegt.', 16],
+  ['Zwerchfell', 'Das Herz sitzt oben darauf und fährt mit. Ein … und aus. Nichts verändern.', 14],
+  ['Mundboden', 'Und jetzt ganz oben: der Mundboden, unter der Zunge. Lass die Zunge weich liegen. Der Kiefer wird locker.', 16],
+  ['Mundboden', 'Wenn du magst, summ ein leises Mmm. Spür, wie es bis in die Füsse schwingt.', 14],
+  ['Alle vier', 'Fusssohle, Becken, Zwerchfell, Mundboden. Vier Böden, übereinander, wie Stockwerke eines Hauses.', 14],
+  ['Alle vier', 'Sie atmen zusammen. Du darfst einfach da sein.', 14],
+  ['', 'Bleib noch liegen, solange du magst. Wenn du zurückkommst: Finger und Zehen bewegen, strecken, Augen auf.', 8]
+];
+var reiseRun = 0;
+function reiseWarte(ms, id){ return new Promise(function(r){ setTimeout(function(){ r(id === reiseRun); }, reduced ? Math.min(ms, 1500) : ms); }); }
+function reiseSprich(t){ if ('speechSynthesis' in window || window.NovaStimme){ var alt = tonAn; tonAn = true; sag(t); tonAn = alt; } }
+function reiseStart(){
+  var id = ++reiseRun, hoeren = $('reiseHoeren').checked; store.set('reiseHoeren', hoeren ? 1 : 0);
+  tonStopp(); atemStopp(false); still();
+  $('reiseBild').classList.toggle('hoeren', hoeren); $('reiseBild').classList.remove('hidden'); document.body.style.overflow = 'hidden';
+  try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function(w){ reiseStart.lock = w; }).catch(function(){}); } catch(e){}
+  memZahl('reise'); var o = $('reiseOrb'), i = 0;
+  (function weiter(){
+    if (id !== reiseRun) return;
+    if (i >= REISE.length){ $('reiseText').textContent = ''; $('reiseOrt').textContent = ''; return; }
+    var s = REISE[i++]; $('reiseOrt').textContent = s[0]; $('reiseText').textContent = s[1]; reiseSprich(s[1]);
+    o.style.transform = 'scale(' + (i % 2 ? 1.35 : .85) + ')';
+    reiseWarte(2500 + s[1].length * 65 + s[2] * 1000, id).then(function(ok){ if (ok) weiter(); });
+  })();
+}
+function reiseStopp(){ reiseRun++; still(); $('reiseBild').classList.add('hidden'); document.body.style.overflow = ''; try { if (reiseStart.lock) reiseStart.lock.release(); } catch(e){} reiseStart.lock = null; memRender(); }
+$('reiseHoeren').checked = !!store.get('reiseHoeren', 0);
+$('reiseGo').addEventListener('click', reiseStart);
+$('reiseStopp').addEventListener('click', reiseStopp);
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !$('reiseBild').classList.contains('hidden')) reiseStopp(); });
+
+/* ================= Start ================= */
+heuteBuehne(); kTagRender(); rRender(); memRender(); buchRender(); eWaehle(ELIST[Math.floor(Date.now() / 864e5) % 5], true);
+zeigeTab(store.get('tab', 'heute'));
+if (!store.get('intro', 0)) einfStart();
+(function(){ var m = memLaden(); memTag(m); store.set('mem', m); ketteRender(); })();
+})();
+</script>
+<script src="../nova/puppe.js" defer></script>
+<script src="../nova/seelen.js" defer></script>
+<script src="../nova/nova.js" data-nova-app="fia-kosmos" data-nova-figur="fia" data-nova-bild="figur.jpg" data-nova-unten="84" defer></script>
+<script src="feedback.js" data-app="Fia Körperkosmos" defer></script>
+<script src="runde6.js" defer></script>
+<script src="runde7.js" defer></script>
+<script src="runde8.js" defer></script>
+<script src="grafik.js" data-modus="svg" data-auch=".tab > span" defer></script>
+<script>
+/* Offline: Fia Körperkosmos geht auch ohne Netz (Netz zuerst, Kopie als Ersatz). */
+if ('serviceWorker' in navigator && location.protocol === 'https:' && !window.Capacitor){ addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); }); }
+</script>
+<script src="lernen.js" data-app="Körperkosmos" data-figur="fia" data-name="Körperkosmos" data-kind="0" data-unten="84" defer></script>
+</body>
+</html>
