@@ -1,0 +1,45 @@
+/* Jackie · Design-Runde «schön» (Salon-Magazin, edel und ruhig). Als letztes Stylesheet geladen. */
+/* ---- Figur als kleines lebendiges Icon (schoen.js setzt .sch-ava) ---- */
+@keyframes schAtem{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+@keyframes schFreut{0%{transform:scale(1)}30%{transform:translateY(-3px) scale(1.12) rotate(-5deg)}65%{transform:scale(.97) rotate(2deg)}100%{transform:scale(1)}}
+html img.sch-ava{border-radius:50%!important;object-fit:cover!important;object-position:50% 50%!important;animation:schAtem 5.2s ease-in-out infinite;transform-origin:50% 80%;filter:none!important;opacity:1!important;background:var(--sch-ring-bg,#f4ead8)}
+html img.sch-ava.sch-freut{animation:schFreut .72s cubic-bezier(.3,.7,.3,1)}
+@media (prefers-reduced-motion:reduce){html img.sch-ava,html img.sch-ava.sch-freut{animation:none}}
+html{--sch-ring-bg:#f4e6d6}
+html img.sch-ava{box-shadow:0 0 0 1.5px color-mix(in srgb,var(--m-gold) 70%,transparent),0 6px 14px -8px rgba(40,20,32,.45)}
+
+/* Hero: ein feiner Goldrahmen statt Doppelrahmen, Datumszeile ohne Umbruch */
+html body .jk-hero::before{display:none}
+html body .jk-hero{border-radius:28px}
+html body .jk-hero #greetEyebrow{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.12em;font-size:11px}
+html body .jk-hero #greetEyebrow::before{width:20px}
+html body .jk-hero h1#greet{text-wrap:balance}
+html body .jk-hero .lead{text-wrap:pretty}
+
+/* Überschriften ohne Waisen */
+html body h1,html body h2,html body h3,html body .tile b,html body .notecta b{text-wrap:balance}
+html body p,html body small{text-wrap:pretty}
+
+/* «Heute für dich»: edle Typo-Karte, Jackie nur als kleines Porträt oben rechts */
+html body .r8-heute{min-height:0;padding:22px 108px 20px 22px;background:linear-gradient(140deg,#2a1624 0%,#55304a 55%,#8a6447 100%);box-shadow:0 1px 2px rgba(40,20,32,.18),0 18px 36px -20px rgba(40,20,32,.55);border:1px solid color-mix(in srgb,var(--m-gold) 40%,transparent)}
+html body .r8-heute::after{content:"";inset:auto;right:-50px;top:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(242,210,160,.22),transparent 70%)}
+html body .r8-heute img{inset:auto;right:22px;top:22px;width:64px;height:64px;border-radius:50%;z-index:1}
+html body .r8-heute .o,html body .r8-heute .u{position:relative;left:auto;right:auto;top:auto;bottom:auto}
+html body .r8-heute .o small{font-size:11px;letter-spacing:.14em;font-weight:600;color:rgba(242,214,170,.9)}
+html body .r8-heute .o b{font-family:'Playfair Display',Georgia,serif;font-weight:500;font-size:24px;line-height:1.2;margin-top:8px;text-shadow:none;text-wrap:balance}
+html body .r8-heute .u{margin:14px -86px 0 0;align-items:center}
+html body .r8-heute .u span{font-size:15px;line-height:1.5;color:rgba(255,255,255,.86)}
+html body .r8-heute .u i{background:rgba(255,255,255,.14);border:1px solid rgba(242,214,170,.45);font-weight:600;font-size:14px;padding:0 16px;min-height:40px}
+
+/* Themen-Kacheln: ein Akzent für alle Symbole, hell und dunkel */
+html body .tiles .tile .ic{background:color-mix(in srgb,var(--m-accent) 12%,var(--m-surface))!important;color:var(--m-accent-ink)!important;border:1px solid color-mix(in srgb,var(--m-accent) 18%,transparent)}
+html body .tiles .tile .ic svg{color:inherit;stroke:currentColor}
+
+/* Kleine Porträts überall gleich gerahmt */
+html body .r6-satz img,html body .header-sch img{border-radius:50%}
+html body header.top .figur-logo{border-radius:50%;width:40px;height:40px}
+
+/* Luft für die Schwebeknöpfe (Lernen links, Nova rechts) am Seitenende */
+html body .wrap{padding-bottom:132px}
+html body .mic .t{text-wrap:balance}
+html body .nova-btn img.sch-ava{background:#f4e6d6}
