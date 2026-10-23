@@ -1,0 +1,65 @@
+/* design.css – Food and Flow im Look «Markthalle» (Design-Umbau 23.10.2026).
+   Lebendig wie ein Markt: Orange und Oliv auf warmem Creme, Bricolage Grotesque, Radius 18.
+   Nur Optik: alle Funktionen, Texte und Speicher bleiben. Wird als letztes Stylesheet geladen.
+   Die Mahlzeiten-Farben (mahlfarben.js) und die Einkaufsliste folgen derselben Palette:
+   Zmorge Honig, Zmittag Oliv, Zvieri Tomate, Znacht Abendblau, Bewegung Petrol. */
+:root:root{
+  --dz-bg:#FFF7EE;--dz-s:#FFFFFF;--dz-i:#2E3A12;--dz-i2:#4F5636;--dz-m:#5F6545;--dz-a:#F27A12;--dz-ad:#B4520A;--dz-at:#A84B08;
+  --dz-honig:#F2C14E;--dz-oliv:#8A9A3B;--dz-tomate:#E85D3A;--dz-line:#F0E2D0;--dz-line2:#EAD8C2;
+  --dz-f:"Bricolage Grotesque","Outfit",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --bg:#FFF7EE;--card:#FFFFFF;--ink:#2E3A12;--ink2:#4F5636;--muted:#5F6545;--line:#F0E2D0;
+  --acc:#5E6B1F;--acc-d:#4F5A16;--acc-l:#F1F3E0;--acc-xl:#F7F8EA;--warm:#B4520A;--warm-l:#FDE9D6;--p:#5E6B1F;
+  --serif:var(--dz-f);--sans:var(--dz-f);--r:18px;
+  --sh:0 1px 2px rgba(46,58,18,.05),0 10px 26px -14px rgba(120,60,10,.28);
+  --g9-akzent:#B4520A;--g9-fokus:#A84B08;--g9-auswahl:rgba(242,122,18,.2);--g9-ico-bg:linear-gradient(160deg,#FDE9D6,#FFF3E6);--g9-ico-fg:#A84B08;--g9-ico-rand:rgba(180,82,10,.16);--g9-lade-a:#F4E6D4;
+  /* Mahlzeiten (gleiche Namen wie mahlfarben.js) */
+  --mf-fr:#7A5200;--mf-fr-l:#FBEBC4;--mf-mi:#55611A;--mf-mi-l:#EEF1D9;--mf-zw:#A8361C;--mf-zw-l:#FCE3DA;
+  --mf-ab:#3B4F86;--mf-ab-l:#E6EAF5;--mf-act:#1E6E6A;--mf-act-l:#DDF1EE;
+}
+html,html body{background:var(--dz-bg)!important;color:var(--dz-i)}
+body,button,input,textarea,select,.hello,h1,h2,h3,h4,.brand{font-family:var(--dz-f)!important}
+h1,h2,h3,.hello{letter-spacing:-.02em}
+.hello{font-weight:700!important;font-size:30px}
+.brand{font-weight:800!important;letter-spacing:-.02em}
+.brand span{color:var(--dz-ad)!important}
+.figur-logo{border-color:var(--dz-a)!important;width:34px!important;height:34px!important}
+
+/* ---------- Banner: Flo-Karte als oranges Markt-Schild, Flo klein ---------- */
+.nb-buehne{background:linear-gradient(135deg,#C85E0C 0%,var(--dz-ad) 55%,#9A4507 100%)!important;border:0!important;border-radius:var(--r)!important;box-shadow:0 14px 30px -16px rgba(150,70,8,.7)!important;color:#fff!important;position:relative;overflow:hidden}
+.nb-buehne::after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:var(--dz-honig);opacity:.28;pointer-events:none}
+.nb-buehne :is(b,h2,h3,strong){color:#fff!important}
+.nb-buehne :is(span,p,small){color:#fff!important}
+.nb-buehne img{border-color:#fff!important;max-width:76px!important;max-height:76px!important}
+.nb-buehne :is(.nb-reden,a,button){background:#fff!important;color:var(--dz-at)!important;border-radius:999px!important;box-shadow:none!important;font-weight:700}
+
+/* ---------- Suche / Eingabe als Markt-Suchfeld ---------- */
+.textrow{border-radius:999px!important;background:var(--dz-s)!important;border:1.5px solid var(--dz-line2)!important;box-shadow:none!important;padding:6px 6px 6px 18px!important}
+.textrow button{border-radius:999px!important;background:var(--dz-ad)!important;color:#fff!important}
+.examples>*,#floSchnell button{border-radius:999px!important;background:var(--dz-s)!important;border:1.5px solid var(--dz-line2)!important;color:var(--dz-i)!important}
+
+/* ---------- Karten und Kacheln ---------- */
+:is(.card,.r6-karte,.r7-karte,.r6-gruss){border-radius:var(--r)!important}
+.alltag>button,.r8-b-zut>button{border-radius:14px!important}
+:is(.alltag,.r8-b-zut)>button:nth-of-type(3n+1){background:color-mix(in srgb,var(--dz-honig) 16%,#fff)!important;border-color:color-mix(in srgb,var(--dz-honig) 55%,#fff)!important}
+:is(.alltag,.r8-b-zut)>button:nth-of-type(3n+2){background:color-mix(in srgb,var(--dz-oliv) 13%,#fff)!important;border-color:color-mix(in srgb,var(--dz-oliv) 45%,#fff)!important}
+:is(.alltag,.r8-b-zut)>button:nth-of-type(3n){background:color-mix(in srgb,var(--dz-tomate) 11%,#fff)!important;border-color:color-mix(in srgb,var(--dz-tomate) 40%,#fff)!important}
+
+/* ---------- Knöpfe: Pillen ---------- */
+.btn:not(.ghost){background:var(--dz-ad)!important;color:#fff!important;border-radius:999px!important}
+.btn.ghost{color:var(--dz-at)!important;border-radius:999px!important}
+.mic{background:radial-gradient(circle at 35% 30%,#F79A45,var(--dz-a) 45%,var(--dz-ad))!important;box-shadow:0 0 0 8px rgba(242,122,18,.12),0 18px 40px -14px rgba(180,82,10,.6)!important}
+.mic svg{stroke:#fff!important;color:#fff}
+.miclabel{color:var(--dz-at)!important}
+
+/* ---------- Tab-Leiste ---------- */
+.nav .in{background:rgba(255,255,255,.94)!important;border-color:var(--dz-line2)!important;border-radius:999px!important}
+.nav button{border-radius:999px!important;color:var(--dz-m)!important}
+.nav button.on{background:#FDE9D6!important;color:var(--dz-at)!important;font-weight:700}
+:root:root[data-theme="dark"],html.dunkel:root{--mf-fr:#F6C870;--mf-fr-l:#3A2E14;--mf-mi:#C9D58A;--mf-mi-l:#2A2F14;--mf-zw:#F4A58E;--mf-zw-l:#3E2018;--mf-ab:#A9C1F2;--mf-ab-l:#1F2A44;--mf-act:#86D9D1;--mf-act-l:#16332F}
+/* ---------- «Für dich»: Kacheln wie Marktstände (Honig, Oliv, Tomate), Text immer dunkel auf hell ---------- */
+.tiles .tile{border-radius:var(--r)!important;border:1.5px solid var(--dz-line2)!important;color:var(--dz-i)!important}
+.tiles .tile:nth-child(4n+1){background:linear-gradient(140deg,#FBEBC4,#FFFFFF 75%)!important}
+.tiles .tile:nth-child(4n+2){background:linear-gradient(140deg,#EEF1D9,#FFFFFF 75%)!important}
+.tiles .tile:nth-child(4n+3){background:linear-gradient(140deg,#FCE3DA,#FFFFFF 75%)!important}
+.tiles .tile:nth-child(4n){background:linear-gradient(140deg,#FDE9D6,#FFFFFF 75%)!important}
+.tiles .tile small{color:var(--dz-m)!important}
