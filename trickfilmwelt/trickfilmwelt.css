@@ -1,0 +1,44 @@
+/* trickfilmwelt.css – die bleibende Filmwelt der Kinder-Apps (zu trickfilmwelt.js). Nur Darstellung. */
+#tfw-welt{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:#0b0d18}
+#tfw-welt::before{content:"";position:absolute;inset:-4%;background:var(--tfw-welt-bild) center/cover no-repeat;opacity:.6}
+#tfw-welt::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(70% 45% at 50% 38%,rgba(255,206,130,.22),transparent 70%),
+             radial-gradient(120% 90% at 50% 50%,transparent 55%,rgba(5,6,14,.7) 100%),
+             linear-gradient(rgba(8,10,24,.35),rgba(8,10,24,.15) 40%,rgba(8,10,24,.55))}
+html.tfw-nacht #tfw-welt::after{background:radial-gradient(70% 45% at 50% 30%,rgba(200,215,255,.18),transparent 70%),
+             radial-gradient(120% 90% at 50% 50%,transparent 55%,rgba(4,6,18,.72) 100%),
+             linear-gradient(rgba(6,10,30,.4),rgba(6,10,30,.18) 40%,rgba(6,10,30,.6))}
+#tfw-welt .tfw-netz{position:absolute;inset:0;background:center/cover no-repeat;opacity:.08;mix-blend-mode:screen}
+#tfw-welt .tfw-band{position:absolute;left:0;top:0;width:100%;height:100%;animation:tfwBand 26s ease-in-out infinite alternate}
+@keyframes tfwBand{from{transform:translateY(0)}to{transform:translateY(-3%) translateX(2%)}}
+/* Buchrand: die App liegt wie auf einer Seite im Buch */
+#tfw-rand{position:fixed;inset:0;z-index:35;pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(255,222,160,.22),inset 0 0 48px rgba(0,0,0,.42);
+  background:linear-gradient(90deg,rgba(255,240,210,.32) 0 1px,transparent 1px 3px,rgba(255,240,210,.22) 3px 4px,transparent 4px 6px,rgba(255,240,210,.14) 6px 7px,transparent 7px) left/8px 100% no-repeat,
+             linear-gradient(270deg,rgba(255,240,210,.22) 0 1px,transparent 1px 3px,rgba(255,240,210,.14) 3px 4px,transparent 4px) right/6px 100% no-repeat}
+/* Karten mit goldenem Seitenrand (wie die Bildränder im Film) */
+.tfw-karte{outline:1.5px solid rgba(255,214,140,.55);outline-offset:3px}
+html.tfw-nacht .tfw-karte{outline-color:rgba(220,230,255,.5)}
+/* Fenster blättern wie eine Buchseite ein */
+.tfw-blaettern{animation:tfwBlatt .6s cubic-bezier(.2,.8,.2,1) both!important;transform-origin:0 50%}
+@keyframes tfwBlatt{from{transform:perspective(1400px) rotateY(-38deg);opacity:0;filter:brightness(1.25) sepia(.25)}55%{opacity:1}to{transform:none;filter:none}}
+/* Eingang */
+#tfw-eingang{position:fixed;inset:0;z-index:2147482900;cursor:pointer;transform-origin:0 50%;-webkit-user-select:none;user-select:none}
+#tfw-eingang canvas{position:absolute;inset:0;display:block}
+#tfw-eingang .tfw-seitenschatten{position:absolute;inset:0;opacity:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.0),rgba(0,0,0,.55))}
+#tfw-eingang .tfw-text{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 10%);padding:0 24px;text-align:center;
+  font:600 21px/1.3 ui-rounded,"SF Pro Rounded",system-ui,-apple-system,sans-serif;color:#ffe2a8;letter-spacing:.3px;
+  text-shadow:0 0 18px rgba(255,200,110,.6),0 2px 8px rgba(0,0,0,.6);opacity:0;transform:translateY(8px);transition:opacity .9s ease,transform .9s ease}
+html.tfw-nacht #tfw-eingang .tfw-text{color:#e8eeff;text-shadow:0 0 18px rgba(190,205,255,.6),0 2px 8px rgba(0,0,0,.6)}
+#tfw-eingang .tfw-text.an{opacity:1;transform:none}
+#tfw-eingang.tfw-umblaettern{animation:tfwUm .9s cubic-bezier(.45,0,.2,1) forwards;pointer-events:none}
+#tfw-eingang.tfw-umblaettern .tfw-seitenschatten{animation:tfwSchatten .9s ease forwards}
+@keyframes tfwUm{from{transform:perspective(1600px) rotateY(0)}to{transform:perspective(1600px) rotateY(-100deg);opacity:.2}}
+@keyframes tfwSchatten{to{opacity:1}}
+#tfw-eingang.tfw-kurz.tfw-umblaettern,#tfw-eingang.tfw-kurz.tfw-umblaettern .tfw-seitenschatten{animation-duration:.6s}
+#tfw-eingang.tfw-weg-sanft{transition:opacity .4s ease;opacity:0;pointer-events:none}
+@media (prefers-reduced-motion:reduce){
+  #tfw-welt .tfw-band{animation:none}
+  .tfw-blaettern{animation:tfwBlattRuhig .3s ease both!important}
+  @keyframes tfwBlattRuhig{from{opacity:0}to{opacity:1}}
+}
