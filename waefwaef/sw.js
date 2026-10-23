@@ -1,5 +1,5 @@
 // Wäf Wäf – Offline-Cache (nur eigene Dateien, keine Daten)
-const CACHE = 'waefwaef-v20';
+const CACHE = 'waefwaef-v21';
 const FILES = ['./grafik.css', './grafik.js', './ton-ios.js', './nda-sperre.js', './posen/hundemarke.jpg', './posen/pssst.jpg', './posen/regenmantel.jpg', './runde6.js', './runde7.js', './runde8.js', './training.js', './saison/halloween.jpg', './saison/advent.jpg', './besuch/granny.jpg', './besuch/hasi.jpg', './besuch/otti.jpg', './besuch/fia.jpg', './', './index.html', './lernen.js', './posen.js', './runde4.js', './seele.js', './feedback.js', './figur.jpg', './figur-klein.jpg', './posen/sitzt.jpg', './posen/rennt.jpg', './posen/schlaeft.jpg', './posen/freut.jpg', './posen/trick.jpg', './posen/schnueffelt.jpg', './icon-180.png', './icon-192.png', './manifest.webmanifest', '../nova/nova.js', '../nova/puppe.js', '../nova/puppe.css', '../nova/seelen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(FILES.map(f => c.add(f).catch(() => {})))).then(() => self.skipWaiting()));
