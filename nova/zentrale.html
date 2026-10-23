@@ -68,6 +68,9 @@
   details.karte .mehr ul { margin:6px 0; padding-left:0; list-style:none; }
   details.karte .mehr li.erledigt { text-decoration:line-through; opacity:.6; }
   details.karte .mehr li .n { color:var(--gold); font-size:12px; margin-left:4px; }
+  details.karte .mehr li { display:flex; align-items:flex-start; gap:8px; margin:4px 0; }
+  details.karte .mehr li .ab { flex:none; width:26px; height:26px; border-radius:50%; border:1.5px solid var(--leise); background:none; color:inherit; font-size:14px; line-height:1; cursor:pointer; padding:0; }
+  details.karte .mehr li.weg { opacity:.35; text-decoration:line-through; transition:opacity .4s; }
   details.karte .mehr a { color:var(--gold); }
   #druck { display:none; }
   @media print {
@@ -202,18 +205,23 @@
       var z0 = document.createElement('span'); z0.className = 'zeichen'; z0.textContent = zeichen;
       var t0 = document.createElement('span'); t0.className = 'titel'; t0.textContent = t.titel || '';
       su.append(z0, t0);
-      var offen = todos.filter(function (x) { return !x.erledigt; }).length;
+      // Erledigtes verschwindet: was der Thread als fertig meldet und was Diego hier abgehakt hat.
+      todos = todos.filter(function (x) { return !x.erledigt && !abgehakt[schluessel(t, x)]; });
+      var offen = todos.length;
+      if (!t.zusammenfassung && !todos.length && !t.neu) return karte(Object.assign({}, t, { todos: [] }), zeichen);
       if (t.neu) { var n0 = document.createElement('span'); n0.className = 'neu'; n0.textContent = t.status === 'wartet auf Diego' ? 'Wartet auf dich' : 'Änderung, wichtig'; su.appendChild(n0); }
       else if (offen) { var o0 = document.createElement('span'); o0.className = 'neu'; o0.textContent = offen + ' offen'; su.appendChild(o0); }
       var m = document.createElement('div'); m.className = 'mehr';
       if (t.zusammenfassung) { var p0 = document.createElement('div'); p0.textContent = t.zusammenfassung; m.appendChild(p0); }
       if (todos.length) {
         var ul = document.createElement('ul');
-        todos.slice().sort(function (a, b) { return (a.erledigt ? 1 : 0) - (b.erledigt ? 1 : 0); }).forEach(function (x) {
-          var li = document.createElement('li'); li.textContent = (x.erledigt ? '✓ ' : '○ ') + (x.text || '');
-          if (x.erledigt) li.className = 'erledigt';
-          if (x.neu && !x.erledigt) { var s0 = document.createElement('span'); s0.className = 'n'; s0.textContent = 'neu'; li.appendChild(s0); }
-          ul.appendChild(li);
+        todos.forEach(function (x) {
+          var li = document.createElement('li'), ab = document.createElement('button'), tx = document.createElement('span');
+          ab.className = 'ab'; ab.type = 'button'; ab.setAttribute('aria-label', 'Erledigt'); ab.textContent = '';
+          ab.addEventListener('click', function (e) { e.preventDefault(); abhaken(t, x, li, ab); });
+          tx.textContent = x.text || '';
+          if (x.neu) { var s0 = document.createElement('span'); s0.className = 'n'; s0.textContent = 'neu'; tx.appendChild(s0); }
+          li.append(ab, tx); ul.appendChild(li);
         });
         m.appendChild(ul);
       }
@@ -227,6 +235,24 @@
     a.append(z, ti);
     if (t.neu) { var n = document.createElement('span'); n.className = 'neu'; n.textContent = t.status === 'wartet auf Diego' ? 'Wartet auf dich' : 'Änderung, wichtig'; a.appendChild(n); }
     return a;
+  }
+  // To-dos abhaken: Diego tippt auf den Kreis, das To-do verschwindet sofort und geht an den Server.
+  // Der Server gibt es an den Thread weiter. Quelle der Wahrheit bleibt der Thread: Was er als erledigt meldet, verschwindet beim nächsten Abgleich (jede Stunde).
+  var abgehakt = {};
+  try { abgehakt = JSON.parse(localStorage.getItem('zentrale.abgehakt') || '{}') || {}; } catch (e) {}
+  (function () { var alt = Date.now() - 14 * 864e5; for (var k in abgehakt) if (abgehakt[k] < alt) delete abgehakt[k]; })();
+  function schluessel(t, x) { return (t.id || t.thread_id || t.link || t.titel || '') + '|' + String(x.id || x.text || '').trim().toLowerCase(); }
+  function abhaken(t, x, li, ab) {
+    abgehakt[schluessel(t, x)] = Date.now();
+    try { localStorage.setItem('zentrale.abgehakt', JSON.stringify(abgehakt)); } catch (e) {}
+    ab.textContent = '✓'; li.classList.add('weg');
+    setTimeout(function () { if (li.parentNode) li.parentNode.removeChild(li); }, 700);
+    if (!quelle) return;
+    try {
+      var u = new URL(quelle), l = u.searchParams.get('l') || '';
+      fetch(u.origin + '/api/zentrale/erledigt?l=' + encodeURIComponent(l), { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ thread: t.id || t.thread_id || '', titel: t.titel || '', link: t.link || '', todo: x.text || '', todo_id: x.id || '' }) }).catch(function () {});
+    } catch (e) {}
   }
   function gruppe(name, l, zeichen) {
     if (!l.length) return;
