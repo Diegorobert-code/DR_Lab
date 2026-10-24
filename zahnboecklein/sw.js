@@ -2,12 +2,14 @@
    Beim Erhöhen der App-Version VERSION ändern, dann wird der alte Cache gelöscht.
    Liegt neben index.html (die App-Datei zahnboecklein-app.html beim Veröffentlichen in index.html umbenennen).
    Audiodateien, falls als eigene Dateien ausgeliefert, unten in DATEIEN ergänzen. */
-const VERSION = 'zahnboecklein-v13';
-const DATEIEN = [
+const VERSION = 'zahnboecklein-v24';
+const DATEIEN = ['./inhalt/wischen.js', './inhalt/wischen.css', './inhalt/wischen-app.js', 
   './ton-ios.js', './nda-sperre.js',
   './',
-  './index.html',
-  './abo.js',
+  './index.html', './musik.js', './musik/ava-carmen.m4a',
+  './lernen.js', './abo.js', './inhalt/inhalt.css', './inhalt/inhalt.js', './inhalt/daten.js', './inhalt/sprich.js', './inhalt/sprich-daten.js', './inhalt/sprich.css', './inhalt/homescreen.js',
+  '../trickfilmwelt/trickfilmwelt.js', '../trickfilmwelt/aura.css',
+  './aura/aura.css', './aura/nacht.webp', './aura/welt.webp', './aura/figur-idle.webp', './aura/figur-winkt.webp', './aura/figur-lacht.webp', './aura/szene.webp', './aura/feier.webp',
   './manifest.webmanifest',
   './icons/icon-48.png',
   './icons/icon-120.png',
@@ -29,6 +31,7 @@ const DATEIEN = [
   './bilder/tanz09.jpg',
   './bilder/tanz10.jpg',
   './bilder/poster-fee.jpg',
+  './bilder/poster-zahn.jpg',
   './bilder/poster-tanz.jpg',
   './audio/a_ol.mp3',
   './audio/a_or.mp3',
@@ -184,8 +187,10 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(req)
         .then((res) => {
-          const copy = res.clone();
-          caches.open(VERSION).then((c) => c.put('./index.html', copy));
+          if (res.ok) {
+            const copy = res.clone();
+            caches.open(VERSION).then((c) => c.put('./index.html', copy));
+          }
           return res;
         })
         .catch(() => caches.match('./index.html'))
