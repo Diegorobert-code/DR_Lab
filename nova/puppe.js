@@ -169,7 +169,7 @@
       glow: '#f2c14e', gruss: 'winken+reden', satz: '¡Hola!'
     },
     jackie: {
-      name: 'Jackie', bild: 'jackie/figur-gross.jpg',
+      name: 'Jacky', bild: 'jackie/figur-gross.jpg',
       augen: [[0.47, 0.47, 0.05, 0.05], [0.665, 0.57, 0.05, 0.055]],
       mund: { l: [0.43, 0.635], r: [0.565, 0.71], oben: 0.01, unten: 0.035, kinn: 0.05, offen: true },
       kopf: [0.55, 0.5, 0.35], hals: [0.55, 0.92], innen: [0.4, 0.08, 0.1],

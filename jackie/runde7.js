@@ -1,4 +1,4 @@
-/* Jackie · Runde 7 (21.10.2026): Design, Verifizierung, vier neue Helfer. Notruf bleibt immer zuoberst.
+/* Jacky · Runde 7 (21.10.2026): Design, Verifizierung, vier neue Helfer. Notruf bleibt immer zuoberst.
    1. «Ruhig werden 5-4-3-2-1»: Erdungs-Übung Schritt für Schritt, mit Vorlesen (Vorbild: SOS-Übungen in Calm und Rootd).
    2. «Notfallkarte fürs Portemonnaie»: wichtige Nummern als Karte zum Drucken oder als Bild, neutral ohne App-Namen, speichert nichts
       (Vorbild: Notfallpass / Medical ID im iPhone).
@@ -6,12 +6,12 @@
    4. «Gesprächskarten»: offene Fragen für Familie und Teenager (Vorbild: Table Topics).
    Nichts davon geht ins Netz. Kein Arzt, keine Diagnose, keine Heilversprechen. */
 window.R7 = {
-  kuerzel: 'ja', figur: 'Jackie', bild: 'posen/winkt.jpg', bildFroh: 'figur.jpg',
+  kuerzel: 'ja', figur: 'Jacky', bild: 'posen/winkt.jpg', bildFroh: 'figur.jpg',
   ort: '#btnIdeas', wo: 'nach',
   himmel: '#jkBuehne',
   ansichten: '#vHome,#vAsk,#vAnswer,#vNotes,#vPause,#vHistory,#vSos,#vStory,#vIdeas',
   keineHaptik: '#vSchutz',
-  neuTitel: 'Neu bei Jackie', neuText: 'Vier kleine Helfer. Alles bleibt auf deinem Handy.',
+  neuTitel: 'Neu bei Jacky', neuText: 'Vier kleine Helfer. Alles bleibt auf deinem Handy.',
   css: [
     '#btnGo{color:#1a1f3a!important;font-weight:700}',
     '.jk-notruf .nr{min-width:0}',
@@ -32,7 +32,7 @@ window.R7 = {
     '.r7-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}.r7-chips button{min-height:44px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:transparent;color:#cfd6ee;font:inherit;cursor:pointer}.r7-chips button[aria-pressed=true]{background:#f2c14e;color:#1a1f3a;border-color:#f2c14e;font-weight:700}',
     '@media print{body.r7-druck>*:not(.r7-druckbar){display:none!important}body.r7-druck .r7-druckbar{display:block!important;position:static!important}body.r7-druck .r7-druckbar .r7-nk{box-shadow:none;border:1px solid #999;margin:0}}',
     '.r7-druckbar{display:none}',
-    /* Runde 7c: Tinkos neue Jackie-Bilder in den Helfern */
+    /* Runde 7c: Tinkos neue Jacky-Bilder in den Helfern */
     '.r7c-fig{display:flex;gap:16px;align-items:center;margin:0 0 16px}.r7c-fig img{flex:none;width:80px;height:80px;border-radius:16px;object-fit:cover;border:1px solid rgba(242,193,78,.45);box-shadow:0 6px 18px -8px rgba(0,0,0,.6)}.r7c-fig p{margin:0!important}'
   ].join('\n'),
   start: function (R) {
@@ -91,7 +91,7 @@ window.R7 = {
         });
       },
       frist: function () {
-        var html = notruf() + '<p>Viele Briefe von Ämtern haben eine Frist. Jackie rechnet den letzten Tag aus. Massgebend ist immer, was im Brief steht.</p>' +
+        var html = notruf() + '<p>Viele Briefe von Ämtern haben eine Frist. Jacky rechnet den letzten Tag aus. Massgebend ist immer, was im Brief steht.</p>' +
           '<label for="r7FDat">Brief erhalten am</label><input type="date" id="r7FDat" value="' + R.heute() + '">' +
           '<label for="r7FArt">Frist laut Brief</label><select id="r7FArt"><option value="t10">10 Tage</option><option value="t20">20 Tage</option><option value="t30" selected>30 Tage</option><option value="m1">1 Monat</option><option value="m2">2 Monate</option><option value="m3">3 Monate</option></select>' +
           '<div class="r7-karte" style="margin-top:16px" aria-live="polite"><span class="r7-klein">Letzter Tag</span><div class="r7-frist" id="r7FErg"></div><span class="r7-klein" id="r7FText"></span></div>' +
@@ -147,7 +147,7 @@ window.R7 = {
     function notruf() { return '<div class="r7-notruf" role="note"><span>Akute Gefahr?</span><a href="tel:117">117</a><a href="tel:144">144</a><a href="tel:142">142</a></div>'; }
     function sprich(t) { try { var u = new SpeechSynthesisUtterance(t); u.lang = 'de-CH'; u.rate = 0.92; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {} }
     function fig(b, text) { return '<div class="r7c-fig"><img src="' + b + '" alt="" width="80" height="80"><p>' + text + '</p></div>'; }
-    // Ermutigung: Jackie «mutig» nur allein in der kleinen Feier-Meldung (grüne Jacke fällt dort nicht auf)
+    // Ermutigung: Jacky «mutig» nur allein in der kleinen Feier-Meldung (grüne Jacke fällt dort nicht auf)
     function mut(text) { var alt = window.R7.bildFroh; window.R7.bildFroh = 'posen/mutig.jpg'; try { R.feier(text); } finally { window.R7.bildFroh = alt; } }
     function stumm() { try { speechSynthesis.cancel(); } catch (e) {} }
     function feiertag(t) {

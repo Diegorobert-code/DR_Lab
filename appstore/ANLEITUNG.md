@@ -2,7 +2,7 @@
 
 Stand 12.10.2026. Alles ist vorbereitet. Du brauchst nur noch deinen MacBook mit Xcode. Eingereicht wird erst, wenn du selbst auf «Zur Prüfung einreichen» tippst.
 
-Fünf Apps sind bereit: **Mondschein**, **HumanSpark**, **TradePing**, **Jackie's Advice** und **Fias Nest** (seit 18.10.2026, Ordner `appstore/fiasnest/`, Bundle-ID `ch.drlab.fiasnest`).
+Fünf Apps sind bereit: **Mondschein**, **HumanSpark**, **TradePing**, **Jacky Roberts** und **Fias Nest** (seit 18.10.2026, Ordner `appstore/fiasnest/`, Bundle-ID `ch.drlab.fiasnest`).
 Pro App liegt alles in `appstore/<app>/`: die iPhone-App (`ios/`), die Texte (`store/texte.md`), das Icon (`store/icon-1024.png`) und die Screenshots (`store/screenshots-6.9/`).
 
 ## Einmalig auf dem MacBook (gratis)

@@ -1,4 +1,4 @@
-/* Jackie's Advice · Runde 4 «Sicher unterwegs» und «Notruf immer sichtbar»
+/* Jacky Roberts · Runde 4 «Sicher unterwegs» und «Notruf immer sichtbar»
    Vorbilder: bSafe (Scheinanruf), Noonlight / Hollie Guard (Begleit-Timer, Standort für den Notruf).
    Grundsatz wie im Schutzraum: speichert NICHTS (kein localStorage), kein Server, keine Nachricht an Dritte.
    Eine SMS an die Vertrauensperson schreibt die Nutzerin selbst in ihrer Nachrichten-App (sms:-Link).
@@ -89,9 +89,9 @@
   function uebersicht() {
     var d = el(
       '<button class="uw-karte" type="button" data-w="anruf"><span class="ic">📞</span><span><b>Scheinanruf</b><small>Dein Handy klingelt, als würde dich jemand anrufen. So kommst du aus einer unangenehmen Lage.</small></span></button>' +
-      '<button class="uw-karte" type="button" data-w="timer"><span class="ic">⏱️</span><span><b>Begleit-Timer</b><small>Auf dem Heimweg: Jackie fragt nach, ob du gut angekommen bist.</small></span></button>' +
+      '<button class="uw-karte" type="button" data-w="timer"><span class="ic">⏱️</span><span><b>Begleit-Timer</b><small>Auf dem Heimweg: Jacky fragt nach, ob du gut angekommen bist.</small></span></button>' +
       '<button class="uw-karte" type="button" data-w="ort"><span class="ic">📍</span><span><b>Wo bin ich?</b><small>Dein Standort gross zum Vorlesen am Notruf, oder als SMS an deine Vertrauensperson.</small></span></button>' +
-      '<p class="uw-hinweis">Nichts davon wird gespeichert oder verschickt. Jackie ersetzt keinen Notruf: In Gefahr immer <a href="tel:117" style="color:#ffb3aa">117</a>.</p>');
+      '<p class="uw-hinweis">Nichts davon wird gespeichert oder verschickt. Jacky ersetzt keinen Notruf: In Gefahr immer <a href="tel:117" style="color:#ffb3aa">117</a>.</p>');
     d.querySelectorAll('[data-w]').forEach(function (b) {
       b.onclick = function () { ({ anruf: anrufBlatt, timer: timerBlatt, ort: ortBlatt })[b.getAttribute('data-w')](); };
     });
@@ -168,7 +168,7 @@
       '<p class="uw-label">Wie lange bist du unterwegs?</p><div class="uw-reihe" role="group" aria-label="Dauer">' +
       [10, 20, 30, 60].map(function (m) { return '<button type="button" class="uw-chip" data-m="' + m + '" aria-pressed="' + (m === 20) + '">' + m + ' Min.</button>'; }).join('') +
       '</div><button class="uw-btn" type="button" id="uwTimerGo">Timer starten</button>' +
-      '<p class="uw-hinweis">Lass diese Seite offen. Wenn die Zeit um ist, klingelt es leise und Jackie fragt: «Bist du gut angekommen?» Dann hast du 117 und deine Vertrauensperson mit einem Tipp. Jackie meldet sich bei niemandem von selbst.</p>');
+      '<p class="uw-hinweis">Lass diese Seite offen. Wenn die Zeit um ist, klingelt es leise und Jacky fragt: «Bist du gut angekommen?» Dann hast du 117 und deine Vertrauensperson mit einem Tipp. Jacky meldet sich bei niemandem von selbst.</p>');
     var min = 20;
     d.querySelectorAll('.uw-chip').forEach(function (c) {
       c.onclick = function () { min = +c.getAttribute('data-m'); d.querySelectorAll('.uw-chip').forEach(function (x) { x.setAttribute('aria-pressed', String(x === c)); }); };
@@ -184,7 +184,7 @@
       tick(); timerI = setInterval(tick, 1000);
       if (window.JackieWinke) window.JackieWinke(false);
     };
-    blatt('Begleit-Timer', 'Jackie begleitet dich in Gedanken nach Hause.', d);
+    blatt('Begleit-Timer', 'Jacky begleitet dich in Gedanken nach Hause.', d);
   }
   function angekommen() {
     klingelTon(); try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch (e) {}

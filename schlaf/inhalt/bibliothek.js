@@ -80,7 +80,7 @@
     if (!grund) grund = 'Weil dich «' + bereichName(best) + '» interessiert';
     return { a: best, warum: grund };
   }
-  /* Stufe: wächst mit Lesen, Quiz und Tagen. Steuert, wie Jackie & Co. dich ansprechen. */
+  /* Stufe: wächst mit Lesen, Quiz und Tagen. Steuert, wie Jacky & Co. dich ansprechen. */
   var STUFEN = C.stufen || ['Neu dabei', 'Am Entdecken', 'Gut unterwegs', 'Kennt sich aus', 'Ganz zuhause'];
   var GRENZE = [0, 5, 15, 35, 60];
   function punkte() { return anzahlGelesen() * 2 + D.quiz.richtig + anzahlTage() + Object.keys(D.gemerkt).length; }
