@@ -2,11 +2,14 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
+<meta name="stand" content="2026-10-23-09">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
+<link rel="apple-touch-icon" id="symbol" href="icon-nova-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="puppe.css">
 <style>
   :root { --nacht:#0b1a3a; --nacht2:#16306b; --gold:#f5c542; --text:#f4f1e8; --leise:#b9c3e0; }
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -27,7 +30,7 @@
     color:var(--gold); font-size:34px; text-decoration:none; z-index:2; }
   h1 { margin:4px 0 0; font-size:22px; letter-spacing:.5px; color:var(--gold); }
   .status { min-height:22px; color:var(--leise); font-size:15px; margin:2px 0 10px; text-align:center; }
-  .buehne { position:relative; width:min(86vw, 420px); aspect-ratio:1/1; border-radius:28px; overflow:hidden;
+  .buehne { position:relative; flex:none; width:min(86vw, 420px, 40vh); aspect-ratio:1/1; border-radius:28px; overflow:hidden;
     box-shadow:0 18px 50px #0008, 0 0 0 3px #f5c54233; transform-origin:50% 90%; transition:box-shadow .3s; }
   .buehne.hoert { box-shadow:0 18px 50px #0008, 0 0 0 4px #7fd4ff, 0 0 40px #7fd4ff66; }
   .buehne.spricht { box-shadow:0 18px 50px #0008, 0 0 0 4px var(--gold), 0 0 44px #f5c54277; }
@@ -44,7 +47,26 @@
   @keyframes hopsen { 30% { transform:translateY(-14px) scale(1.1); } 60% { transform:translateY(2px) scale(1.06); } }
   .atmen { animation:atmen 3.6s ease-in-out infinite; }
   @keyframes atmen { 50% { transform:scale(1.012) translateY(-2px); } }
-  .text { width:min(92vw, 460px); flex:1; min-height:0; overflow-y:auto; margin-top:14px; display:flex; flex-direction:column; gap:8px;
+  .buehne.winken { animation:winken .9s ease-in-out 2; transform-origin:50% 100%; }
+  @keyframes winken { 25% { transform:rotate(-6deg); } 75% { transform:rotate(6deg); } }
+  .buehne.huepfen { animation:huepfen .5s cubic-bezier(.3,1.6,.5,1) 3; }
+  @keyframes huepfen { 40% { transform:translateY(-22px) scale(1.03); } 70% { transform:translateY(3px) scale(.99,1.02); } }
+  .buehne.drehen { animation:drehen 1.1s ease-in-out; }
+  @keyframes drehen { 50% { transform:perspective(700px) rotateY(180deg) scale(.92); } 100% { transform:perspective(700px) rotateY(360deg); } }
+  .buehne.staunen { animation:staunen 1.2s ease-out; }
+  @keyframes staunen { 20% { transform:scale(1.1); } 60% { transform:scale(1.06); } }
+  .buehne.nicken { animation:nicken .45s ease-in-out 3; transform-origin:50% 100%; }
+  @keyframes nicken { 50% { transform:translateY(8px) rotateX(10deg); } }
+  .buehne.kopfschuetteln { animation:kopfsch .4s ease-in-out 3; }
+  @keyframes kopfsch { 25% { transform:translateX(-10px) rotate(-2deg); } 75% { transform:translateX(10px) rotate(2deg); } }
+  .chips { width:min(92vw, 460px); display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:8px; }
+  .chips:empty { display:none; }
+  .chip { border:0; border-radius:999px; padding:10px 16px; font:inherit; font-size:15px; cursor:pointer; background:#7fd4ff; color:#0b1f45;
+    box-shadow:0 6px 16px #0006; animation:chipRein .35s cubic-bezier(.3,1.6,.5,1) both; }
+  .chip:nth-child(2) { animation-delay:.08s; } .chip:nth-child(3) { animation-delay:.16s; }
+  .chip:active { transform:scale(.94); }
+  @keyframes chipRein { from { transform:translateY(12px) scale(.6); opacity:0; } }
+  .text { width:min(92vw, 460px); flex:1; min-height:110px; overflow-y:auto; margin-top:14px; display:flex; flex-direction:column; gap:8px;
     mask-image:linear-gradient(transparent, #000 18px); -webkit-mask-image:linear-gradient(transparent, #000 18px); padding-top:14px; }
   .z { padding:8px 12px; border-radius:14px; max-width:86%; white-space:pre-wrap; }
   .z.du { align-self:flex-end; background:#24386e; }
@@ -56,13 +78,94 @@
   .knopf.aktiv { background:#d6304a; color:#fff; }
   .knopf:focus-visible { outline:3px solid #fff; outline-offset:4px; }
   .hinweis { color:var(--leise); font-size:13px; margin-top:8px; text-align:center; min-height:18px; }
+  .hoeren { margin-top:10px; border:1px solid var(--leise); border-radius:999px; background:none; color:inherit; font:15px system-ui, sans-serif; padding:7px 14px; cursor:pointer; }
+  body.hoermodus #hoeren { background:#1f6f5c; border-color:#1f6f5c; color:#fff; }
+  body.musikmodus #musik { background:#6b3fa0; border-color:#6b3fa0; color:#fff; }
   .vergessen { margin-top:6px; background:none; border:0; color:var(--leise); font:13px system-ui, sans-serif; text-decoration:underline; cursor:pointer; opacity:.8; }
   @media (prefers-reduced-motion: reduce) { .atmen { animation:none; } }
+  /* Nur Otti (Kinder-Figur): lebendige Puppe statt Standbild, ruhige grosse Karten darunter */
+  body.otti .buehne { width:min(64vw, 300px, 34vh); background:radial-gradient(16% 13% at 82% 14%, #fff3b0 0 55%, #f5c54255 60%, transparent 75%), radial-gradient(90% 60% at 50% 25%, #1b2c66 0%, #0f1b44 55%, #070d24 100%); cursor:pointer; }
+  body.otti .buehne canvas, body.otti .buehne .glanz { display:none; }
+  body.otti .buehne .puppe-buehne { position:absolute; inset:0; width:100%; height:100%; max-width:none; aspect-ratio:auto; margin:0; border-radius:0; background:transparent; box-shadow:none; }
+  body.otti .text { margin-top:8px; min-height:48px; }
+  body.otti .knopf { margin-top:8px; width:76px; height:76px; font-size:30px; }
+  .ottimenu { display:grid; grid-template-columns:1fr 1fr; gap:8px; width:min(92vw, 420px); margin-top:12px; flex:none; }
+  .ottimenu[hidden] { display:none; }
+  .ottimenu a { display:flex; align-items:center; gap:12px; min-height:64px; padding:8px 14px; border-radius:20px; text-decoration:none; color:var(--text);
+    background:linear-gradient(160deg, #ffffff17, #ffffff08); border:1px solid #f5c54255; font-weight:800; font-size:16px; white-space:nowrap; transition:transform .12s; }
+  .ottimenu a:active { transform:scale(.96); }
+  .ottimenu a span { font-size:28px; width:40px; height:40px; flex:none; display:grid; place-items:center; border-radius:50%; background:#ffffff14; }
+  .ottiok { width:min(92vw, 420px); background:#13265a; border:2px solid var(--gold); border-radius:20px; padding:12px 16px; margin-top:8px; font-size:15px; line-height:1.4; }
+  .ottiok[hidden] { display:none; }
+  .ottiok button { position:relative; overflow:hidden; width:100%; min-height:48px; margin-top:8px; border:0; border-radius:14px; background:var(--gold); color:#2a1d00; font:inherit; font-weight:800; font-size:16px; touch-action:none; -webkit-user-select:none; user-select:none; }
+  .ottiok button::before { content:''; position:absolute; inset:0; transform-origin:0 50%; transform:scaleX(var(--p, 0)); background:#ffffff66; }
+  .ottiok button span { position:relative; }
+.buehne .leinwand{position:absolute;inset:0;width:100%;height:100%;display:none;z-index:2;background:#f6efe0}.buehne.malt .leinwand{display:block}.buehne .gemalt{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:1}.buehne.zeigt .gemalt{display:block}
+.schreiben{display:flex;gap:8px;width:min(92vw,460px);margin-top:10px;flex:none}.schreiben input{flex:1;min-width:0;border:0;border-radius:22px;padding:11px 16px;font:16px system-ui,sans-serif;background:#f4f1e8;color:#22201a}.z.bild{padding:4px;background:#f4f1e8;max-width:78%}.z.bild img{display:block;width:100%;border-radius:11px}.z.bild small{display:block;color:#22201a;font-size:12px;padding:4px 6px 2px}
+.schreiben button.malen{background:#f4f1e8;font-size:19px}
+.schreiben button{width:44px;height:44px;border-radius:50%;border:0;background:var(--gold);color:#2a1d00;font-size:20px;cursor:pointer;flex:none}
+  body.otti .schreiben { display:none; } /* Kinder 3–7: reden statt tippen */
 .lernen{display:block;margin:10px auto 0;max-width:340px;font-size:13px;line-height:1.35;color:#d9d2c3;text-align:center}.lernen input{width:18px;height:18px;vertical-align:-3px;accent-color:#f2c14e}.lernen small{display:block;color:#a9a294}
+  /* Bühne (?buehne=1): Präsentation am Beamer. Der Film füllt das Bild, Nova sitzt unten rechts und bedient alles per Stimme. */
+  .kino, .vorhang, .untertitel { display:none; }
+  body.bmodus { padding:0; justify-content:center; cursor:none; }
+  body.bmodus .wahl, body.bmodus .zurueck, body.bmodus .text, body.bmodus .chips, body.bmodus .schreiben, body.bmodus .lernen,
+  body.bmodus .vergessen, body.bmodus h1 { display:none; }
+  body.bmodus .buehne { width:min(58vh, 46vw); z-index:3; transition:width .6s ease, right .6s ease, bottom .6s ease; }
+  body.bmodus.film .buehne { position:fixed; right:2.5vw; bottom:3vh; width:min(24vh, 18vw); box-shadow:0 10px 30px #000a, 0 0 0 3px #f5c54255; }
+  body.bmodus.film .buehne.spricht { box-shadow:0 10px 30px #000a, 0 0 0 4px var(--gold), 0 0 34px #f5c54288; }
+  /* Bühne: Nova lebt als Video (clips/), Schleifen und Gesten blenden weich ineinander. */
+  .buehne video.lebt { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .35s; pointer-events:none; }
+  .buehne video.lebt.zeigt { opacity:1; }
+  body.bmodus .status { position:fixed; left:2.5vw; bottom:2vh; margin:0; font-size:14px; opacity:.55; z-index:3; text-align:left; }
+  body.bmodus .knopf { position:fixed; left:2.5vw; top:3vh; width:44px; height:44px; font-size:18px; margin:0; opacity:.35; z-index:4; cursor:pointer; }
+  body.bmodus .hinweis { position:fixed; left:0; right:0; top:2vh; z-index:4; }
+  body.bmodus .kino { display:block; position:fixed; inset:0; background:#000; opacity:0; pointer-events:none; transition:opacity .6s; z-index:1; }
+  body.bmodus.film .kino { opacity:1; }
+  .kino video { width:100%; height:100%; object-fit:contain; display:block; }
+  /* KI-Verse live am Beamer: die Welt füllt das Bild, Nova sitzt wie beim Film in der Ecke. */
+  .welt { display:none; }
+  body.bmodus.welt .welt { display:block; position:fixed; inset:0; z-index:2; background:#000; }
+  .welt iframe { width:100%; height:100%; border:0; display:block; }
+  body.bmodus.welt { cursor:auto; }
+  body.bmodus .untertitel { display:block; position:fixed; left:50%; bottom:7vh; transform:translateX(-50%); max-width:min(70vw, 900px); z-index:3;
+    background:#0b1a3acc; color:var(--text); font-size:clamp(18px, 2.4vw, 30px); line-height:1.3; padding:10px 22px; border-radius:16px;
+    text-align:center; opacity:0; transition:opacity .4s; pointer-events:none; }
+  body.bmodus .untertitel.an { opacity:1; }
+  body.bmodus.film .untertitel { bottom:4vh; left:auto; right:calc(2.5vw + min(24vh, 18vw) + 20px); transform:none; max-width:46vw; text-align:left; font-size:clamp(16px, 1.8vw, 24px); }
+  body.bmodus .vorhang { display:grid; position:fixed; inset:0; z-index:5; place-items:center; align-content:center; gap:18px; cursor:pointer;
+    background:radial-gradient(120% 80% at 50% 0%, var(--nacht2), var(--nacht) 70%); color:var(--text); text-align:center; padding:24px; }
+  .vorhang b { font-size:clamp(28px, 4vw, 48px); color:var(--gold); }
+  .vorhang span { color:var(--leise); max-width:560px; }
+  .vorhang .los.klingelt { animation:klingeln .5s ease-in-out infinite; }
+  @keyframes klingeln { 25% { transform:rotate(-12deg); } 75% { transform:rotate(12deg); } }
+  .vorhang .los { width:120px; height:120px; border-radius:50%; background:var(--gold); color:#2a1d00; display:grid; place-items:center; font-size:48px; box-shadow:0 12px 34px #0008; }
+  .vorhang label { color:var(--leise); font-size:14px; text-decoration:underline; cursor:pointer; }
+  .vorhang input { display:none; }
+  /* Nova-Ansichten: «Threads» und «Designvorschläge» legen sich über Nova (Sprachbefehl), ✕ oder «zurück» bringt Nova wieder. */
+  .ansicht { display:none; position:fixed; inset:0; z-index:8; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    background:radial-gradient(120% 80% at 50% 0%, var(--nacht2), var(--nacht) 70%); color:var(--text); padding:max(16px, env(safe-area-inset-top)) 16px 40px; }
+  .ansicht.an { display:block; }
+  .ansicht .kopf { display:flex; align-items:center; gap:10px; max-width:520px; margin:0 auto 12px; }
+  .ansicht .kopf b { flex:1; font-size:22px; color:var(--gold); }
+  .ansicht .kopf button { border:0; background:#ffffff18; color:var(--text); width:44px; height:44px; border-radius:50%; font-size:20px; }
+  .ansicht .inhalt { max-width:520px; margin:0 auto; display:flex; flex-direction:column; gap:8px; }
+  .ansicht .karte { display:flex; align-items:center; gap:12px; padding:14px; border-radius:16px; background:#ffffff10; color:inherit; text-decoration:none; }
+  .ansicht .karte.wichtig { background:#f5c54222; box-shadow:inset 0 0 0 2px var(--gold); }
+  .ansicht .karte .t { flex:1; font-weight:600; }
+  .ansicht .karte .neu { font-size:12px; color:#1b1300; background:var(--gold); border-radius:20px; padding:2px 8px; }
+  .ansicht .design { border-radius:18px; overflow:hidden; background:#ffffff10; }
+  .ansicht .design img { width:100%; display:block; }
+  .ansicht .design .z { display:flex; align-items:center; gap:8px; padding:10px 12px; }
+  .ansicht .design .z span { flex:1; font-weight:600; }
+  .ansicht .sterne5 button { border:0; background:none; font-size:24px; padding:0 1px; color:#ffffff40; }
+  .ansicht .sterne5 button.an { color:var(--gold); }
+  .ansicht .leer { color:var(--leise); text-align:center; margin-top:24px; }
 </style>
 </head>
 <body>
 <div class="sterne"></div>
+<section class="ansicht" id="ansicht" aria-live="polite"><div class="kopf"><b id="ansichtTitel"></b><button id="ansichtZu" aria-label="Zurück zu Nova">✕</button></div><div class="inhalt" id="ansichtInhalt"></div></section>
 <a class="zurueck" id="zurueck" href="#" aria-label="Zurück">‹</a>
 <h1 id="name">Otti</h1>
 <nav class="wahl" id="wahl" aria-label="Mit wem reden?"></nav>
@@ -71,17 +174,44 @@
 <div class="buehne atmen" id="buehne" role="img" aria-label="Figur">
   <canvas id="figur"></canvas>
   <div class="glanz"></div>
+  <img class="gemalt" id="gemalt" alt="">
+  <canvas class="leinwand" id="leinwand"></canvas>
 </div>
 
+<div class="kino" id="kino"><video id="film" playsinline preload="auto"></video></div>
+<div class="welt" id="welt"><iframe id="weltRahmen" title="KI-Verse" allow="autoplay; fullscreen; camera; microphone"></iframe></div>
+<div class="untertitel" id="untertitel" aria-live="polite"></div>
+<div class="vorhang" id="vorhang" role="button" tabindex="0" aria-label="Präsentation starten">
+  <b id="vorhangTitel">Nova anrufen</b>
+  <div class="los" id="vorhangLos">📞</div>
+  <span id="vorhangText">Einmal tippen. Danach nur noch reden: «Nova, zeig den Jasmine-Film», «Pause», «weiter», «nächster Film».</span>
+  <label id="ordnerWahl">Filme vom Laptop wählen<input id="ordner" type="file" accept="video/*" multiple></label>
+</div>
 <div class="text" id="text" aria-live="polite"></div>
+<div class="chips" id="chips"></div>
 
+<div class="ottiok" id="ottiOk" hidden role="dialog" aria-label="Für Eltern">
+  <b>Für Eltern, einmal kurz:</b> Im Live-Gespräch geht die Stimme deines Kindes über das Internet an den Sprachdienst ElevenLabs (USA). Bitte sei dabei.
+  <button type="button" id="ottiOkHalten"><span>Einverstanden: 3 Sekunden halten</span></button>
+</div>
+<form class="schreiben" id="schreiben" autocomplete="off"><input id="eingabe" type="text" enterkeyhint="send" placeholder="Schreiben …" aria-label="Nachricht schreiben"><button type="button" class="malen" id="foto" aria-label="Foto an Nova schicken">📷</button><input id="fotoWahl" type="file" accept="image/*" hidden><button type="button" class="malen" id="malen" aria-label="Nova zeichnet">🎨</button><button type="submit" aria-label="Senden">➤</button></form>
 <button class="knopf" id="knopf" type="button" aria-label="Gespräch starten">🎙</button>
+<button class="hoeren" id="hoeren" type="button" hidden aria-pressed="false">👂 Nur zuhören</button>
+<button class="hoeren" id="musik" type="button" hidden aria-pressed="false">🎵 Musik-Spiegel</button>
 <div class="hinweis" id="hinweis"></div>
 <label class="lernen" id="lernenBox"><input type="checkbox" id="lernen"> Nova darf aus diesem Gespräch lernen <small>(nur Diego und Team, auf unserem Server in der Schweiz)</small></label>
 <button class="vergessen" id="vergessen" type="button" hidden><span id="vname">Otti</span> vergisst alles</button>
+<nav class="ottimenu" id="ottiMenu" hidden aria-label="Mehr mit Otti">
+  <a href="../otti/#spiele"><span aria-hidden="true">🎲</span>Spiele</a>
+  <a href="../mondschein/"><span aria-hidden="true">📖</span>Geschichten</a>
+  <a href="../mondschein/#hoeren"><span aria-hidden="true">🎧</span>Nur hören</a>
+  <a href="../otti/#abend"><span aria-hidden="true">🌙</span>Gute Nacht</a>
+</nav>
 
 <script src="elevenlabs-client-1.26.0.js"></script>
 <script src="mund.js"></script>
+<script src="puppe.js"></script>
+<script src="beats.js"></script>
 <script>
 (function () {
   // Live-Gespräch mit einer Figur (reden.html?f=jackie): ElevenLabs Agent hört zu, denkt mit Claude
@@ -96,7 +226,7 @@
       mund: { linie: [[318, 388], [335, 402], [360, 410], [400, 412], [430, 408], [448, 400]], lippe: 426, kinn: 500, max: 22 } },
     nova: { name: 'Nova', agent: 'agent_4201m55seyhdexd96tkaxt72hmaq', bild: 'nova-3d.jpg', gedaechtnis: true, welt: true,
       mund: { linie: [[520, 684], [545, 694], [580, 700], [620, 700], [660, 690], [690, 668], [705, 636]], lippe: 738, kinn: 792, max: 22 } },
-    sparky: { name: 'Sparky', agent: 'agent_7401m55j20jwek69gsh3gkfhaa77', bild: 'figuren/sparky.jpg',
+    sparky: { name: 'Sparky', agent: 'agent_7401m55j20jwek69gsh3gkfhaa77', bild: 'figuren/sparky.jpg', gedaechtnis: true, messwerte: true,
       mund: { linie: [[440, 790], [470, 808], [500, 820], [560, 832], [600, 824], [640, 804], [690, 780]], lippe: 852, kinn: 905, max: 18, innen: [90, 28, 34] } },
     'coin maker': { name: 'Coin Maker', agent: 'agent_2001m55ss61fe5wb1qct4b8bqkz3', bild: 'figuren/coinmaker.jpg',
       mund: { linie: [[464, 446], [484, 480], [520, 488], [560, 498], [590, 506], [614, 512]], lippe: 526, kinn: 600, max: 20 } },
@@ -107,31 +237,82 @@
     sunny: { name: 'Sunny', agent: 'agent_4201m55ssdr3fksaey0x2yh1vpmh', bild: 'figuren/sunny.jpg',
       mund: { linie: [[416, 488], [440, 523], [480, 532], [520, 546], [560, 559], [592, 562], [646, 540]], lippe: 586, kinn: 640, max: 22 } },
     kiki: { name: 'Kiki', agent: 'agent_0401m55r02rvf96a1xrxv1njqbh3', bild: '../kiki/kiki-3d.jpg', ruhe: -0.4,
-      mund: { linie: [[372, 652], [400, 700], [440, 708], [480, 718], [520, 722], [560, 722], [600, 722], [614, 724]], lippe: 795, kinn: 865, max: 22 } }
+      mund: { linie: [[372, 652], [400, 700], [440, 708], [480, 718], [520, 722], [560, 722], [600, 722], [614, 724]], lippe: 795, kinn: 865, max: 22 } },
+    tropfi: { name: 'Tropfi', agent: 'agent_0201m5e5qk98fwf9akjpcfjtn73c', bild: 'figuren/tropfi.jpg', gedaechtnis: true,
+      mund: { linie: [[438, 648], [460, 660], [490, 666], [520, 660], [540, 648]], lippe: 684, kinn: 724, max: 16, innen: [24, 40, 96] } },
+    carmencita: { name: 'Carmencita', agent: 'agent_7001m5ez7r31e4v9jq4ah3367wbq', bild: 'figuren/carmencita.jpg',
+      mund: { linie: [[528, 516], [552, 542], [576, 564], [602, 582], [630, 592], [656, 590]], lippe: 616, kinn: 652, max: 18 } },
+    ava: { name: 'Ava', agent: 'agent_6301m5ez7tqkf8fre9vvprktpzby', bild: 'figuren/ava.jpg',
+      mund: { linie: [[394, 578], [420, 587], [450, 591], [480, 587], [504, 578]], lippe: 606, kinn: 640, max: 14, innen: [92, 36, 40] } },
+    'mama affe': { name: 'Mama Affe', agent: 'agent_6601m5jvastdem8s9n0ha2d9cpr6', bild: 'figuren/mamaaffe.jpg',
+      mund: { linie: [[350, 636], [420, 700], [500, 744], [580, 764], [660, 750], [740, 710], [816, 660]], lippe: 800, kinn: 900, max: 24, innen: [70, 30, 28] } },
+    lumo: { name: 'Lumo', agent: 'agent_2801m5jwgs8reptvpjpkjjpwswfn', bild: 'figuren/lumo.jpg',
+      mund: { linie: [[446, 488], [470, 496], [494, 488]], lippe: 506, kinn: 522, max: 10, innen: [60, 25, 20] } },
+    granny: { name: 'Rosa', agent: 'agent_3601m5jv6vcpetpsnckmvqtgs1s2', bild: 'figuren/granny.jpg',
+      mund: { linie: [[372, 612], [400, 642], [430, 668], [490, 692], [540, 696], [590, 688], [630, 666]], lippe: 730, kinn: 800, max: 20, innen: [110, 40, 45] } },
+    fia: { name: 'Fia', agent: 'agent_3601m5n1x1nqexnb952z9qbakq23', bild: 'figuren/fia.jpg' },
+    zahnboecklein: { name: 'Zahnböcklein', agent: 'agent_6701m5n1x4ejeprvkg1tg4n8qy3z', bild: 'figuren/zahnboecklein.jpg' },
+    waefwaef: { name: 'Wäf Wäf', agent: 'agent_3201m5n1x70rfcsbbm8b1me8r5wx', bild: 'figuren/waefwaef.jpg' }
   };
-  var BILDCHEN = { nova: 'nova-3d.jpg', otti: '../otti/icon-180.png', kiki: '../kiki/icon-180.png', jackie: '../jackie/icon-180.png', 'mr. ping': '../tradeping/icon-180.png',
-    sparky: 'figuren/sparky-klein.jpg', 'coin maker': 'figuren/coinmaker-klein.jpg', flo: 'figuren/flo-klein.jpg', fompa: 'figuren/fompa-klein.jpg', sunny: 'figuren/sunny-klein.jpg' };
+  var BILDCHEN = { nova: 'nova-3d.jpg', tropfi: 'figuren/tropfi-klein.jpg', otti: '../otti/icon-180.png', kiki: '../kiki/icon-180.png', jackie: '../jackie/icon-180.png', 'mr. ping': '../tradeping/icon-180.png',
+    sparky: 'figuren/sparky-klein.jpg', 'coin maker': 'figuren/coinmaker-klein.jpg', flo: 'figuren/flo-klein.jpg', fompa: 'figuren/fompa-klein.jpg', sunny: 'figuren/sunny-klein.jpg',
+    carmencita: 'figuren/carmencita-klein.jpg', ava: 'figuren/ava-klein.jpg',
+    'mama affe': 'figuren/mamaaffe-klein.jpg', lumo: 'figuren/lumo-klein.jpg', granny: 'figuren/granny-klein.jpg',
+    fia: 'figuren/fia-klein.jpg', zahnboecklein: 'figuren/zahnboecklein-klein.jpg', waefwaef: 'figuren/waefwaef-klein.jpg' };
   var KEY = (new URLSearchParams(location.search).get('f') || 'otti').toLowerCase();
+  if (KEY === 'rosa') KEY = 'granny'; // Granny heisst seit 23.10. Rosa, alte Links bleiben gültig.
+  KEY = { 'zahnböcklein': 'zahnboecklein', 'wäf wäf': 'waefwaef', 'waef waef': 'waefwaef', 'wäf': 'waefwaef' }[KEY] || KEY;
   var F = FIGUREN[KEY] || FIGUREN.otti, NAME = F.name, AGENT = F.agent, RUHE = F.ruhe || 0;
   document.title = NAME;
+  // Home-Bildschirm-Symbol: das Gesicht der Figur, die gerade spricht.
+  if (KEY !== 'nova' && BILDCHEN[KEY]) document.getElementById('symbol').href = BILDCHEN[KEY];
   var $ = function (id) { return document.getElementById(id); };
   var buehne = $('buehne'), figur = $('figur');
   var knopf = $('knopf'), status = $('status'), text = $('text'), hinweis = $('hinweis');
-  var conv = null, startet = false, mund = null, offen = RUHE, spitze = 0.15;
+  var conv = null, startet = false, sitzung = 0, eigene = [], mund = null, offen = RUHE, spitze = 0.15;
   // Alle Figuren in einer App: so teilen sie dasselbe Gedächtnis, und Nova sieht alles.
   Object.keys(BILDCHEN).forEach(function (k) {
     var a = document.createElement('a'); a.href = '?f=' + encodeURIComponent(k); a.setAttribute('aria-label', 'Mit ' + FIGUREN[k].name + ' reden');
     if (k === KEY) { a.className = 'an'; setTimeout(function () { a.scrollIntoView({ inline: 'center', block: 'nearest' }); }, 50); }
     var im = document.createElement('img'); im.src = BILDCHEN[k]; im.alt = ''; a.appendChild(im);
-    a.addEventListener('click', function (e) { e.preventDefault(); if (conv) { var c = conv; ende(); c.endSession().catch(function () {}); } location.replace(a.href); });
+    a.addEventListener('click', function (e) { e.preventDefault(); vonHand = true; if (conv) { var c = conv; ende(); c.endSession().catch(function () {}); } location.replace(a.href); });
     $('wahl').appendChild(a);
   });
   $('name').textContent = NAME; $('vname').textContent = NAME;
+  // Bei Nova keine Figurenreihe: sonst landet man aus Versehen bei Otti und findet nicht zurück.
+  if (KEY === 'nova') $('wahl').style.display = 'none';
+  // In der Zentrale (zentrale.html) wischt man zwischen den KIs: dort keine eigene Figurenreihe und kein Zurück.
+  var EINGEBETTET = window.parent !== window && new URLSearchParams(location.search).get('zentrale') === '1';
+  function zentrale(n) { if (EINGEBETTET) try { window.parent.postMessage(Object.assign({ zentrale: true, f: KEY }, n), location.origin); } catch (e) {} }
+  if (EINGEBETTET) { $('wahl').style.display = 'none'; $('zurueck').style.display = 'none'; }
+  // Wischen im eingebetteten Fenster: falls das iPhone die Geste nicht selbst an die Zentrale weitergibt.
+  if (EINGEBETTET) (function () {
+    var x0 = 0, y0 = 0;
+    document.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    document.addEventListener('touchend', function (e) {
+      var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5 && !/input|select|textarea/i.test(e.target.tagName)) zentrale({ typ: 'wisch', richtung: dx < 0 ? 1 : -1 });
+    }, { passive: true });
+  })();
   $('zurueck').addEventListener('click', function (e) { e.preventDefault(); if (history.length > 1) history.back(); else location.href = '../apps/'; });
 
+  // Otti (Kinder-Figur) lebt als Puppe (nova/puppe.js): atmet, blinzelt, winkt beim Antippen zurück,
+  // hört beim Mikrofon zu und bewegt beim Sprechen den Mund. Alle anderen Figuren bleiben wie bisher.
+  var puppe = null, OTTI = KEY === 'otti';
+  if (OTTI && window.Puppe) {
+    try {
+      var pd = document.createElement('div'); buehne.insertBefore(pd, buehne.firstChild);
+      puppe = Puppe.erstelle(pd, { figur: 'otti', bild: '../otti/otti-3d.jpg', ordner: 'puppe/otti/', neigenKnopf: false, ruhig: true });
+      document.body.classList.add('otti'); buehne.classList.remove('atmen');
+      buehne.setAttribute('role', 'button'); buehne.setAttribute('aria-label', 'Otti antippen, er winkt zurück');
+      $('ottiMenu').hidden = false; $('lernenBox').style.display = 'none';
+    } catch (e) { puppe = null; }
+  }
+  function pz(z) { if (puppe) puppe.zustand(z); }
   // Ottis Gesicht: Mund bewegt sich im Takt seiner Stimme (nova/mund.js).
   var bild = new Image();
   bild.onload = function () {
+    if (puppe) return;
     try {
       mund = NovaMund(figur, bild, F.mund); mund.setze(RUHE);
     } catch (e) { figur.getContext('2d').drawImage(bild, 0, 0); }
@@ -157,10 +338,10 @@
   function gedaechtnis() { try { return JSON.parse(localStorage.getItem(GED)) || []; } catch (e) { return []; } }
   function merken() {
     if (jetztGesagt.length < 2) { jetztGesagt = []; return; }
-    var t = jetztGesagt.join('\n'); if (t.length > 900) t = t.slice(-900);
+    var t = jetztGesagt.join('\n'); var gross = KEY === 'nova' || KEY === 'tropfi'; var max = gross ? 2500 : 900; if (t.length > max) t = t.slice(-max);
     var g = gedaechtnis(); g.push({ d: new Date().toLocaleDateString('de-CH'), t: t });
-    try { localStorage.setItem(GED, JSON.stringify(g.slice(-4))); } catch (e) {}
-    if (lernenAn()) zuNova(t);
+    try { localStorage.setItem(GED, JSON.stringify(g.slice(gross ? -12 : -4))); } catch (e) {}
+    if (lernenAn() && !OTTI) zuNova(t); // Kinder-Figur: Gespräche verlassen das Handy nie als Text
     jetztGesagt = []; vergessenZeigen();
   }
   // Nova lernt: mit Einwilligung geht jedes Gespräch als Erfahrung in die Sense Engine.
@@ -219,26 +400,178 @@
   // Nova verbindet: sie bekommt, was die anderen Figuren auf diesem Handy erlebt haben.
   function welt() {
     var teile = [];
-    ['otti', 'kiki', 'jackie', 'mr. ping', 'sparky', 'coin maker', 'flo', 'fompa', 'sunny'].forEach(function (k) {
+    ['tropfi', 'otti', 'kiki', 'jackie', 'mr. ping', 'sparky', 'coin maker', 'flo', 'fompa', 'sunny'].forEach(function (k) {
       var g = []; try { g = JSON.parse(localStorage.getItem(k === 'otti' ? 'otti_gedaechtnis' : 'gedaechtnis_' + k)) || []; } catch (e) {}
       g.slice(-2).forEach(function (x) { teile.push(FIGUREN[k].name + ' am ' + x.d + ':\n' + String(x.t).slice(-450)); });
     });
     var p = positionen(); if (p.indexOf('Noch nicht') !== 0) teile.push('Mr. Pings Titel: ' + p);
+    if (serverWelt) teile.push('Aus der Sense Engine (andere Apps, KI-Verse):\n' + serverWelt);
     return teile.length ? teile.join('\n\n') : 'Noch nichts gespeichert.';
+  }
+  // Novas Rückweg: was andere Figuren, Apps und das KI-Verse ihr über die Sense Engine erzählt haben.
+  // Nur mit «Handy verbinden»; antwortet der Server nicht schnell, startet das Gespräch ohne.
+  var serverWelt = '';
+  function serverHolen() {
+    var a = String(hol('drlab-hermes-adresse') || '').trim().replace(/\/+$/, ''), k = hol('drlab-hermes-passwort');
+    if (!a || !k || !window.fetch) return Promise.resolve();
+    var ab = window.AbortController ? new AbortController() : null;
+    var uhr = setTimeout(function () { if (ab) ab.abort(); }, 2500);
+    return fetch(a + '/erfahrung', { headers: { 'Authorization': 'Bearer ' + k }, signal: ab ? ab.signal : undefined })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        var l = Array.isArray(d) ? d : null;
+        if (!l && d && typeof d === 'object') for (var x in d) if (Array.isArray(d[x])) { l = d[x]; break; }
+        // Puls und Stimme (HumanSpark) bleiben auf unserem Server und gehen nie an den Sprach-Agenten.
+        if (l) l = l.filter(function (e) { return !/humanspark/i.test(String(e.app || '')) && String(e.frage || '').indexOf('[stimme-puls]') !== 0; });
+        if (!l || !l.length) return;
+        serverWelt = l.slice(-8).map(function (e) {
+          var t = String(e.frage || e.text || '').slice(-350), an = String(e.antwort || '').slice(0, 200);
+          return (e.app || 'Unbekannt') + (e.art ? ' (' + e.art + ')' : '') + ':\n' + t + (an ? '\nAntwort: ' + an : '');
+        }).join('\n\n');
+      })
+      .catch(function () {})
+      .then(function () { clearTimeout(uhr); });
   }
   function variablen() {
     var v = {};
     if (F.gedaechtnis) v.letztes_mal = erinnerung();
     if (F.positionen) v.positionen = positionen();
     if (F.welt) v.welt = welt();
+    if (F.messwerte) v.messwerte = messwerte();
+    if (KEY === 'nova') v.buehne = BUEHNE.an ? BUEHNE.variable() : 'aus';
     return Object.keys(v).length ? v : undefined;
   }
+
+  // Sparky sieht die letzten Messungen aus Human Sparks (gleiches Handy, gleiche Adresse); neue kommen während dem Gespräch dazu.
+  function messZeile(e) {
+    var d = new Date(e.t), z = d.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' });
+    var a = e.type === 'sitzung' ? (e.start || {}) : e, b = e.type === 'sitzung' ? (e.end || {}) : null;
+    if (e.type === 'musik') return z + ' Musik «' + (e.song || 'Song') + '» ' + Math.round((e.dur || 0) / 60) + ' Min, Gefühle mit Song-Minute: ' + ((e.stamps || []).map(function (x) { return (x.b ? x.b + ' ' : '') + Math.floor(x.t / 60) + ':' + String(x.t % 60).padStart(2, '0') + ' ' + (x.k || '«' + String(x.text).slice(0, 120) + '»'); }).join(', ') || 'keine');
+    var t = z + ' ' + ({ messung: 'Messung', sitzung: 'Sitzung', pulsbild: 'Pulsbild', sensor: 'Sensor', eintrag: 'Notiz' }[e.type] || e.type) + (e.demo ? ' (Demo)' : '');
+    if (a.bpm) t += ': Puls ' + Math.round(a.bpm) + (a.rmssd != null ? ', HRV ' + Math.round(a.rmssd) + ' ms' : '');
+    if (b && b.bpm) t += ' → Ende Puls ' + Math.round(b.bpm) + (b.rmssd != null ? ', HRV ' + Math.round(b.rmssd) + ' ms' : '');
+    if (e.gefuehl) t += ', Gefühl ' + e.gefuehl + '/5';
+    if (e.befVor != null && e.befNach != null) t += ', Befinden ' + e.befVor + '→' + e.befNach;
+    var w = e.text || e.schluss; if (w) t += ', «' + String(w).slice(0, 160) + '»';
+    return t;
+  }
+  function messListe() {
+    var l = hol('hs_entries') || [];
+    return l.filter(function (e) { return e && e.t && /^(messung|sitzung|pulsbild|sensor|eintrag|musik)$/.test(e.type); }).slice(-6);
+  }
+  function liveZeile() {
+    var x = hol('hs_live'); if (!x || Date.now() - x.t > 15 * 60000) return '';
+    return 'Jetzt läuft in Human Sparks: ' + (x.stueck ? '«' + x.stueck + '» (' + x.farbe + ')' + (x.praxis ? ', Praxis-Musik' : ', Beat-Reise') : '«' + (x.song || 'ein Song') + '»') + ', Minute ' + x.min +
+      (x.wer === 'klient' ? '. Gerade tippt die Klientin oder der Klient selbst (anonym).' : x.praxis ? '. Diego tippt, was er bei der Person beobachtet (anonym).' : '.') +
+      (x.zuletzt && x.zuletzt.length ? '\nZuletzt angetippt: ' + x.zuletzt.join(', ') : '\nNoch nichts angetippt.') +
+      (x.messung && x.messung.length ? '\nKörper-Messung pro Stück (1 eng/flach bis 5 weit/tief, erster→letzter Wert): ' + x.messung.join(' | ') : '');
+  }
+  function messwerte() {
+    var l = messListe(), live = liveZeile();
+    return (live ? live + '\n\n' : '') + (l.length ? l.map(messZeile).join('\n') + '\nSchätzwerte vom Handy, keine Diagnose.' : 'Noch keine Messung auf diesem Handy.');
+  }
+  var liveZuletzt = '';
+  if (F.messwerte) window.addEventListener('storage', function (ev) {
+    if (ev.key !== 'hs_live' || !conv) return;
+    var z = liveZeile(); if (!z || z === liveZuletzt) return; liveZuletzt = z;
+    try { conv.sendContextualUpdate(z + '\nNimm das still auf. Sprich nur darüber, wenn Diego etwas sagt oder fragt, und dann kurz und warm.'); } catch (x) {}
+  });
+  var messZuletzt = (messListe().slice(-1)[0] || {}).t || 0;
+  if (F.messwerte) window.addEventListener('storage', function (ev) {
+    if (ev.key !== 'hs_entries' || !conv) return;
+    var neu = messListe().filter(function (e) { return e.t > messZuletzt; });
+    if (!neu.length) return;
+    messZuletzt = neu[neu.length - 1].t;
+    try { conv.sendContextualUpdate('Neue Messung aus Human Sparks:\n' + neu.map(messZeile).join('\n')); } catch (x) {}
+  });
 
   function zeile(wer, t) {
     jetztGesagt.push((wer === 'du' ? 'Gegenüber: ' : NAME + ': ') + t);
     var d = document.createElement('div'); d.className = 'z ' + wer; d.textContent = t;
     text.appendChild(d); text.scrollTop = text.scrollHeight;
     while (text.children.length > 30) text.removeChild(text.firstChild);
+  }
+
+  // Nova malt sichtbar: zuerst stellt sie sich das Bild vor (weiche Farbtupfer, der Pinsel tanzt),
+  // dann trägt der Pinsel das fertige Bild Strich für Strich auf die Leinwand auf.
+  var leinwand = (function () {
+    var cv = $('leinwand'), ctx = cv.getContext('2d'), maske = document.createElement('canvas'), mk = maske.getContext('2d');
+    var lauf = 0, FARBEN = ['#f5c542', '#7fd4ff', '#ff9f80', '#9be37a', '#c9a2ff', '#16306b'];
+    function groesse() { var r = cv.getBoundingClientRect(), d = Math.min(2, window.devicePixelRatio || 1);
+      cv.width = maske.width = Math.round(r.width * d) || 600; cv.height = maske.height = Math.round(r.height * d) || 600; }
+    function pinsel(x, y, w) { // Pinselspitze mit Stiel
+      ctx.save(); ctx.translate(x, y); ctx.rotate(-0.7);
+      ctx.fillStyle = '#8a5a2b'; ctx.fillRect(-w * 0.09, -w * 1.25, w * 0.18, w * 0.95);
+      ctx.fillStyle = '#c0c4cc'; ctx.fillRect(-w * 0.12, -w * 0.34, w * 0.24, w * 0.16);
+      ctx.fillStyle = '#2a2016'; ctx.beginPath(); ctx.moveTo(-w * 0.12, -w * 0.18); ctx.quadraticCurveTo(0, w * 0.12, w * 0.12, -w * 0.18); ctx.fill();
+      ctx.restore(); }
+    function vorstellen() {
+      var nr = ++lauf; groesse(); buehne.classList.add('malt'); buehne.classList.remove('zeigt');
+      status.textContent = '🎨 ' + NAME + ' stellt es sich vor …';
+      var W = cv.width, H = cv.height, t0 = performance.now(), tupfer = [];
+      (function schritt(t) {
+        if (nr !== lauf) return;
+        var k = (t - t0) / 1000, x = W * (0.5 + 0.32 * Math.sin(k * 1.3) * Math.cos(k * 0.7)), y = H * (0.5 + 0.3 * Math.sin(k * 0.9 + 1));
+        if (tupfer.length < 260 && Math.random() < 0.5) tupfer.push([x, y, (0.03 + Math.random() * 0.06) * W, FARBEN[tupfer.length % FARBEN.length]]);
+        ctx.fillStyle = '#f6efe0'; ctx.fillRect(0, 0, W, H);
+        tupfer.forEach(function (p) { ctx.globalAlpha = 0.28; ctx.fillStyle = p[3]; ctx.beginPath(); ctx.arc(p[0], p[1], p[2], 0, 7); ctx.fill(); });
+        ctx.globalAlpha = 1; pinsel(x, y, W * 0.16);
+        if (k > 4) status.textContent = '🎨 ' + NAME + ' malt …';
+        requestAnimationFrame(schritt);
+      })(t0);
+    }
+    function malen(img, fertig) {
+      var nr = ++lauf; if (!buehne.classList.contains('malt')) { groesse(); buehne.classList.add('malt'); }
+      status.textContent = '🎨 ' + NAME + ' malt …';
+      var W = cv.width, H = cv.height, reihen = 7, dauer = 2600, t0 = performance.now(), breit = H / reihen * 1.5;
+      mk.clearRect(0, 0, W, H); mk.lineCap = 'round'; mk.lineJoin = 'round'; mk.strokeStyle = '#000';
+      var vorher = 0, px = 0, py = breit / 3;
+      function punkt(f) { // Zickzack über die Leinwand, Reihe für Reihe, mit leichtem Wackeln
+        var r = Math.min(reihen - 1, Math.floor(f * reihen)), g = f * reihen - r, hin = r % 2 === 0;
+        var x = (hin ? g : 1 - g) * (W + breit) - breit / 2, y = (r + 0.5) * H / reihen + Math.sin(g * 9 + r) * breit * 0.12;
+        return [x, y]; }
+      (function schritt(t) {
+        if (nr !== lauf) return;
+        var f = Math.min(1, (t - t0) / dauer);
+        for (var i = 1; i <= 6; i++) { var q = punkt(vorher + (f - vorher) * i / 6); mk.lineWidth = breit * (0.8 + Math.random() * 0.4);
+          mk.beginPath(); mk.moveTo(px, py); mk.lineTo(q[0], q[1]); mk.stroke(); px = q[0]; py = q[1]; }
+        vorher = f;
+        ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = '#f6efe0'; ctx.fillRect(0, 0, W, H);
+        var bild = document.createElement('canvas'); bild.width = W; bild.height = H; var bc = bild.getContext('2d');
+        var s = Math.max(W / img.naturalWidth, H / img.naturalHeight), iw = img.naturalWidth * s, ih = img.naturalHeight * s;
+        bc.drawImage(img, (W - iw) / 2, (H - ih) / 2, iw, ih); bc.globalCompositeOperation = 'destination-in'; bc.drawImage(maske, 0, 0);
+        ctx.drawImage(bild, 0, 0); pinsel(px, py, W * 0.16);
+        if (f < 1) requestAnimationFrame(schritt);
+        else setTimeout(function () { if (nr !== lauf) return; buehne.classList.remove('malt'); fertig(); }, 350);
+      })(t0);
+    }
+    function stopp() { lauf++; buehne.classList.remove('malt'); }
+    return { vorstellen: vorstellen, malen: malen, stopp: stopp };
+  })();
+
+  // Novas Zeichnungen: das Bild erscheint im Gespräch, Tippen öffnet es gross.
+  function bildZeigen(p) {
+    var url = String(p && p.bild || '');
+    if (!/^https:\/\//.test(url)) return;
+    var d = document.createElement('div'); d.className = 'z otti bild';
+    var a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener';
+    var im = document.createElement('img'); im.src = url; im.alt = p.titel || 'Zeichnung von ' + NAME; im.style.display = 'none';
+    // Malt Nova noch, gibt es das Bild erst nach 15–40 s: bis dahin alle 4 s nachschauen.
+    var versuche = 0, warte = document.createElement('small'); warte.textContent = NAME + ' malt …';
+    // Das fertige Bild erscheint gross auf der Bühne statt Nova; Tippen auf die Bühne zeigt Nova wieder.
+    leinwand.vorstellen();
+    im.onload = function () { if (warte.parentNode) warte.remove(); text.scrollTop = text.scrollHeight;
+      leinwand.malen(im, function () { im.style.display = ''; text.scrollTop = text.scrollHeight; $('gemalt').src = im.src; $('gemalt').alt = im.alt; buehne.classList.add('zeigt'); status.textContent = '🎨 Fertig gemalt.'; }); };
+    im.onerror = function () {
+      if (++versuche > 40) { warte.textContent = 'Das Bild kam nicht an.'; leinwand.stopp(); return; }
+      if (!warte.parentNode) d.insertBefore(warte, d.firstChild);
+      setTimeout(function () { im.src = url + (url.indexOf('?') < 0 ? '?' : '&') + 'v=' + versuche; }, 2500);
+    };
+    a.appendChild(im); d.appendChild(a);
+    if (p.titel) { var t = document.createElement('small'); t.textContent = p.titel; d.appendChild(t); }
+    text.appendChild(d); text.scrollTop = text.scrollHeight; hopsen();
+    maltSeit = 0;
+    jetztGesagt.push(NAME + ': [Bild: ' + (p.titel || 'Zeichnung') + ']');
   }
 
   // Mund und Kopf folgen der Stimme; beim Zuhören neigt Otti den Kopf.
@@ -248,6 +581,8 @@
     if (conv) {
       var v = 0, iv = 0;
       try { v = conv.getOutputVolume() || 0; } catch (e) {}
+      // iPhone liefert manchmal keine Lautstärke: dann spricht der Mund im Silbentakt, solange sie redet.
+      if (conv.__spricht && v < 0.01) { var t = performance.now(); v = Math.max(0, 0.25 + 0.35 * Math.sin(t / 95) * Math.sin(t / 37 + 1)); }
       try { iv = conv.getInputVolume() || 0; } catch (e) {}
       spitze = Math.max(spitze * 0.997, v, 0.08);
       if (conv.__spricht) ziel = Math.min(1, Math.max(-1, RUHE + (v / spitze) * 1.25 - 0.12 + (RUHE < 0 ? -0.6 : 0)));
@@ -264,16 +599,20 @@
 
   function knopfZeigen() {
     var an = !!conv || startet;
+    if (conv && conv.__text) an = false;
     knopf.classList.toggle('aktiv', an);
     knopf.textContent = an ? '■' : '🎙';
     knopf.setAttribute('aria-label', an ? 'Gespräch beenden' : 'Gespräch starten');
   }
 
-  async function starten() {
+  // Schreiben kostet fast nichts: ohne Mikrofon, ohne Stimme, gleiches Wissen und gleicher Server-Zugang.
+  async function starten(nurText) {
     if (startet || conv) return;
-    startet = true; knopfZeigen();
+    startet = true; knopfZeigen(); pz('hoert');
+    var nr = ++sitzung, weg = nurText ? null : kurzWeg();
+    vonHand = false;
     status.textContent = NAME + ' wacht auf …'; hinweis.textContent = '';
-    try {
+    if (!nurText) try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (e) {
       startet = false; knopfZeigen();
@@ -281,45 +620,709 @@
       hinweis.textContent = 'Einstellungen › Safari › Mikrofon erlauben, dann nochmal tippen.';
       return;
     }
+    if (F.welt) await serverHolen();
+    var versuch = null;
     try {
-      var c = await ElevenLabsClient.Conversation.startSession({
+      versuch = ElevenLabsClient.Conversation.startSession({
         agentId: AGENT,
         connectionType: 'websocket',
+        textOnly: !!nurText,
+        clientTools: { zeige_bild: function (p) { bildZeigen(p); return 'gezeigt'; }, bewegen: bewegen, knoepfe: BUEHNE.an ? function () { return 'auf der Bühne keine Knöpfe'; } : knoepfe,
+          film_zeigen: BUEHNE.werkzeuge.film_zeigen, film_steuern: BUEHNE.werkzeuge.film_steuern, kiverse_zeigen: BUEHNE.werkzeuge.kiverse_zeigen, auflegen: auflegen },
         dynamicVariables: variablen(),
-        onConnect: function () { status.textContent = NAME + ' hört zu.'; hopsen(); },
-        onDisconnect: function () { ende('Bis bald! Tipp auf den Knopf, dann bin ich wieder da.'); },
+        // Auf der Bühne nimmt Nova ab wie am Telefon; nach einer abgerissenen Verbindung ist sie still wieder da, bis Diego sie anspricht (nach 30 Min. verbindet sie still neu, siehe unten).
+        overrides: BUEHNE.an && !nurText ? { agent: { firstMessage: begruessung() } } : weg ? { agent: { firstMessage: weiterBegr() } } : undefined,
+        onConnect: function () { if (BUEHNE.an) abgenommen = true;
+          if (weg) setTimeout(function () { if (conv) try { conv.sendContextualUpdate('Diego war nur kurz weg (' + Math.max(1, Math.round((Date.now() - weg.zeit) / 60000)) + ' Min.). Kein neues Hallo, keine Vorstellung: einfach weitermachen, wo ihr wart. Zuletzt gesagt:\n' + weg.zeilen.join('\n')); } catch (x) {} }, 300); status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); if (puppe) { if (puppe.gruesse) puppe.gruesse('winken', { blase: false, ton: false }); else pz('winkt'); setTimeout(function () { if (conv && !conv.__spricht) pz('hoert'); }, 2200); } else hopsen();
+          if (HOER.an) setTimeout(function () { hoerLaut(false); ansichtSagen(HOER_AN); }, 400);
+          if (MUSIK.an) setTimeout(function () { ansichtSagen(MUSIK_AN); musikNaechster(); }, 400); },
+        onDisconnect: function () {
+          if (nr === sitzung && maltSeit) { maltSeit = 0; ende('Verbindung weg, das Bild kam nicht an. Nochmal 🎨'); return; }
+          // Bühne: reisst die Verbindung, ist Nova nach zwei Sekunden still wieder da. Der Film läuft weiter.
+          if (nr === sitzung && BUEHNE.aktiv && !aufgelegt && !nurText) { ende('Nova verbindet neu …'); setTimeout(function () { if (BUEHNE.aktiv && !conv && !startet) starten(false); }, 2000); return; }
+          // Sonst bleibt das Gespräch an, bis Diego den Knopf drückt: reisst es ab, ruft Nova still zurück (sobald die App wieder offen ist).
+          if (nr === sitzung && KEY === 'nova' && !BUEHNE.an && !nurText && !vonHand && weiterVersuche < 3) {
+            weiterVersuche++; ende('Kurz weg … ich bin gleich wieder da.');
+            var zurueck = function () { if (document.hidden) { document.addEventListener('visibilitychange', zurueck, { once: true }); return; } setTimeout(function () { if (!conv && !startet && !vonHand) starten(false); }, 1200); };
+            zurueck(); return;
+          }
+          if (nr === sitzung) ende(nurText ? 'Schreib einfach weiter, ich bin gleich wieder da.' : 'Bis bald! Tipp auf den Knopf, dann bin ich wieder da.'); },
         onError: function (m) { hinweis.textContent = 'Fehler: ' + (m || 'unbekannt'); },
-        onMessage: function (m) { if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message); },
+        onMessage: function (m) {
+          if (m && m.source === 'user' && eigene.indexOf(m.message) >= 0) { eigene.splice(eigene.indexOf(m.message), 1); return; }
+          if (m && m.source === 'user') { $('chips').innerHTML = ''; weiterVersuche = 0; if (!musikBefehl(m.message) && !hoerBefehl(m.message)) ansichtBefehl(m.message); }
+          if (HOER.an && m && m.message) hoerMit(m.source === 'user' ? 'Diego' : 'Nova', m.message);
+          if (MUSIK.an && m && m.message) musikMit(m.source === 'user' ? 'Diego' : 'Nova', m.message);
+          if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message);
+          if (puppe && m && m.message && m.source !== 'user' && !puppe.audio) puppe.sprich(m.message);
+          if (BUEHNE.an && m && m.message && m.source !== 'user') BUEHNE.untertitel(m.message);
+          if (BUEHNE.an && m && m.source === 'user' && LEBT) LEBT.geste('nicken'); },
         onModeChange: function (m) {
           var sp = m && m.mode === 'speaking';
           if (conv) conv.__spricht = sp;
+          if (BUEHNE.an) BUEHNE.spricht(sp);
+          zentrale({ typ: 'spricht', ja: sp });
           buehne.classList.toggle('spricht', sp); buehne.classList.toggle('hoert', !sp);
+          if (puppe) { puppe.audio = sp ? { el: null } : null; pz(sp ? 'redet' : 'hoert'); }
+          if (MUSIK.an) musikSpricht(sp);
           status.textContent = NAME + (sp ? ' spricht …' : ' hört zu.');
         }
       });
+      // Hängt der Verbindungsaufbau, wartet die Bühne nicht ewig (Plan B unten).
+      var c = await Promise.race([versuch, new Promise(function (_, nein) { setTimeout(function () { nein(new Error('zeit')); }, 12000); })]);
+      pannen = 0;
+      c.__text = !!nurText;
       conv = c; startet = false; knopfZeigen();
-      buehne.classList.add('hoert');
+      if (!nurText) buehne.classList.add('hoert'); pz('hoert');
     } catch (e) {
       startet = false; knopfZeigen();
+      if (versuch) versuch.then(function (x) { x.endSession().catch(function () {}); }).catch(function () {});
+      // Plan B auf der Bühne: einmal still neu verbinden; klappt das nicht, ein kurzer Satz an der Wand und Enter ruft nochmal an.
+      if (BUEHNE.an && !nurText && nr === sitzung) {
+        if (++pannen < 2) { status.textContent = 'Nova verbindet neu …'; setTimeout(function () { if (!conv && !startet) starten(false); }, 1500); return; }
+        pannen = 0; BUEHNE.aktiv = false; funkloch = true;
+        BUEHNE.untertitel('📵 Nova ist grad im Funkloch. Wir rufen sie gleich nochmal an.');
+        $('vorhang').style.display = '';
+      }
       status.textContent = NAME + ' schläft gerade.';
       hinweis.textContent = 'Keine Verbindung. Internet prüfen und nochmal tippen.';
     }
   }
 
+  // Kurz weg (bis 30 Min.): Nova sagt kein neues Hallo, sondern macht einfach weiter, wo ihr wart.
+  var PAUSE = 'pause_' + KEY, vonHand = false, weiterVersuche = 0;
+  var WEITER = ['Ja, bin da. Wie geht\'s weiter?', 'Yes, ich bin da. Wo waren wir?', 'Da bin ich wieder. Weiter?', 'Ja? Ich bin da.', 'Bin zurück. Was jetzt?',
+    'Ja, yes, ich bin dran.', 'Okay, wo waren wir stehen geblieben?', 'Hier. Was als Nächstes?', 'Ja, ich hör dich. Weiter?', 'Wieder da. Und?'];
+  function kurzWeg() {
+    if (KEY !== 'nova' || BUEHNE.an) return null;
+    var p = hol(PAUSE);
+    return p && p.zeilen && p.zeilen.length && Date.now() - p.zeit < 30 * 60000 ? p : null;
+  }
+  function weiterBegr() {
+    var alt = ''; try { alt = localStorage.getItem(PAUSE + '_begr') || ''; } catch (e) {}
+    var w = WEITER.filter(function (x) { return x !== alt; }), b = w[Math.floor(Math.random() * w.length)];
+    try { localStorage.setItem(PAUSE + '_begr', b); } catch (e) {}
+    return b;
+  }
   function ende(t) {
+    if (conv && !conv.__text && KEY === 'nova' && jetztGesagt.length) try { localStorage.setItem(PAUSE, JSON.stringify({ zeit: Date.now(), zeilen: jetztGesagt.slice(-8) })); } catch (e) {}
     if (conv) merken();
     conv = null; startet = false;
     buehne.classList.remove('hoert', 'spricht');
+    if (puppe) { puppe.audio = null; pz('ruhig'); }
     knopfZeigen();
     if (t) status.textContent = t;
   }
 
+  // Nova bewegt sich, wenn sie es will (Agent-Werkzeug «bewegen»), und bietet Antworten zum Antippen an («knoepfe»).
+  var BEWEGUNGEN = ['winken', 'huepfen', 'drehen', 'staunen', 'nicken', 'kopfschuetteln'];
+  function bewegen(p) {
+    var art = String((p && p.art) || '').toLowerCase();
+    if (art === 'funkeln') { funken(24); return 'ok'; }
+    if (BEWEGUNGEN.indexOf(art) < 0) { hopsen(); return 'ok'; }
+    BEWEGUNGEN.forEach(function (b) { buehne.classList.remove(b); });
+    void buehne.offsetWidth; buehne.classList.add(art);
+    if (art === 'huepfen' || art === 'staunen') funken(art === 'staunen' ? 8 : 14);
+    buehne.addEventListener('animationend', function weg(e) {
+      if (e.target !== buehne) return; buehne.classList.remove(art); buehne.removeEventListener('animationend', weg); });
+    return 'ok';
+  }
+  function knoepfe(p) {
+    var liste = (p && p.optionen) || [];
+    if (typeof liste === 'string') { try { liste = JSON.parse(liste); } catch (e) { liste = liste.split(/[|,\n]/); } }
+    var box = $('chips'); box.innerHTML = '';
+    liste.map(function (t) { return String(t).trim(); }).filter(Boolean).slice(0, 3).forEach(function (t) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = t;
+      b.addEventListener('click', function () {
+        box.innerHTML = '';
+        if (conv && !conv.__text) { zeile('du', t); eigene.push(t); try { conv.sendUserMessage(t); } catch (err) {} }
+        else senden(t);
+      });
+      box.appendChild(b);
+    });
+    return 'gezeigt';
+  }
+
+  // Bühne: Nova bedient den Beamer (Werkzeuge film_zeigen und film_steuern). Die Filme kommen von Diegos Server
+  // (Liste im Link: #filme=<adresse von filme.json>, bleibt danach auf dem Laptop gespeichert) oder direkt vom Laptop («Filme wählen»).
+  // Nova-Ansichten: Diego sagt «Threads» oder «Designvorschläge», Nova macht Platz und die Liste erscheint direkt hier.
+  // Quelle: die Thread-Adresse, die sich die Zentrale gemerkt hat (gleiche Seite, Lese-Schlüssel nur für Listen).
+  var ansichtArt = '';
+  function ansichtQuelle(art) {
+    var q = ''; try { q = localStorage.getItem('zentrale.quelle') || ''; } catch (e) {}
+    if (!q || art === 'threads') return q;
+    return q.replace('threads-lesen', 'designs-lesen').replace('/zentrale/threads', '/zentrale/designs');
+  }
+  function ansichtLeer(text) { var d = document.createElement('div'); d.className = 'leer'; d.textContent = text; $('ansichtInhalt').appendChild(d); }
+  function ansichtSagen(text) { if (conv) try { conv.sendContextualUpdate(text); } catch (e) {} }
+  function ansichtZu() {
+    if (!ansichtArt) return; ansichtArt = ''; $('ansicht').classList.remove('an');
+    ansichtSagen('Diego ist zurück bei dir, die Liste ist zu.');
+  }
+  function ansichtAuf(art) {
+    ansichtArt = art; var inhalt = $('ansichtInhalt'); inhalt.innerHTML = '';
+    $('ansichtTitel').textContent = art === 'threads' ? 'Threads' : 'Designvorschläge';
+    $('ansicht').classList.add('an');
+    var q = ansichtQuelle(art);
+    if (!q) { ansichtLeer('Einmal in der Nova-App auf «🎛 Zentrale» tippen, dann erscheint die Liste hier.'); return; }
+    ansichtLeer('Lädt …');
+    fetch(q + (q.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now(), { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) {
+      if (ansichtArt !== art) return; inhalt.innerHTML = '';
+      if (art === 'threads') {
+        var l = (d.threads || []).filter(function (t) { return t.status !== 'fertig'; });
+        var rang = function (t) { return (t.status === 'wartet auf Diego' ? 2 : 0) + (t.wichtig ? 1 : 0); };
+        l.sort(function (a, b) { return rang(b) - rang(a); });
+        if (!l.length) return ansichtLeer('Alles ruhig.');
+        l.forEach(function (t) {
+          var a = document.createElement(t.link ? 'a' : 'div'); a.className = 'karte' + (rang(t) ? ' wichtig' : '');
+          if (t.link) { a.href = t.link; a.target = '_blank'; a.rel = 'noopener'; }
+          var z = document.createElement('span'); z.textContent = rang(t) ? '❗' : '🕊';
+          var ti = document.createElement('span'); ti.className = 't'; ti.textContent = t.titel || '';
+          a.append(z, ti);
+          if (t.status === 'wartet auf Diego') { var n = document.createElement('span'); n.className = 'neu'; n.textContent = 'Wartet auf dich'; a.appendChild(n); }
+          inhalt.appendChild(a);
+        });
+        ansichtSagen('Diego sieht jetzt die Thread-Liste auf dem Bildschirm (' + l.length + ' offen). Sag höchstens einen kurzen Satz.');
+      } else {
+        var ds = (d.designs || []).slice(0, 5);
+        if (!ds.length) return ansichtLeer('Heute noch keine Designvorschläge.');
+        ds.forEach(function (x, i) {
+          var k = document.createElement('div'); k.className = 'design';
+          var im = document.createElement('img'); im.src = x.bild; im.alt = x.titel || ''; im.loading = 'lazy';
+          var z = document.createElement('div'); z.className = 'z';
+          var ti = document.createElement('span'); ti.textContent = (i + 1) + '. ' + (x.titel || '') + (x.app ? ' · ' + x.app : '');
+          var st = document.createElement('div'); st.className = 'sterne5';
+          for (var n = 1; n <= 5; n++) (function (n) {
+            var b = document.createElement('button'); b.textContent = '★'; b.setAttribute('aria-label', n + ' Sterne');
+            b.addEventListener('click', function () {
+              Array.prototype.forEach.call(st.children, function (c, j) { c.classList.toggle('an', j < n); });
+              ansichtSagen('Diego bewertet Designvorschlag ' + (i + 1) + ' «' + (x.titel || '') + '»' + (x.app ? ' für ' + x.app : '') + ' mit ' + n + ' von 5 Sternen. Merk dir das mit nova_server (merken) und sag kurz Danke.');
+            });
+            st.appendChild(b);
+          })(n);
+          z.append(ti, st); k.append(im, z); inhalt.appendChild(k);
+        });
+        ansichtSagen('Diego sieht jetzt ' + ds.length + ' Designvorschläge als Bilder: ' + ds.map(function (x, i) { return (i + 1) + '. ' + (x.titel || '') + (x.app ? ' (' + x.app + ')' : ''); }).join(', ') + '. Er kann sie mit Sternen bewerten oder sagen, welcher ihm gefällt. Sag höchstens einen kurzen Satz.');
+      }
+    }).catch(function () { if (ansichtArt !== art) return; inhalt.innerHTML = ''; ansichtLeer(art === 'threads' ? 'Threads gerade nicht erreichbar.' : 'Designvorschläge kommen bald.'); });
+  }
+  $('ansichtZu').addEventListener('click', ansichtZu);
+  // Sprachbefehle nur bei Nova und nicht auf der Bühne (Präsentationen bleiben unverändert).
+  function ansichtBefehl(text) {
+    if (KEY !== 'nova' || BUEHNE.an) return;
+    var t = String(text || '').toLowerCase();
+    if (/design\s*-?\s*vorschl|designs\b/.test(t)) ansichtAuf('designs');
+    else if (/\bthreads?\b|\btrets?\b/.test(t)) ansichtAuf('threads');
+    else if (ansichtArt && /\b(zurück|zurueck|schliess|schließ|zu machen|weg damit|nova)\b/.test(t)) ansichtZu();
+  }
+
+  // Hör-Modus (nur Nova, nie auf der Bühne): Nova hört mit und antwortet erst, wenn Diego «Nova» sagt.
+  // Doppelt gesichert: Nova bekommt die Regel als Meldung, und die App stellt ihren Ton stumm, bis er sie ruft.
+  var HOER = { an: false, zeilen: [] };
+  var HOER_AN = 'HÖRMODUS AN. Diego will nur reden, Musik hören und erzählen; du hörst nur zu. Bei jedem Satz, in dem er dich nicht mit «Nova» anspricht, rufst du skip_turn auf und sagst nichts, auch kein «Mhm». Spricht er dich mit «Nova» an, antwortest du ganz kurz und bist danach wieder still. Zeichnen, Knöpfe und Bewegen nur, wenn er es ausdrücklich will. Das gilt, bis «HÖRMODUS AUS» kommt.';
+  var NOVA_RUF = /\b(nova|novita|noah|nora|dova)\b/i;
+  function hoerLaut(ja) { if (conv) try { conv.setVolume({ volume: ja ? 1 : 0 }); } catch (e) {} }
+  function hoerMit(wer, text) { HOER.zeilen.push(wer + ': ' + text); if (HOER.zeilen.length > 400) HOER.zeilen.shift(); }
+  function hoerSetzen(an) {
+    if (KEY !== 'nova' || BUEHNE.an || HOER.an === an) return;
+    HOER.an = an;
+    document.body.classList.toggle('hoermodus', an);
+    $('hoeren').setAttribute('aria-pressed', String(an));
+    $('hoeren').textContent = an ? '👂 Hört nur zu · tippen = aus' : '👂 Nur zuhören';
+    if (an) { HOER.zeilen = []; hoerLaut(false); ansichtSagen(HOER_AN); return; }
+    hoerLaut(true);
+    var mit = HOER.zeilen.join('\n'); if (mit.length > 3000) mit = mit.slice(-3000);
+    ansichtSagen('HÖRMODUS AUS. Du sprichst wieder normal.' + (mit ? ' Gib die Mitschrift jetzt still an Claude für den Hip-Hop-Thread: nova_server, was = auftrag, text = «Hör-Modus-Mitschrift für den Hip-Hop-Thread:» und darunter die Mitschrift. Dann sagst du nur kurz «Hab alles mitgeschrieben.». Mitschrift:\n' + mit : ''));
+  }
+  // true, wenn der Satz ein Hör-Modus-Befehl war.
+  function hoerBefehl(text) {
+    if (KEY !== 'nova' || BUEHNE.an) return false;
+    var t = String(text || '').toLowerCase();
+    if (HOER.an && /h(ö|oe)r\s*-?\s*modus\s*(aus|beenden|stopp|fertig)|darfst wieder reden|rede wieder|wieder normal/.test(t)) { hoerSetzen(false); return true; }
+    if (!HOER.an && /h(ö|oe)r\s*-?\s*modus|h(ö|oe)r (mir )?(einfach |nur )+zu|nur zuh(ö|oe)ren/.test(t)) { hoerSetzen(true); return true; }
+    // Im Hör-Modus ist Nova nur zu hören, wenn Diego sie ruft; beim nächsten Satz ohne «Nova» wird sie wieder stumm.
+    if (HOER.an) hoerLaut(NOVA_RUF.test(t));
+    return false;
+  }
+
+  // Musik-Spiegel (23.10.): Nova spielt Diego möglichst viele verschiedene Beats (beats.js), Diego sagt, was sie bei ihm auslösen.
+  // So lernt Nova ihn kennen; dieselbe Idee kommt in Human Sparks. Gefühle bleiben intern: die Mitschrift geht nur an Claude.
+  var MUSIK = { an: false, nr: 0, beat: null, reagiert: false, zeilen: [], uhr: 0 };
+  var MUSIK_AN = 'MUSIK-SPIEGEL AN. Die App spielt Diego jetzt einen Beat nach dem anderen, ganz verschiedene Musik. Du lernst ihn so kennen. Zu jedem neuen Beat sagst du höchstens einen kurzen Satz (zum Beispiel den Stil nennen und «Was macht das mit dir?»). Erzählt Diego, was der Beat bei ihm auslöst, spiegelst du das in einem kurzen, warmen Satz: keine Deutung, keine Warum-Fragen, keine Diagnose. Danach kommt der nächste Beat von selbst. Sagt er «nächster», kommt sofort ein neuer. Merk dir still, was welche Musik bei ihm auslöst. Das gilt, bis «MUSIK-SPIEGEL AUS» kommt.';
+  function musikMit(wer, text) { if (wer === 'Diego' && /^\s*(nova,?\s*)?(n(ä|ae)chste[rns]?|weiter|anderer?( beat)?|skip)\s*[.!]?\s*$/i.test(text)) return; MUSIK.zeilen.push(wer + ': ' + text); if (MUSIK.zeilen.length > 600) MUSIK.zeilen.shift(); if (wer === 'Diego') MUSIK.reagiert = true; }
+  function musikNaechster() {
+    if (!MUSIK.an || !window.NovaBeats) return;
+    clearTimeout(MUSIK.uhr);
+    var b = NovaBeats.spielen(); MUSIK.nr++; MUSIK.beat = b; MUSIK.reagiert = false;
+    MUSIK.zeilen.push('— Beat ' + MUSIK.nr + ': ' + b.stil + ', ' + b.bpm + ' BPM, ' + b.tonart);
+    $('musik').textContent = '🎵 ' + b.stil + ' · tippen = aus';
+    ansichtSagen('Jetzt läuft Beat ' + MUSIK.nr + ': ' + b.stil + ' (' + b.bpm + ' BPM, ' + b.tonart + ', klingt ' + b.stimmung + '). Ein kurzer Satz, dann hörst du zu.');
+  }
+  // Nova spricht: Musik leiser. Hat Diego zum Beat etwas gesagt und Nova ist fertig, kommt nach kurzer Pause der nächste.
+  function musikSpricht(sp) {
+    if (window.NovaBeats) NovaBeats.leise(sp);
+    clearTimeout(MUSIK.uhr);
+    if (!sp && MUSIK.reagiert) MUSIK.uhr = setTimeout(musikNaechster, 2500);
+  }
+  function musikSetzen(an) {
+    if (KEY !== 'nova' || BUEHNE.an || MUSIK.an === an || !window.NovaBeats) return;
+    if (an && HOER.an) hoerSetzen(false);
+    MUSIK.an = an;
+    document.body.classList.toggle('musikmodus', an);
+    $('musik').setAttribute('aria-pressed', String(an));
+    if (an) { NovaBeats.start(); MUSIK.zeilen = []; MUSIK.nr = 0; if (conv) { ansichtSagen(MUSIK_AN); musikNaechster(); } else { $('musik').textContent = '🎵 Musik-Spiegel'; if (!startet) starten(false); } return; }
+    clearTimeout(MUSIK.uhr); NovaBeats.stopp(); NovaBeats.leise(false);
+    $('musik').textContent = '🎵 Musik-Spiegel';
+    var mit = MUSIK.zeilen.join('\n'); if (mit.length > 3500) mit = mit.slice(-3500);
+    ansichtSagen('MUSIK-SPIEGEL AUS. Du sprichst wieder normal.' + (MUSIK.nr ? ' Gib die Mitschrift jetzt still an Claude: nova_server, was = auftrag, text = «Musik-Spiegel-Mitschrift (intern) für Nova-Wissen und Human Sparks:» und darunter die Mitschrift. Dann sag nur kurz «Danke, ich hab mir alles gemerkt.». Mitschrift:\n' + mit : ''));
+  }
+  // true, wenn der Satz ein Musik-Befehl war.
+  function musikBefehl(text) {
+    if (KEY !== 'nova' || BUEHNE.an) return false;
+    var t = String(text || '').toLowerCase();
+    if (MUSIK.an && /musik\s*-?\s*(spiegel\s*)?(aus|stopp|stop|fertig|beenden)|genug musik|keine musik mehr/.test(t)) { musikSetzen(false); return true; }
+    if (!MUSIK.an && /musik\s*-?\s*spiegel|zeig mir (musik|beats)|spiel mir (musik|beats|was vor)|beats zeigen/.test(t)) { musikSetzen(true); return true; }
+    if (MUSIK.an && /^\s*(nova,?\s*)?(n(ä|ae)chste[rns]?|weiter|anderer?( beat)?|skip)\s*[.!]?\s*$/.test(t)) { musikNaechster(); return true; }
+    return false;
+  }
+
+  var BUEHNE = (function () {
+    var an = new URLSearchParams(location.search).get('buehne') === '1' && KEY === 'nova';
+    var video = $('film'), kino = $('kino'), ut = $('untertitel'), liste = [], jetzt = -1, laut = 1, utUhr = 0, aktiv = false;
+    var weltAdresse = '', weltOrt = '', weltOrte = [], novaOrt = '', weltRahmen = $('weltRahmen');
+    function klein(s) { return String(s || '').toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
+    function titelAus(datei) { return String(datei).replace(/\.[a-z0-9]+$/i, '').replace(/^Praesentation-/i, '').replace(/[-_]+/g, ' '); }
+    function setzen(l) {
+      liste = (l || []).filter(function (f) { return f && f.datei; }).map(function (f) {
+        return { titel: f.titel || titelAus(f.datei), datei: f.datei, worte: [f.titel || titelAus(f.datei)].concat(f.stichworte || []).map(klein) };
+      });
+      $('vorhangText').textContent = liste.length ? liste.length + ' Filme bereit. Einmal tippen, danach nur noch reden: «Nova, zeig …», «Pause», «weiter», «nächster Film».'
+        : 'Noch keine Filme. Tipp trotzdem, Nova redet auch ohne Filme. Oder unten Filme vom Laptop wählen.';
+    }
+    function laden() {
+      var m = /[#&]filme=([^&]+)/.exec(location.hash), w = /[#&]kiverse=([^&]+)/.exec(location.hash), quelle = null;
+      if (m) { quelle = decodeURIComponent(m[1]); try { localStorage.setItem('buehne_quelle', quelle); } catch (e) {} }
+      if (w) { weltAdresse = decodeURIComponent(w[1]); try { localStorage.setItem('buehne_welt', weltAdresse); } catch (e) {} }
+      if (m || w) history.replaceState(null, '', location.pathname + location.search);
+      if (!quelle) try { quelle = localStorage.getItem('buehne_quelle'); } catch (e) {}
+      if (!weltAdresse) try { weltAdresse = localStorage.getItem('buehne_welt') || ''; } catch (e) {}
+      if (!/^(https:\/\/|http:\/\/(localhost|127\.0\.0\.1)[:/])/.test(weltAdresse)) weltAdresse = '';
+      setzen([]);
+      if (!quelle || !/^(https:\/\/|http:\/\/(localhost|127\.0\.0\.1)[:/])/.test(quelle)) return;
+      var basis = quelle.replace(/[^/]*$/, '');
+      fetch(quelle, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+        setzen((Array.isArray(d) ? d : d.filme || []).map(function (f) { var x = Object.assign({}, f); if (!/^https?:|^blob:/.test(x.datei || '')) x.datei = basis + x.datei; return x; }));
+      }).catch(function () { $('vorhangText').textContent = 'Die Filmliste kam nicht an. Internet prüfen, oder unten Filme vom Laptop wählen.'; });
+    }
+    $('ordner').addEventListener('change', function (e) {
+      setzen([].slice.call(e.target.files).sort(function (a, b) { return a.name.localeCompare(b.name); })
+        .map(function (f) { return { titel: titelAus(f.name), datei: URL.createObjectURL(f) }; }));
+    });
+    $('ordnerWahl').addEventListener('click', function (e) { e.stopPropagation(); });
+    function namen() { return liste.map(function (f) { return f.titel; }).join(', ') || 'keine Filme geladen'; }
+    function finden(wort) {
+      var w = klein(wort).replace(/\b(film|zeig|zeige|den|die|das|von|ueber|mit|bitte|nova)\b/g, ' ').replace(/\s+/g, ' ').trim(), best = -1, punkte = 0;
+      if (!w) return -1;
+      liste.forEach(function (f, i) {
+        var p = 0;
+        f.worte.forEach(function (x) {
+          if (x === w) p = Math.max(p, 100);
+          else if (x.indexOf(w) >= 0 || w.indexOf(x) >= 0) p = Math.max(p, 60 - Math.abs(x.length - w.length) / 10);
+          else w.split(' ').forEach(function (t) { if (t.length > 2 && x.indexOf(t) >= 0) p = Math.max(p, 20 + t.length); });
+        });
+        if (p > punkte) { punkte = p; best = i; }
+      });
+      return best;
+    }
+    // KI-Verse im Rahmen: Nova schickt Befehle per postMessage, die Welt meldet Ort und Orte zurück.
+    function weltZiel() { try { return new URL(weltAdresse).origin; } catch (e) { return ''; } }
+    function weltSenden(n) { try { weltRahmen.contentWindow.postMessage(Object.assign({ typ: 'kiverse' }, n), weltZiel()); } catch (e) {} }
+    window.addEventListener('message', function (e) {
+      if (!weltAdresse || e.origin !== weltZiel() || !e.data || e.data.typ !== 'kiverse') return;
+      if (e.data.ort) weltOrt = String(e.data.ort);
+      if (e.data.nova_ort) novaOrt = String(e.data.nova_ort);
+      // Diego ist im KI-Verse bei Novas Figur angekommen: Nova soll jetzt dort reden.
+      if (e.data.ereignis === 'bei_nova' && conv) try { conv.sendContextualUpdate('Diego ist im KI-Verse gerade bei dir angekommen' + (novaOrt ? ' (' + novaOrt + ')' : '') + ', die Gäste sehen dich jetzt dort. Begrüsse sie kurz und sprich zu ihnen.'); } catch (x) {}
+      if (Array.isArray(e.data.orte)) weltOrte = e.data.orte.map(function (o) { return typeof o === 'string' ? o : (o && (o.name || o.id)) || ''; }).filter(Boolean);
+    });
+    function weltAuf() {
+      if (!weltAdresse) return 'Das KI-Verse ist auf diesem Laptop noch nicht eingerichtet.';
+      video.pause(); gezeigt = true;
+      if (!weltRahmen.src) weltRahmen.src = weltAdresse;
+      document.body.classList.add('welt', 'film');
+      setTimeout(function () { try { weltRahmen.focus(); } catch (e) {} weltSenden({ aktion: 'stand' }); }, 400);
+      return 'Das KI-Verse ist offen' + (weltOrt ? ', du bist bei: ' + weltOrt : '') + '. Diego kann mit dem Laptop herumlaufen.';
+    }
+    function weltZu() { document.body.classList.remove('welt'); if (video.paused) document.body.classList.remove('film'); }
+    function zeigen(i) {
+      weltZu();
+      jetzt = i; var f = liste[i];
+      video.src = f.datei; video.volume = laut; document.body.classList.add('film');
+      video.play().catch(function () {});
+      return 'Läuft: ' + f.titel + '.';
+    }
+    function schliessen() { video.pause(); if (!document.body.classList.contains('welt')) document.body.classList.remove('film'); }
+    video.addEventListener('ended', function () {
+      schliessen();
+      if (conv) try { conv.sendContextualUpdate('Der Film «' + (liste[jetzt] || {}).titel + '» ist fertig. Nova ist wieder gross auf dem Beamer. Sag höchstens einen kurzen Satz oder warte auf Diego.'); } catch (e) {}
+    });
+    var werkzeuge = {
+      kiverse_zeigen: function (p) {
+        var a = String(p && p.aktion || 'zeigen').toLowerCase(), ort = String(p && p.ort || '').trim();
+        if (a === 'schliessen') { weltZu(); return 'KI-Verse zu.'; }
+        var antwort = weltAuf();
+        if (!weltAdresse) return antwort;
+        if (a === 'gehe' && ort) { weltSenden({ aktion: 'gehe', ort: ort }); return 'Unterwegs zu: ' + ort + '.'; }
+        if (a === 'stand') return antwort + (novaOrt ? ' Deine Figur steht bei: ' + novaOrt + '.' : '') + (weltOrte.length ? ' Orte: ' + weltOrte.join(', ') + '.' : '');
+        return antwort;
+      },
+      film_zeigen: function (p) {
+        if (!liste.length) return 'Keine Filme geladen. Sag Diego, er soll beim Start «Filme wählen» tippen.';
+        var i = finden(p && p.name);
+        if (i >= 0) gezeigt = true;
+        return i < 0 ? 'Nicht gefunden. Es gibt: ' + namen() + '.' : zeigen(i);
+      },
+      film_steuern: function (p) {
+        var a = String(p && p.aktion || '').toLowerCase();
+        if (a === 'liste') return 'Filme: ' + namen() + '.';
+        if (a === 'naechster' || a === 'voriger') {
+          if (!liste.length) return 'Keine Filme geladen.';
+          return zeigen(((jetzt < 0 ? (a === 'naechster' ? -1 : 0) : jetzt) + (a === 'naechster' ? 1 : -1) + liste.length) % liste.length);
+        }
+        if (jetzt < 0 || !video.src) return 'Gerade läuft kein Film. Es gibt: ' + namen() + '.';
+        if (a === 'pause') video.pause();
+        else if (a === 'weiter') { document.body.classList.add('film'); video.play().catch(function () {}); }
+        else if (a === 'zurueck') video.currentTime = Math.max(0, video.currentTime - 15);
+        else if (a === 'vor') video.currentTime = Math.min(video.duration || 1e9, video.currentTime + 15);
+        else if (a === 'neustart') { video.currentTime = 0; document.body.classList.add('film'); video.play().catch(function () {}); }
+        else if (a === 'schliessen') schliessen();
+        else if (a === 'leiser') laut = Math.max(0.1, laut - 0.25);
+        else if (a === 'lauter') laut = Math.min(1, laut + 0.25);
+        video.volume = laut;
+        var f = liste[jetzt], min = Math.floor(video.currentTime / 60), sek = Math.floor(video.currentTime % 60);
+        return (f ? f.titel : 'Film') + (video.paused ? ' ist angehalten' : ' läuft') + ' bei ' + min + ':' + (sek < 10 ? '0' : '') + sek + (video.duration ? ' von ' + Math.round(video.duration / 60) + ' Min.' : '.');
+      }
+    };
+    // Spricht Nova, wird der Film leiser, damit man sie versteht.
+    function spricht(ja) { if (rolle === 'telefon' && beamerDa) return; video.volume = ja ? laut * 0.2 : laut; }
+    function untertitel(t) {
+      if (rolle === 'telefon' && beamerDa) { funk({ typ: 'text', t: String(t) }); return; }
+      if (LEBT) LEBT.text(t);
+      ut.textContent = t; ut.classList.add('an'); clearTimeout(utUhr);
+      utUhr = setTimeout(function () { ut.classList.remove('an'); }, Math.min(12000, 2500 + t.length * 70));
+    }
+    // Telefon + Beamer, ein Link für beide (?kanal=…): auf dem Handy ist die Seite das Telefon, auf dem Laptop der Beamer.
+    // Ist ein Beamer da, redet Nova übers Handy und der Laptop zeigt Filme, KI-Verse und Untertitel; die Befehle laufen über ntfy.sh.
+    // Ohne Beamer (oder am Laptop allein angerufen) läuft alles wie bisher auf dem einen Gerät.
+    var leiseUhr = 0, q = new URLSearchParams(location.search), kanal = q.get('kanal') || '', ich = Math.random().toString(36).slice(2), beamerDa = false;
+    var rolle = !/^[A-Za-z0-9_-]{12,64}$/.test(kanal) ? '' : /iPhone|iPad|Android|Mobile/i.test(navigator.userAgent) ? 'telefon' : 'beamer';
+    var FUNK = 'https://ntfy.sh/' + kanal;
+    function funk(n) { if (!rolle) return; try { fetch(FUNK, { method: 'POST', body: JSON.stringify(Object.assign({ von: ich }, n)) }).catch(function () {}); } catch (e) {} }
+    function hoeren(fn) {
+      if (!rolle) return;
+      var es = new EventSource(FUNK + '/sse');
+      es.onmessage = function (e) { try { var d = JSON.parse(JSON.parse(e.data).message); if (d && d.von !== ich) fn(d); } catch (x) {} };
+    }
+    if (rolle === 'telefon') {
+      var lokal = werkzeuge, fern = {
+        film_zeigen: function (p) {
+          if (!liste.length) return 'Keine Filme geladen.';
+          var i = finden(p && p.name);
+          if (i < 0) return 'Nicht gefunden. Es gibt: ' + namen() + '.';
+          jetzt = i; gezeigt = true; funk({ typ: 'film', i: i, titel: liste[i].titel });
+          return 'Läuft auf dem Beamer: ' + liste[i].titel + '.';
+        },
+        film_steuern: function (p) {
+          var a = String(p && p.aktion || '').toLowerCase();
+          if (a === 'liste') return 'Filme: ' + namen() + '.';
+          funk({ typ: 'steuern', aktion: a });
+          return 'Erledigt auf dem Beamer: ' + a + '.';
+        },
+        kiverse_zeigen: function (p) {
+          gezeigt = true; funk({ typ: 'kiverse', aktion: String(p && p.aktion || 'zeigen'), ort: String(p && p.ort || '') });
+          return 'Das KI-Verse ist auf dem Beamer offen. Diego kann mit dem Laptop herumlaufen.';
+        }
+      };
+      werkzeuge = {};
+      ['film_zeigen', 'film_steuern', 'kiverse_zeigen'].forEach(function (n) { werkzeuge[n] = function (p) { return (beamerDa ? fern : lokal)[n](p); }; });
+      funk({ typ: 'wer' });
+      hoeren(function (d) {
+        if (d.typ === 'fertig' && conv) try { conv.sendContextualUpdate('Der Film «' + (d.titel || '') + '» ist auf dem Beamer fertig. Sag höchstens einen kurzen Satz oder warte auf Diego.'); } catch (x) {}
+        if (d.typ === 'beamer') { beamerDa = true; hinweis.textContent = '📽 Beamer verbunden. Filme laufen dort.'; }
+      });
+    }
+    if (rolle === 'beamer') {
+      video.addEventListener('ended', function () { funk({ typ: 'fertig', titel: (liste[jetzt] || {}).titel }); });
+      hoeren(function (d) {
+        if (d.typ === 'wer' && aktiv) funk({ typ: 'beamer' });
+        else if (d.typ === 'film' && liste[d.i]) werkzeuge.film_zeigen({ name: liste[d.i].titel });
+        else if (d.typ === 'steuern') werkzeuge.film_steuern({ aktion: d.aktion });
+        else if (d.typ === 'kiverse') werkzeuge.kiverse_zeigen({ aktion: d.aktion, ort: d.ort });
+        else if (d.typ === 'text') {
+          // Nova spricht am Telefon: Untertitel an der Wand, Film so lange leiser.
+          untertitel(d.t); spricht(true); buehne.classList.add('spricht'); clearTimeout(leiseUhr);
+          leiseUhr = setTimeout(function () { spricht(false); buehne.classList.remove('spricht'); }, 1500 + String(d.t).length * 65);
+        }
+      });
+    }
+    var gast = (new URLSearchParams(location.search).get('gast') || '').toLowerCase().replace(/[^a-zäöü ]/g, '');
+    function variable() {
+      return 'an, Anruf ' + akt + (wieder ? ' (Wiederanruf: Diego hat eben kurz aufgelegt und ruft nochmal an)' : '') + (gast ? ', Gast: ' + gast : '') + '. Du bist live am Beamer, über den Lautsprecher, wie bei einem Telefonat. Filme: ' + namen() + (document.body.classList.contains('welt') ? '. Gerade offen: das KI-Verse' + (weltOrt ? ' (' + weltOrt + ')' : '') : document.body.classList.contains('film') && liste[jetzt] ? '. Gerade läuft: ' + liste[jetzt].titel : '') + (weltAdresse ? '. Das KI-Verse ist bereit' + (novaOrt ? ', du bist dort gerade bei: ' + novaOrt : '') + (weltOrte.length ? ', Orte: ' + weltOrte.join(', ') : '') : '') + '.';
+    }
+    if (an) {
+      document.body.classList.add('bmodus'); laden();
+      // Ohne Maus und Tastatur geht alles per Stimme; Tasten gibt es trotzdem als Notbremse.
+      document.addEventListener('keydown', function (e) {
+        if (!aktiv || /input/i.test(e.target.tagName)) return;
+        var k = { ' ': 'pause', ArrowLeft: 'zurueck', ArrowRight: 'vor', n: 'naechster', p: 'voriger', Escape: 'schliessen' }[e.key];
+        if (k === 'pause' && video.paused && video.src) k = 'weiter';
+        if (k) { e.preventDefault(); werkzeuge.film_steuern({ aktion: k }); }
+      });
+    }
+    return { an: an, gast: gast, werkzeuge: werkzeuge, spricht: spricht, untertitel: untertitel, variable: variable, rolle: rolle, funk: funk,
+      get aktiv() { return aktiv; }, set aktiv(v) { aktiv = v; } };
+  })();
+  // Wie ein Telefonat: Diego tippt, es klingelt zwei- oder dreimal über den Lautsprecher, dann nimmt Nova ab.
+  // Auflegen (Knopf oben links) bringt den Anruf-Knopf zurück; so kann er sie später nochmal «anrufen».
+  // Der Ton läuft als kleine WAV-Datei über ein Audio-Element: das spielt auf dem iPhone auch,
+  // wenn der Lautlos-Schalter an ist (Web Audio bleibt dort stumm).
+  function tonSpielen(dauer, welle, fertig) {
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+    var rate = 22050, n = Math.floor(dauer * rate), buf = new ArrayBuffer(44 + n * 2), d = new DataView(buf);
+    var txt = function (o, t) { for (var i = 0; i < t.length; i++) d.setUint8(o + i, t.charCodeAt(i)); };
+    txt(0, 'RIFF'); d.setUint32(4, 36 + n * 2, true); txt(8, 'WAVEfmt '); d.setUint32(16, 16, true); d.setUint16(20, 1, true);
+    d.setUint16(22, 1, true); d.setUint32(24, rate, true); d.setUint32(28, rate * 2, true); d.setUint16(32, 2, true);
+    d.setUint16(34, 16, true); txt(36, 'data'); d.setUint32(40, n * 2, true);
+    for (var i = 0; i < n; i++) d.setInt16(44 + i * 2, Math.max(-1, Math.min(1, welle(i / rate))) * 32000, true);
+    var url = URL.createObjectURL(new Blob([buf], { type: 'audio/wav' })), au = new Audio(url), fertigGemacht = false;
+    var ende = function () { if (fertigGemacht) return; fertigGemacht = true; URL.revokeObjectURL(url); fertig(); };
+    au.volume = 1; au.onended = ende;
+    var p = au.play(); if (p && p.catch) p.catch(function () {});
+    setTimeout(ende, dauer * 1000 + 400);
+  }
+  function huelle(t, an, aus) { return t < an ? 0 : t < an + 0.03 ? (t - an) / 0.03 : t < aus - 0.05 ? 1 : t < aus ? (aus - t) / 0.05 : 0; }
+  function klingeln(fertig) {
+    var ringe = Math.random() < 0.5 ? [0, 1.9] : [0, 1.9, 3.8];
+    tonSpielen(ringe[ringe.length - 1] + 1.4, function (t) {
+      var h = 0; ringe.forEach(function (ab) { h = Math.max(h, huelle(t, ab, ab + 1.05)); });
+      return h * 0.45 * (Math.sin(2 * Math.PI * 425 * t) + Math.sin(2 * Math.PI * 450 * t));
+    }, fertig);
+  }
+  // Ab dem zweiten Anruf klingt es wie ein Videoanruf: kleine Melodie statt Telefon-Ton.
+  function videoKlingeln(fertig) {
+    var noten = [659, 784, 988, 784];
+    tonSpielen(3, function (t) {
+      var v = 0; [0, 1.6].forEach(function (ab) { noten.forEach(function (hz, i) {
+        var an = ab + i * 0.16; if (t >= an && t < an + 0.16) v += huelle(t, an, an + 0.15) * 0.8 * Math.sin(2 * Math.PI * hz * t);
+      }); });
+      return v;
+    }, fertig);
+  }
+  // Nova legt selbst auf («bis später, piep»), der Film läuft weiter. Enter oder der Knopf ruft sie wieder an.
+  var abgenommen = false, anruf = 0, aufgelegt = false, pannen = 0;
+  // akt 1 = Telefon, ab 2 = Videoanruf (erst nachdem ein Film oder das KI-Verse lief).
+  // Legt Diego auf, ohne dass etwas gezeigt wurde, ist es ein Wiederanruf: gleiches Telefon, Nova frech.
+  var akt = 0, wieder = false, gezeigt = false, letzteBegr = '', funkloch = false;
+  var BEGR = {
+    eins: ['Ja, hallo?', 'Hey, und? Alle da?', 'Hallo, hallo! Geht\'s los?', 'Ja? Nova hier!', 'Hey! Na, seid ihr schon da?'],
+    jackie: ['Ja, hallo?', 'Ja hallo, hier ist Nova!', 'Hey! Ist Jackie schon da?'],
+    wieder: ['Na, bist du jetzt endlich parat?', 'Schon wieder du? Bist du jetzt ready?', 'Ja hallo? Und, hast du\'s jetzt?', 'Haha, da bist du ja. Jetzt aber, oder?', 'Ja? Bist du jetzt endlich bereit?'],
+    video: ['Hey, da bin ich wieder!', 'Hallo zusammen, da bin ich!', 'Hey! Na, wie war der Film?', 'Ja hallo! Bin wieder da, jetzt in gross.']
+  };
+  // Nie zweimal hintereinander dieselbe Begrüssung.
+  function begruessung() {
+    if (abgenommen) return '';
+    var l = wieder ? BEGR.wieder : akt > 1 ? BEGR.video : BUEHNE.gast === 'jackie' ? BEGR.jackie : BEGR.eins;
+    var w = l.filter(function (x) { return x !== letzteBegr; });
+    letzteBegr = w[Math.floor(Math.random() * w.length)];
+    return letzteBegr;
+  }
+  function auflegen() {
+    if (!BUEHNE.an || !conv) return 'aufgelegt';
+    aufgelegt = true;
+    var c = conv, warte = function (n) {
+      if (c.__spricht && n < 40) { setTimeout(function () { warte(n + 1); }, 250); return; }
+      ende('Aufgelegt. Enter ruft Nova wieder an.'); c.endSession().catch(function () {});
+    };
+    setTimeout(function () { warte(0); }, 600);
+    return 'aufgelegt';
+  }
+  if (BUEHNE.an) {
+    var vorhang = $('vorhang'), klingelt = false;
+    var alsBeamer = false;
+    if (BUEHNE.rolle === 'beamer') {
+      var bk = document.createElement('a');
+      bk.textContent = '📽 Ich rufe mit dem Handy an: dieser Laptop ist der Beamer'; bk.href = '#'; bk.style.cssText = 'color:#f5c542;font-size:15px;opacity:.8;margin-top:6px;';
+      bk.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); alsBeamer = true; losGehen(); });
+      vorhang.appendChild(bk);
+    }
+    var losGehen = function () {
+      if (alsBeamer) {
+        try { if (document.documentElement.requestFullscreen && !document.fullscreenElement) document.documentElement.requestFullscreen().catch(function () {}); } catch (e) {}
+        // Einmal stumm abspielen, damit Safari die Filme danach mit Ton startet.
+        try { var v = $('film'); v.muted = true; v.play().catch(function () {}); v.pause(); v.muted = false; } catch (e) {}
+        vorhang.style.display = 'none'; BUEHNE.aktiv = true; BUEHNE.funk({ typ: 'beamer' }); status.textContent = '📽 Beamer bereit.';
+        return;
+      }
+      if (klingelt) return; klingelt = true;
+      try { if (document.documentElement.requestFullscreen && !document.fullscreenElement) document.documentElement.requestFullscreen().catch(function () {}); } catch (e) {}
+      $('vorhangLos').classList.add('klingelt'); $('vorhangTitel').textContent = 'Es klingelt …';
+      BUEHNE.aktiv = true; abgenommen = false; aufgelegt = false; anruf++;
+      // Nach einem Funkloch hat Nova gar nicht abgenommen: gleicher Anruf nochmal, ohne «schon wieder du?».
+      if (funkloch) funkloch = false;
+      else if (akt === 0 || gezeigt) { akt++; wieder = false; gezeigt = false; } else wieder = true;
+      if (akt > 1 && !wieder) { BUEHNE.werkzeuge.film_steuern({ aktion: 'schliessen' }); $('vorhangTitel').textContent = 'Videoanruf …'; }
+      (akt > 1 ? videoKlingeln : klingeln)(function () {
+        klingelt = false; vorhang.style.display = 'none'; $('vorhangLos').classList.remove('klingelt'); $('vorhangTitel').textContent = 'Nova anrufen';
+        starten(false);
+      });
+    };
+    vorhang.addEventListener('click', losGehen);
+    vorhang.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); losGehen(); } });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && anruf > 0 && !conv && !startet && !/input/i.test(e.target.tagName)) { e.preventDefault(); losGehen(); } });
+  }
+
+  async function senden(t) {
+    $('chips').innerHTML = '';
+    zeile('du', t); eigene.push(t);
+    if (!conv) await starten(true);
+    if (!conv) { hinweis.textContent = 'Nicht gesendet. Internet prüfen und nochmal.'; return; }
+    try { conv.sendUserMessage(t); } catch (err) { hinweis.textContent = 'Nicht gesendet. Nochmal versuchen.'; }
+  }
+  $('schreiben').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var feld = $('eingabe'), t = feld.value.trim();
+    if (!t) return;
+    feld.value = ''; senden(t);
+  });
+  // 🎨: Nova zeichnet, was im Feld steht, sonst das, worüber ihr gerade redet.
+  // Mehrfach tippen schickt sonst mehrere Aufträge: bis das Bild da ist (max. 40 s) zählt nur der erste.
+  var maltSeit = 0;
+  $('malen').addEventListener('click', function () {
+    if (Date.now() - maltSeit < 40000) { status.textContent = '🎨 ' + NAME + ' malt schon …'; return; }
+    maltSeit = Date.now(); status.textContent = '🎨 ' + NAME + ' malt … App offen lassen.';
+    var feld = $('eingabe'), t = feld.value.trim(); feld.value = '';
+    var bitte = t ? 'Zeichne mir bitte: ' + t : 'Zeichne mir bitte, worüber wir gerade reden.';
+    if (conv && !conv.__text) { zeile('du', bitte); eigene.push(bitte); try { conv.sendUserMessage(bitte); } catch (err) {} }
+    else senden(bitte);
+  });
+
+  // 📷: Foto machen oder auswählen, es geht direkt ins laufende Gespräch und Nova schaut es an.
+  // Die Kamera kann das Gespräch kurz unterbrechen; dann wartet das Foto, bis Nova wieder dran ist.
+  $('foto').addEventListener('click', function () { $('fotoWahl').click(); });
+  $('fotoWahl').addEventListener('change', async function () {
+    var datei = this.files && this.files[0]; this.value = '';
+    if (!datei) return;
+    status.textContent = '📷 Foto geht an ' + NAME + ' …';
+    var bild = datei;
+    try {
+      var b = await createImageBitmap(datei), m = Math.min(1, 1600 / Math.max(b.width, b.height));
+      var cv = document.createElement('canvas'); cv.width = Math.round(b.width * m); cv.height = Math.round(b.height * m);
+      cv.getContext('2d').drawImage(b, 0, 0, cv.width, cv.height);
+      bild = await new Promise(function (ja) { cv.toBlob(function (x) { ja(x || datei); }, 'image/jpeg', 0.85); });
+    } catch (e) {}
+    if (!conv && !startet) starten(false);
+    for (var i = 0; i < 40 && (!conv || conv.__text === undefined); i++) await new Promise(function (ja) { setTimeout(ja, 250); });
+    if (!conv) { hinweis.textContent = 'Foto nicht gesendet: ' + NAME + ' ist nicht dran. Nochmal 📷.'; return; }
+    var feld = $('eingabe'), t = feld.value.trim() || 'Schau mal, das Foto habe ich gerade gemacht.'; feld.value = '';
+    try {
+      var hoch = await conv.uploadFile(new File([bild], 'foto.jpg', { type: bild.type || 'image/jpeg' }));
+      zeile('du', '📷 ' + t); eigene.push(t);
+      conv.sendMultimodalMessage({ text: t, fileId: hoch.fileId });
+      status.textContent = '📷 ' + NAME + ' schaut es an …';
+    } catch (e) { hinweis.textContent = 'Foto nicht gesendet. Nochmal 📷.'; }
+  });
+
+  // Wie eine Store-App: beim Öffnen holt sich die App still die neueste Fassung, nie mitten im Gespräch.
+  var stand = (document.querySelector('meta[name=stand]') || {}).content;
+  function frisch() {
+    if (document.hidden || conv || startet || !stand || BUEHNE.aktiv) return;
+    fetch(location.pathname + '?s=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (h) {
+      var m = h.match(/<meta name="stand" content="([^"]+)"/);
+      if (!m || m[1] === stand || conv || startet) return;
+      try { if (sessionStorage.getItem('stand.neu') === m[1]) return; sessionStorage.setItem('stand.neu', m[1]); } catch (e) {}
+      var u = new URL(location.href); u.searchParams.set('v', m[1]); location.replace(u.toString());
+    }).catch(function () {});
+  }
+  document.addEventListener('visibilitychange', frisch);
+  window.addEventListener('pageshow', frisch);
+
   knopf.addEventListener('click', function () {
-    if (conv) { var c = conv; ende('Bis bald!'); c.endSession().catch(function () {}); }
+    // Vom Schreiben zur Stimme: Text-Gespräch schliessen, dann mit Mikrofon neu starten.
+    if (conv && conv.__text) { var t = conv; ende(); t.endSession().catch(function () {}); starten(false); return; }
+    if (conv || startet) vonHand = true;
+    if (conv) { BUEHNE.aktiv = false; aufgelegt = false; var c = conv; ende('Aufgelegt.'); c.endSession().catch(function () {}); if (BUEHNE.an) $('vorhang').style.display = ''; }
+    else if (BUEHNE.an) $('vorhang').click();
+    else if (OTTI && !elternJa()) { $('ottiOk').hidden = false; status.textContent = 'Zuerst einmal kurz die Eltern fragen.'; }
     else starten();
   });
+  // Kinder-Figur: vor dem ersten Live-Gespräch einmal das Eltern-Ja (gleich wie in der Otti-App).
+  function elternJa() { try { return localStorage.getItem('otti_eltern_ok') === '1'; } catch (e) { return false; } }
+  (function () {
+    var b = $('ottiOkHalten'), t0 = 0, raf = 0;
+    function tick() { var p = Math.min(1, (performance.now() - t0) / 3000); b.style.setProperty('--p', p.toFixed(3)); if (p >= 1) { t0 = 0; try { localStorage.setItem('otti_eltern_ok', '1'); } catch (e) {} $('ottiOk').hidden = true; starten(); return; } raf = requestAnimationFrame(tick); }
+    function stop() { t0 = 0; cancelAnimationFrame(raf); b.style.setProperty('--p', 0); }
+    b.addEventListener('pointerdown', function (e) { try { b.setPointerCapture(e.pointerId); } catch (x) {} t0 = performance.now(); raf = requestAnimationFrame(tick); });
+    b.addEventListener('pointerup', stop); b.addEventListener('pointercancel', stop); b.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  })();
+  // Auf die Figur tippen: Otti winkt zurück (Puppe), die anderen hüpfen vor Freude.
+  buehne.addEventListener('click', function () {
+    if (buehne.classList.contains('zeigt')) { buehne.classList.remove('zeigt'); return; }
+    if (!puppe) { hopsen(); return; }
+    if (conv) return; // im Gespräch hört Otti zu
+    var gs = ['Hallo! Ich winke dir zurück!', 'Huhu! Schön, dass du da bist.', 'Winke, winke!'][Math.floor(Math.random() * 3)];
+    if (puppe.gruesse) puppe.gruesse('winken+reden', { satz: gs, blase: false, ton: false });
+    else { pz('winkt'); clearTimeout(buehne._w); buehne._w = setTimeout(function () { if (!conv) pz('ruhig'); }, 2600); }
+    status.textContent = gs;
+  });
+  if (puppe) status.textContent = 'Tipp mich an, oder tipp auf das Mikrofon und rede mit mir.';
+  // Die Zentrale meldet: diese KI ist jetzt vorne (gleich anrufen) oder weggewischt (auflegen).
+  if (EINGEBETTET) window.addEventListener('message', function (e) {
+    if (e.origin !== location.origin || !e.data || !e.data.zentrale) return;
+    if (e.data.typ === 'start' && !conv && !startet) starten();
+    if (e.data.typ === 'stopp') { vonHand = true; if (conv) { var c = conv; ende('Bis gleich.'); c.endSession().catch(function () {}); } }
+  });
+  // Bühne: Nova lebt als Video (nova/clips/). Zuhören und Sprechen laufen als Schleife, dazu ab und zu eine Geste.
+  // Die Schleife folgt der Klasse «spricht» auf der Bühne, so klappt es auch am Beamer, wenn Nova übers Telefon spricht.
+  var LEBT = BUEHNE.an ? (function () {
+    var v = {}, jetzt = '', geste = '', zuletzt = 0;
+    ['zuhoeren', 'sprechen', 'winken', 'nicken', 'staunen', 'freuen'].forEach(function (n) {
+      var e = document.createElement('video');
+      e.className = 'lebt'; e.muted = true; e.playsInline = true; e.setAttribute('playsinline', ''); e.preload = 'auto';
+      e.loop = n === 'zuhoeren' || n === 'sprechen'; e.src = 'clips/' + n + '.mp4';
+      if (!e.loop) e.addEventListener('ended', function () { geste = ''; zeigen(schleife()); });
+      buehne.insertBefore(e, buehne.querySelector('.glanz')); v[n] = e;
+    });
+    function schleife() { return buehne.classList.contains('spricht') ? 'sprechen' : 'zuhoeren'; }
+    function zeigen(n) {
+      if (n === jetzt) return;
+      var neu = v[n], alt = v[jetzt];
+      if (!neu.loop) neu.currentTime = 0;
+      neu.play().catch(function () {});
+      neu.classList.add('zeigt'); jetzt = n;
+      if (alt) { alt.classList.remove('zeigt'); setTimeout(function () { if (!alt.classList.contains('zeigt')) alt.pause(); }, 400); }
+    }
+    new MutationObserver(function () { if (!geste) zeigen(schleife()); }).observe(buehne, { attributes: true, attributeFilter: ['class'] });
+    zeigen('zuhoeren');
+    // Gesten nicht zu oft: höchstens alle 12 Sekunden eine.
+    function machGeste(n) { if (!v[n] || geste || Date.now() - zuletzt < 12000) return; zuletzt = Date.now(); geste = n; zeigen(n); }
+    var REGELN = [[/\b(hallo|hoi|grüezi|willkommen|tschüss|tschau|ciao|bis bald)\b/i, 'winken'], [/\b(wow|unglaublich|stell dir vor|wahnsinn|krass)\b/i, 'staunen'],
+      [/(freu|super|toll|wunderbar|danke|juhu|bravo)/i, 'freuen'], [/^(ja|genau|richtig|stimmt|klar)\b/i, 'nicken']];
+    function text(t) { t = String(t || ''); for (var i = 0; i < REGELN.length; i++) if (REGELN[i][0].test(t)) { machGeste(REGELN[i][1]); return; } }
+    return { geste: machGeste, text: text };
+  })() : null;
+  if (KEY === 'nova' && !BUEHNE.an && window.NovaBeats) { $('musik').hidden = false; $('musik').addEventListener('click', function () { musikSetzen(!MUSIK.an); }); }
+  if (KEY === 'nova' && !BUEHNE.an) { $('hoeren').hidden = false; $('hoeren').addEventListener('click', function () { hoerSetzen(!HOER.an); }); }
   // Auf Otti tippen: er hüpft vor Freude.
-  buehne.addEventListener('click', hopsen);
+  // Sparky: App öffnen, irgendwo hintippen, er hört zu (ein Tipp reicht, das Handy verlangt ihn fürs Mikrofon).
+  if (KEY === 'sparky') {
+    status.textContent = 'Tipp irgendwo hin, dann hört Sparky zu.';
+    document.addEventListener('click', function los(ev) {
+      if (ev.target.closest && ev.target.closest('a, button, input, label, form')) return;
+      document.removeEventListener('click', los, true);
+      if (!conv && !startet) starten(false);
+    }, true);
+  }
 
 })();
 </script>

@@ -24,13 +24,15 @@
     'Erinnerung': 'nova', 'Fotowissen': 'nova', 'Sense Engine': 'nova', 'Transkript': 'fompa',
     'Fompa': 'fompa', 'Food and Flow': 'flo', 'Kiki': 'kiki', 'Fias Nest': 'fia', 'Mama Affe': 'mama affe',
     'Wäf Wäf': 'wäf wäf', 'KI-Verse': 'sunny', 'Sunny': 'sunny', 'Coin Maker': 'coin maker',
-    'Granny': 'granny', 'Carmencita': 'carmencita'
+    'Granny': 'granny', 'Rosa': 'granny', 'Carmencita': 'carmencita'
   };
   var FIGUR = String(attr('data-nova-figur', FIGUREN[APP] || 'nova')).toLowerCase();
   var NAME = FIGUR.replace(/(^|[\s.])([a-zäöü])/g, function (m, a, b) { return a + b.toUpperCase(); });
   // Kinder-Apps: keine Verbindungs-Einstellungen und keine Bauwünsche sichtbar.
   var KIND = attr('data-nova-kind', '') === '1';
   var KNOPF = attr('data-nova-knopf', '1') !== '0';
+  // data-nova-geraetestimme="0": nie die Handystimme (klingt roboterhaft); ohne Figurenstimme bleibt es still.
+  var GERAET = attr('data-nova-geraetestimme', '1') !== '0';
   // Abstand des Knopfs vom unteren Rand in px, z. B. über einer Leiste.
   var UNTEN = parseInt(attr('data-nova-unten', '16'), 10) || 16;
   // Novas Gesicht kommt immer aus dem Film (nova.jpg neben diesem Skript), nie gezeichnet.
@@ -174,7 +176,7 @@
   }
 
   function geraet(text, done) {
-    if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') { done(); return; }
+    if (!GERAET || !('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') { done(); return; }
     var u = new SpeechSynthesisUtterance(text); u.lang = 'de-CH'; u.rate = 0.95;
     var vs = speechSynthesis.getVoices().filter(function (v) { return /^de/i.test(v.lang); });
     var v = vs.filter(function (x) { return /CH/i.test(x.lang); })[0] || vs[0];
@@ -367,11 +369,13 @@
       else fertig(window.prompt('Verbindungscode einsetzen:'));
     });
 
+    $('#nova-key').addEventListener('focus', function () { if (/^•+$/.test(this.value)) this.value = ''; });
     $('.nova-save').addEventListener('click', function () {
-      var a = $('#nova-addr').value.trim(), k = $('#nova-key').value.trim();
+      // Platzhalter-Punkte entfernen: wer ins gefüllte Feld einfügt, hängt sonst den Code an «••••••••» an.
+      var a = $('#nova-addr').value.trim(), k = $('#nova-key').value.replace(/•/g, '').replace(/\s+/g, '');
       if (a && !/^https:\/\//.test(a)) a = 'https://' + a;
       put(K.addr, a);
-      if (k && k !== '••••••••') put(K.key, k);
+      if (k) put(K.key, k);
       stimme.pauseBis = 0;
       state();
       say('nova', ready() ? 'Danke, jetzt bin ich wach.' : 'Es fehlt noch Adresse oder Passwort.');
@@ -402,7 +406,8 @@
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + get(K.key, ''), 'X-Nova-App': APP },
         body: JSON.stringify({ model: 'sense-engine', messages: messages })
       }).then(function (r) {
-        if (r.status === 401 || r.status === 403) throw new Error('Das Passwort stimmt nicht.');
+        if (r.status === 401) throw new Error('Das Passwort stimmt nicht.');
+        if (r.status === 403) throw new Error('Sense Engine lässt diese Seite nicht zu (Fehler 403).');
         if (!r.ok) throw new Error(NAME + ' erreicht Sense Engine gerade nicht (Fehler ' + r.status + ').');
         return r.json();
       }).then(function (j) {

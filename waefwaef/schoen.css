@@ -1,0 +1,43 @@
+/* schoen.css – Wäf Wäf, Schön-Runde (23.10.2026). Warm und ruhig, Design «Hundewiese» bleibt:
+   Wiesengrün als einziger Akzent, Ballgelb nur als kleiner Funke. Wäf Wäf im Aura-Licht ist das Herz vom Startbild.
+   Raster 8 px, Fredoka für Titel, Nunito für Text. Nur Darstellung, als letztes Stylesheet geladen. */
+html:root{--h-bg:#F7F4EA;--s-creme:#FFFBF2;--s-abend:#22413A;--s-abend2:#2C5843;
+  --aura-licht:rgba(255,196,128,.55);--aura-licht2:rgba(255,150,170,.16);--aura-rand:rgba(255,206,150,.5)}
+html body :where(h1,h2,h3){text-wrap:balance}
+html body :where(p,li){text-wrap:pretty}
+
+/* ── Startbild: cremeweiss, oben die Abendbühne mit Wäf Wäf ── */
+html.waef-aura body #start{margin-inline:-16px;padding:max(24px,calc(env(safe-area-inset-top,0px) + 16px)) 24px max(32px,calc(env(safe-area-inset-bottom,0px) + 24px));
+  min-height:100svh;box-sizing:border-box;justify-content:center;gap:16px;border-radius:0;color:var(--h-ink);
+  background:radial-gradient(90% 40% at 50% 0%,#FFF6DF,transparent 70%),linear-gradient(180deg,var(--s-creme),var(--h-bg))}
+html.waef-aura body #start::after{display:none}
+html.waef-aura body #start .ring,html.waef-aura body #start .dots,html.waef-aura body #start .tag{display:none}
+html.waef-aura body #start .aura-buehne{width:100%;max-width:392px;aspect-ratio:1/1;max-height:54svh;border-radius:32px;--aura-rund:58%}
+html.waef-aura body #start .aura-buehne:not(.mit-szene){background:radial-gradient(70% 50% at 50% 66%,rgba(255,190,120,.42),transparent 70%),
+  radial-gradient(120% 40% at 50% 112%,#3E7A4C 0 48%,transparent 49%),linear-gradient(180deg,#1E2A4F,#3B3560 55%,#7A5662)}
+html.waef-aura body #start .aura-buehne .aura-figur{top:6%;bottom:6%}
+html.waef-aura body #start h1{color:var(--h-ink)!important;font-size:clamp(2.5rem,11vw,3rem);line-height:1.05;margin:8px 0 0;letter-spacing:-.01em}
+html.waef-aura body #start .lead{color:var(--h-muted)!important;font-size:1.125rem;line-height:1.5;max-width:28ch}
+html.waef-aura body #start .wuff{color:var(--h-text)!important;margin-right:.25em;text-shadow:none}
+html.waef-aura body #start button#go{margin-top:8px;width:100%;max-width:340px;min-height:56px;background:var(--h-fill)!important;color:#FFFFFF!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 12px 24px -12px rgba(47,125,62,.7)!important;font-size:1.0625rem}
+
+/* ── Tag-Kopf: ruhiger Abendgrün-Verlauf mit warmem Licht hinter Wäf Wäf ── */
+html body main>.kopf{background:var(--s-abend)}
+html body main>.hero{background:radial-gradient(46% 34% at 50% 26%,rgba(255,196,128,.32),transparent 72%),radial-gradient(120% 40% at 50% 104%,#3A7A4A 0 50%,transparent 51%),linear-gradient(180deg,var(--s-abend),var(--s-abend2))}
+html body main>.hero::after{width:24px;height:24px;opacity:.9}
+html body .bubble{font-size:1.0625rem;line-height:1.5;padding:16px 24px;max-width:36ch}
+/* Aura-Posen im Tag-Kopf (erst wenn die Posen da sind) */
+html.waef-aura-pup body .pupwrap #pup{width:128px!important;height:136px!important;border:0!important;border-radius:0!important;object-fit:contain;object-position:50% 100%;
+  background:none!important;box-shadow:none!important;filter:drop-shadow(0 0 10px rgba(255,206,150,.5)) drop-shadow(0 8px 10px rgba(0,0,0,.25))}
+
+/* ── Karten: ruhiger Rhythmus im 8er-Raster ── */
+html body main{gap:24px}
+html body main>.hero{margin-top:-24px}
+html body :is(.box,.logbuch,#merkt,.walk,.regeln,.kap){padding:16px!important}
+html body h2.sec{font-size:1.375rem;line-height:1.25;margin:8px 0 0}
+
+/* ── Schwebende Knöpfe: Nova-Pille über Novas Knopf, nie über «Lernen» ── */
+html body .nova-pille{right:16px!important;bottom:calc(96px + 60px + 12px + env(safe-area-inset-bottom,0px))!important;max-width:calc(100vw - 32px);padding:10px 16px!important;font-size:15px!important}
+
+@media (prefers-reduced-motion:reduce){html.waef-aura body #start button#go{transition:none}}

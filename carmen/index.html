@@ -6,17 +6,17 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Carmen">
+<meta name="apple-mobile-web-app-title" content="Carmencita">
 <meta name="theme-color" content="#0f1b3d">
 <meta name="color-scheme" content="dark">
-<meta name="description" content="Salsa lernen mit Carmen: Takt hören, Grundschritt, Feedback im Takt. Alles bleibt auf deinem Handy.">
+<meta name="description" content="Tanzen mit Carmencita: Ballett, Hip-Hop, Latin, für Kinder und Eltern zusammen. Alles bleibt auf deinem Handy.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
-<title>Carmen – Salsa lernen</title>
+<title>Carmencita – Tanzen für Gross und Klein</title>
 <meta property="og:title" content="Carmencita – Salsa lernen"><meta property="og:description" content="Salsa lernen mit Carmencita, Schritt für Schritt."><meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/carmen/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://diegorobert-code.github.io/DR_Lab/carmen/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <style>
 :root{
@@ -33,7 +33,29 @@
 html,body{margin:0;min-height:100%;background:var(--night);color:var(--ink)}
 body{font-family:var(--font);font-size:18px;line-height:1.45;-webkit-font-smoothing:antialiased;overflow-x:hidden;
   background:radial-gradient(120% 70% at 50% -10%,#2b4596 0%,rgba(43,69,150,0) 60%),linear-gradient(180deg,var(--night) 0%,#0b1430 100%);min-height:100vh;min-height:100dvh}
-.wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:calc(12px + var(--sat)) 16px calc(24px + var(--sab))}
+.wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:calc(12px + var(--sat)) max(16px,env(safe-area-inset-right)) calc(176px + var(--sab)) max(16px,env(safe-area-inset-left))}
+/* Runde 3: Kacheln für Nebensachen, leerer Sticker-Zustand, Fokus, Szenenwechsel */
+.kacheln{display:grid!important;grid-template-columns:1fr 1fr;gap:8px}
+.kacheln .item{flex-direction:column;align-items:flex-start;gap:8px;min-height:104px;padding:16px}
+.kacheln .item .tx span{display:none}
+.kacheln .item .ic{width:44px;height:44px;flex:none}
+.mem-leer{display:flex;gap:12px;align-items:center;padding:12px 0 16px;border-bottom:1px solid var(--line);font-size:17px;line-height:1.4}.mem-leer img{width:56px;height:56px;border-radius:50%;border:2px solid #F2C14E;object-fit:cover;flex:none}
+.kacheln .item .tx b{font-size:17px;line-height:1.25}
+.sticker-leer{font:inherit;font-size:16px;color:#ffe9a8;background:rgba(242,193,78,.1);border:1px dashed rgba(242,193,78,.5);border-radius:999px;min-height:48px;padding:0 20px;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid #ffe08a;outline-offset:3px}
+.screen.on{animation:glSzene .35s cubic-bezier(.2,.8,.2,1) both}
+@keyframes glSzene{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+body:has(#figurStart:not([hidden])) .nova-btn,body:has(#figurStart:not([hidden])) .sp-knopf{opacity:0;pointer-events:none}
+/* Unten rechts nur ein runder Knopf (Nova). Mit Carmencita reden sitzt oben im Kopf (🎙). */
+.sp-knopf,.nova-pille{display:none!important}
+.kopf-mic{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font-size:20px;display:grid;place-items:center;padding:0;cursor:pointer;transition:transform .14s cubic-bezier(.3,.7,.4,1),background-color .2s}
+.kopf-mic:active{transform:scale(.94)}
+.back{white-space:nowrap}
+.top:has(#back:not([hidden])) .brand{display:none}
+.kopf-mic.hoert,.kopf-mic.spricht{background:#F2C14E;color:#2a1d00;animation:kopfPuls 1.1s ease-in-out infinite}
+@keyframes kopfPuls{50%{box-shadow:0 0 0 8px rgba(242,193,78,.25)}}
+@media (prefers-reduced-motion:reduce){.kopf-mic.hoert,.kopf-mic.spricht{animation:none}}
+@media (prefers-reduced-motion:reduce){.screen.on,.ob-box{animation:none}.ob{transition:none}}
 button{font-family:inherit;color:inherit}
 header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:52px}
 .back{display:inline-flex;align-items:center;gap:6px;min-height:48px;padding:0 16px;border-radius:99px;border:1px solid var(--line);background:var(--card);font-size:17px;font-weight:500;cursor:pointer}
@@ -47,12 +69,64 @@ h1{font-size:30px;line-height:1.15;margin:4px 0 8px;font-weight:600;text-align:c
 h2{font-size:23px;margin:0 0 6px;font-weight:600}
 h3{font-size:19px;margin:0 0 4px;font-weight:600}
 p{margin:0 0 10px}
-.muted{color:var(--muted)} .small{font-size:15px} .center{text-align:center}
+.muted{color:var(--muted)} .small{font-size:16px} .center{text-align:center}
 .stage{display:flex;justify-content:center;margin:4px 0 0}
 .carmen{width:190px;height:228px;filter:drop-shadow(0 18px 30px rgba(0,0,0,.35))}
 .carmen.small{width:96px;height:115px}
 .carmen.dance #c-body{animation:sway .9s ease-in-out infinite alternate;transform-origin:100px 200px}
 @keyframes sway{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
+/* Trickfilm-Bühne Carmencita */
+.milu-platz{position:relative;height:300px;margin:6px 0 0;border-radius:28px;overflow:hidden;border:1px solid rgba(242,193,78,.45);background:radial-gradient(120% 90% at 50% 0%,#24398a 0%,#122059 55%,#0b1430 100%);box-shadow:0 18px 44px -14px rgba(0,0,0,.6),0 0 40px rgba(229,72,77,.18);isolation:isolate}
+.milu-strasse{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.milu-strasse .lichter circle{fill:#ffd36e;filter:drop-shadow(0 0 5px #ffd36e);animation:lichtBlink 2.4s ease-in-out infinite}
+.milu-strasse .lichter circle:nth-child(2n){fill:#ff8a7a;filter:drop-shadow(0 0 5px #ff8a7a);animation-delay:-1.2s}
+.milu-strasse .lichter circle:nth-child(3n){fill:#7fe3d5;filter:drop-shadow(0 0 5px #7fe3d5);animation-delay:-.6s}
+@keyframes lichtBlink{50%{opacity:.45}}
+.milu-platz.puls .lichter circle{animation:none;opacity:1}
+.milu-tanz{position:absolute;left:50%;bottom:16px;width:188px;height:188px;margin-left:-94px;z-index:2}
+.milu-tanz .milu{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid var(--gold);box-shadow:0 0 0 6px rgba(242,193,78,.14),0 14px 30px rgba(0,0,0,.45),0 0 44px rgba(229,72,77,.45);cursor:pointer;display:block;transform-origin:50% 100%;animation:miluWiegen 2.4s ease-in-out infinite}
+@keyframes miluWiegen{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg) translateY(-4px)}}
+img.carmen{width:auto;height:auto;filter:none}
+.carmen.milu-klein{width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 30px rgba(229,72,77,.45)}
+img.carmen.dance{animation:miluSway .5s ease-in-out infinite alternate;transform-origin:50% 100%}
+@keyframes miluSway{from{transform:rotate(-6deg) translateY(0)}to{transform:rotate(6deg) translateY(-6px)}}
+.b1{animation:miluHopp .32s cubic-bezier(.3,1.6,.5,1)!important}.b2{animation:miluWipp .28s ease-out!important}
+@keyframes miluHopp{40%{transform:translateY(-14px) rotate(-5deg) scale(1.05)}}
+@keyframes miluWipp{40%{transform:translateY(-5px) rotate(3deg)}}
+.milu-req{position:absolute;right:-18px;top:-10px;font-size:44px;opacity:0;pointer-events:none}
+.milu-req.zeig{animation:reqAuf 1.6s ease-out}
+@keyframes reqAuf{0%{opacity:0;transform:translateY(20px) scale(.4)}25%{opacity:1;transform:translateY(-6px) scale(1.15) rotate(10deg)}75%{opacity:1}100%{opacity:0;transform:translateY(-36px)}}
+.milu.dreh{animation:miluDreh .9s cubic-bezier(.4,1.4,.5,1)!important}
+@keyframes miluDreh{50%{transform:rotate(-14deg) scale(1.08) translateY(-12px)}}
+.noten{position:absolute;inset:0;z-index:1;pointer-events:none}
+.noten i{position:absolute;bottom:60px;font-style:normal;font-size:26px;color:#ffd36e;opacity:0;animation:note 4.5s linear infinite}
+.noten i:nth-child(1){left:22%}.noten i:nth-child(2){left:70%;animation-delay:-1.5s;color:#7fe3d5}.noten i:nth-child(3){left:46%;animation-delay:-3s;color:#ff8a7a}
+@keyframes note{0%{opacity:0;transform:translateY(0) rotate(-10deg)}20%{opacity:1}100%{opacity:0;transform:translateY(-170px) rotate(15deg)}}
+.milu-takt-box{position:relative;display:flex;justify-content:center;margin:2px 0 6px}
+.carmen.milu-takt{width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 22px rgba(229,72,77,.45);transform-origin:50% 100%}
+.carmen.milu-takt.jubel{animation:miluDreh .7s ease!important}
+.milu-treffer{position:absolute;left:calc(50% + 50px);top:20px;font-weight:700;font-size:18px;opacity:0;white-space:nowrap}
+.milu-treffer.gut{color:var(--good)}.milu-treffer.nein{color:var(--coral)}
+.milu-treffer.zeig{animation:trefferAuf .9s ease-out}
+@keyframes trefferAuf{0%{opacity:0;transform:translateY(8px) scale(.6)}30%{opacity:1;transform:translateY(-4px) scale(1.1)}100%{opacity:0;transform:translateY(-20px)}}
+.freeze-stage .milu-freeze{width:200px;height:200px;border-radius:50%;object-fit:cover;border:4px solid var(--gold);box-shadow:0 0 40px rgba(229,72,77,.45);transition:filter .3s}
+.milu-freeze.eis{filter:saturate(.2) brightness(1.15) hue-rotate(160deg);border-color:#bfefff;box-shadow:0 0 50px rgba(160,230,255,.8)}
+.sticker-reihe{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:12px 0 4px}
+.sticker-reihe .st{font-size:22px;width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:var(--card);border:1px solid var(--line);filter:grayscale(1);opacity:.35}
+.sticker-reihe .st.hat{filter:none;opacity:1;background:var(--gold-l);border-color:rgba(242,193,78,.5)}
+.sticker-gross{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.stk{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px 10px;text-align:center;display:flex;flex-direction:column;gap:2px;opacity:.45;filter:grayscale(1)}
+.stk.hat{opacity:1;filter:none;border-color:rgba(242,193,78,.5);background:var(--gold-l)}
+.stk .em{font-size:40px}.stk b{font-size:17px}.stk span{font-size:13px;color:var(--muted)}
+.tipp-karte{margin:10px 0 4px;padding:14px 16px;border-radius:20px;background:linear-gradient(135deg,rgba(229,72,77,.18),rgba(46,196,182,.14));border:1px solid var(--line);display:flex;flex-direction:column;gap:4px}
+.tipp-karte b{color:var(--gold)}.tipp-karte small{color:var(--muted);font-size:16px}
+.konfetti{position:fixed;top:-12px;width:9px;height:14px;border-radius:2px;z-index:2147483600;pointer-events:none;animation:konfetti 2.4s ease-in forwards}
+@keyframes konfetti{to{transform:translate(var(--dx),105vh) rotate(720deg)}}
+.sticker-neu{position:fixed;left:16px;right:16px;top:calc(18px + var(--sat));z-index:2147483601;max-width:420px;margin:0 auto;background:#fffaf0;color:#2a2340;border-radius:22px;padding:14px 16px;display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center;box-shadow:0 14px 40px rgba(0,0,0,.45);animation:fade .4s var(--ease)}
+.sticker-neu .em{grid-row:span 2;font-size:40px}.sticker-neu span{font-size:15px;color:#6a6280}
+.sticker-neu.weg{opacity:0;transform:translateY(-20px);transition:all .5s}
+@media (prefers-reduced-motion:reduce){.milu-tanz .milu,.noten i,.milu-strasse .lichter circle,img.carmen.dance{animation:none!important}}
+@media (max-width:360px){.milu-platz{height:260px}.milu-tanz{width:160px;height:160px;margin-left:-80px}}
 .bubble{position:relative;background:#fffaf0;color:#2a2340;border-radius:22px;padding:14px 18px;font-size:19px;font-weight:500;line-height:1.35;text-align:center;margin:10px auto 16px;max-width:420px;box-shadow:0 10px 30px -12px rgba(0,0,0,.5)}
 .bubble:before{content:"";position:absolute;top:-10px;left:50%;margin-left:-11px;border:11px solid transparent;border-top:0;border-bottom-color:#fffaf0}
 .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:58px;border:0;border-radius:20px;padding:12px 20px;font-size:19px;font-weight:600;cursor:pointer;transition:transform .15s var(--ease)}
@@ -66,9 +140,9 @@ p{margin:0 0 10px}
 .item .ic{flex:0 0 46px;height:46px;border-radius:14px;display:grid;place-items:center;background:var(--gold-l);color:var(--gold);font-weight:700;font-size:20px}
 .item .tx{flex:1;min-width:0}
 .item .tx b{display:block;font-size:18px;font-weight:600}
-.item .tx span{display:block;font-size:14px;color:var(--muted)}
-.item .badge{font-size:13px;color:var(--gold);font-weight:600;white-space:nowrap}
-.sec{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 4px 6px}
+.item .tx span{display:block;font-size:16px;line-height:1.35;color:var(--muted)}
+.item .badge{font-size:16px;color:var(--gold);font-weight:600;white-space:nowrap}
+.sec{font-size:20px;font-weight:700;letter-spacing:0;color:#f6efe0;margin:32px 4px 8px}
 .card{border:1px solid var(--line);background:var(--card);border-radius:var(--r);padding:16px;margin:0 0 12px}
 
 /* Zähler */
@@ -103,7 +177,7 @@ p{margin:0 0 10px}
 .tempo{display:flex;align-items:center;gap:10px;margin:6px 0}
 .tempo button{flex:0 0 52px;height:52px;border-radius:16px;border:1px solid var(--line);background:var(--card);font-size:24px;font-weight:600;cursor:pointer}
 .tempo .val{flex:1;text-align:center}
-.tempo .val b{font-size:26px} .tempo .val span{display:block;font-size:13px;color:var(--muted)}
+.tempo .val b{font-size:26px} .tempo .val span{display:block;font-size:16px;color:var(--muted)}
 input[type=range]{width:100%;accent-color:var(--gold)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
 .chip{min-height:44px;padding:0 14px;border-radius:99px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:15px;font-weight:500;cursor:pointer}
@@ -111,12 +185,12 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 .tap{display:grid;place-items:center;width:100%;min-height:120px;border-radius:28px;border:2px solid rgba(242,193,78,.5);background:radial-gradient(circle at 50% 40%,rgba(242,193,78,.22),rgba(242,193,78,.05));font-size:22px;font-weight:600;color:var(--gold);cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation;margin:8px 0}
 .tap.flash{background:radial-gradient(circle at 50% 40%,rgba(127,220,164,.45),rgba(127,220,164,.08))}
 .tap>div{text-align:center}
-.tap small{display:block;font-size:14px;color:var(--muted);font-weight:500;text-align:center}
+.tap small{display:block;font-size:16px;color:var(--muted);font-weight:500;text-align:center}
 .meter{position:relative;height:34px;border-radius:12px;background:var(--card);border:1px solid var(--line);margin:4px 0 4px;overflow:hidden}
 .meter:before{content:"";position:absolute;left:40%;width:20%;top:0;bottom:0;background:rgba(127,220,164,.16)}
 .meter:after{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--good)}
 .meter i{position:absolute;top:8px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:var(--gold);opacity:.9;transition:opacity 1.6s}
-.meterlab{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:8px}
+.meterlab{display:flex;justify-content:space-between;font-size:16px;color:var(--muted);margin-bottom:8px}
 .fb{text-align:center;font-size:20px;font-weight:600;min-height:30px}
 .fb.good{color:var(--good)} .fb.warn{color:var(--warn)}
 .result{text-align:center}
@@ -134,7 +208,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 .mem .m:last-child{border-bottom:0}
 .check{display:flex;gap:10px;align-items:flex-start;font-size:15px;margin:10px 0}
 .check input{width:24px;height:24px;flex:0 0 24px;accent-color:var(--gold)}
-.foot-note{font-size:13px;color:var(--muted);text-align:center;margin-top:18px}
+.foot-note{font-size:16px;line-height:1.5;color:var(--muted);text-align:center;margin-top:18px}
 
 #figurStart{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:max(28px,env(safe-area-inset-top,0px)) 24px max(28px,env(safe-area-inset-bottom,0px));text-align:center;color:#f6efe0;background:radial-gradient(1.5px 1.5px at 12% 18%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 82% 12%,#ffe9a8,transparent),radial-gradient(1px 1px at 70% 30%,#ffe9a8,transparent),radial-gradient(1px 1px at 22% 72%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 88% 80%,#ffe9a8,transparent),radial-gradient(120% 80% at 50% 0%,#1B2C6B 0%,#0E1838 60%,#060A1C 100%);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
 #figurStart[hidden]{display:none!important}
@@ -152,41 +226,80 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 #figurStart p{animation:filmAuf .8s .25s ease-out both}
 #figurStart button{background:linear-gradient(135deg,var(--fgold),color-mix(in srgb,var(--fgold) 60%,var(--fa1)));box-shadow:0 8px 24px color-mix(in srgb,var(--fa1) 45%,transparent);animation:filmAuf .8s .45s ease-out both,filmPuls 2.6s 1.4s ease-in-out infinite}
 #figurStart.geht{animation:filmIris .7s ease-in forwards}
+.ob{position:fixed;inset:0;z-index:99990;background:rgba(6,10,28,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px}
+.ob-box{width:100%;max-width:400px;background:linear-gradient(160deg,#1d2c66,#101a3d);border:2px solid rgba(242,193,78,.5);border-radius:26px;padding:22px 18px;text-align:center;color:#fff6e6;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.ob-box img{width:96px;height:96px;border-radius:50%;border:3px solid #F2C14E;object-fit:cover;animation:filmSchweben 4.6s ease-in-out infinite}
+.ob-dots{display:flex;gap:8px;justify-content:center;margin-top:12px}.ob-dots i{width:8px;height:8px;border-radius:4px;background:rgba(255,255,255,.25);transition:width .3s,background .3s}.ob-dots i.an{width:24px;background:#F2C14E}
+.ob{transition:opacity .4s}.ob.wartet,.ob.zu{opacity:0;pointer-events:none}.ob-box{animation:glObIn .4s cubic-bezier(.2,.8,.2,1) both}@keyframes glObIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+.ob-box small{display:block;opacity:.7;margin-top:6px}.ob-box h3{margin:6px 0 14px;font-size:22px;color:#F2C14E}
+.ob-a{display:flex;flex-direction:column;gap:10px}.ob-skip{margin-top:12px;background:none;border:0;color:#c9d2ee;font:inherit;font-size:16px;min-height:48px;padding:0 16px;cursor:pointer}
 </style>
 </head>
 <body>
-<div id="figurStart" role="dialog" aria-label="Carmencita"><img src="figur-gross.jpg" alt="Carmencita"><h1>Carmencita</h1><p>¡Hola! Hör zuerst die Musik, deine Füsse kommen von allein.</p><button type="button" id="figurStartGo">¡Vamos!</button></div>
+<div id="figurStart" role="dialog" aria-label="Carmencita"><img src="figur-gross.jpg" alt="Carmencita"><h1>Carmencita</h1><p>¡Hola! Tipp auf «¡Vamos!», dann spielt die Band für dich.</p><button type="button" id="figurStartGo">¡Vamos! 💃</button></div>
 <script>(function(){var s=document.getElementById('figurStart');try{if(sessionStorage.getItem('figurStart'))s.hidden=true;}catch(e){}document.getElementById('figurStartGo').onclick=function(){s.hidden=true;try{sessionStorage.setItem('figurStart','1');}catch(e){}};})();</script>
 <div class="wrap">
   <header class="top">
     <button class="back" id="back" hidden>‹ Zurück</button>
-    <div class="brand" id="brand">Carmen <span>·</span> Salsa</div>
-    <div class="pill" id="streak" title="Geübte Runden">★ <span id="rounds">0</span></div>
+    <div class="brand" id="brand">Carmencita</div>
+    <div style="display:flex;gap:8px;align-items:center"><button type="button" class="kopf-mic" id="kopfSprechen" aria-label="Mit Carmencita reden" title="Mit Carmencita reden">🎙</button><span data-feedback-slot></span><div class="pill" id="streak" title="Geübte Runden">★ <span id="rounds">0</span></div></div>
   </header>
 
   <!-- START -->
   <section class="screen on" id="s-home">
-    <div class="stage" data-sag="home-say"><svg class="carmen" id="carmen-home" viewBox="0 0 200 240" aria-label="Carmen"><use href="#carmen-art"/></svg></div>
-    <div class="bubble" id="home-say">¡Hola! Ich bin Carmen. Hör zuerst die Musik, deine Füsse kommen von allein.</div>
+    <div class="milu-platz" id="milu-platz">
+      <svg class="milu-strasse" viewBox="0 0 400 230" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <circle cx="340" cy="38" r="20" fill="#fff4cf" opacity=".9"/><circle cx="350" cy="32" r="18" fill="#16265a"/>
+        <g class="haeuser">
+          <rect x="0" y="80" width="78" height="150" fill="#f29bb0"/><rect x="78" y="104" width="70" height="126" fill="#5fd0c0"/>
+          <rect x="252" y="96" width="74" height="134" fill="#f7cf62"/><rect x="326" y="74" width="74" height="156" fill="#8fb4ff"/>
+          <g fill="#2b3a7a" opacity=".55"><rect x="14" y="100" width="18" height="26" rx="9"/><rect x="46" y="100" width="18" height="26" rx="9"/><rect x="94" y="122" width="16" height="24" rx="8"/><rect x="120" y="122" width="16" height="24" rx="8"/>
+          <rect x="266" y="116" width="18" height="26" rx="9"/><rect x="296" y="116" width="18" height="26" rx="9"/><rect x="340" y="94" width="18" height="26" rx="9"/><rect x="370" y="94" width="18" height="26" rx="9"/></g>
+          <g class="fenster-licht" fill="#ffd36e"><rect x="14" y="150" width="18" height="24" rx="3"/><rect x="120" y="164" width="16" height="22" rx="3"/><rect x="296" y="160" width="18" height="24" rx="3"/><rect x="340" y="140" width="18" height="24" rx="3"/></g>
+          <g fill="#3a2a22" opacity=".7"><rect x="10" y="132" width="58" height="4"/><rect x="262" y="148" width="56" height="4"/><rect x="336" y="126" width="56" height="4"/></g>
+        </g>
+        <path d="M0 60 Q100 96 200 66 T400 58" fill="none" stroke="#3b2a1a" stroke-width="1.5" opacity=".6"/>
+        <g class="lichter"><circle cx="20" cy="66" r="4"/><circle cx="55" cy="76" r="4"/><circle cx="90" cy="84" r="4"/><circle cx="125" cy="84" r="4"/><circle cx="160" cy="76" r="4"/><circle cx="200" cy="66" r="4"/><circle cx="240" cy="64" r="4"/><circle cx="280" cy="64" r="4"/><circle cx="320" cy="62" r="4"/><circle cx="360" cy="60" r="4"/><circle cx="392" cy="58" r="4"/></g>
+        <path d="M0 214 H400 V230 H0Z" fill="#c9774a"/><path d="M0 204 H400 V216 H0Z" fill="#e2a06b"/>
+      </svg>
+      <div class="milu-tanz" data-sag="home-say"><img class="carmen milu" id="carmen-home" src="figur-gross.jpg" alt="Carmencita" width="520" height="520"><span class="milu-req" id="milu-req" aria-hidden="true"></span></div>
+      <div class="noten" aria-hidden="true"><i>♪</i><i>♫</i><i>♪</i></div>
+    </div>
+    <div class="bubble" id="home-say">¡Hola! Ich bin Carmencita. Hör zuerst die Musik, deine Füsse kommen von allein.</div>
     <button class="btn gold" id="go-next">Weiter üben</button>
+    <div class="sticker-reihe" id="sticker-home" aria-label="Fiesta-Sticker"></div>
+    <div class="tipp-karte" id="tipp-karte"></div>
+    <div class="sec">Tanzklassen für Gross und Klein</div>
+    <div class="list">
+      <button class="item" data-go="ws" data-klassen="kinder"><div class="ic">🧒</div><div class="tx"><b>Für Kinder</b><span>Ballett, Hip-Hop, Latin. Je 10 Minuten, ganz einfach erklärt</span></div><div class="badge" id="kl-badge-kinder"></div></button>
+      <button class="item" data-go="ws" data-klassen="familie"><div class="ic">👨‍👧</div><div class="tx"><b>Eltern und Kind zusammen</b><span>Hand in Hand, Spiegeln, Drehen. Je 12 Minuten</span></div><div class="badge" id="kl-badge-familie"></div></button>
+    </div>
     <div class="sec">Stufen</div>
     <div class="list" id="levels"></div>
     <div class="sec">Carmencita Workshop</div>
     <div class="list">
-      <button class="item" data-go="ws"><div class="ic">✦</div><div class="tx"><b>Tanz-Fitness 30 Min.</b><span>4 Wochen, 2× pro Woche: Merengue, Salsa, Cumbia, Reggaeton, Samba</span></div><div class="badge" id="ws-badge"></div></button>
+      <button class="item" data-go="ws"><div class="ic">✦</div><div class="tx"><b>Latin Dance Fitness 30 Min.</b><span>4 Wochen, 2× pro Woche: Merengue, Salsa, Cumbia, Reggaeton, Samba</span></div><div class="badge" id="ws-badge"></div></button>
     </div>
-    <div class="sec">Mehr</div>
+    <div class="sec">Spielen</div>
     <div class="list">
+      <button class="item" data-go="freeze"><div class="ic">❄</div><div class="tx"><b>Stopptanz mit Carmencita</b><span>Tanzen, bis die Musik stoppt, dann einfrieren wie eine Statue. Auch für Kinder.</span></div><div class="badge" id="freeze-badge"></div></button>
+      <button class="item" data-go="sticker"><div class="ic">★</div><div class="tx"><b>Fiesta-Sticker</b><span>Sammle Sticker fürs Üben, nicht fürs Perfektsein</span></div><div class="badge" id="sticker-badge"></div></button>
+    </div>
+    <div class="sec">Weitere Tänze</div>
+    <div class="list" id="dances"></div>
+    <div class="sec">Mehr</div>
+    <div class="list kacheln">
       <button class="item" data-go="band"><div class="ic">♫</div><div class="tx"><b>Band &amp; Metronom</b><span>Instrumente einzeln, Tempo frei, Clave 2-3 oder 3-2</span></div></button>
-      <button class="item" data-go="cam"><div class="ic">◉</div><div class="tx"><b>Kamera-Coach (Beta)</b><span>Carmen schaut auf deine Füsse. Bild bleibt auf dem Handy.</span></div></button>
-      <button class="item" data-go="mem"><div class="ic">♥</div><div class="tx"><b>Was Carmen sich merkt</b><span>Dein Fortschritt, nur auf diesem Gerät</span></div></button>
+      <button class="item" data-go="cam"><div class="ic">◉</div><div class="tx"><b>Kamera-Coach (Beta)</b><span>Carmencita schaut auf deine Füsse. Bild bleibt auf dem Handy.</span></div></button>
+      <button class="item" data-go="mem"><div class="ic">♥</div><div class="tx"><b>Was Carmencita sich merkt</b><span>Dein Fortschritt, nur auf diesem Gerät</span></div></button>
       <button class="item" data-go="set"><div class="ic">⚙</div><div class="tx"><b>Einstellungen</b><span>Führen/Folgen, Clave, Stimme, Kopfhörer ausgleichen</span></div></button>
     </div>
-    <p class="foot-note">Testversion · DR Lab · Musik wird im Handy erzeugt, lizenzfrei · Nichts wird aufgenommen oder gesendet.<br>Bei Knie- oder Rückenschmerzen langsamer tanzen. Platz frei räumen.</p>
+    <p class="foot-note">Musik entsteht im Handy. Nichts wird aufgenommen oder gesendet.<br>Bei Knie- oder Rückenschmerzen langsamer tanzen. Platz frei räumen. · DR Lab</p>
   </section>
 
   <!-- ÜBEN -->
   <section class="screen" id="s-practice">
+    <div class="milu-takt-box"><img class="carmen milu-takt" id="milu-takt" src="figur.jpg" alt="" width="240" height="240"><span class="milu-treffer" id="milu-treffer"></span></div>
     <h2 id="p-title" class="center">Grundschritt</h2>
     <p id="p-intro" class="muted center small"></p>
     <div class="counts" id="counts"></div>
@@ -218,7 +331,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 
   <!-- ERGEBNIS -->
   <section class="screen" id="s-result">
-    <div class="stage"><svg class="carmen small dance" viewBox="0 0 200 240"><use href="#carmen-art"/></svg></div>
+    <div class="stage"><img class="carmen small dance milu-klein" src="figur.jpg" alt="Carmencita" width="240" height="240"></div>
     <div class="result">
       <div class="score" id="r-score">0 %</div>
       <p class="muted" id="r-line">im Takt</p>
@@ -234,8 +347,8 @@ input[type=range]{width:100%;accent-color:var(--gold)}
   <!-- WORKSHOP -->
   <section class="screen" id="s-ws">
     <div id="ws-pick">
-      <h2 class="center">Carmencita Workshop</h2>
-      <p class="muted center small">30 Minuten: Aufwärmen, vier Tanzblöcke, Cool-down. Zweimal pro Woche, vier Wochen. Die Musik wird im Handy erzeugt.</p>
+      <h2 class="center" id="ws-h">Carmencita Workshop</h2>
+      <p class="muted center small" id="ws-p">30 Minuten: Aufwärmen, vier Tanzblöcke, Cool-down. Zweimal pro Woche, vier Wochen. Die Musik wird im Handy erzeugt.</p>
       <div class="list" id="ws-list"></div>
       <p class="foot-note">Kein Gesundheitsversprechen. Bei Schmerzen kleiner und langsamer tanzen. Wasser bereit, Platz frei, glatte Sohlen.</p>
     </div>
@@ -250,10 +363,28 @@ input[type=range]{width:100%;accent-color:var(--gold)}
       <div class="row"><button class="btn soft" id="ws-skip">Nächster Block ››</button></div>
     </div>
     <div id="ws-done" hidden class="center">
-      <div class="stage"><svg class="carmen small dance" viewBox="0 0 200 240"><use href="#carmen-art"/></svg></div>
+      <div class="stage"><img class="carmen small dance milu-klein" src="figur.jpg" alt="Carmencita" width="240" height="240"></div>
       <div class="bubble" id="ws-done-say">¡Eso! Einheit geschafft.</div>
-      <button class="btn gold" id="ws-back">Zur Workshop-Übersicht</button>
+      <button class="btn gold" id="ws-back">Zur Übersicht</button>
     </div>
+  </section>
+
+  <!-- STOPPTANZ -->
+  <section class="screen" id="s-freeze">
+    <h2 class="center">Stopptanz</h2>
+    <p class="muted center small">Tanz, solange die Musik spielt. Stoppt sie, frierst du ein, und Carmencita sagt dir eine Pose. Jede Runde ein anderer Tanz.</p>
+    <div class="stage freeze-stage"><img class="carmen milu-freeze" id="milu-freeze" src="figur-gross.jpg" alt="Carmencita" width="520" height="520"></div>
+    <div class="say"><div class="big" id="fz-big">¿Listo?</div><div class="sub" id="fz-sub">Platz frei machen, dann «Los».</div></div>
+    <div class="result"><div class="score" id="fz-runde">0 / 6</div><p class="muted" id="fz-tanz">Runde</p></div>
+    <div class="row" style="margin:10px 0"><button class="btn gold" id="fz-go">▶ Los</button></div>
+    <p class="foot-note">Platz frei räumen, rutschfeste Socken oder Schuhe. Bei Schmerzen Pause.</p>
+  </section>
+
+  <!-- STICKER -->
+  <section class="screen" id="s-sticker">
+    <h2 class="center">Fiesta-Sticker</h2>
+    <p class="muted center small">Carmencita verteilt Sticker fürs Dranbleiben. Gespeichert nur auf diesem Gerät.</p>
+    <div class="sticker-gross" id="sticker-all"></div>
   </section>
 
   <!-- KAMERA -->
@@ -265,17 +396,17 @@ input[type=range]{width:100%;accent-color:var(--gold)}
     <div class="fb" id="fb-cam"></div>
     <div class="row" style="margin:10px 0"><button class="btn gold" id="cam-go">Kamera + Musik starten</button></div>
     <div class="chips" id="cam-steps"></div>
-    <p class="muted small center">Carmen erkennt, wann ein Fuss aufsetzt, und vergleicht mit dem Takt. Gewicht verlagern ohne Schritt (2 und 6) sieht sie noch nicht. Für genaues Messen: Tippen-Übungen.</p>
+    <p class="muted small center">Carmencita erkennt, wann ein Fuss aufsetzt, und vergleicht mit dem Takt. Gewicht verlagern ohne Schritt (2 und 6) sieht sie noch nicht. Für genaues Messen: Tippen-Übungen.</p>
   </section>
 
   <!-- MERKT SICH -->
   <section class="screen" id="s-mem">
-    <h2 class="center">Was Carmen sich merkt</h2>
+    <h2 class="center">Was Carmencita sich merkt</h2>
     <p class="muted center small">Nur auf diesem Gerät. Keine Bilder, keine Stimme.</p>
     <div class="card"><div class="mem" id="mem-list"></div></div>
     <div class="card">
       <h3>Erfahrung teilen</h3>
-      <p class="small muted">Hilft Carmen und der Sense Engine, besser zu werden. Es gehen nur diese Zahlen raus, nichts anderes.</p>
+      <p class="small muted">Hilft Carmencita und der Sense Engine, besser zu werden. Es gehen nur diese Zahlen raus, nichts anderes.</p>
       <label class="check"><input type="checkbox" id="consent"> <span>Ich bin einverstanden, dass diese Übungszahlen (ohne Bild, ohne Stimme, ohne Namen) geteilt werden.</span></label>
       <button class="btn soft" id="share" disabled>Erfahrung teilen</button>
       <p class="small muted" id="share-ok"></p>
@@ -289,19 +420,19 @@ input[type=range]{width:100%;accent-color:var(--gold)}
     <div class="card">
       <div class="toggle"><span>Ich tanze</span><div class="seg" id="seg-role"><button data-v="lead">Führen</button><button data-v="follow">Folgen</button></div></div>
       <div class="toggle"><span>Clave</span><div class="seg" id="seg-clave"><button data-v="23">2-3</button><button data-v="32">3-2</button></div></div>
-      <div class="toggle"><span>Carmen zählt mit<br><small class="muted">uno, dos, tres … (bis 110 Schläge)</small></span><div class="seg" id="seg-voice"><button data-v="1">Ja</button><button data-v="0">Nein</button></div></div>
+      <div class="toggle"><span>Carmencita zählt mit<br><small class="muted">uno, dos, tres … (bis 110 Schläge)</small></span><div class="seg" id="seg-voice"><button data-v="1">Ja</button><button data-v="0">Nein</button></div></div>
       <div class="toggle"><span>Ausgleich Kopfhörer<br><small class="muted" id="cal-val">0 ms</small></span><button class="chip on" id="cal-go">Messen</button></div>
     </div>
     <div class="card" id="cal-box" hidden>
       <h3>Ausgleich messen</h3>
-      <p class="small">Tippe 16 Mal genau auf den Klick. Carmen merkt sich, wie viel dein Handy oder Kopfhörer verzögert.</p>
+      <p class="small">Tippe 16 Mal genau auf den Klick. Carmencita merkt sich, wie viel dein Handy oder Kopfhörer verzögert.</p>
       <div class="tap" id="cal-tap"><div>Tippen<small id="cal-n">0 / 16</small></div></div>
     </div>
     <p class="foot-note">Führen = klassisch Mann, Folgen = klassisch Frau. Jede und jeder darf beides lernen.</p>
   </section>
 </div>
 
-<!-- Carmen (Platzhalter bis Tinko-Bild) -->
+<!-- Carmencita (Platzhalter bis Tinko-Bild) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <linearGradient id="dress" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a4290"/><stop offset="1" stop-color="#16245a"/></linearGradient>
@@ -379,7 +510,31 @@ const STEPS={
     seq:{1:{f:"L",p:[-20,-46],t:"Links vor"},2:{f:"R",w:1,t:"Gewicht auf rechts"},3:{f:"L",p:[-20,0],t:"Links zusammen"},
          5:{f:"R",p:[20,0],r:150,t:"Rechts, Drehung nach rechts"},6:{f:"L",p:[-20,0],r:300,t:"Links, weiter drehen"},7:{f:"R",p:[20,0],r:360,t:"Rechts, angekommen"}}}
 };
-const ORDER=["hoeren","grund","seite","rueck","drehung"];
+STEPS.merengue={title:"Merengue-Marsch",ic:"M",short:"Auf jeden Schlag ein Schritt, Hüfte folgt",style:"merengue",bpm:110,
+  tapOn:[1,2,3,4,5,6,7,8],hint:"bei jedem Schlag",
+  intro:"Auf jedem Schlag das Gewicht wechseln, Knie weich. Die Hüfte bewegt sich von allein.",
+  seq:{1:{f:"L",w:1,t:"Links"},2:{f:"R",w:1,t:"Rechts"},3:{f:"L",w:1,t:"Links"},4:{f:"R",w:1,t:"Rechts"},
+       5:{f:"L",w:1,t:"Links"},6:{f:"R",w:1,t:"Rechts"},7:{f:"L",w:1,t:"Links"},8:{f:"R",w:1,t:"Rechts"}}};
+STEPS.bachata={title:"Bachata-Grundschritt",ic:"B",short:"Drei Schritte zur Seite, auf 4 tippen",style:"bachata",bpm:110,keepY:1,
+  tapOn:[1,2,3,4,5,6,7,8],hint:"bei jedem Schlag, auch beim Tippen auf 4 und 8",
+  intro:"Seitlich 1-2-3, auf 4 nur antippen und Hüfte heben. Dann zurück 5-6-7, auf 8 antippen.",
+  seq:{1:{f:"L",p:[-50,0],t:"Links zur Seite"},2:{f:"R",p:[-10,0],t:"Rechts ran"},3:{f:"L",p:[-80,0],t:"Links zur Seite"},4:{f:"R",p:[-40,0],w:1,t:"Rechts antippen, Hüfte"},
+       5:{f:"R",p:[0,0],t:"Rechts zur Seite"},6:{f:"L",p:[-40,0],t:"Links ran"},7:{f:"R",p:[30,0],t:"Rechts zur Seite"},8:{f:"L",p:[-10,0],w:1,t:"Links antippen, Hüfte"}}};
+STEPS.cumbia={title:"Cumbia-Grundschritt",ic:"C",short:"Fuss zurück, wiegen, ran. Pause auf 4 und 8",style:"cumbia",bpm:100,
+  tapOn:[1,2,3,5,6,7],hint:"auf 1-2-3 und 5-6-7",
+  intro:"Links zurück, Gewicht nach vorn wiegen, Fuss ran. Dann rechts genauso. Knie weich, Oberkörper ruhig.",
+  seq:{1:{f:"L",p:[-30,46],t:"Links zurück"},2:{f:"R",w:1,t:"Gewicht auf rechts"},3:{f:"L",p:[-20,0],t:"Links ran"},
+       5:{f:"R",p:[30,46],t:"Rechts zurück"},6:{f:"L",w:1,t:"Gewicht auf links"},7:{f:"R",p:[20,0],t:"Rechts ran"}}};
+STEPS.kreuz={title:"Kreuzschritt (Shine)",ic:"✕",short:"Allein tanzen: Fuss kreuzt vorne über",solo:1,
+  intro:"Für Shines, wenn du allein tanzt. Links kreuzt vor dem rechten Fuss auf 1, zurück auf 3. Dann rechts kreuzt auf 5. Hüfte locker.",
+  seq:{1:{f:"L",p:[16,-24],t:"Links kreuzt vorne über"},2:{f:"R",w:1,t:"Gewicht auf rechts"},3:{f:"L",p:[-20,0],t:"Links zurück zur Seite"},
+       5:{f:"R",p:[-16,-24],t:"Rechts kreuzt vorne über"},6:{f:"L",w:1,t:"Gewicht auf links"},7:{f:"R",p:[20,0],t:"Rechts zurück zur Seite"}}};
+STEPS.on2={title:"Salsa On2 (New York)",ic:"2",short:"Der Break kommt auf 2 und 6, weicher und ruhiger",bpm:95,
+  intro:"Auf 1 bleibt der Fuss am Platz. Der Break kommt erst auf 2: zurück, auf 6 vor. Die Conga betont die 2 und die 6, hör auf sie.",
+  seq:{1:{f:"R",w:1,t:"Rechts am Platz"},2:{f:"L",p:[-20,46],t:"Links zurück"},3:{f:"R",w:1,t:"Gewicht auf rechts"},
+       5:{f:"L",p:[-20,0],t:"Links zusammen"},6:{f:"R",p:[20,-46],t:"Rechts vor"},7:{f:"L",w:1,t:"Gewicht auf links"}}};
+const DANCES=["merengue","bachata","cumbia","on2"];
+const ORDER=["hoeren","grund","seite","rueck","drehung","kreuz"];
 const STEP_COUNTS=[1,2,3,5,6,7];
 const sayNum={1:"uno",2:"dos",3:"tres",4:"cuatro",5:"cinco",6:"seis",7:"siete",8:"ocho"};
 
@@ -460,8 +615,8 @@ function schedule(){
     if((P.mode==="step"||P.mode==="hoeren")&&!P.cam&&cyc>P.scored){clearInterval(P.timer);P.timer=null;setTimeout(()=>{if(P.running)finish()},Math.max(0,(t-ctx.currentTime+outLat())*1000)+250);return}
     if(s16%4===0){const count=s16/4+1; P.beats.push({t,count,cyc});
       if(st==="salsa"){ if(on.klick) SND.klick(t,count===1||count===5);
-        if(on.campana) SND.campana(t,count===1||count===5);
-        if(mem.voice&&P.bpm<=110&&(P.mode==="step"||P.mode==="hoeren")) speak(sayNum[count],t,count); }
+        if(on.campana) SND.campana(t,count===1||count===5); }
+      if(mem.voice&&P.bpm<=110&&(P.mode==="step"||P.mode==="hoeren")) speak(sayNum[count],t,count);
     }
     if(st==="salsa"){ if(s16%2===0){
       const i=s16/2, inBar=i%8, barG=Math.floor(P.i/16), ch=CH[barG%4], nxt=CH[(barG+1)%4];
@@ -474,6 +629,7 @@ function schedule(){
   }
 }
 /* Weitere Rhythmen für den Workshop, alles im Handy erzeugt (16tel-Raster, 32 pro 8 Schläge) */
+const BCH=[{b:45,n:[69,72,76]},{b:50,n:[69,74,77]},{b:52,n:[68,71,76]},{b:45,n:[69,72,76]}]; // Am Dm E Am
 const STYLE={
   merengue:(s,t,e,ch)=>{ if(s%4===0)SND.kick(t,.7); if(s%2===0||s%4===3)SND.shaker(t,s%4===0?.22:.12,.05);
     if(s%8===4)SND.snare(t,.35); if(s%8===7)SND.snare(t,.15);
@@ -487,6 +643,15 @@ const STYLE={
     if(s%16===0)SND.bajo(t,ch.b,e*7); if(s%16===8)SND.bajo(t,ch.b,e*7); },
   samba:(s,t,e,ch)=>{ if(s%8===0)SND.surdo(t,.35); if(s%8===4)SND.surdo(t,.7); SND.shaker(t,s%4===3?.2:.08,.03);
     if([0,3,6,10,12].includes(s%16))SND.clave(t); if(s%16===0)SND.piano(t,ch.n); },
+  bachata:(s,t,e)=>{ const c=BCH[Math.floor(P.i/16)%4];
+    if(s%2===0)SND.shaker(t,s%4===0?.2:.1,.05);                       // Güira
+    if(s%4===0)SND.conga(t,s%16===12?"open":"slap");                  // Bongo, offen auf 4
+    if(s%16===12)SND.kick(t,.55);                                     // Betonung auf 4 und 8
+    if(s%16===0)SND.bajo(t,c.b,e*5); if(s%16===6)SND.bajo(t,c.b+7,e*2); if(s%16===8)SND.bajo(t,c.b+12,e*3);
+    if(s%2===0)SND.piano(t,[c.n[(s/2)%3]]); },                        // Gitarren-Arpeggio
+  ballett:(s,t,e,ch)=>{ if(s%16===0)SND.pad(t,ch.n,e*15); if(s%4===0)SND.piano(t,[ch.n[(s/4)%3]+12]); if(s%8===6)SND.piano(t,[ch.n[2]+24]); if(s%16===0)SND.bajo(t,ch.b+12,e*8); },
+  hiphop:(s,t,e,ch)=>{ if(s%16===0||s%16===10)SND.kick(t,.8); if(s%8===4)SND.snare(t,.45); if(s%2===0)SND.shaker(t,s%4===2?.12:.06,.03);
+    if(s%16===0)SND.bajo(t,ch.b,e*6); if(s%16===12)SND.piano(t,ch.n); },
   warm:(s,t,e,ch)=>{ if(s%4===0)SND.kick(t,.5); if(s%4===2)SND.shaker(t,.15,.06); if(s%16===0)SND.bajo(t,ch.b,e*7); if(s%8===4)SND.snare(t,.18); },
   cool:(s,t,e,ch)=>{ if(s%16===0)SND.pad(t,ch.n,e*15); if(s%8===0)SND.shaker(t,.05,.2); }
 };
@@ -494,7 +659,7 @@ let voices=null;
 function speak(w,t,count){
   if(!("speechSynthesis" in window)) return;
   if(STEPS[P.step]&&STEPS[P.step].tapOn&&!STEPS[P.step].tapOn.includes(count)) return;
-  if(P.mode!=="hoeren"&&!STEP_COUNTS.includes(count)) return;
+  if(P.mode!=="hoeren"&&!tapTargets().includes(count)) return;
   const ms=(t-ctx.currentTime+outLat())*1000-140;
   setTimeout(()=>{ if(!P.running)return; try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(w);u.lang="es-ES";u.rate=1.5;u.volume=.9;
     voices=voices||speechSynthesis.getVoices();const v=voices.find(v=>/^es/i.test(v.lang)&&/female|mónica|monica|paulina|marisol/i.test(v.name))||voices.find(v=>/^es/i.test(v.lang));if(v)u.voice=v;speechSynthesis.speak(u);}catch(e){} },Math.max(0,ms));
@@ -533,7 +698,8 @@ function buildCounts(el,tapOn){
     d.className="cnt "+(isStep?"step":"rest"); d.textContent=isStep?c:"·"+c; d.dataset.c=c; el.appendChild(d);}
 }
 function onBeat(b){
-  if(P.mode==="workshop") return;
+  miluBeat(b.count);
+  if(P.mode==="workshop"||P.mode==="freeze") return;
   const el=P.cam?$("#counts-cam"):$("#counts");
   el.querySelectorAll(".cnt").forEach(x=>{x.classList.toggle("now",+x.dataset.c===b.count); if(b.count===1)x.classList.remove("hit","off")});
   if(P.cam){ return; }
@@ -575,7 +741,7 @@ function registerHit(tAudio,el,fbEl,meterEl){
   const ms=Math.round(bd*1000); P.hits.set(key,ms); P.offs.push(ms);
   const a=Math.abs(ms); let txt,cls;
   if(a<=60){txt="¡Perfecto!";cls="good"} else if(a<=120){txt="Gut im Takt";cls="good"} else {txt=(ms<0?"zu früh ":"zu spät ")+a+" ms";cls="warn"}
-  fbEl.textContent=txt; fbEl.className="fb "+cls;
+  fbEl.textContent=txt; fbEl.className="fb "+cls; miluTreffer(a<=60?2:a<=120?1:0);
   if(meterEl){const i=document.createElement("i");i.style.left=(50+Math.max(-48,Math.min(48,ms/250*50)))+"%";meterEl.appendChild(i);setTimeout(()=>i.style.opacity=0,30);setTimeout(()=>i.remove(),1800);}
   const cc=(P.cam?$("#counts-cam"):$("#counts")).querySelector(`[data-c="${best.count}"]`); if(cc) cc.classList.add(a<=120?"hit":"off");
 }
@@ -590,7 +756,7 @@ function manualStep(){
   try{ if(mem.voice&&"speechSynthesis" in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(sayNum[c]);u.lang="es-ES";u.rate=1.1;speechSynthesis.speak(u);} }catch(_){}
 }
 function setManual(v){ P.manual=v; manualCount=0; $("#manual").textContent=v?"Zurück zum Takt mit Musik":"Ohne Musik: Schritt für Schritt";
-  $("#meterbox").hidden=v; $("#fb").textContent=""; $("#tap-hint").textContent=v?"für den nächsten Schritt":(STEPS[P.step].tapOn?"auf 1 und 5":"bei jedem Schritt (nicht auf 4 und 8)");
+  $("#meterbox").hidden=v; $("#fb").textContent=""; $("#tap-hint").textContent=v?"für den nächsten Schritt":(STEPS[P.step].hint||(STEPS[P.step].tapOn?"auf 1 und 5":"bei jedem Schritt (nicht auf 4 und 8)"));
   if(v){ stop(); $("#say-big").textContent="Schritt für Schritt"; $("#say-sub").textContent="Tippe unten. Jedes Tippen ist ein Schlag."; feet={L:[...HOME.L],R:[...HOME.R]};rot=0;placeFeet(false);} }
 $("#manual").onclick=()=>setManual(!P.manual);
 function tap(ev){ ev.preventDefault(); if(P.manual){ manualStep(); return; } if(!ctx||!P.running) return; const t=ctx.currentTime;
@@ -610,7 +776,7 @@ function finish(){
   st.rounds++; st.last=score; st.avg=avg; if(score>st.best)st.best=score; if(score>=80&&P.bpm>st.bestBpm)st.bestBpm=P.bpm;
   mem.rounds++; mem.bpm[P.step]=P.bpm; mem.last=P.step; const d=new Date().toISOString().slice(0,10); if(!mem.days.includes(d))mem.days.push(d); save();
   $("#rounds").textContent=mem.rounds;
-  $("#r-score").textContent=score+" %";
+  $("#r-score").textContent=score+" %"; setTimeout(stickerPruefen,600);
   $("#r-line").textContent=`im Takt bei ${P.bpm} Schlägen · ${good} von ${total} Schritten`;
   let say;
   if(score>=80) say=P.bpm<110?"¡Eso! Das sitzt. Wir machen es ein bisschen schneller.":"¡Muy bien! Bereit für den nächsten Schritt.";
@@ -619,10 +785,10 @@ function finish(){
   if(score<80&&avg<-50) say+=" Du bist oft etwas zu früh: warte auf den Schlag, die Musik trägt dich.";
   if(score<80&&avg>50) say+=" Du bist oft etwas spät: tritt schon, wenn du den Schlag kommen hörst.";
   $("#r-say").textContent=say;
-  show("result");
+  show("result"); if(window.FigurPosen) FigurPosen.zeige($("#s-result .milu-klein"),score>=80?"jubelt":"tanzt",0,score>=80?["verbeugt","tanzt"]:["tanzt"]);
 }
 function suggestion(){
-  // Was als Nächstes? Carmen lernt aus den gespeicherten Zahlen.
+  // Was als Nächstes? Carmencita lernt aus den gespeicherten Zahlen.
   for(const id of ORDER){ const s=mem.steps[id]; const bpm=mem.bpm[id]||90;
     if(!s||s.best<80) return {id,bpm:s&&s.last<50?Math.max(70,bpm-10):bpm};
     if(s.bestBpm<110) return {id,bpm:Math.min(110,s.bestBpm+10)};
@@ -638,15 +804,21 @@ $("#back").onclick=()=>{ if(W){W.run=false;wsLock(false);} stop(); camStop(); sh
 $$("[data-go]").forEach(b=>b.onclick=()=>{const g=b.dataset.go; if(g==="band")openPractice("grund","free"); else show(g);});
 
 function renderHome(){
+  if(typeof renderSticker==="function"&&$("#sticker-home")) try{renderSticker()}catch(e){}
   $("#rounds").textContent=mem.rounds; $("#ws-badge").textContent=Object.keys(mem.ws||{}).length+" / 8";
+  ["kinder","familie"].forEach(k=>{const e=$("#kl-badge-"+k); if(e) e.textContent=Object.keys(mem.kl||{}).filter(x=>x.startsWith(k+":")).length+" / 3";});
   const L=$("#levels"); L.innerHTML="";
   ORDER.forEach((id,k)=>{const s=STEPS[id],m=mem.steps[id];const b=document.createElement("button");b.className="item";
     b.innerHTML=`<div class="ic">${s.ic}</div><div class="tx"><b>${k}. ${s.title}</b><span>${s.short}</span></div><div class="badge">${m?m.best+" %":""}</div>`;
     b.onclick=()=>openPractice(id,"step"); L.appendChild(b);});
+  const D=$("#dances"); D.innerHTML="";
+  DANCES.forEach(id=>{const s=STEPS[id],m=mem.steps[id];const b=document.createElement("button");b.className="item";
+    b.innerHTML=`<div class="ic">${s.ic}</div><div class="tx"><b>${s.title}</b><span>${s.short}</span></div><div class="badge">${m?m.best+" %":""}</div>`;
+    b.onclick=()=>openPractice(id,"step"); D.appendChild(b);});
   const sg=suggestion(); $("#go-next").textContent=`Weiter: ${STEPS[sg.id].title} · ${sg.bpm}`;
   $("#go-next").onclick=()=>openPractice(sg.id,"step",sg.bpm);
   const days=mem.days.length;
-  $("#home-say").textContent=mem.rounds===0?"¡Hola! Ich bin Carmen. Hör zuerst die Musik, deine Füsse kommen von allein."
+  $("#home-say").textContent=mem.rounds===0?"¡Hola! Ich bin Carmencita. Hör zuerst die Musik, deine Füsse kommen von allein."
     :`¡Hola otra vez! ${mem.rounds} Runden an ${days} ${days===1?"Tag":"Tagen"}. Heute schlage ich vor: ${STEPS[sg.id].title}.`;
 }
 function tempoName(b){return b<100?"langsam":b<140?"mittel":b<170?"langsame Salsa":"Club-Tempo"}
@@ -657,18 +829,18 @@ function renderChips(el){
     c.onclick=()=>{on[k]=on[k]?0:1;c.classList.toggle("on",!!on[k]);}; el.appendChild(c);});
 }
 function openPractice(id,mode,bpm){
-  stop(true); P.style="salsa"; P.step=id; P.mode=mode==="free"?"free":(id==="hoeren"?"hoeren":"step"); P.cam=false;
+  stop(true); P.style=(mode!=="free"&&STEPS[id].style)||"salsa"; P.step=id; P.mode=mode==="free"?"free":(id==="hoeren"?"hoeren":"step"); P.cam=false;
   const S=STEPS[id];
-  setBpm(bpm||mem.bpm[id]||90);
+  setBpm(bpm||mem.bpm[id]||STEPS[id].bpm||90);
   if(P.mode==="free"){ $("#p-title").textContent="Band & Metronom"; $("#p-intro").textContent="Schalte Instrumente ein und aus. Hör, wie sie zusammen den Takt bauen. Die Clave ist der Herzschlag.";
     on={klick:0,clave:1,campana:1,conga:1,bajo:1,piano:1}; buildCounts($("#counts"),[1,2,3,4,5,6,7,8]); }
   else { $("#p-title").textContent=S.title; $("#p-intro").textContent=S.intro;
     on=id==="hoeren"?{klick:0,clave:1,campana:1,conga:1,bajo:1,piano:1}:{klick:1,clave:1,campana:1,conga:1,bajo:1,piano:1};
     buildCounts($("#counts"),S.tapOn); }
   $("#floor").hidden=(P.mode!=="step"); $("#tap").hidden=$("#meterbox").hidden=(P.mode==="free");
-  $("#tap-hint").textContent=S.tapOn?"auf 1 und 5":"bei jedem Schritt (nicht auf 4 und 8)";
+  $("#tap-hint").textContent=S.hint||(S.tapOn?"auf 1 und 5":"bei jedem Schritt (nicht auf 4 und 8)");
   $("#say-big").textContent=P.mode==="free"?"♫":"Bereit?"; $("#say-sub").textContent=P.mode==="free"?"Tippe auf Start.":"Tippe auf Start. Die erste Runde hörst du nur zu.";
-  $("#fb").textContent=""; renderChips($("#chips"));
+  $("#fb").textContent=""; renderChips($("#chips")); $("#chips").hidden=(P.style!=="salsa");
   P.manual=false; $("#manual").hidden=(P.mode!=="step"); setManual(false); $("#say-big").textContent=P.mode==="free"?"♫":"Bereit?";
   feet={L:[...HOME.L],R:[...HOME.R]};rot=0;placeFeet(false);$("#ghost").style.opacity=0;
   if(P.mode==="step"){const seq=stepFor(id);const ne=seq[1];if(ne&&ne.p){$("#ghost").style.opacity=1;$("#ghost").style.transform=`translate(${ne.p[0]*1.25}px,${ne.p[1]*1.25}px)`;}}
@@ -693,15 +865,16 @@ $("#cal-tap").addEventListener("pointerdown",e=>{ e.preventDefault(); if(!cal) r
     $("#cal-val").textContent=mem.calib+" ms"; $("#cal-n").textContent="Fertig: "+mem.calib+" ms gespeichert"; }
 });
 
-/* ---------- Was Carmen sich merkt ---------- */
+/* ---------- Was Carmencita sich merkt ---------- */
 function renderMem(){
   const L=$("#mem-list"); const rows=[];
   rows.push(["Geübte Runden",mem.rounds]); rows.push(["Übungstage",mem.days.length]);
   rows.push(["Rolle",mem.role==="lead"?"Führen":"Folgen"]); rows.push(["Kopfhörer-Ausgleich",mem.calib+" ms"]);
-  for(const id of ORDER){const s=mem.steps[id]; if(!s)continue;
+  for(const id of ORDER.concat(DANCES)){const s=mem.steps[id]; if(!s)continue;
     rows.push([STEPS[id].title,`beste ${s.best} % · zuletzt ${s.last} % · ${s.avg<0?"eher früh":"eher spät"} (${Math.abs(s.avg)} ms) · sicher bis ${s.bestBpm||"–"}`]);}
-  const sg=suggestion(); rows.push(["Carmens Vorschlag",`${STEPS[sg.id].title} bei ${sg.bpm}`]);
-  L.innerHTML=rows.map(r=>`<div class="m"><span>${r[0]}</span><span class="muted" style="text-align:right">${r[1]}</span></div>`).join("");
+  const sg=suggestion(); rows.push(["Carmencitas Vorschlag",`${STEPS[sg.id].title} bei ${sg.bpm}`]);
+  L.innerHTML=(mem.rounds?"":`<div class="mem-leer"><img src="figur.jpg" alt="" width="56" height="56"><span>Noch ist mein Heft leer. Tanz eine Runde, dann schreibe ich hier mit, was du schon kannst.</span></div>`)
+    +rows.map(r=>`<div class="m"><span>${r[0]}</span><span class="muted" style="text-align:right">${r[1]}</span></div>`).join("");
 }
 $("#consent").onchange=e=>{$("#share").disabled=!e.target.checked};
 $("#share").onclick=async()=>{
@@ -709,7 +882,10 @@ $("#share").onclick=async()=>{
     inhalt:{runden:mem.rounds,tage:mem.days.length,rolle:mem.role,stufen:Object.fromEntries(Object.entries(mem.steps).map(([k,s])=>[k,{best:s.best,zuletzt:s.last,abweichung_ms:s.avg,sicher_bis_bpm:s.bestBpm}]))},
     hinweis:"Nur Zahlen. Kein Bild, keine Stimme, kein Name."};
   const txt=JSON.stringify(data,null,1);
-  try{ if(navigator.share){await navigator.share({title:"Carmen Erfahrung",text:txt});} else {await navigator.clipboard.writeText(txt);} $("#share-ok").textContent="Bereit zum Einfügen in die Sense Engine."; }
+  try{ const a=String(JSON.parse(localStorage.getItem("drlab-hermes-adresse")||'""')||"").trim().replace(/\/+$/,""), k=JSON.parse(localStorage.getItem("drlab-hermes-passwort")||'""');
+    if(/^https:\/\//.test(a)&&k){ const r=await fetch(a+"/erfahrung",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+k},body:JSON.stringify({app:"Carmencita",art:"lernzahlen",frage:JSON.stringify(data.inhalt),antwort:""})});
+      if(r.ok){ $("#share-ok").textContent="Danke! Die Zahlen sind bei der Sense Engine angekommen."; return; } } }catch(e){}
+  try{ if(navigator.share){await navigator.share({title:"Carmencita Erfahrung",text:txt});} else {await navigator.clipboard.writeText(txt);} $("#share-ok").textContent="Bereit zum Einfügen in die Sense Engine."; }
   catch(e){ try{await navigator.clipboard.writeText(txt);$("#share-ok").textContent="Kopiert.";}catch(_){ $("#share-ok").textContent="Teilen nicht möglich."; } }
 };
 $("#mem-reset").onclick=()=>{ if(confirm("Wirklich alles vergessen?")){ mem=Object.assign({},defMem,{steps:{},bpm:{},days:[]}); save(); renderMem(); } };
@@ -722,7 +898,7 @@ function camChips(){ const el=$("#cam-steps"); el.innerHTML="";
     c.onclick=()=>{camStep=id;camChips();}; el.appendChild(c);}); }
 $("[data-go=cam]").addEventListener("click",()=>{camChips();buildCounts($("#counts-cam"));});
 async function camStart(){
-  audio(); $("#cam-ov").textContent="Carmen lädt die Bewegungserkennung …";
+  audio(); $("#cam-ov").textContent="Carmencita lädt die Bewegungserkennung …";
   try{
     stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:{ideal:640},height:{ideal:480}},audio:false});
     const v=$("#video"); v.srcObject=stream; await v.play();
@@ -776,9 +952,34 @@ const WS={
  "4A":{t:"Woche 4 · Choreo B",b:[B("Merengue","merengue",130,["Merengue-Hüfte mit Armen"]),B("Choreo A","salsa",140,CH_A,8),B("Choreo B lernen","cumbia",120,CH_B,8),B("Samba","samba",100,["Samba-Hüfte"])]},
  "4B":{t:"Woche 4 · Ganze Choreo",b:[B("Choreo A","salsa",140,CH_A,8),B("Choreo B","cumbia",122,CH_B,8),B("Ganze Choreo","salsa",140,CH_A.concat(CH_B),8),B("Choreo + frei tanzen","merengue",128,CH_A.concat(CH_B,["Frei tanzen!"]),8)]}
 };
-const BLOCK_S=300; let W=null,wake=null;
-function wsBlocks(k){return [WARM,...WS[k].b,COOL]}
+let W=null,wake=null,KLW=null;
+/* ---------- Tanzklassen für Gross und Klein (21.10.) ---------- */
+const KWARM={name:"Aufwärmen",style:"warm",bpm:110,every:16,moves:["Wie ein Baum wachsen, ganz gross","Arme schwingen wie Flügel","Auf der Stelle hüpfen","Schultern hoch und runter"]};
+const KCOOL={name:"Ausruhen",style:"cool",bpm:66,every:16,moves:["Ganz langsam gehen","Tief einatmen, wie ein Ballon","Ausatmen und schütteln","Verbeugen. ¡Gracias!"]};
+const FWARM={name:"Aufwärmen zusammen",style:"warm",bpm:110,every:16,moves:["Hände halten und zusammen marschieren","Abwechselnd Hände klatschen","Zusammen in die Knie und hoch","Rücken an Rücken wippen"]};
+const FCOOL={name:"Ausruhen zusammen",style:"cool",bpm:66,every:16,moves:["Hand in Hand langsam gehen","Zusammen tief atmen","Einander die Schultern ausschütteln","Zusammen verbeugen. ¡Gracias!"]};
+const KL={
+ kinder:{h:"Tanzklassen für Kinder",p:"Je 10 Minuten: Aufwärmen, drei Tanzblöcke, Ausruhen. Ein Erwachsener ist in der Nähe.",s:120,warm:KWARM,cool:KCOOL,k:{
+  "Ballett":{t:"Ballett · Kleine Tänzer",b:[B("Plié","ballett",72,["Fersen zusammen, Füsse wie ein V","Knie auf und zu, weich wie eine Feder"],16),B("Relevé","ballett",72,["Auf die Zehenspitzen, ganz gross","Langsam wieder runter"],16),B("Arme und Drehung","ballett",76,["Arme rund wie ein grosser Ball","Kleine vorsichtige Drehung, dann verbeugen"],16)]},
+  "Hip-Hop":{t:"Hip-Hop · Coole Kids",b:[B("Bounce","hiphop",90,["Knie locker, auf und ab wippen","Mit den Schultern mitwippen"],16),B("Step-Touch","hiphop",92,["Schritt zur Seite, Fuss tippen","Arme kreuzen beim Tippen"],16),B("Roboter und Freeze","hiphop",94,["Bewege dich wie ein Roboter: piep, piep","Coole Pose! Einfrieren"],16)]},
+  "Latin":{t:"Latin Dance Fitness · Kids",b:[B("Merengue-Marsch","merengue",120,["Marschieren im Takt","Marschieren und Hüfte wackeln"],16),B("Cumbia","cumbia",110,["Ein Fuss nach hinten, wiegen, ran","Mit Fächer-Hand"],16),B("Salsa einfach","salsa",130,["Vor, zurück, Pause","Mit den Armen mitschwingen"],16)]}}},
+ familie:{h:"Eltern und Kind zusammen",p:"Je 12 Minuten. Zusammen tanzen, Hand in Hand, sich spiegeln. Das Kind gibt auch mal den Takt an.",s:144,warm:FWARM,cool:FCOOL,k:{
+  "Salsa":{t:"Familien-Salsa · Hand in Hand",b:[B("Grundschritt gegenüber","salsa",130,["Hände halten, einer vor, einer zurück","Jetzt tauschen"],16),B("Drehen unter dem Arm","salsa",130,["Kind dreht sich unter dem Arm des Erwachsenen","Und jetzt in die andere Richtung"],16),B("Frei zusammen","merengue",120,["Zusammen frei tanzen","Auf 8: gemeinsame Pose"],16)]},
+  "Ballett":{t:"Familien-Ballett · Spiegel",b:[B("Spiegel","ballett",72,["Das Kind macht vor, der Erwachsene spiegelt","Jetzt umgekehrt"],16),B("Plié zusammen","ballett",72,["Hände halten, zusammen in die Knie","Zusammen auf die Zehen"],16),B("Grosse Drehung","ballett",76,["Erwachsener hält die Hand, Kind dreht wie eine Ballerina","Zusammen verbeugen"],16)]},
+  "Hip-Hop":{t:"Familien-Hip-Hop · Battle",b:[B("Bounce zusammen","hiphop",90,["Zusammen wippen, Blick zueinander","High Five auf 1"],16),B("Du und ich","hiphop",92,["8 Schläge tanzt das Kind, der Erwachsene klatscht","8 Schläge tanzt der Erwachsene, das Kind klatscht"],16),B("Gemeinsame Pose","hiphop",94,["Erfindet zusammen eine Bewegung","Auf 8: Freeze zusammen!"],16)]}}}
+};
+function wsSrc(k){ return W&&W.set ? KL[W.set].k[k] : WS[k]; }
+function wsBlocks(k){ if(W&&W.set){const c=KL[W.set]; return [c.warm,...c.k[k].b,c.cool];} return [WARM,...WS[k].b,COOL]; }
+const blockS=()=>W&&W.set?KL[W.set].s:300;
+function renderKl(set){
+  KLW=set; const c=KL[set]; $("#ws-pick").hidden=false;$("#ws-run").hidden=true;$("#ws-done").hidden=true;
+  $("#ws-h").textContent=c.h; $("#ws-p").textContent=c.p; const done=(mem.kl||{}); const L=$("#ws-list"); L.innerHTML="";
+  Object.keys(c.k).forEach(k=>{const b=document.createElement("button");b.className="item";const id=set+":"+k;
+    b.innerHTML=`<div class="ic">${done[id]?"✓":({"Ballett":"🩰","Hip-Hop":"🎧","Latin":"💃","Salsa":"💃"})[k]||"✦"}</div><div class="tx"><b>${c.k[k].t}</b><span>${c.k[k].b.map(x=>x.name).join(", ")}</span></div><div class="badge">${done[id]?"★":""}</div>`;
+    b.onclick=()=>wsOpen(k,set); L.appendChild(b);});
+}
 function renderWs(){
+  KLW=null; $("#ws-h").textContent="Carmencita Workshop"; $("#ws-p").textContent="30 Minuten: Aufwärmen, vier Tanzblöcke, Cool-down. Zweimal pro Woche, vier Wochen. Die Musik wird im Handy erzeugt.";
   $("#ws-pick").hidden=false;$("#ws-run").hidden=true;$("#ws-done").hidden=true;
   const done=(mem.ws||{}); const L=$("#ws-list"); L.innerHTML="";
   let next=Object.keys(WS).find(k=>!done[k])||"4B";
@@ -786,15 +987,15 @@ function renderWs(){
     b.innerHTML=`<div class="ic">${done[k]?"✓":k}</div><div class="tx"><b>Einheit ${k}${k===next?" · als Nächstes":""}</b><span>${WS[k].t}: ${WS[k].b.map(x=>x.name).join(", ")}</span></div><div class="badge">${done[k]?done[k].slice(5).split("-").reverse().join("."):""}</div>`;
     b.onclick=()=>wsOpen(k); L.appendChild(b);});
 }
-function wsOpen(k){ W={k,idx:0,el:0,run:false,lastMove:-1}; $("#ws-pick").hidden=true;$("#ws-run").hidden=false;$("#ws-done").hidden=true;
-  $("#ws-title").textContent="Einheit "+k+" · "+WS[k].t.split(" · ")[1]; buildCounts($("#counts-ws"),[1,2,3,4,5,6,7,8]); wsShow(); $("#ws-play").textContent="▶ Los"; }
+function wsOpen(k,set){ W={k,set:set||null,idx:0,el:0,run:false,lastMove:-1}; $("#ws-pick").hidden=true;$("#ws-run").hidden=false;$("#ws-done").hidden=true;
+  $("#ws-title").textContent=W.set?wsSrc(k).t:"Einheit "+k+" · "+WS[k].t.split(" · ")[1]; buildCounts($("#counts-ws"),[1,2,3,4,5,6,7,8]); wsShow(); $("#ws-play").textContent="▶ Los"; }
 function sayDe(txt){ try{ if(window.NovaStimme&&NovaStimme.aktiv()){ NovaStimme.sprich(txt); return; } // Carmencitas eigene Stimme (Sense Engine)
   if(!("speechSynthesis" in window))return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(txt); u.lang="de-DE"; u.rate=1.05;
   const v=(voices||speechSynthesis.getVoices()).find(v=>/^de/i.test(v.lang)); if(v)u.voice=v; speechSynthesis.speak(u);}catch(e){} }
 const mmss=x=>{x=Math.max(0,Math.ceil(x));return Math.floor(x/60)+":"+String(x%60).padStart(2,"0")};
-function wsShow(){ const bl=wsBlocks(W.k), b=bl[W.idx], rest=BLOCK_S-W.el;
-  $("#ws-block").textContent=b.name; $("#ws-time").textContent=mmss(rest); $("#ws-total").textContent="noch "+mmss(rest+(bl.length-1-W.idx)*BLOCK_S)+" gesamt";
-  $("#ws-bar").style.width=((W.idx*BLOCK_S+W.el)/(bl.length*BLOCK_S)*100)+"%";
+function wsShow(){ const bl=wsBlocks(W.k), b=bl[W.idx], rest=blockS()-W.el;
+  $("#ws-block").textContent=b.name; $("#ws-time").textContent=mmss(rest); $("#ws-total").textContent="noch "+mmss(rest+(bl.length-1-W.idx)*blockS())+" gesamt";
+  $("#ws-bar").style.width=((W.idx*blockS()+W.el)/(bl.length*blockS())*100)+"%";
   const beats=Math.floor(W.el*b.bpm/60), mi=Math.floor(beats/b.every)%b.moves.length;
   $("#ws-move").textContent=b.moves[mi]+" · "+b.bpm+" Schläge";
   if(W.run&&mi!==W.lastMove){ if(W.lastMove!==-1&&b.moves.length>1) sayDe(b.moves[mi]); W.lastMove=mi; }
@@ -802,12 +1003,12 @@ function wsShow(){ const bl=wsBlocks(W.k), b=bl[W.idx], rest=BLOCK_S-W.el;
 }
 function wsStartBlock(announce){ const b=wsBlocks(W.k)[W.idx]; P.style=b.style; P.mode="workshop"; P.cam=false; setBpm(b.bpm);
   on={klick:0,clave:1,campana:1,conga:1,bajo:1,piano:1}; start(); P.style=b.style; W.t0=ctx.currentTime-W.el; W.run=true; W.lastMove=-1;
-  if(announce) sayDe(W.idx===0?"Willkommen. Wir wärmen uns auf. "+b.moves[0]:"Jetzt "+b.name+". "+b.moves[0]);
+  if(announce) sayDe(W.idx===0?(W.set==="familie"?"¡Hola familia! Wir wärmen uns zusammen auf. ":W.set?"¡Hola! Wir wärmen uns auf. ":"Willkommen. Wir wärmen uns auf. ")+b.moves[0]:"Jetzt "+b.name+". "+b.moves[0]);
   $("#ws-play").textContent="❚❚ Pause"; wsLoop(); }
 function wsLoop(){ if(!W||!W.run)return; W.el=ctx.currentTime-W.t0;
   const b=currentBeat(); if(b) $("#counts-ws").querySelectorAll(".cnt").forEach(x=>x.classList.toggle("now",+x.dataset.c===b.count));
-  if(W.el>=BLOCK_S-10&&!W.warned){W.warned=true;sayDe("Noch zehn Sekunden");}
-  if(W.el>=BLOCK_S) return wsNext();
+  if(W.el>=blockS()-10&&!W.warned){W.warned=true;sayDe("Noch zehn Sekunden");}
+  if(W.el>=blockS()) return wsNext();
   wsShow(); requestAnimationFrame(wsLoop); }
 function wsNext(){ const bl=wsBlocks(W.k); stop(true); W.warned=false; W.el=0;
   if(W.idx>=bl.length-1) return wsFinish(); W.idx++; wsStartBlock(true); }
@@ -815,16 +1016,150 @@ async function wsLock(on_){ try{ if(on_&&navigator.wakeLock) wake=await navigato
 $("#ws-play").onclick=()=>{ if(!W)return; audio(); if(W.run){ W.run=false; stop(); wsLock(false); $("#ws-play").textContent="▶ Weiter"; } else { wsLock(true); wsStartBlock(W.el===0); } };
 $("#ws-skip").onclick=()=>{ if(!W)return; const was=W.run; W.run=false; stop(true); W.el=0; W.warned=false;
   if(W.idx>=wsBlocks(W.k).length-1) return wsFinish(); W.idx++; if(was){audio();wsStartBlock(true);} else wsShow(); };
-function wsFinish(){ W.run=false; stop(); wsLock(false); mem.ws=mem.ws||{}; mem.ws[W.k]=new Date().toISOString().slice(0,10); save();
+function wsFinish(){ W.run=false; stop(); wsLock(false);
+  if(W.set){ mem.kl=mem.kl||{}; mem.kl[W.set+":"+W.k]=new Date().toISOString().slice(0,10); save(); setTimeout(stickerPruefen,800);
+    const m=W.set==="familie"?"¡Eso, familia! Ihr habt zusammen getanzt. Gebt euch ein High Five.":"¡Muy bien! Du hast ganz toll getanzt. Trink etwas Wasser.";
+    sayDe(m); $("#ws-run").hidden=true; $("#ws-done").hidden=false; $("#ws-done-say").textContent=m; return; }
+  mem.ws=mem.ws||{}; mem.ws[W.k]=new Date().toISOString().slice(0,10); save(); setTimeout(stickerPruefen,800);
   sayDe("Eso! Einheit geschafft. Trink etwas Wasser.");
   $("#ws-run").hidden=true; $("#ws-done").hidden=false;
   const n=Object.keys(mem.ws).length; $("#ws-done-say").textContent=`¡Eso! Einheit ${W.k} geschafft. ${n} von 8 Einheiten. Trink etwas Wasser.`; }
-$("#ws-back").onclick=()=>renderWs();
-$("[data-go=ws]").addEventListener("click",()=>renderWs());
+$("#ws-back").onclick=()=>KLW?renderKl(KLW):renderWs();
+$$("[data-go=ws]").forEach(b=>b.addEventListener("click",()=>b.dataset.klassen?renderKl(b.dataset.klassen):renderWs()));
+
+/* ---------- Trickfilm: Carmencita tanzt im Takt ---------- */
+const ruhigM=matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+function miluBeat(c){ if(ruhigM) return;
+  $$(".milu-takt,.milu,.milu-freeze").forEach(im=>{ if(P.mode==="freeze"&&FZ&&FZ.frozen) return; im.classList.remove("b1","b2"); void im.offsetWidth; im.classList.add(c===1||c===5?"b1":"b2"); });
+  const pl=$("#milu-platz"); if(pl&&(c===1||c===5)){ pl.classList.remove("puls"); void pl.offsetWidth; pl.classList.add("puls"); } }
+function miluTreffer(q){ const t=$("#milu-treffer"); if(!t) return; t.textContent=q===2?"¡Perfecto!":q===1?"¡Bien!":"¡Ay!"; t.className="milu-treffer "+(q?"gut":"nein"); void t.offsetWidth; t.classList.add("zeig");
+  const im=$("#milu-takt"); if(im&&q===2&&!ruhigM){im.classList.remove("jubel");void im.offsetWidth;im.classList.add("jubel");}
+  if(q===2&&window.FigurPosen) FigurPosen.zeige(im,"jubelt",1400); }
+document.addEventListener("animationend",e=>{ if(/^milu(Hopp|Wipp|Dreh)$/.test(e.animationName)) e.target.classList.remove("b1","b2","jubel","dreh"); });
+const POSEN_REQ=["💃","🌺","🎵","✨","🪇"];
+$("#carmen-home").addEventListener("click",()=>{ const r=$("#milu-req"); r.textContent=POSEN_REQ[Math.floor(Math.random()*POSEN_REQ.length)]; r.classList.remove("zeig"); void r.offsetWidth; r.classList.add("zeig");
+  const im=$("#carmen-home"); im.classList.remove("dreh"); void im.offsetWidth; if(!ruhigM) im.classList.add("dreh");
+  if(window.FigurPosen) FigurPosen.zeige(im,"dreht",2200,["tanzt"]); });
+
+/* ---------- Tanz-Tipp des Tages (Haltung, Takt, Freude) ---------- */
+const TIPPS=[
+  ["Knie weich","Weiche Knie machen den Schritt leicht. Steif wird es schwer."],
+  ["Oberkörper ruhig","Die Füsse tanzen, die Schultern bleiben ruhig und locker."],
+  ["Klein ist schön","Kleine Schritte sind schneller und schöner als grosse."],
+  ["Auf den Ballen","Setz den Fuss mit dem Ballen auf, nicht mit der Ferse."],
+  ["Hör die Glocke","Die Glocke spielt auf jedem Schlag. Sie hilft dir, die 1 zu finden."],
+  ["Blick nach vorn","Schau nicht auf die Füsse. Ein Punkt an der Wand hilft beim Drehen."],
+  ["Lächeln","Lächeln gehört zum Tanz. Fehler auch. ¡No pasa nada!"],
+  ["Atmen","Atme ruhig weiter. Wer die Luft anhält, wird steif."],
+  ["Langsam lernen","Erst langsam sicher, dann schneller. Das Tempo kommt von allein."],
+  ["Wasser","Zwischen den Runden einen Schluck Wasser."]
+];
+const PALABRAS=[["uno, dos, tres","eins, zwei, drei"],["¡Eso!","Genau so!"],["¡Vamos!","Los geht's!"],["despacio","langsam"],["la vuelta","die Drehung"],["¡Sigue!","Mach weiter!"],["el ritmo","der Rhythmus"],["¡Qué bien!","Wie schön!"]];
+function renderTipp(){ const d=Math.floor(Date.now()/864e5), t=TIPPS[d%TIPPS.length], w=PALABRAS[d%PALABRAS.length];
+  $("#tipp-karte").innerHTML=""; const h=document.createElement("b"); h.textContent="Carmencitas Tipp: "+t[0];
+  const p=document.createElement("span"); p.textContent=t[1]; const w2=document.createElement("small"); w2.textContent="Spanisch-Wort des Tages: «"+w[0]+"» = "+w[1];
+  $("#tipp-karte").append(h,p,w2); }
+
+/* ---------- Fiesta-Sticker (nur auf dem Gerät) ---------- */
+const STICKER=[
+  ["erste","🎵","Erste Runde","Die erste Runde getanzt",()=>mem.rounds>=1],
+  ["zehn","🪇","Maracas","10 Runden getanzt",()=>mem.rounds>=10],
+  ["fuenfzig","🎺","Trompete","50 Runden getanzt",()=>mem.rounds>=50],
+  ["dreitage","🌺","Drei Tage","An 3 Tagen getanzt",()=>mem.days.length>=3],
+  ["woche","🌴","Eine Woche","An 7 Tagen getanzt",()=>mem.days.length>=7],
+  ["perfekt","⭐","Im Takt","Eine Runde mit 80 % oder mehr",()=>Object.values(mem.steps).some(s=>s.best>=80)],
+  ["basis","💃","Salsa-Basis","Grundschritt, Seitschritt und Rückschritt mit 80 %",()=>["grund","seite","rueck"].every(k=>mem.steps[k]&&mem.steps[k].best>=80)],
+  ["dreh","🌀","Die Drehung","Rechtsdrehung mit 80 %",()=>mem.steps.drehung&&mem.steps.drehung.best>=80],
+  ["welt","🌎","Weltreise","Merengue, Bachata und Cumbia ausprobiert",()=>["merengue","bachata","cumbia"].every(k=>mem.steps[k])],
+  ["newyork","🗽","New York","Salsa On2 mit 80 %",()=>mem.steps.on2&&mem.steps.on2.best>=80],
+  ["schnell","⚡","Club-Tempo","80 % bei 150 Schlägen oder mehr",()=>Object.values(mem.steps).some(s=>s.bestBpm>=150)],
+  ["fitness","🔥","Tanz-Fitness","Eine Workshop-Einheit geschafft",()=>Object.keys(mem.ws||{}).length>=1],
+  ["workshop","🏆","Workshop komplett","Alle 8 Einheiten geschafft",()=>Object.keys(mem.ws||{}).length>=8],
+  ["statue","🧊","Statue","Einen Stopptanz fertig getanzt",()=>(mem.freeze||0)>=1]
+];
+function stickerHat(){ return STICKER.filter(x=>{try{return x[4]()}catch(e){return false}}).map(x=>x[0]); }
+function renderSticker(){
+  const hat=stickerHat(); $("#sticker-badge").textContent=hat.length+" / "+STICKER.length;
+  $("#freeze-badge").textContent=mem.freeze?mem.freeze+"×":"";
+  const r=$("#sticker-home"); r.innerHTML="";
+  if(!hat.length){ const l=document.createElement("button"); l.className="sticker-leer"; l.textContent="🎁 Erster Sticker: tanz eine Runde"; l.onclick=()=>$("#go-next").click(); r.appendChild(l); }
+  else STICKER.forEach(x=>{const i=document.createElement("span"); i.className="st"+(hat.includes(x[0])?" hat":""); i.textContent=x[1]; i.title=x[2]; r.appendChild(i);});
+  const a=$("#sticker-all"); a.innerHTML=""; STICKER.forEach(x=>{const d=document.createElement("div"); d.className="stk"+(hat.includes(x[0])?" hat":"");
+    const e=document.createElement("div"); e.className="em"; e.textContent=x[1]; const b=document.createElement("b"); b.textContent=x[2]; const s=document.createElement("span"); s.textContent=x[3]; d.append(e,b,s); a.appendChild(d);}); }
+function konfetti(){ if(ruhigM) return; const f=["#f2c14e","#E5484D","#2EC4B6","#ffffff","#ff8a7a"];
+  for(let i=0;i<40;i++){const c=document.createElement("i");c.className="konfetti";c.style.left=Math.random()*100+"vw";c.style.background=f[i%f.length];c.style.animationDelay=Math.random()*.6+"s";c.style.setProperty("--dx",(Math.random()*120-60)+"px");document.body.appendChild(c);setTimeout(()=>c.remove(),2800);} }
+function stickerPruefen(){ const hat=stickerHat(), alt=mem.sticker||[]; const neu=hat.filter(k=>!alt.includes(k)); mem.sticker=hat; save(); renderSticker();
+  if(!neu.length) return; const x=STICKER.find(s=>s[0]===neu[0]); konfetti();
+  const box=document.createElement("div"); box.className="sticker-neu"; box.innerHTML='<div class="em"></div><b></b><span></span>';
+  box.querySelector(".em").textContent=x[1]; box.querySelector("b").textContent="Neuer Sticker: "+x[2]; box.querySelector("span").textContent=x[3]; document.body.appendChild(box);
+  setTimeout(()=>box.classList.add("weg"),3200); setTimeout(()=>box.remove(),3800); sayDe("Eso! Neuer Sticker: "+x[2]+"."); }
+$("[data-go=sticker]").addEventListener("click",()=>renderSticker());
+
+/* ---------- Stopptanz ---------- */
+let FZ=null;
+const FZ_TAENZE=[["salsa",95,"Salsa"],["merengue",115,"Merengue"],["cumbia",100,"Cumbia"],["reggaeton",92,"Reggaeton"],["samba",100,"Samba"],["bachata",112,"Bachata"]];
+const FZ_POSEN=["Arme hoch wie Carmencita!","Auf einem Bein, wie ein Flamingo!","Hände auf die Hüfte!","Wie eine Blume, ganz gross!","Ganz klein machen, wie eine Maus!","Eine Hand in die Luft, eine auf den Bauch!","Lächeln einfrieren!","Wie eine Statue im Park!"];
+function fzZeigen(){ $("#fz-runde").textContent=(FZ?FZ.runde:0)+" / 6"; }
+function fzTanz(){ if(!FZ||!FZ.run) return; const t=FZ_TAENZE[FZ.runde%FZ_TAENZE.length]; FZ.frozen=false; $("#milu-freeze").classList.remove("eis");
+  P.style=t[0]; P.mode="freeze"; P.step="grund"; P.cam=false; on={klick:0,clave:1,campana:1,conga:1,bajo:1,piano:1}; setBpm(t[1]); start(); P.mode="freeze";
+  $("#play").textContent="▶ Start"; $("#fz-big").textContent="¡Baila! "+t[2]; $("#fz-sub").textContent="Tanz frei, wie du willst."; $("#fz-tanz").textContent=t[2];
+  FZ.timer=setTimeout(fzStopp,5000+Math.random()*7000); }
+function fzStopp(){ if(!FZ||!FZ.run) return; stop(true); carmenDance(false); FZ.frozen=true; FZ.runde++; fzZeigen();
+  const pose=FZ_POSEN[Math.floor(Math.random()*FZ_POSEN.length)]; $("#milu-freeze").classList.add("eis"); if(window.FigurPosen) FigurPosen.zeige($("#milu-freeze"),"friert",3300);
+  $("#fz-big").textContent="¡Congelado! ❄"; $("#fz-sub").textContent=pose; sayDe("Congelado! "+pose);
+  if(FZ.runde>=6){ FZ.timer=setTimeout(fzEnde,3500); return; }
+  FZ.timer=setTimeout(()=>{ if(!FZ||!FZ.run)return; $("#fz-big").textContent="¡Sigue!"; fzTanz(); },3500+Math.random()*1500); }
+function fzEnde(){ FZ.run=false; $("#milu-freeze").classList.remove("eis"); mem.freeze=(mem.freeze||0)+1; save();
+  $("#fz-big").textContent="¡Fiesta! 🎉"; $("#fz-sub").textContent="6 Mal eingefroren. Du bist eine echte Statue!"; $("#fz-go").textContent="▶ Nochmal"; sayDe("Fiesta! Super getanzt."); konfetti(); stickerPruefen(); }
+function fzAus(){ if(FZ){FZ.run=false;clearTimeout(FZ.timer);} if(P.mode==="freeze"){stop();P.mode="step";} $("#fz-go").textContent="▶ Los"; $("#milu-freeze").classList.remove("eis"); }
+$("#fz-go").onclick=()=>{ if(FZ&&FZ.run){ fzAus(); $("#fz-big").textContent="Pause"; $("#fz-sub").textContent="«Los» für eine neue Runde."; return; }
+  audio(); FZ={run:true,runde:0,frozen:false}; fzZeigen(); $("#fz-go").textContent="■ Stopp"; fzTanz(); };
+$("[data-go=freeze]").addEventListener("click",()=>{ fzAus(); FZ=null; fzZeigen(); $("#fz-big").textContent="¿Listo?"; $("#fz-sub").textContent="Platz frei machen, dann «Los»."; });
+$("#back").addEventListener("click",()=>fzAus());
+
+/* ---------- Erster Start: drei kurze Fragen ---------- */
+function onboarding(){
+  if(mem.onboard) return;
+  const o=document.createElement("div"); o.className="ob"; o.setAttribute("role","dialog"); o.setAttribute("aria-label","Willkommen bei Carmencita");
+  const SCH=[
+    {q:"Wer tanzt heute?",a:[["Ich allein","solo"],["Mit einem Kind","kind"],["Zu zweit","paar"]]},
+    {q:"Welche Rolle möchtest du lernen?",a:[["Führen","lead"],["Folgen","follow"],["Weiss noch nicht","lead"]]},
+    {q:"Soll Carmencita auf Spanisch mitzählen?",a:[["Ja, uno, dos, tres","1"],["Nein, nur Musik","0"]]}
+  ];
+  let i=0; const wahl={};
+  function zeig(){ const x=SCH[i]; o.innerHTML='<div class="ob-box"><img src="figur.jpg" alt="" width="96" height="96"><div class="ob-dots" role="img" aria-label="Frage '+(i+1)+' von 3">'+[0,1,2].map(k=>'<i'+(k<=i?' class="an"':'')+'></i>').join('')+'</div><h3></h3><div class="ob-a"></div><button class="ob-skip">Überspringen</button></div>';
+    o.querySelector("h3").textContent=x.q;
+    x.a.forEach(([t,v])=>{const b=document.createElement("button"); b.className="btn gold"; b.textContent=t; b.onclick=()=>{wahl[i]=v; i++; if(i<SCH.length) zeig(); else fertig();}; o.querySelector(".ob-a").appendChild(b);});
+    o.querySelector(".ob-skip").onclick=fertig; }
+  function fertig(){ mem.onboard=1; if(wahl[1]) mem.role=wahl[1]; if(wahl[2]!==undefined) mem.voice=+wahl[2]; mem.wer=wahl[0]||"solo"; save(); o.classList.add("zu"); setTimeout(()=>o.remove(),300); renderHome(); konfetti(); try{navigator.vibrate&&navigator.vibrate([12,60,12])}catch(e){}
+    const t=mem.wer==="kind"?"¡Qué bien! Ganz oben findest du «Eltern und Kind zusammen». Und der Stopptanz unter «Spielen» macht Kindern viel Spass.":mem.wer==="paar"?"¡Bienvenidos! Lernt zuerst beide allein den Grundschritt, dann tanzt ihr zusammen.":"¡Bienvenido! Wir starten mit der 1. Hör einfach zu.";
+    $("#home-say").textContent=t; sayDe(t); }
+  zeig(); document.body.appendChild(o);
+}
+
+/* ---------- Runde 3: erster Eindruck. Nach «¡Vamos!» spielt die Band kurz, Carmencita tanzt, dann kommen die Fragen ---------- */
+function fiesta(){
+  const ob=document.querySelector(".ob"); if(ob) ob.classList.add("wartet");
+  let fertig=false;
+  const ende=()=>{ if(fertig) return; fertig=true; if(P.mode==="free"&&current==="home") stop(); setBpm(90); if(ob&&ob.isConnected) ob.classList.remove("wartet"); };
+  try{ audio(); P.style="salsa"; P.mode="free"; P.step="grund"; P.cam=false; setBpm(104); start(); }catch(e){ ende(); return; }
+  $("#home-say").textContent="¡Hola! Ich bin Carmencita. Hörst du die Band? Die spielt nur für dich.";
+  try{navigator.vibrate&&navigator.vibrate([12,60,12])}catch(e){}
+  setTimeout(ende,5600);
+  document.addEventListener("pointerdown",function f(e){ if(e.target.closest&&e.target.closest("#figurStart")) return; document.removeEventListener("pointerdown",f,true); ende(); },true);
+}
+$("#figurStartGo").addEventListener("click",fiesta);
+// Mit Carmencita reden: der Knopf oben im Kopf löst den Sprech-Baustein aus (dessen eigener Knopf ist versteckt)
+$("#kopfSprechen").onclick=()=>{ try{navigator.vibrate&&navigator.vibrate(10)}catch(e){} location.href="../nova/reden.html?f=carmencita"; };
+(function spiegeln(t){ const k=document.querySelector(".sp-knopf"); if(!k){ if(t<300) requestAnimationFrame(()=>spiegeln(t+1)); return; }
+  new MutationObserver(()=>{ $("#kopfSprechen").classList.toggle("hoert",k.classList.contains("hoert")); $("#kopfSprechen").classList.toggle("spricht",k.classList.contains("spricht")); }).observe(k,{attributes:true,attributeFilter:["class"]}); })(0);
 
 /* ---------- Start ---------- */
+renderTipp(); renderSticker(); mem.sticker=mem.sticker||stickerHat();
 renderHome();
 if("speechSynthesis" in window) speechSynthesis.onvoiceschanged=()=>{voices=speechSynthesis.getVoices()};
+onboarding();
+addEventListener("offline",()=>{ $("#home-say").textContent="Ohne Internet tanzen wir trotzdem: Die Band spielt direkt im Handy."; });
 document.addEventListener("visibilitychange",()=>{ if(document.hidden){ if(W&&W.run){W.run=false;$("#ws-play").textContent="▶ Weiter";} stop();camStop();} });
 })();
 </script>
@@ -871,7 +1206,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 <script>
 (function(){
   var ruhig=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var SAETZE=["¡Hola! Tanzt du mit mir?", "Eins, zwei, drei … und Pause. Genau so!", "Lächeln gehört zum Schritt dazu.", "Die Musik trägt dich, du musst nur zuhören."],si=0;
+  var SAETZE=["¡Hola! Tanzt du mit mir?", "Eins, zwei, drei … und Pause. Genau so!", "Lächeln gehört zum Schritt dazu.", "Die Musik trägt dich, du musst nur zuhören.", "In Havanna tanzen alle auf der Strasse. Du auch?", "¡Vamos! Spielen wir Stopptanz?", "Meine Oma sagt: Wer tanzt, ist nie allein."],si=0;
   var farben=['#F2C14E','#E5484D','#2EC4B6','#ffffff'];
   // Farbschleier + aufsteigende Funken (wie Fias Nest)
   var au=document.createElement('div');au.className='film-aurora';au.setAttribute('aria-hidden','true');au.innerHTML='<i></i><i></i><i></i>';document.body.prepend(au);
@@ -908,8 +1243,12 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
   }
 })();
 </script>
-<script src="../apps/sprechen/sprechen.js" data-figur="carmencita" data-name="Carmencita" data-bild="figur.jpg" data-audio="audio/carmencita/" data-unten="18" data-saetze='{"gruss": ["¡Hola! Ich bin Carmencita. Tanzt du mit mir?"], "lob": ["¡Muy bien! Deine Füsse tanzen schon ganz von allein."], "mut": ["Langsam ist auch schön. Hör auf die Musik, eins, zwei, drei, Pause."], "frage": ["Tipp auf «Weiter üben», dann zeige ich dir den nächsten Schritt."]}' defer></script>
+<script src="../apps/sprechen/sprechen.js" data-figur="carmencita" data-name="Carmencita" data-bild="figur.jpg" data-audio="audio/carmencita/" data-unten="16" data-saetze='{"gruss": ["¡Hola! Ich bin Carmencita. Tanzt du mit mir?"], "lob": ["¡Muy bien! Deine Füsse tanzen schon ganz von allein."], "mut": ["Langsam ist auch schön. Hör auf die Musik, eins, zwei, drei, Pause."], "frage": ["Tipp auf «Weiter üben», dann zeige ich dir den nächsten Schritt."]}' defer></script>
+<script src="posen.js"></script>
+<script src="feedback.js" data-app="Carmencita" defer></script>
+<script>if('serviceWorker' in navigator && location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(function(){});</script>
 <script src="../nova/seelen.js" defer></script>
+<script src="../nova/nova.js" data-nova-app="Carmencita" data-nova-figur="carmencita" defer></script>
 <script src="../nova/nova.js" data-nova-bild="figur.jpg" data-nova-app="Carmencita" data-nova-figur="carmencita" defer></script>
 </body>
 </html>

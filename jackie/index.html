@@ -2,20 +2,24 @@
 <html lang="de-CH">
 <head>
 <meta charset="utf-8">
+<script src="ton-ios.js"></script>
+<script src="nda-sperre.js" data-app="Jackie"></script>
+<script src="diskret.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Jackie's Advice">
-<meta name="theme-color" content="#f7f1ea">
-<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#fbf7f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#17111a" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
 <meta name="description" content="Deine Begleiterin im Familienalltag – warm wie eine Freundin.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
 <title>Jackie's Advice</title>
 <meta property="og:title" content="Jackie's Advice"><meta property="og:description" content="Jackie hilft der Familie durch den Alltag."><meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/jackie/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://diegorobert-code.github.io/DR_Lab/jackie/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <style>
@@ -104,6 +108,8 @@ textarea::placeholder,input::placeholder{color:#b3a59c}
 .tile small{display:block;font-size:13px;color:var(--muted);margin-top:2px;line-height:1.35}
 .t-streit .ic{background:var(--accent-l);color:var(--accent-d)} .t-schule .ic{background:var(--sky-l);color:#4f6478} .t-behoerden .ic{background:var(--plum-l);color:#7a5a72} .t-teen .ic{background:var(--sand-l);color:#8a6a35}
 .t-gesundheit .ic{background:#e3eeec;color:#3f716a}
+.t-pause{grid-column:1/-1}
+.t-freunde .ic{background:var(--sky-l);color:#4f6478}
 .t-pause{background:linear-gradient(140deg,var(--sage-l),#eef3ee)}
 .t-pause .ic{background:rgba(255,255,255,.7);color:var(--sage-d)}
 .tile{min-width:0}
@@ -121,8 +127,8 @@ header.top .pills{display:flex;gap:8px;flex:none}
 header.top .pill{padding:0 14px}
 @media (max-width:400px){ .brand span{display:none} }
 .card{background:var(--card);border:1px solid rgba(233,221,208,.6);border-radius:var(--r);padding:20px;margin:12px 0;box-shadow:var(--sh)}
-.card.step{background:linear-gradient(160deg,#fff 0%,var(--accent-xl) 100%);border-color:var(--accent-l)}
-.card.soft{background:rgba(255,252,248,.6);box-shadow:none}
+.card.step{background:linear-gradient(160deg,#25336f 0%,#1a2758 100%);border-color:#f2c14e!important}
+.card.soft{background:rgba(20,30,70,.55);box-shadow:none}
 .quote{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.4;color:var(--ink2);padding:4px 0 4px 16px;border-left:2px solid var(--accent);margin:8px 0 6px;word-wrap:break-word}
 .opts{display:flex;flex-direction:column;gap:10px;margin-top:14px}
 .opt{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-height:58px;border:1px solid var(--line);background:var(--card);border-radius:18px;font-size:17px;font-weight:500;color:var(--ink);text-align:left;padding:13px 18px;cursor:pointer;box-shadow:var(--sh-s);transition:transform .2s var(--ease),border-color .2s}
@@ -235,10 +241,242 @@ h1 em{color:#F2C14E}
 @media (prefers-reduced-motion:reduce){.jk-buehne img{animation:none}}
 .ob-jackie{overflow:hidden;padding:0!important;border:3px solid #f2c14e;box-shadow:0 0 40px rgba(242,193,78,.35)!important}.ob-jackie img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;animation:jkAtmen 5s ease-in-out infinite}
 header.top .pill{background:rgba(20,30,70,.6)!important;color:#f3ece4!important;border-color:rgba(242,193,78,.35)!important;backdrop-filter:blur(6px)}
+
+/* ===== Trickfilm 1.1 (Yulia v2: Jackie gross, Mikro auf dem Bild, goldener Schuh, weiche Tusche-Konturen, leichter Schatten) ===== */
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.07;background-image:radial-gradient(#f2c14e 1px,transparent 1.4px);background-size:9px 9px}
+.card,.tile,.notecta,.opt,.recall,.hopen,.nbody{border:1.5px solid rgba(242,193,78,.28)!important;box-shadow:0 0 0 1px rgba(5,8,25,.35),3px 4px 0 rgba(5,8,25,.28),0 10px 26px -14px rgba(0,0,0,.55)!important}
+.jk-buehne{isolation:isolate}
+.jk-blase{position:absolute;left:14px;top:14px;max-width:62%;background:#fffaf0;color:#2a1d10;border:2px solid #2a1d10;border-radius:20px 20px 20px 6px;padding:10px 14px;font:600 16px/1.35 var(--sans);box-shadow:3px 4px 0 rgba(10,8,20,.35);animation:jkBlase .5s cubic-bezier(.3,1.5,.5,1) both;z-index:2}
+.jk-blase::after{content:"";position:absolute;left:22px;bottom:-12px;width:18px;height:14px;background:#fffaf0;border-right:2px solid #2a1d10;border-bottom:2px solid #2a1d10;transform:skewX(-30deg) rotate(12deg);border-radius:0 0 6px 0}
+@keyframes jkBlase{from{opacity:0;transform:translateY(8px) scale(.85)}to{opacity:1;transform:none}}
+.jk-stagemic{position:absolute;right:14px;top:14px;z-index:2;width:66px;height:66px;border-radius:50%;border:3px solid #fffaf0;background:radial-gradient(circle at 35% 30%,#ffe39a,#f2c14e 55%,#b8862a);color:#2a1d10;display:grid;place-items:center;cursor:pointer;box-shadow:0 0 0 6px rgba(242,193,78,.22),3px 5px 0 rgba(10,8,20,.4);animation:jkMicPuls 2.6s ease-in-out infinite}
+.jk-stagemic svg.i{width:30px;height:30px;stroke-width:2}
+.jk-stagemic.listening{background:radial-gradient(circle at 35% 30%,#c4f0d2,#6fbf8c 60%,#3f8a5c);animation:jkMicHoer 1s ease-in-out infinite}
+@keyframes jkMicPuls{50%{box-shadow:0 0 0 12px rgba(242,193,78,.08),3px 5px 0 rgba(10,8,20,.4)}}
+@keyframes jkMicHoer{50%{transform:scale(1.08)}}
+.jk-flugschuh{position:absolute;right:6%;top:34%;width:84px;z-index:1;filter:drop-shadow(0 0 14px rgba(242,193,78,.8));animation:jkFlug 4.2s ease-in-out infinite;pointer-events:none}
+@keyframes jkFlug{0%,100%{transform:translate(0,0) rotate(-6deg)}50%{transform:translate(-14px,-16px) rotate(4deg)}}
+.jk-buehne img.jk-pose-hops{animation:jkPoseHops .7s cubic-bezier(.3,1.6,.5,1)!important}
+.jk-buehne img.jk-pose-hoert{animation:jkPoseHoert 2.4s ease-in-out infinite!important}
+.jk-buehne img.jk-pose-fliegt{animation:jkPoseFliegt 1.6s ease-in-out!important}
+.jk-buehne img.jk-pose-winkt{animation:jkPoseWinkt 1.2s ease-in-out!important}
+.jk-buehne img.jk-pose-denkt{animation:jkPoseDenkt 2.8s ease-in-out infinite!important}
+.jk-buehne img.jk-pose-zeigt{animation:jkPoseZeigt 1.1s ease-out!important}
+@keyframes jkPoseWinkt{20%,60%{transform:rotate(-3deg)}40%,80%{transform:rotate(3deg)}}
+@keyframes jkPoseDenkt{50%{transform:translateX(-6px) rotate(-1.5deg) scale(1.01)}}
+@keyframes jkPoseZeigt{40%{transform:translateX(10px) rotate(2deg)}}
+.jk-ki{margin-top:14px}
+.jk-ki .jk-ki-text{white-space:pre-wrap;margin:8px 0 0}
+@keyframes jkPoseHops{30%{transform:translateY(-16px) scale(1.03) rotate(-2deg)}60%{transform:translateY(0) scale(.99) rotate(1deg)}}
+@keyframes jkPoseHoert{50%{transform:rotate(-2.5deg) scale(1.02);transform-origin:40% 80%}}
+@keyframes jkPoseFliegt{0%{transform:none}40%{transform:translateY(-26px) scale(1.04)}100%{transform:none}}
+.jk-schuhe{display:block;width:100%;text-align:left;border:1.5px solid rgba(242,193,78,.4);border-radius:20px;background:linear-gradient(135deg,#1b2a63,#121d48);color:var(--ink);padding:14px 16px 12px;margin:-6px 0 16px;cursor:pointer;box-shadow:3px 4px 0 rgba(5,8,25,.3)}
+.jk-schuhe-kopf b{display:block;font-family:var(--serif);font-weight:500;font-size:18px;color:#f2c14e}
+.jk-schuhe-kopf small{display:block;font-size:14px;color:var(--ink2);margin-top:2px}
+.jk-schuhe-bar{position:relative;display:block;height:14px;border-radius:99px;background:rgba(255,255,255,.1);margin:12px 34px 4px 0;border:1.5px solid rgba(242,193,78,.35)}
+.jk-schuhe-bar>i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#b8862a,#f2c14e,#ffe9a8);box-shadow:0 0 12px rgba(242,193,78,.6);transition:width .9s var(--ease)}
+.jk-schuhe-gold{position:absolute;right:-38px;top:-14px;width:44px;filter:grayscale(.85) brightness(.75);transition:filter .6s}
+.jk-schuhe-gold.voll{filter:drop-shadow(0 0 8px rgba(242,193,78,.9));animation:jkFlug 2.4s ease-in-out infinite}
+.jk-regal{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;min-height:0}
+.jk-regal svg{width:30px;height:18px;filter:drop-shadow(0 0 4px rgba(242,193,78,.6))}
+.jk-tuer{display:flex;align-items:center;gap:14px;width:100%;min-height:76px;margin:12px 0 0;padding:12px 16px;border-radius:20px;cursor:pointer;text-align:left;color:var(--ink);background:linear-gradient(135deg,rgba(242,193,78,.16),rgba(30,45,100,.6));border:1.5px solid rgba(242,193,78,.45);box-shadow:3px 4px 0 rgba(5,8,25,.3)}
+.jk-tuer-bild{width:38px;height:48px;flex:none;filter:drop-shadow(0 0 10px rgba(242,193,78,.55))}
+.jk-tuer b{display:block;font-size:17px;font-weight:600}
+.jk-tuer small{display:block;font-size:14px;color:var(--ink2);margin-top:2px;line-height:1.35}
+.jk-geschichte .ic{overflow:hidden;padding:0;border:2px solid #f2c14e}
+.jk-geschichte .ic img{width:100%;height:100%;object-fit:cover;object-position:50% 20%}
+.jk-zeigt{display:flex;align-items:flex-end;gap:8px;margin:14px 0 -4px}
+.jk-zeigt img{width:58px;height:58px;border-radius:50%;border:2.5px solid #f2c14e;object-fit:cover;object-position:50% 28%;flex:none;animation:filmSchweben 4.6s ease-in-out infinite}
+.jk-zeigt span{position:relative;background:#fffaf0;color:#2a1d10;border:2px solid #2a1d10;border-radius:16px 16px 16px 4px;padding:8px 12px;font-weight:600;font-size:15px;box-shadow:2px 3px 0 rgba(10,8,20,.35)}
+.jk-leer{display:flex;gap:12px;align-items:center}
+.jk-leer img{width:52px;height:52px;border-radius:50%;border:2px solid #f2c14e;object-fit:cover;flex:none}
+.jk-merkt-kopf{display:flex;align-items:center;gap:10px}
+.jk-merkt-kopf img{width:42px;height:42px;border-radius:50%;border:2px solid #f2c14e;object-fit:cover}
+.jk-merkt-kopf h3{margin:0}
+.jk-merkt ul{margin:0;padding:0;list-style:none}
+.jk-merkt li{display:flex;justify-content:space-between;gap:10px;padding:8px 2px;border-top:1px solid var(--line);font-size:15px;color:var(--ink2)}
+.jk-merkt li:first-child{border-top:0}
+.jk-merkt li b{color:var(--ink);font-weight:600}
+.tile .oft{position:absolute;top:10px;right:10px;font-size:11px;font-weight:700;letter-spacing:.06em;color:#2a1d10;background:#f2c14e;border-radius:99px;padding:2px 8px}
+.jk-familie{margin:14px 0 4px}
+.jk-familie span{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.jk-familie div{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+.jk-familie a{flex-direction:column;gap:4px;font-size:13px;min-height:0;padding:0}
+.jk-familie img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #f2c14e}
+.backrow .pill{background:rgba(20,30,70,.6)!important;color:#f3ece4!important;border-color:rgba(242,193,78,.35)!important}
+.wrap{padding-bottom:calc(110px + var(--sab))}
+/* Geschichte */
+.st-film{border-radius:24px;overflow:hidden;border:1.5px solid rgba(242,193,78,.45);background:#0b1636;box-shadow:3px 4px 0 rgba(5,8,25,.3),0 18px 40px -16px rgba(0,0,0,.6)}
+.st-bild{position:relative;aspect-ratio:4/3;overflow:hidden}
+.st-bild img{width:100%;height:100%;object-fit:cover;object-position:50% 25%;animation:stKen 9s ease-in-out both}
+.st-bild img.st-neu{animation:stIris .8s ease-out both,stKen 9s ease-in-out both}
+@keyframes stKen{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.14) translate(-2%,-2%)}}
+@keyframes stIris{from{clip-path:circle(0% at 50% 45%)}to{clip-path:circle(80% at 50% 45%)}}
+.st-schuh{position:absolute;left:50%;bottom:10%;width:110px;margin-left:-55px;opacity:0;filter:drop-shadow(0 0 16px rgba(242,193,78,.9));transition:opacity .6s}
+.st-schuh.an{opacity:1;animation:jkFlug 3s ease-in-out infinite}
+.st-funken{position:absolute;inset:0;background:radial-gradient(2px 2px at 20% 30%,#ffe9a8,transparent),radial-gradient(2px 2px at 70% 20%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 85% 65%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 35% 75%,#ffe9a8,transparent);animation:filmFunkeln 4s ease-in-out infinite}
+.st-text{padding:16px 18px 18px}
+.st-text p{font-family:var(--serif);font-size:20px;line-height:1.45;margin:0;color:var(--ink);min-height:5.8em}
+/* Schutzraum */
+body.im-schutz header.top,body.im-schutz .nova-pille,body.im-schutz .nova-btn,body.im-schutz .nova-panel,body.im-schutz #fbBtn,body.im-schutz .fb-veil,body.im-schutz header.top .pills,body.im-schutz footer .jk-familie,body.im-schutz [data-drlab-lernen]{display:none!important}
+.jk-exit{display:none;position:fixed;top:calc(10px + var(--sat));right:calc(12px + var(--sar));z-index:2147483600;min-height:52px;padding:0 20px;border-radius:999px;border:2px solid #fffaf0;background:#1f5f6b;color:#fff;font:700 17px var(--sans);box-shadow:0 4px 14px rgba(0,0,0,.45);cursor:pointer}
+body.im-schutz .jk-exit{display:inline-flex;align-items:center}
+body.im-schutz .wrap{padding-top:calc(74px + var(--sat))}
+.jk-cover{display:none;position:fixed;inset:0;z-index:2147483646;background:#fffaf2;color:#3a2c22;align-items:center;justify-content:center;text-align:center;font:600 20px Georgia,serif}
+.jk-cover.on{display:flex}
+.jk-cover img{width:84px;height:84px;border-radius:50%;object-fit:cover}
+.jk-cover button{min-height:52px;padding:0 28px;border-radius:16px;border:0;background:#b5822f;color:#fff;font:600 17px var(--sans);margin-top:10px}
+.sz-sprache{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.sz-sprache button{min-height:40px;padding:0 12px;border-radius:99px;border:1.5px solid rgba(242,193,78,.35);background:transparent;color:var(--ink);font:600 14px var(--sans);cursor:pointer}
+.sz-sprache button.an{background:rgba(242,193,78,.18);border-color:#f2c14e;color:#f2c14e}
+.jk-tuer-sprachen{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 14px;font-size:13px;color:var(--muted)}
+.jk-tuer-sprachen button{min-height:36px;padding:0 12px;border-radius:99px;border:1px solid rgba(242,193,78,.4);background:transparent;color:var(--ink2);font:600 13px var(--sans);cursor:pointer}
+.sz-akut{background:var(--red-l);border:1.5px solid #ff8f80;border-radius:16px;padding:12px 16px;font-size:17px;margin:0 0 14px;color:#ffd9d3}
+.sz-akut a{color:#fff;font-weight:700;text-decoration:underline}
+.sz-kopf{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.sz-jackie{width:62px;height:62px;border-radius:50%;object-fit:cover;border:2.5px solid #f2c14e;flex:none}
+.sz-eyebrow{display:block;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#f2c14e}
+.sz-satz{margin:2px 0 0;font-family:var(--serif);font-size:17px;line-height:1.4;color:var(--ink)}
+.sz-tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;margin:0 -2px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.sz-tabs::-webkit-scrollbar{display:none}
+.sz-tabs button{flex:none;min-height:44px;padding:0 16px;border-radius:99px;border:1.5px solid rgba(242,193,78,.35);background:rgba(20,30,70,.6);color:var(--ink);font:600 15px var(--sans);cursor:pointer}
+.sz-tabs button.an{background:#f2c14e;color:#2a1d10;border-color:#f2c14e}
+.sz-inhalt h2{font-size:24px;margin:0 0 4px}
+.sz-h{font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:18px 2px 8px}
+.sz-intro{display:flex;gap:14px;align-items:center;margin:4px 0 6px}
+.sz-intro p{margin:0;color:var(--ink2)}
+.sz-tuer{width:70px;flex:none}
+.sz-call{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:62px;margin:8px 0;padding:10px 16px;border-radius:16px;background:var(--card);border:1.5px solid rgba(242,193,78,.3);color:var(--ink)!important;text-decoration:none;box-shadow:2px 3px 0 rgba(5,8,25,.3)}
+.sz-call b{display:block;font-size:17px;font-weight:600}
+.sz-call small{display:block;font-size:13px;color:var(--muted);line-height:1.35}
+.sz-call strong{font-size:22px;color:#f2c14e;white-space:nowrap}
+.sz-call.notruf{border-color:#ff8f80}
+.sz-call.notruf strong{color:#ff8f80;font-size:26px}
+.sz-hint{font-size:14px;color:var(--muted);margin:4px 2px 10px}
+.sz-card{background:var(--card);border:1.5px solid rgba(242,193,78,.28);border-radius:20px;padding:16px 18px;margin:12px 0;box-shadow:3px 4px 0 rgba(5,8,25,.28)}
+.sz-card h3{font-size:19px;margin:0 0 6px}
+.sz-card p{color:var(--ink2);margin:0 0 8px}
+.sz-card p:last-child{margin-bottom:0}
+.sz-card a{color:#f2c14e;font-weight:600}
+.sz-card.gold{border-color:#f2c14e;background:linear-gradient(160deg,#1f2d66,#17255a)}
+.sz-card.rot{border-color:#ff8f80}
+.sz-list{margin:0;padding-left:20px;color:var(--ink2)}
+.sz-list li{margin:6px 0}
+.sz-klein{font-size:14px;color:var(--muted);margin:6px 2px 10px}
+.sz-weiter{font-size:15px;color:var(--ink2);margin:16px 2px}
+.sz-weiter a{color:#f2c14e;font-weight:700}
+.sz-hand{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0}
+.sz-hand figure{margin:0;text-align:center}
+.sz-hand svg{width:100%;max-width:90px;height:auto;background:#fffaf0;border-radius:14px;padding:6px}
+.sz-hand figcaption{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.3}
+.sz-prog{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin:4px 0 6px}
+.sz-prog i{display:block;height:100%;background:#f2c14e;transition:width .4s}
+.sz-frage{font-family:var(--serif);font-size:20px;line-height:1.4;color:var(--ink)!important}
+.sz-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.sz-opts button,.sz-btn{min-height:54px;border-radius:16px;border:1.5px solid rgba(242,193,78,.45);background:rgba(242,193,78,.12);color:var(--ink);font:600 16px var(--sans);cursor:pointer;padding:0 12px}
+.sz-btn{background:#f2c14e;color:#2a1d10;border-color:#f2c14e;flex:1}
+.sz-btn.soft{background:transparent;color:var(--ink);border-color:rgba(242,193,78,.45)}
+.sz-row{display:flex;gap:10px;margin:14px 0}
+.sz-link{background:none;border:0;color:#f2c14e;font:600 15px var(--sans);min-height:44px;cursor:pointer;padding:0 4px}
+.sz-step{display:flex;gap:12px}
+.sz-nr{flex:none;width:34px;height:34px;border-radius:50%;background:#f2c14e;color:#2a1d10;font-weight:700;display:grid;place-items:center}
+.sz-step>div{flex:1;min-width:0}
+.sz-in{width:100%;min-height:48px!important;border-radius:14px!important;font-size:16px!important;margin-top:4px;padding:10px 12px!important}
+.sz-check{display:flex;gap:12px;align-items:center;min-height:48px;border-top:1px solid var(--line);font-size:16px;color:var(--ink);cursor:pointer}
+.sz-check:first-child{border-top:0}
+.sz-check input{width:24px;height:24px;flex:none;accent-color:#f2c14e}
+.sz-web{display:flex;align-items:center;min-height:48px;margin:6px 0}
+.sz-fuss{font-size:13px;color:var(--muted);margin:20px 2px 10px;line-height:1.5}
+.sz-zurueck{width:100%;min-height:52px;border-radius:16px;border:1.5px solid var(--line);background:transparent;color:var(--ink2);font:600 16px var(--sans);cursor:pointer}
+@media (prefers-reduced-motion:reduce){.jk-blase,.jk-stagemic,.jk-flugschuh,.st-bild img,.st-schuh.an,.jk-schuhe-gold.voll,.jk-zeigt img{animation:none!important}}
+@media print{body::before,.film-aurora,#filmFunken,header.top,footer,.jk-exit,.sz-tabs,.sz-akut,.sz-kopf,.sz-zurueck,.nova-btn,#fbBtn{display:none!important}html,body{background:#fff!important;color:#000!important}.sz-card,.sz-card p,.sz-in{color:#000!important;background:#fff!important;box-shadow:none!important;border-color:#999!important}}
+/* ===== Runde 3: erster Eindruck (Sicherheit zuerst, HIG/Material: 8-px-Raster, 44-px-Ziele, 16-px-Schrift) ===== */
+.wrap{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+:focus-visible{outline:3px solid #f2c14e;outline-offset:3px}
+/* Notruf-Leiste: ruhig, klar, ohne Animation, immer zuoberst */
+.jk-notruf{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:4px 0 16px}
+.jk-notruf .nr{display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:8px;border-radius:16px;border:1.5px solid rgba(255,143,128,.55);background:#3a2236;color:#ffe3de;text-decoration:none;font:inherit;cursor:pointer;animation:none!important;transition:background .15s}
+.jk-notruf .nr:active{background:#4a2a40}
+.jk-notruf .nr svg.i{width:20px;height:20px;flex:none;stroke:#ff8f80}
+.jk-notruf .nr b{display:block;font-size:20px;line-height:1.1;color:#fff;font-weight:700}
+.jk-notruf .nr small{display:block;font-size:14px;line-height:1.2;color:#ffc9c1}
+.jk-notruf .nr.mehr{border-color:rgba(255,255,255,.25);background:rgba(20,30,70,.6);color:var(--ink)}
+.jk-notruf .nr.mehr b{font-size:16px}.jk-notruf .nr.mehr small{color:var(--muted)}
+.jk-notruf .nr span{text-align:left}
+/* Bühne kompakter, damit Mikrofon und Thema schneller kommen */
+.jk-buehne img{aspect-ratio:1/1;max-height:min(56vh,380px);object-position:50% 22%}
+.jk-buehne .unten{padding:56px 16px 16px}
+.jk-buehne .unten span{font-size:16px}
+.jk-buehne img{animation:jkAuf .8s cubic-bezier(.22,.8,.26,1) both,jkAtmen 5s 1s ease-in-out infinite}
+@keyframes jkAuf{from{opacity:0;transform:scale(1.06)}to{opacity:1;transform:none}}
+.jk-blase{animation:jkBlaseAuf .5s .5s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes jkBlaseAuf{from{opacity:0;transform:translateY(8px) scale(.92)}to{opacity:1;transform:none}}
+/* Doppelte Reden-Pille von Nova weg: Sie lag über dem Notfall-Knopf. Der Nova-Knopf bleibt. */
+.nova-pille{display:none!important}
+/* Erststart-Karte */
+.jk-neu{position:relative;margin:8px 0 16px;padding:16px 48px 16px 16px;border-radius:20px;background:rgba(242,193,78,.1);border:1px solid rgba(242,193,78,.4);font-size:16px}
+.jk-neu-knoepfe{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.jk-neu-knoepfe button{min-height:44px;padding:0 16px;border-radius:99px;border:1px solid rgba(242,193,78,.55);background:transparent;color:#f2c14e;font:600 16px var(--sans);cursor:pointer}
+.jk-neu-knoepfe button:active,.jk-neu-zu:active{transform:scale(.96)}
+.jk-neu-zu{position:absolute;top:4px;right:4px;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--muted);font-size:18px;cursor:pointer}
+/* Einführung: Nacht statt Beige, Notruf sichtbar */
+.ob{background:radial-gradient(120% 60% at 50% 0%,#22356e 0%,#0E1838 60%,#0a1230 100%)!important;padding-top:calc(76px + var(--sat))}
+.ob-notruf{position:fixed;top:calc(12px + var(--sat));left:max(16px,env(safe-area-inset-left));right:max(16px,env(safe-area-inset-right));display:flex;gap:8px;z-index:2}
+.ob-notruf a,.ob-notruf button{flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:14px;font:600 15px var(--sans);text-decoration:none;cursor:pointer}
+.ob-notruf a{background:#3a2236;border:1.5px solid rgba(255,143,128,.55);color:#ffe3de}
+.ob-notruf a{white-space:nowrap}
+.ob-notruf button{flex:0 0 44px;padding:0;font-size:18px;background:transparent;border:1px solid rgba(255,255,255,.25);color:var(--ink)}
+/* Lesbarkeit: mind. 15-16 px */
+.tile small,.sosbtn small,.call small{font-size:15px}
+/* Notfallnummern: lesbar (vorher helle Schrift auf weissen Karten) */
+.call{background:#1a2452!important;border:1px solid rgba(255,143,128,.4);color:#f6efe4!important;font-size:16px;min-height:64px}
+.call strong{color:#ffaa9d}
+.call small{color:var(--ink2)}
+.call:active{background:#22306a!important}
+.sos{color:#ffe3de}
+.jk-tuer small{font-size:15px}
+.jk-tuer-sprachen button{min-height:44px;font-size:15px;padding:0 14px}
+.sz-sprache button{min-height:44px;font-size:16px}
+.privacy{font-size:15px}
+.tile:active,.notecta:active,.jk-tuer:active{transform:scale(.98)}
+@media (prefers-reduced-motion:reduce){.jk-buehne img,.jk-blase{animation:none!important}}
+
+/* Runde 4: Notruf immer sichtbar, Klack-Schuhe, Sicher unterwegs */
+.jk-notruf{grid-template-columns:1fr 1fr 1fr .8fr}
+.jk-notruf .nr{gap:6px;padding:8px 6px}
+.jk-notruf .nr svg.i{width:16px;height:16px}
+@media (max-width:370px){.jk-notruf .nr svg.i{display:none}}
+.jk-sticky-nr{position:fixed;left:0;right:0;top:0;z-index:70;display:flex;gap:6px;padding:calc(6px + var(--sat)) calc(12px + var(--sar)) 6px calc(12px + var(--sal));background:rgba(10,16,40,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,143,128,.35);transform:translateY(-110%);transition:transform .25s var(--ease)}
+.jk-sticky-nr.an{transform:none}
+.jk-sticky-nr a{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;border-radius:12px;background:#3a2236;border:1px solid rgba(255,143,128,.55);color:#ffe3de;text-decoration:none;font:500 14px var(--sans);white-space:nowrap}
+.jk-sticky-nr a b{font-size:17px;color:#fff}
+/* Schutzraum: 117, 144 und 142 bleiben sichtbar, die Leiste liegt unter dem Verlassen-Knopf */
+body.im-schutz .jk-sticky-nr{top:calc(70px + var(--sat));padding-top:6px}
+body.im-schutz .wrap{padding-top:calc(130px + var(--sat))}
+@media (prefers-reduced-motion:reduce){.jk-sticky-nr{transition:none}}
+.jk-klack{position:absolute;left:12px;top:40%;width:110px;height:40px;z-index:1;pointer-events:none;opacity:0}
+.jk-klack svg{position:absolute;bottom:0;width:52px;filter:drop-shadow(0 0 10px rgba(242,193,78,.8))}
+.jk-klack .l{left:2px;transform:scaleX(-1)}.jk-klack .r{right:2px}
+.jk-klack i{position:absolute;left:50%;bottom:16px;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:#fff;box-shadow:0 0 12px 6px rgba(255,233,168,.9);opacity:0}
+.jk-klack.an{animation:jkKlackDa 1.5s ease both}
+.jk-klack.an .l{animation:jkKlackL .32s ease-in-out 2 .15s}
+.jk-klack.an .r{animation:jkKlackR .32s ease-in-out 2 .15s}
+.jk-klack.an i{animation:jkKlackFunke .32s ease-out 2 .3s}
+@keyframes jkKlackDa{0%{opacity:0;transform:translateY(8px)}15%,80%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes jkKlackL{50%{transform:scaleX(-1) translateX(-14px) rotate(-8deg)}}
+@keyframes jkKlackR{50%{transform:translateX(-14px) rotate(-8deg)}}
+@keyframes jkKlackFunke{0%{opacity:0;transform:scale(.3)}40%{opacity:1;transform:scale(1.4)}100%{opacity:0;transform:scale(.6)}}
+@media (prefers-reduced-motion:reduce){.jk-klack.an,.jk-klack.an *{animation:none!important}}
+.jk-unterwegs{display:flex;align-items:center;gap:14px;width:100%;margin:12px 0 4px;padding:14px 16px;min-height:64px;border-radius:20px;border:1px solid rgba(91,141,239,.45);background:linear-gradient(135deg,rgba(40,60,130,.55),rgba(20,30,70,.7));color:var(--ink);text-align:left;cursor:pointer;font:inherit}
+.jk-unterwegs b{display:block;font-size:17px}.jk-unterwegs small{display:block;font-size:14px;line-height:1.35;color:var(--muted)}
+.jk-uw-ic{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:rgba(91,141,239,.25);color:#cfe0ff}
+.jk-uw-pfeil{margin-left:auto;opacity:.6}
 </style>
+<link rel="stylesheet" href="../nova/puppe.css">
 </head>
 <body>
-<script src="../nova/intro.js" data-art="portal" data-bild="schuhmacher.jpg" data-fokus="0.55,0.3" data-text="Willkommen in der Werkstatt vom Schuhmacher"></script>
+<!-- Runde 4: kein Kino-Intro mehr. Es lag 3 Sekunden über den Notrufnummern. Jackie grüsst stattdessen auf der Bühne (winkt, klackt mit den Schuhen). -->
+<div class="jk-sticky-nr" id="jkStickyNr" role="region" aria-label="Notruf, immer erreichbar" aria-hidden="true"><a href="tel:117" tabindex="-1"><b>117</b> Polizei</a><a href="tel:144" tabindex="-1"><b>144</b> Sanität</a><a href="tel:142" tabindex="-1"><b>142</b> Opferhilfe</a></div>
 
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -264,6 +502,8 @@ header.top .pill{background:rgba(20,30,70,.6)!important;color:#f3ece4!important;
     <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 4.5c-2 0-3 1.4-3 3v1.5H7.5c-1.6 0-3 1-3 3s1.4 3 3 3H9v1.5c0 1.6 1 3 3 3s3-1.4 3-3V15h1.5c1.6 0 3-1 3-3s-1.4-3-3-3H15V7.5c0-1.6-1-3-3-3z"/></symbol>
     <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.5 4h3l1.5 4-2 1.5a10 10 0 0 0 5.5 5.5L16 13l4 1.5v3A2 2 0 0 1 18 19.5C10.5 19 5 13.5 4.5 6A2 2 0 0 1 6.5 4z"/></symbol>
     <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 17.5h6M10 20.5h4"/><path d="M12 3.5a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.4 1.1 2.2h5c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3.5z"/></symbol>
+    <linearGradient id="gsGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe9a8"/><stop offset=".55" stop-color="#f2c14e"/><stop offset="1" stop-color="#b8862a"/></linearGradient>
+    <symbol id="i-goldschuh" viewBox="0 0 120 70"><path d="M58 22c8-14 26-20 44-16-6 4-9 8-10 12 7-1 13 0 18 3-8 2-13 5-16 9 4 0 8 2 11 4-10 3-22 3-31 1z" fill="#fff6dc" stroke="#b8862a" stroke-width="2" stroke-linejoin="round"/><path d="M8 50c0-10 6-16 16-17l14-2c6-1 10-5 13-10 3-4 9-4 12 0 4 6 9 11 17 14l18 6c8 3 12 8 12 13v2H8z" fill="url(#gsGold)" stroke="#7a5214" stroke-width="2.4" stroke-linejoin="round"/><path d="M6 56h104v5a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4z" fill="#fff3cf" stroke="#7a5214" stroke-width="2.4"/><path d="M48 30l8 6M54 26l8 6M60 23l7 6" stroke="#7a5214" stroke-width="2" stroke-linecap="round"/><circle cx="30" cy="42" r="2.4" fill="#fff"/></symbol>
     <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/></symbol>
   </defs>
 </svg>
@@ -271,7 +511,7 @@ header.top .pill{background:rgba(20,30,70,.6)!important;color:#f3ece4!important;
 <div class="wrap">
   <header class="top">
     <div class="brand"><img class="figur-logo" src="figur.jpg" alt=""><span>Jackie's Advice</span></div>
-    <div class="pills">
+    <div class="pills" data-feedback-slot>
       <button class="pill" id="btnGuide" aria-label="Anleitung zeigen">Anleitung</button>
       <button class="pill" id="btnHistory" aria-label="Verlauf öffnen"><svg class="i"><use href="#i-clock"/></svg>Verlauf</button>
     </div>
@@ -279,15 +519,39 @@ header.top .pill{background:rgba(20,30,70,.6)!important;color:#f3ece4!important;
 
   <!-- HOME -->
   <section id="vHome">
-    <section class="jk-buehne" aria-label="Jackie">
-      <img src="jackie-3d.jpg" alt="Jackie" width="1024" height="1024">
+    <div class="jk-notruf" role="region" aria-label="Notfall – sofort Hilfe">
+      <a class="nr" href="tel:117"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg><span><b>117</b><small>Polizei</small></span></a>
+      <a class="nr" href="tel:144"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg><span><b>144</b><small>Sanität</small></span></a>
+      <a class="nr" href="tel:142"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg><span><b>142</b><small>Opferhilfe</small></span></a>
+      <button class="nr mehr" id="btnSos" type="button" aria-label="Alle Notfallnummern"><span><b>Alle</b><small>Nummern</small></span></button>
+    </div>
+    <section class="jk-buehne" aria-label="Jackie" id="jkBuehne">
+      <img src="jackie-3d.jpg" alt="Jackie" width="1024" height="1024" id="jkBild">
+      <div class="jk-blase" id="jkBlase" aria-live="polite"><span id="jkBlaseText">Ich höre dir zu. Tipp aufs Mikrofon.</span></div>
+      <button class="jk-stagemic" id="stageMic" type="button" aria-label="Jackie erzählen: Mikrofon starten"><svg class="i"><use href="#i-mic"/></svg></button>
+      <svg class="jk-flugschuh" viewBox="0 0 120 70" aria-hidden="true"><use href="#i-goldschuh"/></svg>
+      <span class="jk-klack" id="jkKlack" aria-hidden="true"><svg class="l" viewBox="0 0 120 70"><use href="#i-goldschuh"/></svg><svg class="r" viewBox="0 0 120 70"><use href="#i-goldschuh"/></svg><i></i></span>
       <div class="unten"><b>Ich bin Jackie.</b><span>Erzähl mir, was los ist. Wir finden zusammen den nächsten Schritt.</span>
       <a class="jk-reden" href="../nova/reden.html?f=jackie">📞 Mit Jackie reden</a></div>
     </section>
     <span class="eyebrow" id="greetEyebrow">Guten Tag</span>
     <h1 id="greet">Hallo,<br><em>schön, dass du da bist.</em></h1>
+    <div class="jk-neu hide" id="jkNeu">
+      <span>Neu hier? Magst du mir deinen Namen sagen? Ganz freiwillig.</span>
+      <div class="jk-neu-knoepfe"><button type="button" id="neuName">Name eingeben</button><button type="button" id="neuGuide">So geht's</button></div>
+      <button type="button" class="jk-neu-zu" id="neuZu" aria-label="Hinweis schliessen">✕</button>
+    </div>
     <p class="lead" id="greetLead">Erzähl mir, was dich gerade beschäftigt. Ich höre zu – ohne zu urteilen.</p>
-    <button class="sosbtn" id="btnSos"><svg class="i"><use href="#i-phone"/></svg><span>Notfall – sofort Hilfe<small>Alle Notrufnummern und Beratungsstellen</small></span></button>
+    <button class="jk-tuer" id="btnSchutz" type="button">
+      <svg class="jk-tuer-bild" viewBox="0 0 120 150" aria-hidden="true"><path d="M30 140V48a30 30 0 0 1 60 0v92z" fill="#1b2a63" stroke="#f2c14e" stroke-width="4"/><path d="M38 140V52a22 22 0 0 1 44 0v88z" fill="#f6d98a"/><circle cx="74" cy="98" r="4" fill="#a8792a"/></svg>
+      <span><b>Fühlst du dich zuhause nicht sicher?</b><small>Hilfe ohne Konto, gratis, vertraulich. Nichts wird gespeichert.</small></span>
+    </button>
+    <div class="jk-tuer-sprachen" aria-label="Hilfe in anderen Sprachen"><button type="button" data-schutz="sofort" data-schutz-lang="fr" lang="fr">Aide · Français</button><button type="button" data-schutz="sofort" data-schutz-lang="it" lang="it">Aiuto · Italiano</button><button type="button" data-schutz="sofort" data-schutz-lang="en" lang="en">Help · English</button></div>
+    <button class="jk-unterwegs" id="btnUnterwegs" type="button">
+      <span class="jk-uw-ic" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg></span>
+      <span><b>Sicher unterwegs</b><small>Scheinanruf · Begleit-Timer · Wo bin ich? Alles nur auf deinem Handy.</small></span>
+      <svg class="i jk-uw-pfeil" aria-hidden="true" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
 
     <div id="recallBox"></div>
 
@@ -310,18 +574,28 @@ header.top .pill{background:rgba(20,30,70,.6)!important;color:#f3ece4!important;
       <button class="tile t-behoerden stag" data-topic="behoerden"><span class="ic"><svg class="i"><use href="#i-doc"/></svg></span><span><b>Behörden &amp; Formulare</b><small>Briefe, Fristen, Geld</small></span></button>
       <button class="tile t-teen stag" data-topic="teen"><span class="ic"><svg class="i"><use href="#i-head"/></svg></span><span><b>Teenager</b><small>Rückzug, Handy, Ausgang</small></span></button>
       <button class="tile t-gesundheit stag" data-topic="gesundheit"><span class="ic"><svg class="i"><use href="#i-plus"/></svg></span><span><b>Gesundheit (allgemein)</b><small>Fieber, Schlaf, Essen, Arzt</small></span></button>
+      <button class="tile t-freunde stag" data-topic="freunde"><span class="ic"><svg class="i"><use href="#i-heart"/></svg></span><span><b>Freunde finden</b><small>Für dich oder dein Kind</small></span></button>
       <button class="tile t-pause stag" data-topic="pause"><span class="ic"><svg class="i"><use href="#i-leaf"/></svg></span><span><b>Ich brauche eine Pause</b><small>Zwei Minuten nur atmen</small></span></button>
     </div>
 
     <div class="section-title"><h2>Für dich</h2></div>
+    <button class="jk-schuhe" id="jkSchuhe" type="button" aria-label="Deine Schuhe nach Mass">
+      <span class="jk-schuhe-kopf"><b>Deine Schuhe nach Mass</b><small id="jkSchuheText">Jeder Schritt hier ist ein Stich in deinen Schuh.</small></span>
+      <span class="jk-schuhe-bar"><i id="jkSchuheBar"></i><svg class="jk-schuhe-gold" id="jkSchuheGold" viewBox="0 0 120 70" aria-hidden="true"><use href="#i-goldschuh"/></svg></span>
+      <span class="jk-regal" id="jkRegal" aria-hidden="true"></span>
+    </button>
     <button class="notecta" id="btnNotes">
       <span class="ic"><svg class="i"><use href="#i-pen"/></svg></span>
       <span><b>Notiz an mich</b><small>Kurz festhalten – ich erinnere dich beim nächsten Öffnen.</small></span>
       <span class="count hide" id="noteCount">0</span>
     </button>
+    <button class="notecta jk-geschichte" id="btnStory" style="margin-top:12px">
+      <span class="ic"><img src="schuhmacher.jpg" alt="" loading="lazy" decoding="async"></span>
+      <span><b>Der Schuhmacher hat eine Geschichte für dich</b><small>Wie Jackie zu ihren Zauberschuhen kam. Zwei Minuten, mit Vorlesen.</small></span>
+    </button>
     <button class="notecta" id="btnIdeas" style="margin-top:12px">
       <span class="ic" style="background:var(--accent-l);color:var(--accent-d)"><svg class="i"><use href="#i-bulb"/></svg></span>
-      <span><b>Kauf mit deinen Ideen</b><small>Bald kannst du auch mit deinen Ideen bezahlen.</small></span>
+      <span><b>Kauf mit deinen Ideen</b><small>Jede Idee zahlt zwei goldene Stiche in deine Schuhe ein.</small></span>
     </button>
     <p class="privacy"><svg class="i"><use href="#i-lock"/></svg>Deine Daten bleiben auf deinem Handy.</p>
   </section>
@@ -402,6 +676,14 @@ header.top .pill{background:rgba(20,30,70,.6)!important;color:#f3ece4!important;
     <h1>Was du mir <em>erzählt hast</em></h1>
     <p class="privacy" style="margin-top:0"><svg class="i"><use href="#i-lock"/></svg>Nur auf diesem Handy gespeichert. Du kannst jederzeit löschen.</p>
     <div id="hList"></div>
+    <div class="card jk-merkt" id="memCard" style="margin-top:20px">
+      <div class="jk-merkt-kopf"><img src="figur.jpg" alt=""><h3>Was Jackie sich merkt</h3></div>
+      <p class="muted small" style="margin:6px 0 10px">Jackie lernt mit dir: Themen, die dich oft beschäftigen, stehen weiter oben, und sie fragt nach, wie es weitergegangen ist. Gespeichert werden nur Zahlen, nie deine Worte, nie deine Stimme, nur auf diesem Handy. Der Bereich «Wenn es zuhause nicht sicher ist» wird nie mitgezählt.</p>
+      <div id="memList"></div>
+      <label class="check" style="align-items:flex-start"><input type="checkbox" id="memOk" style="margin-top:2px"> <span>Ich bin einverstanden, dass das App-Team diese Lern-Zahlen (ohne Namen, ohne Text, ohne Stimme) für die Weiterentwicklung von Jackie nutzen darf.</span></label>
+      <div class="row" style="margin-top:8px"><button class="btn soft" id="memShare" disabled>Lern-Zahlen weitergeben</button><button class="btn danger" id="memDel" style="flex:0 0 auto;width:auto;padding:0 18px">Vergessen</button></div>
+      <p class="muted small" id="memMsg" style="margin:8px 2px 0;min-height:1em"></p>
+    </div>
     <div class="card soft" style="margin-top:20px">
       <h3>Alles löschen</h3>
       <p class="muted small">Löscht alle Gespräche, Notizen, deinen Namen, gezählte Pausen und Einstellungen auf diesem Handy. Danach startet die App wie neu.</p>
@@ -430,45 +712,92 @@ header.top .pill{background:rgba(20,30,70,.6)!important;color:#f3ece4!important;
         <a class="call" href="tel:147"><strong>147</strong><span>Pro Juventute<small>Für Kinder, Jugendliche und Eltern</small></span></a>
         <a class="call" href="tel:143"><strong>143</strong><span>Die Dargebotene Hand<small>Reden, wenn alles zu viel ist – Tag und Nacht</small></span></a>
         <a class="call" href="tel:0848354555"><strong style="font-size:15px;min-width:0">0848 35 45 55</strong><span>Elternnotruf<small>24 Stunden für Eltern in Krisen</small></span></a>
-        <a class="call" href="https://www.opferhilfe-schweiz.ch" target="_blank" rel="noopener"><strong style="font-size:15px;min-width:0">Opferhilfe</strong><span>opferhilfe-schweiz.ch<small>Beratung nach Gewalt – kostenlos, vertraulich</small></span></a>
+        <a class="call" href="tel:142"><strong>142</strong><span>Opferhilfe Schweiz<small>Nach Gewalt – 24 Stunden, gratis, vertraulich. Kein Notruf.</small></span></a>
+        <a class="call" href="https://www.opferhilfe-schweiz.ch" target="_blank" rel="noopener noreferrer"><strong style="font-size:15px;min-width:0">Opferhilfe</strong><span>opferhilfe-schweiz.ch<small>Beratungsstellen in deinem Kanton</small></span></a>
       </div>
     </div>
+    <p class="sz-hint" style="margin:6px 4px">Anrufe stehen danach in deiner Anrufliste. Lösche sie, wenn das für dich sicherer ist.</p>
+    <button class="jk-tuer" type="button" data-schutz="sofort" style="margin-top:10px">
+      <svg class="jk-tuer-bild" viewBox="0 0 120 150" aria-hidden="true"><path d="M30 140V48a30 30 0 0 1 60 0v92z" fill="#1b2a63" stroke="#f2c14e" stroke-width="4"/><path d="M38 140V52a22 22 0 0 1 44 0v88z" fill="#f6d98a"/><circle cx="74" cy="98" r="4" fill="#a8792a"/></svg>
+      <span><b>Gewalt zuhause?</b><small>Sicherheitsplan, Notfalltasche, Frauenhaus, deine Rechte</small></span>
+    </button>
     <div id="sosNext"></div>
   </section>
 
-  <!-- IDEEN -->
+  <!-- MUSTER PRO ZYKLUSPHASE (Inhalt aus zyklus.js, nur auf dem Handy) -->
+  <section id="vZyklus" class="hide" aria-labelledby="zyTitel"></section>
+
+  <!-- SCHUTZRAUM (Inhalt aus schutz.js, speichert nichts) -->
+  <section id="vSchutz" class="hide" aria-label="Wenn es zuhause nicht sicher ist"></section>
+
+  <!-- GESCHICHTE VOM SCHUHMACHER -->
+  <section id="vStory" class="hide">
+    <div class="backrow"><button class="pill" data-home><svg class="i"><use href="#i-back"/></svg>Zurück</button></div>
+    <div class="st-film" id="stFilm">
+      <div class="st-bild"><img id="stImg" src="schuhmacher.jpg" alt="" loading="lazy" decoding="async"><div class="st-funken" aria-hidden="true"></div><svg class="st-schuh" id="stSchuh" viewBox="0 0 120 70" aria-hidden="true"><use href="#i-goldschuh"/></svg></div>
+      <div class="st-text"><span class="eyebrow" id="stWer">Der Schuhmacher erzählt</span><p id="stSatz"></p></div>
+    </div>
+    <div class="dots" id="stDots"></div>
+    <div class="row"><button class="btn soft" id="stBack">Zurück</button><button class="btn" id="stNext">Weiter</button></div>
+    <label class="check"><input type="checkbox" id="stVoice"> Vorlesen</label>
+  </section>
+
+  <!-- IDEEN: Kauf mit deinen Ideen (jede Idee = 2 Stiche in deinen Schuh) -->
   <section id="vIdeas" class="hide">
     <div class="backrow"><button class="pill" data-home><svg class="i"><use href="#i-back"/></svg>Zurück</button></div>
     <span class="eyebrow">Kauf mit deinen Ideen</span>
-    <h1>Bald kannst du auch <em>mit deinen Ideen bezahlen.</em></h1>
-    <p class="lead">Hast du eine Idee, wie Jackie's Advice dir besser helfen könnte? Ein Thema, das fehlt, ein Satz, der dir gutgetan hätte? Solche Ideen sollen später etwas wert sein.</p>
-    <div class="card">
-      <h3>So ist es gedacht</h3>
+    <h1>Deine Ideen sind <em>bei uns etwas wert.</em></h1>
+    <p class="lead">Ein Thema, das fehlt? Ein Satz, der dir gutgetan hätte? Jede Idee zahlt zwei goldene Stiche in deine Schuhe nach Mass ein.</p>
+    <div class="card jk-ideenkasse">
+      <div class="jk-merkt-kopf"><img src="schuhmacher.jpg" alt="" loading="lazy" decoding="async"><h3>Die Ideenkasse vom Schuhmacher</h3></div>
+      <p class="muted small" id="ideaKasse" style="margin:6px 0 0">Noch keine Idee eingezahlt.</p>
+    </div>
+    <label for="ideaTxt" class="fieldlabel">Deine Idee</label>
+    <textarea id="ideaTxt" maxlength="400" placeholder="z. B. «Ein Thema für Grosseltern» oder «Jackie soll mich am Sonntagabend an die Wochenplanung erinnern»"></textarea>
+    <div class="counter" id="ideaCounter">0 / 400</div>
+    <button class="btn" id="btnIdeaSave" style="margin-top:8px"><svg class="i"><use href="#i-bulb"/></svg>Idee einzahlen</button>
+    <div id="ideaList" style="margin-top:20px"></div>
+    <div class="card" style="margin-top:18px">
+      <h3>So funktioniert es</h3>
       <ul class="alts">
-        <li>Ideen teilen ist freiwillig. Du musst nichts geben.</li>
-        <li>Nichts wird automatisch freigeschaltet oder verrechnet.</li>
-        <li>Zurzeit ist das erst eine Vorschau – es gibt noch nichts zu kaufen.</li>
+        <li>Deine Ideen bleiben auf diesem Handy. Nichts wird automatisch verschickt.</li>
+        <li>Willst du, dass das App-Team eine Idee liest? Tipp bei der Idee auf «Ans App-Team schicken». Nur dann geht genau dieser Text weg, ohne Namen.</li>
+        <li>Gute Ideen kommen in Jackie hinein. Bezahlt wird mit goldenen Stichen, nicht mit Geld.</li>
       </ul>
     </div>
-    <div class="info"><svg class="i"><use href="#i-info"/></svg><span>Bis es so weit ist, kannst du deine Idee als «Notiz an mich» festhalten. Sie bleibt nur auf deinem Handy.</span></div>
-    <button class="btn soft" id="btnIdeaNote"><svg class="i"><use href="#i-pen"/></svg>Idee als Notiz festhalten</button>
   </section>
 
   <footer>
     <div><b>Notfall Schweiz</b> – du bist nicht allein</div>
     <div class="nums">
+      <a href="tel:117">117 Polizei</a>
       <a href="tel:144">144 Sanität</a>
+      <a href="tel:142">142 Opferhilfe</a>
       <a href="tel:147">147 Pro Juventute</a>
       <a href="tel:143">143 Dargebotene Hand</a>
       <a href="#" id="footSos">Alle Notfallnummern</a>
     </div>
-    <div>Keine Rechtsberatung · keine Diagnosen · Deine Daten bleiben auf deinem Handy.</div>
-    <div style="margin-top:6px">DR Lab · Testphase</div>
+    <div>Keine Rechtsberatung · keine Diagnosen · ohne Konto · Deine Daten bleiben auf deinem Handy.</div>
+    <nav class="jk-familie" id="jkFamilie" aria-label="Weitere Apps">
+      <span>Weitere Apps</span>
+      <div>
+        <a href="../mondschein/"><img src="../mondschein/figur.jpg" alt="" loading="lazy">Otti</a>
+        <a href="../kiki/"><img src="../kiki/figur.jpg" alt="" loading="lazy">Kiki</a>
+        <a href="../humanspark/"><img src="../humanspark/figur.jpg" alt="" loading="lazy">Sparky</a>
+        <a href="../schlaf/"><img src="../schlaf/icon-180.png" alt="" loading="lazy">Fia</a>
+      </div>
+    </nav>
+    <div style="margin-top:6px">Testphase</div>
   </footer>
 </div>
 
+<!-- Schnellausstieg: nur im Hilfebereich sichtbar (schutz.js) -->
+<button type="button" id="jkExit" class="jk-exit" aria-label="Seite sofort verlassen">Verlassen ✕</button>
+<div class="jk-cover" id="jkCover"><div><img src="figur.jpg" alt=""><p>Jackie's Advice</p><button type="button" id="jkCoverGo">Weiter</button></div></div>
+
 <!-- ONBOARDING -->
 <div class="ob hide" id="ob">
+  <div class="ob-notruf"><a href="tel:117">117 Polizei</a><a href="tel:142">142 Opferhilfe</a><button type="button" id="obZu" aria-label="Einführung schliessen">✕</button></div>
   <div class="ob-in" id="obName">
     <div class="ob-art ob-jackie"><img src="jackie-3d.jpg" alt="Jackie"></div>
     <h1>Hallo,<br><em>schön, dass du da bist.</em></h1>
@@ -489,6 +818,8 @@ header.top .pill{background:rgba(20,30,70,.6)!important;color:#f3ece4!important;
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="schutz.js"></script>
+<script src="unterwegs.js"></script>
 <script>
 (function(){
 'use strict';
@@ -530,6 +861,7 @@ const TOPICS = {
   behoerden:{name:'Behörden & Formulare', icon:'doc'},
   teen:     {name:'Teenager', icon:'head'},
   gesundheit:{name:'Gesundheit (allgemein)', icon:'plus'},
+  freunde:  {name:'Freunde finden', icon:'heart'},
   pause:    {name:'Ich brauche eine Pause', icon:'leaf'}
 };
 
@@ -554,6 +886,11 @@ const MODS = {
     {id:'wut', label:'Ich bin wütend', tip:'Wut ist okay – sie zeigt, dass dir etwas wichtig ist. Klär die Sache erst, wenn du wieder bei 5 von 10 bist. Bis dahin darfst du sagen: «Ich brauch kurz.»'},
     {id:'traurig', label:'Traurig oder hilflos', tip:'So fühlen sich viele Mütter in dieser Phase. Dein Teenager braucht dich noch – nur anders. Sei sanft mit dir.'},
     {id:'sorge', label:'Ich mache mir Sorgen', tip:'Sorgen sind ein gutes Frühwarnsystem. Hör darauf, ohne in Panik zu geraten – und hol dir Unterstützung, wenn das Gefühl bleibt.'}
+  ]},
+  freunde:{ q:'Was fällt dir am schwersten?', opts:[
+    {id:'anfang', label:'Den ersten Schritt machen', tip:'Der erste Schritt muss nicht gross sein. Ein Lächeln, eine Frage, ein «Hallo» reicht. Die meisten Menschen freuen sich, angesprochen zu werden, sie trauen sich nur selbst nicht.'},
+    {id:'zeit', label:'Zeit dafür finden', tip:'Freundschaft braucht keine freien Abende. Sie wächst auch nebenbei: auf dem Spielplatz, beim Abholen, beim Einkaufen. Kleine, regelmässige Momente zählen mehr als seltene grosse.'},
+    {id:'vertrauen', label:'Mich öffnen und vertrauen', tip:'Du darfst langsam sein. Erzähl erst Kleines von dir und schau, wie es zurückkommt. Vertrauen wächst Schritt für Schritt, nicht auf einmal.'}
   ]},
   gesundheit:{ q:'Wie alt ist dein Kind ungefähr?', opts:[
     {id:'baby', label:'Baby (unter 1 Jahr)', tip:'Bei Babys lieber früher als später anrufen – besonders bei Fieber unter 3 Monaten, wenn es schlecht trinkt oder schlapp wirkt. Niemand findet das übertrieben.'},
@@ -688,6 +1025,34 @@ const SITS = [
  alts:['Auf 147 hinweisen – Jugendliche können dort anonym anrufen, chatten oder schreiben.','Für dich selbst: die Elternberatung von Pro Juventute oder die Dargebotene Hand (143), wenn es dir zu viel wird.']}
 ];
 
+/* ===== FREUNDE FINDEN ===== */
+const FR_INFO = 'In Zürich zum Beispiel: Women4Women vom SRK Kanton Zürich (kostenloser Frauentreff, kreativ und gemütlich) · ZIWA (internationale Frauengruppen: Bücher, Sport, Wandern, Sprachen) · Checkin breaks out (monatlicher Apéro, um neue Leute kennenzulernen) · Gemeinschaftszentren GZ (Töpfern und Kurse im Quartier) · Habi-Art in Altstetten (Malen und Zeichnen) · LOKI Studio (Keramikkurse) · Timeleft (Abendessen zu sechst mit Fremden, per App) · Meetup-Gruppe «Zürich Girlfriends connecting» (Frauen 33–45). Daten und Preise bitte direkt beim Angebot nachschauen, sie ändern sich.';
+SITS.push(
+{id:'einsam', topic:'freunde', title:'Ich fühle mich als Mama oft allein',
+ kw:['einsam','allein mit','niemanden','keine freundin','keine freundinnen','keine freunde mehr','niemand zum reden','fühle mich allein','isoliert'],
+ intro:'Viele Mütter kennen dieses Gefühl, auch wenn kaum jemand darüber spricht. Den ganzen Tag mit Kindern und trotzdem allein: Das ist kein persönliches Versagen, das ist eine Phase, die du verändern kannst.',
+ step:{t:'Diese Woche eine Person kurz kontaktieren', x:'Denk an eine Person, mit der es früher schön war oder die dir sympathisch ist. Schreib ihr heute eine kurze Nachricht: «Ich habe an dich gedacht. Hast du Lust auf einen Kaffee oder einen Spaziergang mit den Kindern?» Mehr braucht es nicht für den Anfang.'},
+ alts:['Einen festen Wochentag für dich einplanen, an dem du etwas mit anderen Erwachsenen machst, auch wenn es nur eine Stunde ist.','Die Mütter- und Väterberatung oder das Familienzentrum deiner Gemeinde fragen: Dort gibt es oft Treffs für Eltern.'],
+ info:FR_INFO},
+{id:'neu', topic:'freunde', title:'Neu hier, ich kenne noch niemanden',
+ kw:['neu hier','zugezogen','umgezogen','neue stadt','neuer ort','kenne niemanden','kenne noch niemanden','fremd hier','anschluss finden','anschluss'],
+ intro:'Neu anfangen ist mutig, und es braucht Zeit. Freundschaften an einem neuen Ort wachsen meist über das, was du sowieso tust.',
+ step:{t:'Einen Ort finden, an dem du regelmässig bist', x:'Such dir einen Ort, wo du jede Woche zur gleichen Zeit bist: ein Elterncafé, ein Kurs, ein Chor, ein Sportverein, eine Spielgruppe. Wer sich immer wieder sieht, kommt ganz von selbst ins Gespräch.'},
+ alts:['Bei der Gemeinde nach einem Begrüssungsanlass oder Quartiertreff für Neuzugezogene fragen.','Nachbarn grüssen und kurz vorstellen. Ein kleiner Zettel im Treppenhaus («Wir sind neu hier») öffnet oft Türen.'],
+ info:FR_INFO},
+{id:'muetter', topic:'freunde', title:'Andere Mütter kennenlernen',
+ kw:['andere mütter','andere mamis','mamis','mütter kennenlernen','spielplatz','elternabend','krabbelgruppe','spielgruppe','eltern kennenlernen','mamifreundin'],
+ intro:'Auf dem Spielplatz stehen oft viele Mütter, die genau dasselbe denken wie du: «Ich würde gerne reden, aber wie anfangen?»',
+ step:{t:'Über die Kinder ins Gespräch kommen', x:'Die Kinder sind der einfachste Einstieg: «Wie alt ist Ihre Kleine?» oder «Kommt ihr oft hierher?» Wenn es sich gut anfühlt, schlag beim nächsten Mal vor: «Sollen wir uns nächste Woche wieder hier treffen?»'},
+ alts:['Beim Elternabend oder Abholen Nummern austauschen, zum Beispiel für eine Klassen- oder Spielgruppen-Chatgruppe.','Selbst zu einem einfachen Treffen einladen: Zvieri im Park, jede bringt etwas mit.'],
+ info:FR_INFO},
+{id:'kindfreunde', topic:'freunde', title:'Mein Kind findet keine Freunde',
+ kw:['findet keine freunde','hat keine freunde','keine gspänli','keine gspändli','kein gspänli','spielt allein','spielt immer allein','schüchtern','findet keinen anschluss','neue klasse','kein freund'],
+ intro:'Wenn dein Kind allein ist, tut das auch dir weh. Viele Kinder brauchen einfach etwas mehr Zeit oder einen kleinen Anstoss, und ein einziger guter Freund reicht oft schon.',
+ step:{t:'Ein Kind zum Spielen einladen', x:'Frag dein Kind: «Mit wem spielst du gern, auch nur ein bisschen?» Lade genau dieses eine Kind zu euch ein, kurz und einfach: eine Stunde, ein Spiel, ein Zvieri. Zu zweit fällt es schüchternen Kindern viel leichter als in der Gruppe.'},
+ alts:['Ein Hobby mit anderen Kindern suchen, das dein Kind wirklich mag: Fussball, Zeichnen, Pfadi, Musik.','Wird dein Kind ausgeschlossen oder geplagt: die Lehrperson oder Schulsozialarbeit informieren.']}
+);
+
 /* ===== GESUNDHEIT ===== */
 const GES_INFO = 'Keine Diagnose: Bitte lass Beschwerden ärztlich abklären – bei deiner Kinderärztin oder deinem Hausarzt. Ausserhalb der Praxiszeiten: Ärztefon Zürich 0800 33 66 55. Notfall 144, Vergiftung Tox Info 145.';
 SITS.push(
@@ -739,6 +1104,7 @@ function analyse(text){
   if(/(schule|klasse|lehr)/.test(t)) scores.schule=(scores.schule||0)+1;
   if(/( amt|behörde|gemeinde|kanton|formular)/.test(t)) scores.behoerden=(scores.behoerden||0)+1;
   if(/(gesund|krank(?!enkass)|arzt|ärzt|medikament|schmerz|fieber|schlaf)/.test(t)) scores.gesundheit=(scores.gesundheit||0)+1;
+  if(/(freund|freundschaft|kontakte|anschluss|einsam)/.test(t)) scores.freunde=(scores.freunde||0)+1;
   let pause=0; PAUSE_KW.forEach(k=>{ if(hasKw(t,k)) pause++; });
   let topic=null, best=0;
   Object.keys(scores).forEach(k=>{ if(scores[k]>best){best=scores[k];topic=k;} });
@@ -752,10 +1118,14 @@ function analyse(text){
 }
 
 /* ---------- Ansichten ---------- */
-const VIEWS=['vHome','vAsk','vAnswer','vPause','vHistory','vNotes','vSos','vIdeas'];
+const VIEWS=['vHome','vAsk','vAnswer','vPause','vHistory','vNotes','vSos','vIdeas','vSchutz','vStory','vZyklus'];
 function show(v){
   VIEWS.forEach(id=>{ const el=$(id); const on = id===v; el.classList.toggle('hide', !on); if(on){ el.classList.remove('view-in'); void el.offsetWidth; el.classList.add('view-in'); } });
   window.scrollTo(0,0);
+  // Hilfebereich: Schnellausstieg zeigen, Nova/Feedback ausblenden
+  document.body.classList.toggle('im-schutz', v==='vSchutz' || v==='vSos');
+  if(v!=='vSchutz' && window.JackieSchutz) JackieSchutz.vergessen();
+  if(v!=='vStory') stopStory();
   if(v!=='vPause') stopBreath(true);
   if(v!=='vAnswer') stopSpeak();
   stopRec();
@@ -777,7 +1147,7 @@ function renderGreeting(){
     ? 'Der Tag war lang. Erzähl mir, was dich noch beschäftigt – dann darf es ruhen.'
     : 'Erzähl mir, was dich gerade beschäftigt. Ich höre zu – ohne zu urteilen.';
 }
-function renderHome(){ renderGreeting(); renderRecall(); updateNoteCount(); }
+function renderHome(){ renderGreeting(); renderRecall(); updateNoteCount(); renderSchuhe(); renderBlase(); markTiles(); setTimeout(()=>{ const vh=$('vHome'); if(vh && !vh.classList.contains('hide') && !document.querySelector('#jkBild[class*="jk-pose-"]')) winke(false); }, 400); }
 
 /* ---------- Ablauf ---------- */
 let flow = null;
@@ -785,6 +1155,11 @@ let flow = null;
 function startFromText(){
   const text = $('txt').value.trim();
   if(!text){ toast('Erzähl mir zuerst kurz, was los ist.'); $('txt').focus(); return; }
+  /* Gewalt zuhause: sofort in den Schutzraum, nichts speichern, Text aus dem Feld nehmen */
+  const suizid = /(ich (will|möchte|werde) mich (umbringen|töten)|suizid|selbstmord|will sterben|nicht mehr leben|mir das leben nehmen)/.test(text.toLowerCase());
+  if(!suizid && window.JackieSchutz && JackieSchutz.gefahr(text)){
+    const sp=JackieSchutz.gefahrSprache(text); $('txt').value=''; flow=null; JackieSchutz.open('sofort', sp||'de'); return;
+  }
   const a = analyse(text);
   flow = {text, topic:a.topic, sos:a.sos, sitScores:a.sitScores, sitId:null, modId:null};
   /* Notfall zuerst – ohne Rückfragen */
@@ -828,7 +1203,7 @@ function askTopic(){
   $('askQ').textContent='Ich möchte dich richtig verstehen. Was passt am ehesten?';
   $('askSub').textContent='Tipp einfach an, was am nächsten dran ist – dann bekommst du gleich deinen nächsten Schritt.';
   const list=[];
-  ['streit','schule','behoerden','teen','gesundheit'].forEach(k=>{
+  ['streit','schule','behoerden','teen','gesundheit','freunde'].forEach(k=>{
     list.push({group:TOPICS[k].name});
     SITS.filter(s=>s.topic===k).forEach(s=>list.push({label:s.title, onClick:()=>{ flow.topic=k; flow.sitId=s.id; finish(); }}));
   });
@@ -861,9 +1236,13 @@ function askMod(){
 }
 
 function finish(){
-  const entry = {id:Date.now(), date:new Date().toISOString(), text:flow.text, topic:flow.topic, sitId:flow.sitId, modId:flow.modId, sos:!!flow.sos};
+  // Bei Notfall-Wörtern wird der Wortlaut nicht gespeichert (keine Spuren auf dem Handy).
+  const entry = {id:Date.now(), date:new Date().toISOString(), text:flow.sos?'':flow.text, topic:flow.topic, sitId:flow.sitId, modId:flow.modId, sos:!!flow.sos};
   const h = store.get('history', []); h.unshift(entry); store.set('history', h.slice(0,100));
+  if(flow.sos) $('txt').value='';
+  lernen('thema', flow.topic); lernen('situation', flow.sitId);
   renderAnswer(entry);
+  stich('Gespräch');
 }
 
 /* ---------- Antwort ---------- */
@@ -873,7 +1252,8 @@ function sosHtml(){
     '<a class="call" href="tel:144"><strong>144</strong> Sanität / Notruf</a>'+
     '<a class="call" href="tel:147"><strong>147</strong> Pro Juventute – für Kinder, Jugendliche und Eltern</a>'+
     '<a class="call" href="tel:143"><strong>143</strong> Dargebotene Hand – Tag und Nacht</a>'+
-    '<a class="call" href="tel:117"><strong>117</strong> Polizei</a></div>'+
+    '<a class="call" href="tel:117"><strong>117</strong> Polizei</a>'+
+    '<a class="call" href="tel:142"><strong>142</strong> Opferhilfe – nach Gewalt, 24 h, gratis</a></div>'+
     '<button class="btn soft" data-sosview style="margin-top:10px">Alle Notfallnummern und Beratungsstellen</button></div>';
 }
 /* Telefonnummern in Hinweisen anklickbar machen (Text ist bereits escaped) */
@@ -920,6 +1300,7 @@ function renderAnswer(e){
   if(e.sos) html+=sosHtml();
   if(e.text) html+='<div class="quote">«'+esc(e.text)+'»</div>';
   html+='<div class="card"><span class="eyebrow">'+esc(sit.title)+'</span><p class="ink2" style="font-family:var(--serif);font-size:19px;line-height:1.4;color:var(--ink)">'+esc(thanksLine())+'</p><p class="ink2"'+(mod?'':' style="margin:0"')+'>'+esc(sit.intro)+'</p>'+(mod?'<p class="muted" style="margin:0">'+esc(mod.tip)+'</p>':'')+'</div>';
+  html+=zeigt('Das hier ist dein nächster Schritt. Einer reicht.');
   html+='<div class="card step"><span class="eyebrow">Dein nächster Schritt</span><h2>'+esc(sit.step.t)+'</h2><p class="ink2" style="margin:0">'+esc(sit.step.x)+'</p></div>';
   if(sit.info) html+='<div class="info">'+icon('info')+'<span>'+linkTel(esc(sit.info))+'</span></div>';
   if(sit.topic==='schule') html+='<div class="info">'+icon('info')+'<span>Verbindlich Auskunft gibt die Schule (Lehrperson, Schulleitung); die Schulsozialarbeit berät vertraulich.</span></div>';
@@ -930,17 +1311,46 @@ function renderAnswer(e){
       '<button class="btn" id="btnCopy" style="margin-top:12px">'+icon('copy')+'Text kopieren</button></div>';
   }
   html+=moreBlock(more);
+  if(e.text && !e.sos && serverBereit()) html+='<div class="card jk-ki" id="kiBox"><span class="eyebrow">Jackie persönlich</span><p class="ink2" style="margin:4px 0 10px">Willst du, dass Jackie genauer auf deine Worte eingeht? Dann geht dein Text einmal an den App-Server, ohne Namen.</p><button class="btn soft" id="btnKi">'+icon('chat')+'Jackie persönlich fragen</button><div id="kiOut"></div></div>';
   $('ansBody').innerHTML=html;
   bindMore(sit.letter ? 'andere Wege und Briefentwurf' : 'andere Wege');
+  if($('btnKi')) $('btnKi').addEventListener('click', ()=>kiFragen(e.text, sit));
   if(sit.letter) $('btnCopy').addEventListener('click', copyLetter);
   speakText = thanksLine()+' '+sit.intro+' '+(mod?mod.tip+' ':'')+'Dein nächster Schritt: '+sit.step.t+'. '+sit.step.x;
   rememberText = sit.step.t+' ('+sit.title+')';
   $('btnRemember').classList.remove('hide');
   show('vAnswer');
 }
+/* ---------- Jackie persönlich (Sense Engine, nur auf Knopfdruck, nie im Hilfebereich) ---------- */
+function serverDaten(){ let addr='', key=''; try{ addr=JSON.parse(localStorage.getItem('drlab-hermes-adresse')||'""')||''; key=JSON.parse(localStorage.getItem('drlab-hermes-passwort')||'""')||''; }catch(e){} return {addr:String(addr).trim().replace(/\/+$/,''), key}; }
+function serverBereit(){ const d=serverDaten(); return /^https:\/\//.test(d.addr) && !!d.key && navigator.onLine!==false; }
+async function kiFragen(text, sit){
+  const out=$('kiOut'), b=$('btnKi'); if(!out||!b) return;
+  b.disabled=true; out.innerHTML='<p class="muted small jk-ki-text">Jackie denkt nach …</p>';
+  const d=serverDaten();
+  const sys="Du bist Jackie aus der App «Jackie's Advice»: eine warme, ruhige Begleiterin für Mütter und Eltern in der Schweiz. Antworte auf Deutsch (Schweiz, kein ß), in höchstens 5 kurzen Sätzen, einfach und ohne Fachwörter. Nenne einen konkreten nächsten Schritt. Keine Diagnose, keine Rechtsberatung, keine grossen Versprechen. Bei Gewalt oder Gefahr: 117 Polizei, 142 Opferhilfe, 144 Sanität, 143 Dargebotene Hand. Das Thema laut App: "+sit.title+".";
+  try{
+    const ctl=('AbortController' in window)?new AbortController():null; const to=setTimeout(()=>{ if(ctl) ctl.abort(); }, 25000);
+    const r=await fetch(d.addr+'/v1/chat/completions',{method:'POST',signal:ctl?ctl.signal:undefined,headers:{'Content-Type':'application/json','Authorization':'Bearer '+d.key,'X-Nova-App':'Jackie'},body:JSON.stringify({model:'sense-engine',messages:[{role:'system',content:sys},{role:'user',content:String(text).slice(0,1500)}]})});
+    clearTimeout(to);
+    if(!r.ok) throw new Error('status '+r.status);
+    const j=await r.json();
+    const a=String((j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||'').trim();
+    if(!a) throw new Error('leer');
+    out.innerHTML='<p class="ink2 jk-ki-text">'+linkTel(esc(a))+'</p><button class="btn soft" id="btnKiVor" style="margin-top:10px">'+icon('speak')+'<span>Vorlesen</span></button>';
+    $('btnKiVor').addEventListener('click', ()=>{ stopSpeak(); say(a); });
+    b.remove(); lernen('ki','gefragt'); stich('Gespräch');
+  }catch(err){
+    out.innerHTML='<p class="muted small jk-ki-text">Jackie erreicht ihren Server gerade nicht. Deine Tipps oben gelten trotzdem. Versuch es später nochmals.</p>';
+    b.disabled=false;
+  }
+}
 function renderPauseAnswer(){
-  const entry = {id:Date.now(), date:new Date().toISOString(), text:(flow&&flow.text)||'', topic:'pause', sitId:null, modId:null, sos:!!(flow&&flow.sos)};
+  const isSos=!!(flow&&flow.sos);
+  const entry = {id:Date.now(), date:new Date().toISOString(), text:isSos?'':((flow&&flow.text)||''), topic:'pause', sitId:null, modId:null, sos:isSos};
   const h = store.get('history', []); h.unshift(entry); store.set('history', h.slice(0,100));
+  if(isSos) $('txt').value='';
+  lernen('thema','pause');
   renderPauseEntry(entry);
 }
 function renderPauseEntry(e){
@@ -1053,8 +1463,48 @@ document.addEventListener('click', ev=>{
 });
 $('btnSos').addEventListener('click', ()=>openSos(null));
 $('footSos').addEventListener('click', ev=>{ ev.preventDefault(); openSos(null); });
-$('btnIdeas').addEventListener('click', ()=>show('vIdeas'));
-$('btnIdeaNote').addEventListener('click', ()=>{ openNotes(); $('noteTxt').value='Idee für Jackie\'s Advice: '; updateCounter(); $('noteTxt').focus(); });
+$('btnIdeas').addEventListener('click', ()=>{ renderIdeen(); show('vIdeas'); });
+/* ---------- Ideenkasse: Ideen bleiben auf dem Handy, Versand nur pro Idee auf Knopfdruck ---------- */
+function getIdeen(){ const i=store.get('ideen',[]); return Array.isArray(i)?i:[]; }
+function renderIdeen(){
+  const l=getIdeen(); const box=$('ideaList');
+  const gesendet=l.filter(x=>x.gesendet).length;
+  $('ideaKasse').textContent = l.length ? l.length+(l.length===1?' Idee':' Ideen')+' eingezahlt = '+(l.length*2)+' goldene Stiche'+(gesendet?' · '+gesendet+' ans App-Team geschickt':'')+'.' : 'Noch keine Idee eingezahlt. Die erste bringt dir zwei Stiche.';
+  if(!l.length){ box.innerHTML='<div class="jk-leer"><img src="figur.jpg" alt=""><p class="muted" style="margin:0">Hier sammeln sich deine Ideen. Jackie freut sich auf die erste.</p></div>'; return; }
+  box.innerHTML='<div class="section-title"><h2>Deine Ideen</h2></div>'+l.map(x=>'<div class="card jk-idee" data-id="'+x.id+'"><p class="ink2" style="margin:0 0 8px">'+esc(x.text)+'</p><p class="muted small" style="margin:0 0 10px">'+esc(relDay(x.id))+(x.gesendet?' · ans App-Team geschickt ✓':'')+'</p><div class="row"><button class="btn soft" data-idee="senden"'+(x.gesendet?' disabled':'')+'>'+(x.gesendet?'Geschickt':'Ans App-Team schicken')+'</button><button class="btn danger" data-idee="weg" style="flex:0 0 auto;width:auto;padding:0 18px" aria-label="Idee löschen">Löschen</button></div></div>').join('');
+}
+async function ideeSenden(idee){
+  const text="Idee für Jackie's Advice: "+idee.text;
+  let addr='', key='';
+  try{ addr=JSON.parse(localStorage.getItem('drlab-hermes-adresse')||'""')||''; key=JSON.parse(localStorage.getItem('drlab-hermes-passwort')||'""')||''; }catch(e){}
+  if(/^https:\/\//.test(addr) && key){
+    try{
+      const r=await fetch(addr.replace(/\/$/,'')+'/erfahrung',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key,'X-Nova-App':'Jackie'},body:JSON.stringify({app:'Jackie', art:'idee', frage:idee.text, antwort:''})});
+      if(r.ok) return 'server';
+    }catch(e){}
+  }
+  try{ if(navigator.share){ await navigator.share({title:"Idee für Jackie's Advice", text}); return 'geteilt'; } }catch(e){ if(e && e.name==='AbortError') return ''; }
+  try{ await navigator.clipboard.writeText(text); return 'kopiert'; }catch(e){ return ''; }
+}
+$('ideaList').addEventListener('click', async ev=>{
+  const b=ev.target.closest('button[data-idee]'); if(!b) return;
+  const id=Number(b.closest('.jk-idee').dataset.id); const l=getIdeen(); const x=l.find(y=>y.id===id); if(!x) return;
+  if(b.dataset.idee==='weg'){ store.set('ideen', l.filter(y=>y.id!==id)); renderIdeen(); toast('Idee gelöscht. Die Stiche bleiben dir.'); return; }
+  b.disabled=true;
+  const wie=await ideeSenden(x);
+  if(wie){ x.gesendet=true; store.set('ideen', l); renderIdeen(); toast(wie==='server'?'Angekommen. Danke für deine Idee!':wie==='geteilt'?'Geteilt. Danke!':'Kopiert. Du kannst sie jetzt an DR Lab schicken.'); }
+  else { b.disabled=false; toast('Das ging gerade nicht. Deine Idee bleibt gespeichert.'); }
+});
+$('ideaTxt').addEventListener('input', ()=>{ $('ideaCounter').textContent=$('ideaTxt').value.length+' / 400'; });
+$('btnIdeaSave').addEventListener('click', ()=>{
+  const t=$('ideaTxt').value.trim();
+  if(!t){ toast('Schreib zuerst deine Idee hinein.'); $('ideaTxt').focus(); return; }
+  if(window.JackieSchutz && JackieSchutz.gefahr(t)){ const sp=JackieSchutz.gefahrSprache(t); $('ideaTxt').value=''; JackieSchutz.open('sofort', sp||'de'); return; }
+  const l=getIdeen(); l.unshift({id:Date.now(), text:t.slice(0,400), gesendet:false}); store.set('ideen', l.slice(0,100));
+  $('ideaTxt').value=''; $('ideaCounter').textContent='0 / 400';
+  stich('Idee'); stich('Idee'); renderIdeen(); lernen('idee','eingezahlt');
+  toast('Eingezahlt! Zwei goldene Stiche für deine Schuhe.');
+});
 function resetHome(){ flow=null; renderHome(); show('vHome'); }
 
 /* ---------- Notiz an mich ---------- */
@@ -1091,7 +1541,7 @@ function renderRecall(){
     '<p class="ink2" style="margin:8px 0 14px">'+esc(RECALL_ASK[k])+(nm&&k===0?' Ganz ohne Druck, '+esc(nm)+'.':'')+'</p>'+
     '<div class="row"><button class="btn sage" id="rcDone">'+icon('check')+'Erledigt</button><button class="btn soft" id="rcLater">Später</button></div>'+
     (more>0?'<button class="more" id="rcMore">und '+more+' weitere '+(more===1?'Notiz':'Notizen')+' ansehen</button>':'')+'</div>';
-  $('rcDone').addEventListener('click', ()=>{ markDone(n.id,true); toast(['Erledigt. Schön!','Abgehakt – gut gemacht.','Eins weniger im Kopf.'][k]); renderRecall(); updateNoteCount(); });
+  $('rcDone').addEventListener('click', ()=>{ markDone(n.id,true); stich('Erledigt'); toast(['Erledigt. Schön!','Abgehakt – gut gemacht.','Eins weniger im Kopf.'][k]); renderRecall(); updateNoteCount(); });
   $('rcLater').addEventListener('click', ()=>{ snoozed.add(n.id); toast('Okay, ich erinnere dich beim nächsten Mal.'); renderRecall(); });
   if(more>0) $('rcMore').addEventListener('click', openNotes);
 }
@@ -1101,7 +1551,7 @@ function renderNotes(){
   const n=getNotes(); const box=$('nList');
   const open=n.filter(x=>!x.done), done=n.filter(x=>x.done);
   let html='';
-  if(!n.length){ box.innerHTML='<div class="card soft"><p class="muted" style="margin:0">Noch keine Notizen. Was du hier festhältst, greife ich beim nächsten Öffnen freundlich wieder auf.</p></div>'; return; }
+  if(!n.length){ box.innerHTML='<div class="card soft jk-leer"><img src="figur.jpg" alt=""><p class="muted" style="margin:0">Noch keine Notizen. Was du hier festhältst, greife ich beim nächsten Öffnen freundlich wieder auf.</p></div>'; return; }
   if(open.length) html+='<h3 style="margin:0 2px 4px">Offen <span class="muted" style="font-family:var(--sans);font-size:15px">('+open.length+')</span></h3>';
   open.forEach(x=>{ html+='<div class="nitem" data-id="'+x.id+'"><div class="nbody"><p>'+esc(x.text)+'</p><span>'+esc(relDay(x.created))+', '+esc(timeStr(x.created))+'</span></div><button class="sq ok" data-act="done" aria-label="Als erledigt markieren">'+icon('check')+'</button><button class="sq del" data-act="del" aria-label="Notiz löschen">'+icon('x')+'</button></div>'; });
   if(done.length){
@@ -1132,6 +1582,7 @@ $('btnSaveNote').addEventListener('click', ()=>{
   if(!t){ toast('Schreib oder sprich zuerst kurz deine Notiz.'); $('noteTxt').focus(); return; }
   addNote(t); $('noteTxt').value=''; updateCounter(); renderNotes();
   toast('Gespeichert. Ich erinnere dich beim nächsten Öffnen.');
+  stich('Notiz');
 });
 
 /* ---------- Pause / Atmen ---------- */
@@ -1174,7 +1625,9 @@ function breathDone(){
   pRun=false; $('pStart').textContent='Start'; $('phase').textContent='Fertig. Gut gemacht.'; $('pDone').classList.remove('hide');
   $('circle').style.transform='scale(1)';
   store.set('pauses', store.get('pauses',0)+1);
+  lernen('pause_fertig', 1);
   if($('pVoice').checked) say('Fertig. Gut gemacht.');
+  stich('Pause');
 }
 $('pStart').addEventListener('click', ()=>{ pRun ? stopBreath(false) : startBreath(); });
 $('pReset').addEventListener('click', resetBreath);
@@ -1186,7 +1639,7 @@ $('pVoice').checked = !!store.get('voice', false);
 function renderHistory(){
   const h=store.get('history',[]); const box=$('hList');
   $('nameEdit').value=getName();
-  if(!h.length){ box.innerHTML='<div class="card soft"><p class="muted" style="margin:0">Noch nichts hier. Was du erzählst, erscheint hier – und nur hier, auf deinem Handy.</p></div>'; return; }
+  if(!h.length){ box.innerHTML='<div class="card soft jk-leer"><img src="figur.jpg" alt=""><p class="muted" style="margin:0">Noch nichts hier. Was du erzählst, erscheint hier – und nur hier, auf deinem Handy.</p></div>'; return; }
   box.innerHTML='';
   h.forEach(e=>{
     const sit=SITS.find(s=>s.id===e.sitId);
@@ -1202,11 +1655,11 @@ function renderHistory(){
     box.appendChild(row);
   });
 }
-$('btnHistory').addEventListener('click', ()=>{ renderHistory(); show('vHistory'); });
+$('btnHistory').addEventListener('click', ()=>{ renderHistory(); renderMem(); show('vHistory'); });
 $('btnDelAll').addEventListener('click', ()=>{
   if(!confirm('Wirklich alles löschen – Gespräche, Notizen, Name, Pausen und Einstellungen? Das kann man nicht rückgängig machen.')) return;
   try{ const ks=[]; for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k && k.indexOf('ja_')===0) ks.push(k); } ks.forEach(k=>localStorage.removeItem(k)); }catch(e){}
-  ['history','notes','name','pauses','voice','onboarded','lastOpen'].forEach(k=>store.del(k));
+  ['history','notes','name','pauses','voice','onboarded','lastOpen','lernen','memOk','stiche'].forEach(k=>store.del(k));
   snoozed=new Set(); flow=null; $('pVoice').checked=false; $('nameEdit').value=''; $('nameInput').value=''; $('txt').value=''; $('noteTxt').value='';
   resetHome(); toast('Alles gelöscht.');
   obOpen(true);
@@ -1220,7 +1673,7 @@ $('btnSaveName').addEventListener('click', ()=>{
 const OB=[
   {i:'chat', t:'Einfach reden wie mit einer Freundin', x:'Kein Fachwort nötig. Erzähl so, wie es dir gerade kommt – gesprochen oder getippt.'},
   {i:'ask',  t:'Ich frage nach, wenn ich etwas nicht verstehe', x:'Höchstens eine kurze Frage zum Antippen – dann bekommst du einen klaren nächsten Schritt.'},
-  {i:'heart',t:'Du entscheidest, was du davon nimmst', x:'Du kennst deine Familie am besten. Ich bin nur Begleiterin. Und deine Daten bleiben auf deinem Handy.'}
+  {i:'heart',t:'Du entscheidest, was du davon nimmst', x:'Du kennst deine Familie am besten. Ich bin nur Begleiterin. Deine Daten bleiben auf deinem Handy. Und wenn es zuhause nicht sicher ist: Die goldene Tür auf der Startseite führt zu Hilfe, ohne Konto, auch auf Französisch, Italienisch und Englisch.'}
 ];
 let obI=0, obFirst=true;
 function obRender(){
@@ -1233,12 +1686,13 @@ function obRender(){
   const s=$('obSlides'); s.classList.remove('fade'); void s.offsetWidth; s.classList.add('fade');
 }
 function obToSlides(){ $('obName').classList.add('hide'); $('obSlides').classList.remove('hide'); obI=0; obRender(); }
-function obClose(){ store.set('onboarded',true); $('ob').classList.add('hide'); renderHome(); show('vHome'); }
+function obClose(){ store.set('onboarded',true); $('ob').classList.add('hide'); if(typeof neuZeigen==='function') neuZeigen(); renderHome(); show('vHome'); }
 $('obNameNext').addEventListener('click', ()=>{ setName($('nameInput').value); obToSlides(); });
 $('obNameSkip').addEventListener('click', ()=>{ $('nameInput').value=''; obToSlides(); });
 $('nameInput').addEventListener('keydown', ev=>{ if(ev.key==='Enter'){ ev.preventDefault(); $('obNameNext').click(); } });
 $('obNext').addEventListener('click', ()=>{ if(obI<OB.length-1){obI++;obRender();} else obClose(); });
 $('obSkip').addEventListener('click', obClose);
+$('obZu').addEventListener('click', obClose);
 function obOpen(withName){
   $('ob').classList.remove('hide');
   obFirst=!!withName;
@@ -1247,16 +1701,224 @@ function obOpen(withName){
 }
 $('btnGuide').addEventListener('click', ()=>obOpen(false));
 
+/* ---------- Jackie zeigt (Figur zeigt auf den nächsten Schritt) ---------- */
+function zeigt(satz){ return '<div class="jk-zeigt fade"><img src="posen/zeigt.jpg" alt=""><span>'+esc(satz)+'</span></div>'; }
+
+/* ---------- Posen auf der Bühne ---------- */
+/* Echte Posen-Bilder (Tinko) werden automatisch genutzt, sobald sie in posen/posen.json stehen. Sonst bewegt sich das eine Bild. */
+const POSEN_BILD={}; const GRUNDBILD='jackie-3d.jpg'; const POSEN=['hops','hoert','fliegt','winkt','denkt','zeigt'];
+fetch('posen/posen.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(j=>{
+  ((j&&j.posen)||[]).forEach(n=>{ if(POSEN.indexOf(n)<0) return; const im=new Image(); im.onload=()=>{ POSEN_BILD[n]='posen/'+n+'.jpg'; }; im.src='posen/'+n+'.jpg'; });
+}).catch(()=>{});
+let poseTimer=null;
+function pose(name){
+  const img=$('jkBild'); if(!img) return;
+  clearTimeout(poseTimer);
+  POSEN.forEach(n=>img.classList.remove('jk-pose-'+n)); void img.offsetWidth;
+  const ziel=(name && POSEN_BILD[name]) || GRUNDBILD;
+  if(img.getAttribute('src')!==ziel) img.setAttribute('src', ziel);
+  if(name) img.classList.add('jk-pose-'+name);
+  if(name && name!=='hoert' && name!=='denkt') poseTimer=setTimeout(()=>pose(''), 1700);
+}
+
+/* ---------- Was Jackie sich merkt (nur Zahlen, nur auf diesem Handy) ---------- */
+function getLern(){ const l=store.get('lernen',null); return (l && typeof l==='object') ? l : {thema:{}, situation:{}, tageszeit:{}, pause_fertig:0, tage:[], seit:Date.now()}; }
+function lernen(art, wert){
+  if(!wert) return;
+  const l=getLern();
+  if(art==='pause_fertig'){ l.pause_fertig=(l.pause_fertig||0)+1; }
+  else { l[art]=l[art]||{}; l[art][wert]=(l[art][wert]||0)+1; }
+  const h=new Date().getHours(); const tz=h<11?'morgen':h<14?'mittag':h<18?'nachmittag':h<22?'abend':'nacht';
+  l.tageszeit=l.tageszeit||{}; l.tageszeit[tz]=(l.tageszeit[tz]||0)+1;
+  const tag=new Date().toISOString().slice(0,10); l.tage=l.tage||[]; if(l.tage.indexOf(tag)<0){ l.tage.push(tag); l.tage=l.tage.slice(-60); }
+  if(art==='thema') l.zuletzt={art, wert, am:Date.now()};
+  store.set('lernen', l);
+}
+function topThema(){ const t=getLern().thema||{}; let k=null,b=0; Object.keys(t).forEach(x=>{ if(TOPICS[x] && t[x]>b){b=t[x];k=x;} }); return b>=2?k:null; }
+function markTiles(){
+  const top=topThema();
+  document.querySelectorAll('.tile').forEach(t=>{ const o=t.querySelector('.oft'); if(o) o.remove(); if(t.dataset.topic===top){ const s=document.createElement('span'); s.className='oft'; s.textContent='oft'; t.appendChild(s); } });
+  const box=document.querySelector('.tiles'); const el=top && box ? box.querySelector('[data-topic="'+top+'"]') : null;
+  if(el && box.firstElementChild!==el) box.insertBefore(el, box.firstElementChild);
+}
+const TZ_NAME={morgen:'am Morgen',mittag:'über Mittag',nachmittag:'am Nachmittag',abend:'am Abend',nacht:'in der Nacht'};
+function renderMem(){
+  const l=getLern(); const box=$('memList'); const rows=[];
+  const th=Object.keys(l.thema||{}).filter(k=>TOPICS[k]).sort((a,b)=>l.thema[b]-l.thema[a]);
+  if(th.length) rows.push(['Was dich oft beschäftigt', th.slice(0,3).map(k=>TOPICS[k].name+' ('+l.thema[k]+')').join(', ')]);
+  const tz=Object.keys(l.tageszeit||{}).sort((a,b)=>l.tageszeit[b]-l.tageszeit[a])[0];
+  if(tz) rows.push(['Du kommst meistens', TZ_NAME[tz]||tz]);
+  if(l.pause_fertig) rows.push(['Pausen ganz gemacht', String(l.pause_fertig)]);
+  rows.push(['Stiche in deinen Schuhen', String(store.get('stiche',0))]);
+  if(l.idee && l.idee.eingezahlt) rows.push(['Ideen eingezahlt', String(l.idee.eingezahlt)]);
+  if(l.ki && l.ki.gefragt) rows.push(['Jackie persönlich gefragt', String(l.ki.gefragt)]);
+  if((l.tage||[]).length) rows.push(['Tage mit Jackie', String(l.tage.length)]);
+  box.innerHTML = th.length||l.pause_fertig ? '<ul>'+rows.map(r=>'<li><span>'+esc(r[0])+'</span><b>'+esc(r[1])+'</b></li>').join('')+'</ul>'
+    : '<div class="jk-leer"><img src="figur.jpg" alt=""><p class="muted" style="margin:0">Noch nichts. Nach deinem ersten Gespräch steht hier, was Jackie gelernt hat.</p></div>';
+  $('memOk').checked=!!store.get('memOk',false); $('memShare').disabled=!$('memOk').checked; $('memMsg').textContent='';
+}
+function lernText(){
+  const l=getLern();
+  const daten={thema:l.thema||{}, situation:l.situation||{}, tageszeit:l.tageszeit||{}, pause_fertig:l.pause_fertig||0, tage:(l.tage||[]).length, stiche:store.get('stiche',0)};
+  return {daten, text:["JACKIE'S ADVICE – Lern-Zahlen (für Sense Engine)", 'Datum: '+new Date().toISOString().slice(0,10), 'Einwilligung: ja · ohne Namen · ohne Text · ohne Stimme · ohne Hilfebereich', '', JSON.stringify({app:'Jackie', art:'lernen', zeit:new Date().toISOString().slice(0,16), daten, einwilligung:true})].join('\n')};
+}
+$('memOk').addEventListener('change', ()=>{ store.set('memOk', $('memOk').checked); $('memShare').disabled=!$('memOk').checked; });
+$('memDel').addEventListener('click', ()=>{ store.del('lernen'); renderMem(); markTiles(); toast('Jackie hat die Lern-Zahlen vergessen.'); });
+$('memShare').addEventListener('click', async ()=>{
+  if(!$('memOk').checked) return;
+  const x=lernText(); const msg=$('memMsg');
+  // Mit Server (Sense Engine, gleiche Adresse wie Nova): direkt senden. Sonst teilen oder kopieren.
+  let addr='', key='';
+  try{ addr=JSON.parse(localStorage.getItem('drlab-hermes-adresse')||'""')||''; key=JSON.parse(localStorage.getItem('drlab-hermes-passwort')||'""')||''; }catch(e){}
+  if(addr && key){
+    try{
+      const r=await fetch(addr.replace(/\/$/,'')+'/erfahrung',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({app:'Jackie', art:'lernen', frage:JSON.stringify(x.daten), antwort:''})});
+      if(r.ok){ msg.textContent='An Sense Engine gesendet. Danke!'; return; }
+    }catch(e){}
+  }
+  try{ if(navigator.share){ await navigator.share({title:"Jackie – Lern-Zahlen", text:x.text}); msg.textContent='Geteilt. Danke!'; return; } }catch(e){ if(e && e.name==='AbortError') return; }
+  try{ await navigator.clipboard.writeText(x.text); msg.textContent='Kopiert. Du kannst es jetzt einfügen.'; }catch(e){ msg.textContent='Teilen geht hier nicht.'; }
+});
+
+/* ---------- Schuhe nach Mass: jeder Schritt ist ein Stich, 5 Stiche = ein goldener Schuh ---------- */
+const STICHE_PRO_SCHUH=5;
+const SCHUH_NAMEN=['Turnschuh','Wanderschuh','Tanzschuh','Regenstiefel','Ballerina','Bergschuh','Zauberschuh'];
+function renderSchuhe(animate){
+  const n=store.get('stiche',0); const fertig=Math.floor(n/STICHE_PRO_SCHUH); const im=n%STICHE_PRO_SCHUH;
+  const pct = n>0 && im===0 ? 100 : Math.round(im/STICHE_PRO_SCHUH*100);
+  $('jkSchuheBar').style.width=pct+'%';
+  $('jkSchuheGold').classList.toggle('voll', n>0 && im===0);
+  const naechster=SCHUH_NAMEN[fertig % SCHUH_NAMEN.length];
+  $('jkSchuheText').textContent = n===0 ? 'Jeder Schritt hier ist ein Stich in deinen Schuh. Fünf Stiche, dann glänzt er golden.'
+    : (im===0 ? 'Fertig! Dein '+SCHUH_NAMEN[(fertig-1)%SCHUH_NAMEN.length]+' glänzt golden.' : im+' von '+STICHE_PRO_SCHUH+' Stichen. Noch '+(STICHE_PRO_SCHUH-im)+', dann glänzt dein '+naechster+'.');
+  const reg=$('jkRegal'); const zeige=Math.min(fertig,14);
+  reg.innerHTML = Array.from({length:zeige},()=>'<svg viewBox="0 0 120 70"><use href="#i-goldschuh"/></svg>').join('') + (fertig>14?'<small class="muted">+'+(fertig-14)+'</small>':'');
+}
+function stich(was){
+  const n=store.get('stiche',0)+1; store.set('stiche', n);
+  try{ if(navigator.vibrate) navigator.vibrate(n%STICHE_PRO_SCHUH===0?[30,60,30,60,80]:12); }catch(e){}
+  if(n%STICHE_PRO_SCHUH===0){
+    setTimeout(()=>{ toast('Der Schuhmacher: «Ein Schuh nach Mass ist fertig. Er glänzt golden.»'); }, 900);
+    store.set('schuhNeu', true);
+  }
+}
+$('jkSchuhe').addEventListener('click', ()=>{ pose('fliegt'); blase(SAETZE_SCHUH[Math.floor(Math.random()*SAETZE_SCHUH.length)]); });
+const SAETZE_SCHUH=['Der Schuhmacher misst nicht deine Füsse, sondern deine Schritte.','Jeder kleine Schritt ist ein Stich. Du machst das gut.','Wenn der Schuh golden glänzt, trägt er dich ein Stück weiter.'];
+
+/* ---------- Sprechblase auf der Bühne ---------- */
+let blaseTimer=null;
+function blase(t){
+  const b=$('jkBlase'); const s=$('jkBlaseText'); if(!b||!s) return;
+  s.textContent=t; b.style.animation='none'; void b.offsetWidth; b.style.animation='';
+}
+function renderBlase(){
+  const n=getName(); const h=new Date().getHours(); const l=getLern();
+  const opts=[];
+  if(store.get('schuhNeu',false)){ store.del('schuhNeu'); opts.push('Schau mal, dein neuer Schuh glänzt golden!'); pose('fliegt'); }
+  else if(h>=21||h<5) opts.push('Späte Stunde'+(n?', '+n:'')+'. Ich bin da.');
+  else if(h<11) opts.push('Guten Morgen'+(n?', '+n:'')+'! Was steht heute an?');
+  else opts.push('Ich höre dir zu'+(n?', '+n:'')+'. Tipp aufs Mikrofon.');
+  // Jackie lernt: fragt nach dem letzten Familienthema (nie nach dem Hilfebereich)
+  const z=l.zuletzt;
+  if(z && z.art==='thema' && TOPICS[z.wert] && z.wert!=='pause' && Date.now()-z.am>6*3600e3 && Date.now()-z.am<14*86400e3) opts.push('Letztes Mal ging es um «'+TOPICS[z.wert].name+'». Wie ist es weitergegangen?');
+  blase(opts[opts.length-1]);
+}
+/* Runde 4: Jackie winkt zurück und klackt mit den Zauberschuhen (warm, ruhig, verdeckt nichts). */
+let klackCtx=null;
+function klackTon(){ try{ if(document.body.classList.contains('im-schutz')) return; klackCtx=klackCtx||new (window.AudioContext||window.webkitAudioContext)(); const c=klackCtx; if(c.state==='suspended') c.resume();
+  [0,0.16].forEach(t=>{ const o=c.createOscillator(), g=c.createGain(); o.type='triangle'; o.frequency.setValueAtTime(1500,c.currentTime+t); o.frequency.exponentialRampToValueAtTime(700,c.currentTime+t+0.05); g.gain.setValueAtTime(0.0001,c.currentTime+t); g.gain.exponentialRampToValueAtTime(0.12,c.currentTime+t+0.005); g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+t+0.08); o.connect(g).connect(c.destination); o.start(c.currentTime+t); o.stop(c.currentTime+t+0.1); }); }catch(e){} }
+/* Puppe aus nova/puppe.js (#136): wenn geladen, grüsst Jackie lebendig mit «lachen+winken». Sonst CSS-Pose (Fallback). */
+let jkPuppe=null;
+function puppeGruss(){
+  if(!(window.Puppe && typeof window.Puppe.winkeZurueck==='function')) return false;
+  // Runde 5: Tinkos «Jackie winkt» (Hand frei, Zauberschuhe) – Bild zeigen, dann schwingt genau diese Hand
+  if(!POSEN_BILD.winkt) return false;
+  try{ pose('winkt'); clearTimeout(poseTimer); poseTimer=setTimeout(()=>pose(''), 3400);
+    jkPuppe=jkPuppe||window.Puppe.winkeZurueck($('jkBild'),{figur:'jackie',gruss:'lachen+winken',antippen:false,blase:false,bild:'posen/winkt.jpg',arm:false,augen:[[9,9,0.01,0.01]],mund:{l:[9,9],r:[9.1,9],oben:0,unten:0,kinn:0.01},kopf:[0.443,0.31,0.11],gesicht:[0.443,0.31,0.085],winkArm:{x:0.157,y:0.386,r:0.107,dx:0.214,dy:0.543,seite:'links'}});
+    if(jkPuppe&&typeof jkPuppe.gruesse==='function'){ jkPuppe.gruesse('lachen+winken'); return true; } }catch(e){}
+  return false;
+}
+function winke(mitTon){
+  if(!(mitTon && puppeGruss())) pose('winkt');
+  const k=$('jkKlack'); if(k){ k.classList.remove('an'); void k.offsetWidth; k.classList.add('an'); }
+  if(mitTon){ klackTon(); try{ navigator.vibrate&&navigator.vibrate([12,140,12]); }catch(e){} }
+}
+window.JackieWinke=winke;
+$('jkBild').addEventListener('click', ()=>{
+  winke(true); blase(['Ich höre dir zu. Ganz in Ruhe.','Du musst das nicht allein lösen.','Ein kleiner Schritt reicht für heute.','Tipp auf das Mikrofon und erzähl.'][Math.floor(Math.random()*4)]); });
+
+/* Mikrofon auf dem Bild (Yulia v2): startet dasselbe Zuhören wie der grosse Knopf */
+$('stageMic').addEventListener('click', ()=>{
+  $('btnMic').click();
+  const on=$('btnMic').classList.contains('listening');
+  $('stageMic').classList.toggle('listening', on);
+  pose(on?'hoert':''); blase(on?'Ich höre zu …':'Danke. Tipp auf «Weiter», wenn alles drin ist.');
+  if(on) try{ $('txt').scrollIntoView({behavior:'smooth', block:'center'}); }catch(e){}
+});
+new MutationObserver(()=>{ const on=$('btnMic').classList.contains('listening'); $('stageMic').classList.toggle('listening', on); if(!on) pose(''); }).observe($('btnMic'),{attributes:true, attributeFilter:['class']});
+
+/* ---------- Schutzraum öffnen ---------- */
+function openSchutz(tab, sprache){ stopRec(); if(window.JackieSchutz) JackieSchutz.open(tab||'sofort', sprache); else openSos(null); }
+$('btnSchutz').addEventListener('click', ()=>openSchutz('sofort','de'));
+document.addEventListener('click', ev=>{ const b=ev.target.closest && ev.target.closest('[data-schutz]'); if(b) openSchutz(b.dataset.schutz, b.dataset.schutzLang||'de'); });
+
+/* ---------- Die Geschichte vom Schuhmacher (kleiner Trickfilm) ---------- */
+const STORY=[
+  {wer:'Der Schuhmacher erzählt', bild:'schuhmacher.jpg', t:'In einer kleinen Werkstatt, mitten in der Stadt, riecht es nach Leder und Kaffee. Hier baue ich Schuhe. Aber nicht irgendwelche.'},
+  {wer:'Der Schuhmacher erzählt', bild:'jackie-3d.jpg', t:'Eines Abends kam Jackie herein. Müde, die Schuhe abgelaufen vom vielen Rennen: Kinder, Arbeit, Briefe, alles gleichzeitig.'},
+  {wer:'Der Schuhmacher erzählt', bild:'schuhmacher.jpg', t:'Ich habe nicht ihre Füsse gemessen, sondern ihre Schritte. Jeder kleine Schritt, den sie für sich macht, ist ein Stich in ihren Schuh.'},
+  {wer:'Der Schuhmacher erzählt', bild:'jackie-3d.jpg', schuh:true, t:'Und wenn genug Stiche beisammen sind, beginnt der Schuh zu glänzen. Golden. Dann trägt er sie. Manchmal fliegt sie sogar ein Stück.'},
+  {wer:'Der Schuhmacher erzählt', bild:'schuhmacher.jpg', schuh:true, t:'Die Schuhe bringen dich nicht weg von allem. Sie bringen dich zur nächsten sicheren Tür. Und deine Schuhe nähe ich ab heute auch.'},
+  {wer:'Jackie', bild:'jackie-3d.jpg', schuh:true, t:'Jedes Gespräch, jede Pause, jede erledigte Notiz ist ein Stich. Schau oben auf deinen Schuh. Komm, wir machen den nächsten Schritt zusammen.'}
+];
+let stI=0;
+function stopStory(){ try{ if(window.NovaStimme) NovaStimme.stopp(); if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){} }
+function renderStory(){
+  const sc=STORY[stI]; const img=$('stImg');
+  if(img.getAttribute('src')!==sc.bild){ img.src=sc.bild; }
+  img.classList.remove('st-neu'); void img.offsetWidth; img.classList.add('st-neu');
+  img.style.objectPosition = sc.bild==='schuhmacher.jpg' ? '50% 20%' : '50% 35%';
+  $('stWer').textContent=sc.wer; $('stSatz').textContent=sc.t;
+  $('stSchuh').classList.toggle('an', !!sc.schuh);
+  $('stDots').innerHTML=STORY.map((_,i)=>'<i'+(i===stI?' class="on"':'')+'></i>').join('');
+  $('stBack').disabled = stI===0;
+  $('stNext').textContent = stI===STORY.length-1 ? 'Zum ersten Stich' : 'Weiter';
+  stopStory();
+  if($('stVoice').checked) say(sc.t);
+}
+$('btnStory').addEventListener('click', ()=>{ stI=0; $('stVoice').checked=!!store.get('storyVoice',false); show('vStory'); renderStory(); });
+$('stNext').addEventListener('click', ()=>{ if(stI<STORY.length-1){ stI++; renderStory(); } else { if(!store.get('storySeen',false)){ store.set('storySeen',true); stich('Geschichte'); } resetHome(); pose('fliegt'); } });
+$('stBack').addEventListener('click', ()=>{ if(stI>0){ stI--; renderStory(); } });
+$('stVoice').addEventListener('change', ()=>{ store.set('storyVoice', $('stVoice').checked); if($('stVoice').checked) say(STORY[stI].t); else stopStory(); });
+
+/* Familienleiste nur im Web (im iPhone-Bundle sind die anderen Apps nicht dabei) */
+if(window.Capacitor){ const f=$('jkFamilie'); if(f) f.remove(); }
+
+/* Für schutz.js */
+window.JackieApp = { show, resetHome };
+
 /* ---------- Start ---------- */
 if('speechSynthesis' in window){ try{ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=()=>{}; }catch(e){} }
 drawBreath();
 renderHome();
 $('vHome').classList.add('view-in');
-if(!store.get('onboarded',false)){ obOpen(true); setTimeout(()=>{ try{ $('nameInput').focus({preventScroll:true}); }catch(e){} }, 300); }
+// Runde 3: Kein Sperrbildschirm beim ersten Öffnen. Die Startseite (mit Notruf oben) kommt sofort,
+// Name und Anleitung sind freiwillig in einer kleinen Karte.
+function neuZeigen(){ $('jkNeu').classList.toggle('hide', !!store.get('onboarded',false)); }
+neuZeigen();
+$('neuName').addEventListener('click', ()=>{ obOpen(true); setTimeout(()=>{ try{ $('nameInput').focus({preventScroll:true}); }catch(e){} }, 300); });
+$('neuGuide').addEventListener('click', ()=>obOpen(false));
+$('neuZu').addEventListener('click', ()=>{ store.set('onboarded',true); neuZeigen(); });
 })();
 </script>
+<script src="../nova/puppe.js"></script>
 <script src="../nova/seelen.js" defer></script>
 <script src="../nova/nova.js" data-nova-app="Jackie" data-nova-bild="figur.jpg" defer></script>
+<script src="feedback.js" data-app="Jackie" defer></script>
+<script>
+/* Offline: Hilfebereich und Notrufe gehen auch ohne Netz (Netz zuerst, Kopie als Ersatz). Nicht im iPhone-Bundle. */
+if('serviceWorker' in navigator && location.protocol==='https:' && !window.Capacitor){ addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
+</script>
 <!-- Figuren-Film (Trickfilm-Look): Farben, Funken, Atmen, Tipp-Reaktion, Szenenwechsel. Nur Optik. -->
 <style id="figurFilmCss">
 .film-aurora{position:fixed;inset:-20%;z-index:-1;pointer-events:none;filter:blur(60px);opacity:.5}
@@ -1318,7 +1980,7 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
     if(fig){fig.classList.remove('film-hops');void fig.offsetWidth;fig.classList.add('film-hops');sterne(e.clientX,e.clientY,8);
       var sp=fig.closest('.figur-hero')&&fig.closest('.figur-hero').querySelector('span');if(sp&&SAETZE.length){sp.textContent=SAETZE[si++%SAETZE.length];sp.classList.remove('film-neu');void sp.offsetWidth;sp.classList.add('film-neu');}return;}
     var b=t.closest&&t.closest('button,.btn,[role=button]');
-    if(b&&b.id!=='figurStartGo')sterne(e.clientX,e.clientY,5);
+    if(b&&b.id!=='figurStartGo'&&!document.body.classList.contains('im-schutz')&&!b.closest('.jk-notruf,.ob-notruf,#vSos,#vSchutz,.jk-tuer,.jk-tuer-sprachen,.jk-exit,footer'))sterne(e.clientX,e.clientY,5);
   },true);
   document.addEventListener('animationend',function(e){if(e.animationName==='filmHops')e.target.classList.remove('film-hops');});
   // Karten gleiten wie Filmszenen herein
@@ -1328,5 +1990,19 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
   }
 })();
 </script>
+<script src="runde6.js" defer></script>
+<script src="runde7.js" defer></script>
+<script src="runde8.js" defer></script>
+<link rel="stylesheet" href="markt.css">
+<link rel="stylesheet" href="feinschliff.css">
+<link rel="stylesheet" href="schoen.css">
+<script src="zyklus.js" defer></script>
+<script src="feinschliff.js" defer></script>
+<script src="lernen.js" data-app="Jackie" data-figur="jackie" data-name="Jackie" data-kind="0" data-unten="16" defer></script>
+<script src="schoen.js" defer></script>
+<script src="inhalt/daten.js" defer></script>
+<script src="inhalt/bibliothek.js" defer></script>
+<script src="inhalt/installieren.js" defer></script>
+<link rel="stylesheet" href="inhalt/wischen.css"><script src="inhalt/wischen.js" defer></script><script src="inhalt/wischen-app.js" defer></script>
 </body>
 </html>

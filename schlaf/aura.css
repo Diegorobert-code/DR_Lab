@@ -1,0 +1,50 @@
+/* Fias Nest – Fia im «Aura»-Look (23.10.): Nest im Mondbaum bei Nacht, Fia als bewegliche Trickfilm-Figur.
+   Nur die Bühne auf der Startseite und Fia selbst. Alles andere bleibt im Design «Wolldecke». */
+
+/* Kein heller Streifen unten: html dunkel, body deckt die ganze Höhe */
+html{background:#1D1713}
+html body{min-height:100vh;min-height:100dvh}
+
+/* Kopf: Titel oben, darunter die Bühne über die ganze Breite, dann Fias Satz */
+html.aura body #home .hero{grid-template-columns:1fr!important;grid-template-areas:"titel" "fia" "sagt"!important;gap:12px!important}
+html.aura body #home .buehne{grid-area:fia;position:relative;display:block;width:100%!important;height:auto!important;aspect-ratio:358/300;padding:0!important;
+  border-radius:20px;overflow:hidden;isolation:isolate;background:#0d1a3a url("aura/nest-nacht.webp") 50% 62%/cover no-repeat;
+  box-shadow:0 1px 2px rgba(0,0,0,.18),0 18px 40px -22px rgba(13,26,58,.75);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+html.aura body #home .buehne::after{content:"";position:absolute;inset:0;z-index:6;pointer-events:none;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+  background:radial-gradient(120% 90% at 50% 40%,transparent 55%,rgba(5,10,30,.45) 100%)}
+html.aura body #home .buehne:has(#cover:focus-visible){outline:2px solid var(--w-accent);outline-offset:3px}
+html.aura body #home .buehne .halo{display:none!important}
+
+/* Ebenen */
+.aura-glow{position:absolute;left:var(--ax,53%);top:calc(var(--ay,63%) - 20%);width:78%;aspect-ratio:1;z-index:1;pointer-events:none;
+  transform:translate(-50%,-50%) scale(var(--gs,1));opacity:var(--go,.75);border-radius:50%;
+  background:radial-gradient(circle,rgba(255,170,90,.55) 0%,rgba(255,120,60,.26) 30%,rgba(255,110,60,.08) 52%,transparent 68%);mix-blend-mode:screen}
+.aura-figur{position:absolute;inset:0;z-index:2;pointer-events:none;transform-origin:var(--ax,53%) var(--ay,63%)}
+.aura-akt{position:absolute;inset:0;transform-origin:var(--ax,53%) var(--ay,63%)}
+.aura-pose{position:absolute;display:block;max-width:none;height:auto;opacity:0;transition:opacity .3s ease;will-change:opacity;
+  -webkit-user-select:none;user-select:none;-webkit-user-drag:none;filter:drop-shadow(0 6px 10px rgba(10,6,20,.35))}
+.aura-pose.an{opacity:1}
+.aura-vorne{position:absolute;inset:0;z-index:3;pointer-events:none;background:url("aura/nest-vorne.webp") 50% 62%/cover no-repeat}
+.aura-funken{position:absolute;inset:0;z-index:4;width:100%;height:100%;pointer-events:none}
+.aura-schlaf .aura-glow{--go:.32}
+
+/* Fia selbst bleibt das bekannte #cover: unsichtbare Tippfläche über der Figur.
+   So wirken Antippen, Streicheln und langes Drücken wie bisher. */
+html.aura body #home .buehne #cover{position:absolute!important;left:28%!important;top:12%!important;width:50%!important;height:60%!important;max-width:none!important;
+  aspect-ratio:auto!important;z-index:5;opacity:0!important;border:0!important;border-radius:40%!important;box-shadow:none!important;animation:none!important;transform:none!important;
+  object-fit:cover;cursor:pointer;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+html.aura body #home .buehne .tipp{z-index:7;bottom:12px!important;top:auto!important}
+html.aura body #home .buehne .r6-saisonbild{z-index:8!important}
+html.aura body #home .buehne .winkhand{display:none}
+
+/* Auftritt: die Bühne blendet weich auf, Fia hüpft hinein */
+html.aura body #home .buehne.auftritt{animation:auraAuf .9s ease both}
+@keyframes auraAuf{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Einführung: Fia im Nest auf Nachtgrund */
+html.aura body #onbFia.aura-onb{object-fit:contain!important;background:#0d1a3a url("aura/nest-nacht.webp") 50% 40%/cover no-repeat;padding:8px 10px 0;box-sizing:border-box}
+
+@media (prefers-reduced-motion:reduce){
+  .aura-funken{display:none}
+  html.aura body #home .buehne.auftritt{animation:none}
+}

@@ -1,0 +1,187 @@
+/* abenteuer.css – «🚀 Abenteuer» im Aura-Stil: Nachtblau, Gold, violetter Schein. Animiert wird nur transform und opacity.
+   Text und Knöpfe stehen über dem Pillen-Platz unten (--ab-unten, von abenteuer.js gemessen). */
+
+/* Karte in der Spielwahl */
+.sk.ab-karte { --c:#b484ff; grid-column:1 / -1; flex-direction:row; align-items:center; gap:16px; min-height:88px;
+  background:radial-gradient(120% 140% at 0% 0%, rgba(180,132,255,.38), transparent 60%), radial-gradient(90% 120% at 100% 100%, rgba(255,210,122,.26), transparent 60%), linear-gradient(160deg, #241f63, #121a46) !important;
+  border-color:rgba(255,210,122,.7) !important; box-shadow:0 0 22px rgba(180,132,255,.35), inset 0 0 18px rgba(255,210,122,.12); }
+.sk.ab-karte .e { flex:none; width:60px; height:60px; font-size:34px; background:radial-gradient(circle at 40% 35%, #ffe9a8, #ffd27a 50%, #b484ff 100%); box-shadow:0 0 18px rgba(255,210,122,.6); }
+.sk.ab-karte .ab-karte-tx { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.sk.ab-karte b { font-size:20px; color:#ffe2a0; margin:0; text-shadow:0 0 12px rgba(255,210,122,.5); }
+.sk.ab-karte small { color:#e6dcff; }
+
+/* Das Fenster */
+.ab { position:fixed; inset:0; z-index:45; --ab-unten:128px; --ab-panel:200px; --ab-oben:calc(env(safe-area-inset-top, 0px) + 72px);
+  color:#fff6e0; font:17px/1.4 ui-rounded, "SF Pro Rounded", system-ui, -apple-system, sans-serif; overflow:hidden; background:#0b1636;
+  -webkit-user-select:none; user-select:none; animation:abAuf .35s cubic-bezier(.2,.8,.2,1) both; }
+.ab[hidden] { display:none; }
+@keyframes abAuf { from { opacity:0; transform:scale(.98); } }
+.ab button { font:inherit; color:inherit; touch-action:manipulation; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+.ab button:focus-visible { outline:3px solid #fff; outline-offset:3px; }
+
+/* Szene: Kulisse (SVG oder gemaltes Nachtbild), darüber der Bild-Platz für gemalte Illustrationen */
+.ab-szene { position:absolute; inset:0; background:radial-gradient(90% 60% at 50% 20%, #26307a, #0f1a4a 60%, #070c26); transition:filter .8s; }
+.ab-szene.bg-wald, .ab-szene.bg-bach { background:linear-gradient(rgba(8,12,36,.05), rgba(8,12,36,.55) 70%, rgba(8,12,36,.85)), url("../aura/nacht.webp") center 22% / cover no-repeat, #0b1636; }
+.ab-szene.bg-sturm { background:radial-gradient(70% 40% at 50% 26%, #4a3a9c, #231d63 60%, #0d1036); }
+.ab-szene.bg-baumhaus { background:#2a1d4a; }
+.ab-szene.dunkel { filter:brightness(.42) saturate(.7); }
+.ab-szene.hell { filter:none; }
+.ab-kulisse { position:absolute; inset:0; width:100%; height:100%; display:block; }
+.ab-kulisse .ab-st { animation:abFunkeln 3.2s ease-in-out var(--v, 0s) infinite; }
+@keyframes abFunkeln { 50% { opacity:.25; } }
+.ab-kulisse .ab-spirale { animation:abDrehen 14s linear infinite; }
+@keyframes abDrehen { to { transform:rotate(360deg); } }
+.ab-kulisse .ab-wiegen { transform-origin:50% 100%; animation:abWiegen 3s ease-in-out infinite; }
+@keyframes abWiegen { 50% { transform:skewX(-2deg); } }
+.ab-kulisse .ab-lampe { animation:abFunkeln 4s ease-in-out infinite; }
+.ab-bild { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.ab-szene.mit-bild .ab-kulisse { display:none; }
+
+/* Kopf */
+.ab-kopf { position:absolute; left:0; right:0; top:0; z-index:5; display:flex; align-items:center; gap:8px;
+  padding:calc(env(safe-area-inset-top, 0px) + 8px) 12px 8px; background:linear-gradient(rgba(7,12,38,.85), rgba(7,12,38,0)); }
+.ab-rund { flex:none; width:44px; height:44px; border-radius:50%; border:1px solid rgba(255,210,122,.45); background:rgba(255,255,255,.08); font-size:20px; display:grid; place-items:center; padding:0;
+  box-shadow:0 0 14px rgba(180,132,255,.25); transition:transform .12s; }
+.ab-rund:active { transform:scale(.9); }
+.ab-rund[hidden] { display:none; }
+.ab-kopfmitte { flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.ab-titel { font-weight:800; font-size:15px; line-height:1.2; color:#ffe2a0; text-shadow:0 0 10px rgba(255,210,122,.5); text-align:center; max-width:100%; padding:0 2px;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.ab-punkte { display:flex; gap:5px; }
+.ab-punkte i { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.25); transition:transform .3s, background .3s; }
+.ab-punkte i.an { background:#ffd27a; }
+.ab-punkte i.jetzt { background:#fff; transform:scale(1.35); box-shadow:0 0 8px #b484ff; }
+
+/* Bühne zwischen Kopf und Text */
+.ab-buehne { position:absolute; left:0; right:0; top:var(--ab-oben); bottom:calc(var(--ab-unten) + var(--ab-panel) + 8px); z-index:2; }
+.ab-ottibox { position:absolute; left:2%; bottom:0; height:min(70%, 300px); aspect-ratio:.82; }
+.ab-ottibox .ab-schein { position:absolute; left:-25%; right:-25%; top:-5%; bottom:-10%; border-radius:50%;
+  background:radial-gradient(42% 46% at 50% 52%, rgba(180,132,255,.55), rgba(180,132,255,.15) 55%, transparent 72%); animation:abPuls 3.6s ease-in-out infinite; }
+@keyframes abPuls { 50% { opacity:.6; transform:scale(1.05); } }
+.ab-otti { position:absolute; left:50%; bottom:0; height:100%; width:auto; max-width:none; transform:translateX(-50%);
+  filter:drop-shadow(0 0 10px rgba(180,132,255,.55)) drop-shadow(0 0 2px rgba(255,226,170,.5)); animation:abAtem 3.6s ease-in-out infinite; transform-origin:50% 100%; }
+.ab-otti.pose-schlaeft { height:auto; width:118%; }
+@keyframes abAtem { 50% { transform:translateX(-50%) scale(1.012, 1.024); } }
+.ab-gadget { position:absolute; right:-10px; top:-10px; width:44px; height:44px; border-radius:50%; display:grid; place-items:center; font-size:24px;
+  background:radial-gradient(circle at 40% 35%, #fff4d0, #ffd27a 60%, #f0b347); box-shadow:0 0 16px rgba(255,210,122,.75); animation:abSchweben 2.8s ease-in-out 3; }
+.ab-gadget.bei-otti { right:4%; top:6%; }
+@keyframes abSchweben { 50% { transform:translateY(-6px) rotate(-6deg); } }
+
+/* Helden und Freunde */
+.ab-fig { --h:#ffd27a; position:absolute; display:flex; flex-direction:column; align-items:center; gap:2px; }
+.ab-fig .ab-fig-e { width:64px; height:64px; border-radius:50%; display:grid; place-items:center; font-size:38px; line-height:1;
+  background:radial-gradient(circle at 50% 40%, rgba(255,255,255,.22), rgba(20,26,80,.75) 70%); border:2px solid color-mix(in srgb, var(--h) 70%, transparent);
+  box-shadow:0 0 18px color-mix(in srgb, var(--h) 45%, transparent); }
+.ab-fig b { font-size:13px; font-weight:800; color:#fff6e0; background:rgba(7,12,38,.72); border:1px solid rgba(255,210,122,.35); border-radius:999px; padding:1px 8px; white-space:nowrap; }
+.ab-fig.ist-held .ab-fig-e { border-width:3px; box-shadow:0 0 22px var(--h), 0 0 46px rgba(180,132,255,.4); }
+.ab-fig.blau .ab-fig-e { filter:hue-rotate(95deg) saturate(1.3); }
+.ab-fig.blau b { filter:none; }
+.ab-fig.gross { right:6%; bottom:22%; animation:abSchweben 3.4s ease-in-out 3; }
+.ab-fig.gross .ab-fig-e { width:112px; height:112px; font-size:68px; }
+.ab-fig.gross b { font-size:16px; padding:2px 12px; }
+.ab-fig.gross.oben { bottom:auto; top:2%; right:10%; }
+.ab-fig.gross.klein .ab-fig-e { width:84px; height:84px; font-size:44px; }
+.ab-reihe { position:absolute; left:44%; right:2%; bottom:0; display:flex; flex-wrap:wrap-reverse; justify-content:flex-end; gap:6px 4px; }
+.ab-reihe .ab-fig { position:relative; }
+.ab-reihe .ab-fig .ab-fig-e { width:52px; height:52px; font-size:30px; }
+.ab-reihe .ab-fig b { font-size:12px; padding:0 6px; }
+.ab-buehne > .ab-fig.gross ~ .ab-reihe { left:48%; }
+
+/* Licht-Effekte */
+.ab-licht { position:absolute; inset:0; pointer-events:none; }
+.ab-licht i { position:absolute; width:8px; height:8px; border-radius:50%; background:radial-gradient(#fff, rgba(255,214,140,.9) 40%, transparent 70%);
+  box-shadow:0 0 10px 3px rgba(255,214,140,.4); opacity:0; animation:abLicht var(--t, 3s) ease-in-out var(--v, 0s) infinite; }
+.ab-licht i.v { background:radial-gradient(#fff, rgba(180,132,255,.9) 40%, transparent 70%); box-shadow:0 0 10px 3px rgba(180,132,255,.4); }
+.ab-licht.glimm i { background:radial-gradient(#fff, rgba(220,255,120,.95) 40%, transparent 70%); box-shadow:0 0 12px 4px rgba(220,255,120,.45); }
+.ab-licht.wind i { width:40px; height:3px; border-radius:2px; background:linear-gradient(90deg, transparent, rgba(220,230,255,.8), transparent); box-shadow:none; animation-name:abWind; }
+@keyframes abLicht { 0% { opacity:0; transform:translate(0, 0); } 30% { opacity:.95; } 60% { opacity:.4; transform:translate(8px, -26px); } 100% { opacity:0; transform:translate(-4px, -52px); } }
+@keyframes abWind { 0% { opacity:0; transform:translateX(-40px); } 40% { opacity:.9; } 100% { opacity:0; transform:translateX(80px); } }
+.ab-licht.alarm { background:radial-gradient(60% 40% at 50% 10%, rgba(255,90,90,.0), transparent); }
+.ab-licht.alarm::before { content:""; position:absolute; left:50%; top:4%; width:46px; height:46px; margin-left:-23px; border-radius:50%;
+  background:radial-gradient(#fff, #ffd27a 45%, rgba(255,120,120,.6) 70%, transparent 72%); box-shadow:0 0 30px 10px rgba(255,210,122,.55); animation:abBlink 1s ease-in-out infinite; }
+@keyframes abBlink { 50% { opacity:.35; transform:scale(.85); } }
+.ab-funke { position:absolute; width:10px; height:10px; margin:-5px 0 0 -5px; border-radius:50%; pointer-events:none; z-index:6;
+  background:radial-gradient(#fff, rgba(255,214,140,.9) 40%, transparent 70%); box-shadow:0 0 12px 4px rgba(255,214,140,.45); animation:abFunke .9s cubic-bezier(.2,.7,.3,1) forwards; }
+.ab-funke.v { background:radial-gradient(#fff, rgba(180,132,255,.9) 40%, transparent 70%); }
+@keyframes abFunke { 0% { opacity:0; transform:translate(0, 0) scale(.4); } 15% { opacity:1; } 100% { opacity:0; transform:translate(var(--dx), var(--dy)) scale(.2); } }
+
+/* Tippen, um zu helfen */
+.ab-tippfeld { position:absolute; inset:0; z-index:4; }
+.ab-ding { position:absolute; width:68px; height:68px; margin:-4px 0 0 -34px; border-radius:50%; border:2px dashed rgba(255,210,122,.65); background:rgba(11,22,54,.55);
+  font-size:38px; line-height:1; display:grid; place-items:center; padding:0; animation:abLocken 1.8s ease-in-out var(--v, 0s) 3; }
+.ab-ding:not(.an) { filter:grayscale(.6) brightness(.75); }
+.ab-ding.an { border:2px solid #ffd27a; background:radial-gradient(circle, rgba(255,240,190,.55), rgba(255,210,122,.15) 60%, transparent 72%);
+  box-shadow:0 0 26px 8px rgba(255,210,122,.55), 0 0 50px rgba(180,132,255,.35); filter:none; animation:abAn .45s cubic-bezier(.3,1.6,.5,1) both; }
+.art-wurm .ab-ding.an { box-shadow:0 0 26px 10px rgba(220,255,120,.6); }
+.art-wirbel .ab-ding.an { background:radial-gradient(circle, rgba(230,236,255,.5), transparent 70%); box-shadow:0 0 22px 6px rgba(220,230,255,.45); }
+@keyframes abLocken { 50% { transform:scale(1.08); } }
+@keyframes abAn { from { transform:scale(.6); } }
+.ab-buehne.tippen .ab-ottibox { height:min(46%, 220px); }
+
+/* Abzeichen am Ende */
+.ab-badge { position:absolute; left:50%; top:4%; z-index:5; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center;
+  background:radial-gradient(120% 100% at 50% 0%, #3a2e8a, #141c4c); border:2px solid #ffd27a; border-radius:24px; padding:10px 20px 12px;
+  box-shadow:0 0 30px rgba(255,210,122,.5), 0 0 60px rgba(180,132,255,.4); animation:abBadge .7s cubic-bezier(.3,1.6,.5,1) both; white-space:nowrap; }
+.ab-badge-e { font-size:52px; line-height:1; }
+.ab-badge b { font-size:22px; color:#ffe2a0; text-shadow:0 0 14px rgba(255,210,122,.6); }
+.ab-badge small { font-size:15px; color:#e6dcff; }
+@keyframes abBadge { from { opacity:0; transform:translateX(-50%) scale(.4) rotate(-8deg); } }
+
+/* Text und Knöpfe: Karte über dem Pillen-Platz */
+.ab-panel { position:absolute; left:12px; right:12px; bottom:var(--ab-unten); z-index:6; max-width:520px; margin:0 auto;
+  background:linear-gradient(180deg, rgba(34,30,86,.94), rgba(18,26,70,.96)); border:1px solid rgba(255,210,122,.7); border-radius:24px; padding:14px 16px 16px;
+  box-shadow:0 0 0 1px rgba(255,214,140,.15), 0 14px 40px rgba(2,4,18,.6), 0 0 40px rgba(180,132,255,.3); }
+.ab-text { margin:0; font-size:19px; line-height:1.42; font-weight:600; color:#fff8e6; -webkit-user-select:text; user-select:text; }
+.ab-lehre { margin:10px 0 0; font-size:18px; line-height:1.38; font-weight:800; color:#ffe2a0; text-shadow:0 0 12px rgba(255,210,122,.35); }
+.ab-lehre[hidden] { display:none; }
+.ab-aktion { margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+.ab-aktion:empty { display:none; }
+.ab .ab-weiter { min-height:56px; border:0; border-radius:999px; padding:10px 24px; font-weight:900; font-size:20px; color:#2a1d00;
+  background:radial-gradient(circle at 40% 35%, #ffe9a8, #ffd27a 55%, #f0b347); box-shadow:0 0 22px rgba(255,210,122,.5), 0 0 40px rgba(180,132,255,.25); transition:transform .12s; }
+.ab .ab-weiter:active { transform:scale(.96); }
+.ab-wahl { display:flex; flex-direction:column; gap:8px; }
+.ab-wahl button { min-height:56px; border:2px solid rgba(255,210,122,.75); border-radius:18px; background:rgba(180,132,255,.16); padding:8px 16px; text-align:left;
+  font-weight:800; font-size:19px; box-shadow:0 0 16px rgba(180,132,255,.25); transition:transform .12s, background .2s; }
+.ab-wahl button:active { transform:scale(.97); background:rgba(255,210,122,.25); }
+.ab-zaehler { display:flex; gap:8px; justify-content:center; }
+.ab-zaehler i { width:16px; height:16px; border-radius:50%; background:rgba(255,255,255,.2); border:1px solid rgba(255,210,122,.4); transition:background .2s, transform .2s; }
+.ab-zaehler i.an { background:#ffd27a; transform:scale(1.15); box-shadow:0 0 10px rgba(255,210,122,.8); }
+.ab-tipphinweis { margin:0; text-align:center; font-weight:800; color:#e6dcff; font-size:17px; min-height:24px; }
+.ab-endwahl { display:flex; flex-direction:column; gap:8px; }
+.ab-zwei { display:flex; gap:8px; }
+.ab-zweit { flex:1; min-height:52px; border:2px solid rgba(255,210,122,.55); border-radius:16px; background:rgba(255,255,255,.08); font-weight:800; font-size:16px; padding:6px 8px; }
+.ab-zweit:active { transform:scale(.96); }
+
+/* Missionsliste */
+.ab.ist-liste .ab-buehne { overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; }
+.ab-liste { display:flex; flex-direction:column; gap:10px; padding:4px 12px 12px; max-width:520px; margin:0 auto; }
+.ab-listekopf { margin:0 0 2px; text-align:center; font-weight:900; font-size:22px; color:#ffe2a0; text-shadow:0 0 14px rgba(255,210,122,.55), 0 0 30px rgba(180,132,255,.5); }
+.ab-mission { --c:#ffd27a; position:relative; display:flex; align-items:center; gap:12px; min-height:88px; text-align:left; padding:10px 14px; border-radius:22px;
+  border:2px solid color-mix(in srgb, var(--c) 60%, transparent); background:linear-gradient(160deg, color-mix(in srgb, var(--c) 24%, #1a1f5c), rgba(14,20,60,.92) 70%);
+  box-shadow:0 0 18px color-mix(in srgb, var(--c) 30%, transparent); animation:abAuf .4s cubic-bezier(.2,.8,.2,1) both; transition:transform .12s; }
+.ab-mission:active { transform:scale(.97); }
+.ab-mission:nth-child(3) { animation-delay:.05s; } .ab-mission:nth-child(4) { animation-delay:.1s; } .ab-mission:nth-child(5) { animation-delay:.15s; } .ab-mission:nth-child(6) { animation-delay:.2s; }
+.ab-mission-ic { flex:none; width:56px; height:56px; border-radius:50%; display:grid; place-items:center; font-size:32px; background:radial-gradient(circle at 40% 35%, rgba(255,255,255,.35), rgba(255,255,255,.06)); box-shadow:inset 0 0 0 2px rgba(255,210,122,.5); }
+.ab-mission-tx { display:flex; flex-direction:column; gap:2px; min-width:0; padding-right:30px; }
+.ab-mission-tx b { font-size:18px; color:#fff6e0; }
+.ab-mission-tx small { font-size:15px; color:#d8d0f5; line-height:1.3; }
+.ab-mission-team { display:flex; gap:2px; font-size:18px; font-style:normal; margin-top:2px; }
+.ab-mission-team i { font-style:normal; }
+.ab-mission-team i.blau { filter:hue-rotate(95deg) saturate(1.3); }
+.ab-medaille { position:absolute; right:10px; top:8px; font-size:26px; filter:drop-shadow(0 0 8px rgba(255,210,122,.8)); }
+
+/* Kleine Handys: etwas kompakter */
+@media (max-height:720px) {
+  .ab-text { font-size:17px; } .ab-lehre { font-size:16px; }
+  .ab-weiter, .ab-wahl button { min-height:50px; font-size:18px; }
+  .ab-fig.gross .ab-fig-e { width:88px; height:88px; font-size:52px; }
+  .ab-badge-e { font-size:40px; } .ab-badge b { font-size:19px; }
+}
+
+/* Weniger Bewegung: alles still, Effekte aus */
+@media (prefers-reduced-motion: reduce) {
+  .ab, .ab *, .ab *::before, .ab *::after { animation:none !important; transition:none !important; }
+  .ab-funke, .ab-licht i { display:none; }
+  .ab-otti { transform:translateX(-50%); }
+  .ab-badge { transform:translateX(-50%); }
+}
