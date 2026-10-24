@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="de-CH"><head><meta charset="utf-8">
+<script src="ton-ios.js"></script>
+<script src="nda-sperre.js" data-app="Copacabana"></script><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Geschenk Lädeli Copacabana</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8E%81%3C/text%3E%3C/svg%3E"><link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="Copacabana">
+<meta name="theme-color" content="#fbf8f3">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Nunito:wght@400;600;800&display=swap">
+<style>
+/* Layout: Abendstrand oben (Ladenschild, Sonne, Wellen), darunter Regal mit Geschenken, Korb als Seitenleiste/Blatt */
+:root{
+  --nacht:#1b1440; --nacht2:#2a1f5c; --nacht3:#3b2d78;
+  --gold:#f2b84b; --gold2:#ffd98a; --koralle:#ff7a6b; --tuerkis:#4fd6c8;
+  --sand:#f6e3c0; --text:#fdf6ea; --mute:#c9bfe6;
+  --disp:"Fraunces",Georgia,serif; --body:"Nunito",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--nacht);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.5;margin:0;overflow-x:hidden}
+.wrap{max-width:1040px;margin:0 auto;padding-block:16px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.entwurf{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--nacht);background:var(--gold2);border-radius:4px;padding:2px 8px;font-weight:800}
+
+/* Strand-Szene */
+.szene{position:relative;border-radius:18px;overflow:hidden;margin-top:12px;min-height:260px;
+  background:linear-gradient(180deg,#3b2d78 0%,#a8547a 48%,#ff9a6b 70%,#ffcf8a 100%)}
+.sonne{position:absolute;left:50%;top:44%;width:130px;height:130px;margin-left:-65px;border-radius:50%;
+  background:radial-gradient(circle,#fff3c4 0%,#ffd06a 55%,#ff9a4a 100%);box-shadow:0 0 70px 20px rgba(255,190,90,.55);animation:sonne 8s ease-in-out infinite alternate}
+@keyframes sonne{to{transform:translateY(-10px) scale(1.04)}}
+.meer{position:absolute;left:-5%;right:-5%;bottom:48px;height:70px;background:#2f6fa8;opacity:.92}
+.welle{position:absolute;left:-10%;width:120%;height:40px;bottom:60px;background:repeating-radial-gradient(circle at 30px -10px,transparent 0 22px,rgba(255,255,255,.35) 23px 25px,transparent 26px);background-size:60px 40px;animation:welle 6s linear infinite}
+.welle.b{bottom:78px;opacity:.5;animation-duration:9s}
+@keyframes welle{to{transform:translateX(60px)}}
+.strand{position:absolute;left:0;right:0;bottom:0;height:56px;background:
+  repeating-linear-gradient(90deg,transparent 0 60px,rgba(0,0,0,.06) 60px 120px),var(--sand)}
+.palme{position:absolute;bottom:40px;font-size:84px;line-height:1;filter:drop-shadow(0 4px 6px rgba(0,0,0,.25));transform-origin:bottom center;animation:wiegen 4s ease-in-out infinite alternate}
+.palme.l{left:4%}.palme.r{right:4%;animation-delay:-2s}
+@keyframes wiegen{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}
+.schild{position:relative;z-index:2;text-align:center;padding:22px 16px 0}
+.schild h1{font-family:var(--disp);font-weight:800;font-size:clamp(30px,7vw,58px);line-height:1.02;margin:0;color:#fff7e0;text-wrap:balance;text-shadow:0 3px 0 #a8547a,0 0 30px rgba(255,210,120,.6)}
+.schild p{margin:6px auto 0;max-width:46ch;color:#fff3dc;font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+
+/* Begrüssung */
+.bubble{background:var(--nacht2);border:1px solid var(--nacht3);border-radius:14px;padding:12px 16px;margin:18px 0;max-width:62ch}
+.bubble b{color:var(--gold2)}
+/* Copa, die Ladenfigur (Runde 5) */
+.copa-gruss{display:flex;gap:14px;align-items:center;margin:18px 0}
+.copa-gruss .bubble{margin:0;position:relative;flex:1;min-width:0}
+.copa-gruss .bubble::before{content:"";position:absolute;left:-8px;top:50%;width:14px;height:14px;margin-top:-7px;background:var(--nacht2);border-left:1px solid var(--nacht3);border-bottom:1px solid var(--nacht3);transform:rotate(45deg)}
+.copa{position:relative;width:104px;height:104px;flex:none;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 0 5px rgba(242,184,75,.15),0 8px 24px rgba(0,0,0,.4),0 0 30px rgba(255,122,107,.35);cursor:pointer;background:var(--nacht2)}
+.copa:focus-visible{outline:3px solid var(--tuerkis);outline-offset:3px}
+.copa.copa-wink{animation:copaWink 1.1s cubic-bezier(.3,.7,.3,1)}
+.copa.copa-freu{animation:copaFreu .7s cubic-bezier(.3,1.6,.5,1)}
+@keyframes copaWink{20%{transform:rotate(-6deg) translateY(-4px)}45%{transform:rotate(5deg) translateY(-4px)}70%{transform:rotate(-3deg)}}
+@keyframes copaFreu{40%{transform:translateY(-8px) scale(1.04)}}
+.copa-gruss .pp-winker::after{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid var(--gold);pointer-events:none}
+@media(min-width:600px){.copa{width:128px;height:128px}}
+
+/* Filter */
+.filter{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 16px}
+.filter button{all:unset;cursor:pointer;padding:6px 14px;border-radius:999px;background:var(--nacht2);border:1px solid var(--nacht3);color:var(--mute);font-weight:700;font-size:14px}
+.filter button[aria-pressed=true]{background:var(--gold);color:var(--nacht);border-color:var(--gold)}
+
+/* Regal */
+.regal{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.ware{display:flex;flex-direction:column;background:var(--nacht2);border:1px solid var(--nacht3);border-bottom:6px solid #7a4a2a;border-radius:14px;overflow:hidden;transition:transform .15s,box-shadow .15s;min-width:0}
+.ware:hover{transform:translateY(-3px) rotate(-.4deg);box-shadow:0 10px 26px rgba(255,154,107,.25)}
+.bild{aspect-ratio:4/3;display:grid;place-items:center;font-size:56px;background:radial-gradient(circle at 50% 40%,rgba(255,217,138,.35),transparent 65%)}
+.bild img{width:100%;height:100%;object-fit:cover}
+.info{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
+.info h3{font-family:var(--disp);font-size:17px;line-height:1.2;margin:0;color:var(--gold2);hyphens:auto;overflow-wrap:anywhere}
+.info p{margin:0;color:var(--mute);font-size:14px;flex:1}
+.preis{font-weight:800;font-size:18px}
+.knopf{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;padding:9px 14px;border-radius:10px;background:var(--koralle);color:#fff;font-weight:800;transition:transform .1s}
+.knopf:active{transform:scale(.96)}
+.knopf.leise{background:transparent;border:1px solid var(--nacht3);color:var(--mute)}
+.mark{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--tuerkis);font-weight:800}
+
+/* Korb */
+.korbknopf{all:unset;position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:20;cursor:pointer;background:var(--gold);color:var(--nacht);font-weight:800;border-radius:999px;padding:12px 18px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.korbknopf.hupf{animation:hupf .4s}
+@keyframes hupf{50%{transform:scale(1.15) rotate(-4deg)}}
+.blatt{position:fixed;inset:auto 0 0 0;max-height:88vh;overflow:auto;z-index:30;background:var(--nacht2);border-top:3px solid var(--gold);border-radius:18px 18px 0 0;padding:18px max(16px,env(safe-area-inset-right,0px)) 28px max(16px,env(safe-area-inset-left,0px));transform:translateY(105%);transition:transform .25s}
+.blatt.offen{transform:none}
+@media(min-width:760px){.blatt{inset:0 0 0 auto;width:400px;max-height:none;border-radius:0;border-top:0;border-left:3px solid var(--gold);transform:translateX(105%)}}
+.blatt h2{font-family:var(--disp);color:var(--gold2);margin:0 0 10px}
+.zeile{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--nacht3)}
+.zeile .em{font-size:28px}
+.menge{display:flex;gap:6px;align-items:center}
+.menge button{all:unset;cursor:pointer;width:28px;height:28px;border-radius:50%;text-align:center;background:var(--nacht3);font-weight:800}
+label{display:block;font-size:14px;color:var(--mute);margin-top:12px}
+input,textarea{background:var(--nacht);color:var(--text);border:1px solid var(--nacht3);border-radius:8px;padding:9px 10px;font:inherit;width:100%}
+.check{display:flex;gap:8px;align-items:center;margin-top:12px;color:var(--text)}
+.check input{width:auto}
+.summe{display:flex;justify-content:space-between;font-weight:800;font-size:18px;margin:14px 0}
+.hinweis{font-size:13px;color:var(--mute)}
+.ok{background:rgba(79,214,200,.12);border:1px solid var(--tuerkis);border-radius:10px;padding:12px;margin-top:12px}
+.zu{position:absolute;right:16px;top:14px}
+.schleier{position:fixed;inset:0;background:rgba(10,6,30,.55);z-index:25;display:none}
+.schleier.offen{display:block}
+footer{margin-top:40px;color:var(--mute);font-size:13px;text-align:center}
+.lad{margin:22px 0 26px}
+.lad h2{font-family:var(--disp);color:var(--gold2);margin:0 0 4px;font-size:clamp(22px,4.5vw,30px)}
+.lad-sub,.lad-info{color:var(--mute);margin:0 0 12px;max-width:60ch}
+.lad-info{font-size:14px;margin-top:10px}
+.lad-video{display:block;width:100%;max-width:360px;aspect-ratio:3/4;object-fit:cover;border-radius:16px;border:3px solid var(--gold);background:var(--nacht2);margin-bottom:14px}
+.lad-reihe{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.lad-reihe figure{flex:0 0 140px;margin:0;scroll-snap-align:start}
+.lad-reihe img{width:140px;height:186px;object-fit:cover;border-radius:12px;display:block;border:1px solid var(--nacht3)}
+.lad-reihe figcaption{font-size:13px;color:var(--mute);margin-top:4px;text-align:center}
+@media(min-width:760px){.lad{display:grid;grid-template-columns:360px 1fr;gap:6px 22px;align-items:start}.lad h2,.lad-sub{grid-column:1/-1}.lad-video{grid-row:span 2}.lad-reihe{flex-wrap:wrap;overflow:visible}}
+</style>
+<link rel="stylesheet" href="../nova/puppe.css">
+</head>
+<body>
+<div class="wrap">
+  <span class="entwurf">Entwurf · Testladen</span>
+
+  <section class="szene" aria-label="Abendstrand">
+    <div class="sonne"></div>
+    <div class="meer"></div><div class="welle"></div><div class="welle b"></div>
+    <div class="strand"></div>
+    <div class="palme l" aria-hidden="true">🌴</div><div class="palme r" aria-hidden="true">🌴</div>
+    <div class="schild">
+      <h1>Geschenk Lädeli<br>Copacabana</h1>
+      <p>Kleine Freuden mit Sonne drin. Liebevoll ausgesucht, schön verpackt.</p>
+    </div>
+  </section>
+
+  <div class="copa-gruss">
+    <img id="copaBild" class="copa" src="copa/winkt.jpg" alt="Copa, der bunte Ara des Lädelis, winkt dir zu. Antippen zum Grüssen." width="768" height="768" role="button" tabindex="0">
+    <div class="bubble"><b>Olá, ich bin Copa!</b> <span id="copaSatz">Schau dich um.</span> Leg in den Korb, was Freude macht. Auf Wunsch packen wir es als Geschenk ein und legen eine Karte mit deinem Gruss dazu.</div>
+  </div>
+
+  <section class="lad" aria-labelledby="ladTitel">
+    <h2 id="ladTitel">Unser Lädeli</h2>
+    <p class="lad-sub">Komm vorbei und stöbere: Ballone, Plüschtiere, Karten für jeden Anlass und viele kleine Freuden.</p>
+    <video class="lad-video" src="laden/rundgang.mp4" poster="laden/poster.jpg" muted autoplay loop playsinline preload="metadata" aria-label="Kurzer Rundgang durch das Lädeli"></video>
+    <div class="lad-reihe" role="list" aria-label="Einblicke ins Lädeli">
+      <figure role="listitem"><img src="laden/laden-1.jpg" alt="Regale mit Spielwaren und Geschenken" loading="lazy" width="360" height="480"><figcaption>Spielwaren</figcaption></figure>
+      <figure role="listitem"><img src="laden/laden-2.jpg" alt="Schaufenster mit Piñatas" loading="lazy" width="360" height="480"><figcaption>Party &amp; Piñatas</figcaption></figure>
+      <figure role="listitem"><img src="laden/laden-3.jpg" alt="Grosse Wand mit Grusskarten" loading="lazy" width="360" height="480"><figcaption>Grusskarten</figcaption></figure>
+      <figure role="listitem"><img src="laden/laden-4.jpg" alt="Eingang mit Spielen und Schirmen" loading="lazy" width="360" height="480"><figcaption>Spiele &amp; Schirme</figcaption></figure>
+      <figure role="listitem"><img src="laden/laden-5.jpg" alt="Ballone an der Decke und Plüschtiere" loading="lazy" width="360" height="480"><figcaption>Ballone</figcaption></figure>
+      <figure role="listitem"><img src="laden/laden-6.jpg" alt="Ständer mit Plüschtieren" loading="lazy" width="360" height="480"><figcaption>Plüschtiere</figcaption></figure>
+    </div>
+    <p class="lad-info">Adresse und Öffnungszeiten folgen.</p>
+  </section>
+
+  <div class="filter" id="filter" role="group" aria-label="Kategorien"></div>
+  <div class="regal" id="regal"></div>
+
+  <footer>Geschenk Lädeli Copacabana · Testversion, noch keine echten Bestellungen</footer>
+</div>
+
+<button class="korbknopf" id="korbknopf" aria-label="Korb öffnen">🧺 Korb · <span id="anzahl">0</span></button>
+<div class="schleier" id="schleier"></div>
+<aside class="blatt" id="blatt" aria-label="Korb">
+  <button class="knopf leise zu" id="zu">Schliessen</button>
+  <h2>Dein Korb</h2>
+  <div id="liste"></div>
+  <label class="check"><input type="checkbox" id="verpacken"> Als Geschenk verpacken (+ CHF 4.00)</label>
+  <label for="gruss">Gruss auf der Karte</label>
+  <textarea id="gruss" rows="3" placeholder="Alles Liebe zum Geburtstag …"></textarea>
+  <div class="summe"><span>Total</span><span id="total">CHF 0.00</span></div>
+  <button class="knopf" id="bestellen" style="display:block;width:100%">Bestellung vorbereiten</button>
+  <p class="hinweis">Testladen: es wird nichts bezahlt und nichts verschickt. Bezahlung (TWINT/Karte) kommt später.</p>
+  <div id="danke"></div>
+</aside>
+
+<script>
+// Beispiel-Waren: werden durch Diegos echte Produkte und Fotos ersetzt (bild: Dateiname in bilder/)
+const WAREN = [
+  {id:"kerze",   em:"🕯️", name:"Sonnenuntergang-Kerze", text:"Duft nach Kokos und Vanille, brennt ca. 30 Stunden.", preis:24, kat:"Wohnen"},
+  {id:"tuch",    em:"🧣", name:"Strandtuch Copacabana", text:"Leichtes Baumwolltuch mit Wellenmuster.", preis:39, kat:"Strand"},
+  {id:"tasse",   em:"☕", name:"Tasse «Bom dia»", text:"Für den ersten Kaffee mit gutem Gefühl.", preis:18, kat:"Küche"},
+  {id:"armband", em:"📿", name:"Glücksbändeli", text:"Bunt geknüpft, drei Wünsche inklusive.", preis:12, kat:"Schmuck"},
+  {id:"schoggi", em:"🍫", name:"Schoggi Maracuja", text:"Schweizer Schoggi mit Passionsfrucht.", preis:9, kat:"Küche"},
+  {id:"karte",   em:"💌", name:"Grusskarte Palme", text:"Klappkarte mit Couvert, innen leer.", preis:5, kat:"Karten"},
+  {id:"muschel", em:"🐚", name:"Muschel-Schälchen", text:"Für Ringe, Schlüssel oder kleine Schätze.", preis:16, kat:"Wohnen"},
+  {id:"box",     em:"🎁", name:"Überraschungsbox", text:"Drei kleine Freuden, schön verpackt.", preis:45, kat:"Geschenkbox"}
+];
+const VERPACKUNG = 4;
+const chf = n => "CHF " + n.toFixed(2);
+let korb = {}; try{ korb = JSON.parse(localStorage.getItem("copa-korb")||"{}"); }catch(e){}
+const speichern = () => { try{ localStorage.setItem("copa-korb", JSON.stringify(korb)); }catch(e){} };
+let aktiv = "Alle";
+
+function filterZeigen(){
+  const kats = ["Alle", ...new Set(WAREN.map(w=>w.kat))];
+  const f = document.getElementById("filter"); f.innerHTML = "";
+  kats.forEach(k=>{ const b=document.createElement("button"); b.textContent=k; b.setAttribute("aria-pressed", k===aktiv);
+    b.onclick=()=>{aktiv=k; filterZeigen(); regalZeigen();}; f.appendChild(b); });
+}
+function regalZeigen(){
+  const r = document.getElementById("regal"); r.innerHTML = "";
+  WAREN.filter(w=>aktiv==="Alle"||w.kat===aktiv).forEach(w=>{
+    const el = document.createElement("article"); el.className="ware";
+    el.innerHTML = `<div class="bild">${w.bild?`<img src="bilder/${w.bild}" alt="">`:w.em}</div>
+      <div class="info"><span class="mark">${w.kat}</span><h3>${w.name}</h3><p>${w.text}</p>
+      <span class="preis">${chf(w.preis)}</span><button class="knopf">In den Korb</button></div>`;
+    el.querySelector("button").onclick=()=>{ korb[w.id]=(korb[w.id]||0)+1; speichern(); korbZeigen(true); };
+    r.appendChild(el);
+  });
+}
+function korbZeigen(hupf){
+  const ids = Object.keys(korb).filter(id=>korb[id]>0 && WAREN.find(w=>w.id===id));
+  const anzahl = ids.reduce((s,id)=>s+korb[id],0);
+  document.getElementById("anzahl").textContent = anzahl;
+  if(hupf){ const k=document.getElementById("korbknopf"); k.classList.remove("hupf"); void k.offsetWidth; k.classList.add("hupf"); }
+  const l = document.getElementById("liste"); l.innerHTML = ids.length?"":'<p class="hinweis">Noch leer. Ein Geschenk wartet auf dich 🌞</p>';
+  let summe = 0;
+  ids.forEach(id=>{ const w=WAREN.find(x=>x.id===id); summe+=w.preis*korb[id];
+    const z=document.createElement("div"); z.className="zeile";
+    z.innerHTML=`<span class="em">${w.em}</span><div><b>${w.name}</b><br><span class="hinweis">${chf(w.preis*korb[id])}</span></div>
+      <div class="menge"><button aria-label="weniger">−</button><span>${korb[id]}</span><button aria-label="mehr">+</button></div>`;
+    const [minus,plus]=z.querySelectorAll("button");
+    minus.onclick=()=>{korb[id]--; speichern(); korbZeigen();}; plus.onclick=()=>{korb[id]++; speichern(); korbZeigen();};
+    l.appendChild(z); });
+  if(document.getElementById("verpacken").checked && anzahl) summe+=VERPACKUNG;
+  document.getElementById("total").textContent = chf(summe);
+  return {anzahl, summe};
+}
+const blatt=document.getElementById("blatt"), schleier=document.getElementById("schleier");
+const oeffnen=o=>{ blatt.classList.toggle("offen",o); schleier.classList.toggle("offen",o); };
+document.getElementById("korbknopf").onclick=()=>{ document.getElementById("danke").innerHTML=""; oeffnen(true); };
+document.getElementById("zu").onclick=()=>oeffnen(false); schleier.onclick=()=>oeffnen(false);
+document.getElementById("verpacken").onchange=()=>korbZeigen();
+document.getElementById("bestellen").onclick=()=>{
+  const {anzahl,summe}=korbZeigen();
+  const d=document.getElementById("danke");
+  d.innerHTML = anzahl ? `<div class="ok">🎉 Danke! Im echten Laden ginge es jetzt zur Bezahlung (${chf(summe)}). Hier im Test wird nichts bestellt.</div>`
+                       : `<div class="ok">Der Korb ist noch leer.</div>`;
+};
+filterZeigen(); regalZeigen(); korbZeigen();
+</script>
+<script src="runde4.js"></script>
+<script src="../nova/puppe.js"></script>
+<script src="copa.js"></script>
+<script src="../nova/seelen.js" defer></script>
+<script src="../nova/nova.js" data-nova-app="Geschenk Lädeli Copacabana" data-nova-unten="84" defer></script>
+<script src="runde6.js" defer></script>
+<script src="runde7.js" defer></script>
+<script src="runde8.js" defer></script>
+<script src="musik.js" defer></script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });</script>
+<link rel="stylesheet" href="markt.css">
+<link rel="stylesheet" href="feinschliff.css">
+<script src="feinschliff.js" defer></script>
+<script src="lernen.js" data-app="Copacabana" data-figur="carmencita" data-name="Copacabana" data-kind="0" data-unten="16" defer></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="design.css">
+<link rel="stylesheet" href="schoen.css">
+<script src="schoen.js" defer></script>
+<script src="inhalt/daten.js" defer></script>
+<script src="inhalt/bibliothek.js" defer></script>
+<script src="inhalt/installieren.js" defer></script>
+<link rel="stylesheet" href="inhalt/wischen.css"><script src="inhalt/wischen.js" defer></script><script src="inhalt/wischen-app.js" defer></script>
+</body></html>
