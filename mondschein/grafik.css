@@ -1,0 +1,66 @@
+/* Grafik-Feinschliff (g9): nur Darstellung, keine Funktion. Kern + App-Teil. */
+/* ── Kern (für alle Apps gleich) ───────────────────────────── */
+:root{--g9-1:4px;--g9-2:8px;--g9-3:12px;--g9-4:16px;--g9-5:24px;--g9-6:32px;--g9-ease:cubic-bezier(.2,.8,.2,1)}
+html{-webkit-tap-highlight-color:transparent;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;accent-color:var(--g9-akzent)}
+:where(h1,h2,h3,h4){text-wrap:balance}
+:where(p,li,figcaption,small){text-wrap:pretty}
+::selection{background:var(--g9-auswahl)}
+:where(button,a,input,select,textarea,summary,[tabindex]):focus-visible{outline:2.5px solid var(--g9-fokus);outline-offset:2px}
+:where(button,[role="button"],summary){transition:scale .16s var(--g9-ease),background-color .2s ease,border-color .2s ease,box-shadow .25s ease,color .2s ease}
+:where(button,[role="button"]):where(:active):not(:disabled):not([aria-disabled="true"]){scale:.97}
+
+/* Auswahlfelder: eigener feiner Pfeil statt System-Pfeil */
+html.g9 body select:not([multiple]):not([size]){-webkit-appearance:none;appearance:none;background-image:var(--g9-chev)!important;background-repeat:no-repeat!important;background-position:right 12px center!important;background-size:16px 16px!important;padding-right:40px!important;max-width:100%;text-overflow:ellipsis}
+
+/* Icons in Titeln: feine Linie im weichen Rahmen */
+.g9-ico{display:inline-grid;place-items:center;flex:none;box-sizing:border-box;width:1.62em;height:1.62em;margin-right:.48em;border-radius:.58em;vertical-align:-.46em;background:var(--g9-ico-bg);color:var(--g9-ico-fg);box-shadow:inset 0 0 0 1px var(--g9-ico-rand,transparent);line-height:1;font-style:normal;font-weight:400;letter-spacing:0;text-transform:none}
+.g9-ico svg{display:block;width:.98em;height:.98em;overflow:visible}
+.g9-ico.g9-emo{font-size:1em}
+.g9-ico-k{width:2.1em;height:2.1em;margin-right:0;border-radius:.7em;vertical-align:middle}
+.g9-ico-k svg{width:1.2em;height:1.2em}
+.g9-ico-k.g9-emo{font-size:1em}
+.g9-weg{display:none!important}
+.g9-ico-inhalt svg{display:block;width:1em;height:1em;margin:auto;overflow:visible}
+
+/* Bilder: weicher Platzhalter beim Laden, sanftes Einblenden */
+:where(img.g9-laedt){background-color:var(--g9-lade-a);background-image:linear-gradient(100deg,transparent 30%,var(--g9-lade-b) 50%,transparent 70%);background-size:300% 100%;background-repeat:no-repeat;animation:g9Schimmer 1.5s linear infinite}
+:where(img.g9-da){animation:g9Ein .55s var(--g9-ease) both}
+@keyframes g9Schimmer{from{background-position:100% 0}to{background-position:0 0}}
+@keyframes g9Ein{from{opacity:0}to{opacity:1}}
+
+@media (prefers-reduced-motion:reduce){
+  :where(img.g9-laedt),:where(img.g9-da){animation:none}
+  :where(button,[role="button"],summary){transition:none}
+  :where(button,[role="button"]):where(:active){scale:none}
+}
+
+/* ── Mondschein: Bilderbuch am Tag (Creme-Papier), Sternenhimmel in der Nacht ─────── */
+:root{--g9-akzent:#f2b43a;--g9-fokus:#a8862f;--g9-auswahl:rgba(255,214,107,.45);--g9-ico-bg:#fde9c0;--g9-ico-licht:#fffaf0;--g9-ico-rand:rgba(242,180,58,.55);--g9-ico-glanz:rgba(255,214,107,.55);--g9-lade-a:#f6e6c4;--g9-lade-b:rgba(255,255,255,.7);--g9-rahmen:#fff6e3;--g9-rahmen-linie:rgba(242,180,58,.8);--g9-chev:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a8862f' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
+:root[data-night="1"]{--g9-fokus:#ffd66b;--g9-ico-bg:rgba(207,174,85,.14);--g9-ico-licht:rgba(255,240,200,.22);--g9-ico-rand:rgba(207,174,85,.5);--g9-ico-glanz:rgba(207,174,85,.35);--g9-lade-a:#1f2a4d;--g9-lade-b:rgba(207,174,85,.14);--g9-rahmen:#e9dfc4;--g9-rahmen-linie:rgba(207,174,85,.7);--g9-chev:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23cfae55' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
+
+/* ── Bilderbuch-Feinschliff (Otti, Mondschein): weiche Formen, Bildrahmen, Papierkorn ─────── */
+:root{
+  --g9-papier:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .3 0 0 0 0 .16 0 0 0 .11 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --g9-papier-nacht:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .95 0 0 0 0 .85 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* Emojis in Titeln: im runden, leise leuchtenden Mondrahmen */
+.g9-ico.g9-emo{border-radius:50%;width:1.7em;height:1.7em;font-size:.92em;vertical-align:-.42em;background:radial-gradient(circle at 35% 30%,var(--g9-ico-licht),var(--g9-ico-bg) 70%);box-shadow:inset 0 0 0 1.5px var(--g9-ico-rand),0 0 14px -2px var(--g9-ico-glanz)}
+.g9-ico-k.g9-emo{width:2.2em;height:2.2em;font-size:1em}
+/* Bildrahmen: Passepartout in Creme, feine Goldlinie, weicher Schatten */
+html.g9 .r7-bild{border:3px solid var(--g9-rahmen);box-shadow:0 0 0 1px var(--g9-rahmen-linie),0 14px 28px -16px rgba(0,0,0,.6)}
+html.g9 .r6-bild{box-shadow:0 0 0 3px var(--g9-rahmen),0 0 0 4px var(--g9-rahmen-linie),0 10px 22px -10px rgba(0,0,0,.55)}
+html.g9 .r8-heute{box-shadow:0 0 0 3px var(--g9-rahmen),0 0 0 4px var(--g9-rahmen-linie),0 18px 40px -18px rgba(0,0,0,.7)!important}
+html.g9 .r7-bild,html.g9 .r8-heute img{object-position:50% 38%}
+/* Karten: Papierkorn ganz leise, Kanten weich */
+html.g9 :is(.r6-karte,.r7-karte,.r8-karte){background-image:var(--g9-papier-nacht),var(--r7-karte,linear-gradient(160deg,rgba(38,58,130,.62),rgba(16,26,62,.9)))!important;background-size:220px 220px,100% 100%!important}
+html.g9 .r7-was li button .g9-ico{font-size:15px}
+/* Papier am Tag: Seite und Karten mit feinem Korn wie in einem gedruckten Bilderbuch */
+html.g9:not([data-night="1"]) body{background-image:var(--g9-papier);background-size:220px 220px}
+html.g9:not([data-night="1"]) .card{background-image:var(--g9-papier);background-size:220px 220px}
+html.g9[data-night="1"] .card{background-image:var(--g9-papier-nacht);background-size:220px 220px}
+/* Karten: weicher Doppelschatten statt harter Kante */
+html.g9:not([data-night="1"]) .card{box-shadow:inset 0 1px 0 rgba(255,255,255,.7),var(--shadow),0 16px 30px -18px rgba(29,42,79,.3)}
+html.g9[data-night="1"] .card{box-shadow:inset 0 1px 0 rgba(255,246,216,.06),var(--shadow),0 16px 30px -18px rgba(0,0,0,.6)}
+/* Tagmodus: Nacht-Karten der Runden-Bausteine liegen wie eine Nachtseite deckend auf dem Papier (vorher halb durchsichtig, Gruss und «Neu bei Otti» kaum lesbar) */
+html.g9:not([data-night="1"]) :is(.r6-karte,.r7-karte,.r8-karte){background-image:var(--g9-papier-nacht),linear-gradient(160deg,#2b3d86,#16214e)!important}
+html.g9:not([data-night="1"]) :is(.r6-gruss,.r7-was){background:var(--g9-papier-nacht) 0 0/220px 220px,linear-gradient(125deg,#4b437c,#22306a 70%)!important;border-color:rgba(242,193,78,.55)!important;box-shadow:0 14px 30px -18px rgba(29,42,79,.55)}

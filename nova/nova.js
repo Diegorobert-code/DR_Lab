@@ -24,13 +24,15 @@
     'Erinnerung': 'nova', 'Fotowissen': 'nova', 'Sense Engine': 'nova', 'Transkript': 'fompa',
     'Fompa': 'fompa', 'Food and Flow': 'flo', 'Kiki': 'kiki', 'Fias Nest': 'fia', 'Mama Affe': 'mama affe',
     'Wäf Wäf': 'wäf wäf', 'KI-Verse': 'sunny', 'Sunny': 'sunny', 'Coin Maker': 'coin maker',
-    'Granny': 'granny', 'Carmencita': 'carmencita'
+    'Granny': 'granny', 'Rosa': 'granny', 'Carmencita': 'carmencita'
   };
   var FIGUR = String(attr('data-nova-figur', FIGUREN[APP] || 'nova')).toLowerCase();
   var NAME = FIGUR.replace(/(^|[\s.])([a-zäöü])/g, function (m, a, b) { return a + b.toUpperCase(); });
   // Kinder-Apps: keine Verbindungs-Einstellungen und keine Bauwünsche sichtbar.
   var KIND = attr('data-nova-kind', '') === '1';
   var KNOPF = attr('data-nova-knopf', '1') !== '0';
+  // data-nova-geraetestimme="0": nie die Handystimme (klingt roboterhaft); ohne Figurenstimme bleibt es still.
+  var GERAET = attr('data-nova-geraetestimme', '1') !== '0';
   // Abstand des Knopfs vom unteren Rand in px, z. B. über einer Leiste.
   var UNTEN = parseInt(attr('data-nova-unten', '16'), 10) || 16;
   // Novas Gesicht kommt immer aus dem Film (nova.jpg neben diesem Skript), nie gezeichnet.
@@ -174,7 +176,7 @@
   }
 
   function geraet(text, done) {
-    if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') { done(); return; }
+    if (!GERAET || !('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') { done(); return; }
     var u = new SpeechSynthesisUtterance(text); u.lang = 'de-CH'; u.rate = 0.95;
     var vs = speechSynthesis.getVoices().filter(function (v) { return /^de/i.test(v.lang); });
     var v = vs.filter(function (x) { return /CH/i.test(x.lang); })[0] || vs[0];

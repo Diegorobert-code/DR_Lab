@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Fompa – Steuern</title>
+<title>Fompa – Buchhaltung und Steuern</title>
 <meta name="theme-color" content="#14213d">
 <meta name="robots" content="noindex">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -57,52 +57,98 @@ textarea{min-height:120px;font-size:15px}
 .dot.ok{background:var(--ok)}
 .hidden{display:none!important}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px;background:var(--card);color:var(--ink);cursor:pointer;min-height:36px}
-.foot{color:var(--muted);font-size:13px;text-align:center}
+.foot{color:var(--muted);font-size:13px;text-align:center;margin-bottom:160px}
 .foot a{color:var(--muted)}
-.toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ok);color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+.toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ok);color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center;z-index:9999}
 .toast.show{opacity:1}
+.mode{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:4px}
+.mode button{min-height:46px;border:0;border-radius:12px;background:transparent;color:var(--ink);font:600 16px var(--f);cursor:pointer}
+.mode button.on{background:var(--gold);color:#fff}
+.glas{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:center}
+.glas svg{width:110px;height:130px}
+.glas p{margin:0}
+.glas .big{font-size:22px;font-weight:700}
+.star{transform-box:fill-box;transform-origin:center}
+.star.neu{animation:fall .9s ease-out both}
+@keyframes fall{from{transform:translateY(-60px) scale(.4);opacity:0}}
+@media (prefers-reduced-motion:reduce){.star.neu{animation:none}}
+.sum3{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sum3 .card{display:grid;gap:2px}
+.sum3 small{color:var(--muted)}
+.sum3 strong{font-size:22px;font-variant-numeric:tabular-nums}
+.kat{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:6px 0;font-size:15px}
+.kat span:last-child{font-variant-numeric:tabular-nums}
+pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px;font-size:12px;max-height:240px;overflow:auto;margin:10px 0 0}
 </style>
 </head>
 <body>
-<script src="../nova/intro.js" data-art="funken" data-bild="../nova/figuren/fompa.jpg" data-text="Fompa ordnet deine Belege"></script>
+<script src="../nova/intro.js" data-art="funken" data-bild="../nova/figuren/fompa.jpg" data-text="Fompa sammelt deine Zettel"></script>
 <div class="w">
   <header>
-    <img src="icon-180.png" alt="Fompa">
+    <img src="icon-180.png" alt="Fompa, der Löwenaffe mit Brille">
     <div>
-      <h1>Fompa · Steuern</h1>
-      <p class="sub">Belege fotografieren, ordnen, zusammenzählen. Alles bleibt auf deinem Handy. <a href="../apps/">Alle Apps</a></p>
+      <h1>Fompa</h1>
+      <p class="sub">Buchhaltung und Steuern. Fompa sammelt deine Zettel, damit keiner verloren geht. Alles bleibt auf deinem Handy. <a href="../apps/">Alle Apps</a></p>
     </div>
   </header>
+
+  <div class="mode" role="tablist">
+    <button data-mode="buch" class="on">Buchhaltung</button>
+    <button data-mode="steuer">Steuern</button>
+  </div>
+
+  <div class="card glas">
+    <svg viewBox="0 0 110 130" aria-hidden="true">
+      <defs><clipPath id="glasInnen"><path d="M22 34 Q18 40 18 52 L18 112 Q18 122 30 122 L80 122 Q92 122 92 112 L92 52 Q92 40 88 34 Z"/></clipPath></defs>
+      <rect x="30" y="12" width="50" height="14" rx="4" fill="var(--gold)" opacity=".85"/>
+      <path d="M26 26 L84 26 L88 34 L22 34 Z" fill="var(--gold)" opacity=".45"/>
+      <g id="sterne" clip-path="url(#glasInnen)"></g>
+      <path d="M22 34 Q18 40 18 52 L18 112 Q18 122 30 122 L80 122 Q92 122 92 112 L92 52 Q92 40 88 34 Z" fill="none" stroke="var(--muted)" stroke-width="2.5" opacity=".7"/>
+      <path d="M26 50 L26 100" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".35"/>
+    </svg>
+    <div>
+      <p class="big" id="glasZahl">0 Zettel</p>
+      <p class="hint" id="glasText">Jede Quittung wird ein Stern in Fompas Glas. Am Jahresende wird daraus die Liste für den Steuerberater.</p>
+    </div>
+  </div>
 
   <div class="bubble" id="bubble"></div>
 
   <div class="row">
-    <label>Steuerjahr
+    <label>Jahr
       <select id="year"></select>
     </label>
-    <div class="card total" style="align-self:end"><span>Total</span><strong id="total">0.00</strong></div>
+    <div class="card total" style="align-self:end"><span id="totalLabel">Total</span><strong id="total">0.00</strong></div>
   </div>
 
   <nav class="tabs">
-    <button class="tab on" data-tab="neu">Beleg</button>
-    <button class="tab" data-tab="liste">Ordner</button>
-    <button class="tab" data-tab="paket">Paket</button>
+    <button class="tab on" data-tab="neu">Zettel</button>
+    <button class="tab" data-tab="monat">Monat</button>
+    <button class="tab" data-tab="export">Export</button>
   </nav>
 
-  <!-- Beleg erfassen -->
+  <!-- Zettel erfassen (Buchhaltung und Steuern) -->
   <section id="neu" class="card form">
-    <h2 id="formTitle">Neuer Beleg</h2>
-    <div class="shot" id="shot">📷 Foto vom Beleg machen<br><small>oder Bild/PDF auswählen</small></div>
+    <h2 id="formTitle">Neuer Zettel</h2>
+    <p class="hint" id="sprechHint">Tipp auf das kleine Fompa-Bild rechts unten und sag zum Beispiel: «Kaffee 4.80 mit Twint» oder «Migros 23.50 mit Karte». Fompa füllt alles aus, auch für alles, was du im Alltag kaufst.</p>
+    <div class="shot" id="shot">📷 Quittung fotografieren<br><small>oder Bild/PDF auswählen (freiwillig)</small></div>
     <input type="file" id="file" accept="image/*,application/pdf" capture="environment" class="hidden">
-    <label>Aussteller
-      <input id="from" list="fromList" placeholder="z. B. Krankenkasse, Vermieter" autocomplete="off">
+    <label><span id="fromLabel">Wofür</span>
+      <input id="from" list="fromList" placeholder="z. B. Server, Praxismiete, Krankenkasse" autocomplete="off">
       <datalist id="fromList"></datalist>
     </label>
     <div class="chips" id="suggest"></div>
-    <label>Ordner
-      <select id="cat"></select>
-    </label>
+    <div class="row nurBuch">
+      <label>Kategorie
+        <select id="haupt"><option>Privat</option><option>Ferien</option><option>Praxis</option><option>DR Lab</option><option>Unklar</option></select>
+      </label>
+      <label>Genauer (freiwillig)
+        <input id="unter" list="unterList" placeholder="z. B. Kaffee" autocomplete="off">
+        <datalist id="unterList"></datalist>
+      </label>
+    </div>
     <div class="row">
       <label>Betrag CHF
         <input id="amount" inputmode="decimal" placeholder="0.00">
@@ -111,24 +157,70 @@ textarea{min-height:120px;font-size:15px}
         <input id="date" type="date">
       </label>
     </div>
-    <label>Notiz (optional)
+    <div class="row nurBuch">
+      <label>Bezahlt mit
+        <input id="paid" list="paidList" placeholder="Karte" autocomplete="off">
+        <datalist id="paidList"><option value="Karte"><option value="Kreditkarte"><option value="Debitkarte Geschaeftskonto"><option value="Twint"><option value="Bar"><option value="E-Banking"></datalist>
+      </label>
+      <label>Fixkosten
+        <input id="fix" placeholder="z. B. monatlich" autocomplete="off">
+      </label>
+    </div>
+    <label id="catRow"><span id="catLabel">Steuer-Ordner</span>
+      <select id="cat"></select>
+    </label>
+    <label>Notiz (freiwillig)
       <input id="note" placeholder="z. B. Frage an den Steuerberater">
     </label>
-    <button class="btn main" id="save">Beleg ablegen</button>
+    <button class="btn main" id="save">Ins Glas legen</button>
     <button class="btn hidden" id="cancel">Abbrechen</button>
+    <button class="btn del hidden" id="delOne">Zettel löschen</button>
   </section>
 
-  <!-- Ordner -->
+  <!-- Buchhaltung: Monat -->
+  <section id="monat" class="hidden" style="display:grid;gap:12px">
+    <label>Monat
+      <select id="monatSel"></select>
+    </label>
+    <div class="sum3">
+      <div class="card"><small>Privat diese Woche</small><strong id="sumWoche">0.00</strong><small id="wocheBudget">Budget 138</small></div>
+      <div class="card"><small id="sumMonatLabel">Monat</small><strong id="sumMonat">0.00</strong></div>
+    </div>
+    <div class="card"><h2>Nach Kategorie</h2><div id="katSum"></div></div>
+    <div class="card"><h2>Zettel</h2><div class="belege" id="monatListe"></div></div>
+  </section>
+
+  <!-- Buchhaltung: Export -->
+  <section id="export" class="hidden card">
+    <h2>Für die Buchhaltung</h2>
+    <p class="hint">Gleiche Spalten wie die Ausgaben-Liste der Buchhaltung, dazu die Steuer-Ordner-Nummer. Kopieren und im Buchhaltung-Thread einfügen.</p>
+    <label style="margin-top:10px">Monat
+      <select id="exSel"></select>
+    </label>
+    <div style="display:grid;gap:8px;margin-top:10px">
+      <button class="btn main" id="exCopy">Zeilen kopieren</button>
+      <button class="btn" id="exShare">Als CSV teilen</button>
+    </div>
+    <pre id="exPre"></pre>
+    <details style="margin-top:12px">
+      <summary><b>Bestehende Ausgaben einlesen</b></summary>
+      <p class="hint">Zeilen aus der Ausgaben-Liste einfügen (Datum;Wofuer;Kategorie;Betrag CHF;Bezahlt mit;Beleg;Fixkosten, optional Steuer-Ordner). Doppelte Zeilen überspringt Fompa.</p>
+      <textarea id="impText" spellcheck="false" placeholder="2026-10-11;Server;DR Lab Software;35.00;Twint;;jaehrlich"></textarea>
+      <button class="btn" id="imp" style="margin-top:8px;width:100%">Einlesen</button>
+    </details>
+  </section>
+
+  <!-- Steuern: Ordner -->
   <section id="liste" class="hidden">
-    <p class="hint" style="margin-bottom:8px">Grün = Beleg vorhanden. Leere Ordner zeigen, was noch fehlt. Tippen öffnet den Ordner.</p>
+    <p class="hint" style="margin-bottom:8px">Grün = Zettel vorhanden. Leere Ordner zeigen, was noch fehlt. Tippen öffnet den Ordner.</p>
     <ul class="cats" id="cats"></ul>
   </section>
 
-  <!-- Paket -->
+  <!-- Steuern: Paket -->
   <section id="paket" class="hidden" style="display:grid;gap:12px">
     <div class="card">
       <h2>Paket für den Steuerberater</h2>
-      <p class="hint">Ein ZIP mit einem Ordner pro Nummer, Dateinamen wie <code>3_Krankenkasse_CSS_2026-01.jpg</code> und einer Übersicht (00_Uebersicht.csv). Du entscheidest selbst, wem du es schickst.</p>
+      <p class="hint">Ein ZIP mit einem Ordner pro Nummer, Dateinamen wie <code>6000_Miete-Praxis_Vermieter_2026-01.jpg</code> und einer Übersicht (00_Uebersicht.csv). Zettel aus der Buchhaltung mit Steuer-Ordner sind dabei. Du entscheidest selbst, wem du es schickst.</p>
       <div style="display:grid;gap:8px;margin-top:10px">
         <button class="btn main" id="zip">ZIP erstellen</button>
         <button class="btn" id="csv">Nur Übersicht (CSV)</button>
@@ -137,7 +229,7 @@ textarea{min-height:120px;font-size:15px}
     </div>
     <div class="card">
       <h2>Eigene Nummern</h2>
-      <p class="hint">Wie in deiner Excel-Datei: eine Zeile pro Ordner, <code>Nummer;Bezeichnung</code>. Bestehende Belege behalten ihre Nummer.</p>
+      <p class="hint">Vorgabe: die Konten aus deiner Erfolgsrechnung (3000–6640, 1500, 1520) und private Ordner P1–P9. Eine Zeile pro Ordner, <code>Nummer;Bezeichnung</code>. Bestehende Zettel behalten ihre Nummer.</p>
       <textarea id="catText" spellcheck="false"></textarea>
       <div class="row" style="margin-top:8px">
         <button class="btn" id="catSave">Speichern</button>
@@ -146,51 +238,103 @@ textarea{min-height:120px;font-size:15px}
     </div>
     <details class="card">
       <summary><b>Was Fompa sich merkt</b></summary>
-      <p class="hint">Fompa merkt sich, welcher Aussteller in welchen Ordner gehört, und schlägt ihn beim nächsten Mal vor. Nur auf diesem Handy, nichts wird gesendet.</p>
+      <p class="hint">Fompa merkt sich, wohin ein Zettel gehört (Kategorie und Steuer-Ordner), und schlägt es beim nächsten Mal vor. Nur auf diesem Handy, nichts wird gesendet.</p>
       <ul id="memory" class="hint"></ul>
       <button class="btn small del" id="forget">Vergessen</button>
     </details>
     <details class="card">
       <summary><b>Alles löschen</b></summary>
-      <p class="hint">Löscht alle Belege dieses Steuerjahres auf diesem Handy. Vorher das ZIP sichern.</p>
-      <button class="btn del" id="wipe">Steuerjahr löschen</button>
+      <p class="hint">Löscht alle Zettel dieses Jahres auf diesem Handy, auch die der Buchhaltung. Vorher ZIP und Export sichern.</p>
+      <button class="btn del" id="wipe">Jahr löschen</button>
     </details>
   </section>
 
-  <p class="foot">Fompa ordnet und rechnet, ist aber keine Steuerberatung. Ob etwas abziehbar ist, entscheidet dein Steuerberater oder das Steueramt.<br>Belege bleiben auf deinem Gerät (kein Server, kein Konto).</p>
+  <p class="foot">Fompa ordnet und rechnet, ist aber keine Steuerberatung. Ob etwas abziehbar ist, entscheidet dein Steuerberater oder das Steueramt. Bei Kundinnen und Kunden nur Kürzel verwenden.<br>Zettel bleiben auf deinem Gerät (kein Server, kein Konto).</p>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
-// Fompa – Steuer-Belege. Speicher: nur IndexedDB auf dem Gerät.
+// Fompa – Buchhaltung und Steuern. Speicher: nur IndexedDB auf dem Gerät.
+// Ein Zettel = ein Eintrag in «belege». kind 'ausgabe' = Buchhaltung, sonst Steuer-Beleg. cat = Steuer-Ordner ('' = keiner).
 const $ = s => document.querySelector(s);
-const DEFAULT_CATS = `1;Lohnausweis und Einkommen
-2;Praxis Einnahmen
-3;Krankenkasse
-4;Krankheitskosten selbst bezahlt
-5;AHV SVA Beiträge
-6;Säule 3a
-7;Praxis Miete
-8;Praxis Versicherungen
-9;Telefon Internet Software
-10;Weiterbildung Fachliteratur
-11;Werbung Website
-12;Anschaffungen Laptop Handy
-13;Bank- und Depotauszüge
-14;Unterhaltsbeiträge
-15;Spenden
-16;Schuldzinsen
-17;Diverses`;
+// Nummern wie in Diegos Erfolgsrechnung (Konten) plus private Steuer-Ordner P1–P10
+const DEFAULT_CATS = `3000;Einnahmen Praxis
+4000;Materialaufwand und Verbrauchsmaterial
+5700;AHV und Personenversicherungen
+5720;Unfallversicherung Verbandsbeitrag
+6000;Miete Praxis- und Büroräume
+6100;Unterhalt Reparaturen Ersatzanschaffungen
+6120;Berufskleider
+6300;Sachversicherungen
+6310;Berufshaftpflichtversicherung
+6400;Elektrizität Kehricht Entsorgung
+6500;Büro- und EDV-Material
+6510;Telefon
+6520;Porto Werbesendungen
+6530;Buchführung und Beratung
+6540;Fachliteratur Zeitungsabo
+6550;Weiterbildung
+6560;Mitgliederbeiträge Spenden
+6570;EDV-Support Software
+6580;Internet Homepage Gebühren
+6590;Übriger Betriebsaufwand
+6600;Werbung Inserate Drucksachen
+6630;Repräsentationsspesen
+6635;Restaurant und Bewirtung
+6640;Reisespesen Hotel Weiterbildung Ausland
+1500;Anschaffungen
+1520;EDV-Anlage Anschaffungen Homepage
+P1;Lohnausweis und weitere Einkommen
+P2;Krankenkasse
+P3;Krankheitskosten selbst bezahlt
+P4;Säule 3a
+P5;Unterhaltsbeiträge
+P6;Bank- und Depotauszüge
+P7;Spenden privat
+P8;Schuldzinsen
+P9;Diverses`;
+// Kategorien wie im Buchhaltung-Thread: nur Praxis und DR Lab bekommen einen Steuer-Ordner
+const HAUPT = ['Privat','Ferien','Praxis','DR Lab','Unklar'];
+const UNTER = {Privat:['Essen','Kaffee und Snacks','Lebensmittel','Restaurant','Ausgang','Mila','Kleider','Haushalt','Mobilität','Gesundheit'], Ferien:['Essen','Hotel','Reise'], Praxis:['Miete','Material','Versicherungen','Weiterbildung','Telefon Internet','Werbung'], 'DR Lab':['Software','Programmierer','App-Produktion','Nova'], Unklar:[]};
+const MIT_ORDNER = h => h === 'Praxis' || h === 'DR Lab';
+// Konto-Vorschlag aus Kategorie (nur ein Vorschlag, der Steuerberater entscheidet)
+const KONTO = {'Praxis Miete':'6000','Praxis Material':'4000','Praxis Versicherungen':'6300','Praxis Weiterbildung':'6550','Praxis Telefon Internet':'6510','Praxis Werbung':'6600',
+  'DR Lab Software':'6570','DR Lab Programmierer':'6590','DR Lab App-Produktion':'6590','DR Lab Nova':'6580'};
+function kontoVorschlag(){
+  if (mode !== 'buch' || editId) return;
+  const k = KONTO[getKat()] || ($('#haupt').value === 'DR Lab' ? '6590' : '');
+  if (k && [...$('#cat').options].some(o => o.value === k)) $('#cat').value = k;
+}
+const WOCHE_PRIVAT = 138;
+const splitKat = k => { k = String(k||''); const h = HAUPT.find(x => k === x || k.startsWith(x + ' ')); return h ? {h, u: k.slice(h.length).trim()} : {h: k ? 'Unklar' : 'Privat', u: k}; };
+const getKat = () => ($('#haupt').value + ' ' + $('#unter').value.trim()).trim();
+function setKat(k){ const {h,u} = splitKat(k); $('#haupt').value = h; $('#unter').value = u; katChanged(); }
+function katChanged(){
+  const h = $('#haupt').value;
+  $('#unterList').innerHTML = (UNTER[h]||[]).map(x => `<option value="${esc(x)}">`).join('');
+  const zeig = mode !== 'buch' || MIT_ORDNER(h);
+  $('#catRow').classList.toggle('hidden', !zeig);
+  if (!zeig) $('#cat').value = ''; else if (!$('#cat').value) kontoVorschlag();
+}
 
-const TIPS = [
-  'Ich bin <b>Fompa</b>. Du fotografierst, ich ordne und zähle. Ob etwas abziehbar ist, sagt dein Steuerberater.',
-  'Ein Beleg pro Foto. Mehrere Seiten? Einfach nacheinander ablegen, ich halte sie im gleichen Ordner zusammen.',
-  'Unleserliche Zahl? Lass den Betrag leer, ich markiere den Beleg als «Betrag fehlt».',
-  'Im Kanton Zürich ist die Frist meist der 31. März. Verlängern geht online.',
-  'Leere Ordner sind kein Fehler. Sie zeigen nur, was noch fehlt.'
-];
+const TIPS = {
+  buch: [
+    'Ich bin <b>Fompa</b>. Verlorene Zettel sind mein Lieblingsfund. Fotografier die Quittung oder sag mir einfach, was du bezahlt hast.',
+    'Jeder Zettel wird ein Stern in meinem Glas. Ein volles Glas heisst: Nichts ist verloren gegangen.',
+    'Gib einem Zettel einen Steuer-Ordner, dann liegt er am Jahresende schon richtig für den Steuerberater.',
+    'Am Sonntag schaue ich gern mit dir auf die Woche. Unter «Monat» siehst du, was zusammenkommt.'
+  ],
+  steuer: [
+    'Ich bin <b>Fompa</b>. Du fotografierst, ich ordne und zähle. Ob etwas abziehbar ist, sagt dein Steuerberater.',
+    'Unleserliche Zahl? Lass den Betrag leer, ich markiere den Zettel als «Betrag fehlt».',
+    'Im Kanton Zürich ist die Frist meist der 31. März. Verlängern geht online.',
+    'Leere Ordner sind kein Fehler. Sie zeigen nur, was noch fehlt.'
+  ]
+};
 
-let db, year, cats = [], belege = [], editId = null, photo = null, memory = {};
+let db, year, cats = [], zettel = [], editId = null, photo = null, memory = {}, mode = 'buch', neuId = null;
+const isBuch = z => z.kind === 'ausgabe';
+const steuerZettel = () => zettel.filter(z => z.cat);
 
 function openDB(){
   return new Promise((ok, no) => {
@@ -205,83 +349,186 @@ function openDB(){
     r.onerror = () => no(r.error);
   });
 }
-function tx(store, mode, fn){
+function tx(store, m, fn){
   return new Promise((ok, no) => {
-    const t = db.transaction(store, mode); const s = t.objectStore(store);
+    const t = db.transaction(store, m); const s = t.objectStore(store);
     const res = fn(s); t.oncomplete = () => ok(res && res.result); t.onerror = () => no(t.error);
   });
 }
 const kvGet = k => tx('kv','readonly', s => s.get(k));
 const kvSet = (k,v) => tx('kv','readwrite', s => s.put(v,k));
 
-function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2200); }
+function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2400); }
 const chf = n => (Math.round(n*100)/100).toLocaleString('de-CH',{minimumFractionDigits:2,maximumFractionDigits:2});
 const parseAmt = s => { const n = parseFloat(String(s).replace(/['\s]/g,'').replace(',','.')); return isFinite(n) ? n : null; };
 const safe = s => String(s||'').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/Ä/g,'Ae').replace(/Ö/g,'Oe').replace(/Ü/g,'Ue').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w.-]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
 const esc = s => String(s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ascii = s => String(s||'').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/Ä/g,'Ae').replace(/Ö/g,'Oe').replace(/Ü/g,'Ue').replace(/;/g,',');
+const ymd = d => new Date(d.getTime() - d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const sum = list => list.reduce((s,z) => s + (z.amount||0), 0);
+const MONATE = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+const monatName = m => MONATE[+m.slice(5,7)-1] + ' ' + m.slice(0,4);
 
 function parseCats(txt){
   return txt.split('\n').map(l => l.trim()).filter(Boolean).map(l => {
     const i = l.indexOf(';'); return i < 0 ? {nr:l, name:l} : {nr:l.slice(0,i).trim(), name:l.slice(i+1).trim()};
   });
 }
+// Gedächtnis: früher nur Steuer-Ordner (Text), jetzt {kat, cat}
+const merk = k => { const v = memory[k]; return typeof v === 'string' ? {cat:v} : (v || null); };
 
 async function loadYear(){
   cats = parseCats((await kvGet('cats-'+year)) || (await kvGet('cats-last')) || DEFAULT_CATS);
-  belege = await new Promise(ok => {
+  zettel = await new Promise(ok => {
     const out = []; const r = db.transaction('belege').objectStore('belege').index('year').openCursor(IDBKeyRange.only(year));
     r.onsuccess = () => { const c = r.result; if (c){ out.push(c.value); c.continue(); } else ok(out); };
   });
-  belege.sort((a,b) => (a.date||'').localeCompare(b.date||''));
+  zettel.sort((a,b) => (a.date||'').localeCompare(b.date||''));
   renderAll();
 }
 
 function renderAll(){
-  $('#cat').innerHTML = cats.map(c => `<option value="${esc(c.nr)}">${esc(c.nr)} · ${esc(c.name)}</option>`).join('');
+  const leer = mode === 'buch' ? '<option value="">– kein Steuer-Ordner –</option>' : '';
+  const keep = $('#cat').value;
+  $('#cat').innerHTML = leer + cats.map(c => `<option value="${esc(c.nr)}">${esc(c.nr)} · ${esc(c.name)}</option>`).join('');
+  if ([...$('#cat').options].some(o => o.value === keep)) $('#cat').value = keep;
   $('#catText').value = cats.map(c => c.nr+';'+c.name).join('\n');
-  $('#total').textContent = chf(belege.reduce((s,b) => s + (b.amount||0), 0));
-  const froms = [...new Set(Object.keys(memory))];
-  $('#fromList').innerHTML = froms.map(f => `<option value="${esc(f)}">`).join('');
-  renderCats(); renderMemory(); renderMissing();
+  $('#fromList').innerHTML = Object.keys(memory).map(f => `<option value="${esc(f)}">`).join('');
+  if (mode === 'buch'){
+    const m = ymd(new Date()).slice(0,7);
+    $('#totalLabel').textContent = String(year) === m.slice(0,4) ? MONATE[+m.slice(5)-1] : 'Jahr';
+    $('#total').textContent = chf(sum(zettel.filter(z => isBuch(z) && (String(year) !== m.slice(0,4) || (z.date||'').startsWith(m)))));
+  } else {
+    $('#totalLabel').textContent = 'Steuer-Total';
+    $('#total').textContent = chf(sum(steuerZettel()));
+  }
+  renderGlas(); renderCats(); renderMemory(); renderMissing(); renderMonate(); renderMonat(); renderExport();
 }
 
-const urls = [];
-function imgURL(b){ if(!b.blob || !b.type.startsWith('image/')) return ''; const u = URL.createObjectURL(b.blob); urls.push(u); return u; }
+/* ---------- Fompas Glas ---------- */
+function hash(s){ let h = 2166136261; for (const c of String(s)) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; }
+function renderGlas(){
+  const n = zettel.length, mitOrdner = steuerZettel().length;
+  const list = zettel.slice(-160), cols = list.length < 25 ? 5 : 7, w = 66 / cols, gr = list.length < 25 ? 5.5 : 3.6;
+  const pts = list.map((z,i) => {
+    const h = hash(z.id), row = Math.floor(i / cols), col = i % cols;
+    const x = 22 + w/2 + col * w + (h % 5) - 2, y = 116 - gr - row * gr * 1.7 - ((h >> 4) % 3);
+    const r = gr * (.85 + ((h >> 8) % 4) * .08), rot = (h >> 12) % 72;
+    const fill = z.cat ? (isBuch(z) ? 'var(--gold)' : '#8fb3e8') : '#e8c97a';
+    return `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot})"><path class="star${z.id === neuId ? ' neu' : ''}" d="${starPath(r)}" fill="${fill}" stroke="rgba(0,0,0,.15)" stroke-width=".4"/></g>`;
+  });
+  $('#sterne').innerHTML = pts.join('');
+  neuId = null;
+  $('#glasZahl').textContent = n === 1 ? '1 Zettel' : n + ' Zettel';
+  $('#glasText').textContent = n
+    ? `${mitOrdner} davon liegen schon in einem Steuer-Ordner. Am Jahresende wird daraus die Liste für den Steuerberater.`
+    : 'Jede Quittung wird ein Stern in Fompas Glas. Am Jahresende wird daraus die Liste für den Steuerberater.';
+}
+function starPath(r){
+  let d = ''; for (let i = 0; i < 10; i++){ const a = Math.PI/5*i - Math.PI/2, rr = i % 2 ? r*.45 : r; d += (i ? 'L' : 'M') + (Math.cos(a)*rr).toFixed(2) + ' ' + (Math.sin(a)*rr).toFixed(2); }
+  return d + 'Z';
+}
 
+/* ---------- Steuern: Ordner ---------- */
+const urls = [];
+function imgURL(z){ if(!z.blob || !(z.type||'').startsWith('image/')) return ''; const u = URL.createObjectURL(z.blob); urls.push(u); return u; }
+function zeile(z){
+  const u = imgURL(z);
+  return `<div class="beleg">${u ? `<img src="${u}" alt="">` : `<div class="noimg" style="display:grid;place-items:center">${z.blob ? '📄' : '⭐'}</div>`}
+    <div>${esc(z.from)||'ohne Angabe'}<small>${z.date||'ohne Datum'} · ${z.amount==null?'<b style="color:var(--warn)">Betrag fehlt</b>':'CHF '+chf(z.amount)}${isBuch(z)&&z.kat?' · '+esc(z.kat):''}${z.cat&&mode==='buch'?' · Ordner '+esc(z.cat):''}${z.note?' · '+esc(z.note):''}</small></div>
+    <button class="btn small" data-edit="${z.id}">Ändern</button></div>`;
+}
 function renderCats(){
   urls.splice(0).forEach(u => URL.revokeObjectURL(u));
-  const known = new Set(cats.map(c => c.nr));
-  const extra = [...new Set(belege.map(b => b.cat).filter(n => !known.has(n)))].map(n => ({nr:n, name:'(nicht mehr in der Liste)'}));
+  const st = steuerZettel(), known = new Set(cats.map(c => c.nr));
+  const extra = [...new Set(st.map(b => b.cat).filter(n => !known.has(n)))].map(n => ({nr:n, name:'(nicht mehr in der Liste)'}));
   $('#cats').innerHTML = [...cats, ...extra].map(c => {
-    const list = belege.filter(b => b.cat === c.nr);
-    const sum = list.reduce((s,b) => s + (b.amount||0), 0);
+    const list = st.filter(b => b.cat === c.nr);
     return `<li><div class="head" data-open="${esc(c.nr)}"><span><span class="dot ${list.length?'ok':''}"></span><span class="nr">${esc(c.nr)}</span>${esc(c.name)}</span>
-      <span class="sum">${list.length ? list.length+' · '+chf(sum) : '<span class="empty">fehlt</span>'}</span></div>
-      <div class="belege hidden" data-body="${esc(c.nr)}">${list.map(b => `<div class="beleg">
-        ${imgURL(b) ? `<img src="${imgURL(b)}" alt="">` : `<div class="noimg" style="display:grid;place-items:center">📄</div>`}
-        <div>${esc(b.from)||'ohne Aussteller'}<small>${b.date||'ohne Datum'} · ${b.amount==null?'<b style="color:var(--warn)">Betrag fehlt</b>':'CHF '+chf(b.amount)}${b.note?' · '+esc(b.note):''}</small></div>
-        <button class="btn small" data-edit="${b.id}">Ändern</button></div>`).join('') || '<p class="hint">Noch kein Beleg.</p>'}</div></li>`;
+      <span class="sum">${list.length ? list.length+' · '+chf(sum(list)) : '<span class="empty">fehlt</span>'}</span></div>
+      <div class="belege hidden" data-body="${esc(c.nr)}">${list.map(zeile).join('') || '<p class="hint">Noch kein Zettel.</p>'}</div></li>`;
   }).join('');
 }
-
 function renderMemory(){
-  const e = Object.entries(memory);
-  $('#memory').innerHTML = e.length ? e.map(([f,c]) => `<li>${esc(f)} → Ordner ${esc(c)}</li>`).join('') : '<li>Noch nichts. Nach den ersten Belegen steht hier, was Fompa gelernt hat.</li>';
+  const e = Object.keys(memory);
+  $('#memory').innerHTML = e.length ? e.map(f => { const m = merk(f); return `<li>${esc(f)} → ${[m.kat, m.cat && 'Ordner '+m.cat].filter(Boolean).map(esc).join(', ')}</li>`; }).join('') : '<li>Noch nichts. Nach den ersten Zetteln steht hier, was Fompa gelernt hat.</li>';
 }
-
 function renderMissing(){
-  const empty = cats.filter(c => !belege.some(b => b.cat === c.nr));
-  const noAmt = belege.filter(b => b.amount == null).length;
-  $('#missing').textContent = (empty.length ? 'Noch leer: ' + empty.map(c => c.nr).join(', ') + '. ' : 'Alle Ordner haben Belege. ') + (noAmt ? noAmt + ' Beleg(e) ohne Betrag.' : '');
+  const st = steuerZettel();
+  const empty = cats.filter(c => !st.some(b => b.cat === c.nr));
+  const noAmt = st.filter(b => b.amount == null).length;
+  $('#missing').textContent = (empty.length ? 'Noch leer: ' + empty.map(c => c.nr).join(', ') + '. ' : 'Alle Ordner haben Zettel. ') + (noAmt ? noAmt + ' Zettel ohne Betrag.' : '');
 }
 
+/* ---------- Buchhaltung: Monat und Export ---------- */
+function monate(){
+  const set = new Set(zettel.filter(isBuch).map(z => (z.date||'').slice(0,7)).filter(Boolean));
+  const jetzt = ymd(new Date()).slice(0,7); if (jetzt.startsWith(String(year))) set.add(jetzt);
+  return [...set].sort().reverse();
+}
+function renderMonate(){
+  const ms = monate();
+  for (const [sel, alle] of [['#monatSel', false], ['#exSel', true]]){
+    const keep = $(sel).value;
+    $(sel).innerHTML = (alle ? '<option value="">Ganzes Jahr</option>' : '') + ms.map(m => `<option value="${m}">${monatName(m)}</option>`).join('');
+    if ([...$(sel).options].some(o => o.value === keep)) $(sel).value = keep;
+    else if (alle && ms[0]) $(sel).value = ms[0];
+  }
+}
+function renderMonat(){
+  const m = $('#monatSel').value || '';
+  const list = zettel.filter(z => isBuch(z) && m && (z.date||'').startsWith(m));
+  const heute = new Date(), mo = new Date(heute); mo.setDate(heute.getDate() - ((heute.getDay()+6)%7));
+  const von = ymd(mo), bis = ymd(heute);
+  const privat = sum(zettel.filter(z => isBuch(z) && splitKat(z.kat).h === 'Privat' && z.date >= von && z.date <= bis));
+  $('#sumWoche').textContent = chf(privat);
+  $('#sumWoche').style.color = privat > WOCHE_PRIVAT ? 'var(--warn)' : '';
+  $('#wocheBudget').textContent = privat > WOCHE_PRIVAT ? `${chf(privat - WOCHE_PRIVAT)} über Budget ${WOCHE_PRIVAT}` : `noch ${chf(WOCHE_PRIVAT - privat)} von ${WOCHE_PRIVAT}`;
+  $('#sumMonatLabel').textContent = m ? monatName(m) : 'Monat';
+  $('#sumMonat').textContent = chf(sum(list));
+  const k = {}; list.forEach(z => { const n = z.kat || 'ohne Kategorie'; k[n] = (k[n]||0) + (z.amount||0); });
+  $('#katSum').innerHTML = Object.entries(k).sort((a,b) => b[1]-a[1]).map(([n,v]) => `<div class="kat"><span>${esc(n)}</span><span>${chf(v)}</span></div>`).join('') || '<p class="hint">Noch keine Ausgaben in diesem Monat.</p>';
+  $('#monatListe').innerHTML = list.slice().reverse().map(zeile).join('') || '<p class="hint">Noch kein Zettel.</p>';
+}
+function exportZeilen(){
+  const m = $('#exSel').value;
+  return zettel.filter(z => isBuch(z) && (!m || (z.date||'').startsWith(m)))
+    .map(z => [z.date||'', ascii(z.from), ascii(z.kat), z.amount==null ? '' : z.amount.toFixed(2), ascii(z.paid), z.blob ? 'Foto in Fompa' : ascii((z.note||'').startsWith('Beleg: ') ? z.note.slice(7) : ''), ascii(z.fix), z.cat||''].join(';'));
+}
+const EX_KOPF = 'Datum;Wofuer;Kategorie;Betrag CHF;Bezahlt mit;Beleg;Fixkosten;Steuer-Ordner';
+function renderExport(){ const z = exportZeilen(); $('#exPre').textContent = z.length ? EX_KOPF + '\n' + z.join('\n') : 'Noch keine Ausgaben.'; }
+
+async function importieren(){
+  const zeilen = $('#impText').value.split(/\r?\n/).map(l => l.trim()).filter(l => l && !/^datum;/i.test(l));
+  let neu = 0, doppelt = 0, fehler = 0;
+  const schluessel = z => [z.date, z.from, (z.amount||0).toFixed(2)].join('|');
+  const bekannt = new Set(zettel.filter(isBuch).map(schluessel));
+  const liste = [];
+  for (const l of zeilen){
+    const c = l.split(';'); const amt = parseAmt(c[3]);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(c[0]||'') || amt == null){ fehler++; continue; }
+    const {h,u} = splitKat(c[2]);
+    const z = {id: Date.now().toString(36) + Math.random().toString(36).slice(2,8), year: +c[0].slice(0,4), kind:'ausgabe',
+      date:c[0], from:(c[1]||'').trim(), kat:(h + ' ' + u).trim(), amount:amt, paid:(c[4]||'').trim(), fix:(c[6]||'').trim(),
+      note:(c[5]||'').trim() ? 'Beleg: ' + c[5].trim() : '', cat: MIT_ORDNER(h) ? (c[7]||'').trim() : '', blob:null, type:''};
+    if (bekannt.has(schluessel(z))){ doppelt++; continue; }
+    bekannt.add(schluessel(z)); liste.push(z); neu++;
+  }
+  if (liste.length) await tx('belege','readwrite', s => liste.forEach(z => s.put(z)));
+  $('#impText').value = '';
+  toast(`${neu} eingelesen` + (doppelt ? `, ${doppelt} doppelt` : '') + (fehler ? `, ${fehler} unlesbar` : ''));
+  await loadYear();
+}
+
+/* ---------- Formular ---------- */
 function suggest(){
   const f = $('#from').value.trim().toLowerCase();
-  const hit = Object.entries(memory).find(([k]) => k.toLowerCase() === f);
-  $('#suggest').innerHTML = hit && $('#cat').value !== hit[1] ? `<button class="chip" data-cat="${esc(hit[1])}">Wie letztes Mal: Ordner ${esc(hit[1])}</button>` : '';
-  if (hit && !editId) $('#cat').value = hit[1];
+  const key = Object.keys(memory).find(k => k.toLowerCase() === f);
+  const m = key && merk(key);
+  if (!m){ $('#suggest').innerHTML = ''; return; }
+  if (!editId){ if (m.kat) setKat(m.kat); if (m.cat && [...$('#cat').options].some(o => o.value === m.cat)) $('#cat').value = m.cat; }
+  $('#suggest').innerHTML = `<span class="hint">Wie letztes Mal: ${[m.kat, m.cat && 'Ordner '+m.cat].filter(Boolean).map(esc).join(', ')}</span>`;
 }
-
 async function shrink(file){
   if (!file.type.startsWith('image/')) return file;
   try {
@@ -292,61 +539,114 @@ async function shrink(file){
     return await new Promise(ok => c.toBlob(b => ok(b || file), 'image/jpeg', .85));
   } catch { return file; }
 }
-
 function showPhoto(blob){
-  if (!blob){ $('#shot').innerHTML = '📷 Foto vom Beleg machen<br><small>oder Bild/PDF auswählen</small>'; return; }
-  $('#shot').innerHTML = blob.type.startsWith('image/') ? `<img src="${URL.createObjectURL(blob)}" alt="Beleg">` : '📄 PDF ausgewählt';
+  if (!blob){ $('#shot').innerHTML = '📷 Quittung fotografieren<br><small>oder Bild/PDF auswählen (freiwillig)</small>'; return; }
+  $('#shot').innerHTML = blob.type.startsWith('image/') ? `<img src="${URL.createObjectURL(blob)}" alt="Quittung">` : '📄 PDF ausgewählt';
 }
-
+function defaultDate(){ const t = ymd(new Date()); return t.startsWith(String(year)) ? t : year + '-12-31'; }
 function resetForm(){
   editId = null; photo = null; showPhoto(null);
-  ['#from','#amount','#note'].forEach(s => $(s).value = '');
-  const today = new Date().toISOString().slice(0,10);
-  $('#date').value = today.startsWith(String(year)) ? today : year + '-12-31';
-  $('#formTitle').textContent = 'Neuer Beleg'; $('#save').textContent = 'Beleg ablegen';
-  $('#cancel').classList.add('hidden'); $('#suggest').innerHTML = '';
+  ['#from','#amount','#note','#unter','#paid','#fix'].forEach(s => $(s).value = '');
+  $('#haupt').value = 'Privat'; katChanged();
+  if (mode === 'buch') $('#cat').value = '';
+  $('#date').value = defaultDate();
+  $('#formTitle').textContent = 'Neuer Zettel'; $('#save').textContent = 'Ins Glas legen';
+  $('#cancel').classList.add('hidden'); $('#delOne').classList.add('hidden'); $('#suggest').innerHTML = '';
 }
-
 async function save(){
   const amt = $('#amount').value.trim() ? parseAmt($('#amount').value) : null;
   if ($('#amount').value.trim() && amt == null){ toast('Betrag bitte als Zahl, z. B. 123.45'); return; }
-  const old = editId ? belege.find(b => b.id === editId) : null;
-  if (!photo && !old){ toast('Zuerst ein Foto vom Beleg'); return; }
-  const b = {
+  const old = editId ? zettel.find(b => b.id === editId) : null;
+  const kind = old ? old.kind : (mode === 'buch' ? 'ausgabe' : 'steuer');
+  if (!photo && !old && !$('#from').value.trim() && amt == null){ toast('Foto, Wofür oder Betrag eintragen'); return; }
+  if (kind === 'ausgabe' && !MIT_ORDNER($('#haupt').value)) $('#cat').value = '';
+  if (kind !== 'ausgabe' && !$('#cat').value){ toast('Bitte einen Steuer-Ordner wählen'); return; }
+  const blob = photo || (old && old.blob) || null;
+  const z = {
     id: editId || (Date.now().toString(36) + Math.random().toString(36).slice(2,6)),
-    year, cat: $('#cat').value, from: $('#from').value.trim(), amount: amt,
+    year: +String($('#date').value || defaultDate()).slice(0,4) || year, kind,
+    cat: $('#cat').value, from: $('#from').value.trim(), amount: amt,
     date: $('#date').value, note: $('#note').value.trim(),
-    blob: photo || old.blob, type: (photo || old.blob).type || 'image/jpeg'
+    kat: kind === 'ausgabe' ? getKat() : '', paid: $('#paid').value.trim(), fix: $('#fix').value.trim(),
+    blob, type: blob ? (blob.type || 'image/jpeg') : ''
   };
-  await tx('belege','readwrite', s => s.put(b));
-  if (b.from){ memory[b.from] = b.cat; await kvSet('memory', memory); }
-  toast(old ? 'Geändert' : 'Abgelegt in Ordner ' + b.cat);
+  await tx('belege','readwrite', s => s.put(z));
+  if (z.from){ memory[z.from] = {kat: z.kat || (merk(z.from)||{}).kat || '', cat: z.cat}; await kvSet('memory', memory); }
+  if (!old) neuId = z.id;
+  toast(old ? 'Geändert' : (z.cat ? 'Im Glas und in Ordner ' + z.cat : 'Im Glas ⭐'));
+  if (z.year !== year){ year = z.year; await kvSet('year', year); fillYears(); }
   resetForm(); await loadYear();
 }
-
-async function edit(id){
-  const b = belege.find(x => x.id === id); if (!b) return;
-  editId = id; photo = null; showPhoto(b.blob);
-  $('#from').value = b.from; $('#cat').value = b.cat; $('#amount').value = b.amount==null ? '' : b.amount;
-  $('#date').value = b.date; $('#note').value = b.note;
-  $('#formTitle').textContent = 'Beleg ändern'; $('#save').textContent = 'Speichern';
-  $('#cancel').classList.remove('hidden');
-  if (!document.querySelector('#delOne')){
-    const d = document.createElement('button'); d.className = 'btn del'; d.id = 'delOne'; d.textContent = 'Beleg löschen';
-    d.onclick = async () => { if (!confirm('Diesen Beleg löschen?')) return; await tx('belege','readwrite', s => s.delete(editId)); resetForm(); d.remove(); await loadYear(); toast('Gelöscht'); };
-    $('#cancel').after(d);
-  }
+function edit(id){
+  const z = zettel.find(x => x.id === id); if (!z) return;
+  setMode(isBuch(z) ? 'buch' : 'steuer', true);
+  editId = id; photo = null; showPhoto(z.blob);
+  $('#from').value = z.from||''; $('#cat').value = z.cat||''; $('#amount').value = z.amount==null ? '' : z.amount;
+  $('#date').value = z.date||''; $('#note').value = z.note||''; setKat(z.kat||''); $('#paid').value = z.paid||''; $('#fix').value = z.fix||'';
+  $('#formTitle').textContent = 'Zettel ändern'; $('#save').textContent = 'Speichern';
+  $('#cancel').classList.remove('hidden'); $('#delOne').classList.remove('hidden');
   tab('neu');
 }
 
+/* ---------- Modus und Tabs ---------- */
+const TABS = {buch: [['neu','Zettel'],['monat','Monat'],['export','Export']], steuer: [['neu','Zettel'],['liste','Ordner'],['paket','Paket']]};
+function setMode(m, still){
+  mode = m;
+  document.querySelectorAll('.mode button').forEach(b => b.classList.toggle('on', b.dataset.mode === m));
+  document.querySelectorAll('.tab').forEach((t,i) => { t.dataset.tab = TABS[m][i][0]; t.textContent = TABS[m][i][1]; });
+  document.querySelectorAll('.nurBuch').forEach(el => el.classList.toggle('hidden', m !== 'buch'));
+  $('#fromLabel').textContent = m === 'buch' ? 'Wofür' : 'Aussteller';
+  $('#catLabel').textContent = m === 'buch' ? 'Steuer-Ordner (freiwillig)' : 'Steuer-Ordner';
+  const t = TIPS[m]; $('#bubble').innerHTML = t[Math.floor(Date.now()/864e5) % t.length];
+  try { localStorage.setItem('fompa-mode', m); } catch {}
+  katChanged();
+  if (!still){ resetForm(); tab('neu'); }
+  renderAll();
+}
 function tab(name){
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === name));
-  ['neu','liste','paket'].forEach(n => $('#'+n).classList.toggle('hidden', n !== name));
-  if (name !== 'neu' || !editId){ const d = $('#delOne'); if (d && !editId) d.remove(); }
+  ['neu','monat','export','liste','paket'].forEach(n => $('#'+n).classList.toggle('hidden', n !== name));
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
-/* ---------- Export: CSV + ZIP (ohne Bibliothek, unkomprimiert) ---------- */
+/* ---------- Reden mit Fompa (Sprech-Baustein) ---------- */
+// Sagt man einen Betrag, füllt Fompa den Zettel aus. Sonst antwortet der Baustein normal.
+function verstehe(t){
+  let s = ' ' + t.toLowerCase().replace(/(\d)\s*[.,]\s*(\d)/g, '$1.$2') + ' ';
+  let betrag = null, m;
+  if ((m = s.match(/(\d+)\s*(?:franken|fr\.?|chf|stutz)\s*(?:und\s*)?(\d{1,2})\b/))) betrag = +m[1] + (+m[2])/100;
+  else if ((m = s.match(/(\d+(?:\.\d{1,2})?)\s*(?:franken|fr\.?|chf|stutz)/)) || (m = s.match(/(?:chf|fr\.?)\s*(\d+(?:\.\d{1,2})?)/))) betrag = +m[1];
+  else { const all = [...s.matchAll(/\b\d+(?:\.\d{1,2})?\b/g)].map(x => x[0]); const dez = all.find(x => x.includes('.')); if (dez || all.length) betrag = +(dez || all[all.length-1]); }
+  if (betrag == null || !isFinite(betrag)) return null;
+  const zahl = [['kreditkarte','Kreditkarte'],['debitkarte','Debitkarte Geschaeftskonto'],['twint','Twint'],['karte','Karte'],['bar','Bar'],['e-banking','E-Banking'],['ebanking','E-Banking'],['rechnung','E-Banking']].find(([w]) => new RegExp('\\b' + w + '\\b').test(s));
+  const d = new Date(); if (/\bgestern\b/.test(s)) d.setDate(d.getDate()-1); if (/\bvorgestern\b/.test(s)) d.setDate(d.getDate()-1);
+  let was = s.replace(/(\d+)\s*(franken|fr\.?|chf|stutz)\s*(und\s*)?\d{0,2}/g, ' ').replace(/(chf|fr\.?)\s*\d+(\.\d+)?/g, ' ').replace(/\b\d+(\.\d+)?\b/g, ' ')
+    .replace(/\b(mit|per|bezahlt|habe|hab|ich|heute|gestern|vorgestern|für|fuer|von|der|die|das|ein|eine|einen|beleg|quittung|zettel|kreditkarte|debitkarte|karte|twint|bar|e-banking|ebanking|rechnung|ausgegeben|gekauft|und)\b/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+  was = was ? was.charAt(0).toUpperCase() + was.slice(1) : '';
+  if (mode !== 'buch') setMode('buch');
+  resetForm(); tab('neu');
+  $('#from').value = was; $('#amount').value = betrag.toFixed(2); $('#date').value = ymd(d);
+  if (zahl) $('#paid').value = zahl[1];
+  const kw = KONSUM.find(([re]) => re.test(s)); if (kw) setKat(kw[1]);
+  suggest();
+  return `Notiert: ${was || 'ohne Namen'}, CHF ${chf(betrag)}${zahl ? ', ' + zahl[1] : ''}. Schau kurz drüber und tipp auf «Ins Glas legen», dann kommt der Zettel zu den anderen.`;
+}
+window.SPRECHEN_EINGABE = verstehe;
+// Konsum: Kategorie aus dem Gesagten erraten (Fompas Gedächtnis hat Vorrang)
+const KONSUM = [
+  [/\b(kaffee|cappuccino|espresso|gipfeli|croissant|snack|glace)\b/, 'Privat Kaffee und Snacks'],
+  [/\b(restaurant|znacht|zmittag|mittagessen|abendessen|pizza|sushi|kebab|take ?away)\b/, 'Privat Restaurant'],
+  [/\b(bier|wein|drink|apéro|apero|club)\b/, 'Privat Ausgang'],
+  [/\b(migros|coop|denner|aldi|lidl|volg|spar|einkauf|lebensmittel|gemüse|brot)\b/, 'Privat Lebensmittel'],
+  [/\b(sbb|zvv|tram|bus|zug|taxi|uber|benzin|parkieren|velo)\b/, 'Privat Mobilität'],
+  [/\b(apotheke|arzt|zahnarzt|drogerie)\b/, 'Privat Gesundheit'],
+  [/\b(kleider|schuhe|zara|h&m)\b/, 'Privat Kleider'],
+  [/\b(server|software|abo|app|domain|hosting)\b/, 'DR Lab Software'],
+  [/\b(miete)\b/, 'Praxis Miete']
+];
+
+/* ---------- Export Steuern: CSV + ZIP (ohne Bibliothek, unkomprimiert) ---------- */
 function fileName(b, i){
   const c = cats.find(x => x.nr === b.cat) || {nr:b.cat, name:'Ordner'};
   const ext = b.type === 'application/pdf' ? 'pdf' : (b.type === 'image/png' ? 'png' : 'jpg');
@@ -354,13 +654,14 @@ function fileName(b, i){
 }
 function csvText(){
   const q = v => '"' + String(v==null?'':v).replace(/"/g,'""') + '"';
+  const st = steuerZettel();
   const rows = [['Nummer','Bezeichnung','Dateiname','Datum','Aussteller','Betrag CHF','Status','Bemerkung']];
   cats.forEach(c => {
-    const list = belege.filter(b => b.cat === c.nr);
+    const list = st.filter(b => b.cat === c.nr);
     if (!list.length) rows.push([c.nr, c.name, '', '', '', '', 'fehlt', '']);
-    list.forEach(b => rows.push([c.nr, c.name, fileName(b, belege.indexOf(b)+1).split('/')[1], b.date, b.from, b.amount==null?'':b.amount.toFixed(2), b.amount==null?'Betrag fehlt':'vorhanden', b.note]));
+    list.forEach(b => rows.push([c.nr, c.name, b.blob ? fileName(b, st.indexOf(b)+1).split('/')[1] : '(kein Foto)', b.date, b.from, b.amount==null?'':b.amount.toFixed(2), b.amount==null?'Betrag fehlt':'vorhanden', b.note]));
   });
-  rows.push(['','Total','','','', belege.reduce((s,b)=>s+(b.amount||0),0).toFixed(2), '', '']);
+  rows.push(['','Total','','','', sum(st).toFixed(2), '', '']);
   return '﻿' + rows.map(r => r.map(q).join(';')).join('\r\n');
 }
 const CRC = (() => { const t = new Uint32Array(256); for (let n=0;n<256;n++){ let c=n; for (let k=0;k<8;k++) c = c&1 ? 0xEDB88320^(c>>>1) : c>>>1; t[n]=c>>>0; } return t; })();
@@ -395,49 +696,66 @@ async function deliver(blob, name){
 }
 
 /* ---------- Start ---------- */
+function fillYears(){
+  const now = new Date().getFullYear();
+  const ys = [...new Set([now-2, now-1, now, now+1, year])].sort();
+  $('#year').innerHTML = ys.map(y => `<option ${y==year?'selected':''}>${y}</option>`).join('');
+}
 (async () => {
   db = await openDB();
   memory = (await kvGet('memory')) || {};
-  const now = new Date().getFullYear(), last = await kvGet('year');
-  year = last || (new Date().getMonth() < 6 ? now - 1 : now);
-  $('#year').innerHTML = [now-2, now-1, now, now+1].map(y => `<option ${y==year?'selected':''}>${y}</option>`).join('');
-  $('#bubble').innerHTML = TIPS[Math.floor(Date.now()/864e5) % TIPS.length];
-  await loadYear(); resetForm();
+  year = (await kvGet('year')) || new Date().getFullYear();
+  fillYears();
+  let m = 'buch'; try { m = localStorage.getItem('fompa-mode') || 'buch'; } catch {}
+  await loadYear(); setMode(m);
 
+  document.querySelectorAll('.mode button').forEach(b => b.onclick = () => setMode(b.dataset.mode));
   $('#year').onchange = async e => { year = +e.target.value; await kvSet('year', year); await loadYear(); resetForm(); };
   document.querySelectorAll('.tab').forEach(t => t.onclick = () => tab(t.dataset.tab));
   $('#shot').onclick = () => $('#file').click();
   $('#file').onchange = async e => { const f = e.target.files[0]; if (!f) return; photo = await shrink(f); showPhoto(photo); e.target.value=''; };
   $('#from').oninput = suggest;
-  $('#suggest').onclick = e => { const c = e.target.dataset.cat; if (c){ $('#cat').value = c; $('#suggest').innerHTML=''; } };
+  $('#haupt').onchange = () => { $('#cat').value = ''; katChanged(); };
+  $('#unter').onchange = () => { $('#cat').value = ''; kontoVorschlag(); };
+  $('#imp').onclick = importieren;
   $('#save').onclick = save;
-  $('#cancel').onclick = () => { resetForm(); const d=$('#delOne'); if(d) d.remove(); };
-  $('#cats').onclick = e => {
+  $('#cancel').onclick = resetForm;
+  $('#delOne').onclick = async () => { if (!confirm('Diesen Zettel löschen?')) return; await tx('belege','readwrite', s => s.delete(editId)); resetForm(); await loadYear(); toast('Gelöscht'); };
+  document.querySelector('.w').addEventListener('click', e => {
     const ed = e.target.closest('[data-edit]'); if (ed){ edit(ed.dataset.edit); return; }
     const h = e.target.closest('[data-open]'); if (h) document.querySelector(`[data-body="${CSS.escape(h.dataset.open)}"]`).classList.toggle('hidden');
+  });
+  $('#monatSel').onchange = renderMonat;
+  $('#exSel').onchange = renderExport;
+  $('#exCopy').onclick = async () => {
+    const z = exportZeilen(); if (!z.length){ toast('Noch keine Ausgaben'); return; }
+    try { await navigator.clipboard.writeText(z.join('\n')); toast(z.length + ' Zeilen kopiert'); } catch { toast('Kopieren ging nicht, bitte «Als CSV teilen»'); }
   };
+  $('#exShare').onclick = () => { const z = exportZeilen(); deliver(new Blob(['﻿' + EX_KOPF + '\r\n' + z.join('\r\n')], {type:'text/csv'}), `Ausgaben-${$('#exSel').value || year}.csv`); };
   $('#catSave').onclick = async () => { const t = $('#catText').value; if (!parseCats(t).length) return; await kvSet('cats-'+year, t); await kvSet('cats-last', t); await loadYear(); toast('Nummern gespeichert'); };
   $('#catReset').onclick = () => { $('#catText').value = DEFAULT_CATS; toast('Vorschlag geladen, noch speichern'); };
   $('#forget').onclick = async () => { memory = {}; await kvSet('memory', memory); renderAll(); toast('Vergessen'); };
   $('#wipe').onclick = async () => {
-    if (!confirm(`Alle ${belege.length} Belege von ${year} auf diesem Handy löschen?`)) return;
-    await tx('belege','readwrite', s => belege.forEach(b => s.delete(b.id))); await loadYear(); toast('Gelöscht');
+    if (!confirm(`Alle ${zettel.length} Zettel von ${year} auf diesem Handy löschen?`)) return;
+    await tx('belege','readwrite', s => zettel.forEach(b => s.delete(b.id))); await loadYear(); toast('Gelöscht');
   };
   $('#csv').onclick = () => deliver(new Blob([csvText()], {type:'text/csv'}), `Steuern-${year}-Uebersicht.csv`);
   $('#zip').onclick = async () => {
-    if (!belege.length){ toast('Noch keine Belege'); return; }
+    const st = steuerZettel();
+    if (!st.length){ toast('Noch keine Zettel mit Steuer-Ordner'); return; }
     toast('ZIP wird erstellt …');
     const root = `Steuern-${year}`;
     const files = [{name:`${root}/00_Uebersicht.csv`, data:new TextEncoder().encode(csvText())}];
-    cats.forEach(c => { if (!belege.some(b => b.cat === c.nr)) files.push({name:`${root}/${safe(c.nr)}_${safe(c.name)}/.leer`, data:new Uint8Array(0)}); });
-    belege.forEach((b,i) => files.push({name:`${root}/${fileName(b, i+1)}`, data:b.blob}));
+    cats.forEach(c => { if (!st.some(b => b.cat === c.nr)) files.push({name:`${root}/${safe(c.nr)}_${safe(c.name)}/.leer`, data:new Uint8Array(0)}); });
+    st.forEach((b,i) => { if (b.blob) files.push({name:`${root}/${fileName(b, i+1)}`, data:b.blob}); });
     await deliver(await makeZip(files), `${root}.zip`);
   };
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
 </script>
+<script src="../apps/sprechen/sprechen.js" data-figur="fompa" data-name="Fompa" data-bild="figur.jpg" data-stimme-handy="mann" data-unten="84" data-saetze='{"gruss":["Hallo, ich bin Fompa. Sag mir, was du bezahlt hast, zum Beispiel: Migros Büromaterial 23.50 mit Karte. Dann fülle ich den Zettel für dich aus."],"lob":["Wunderbar, wieder ein Zettel gerettet. Mein Glas glitzert schon."],"mut":["Keine Sorge, wir machen das Zettel für Zettel. Nichts geht verloren."],"frage":["Sag mir einfach Wofür, Betrag und womit bezahlt. Ob etwas abziehbar ist, entscheidet dein Steuerberater, ich ordne nur."],"abschied":["Bis bald. Ich passe auf deine Zettel auf."]}' defer></script>
 <script src="../nova/seelen.js" defer></script>
-<script src="../nova/buehne.js" data-figur="fompa" data-name="Fompa" data-bild="../nova/figuren/fompa.jpg" data-satz="Ich ordne deine Belege und rechne alles zusammen." defer></script>
+<script src="../nova/buehne.js" data-figur="fompa" data-name="Fompa" data-bild="../nova/figuren/fompa.jpg" data-satz="Ich sammle deine Zettel und rechne alles zusammen." defer></script>
 <script src="../nova/nova.js" data-nova-bild="icon-192.png" data-nova-app="Fompa" defer></script>
 </body>
 </html>

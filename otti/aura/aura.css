@@ -1,0 +1,69 @@
+/* Otti im Stil «Aura» (3D-Trickfilm, warme Nacht, leuchtendes Licht). Nur Darstellung; ergänzt ../trickfilmwelt/aura.css.
+   Die Figur auf der Bühne kommt aus aura-figur.js (Posen aus aura/*.webp), die Puppe (nova/puppe.js) läuft unsichtbar mit. */
+html.tfw-aura{--gold:#ffd27a;--gold2:#f0b347;--violett:#b484ff;--flaeche:#ffffff12;--rand:#ffd27a55}
+html.tfw-aura body,html.tfw-aura body[class*="zeit-"]{background:transparent!important}
+html.tfw-aura .sterne{opacity:.55}
+html.tfw-aura h1{color:#ffe2a0;text-shadow:0 0 16px rgba(255,210,122,.55),0 0 38px rgba(180,132,255,.45)}
+/* Bühne: Nachtszene aus dem Trickfilm, Mond hinter Otti, weicher violetter Schein */
+html.tfw-aura .buehne,html.tfw-aura body[class*="zeit-"] .buehne{background:url("nacht.webp") 52% 30%/cover,#0b1636!important;
+  box-shadow:0 0 0 1px rgba(255,214,140,.28),0 18px 48px rgba(2,4,18,.6),0 0 56px rgba(180,132,255,.28)!important}
+html.tfw-aura .buehne.hoert{box-shadow:0 0 0 3px #9fd8ff,0 18px 48px rgba(2,4,18,.6),0 0 56px rgba(127,212,255,.45)!important}
+html.tfw-aura .buehne.spricht{box-shadow:0 0 0 3px var(--gold),0 18px 48px rgba(2,4,18,.6),0 0 60px rgba(255,210,122,.5)!important}
+html.tfw-aura .buehne::before{display:none}
+html.tfw-aura .buehne::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;border-radius:inherit;
+  background:radial-gradient(120% 50% at 50% 115%,rgba(6,10,30,.55),transparent 60%)}
+html.tfw-aura .mondknopf{left:38%;right:auto;top:11%;width:24%}
+html.tfw-aura .mondknopf::after{background:radial-gradient(rgba(255,240,200,.75),rgba(180,132,255,.25) 45%,transparent 68%)}
+/* Die Puppe rechnet weiter (Zustände, Mund), sichtbar ist die Aura-Figur */
+html.tfw-aura #puppe{opacity:0}
+html.tfw-aura .fw .pose{display:none}
+.aura-figur{position:absolute;left:50%;bottom:4%;width:74%;height:72%;transform:translateX(-50%);pointer-events:none}
+.aura-figur .aura-schein{position:absolute;left:-30%;right:-30%;top:-8%;bottom:-12%;border-radius:50%;
+  background:radial-gradient(42% 46% at 50% 52%,rgba(180,132,255,.55),rgba(180,132,255,.18) 55%,transparent 72%);
+  -webkit-mask-image:linear-gradient(#000 62%,transparent 84%);mask-image:linear-gradient(#000 62%,transparent 84%);
+  opacity:.55;animation:auraPuls 3.6s ease-in-out infinite}
+.aura-figur .aura-boden{position:absolute;left:10%;right:10%;bottom:-4%;height:16%;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(3,5,18,.9),rgba(3,5,18,.55) 55%,rgba(3,5,18,0))}
+.aura-figur .aura-atem{position:absolute;inset:0;transform-origin:50% 100%;animation:auraAtem 3.6s ease-in-out infinite}
+.aura-figur .aura-pose{position:absolute;left:50%;bottom:0;height:100%;width:auto;max-width:none;transform:translateX(-50%);opacity:0;
+  filter:drop-shadow(0 0 10px rgba(180,132,255,.55)) drop-shadow(0 0 2px rgba(255,226,170,.5))}
+.aura-figur .aura-pose[data-p="schlaeft"]{height:auto;width:118%}
+.aura-figur .aura-pose.an{opacity:1;z-index:2}
+@keyframes auraAtem{0%,100%{transform:scale(1,1)}50%{transform:scale(1.012,1.022)}}
+@keyframes auraPuls{0%,100%{opacity:.45;transform:scale(1)}50%{opacity:.8;transform:scale(1.05)}}
+.buehne.spricht .aura-figur .aura-atem{animation:auraRede .42s ease-in-out infinite alternate}
+@keyframes auraRede{from{transform:scale(1,1)}to{transform:scale(1.016,1.03) translateY(-.6%)}}
+.buehne.schlaeft .aura-figur .aura-atem{animation-duration:5.2s}
+/* Antippen: Lichtblitz und Lichtpunkte */
+.aura-figur.blitz .aura-schein{animation:auraBlitz .7s ease-out}
+@keyframes auraBlitz{0%{opacity:.6;transform:scale(1)}25%{opacity:1;transform:scale(1.18)}100%{opacity:.55;transform:scale(1)}}
+.aura-funke{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;pointer-events:none;z-index:3;
+  background:radial-gradient(#fff,rgba(255,214,140,.9) 40%,transparent 70%);box-shadow:0 0 12px 4px rgba(255,214,140,.45);
+  animation:auraFunke var(--t,1.1s) cubic-bezier(.2,.7,.3,1) forwards}
+.aura-funke.v{background:radial-gradient(#fff,rgba(180,132,255,.9) 40%,transparent 70%);box-shadow:0 0 12px 4px rgba(180,132,255,.45)}
+@keyframes auraFunke{0%{opacity:0;transform:translate(0,0) scale(.4)}15%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.2)}}
+/* Spielfeld, Blätter, Fenster: tiefe Nacht mit warmem Rand */
+html.tfw-aura .feld{background:linear-gradient(rgba(8,12,36,.5),rgba(8,12,36,.85)),url("nacht.webp") center 70%/cover,#0b1636!important;border-color:rgba(255,214,140,.22)}
+html.tfw-aura .blattinnen,html.tfw-aura .eltern .karte{background:linear-gradient(180deg,#221e56,#121a46 60%)!important;border-color:rgba(255,210,122,.75)!important}
+html.tfw-aura .feier .karte{background:radial-gradient(120% 90% at 50% 0%,#3a2e8a,#141c4c)!important;border-color:var(--gold)!important}
+html.tfw-aura .z.otti,html.tfw-aura .blase{background:#fff8e6;box-shadow:0 0 18px rgba(255,214,140,.25)}
+html.tfw-aura .z.du{background:#3a3487}
+html.tfw-aura .knopf .rund{background:radial-gradient(circle at 40% 35%,#ffe9a8,#ffd27a 55%,#f0b347)!important;box-shadow:0 0 22px rgba(255,210,122,.55),0 0 44px rgba(180,132,255,.3)}
+html.tfw-aura .aktion .rund{box-shadow:0 0 14px rgba(180,132,255,.18)}
+@media (prefers-reduced-motion:reduce){
+  .aura-figur .aura-atem,.aura-figur .aura-schein,.buehne.spricht .aura-figur .aura-atem{animation:none}
+  .aura-funke{display:none}
+}
+.aura-figur .aura-pose.aura-lider{opacity:0;z-index:3;filter:none;transition:opacity .07s linear}
+.aura-figur[data-pose="idle"] .aura-pose.aura-lider.zu{opacity:1}
+html.tfw-aura .endkarte .abendbild{object-fit:contain;background:url("nacht.webp") center/cover}
+/* Lider nur über der Ruhepose; bei winkt, lacht und schläft liegt nichts über den Augen */
+.aura-figur:not([data-pose="idle"]) .aura-pose.aura-lider{opacity:0!important;transition:none}
+/* Posenwechsel: Schnitt mit kurzem Federn und Lichtschein (kein Überblenden, damit nie zwei Gesichter übereinander liegen) */
+.aura-figur.wechsel .aura-atem{animation:auraWechsel .26s cubic-bezier(.3,1.6,.5,1)}
+.aura-figur.wechsel .aura-schein{animation:auraBlitz .5s ease-out}
+@keyframes auraWechsel{0%{transform:scale(1.04,.95)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){.aura-figur.wechsel .aura-atem,.aura-figur.wechsel .aura-schein{animation:none}}
+/* QA 23.10.: «Tipp mich an!» lag hinter der Aura-Figur; Untertitel ragte über den Musik-Knopf */
+html.tfw-aura .buehne .tipp{z-index:4}
+html.tfw-aura h1 small{font-size:11px;letter-spacing:1px}
