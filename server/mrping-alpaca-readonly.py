@@ -8,6 +8,7 @@ import json
 import os
 import re
 import time
+import threading
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -21,6 +22,46 @@ HOST = os.getenv("MRPING_HOST", "0.0.0.0" if os.getenv("RENDER") else "127.0.0.1
 PORT = int(os.getenv("PORT", os.getenv("MRPING_PORT", "8672")))
 SYMBOL_RE = re.compile(r"^[A-Z][A-Z0-9.]{0,9}$")
 UPSTREAM = "https://data.alpaca.markets/v2/stocks"
+
+# Background probe verifies that Alpaca actually accepts these credentials.
+# Health only reveals a coarse status, never headers, secrets or prices.
+PROBE = {"status": "pending", "checked_at": None}
+
+def check_alpaca():
+    if not (KEY and SECRET):
+        return "missing_credentials"
+    req = urllib.request.Request(
+        UPSTREAM + "/AAPL/snapshot?feed=iex",
+        headers={
+            "APCA-API-KEY-ID": KEY,
+            "APCA-API-SECRET-KEY": SECRET,
+            "Accept": "application/json",
+            "User-Agent": "DRLab-MrPing/0.2",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=8) as response:
+            data = json.load(response)
+        trade = data.get("latestTrade") or {}
+        quote = data.get("latestQuote") or {}
+        return "connected" if trade.get("p") is not None or quote.get("bp") is not None or quote.get("ap") is not None else "no_price_data"
+    except urllib.error.HTTPError as exc:
+        if exc.code in (401, 403):
+            return "authorization_failed"
+        if exc.code == 429:
+            return "rate_limited"
+        return "provider_http_error"
+    except (TimeoutError, urllib.error.URLError, ValueError, OSError):
+        return "provider_unavailable"
+
+def probe_loop():
+    while True:
+        status = check_alpaca()
+        PROBE.update(status=status, checked_at=int(time.time()))
+        # Keep logs useful without exposing credentials or price details.
+        print("Alpaca read-only market-data check: " + status, flush=True)
+        time.sleep(600)
+
 
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, *_):
@@ -56,7 +97,7 @@ class Handler(BaseHTTPRequestHandler):
         origin = self.headers.get("Origin", "")
         parsed = urllib.parse.urlparse(self.path)
         if parsed.path == "/health":
-            return self.reply(200, {"service": "mrping-alpaca-readonly", "configured": bool(KEY and SECRET and ACCESS)})
+            return self.reply(200, {"service": "mrping-alpaca-readonly", "configured": bool(KEY and SECRET and ACCESS), "alpaca_test": dict(PROBE)})
         if parsed.path != "/v1/stock":
             return self.reply(404, {"error": "not_found"}, origin)
         # This personal endpoint must additionally be protected by HTTPS,
@@ -97,5 +138,6 @@ class Handler(BaseHTTPRequestHandler):
 if __name__ == "__main__":
     if HOST not in ("127.0.0.1", "::1") and not (os.getenv("RENDER") and HOST == "0.0.0.0"):
         raise SystemExit("Public binding is permitted only behind Render HTTPS; keep MRPING_BRIDGE_TOKEN secret.")
-    print("Mr. Ping Alpaca read-only bridge listening on %s:%s" % (HOST, PORT))
+    threading.Thread(target=probe_loop, daemon=True).start()
+    print("Mr. Ping Alpaca read-only bridge listening on %s:%s" % (HOST, PORT), flush=True)
     ThreadingHTTPServer((HOST, PORT), Handler).serve_forever()
