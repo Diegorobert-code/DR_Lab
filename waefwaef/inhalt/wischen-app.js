@@ -39,8 +39,10 @@
       var k = W.kinder() || { regale: [] };
       var bereiche = [].slice.call(document.querySelectorAll('nav a[data-v]')).map(bereichKarte).filter(Boolean);
       var sprich = W.sprich({ figur: 'Wäf Wäf', bild: 'posen/freut.jpg', text: 'Frag Wäf Wäf, was ein Hund braucht. Alles bleibt auf diesem Handy.' });
+      var tagebuch = { id: 'tagebuch', e: '🐾', bild: 'posen/freut.jpg', chip: 'Tagebuch', titel: 'Hunde-Tagebuch', text: 'Füttern, Gassi, Pipi, Gagi, Schlafen: ein Tipp, und Wäf Wäf lernt euren Rhythmus.', art: 'bereich',
+        los: function () { zeigeBereich('tag'); setTimeout(function () { var t = document.getElementById('tagebuch'); if (!t) return; var y = t.getBoundingClientRect().top + scrollY - 110; try { scrollTo({ top: Math.max(0, y), behavior: 'smooth' }); } catch (e) { scrollTo(0, y); } }, 80); } };
       var geschichte = W.film({ id: 'film-allein', art: 'film', chip: 'Bildergeschichte', bild: 'posen/pssst.jpg', titel: 'Das erste Mal allein', text: 'Wäf Wäf erzählt, wie er zum ersten Mal allein zu Hause bleibt.', los: W.klick('#gStart') });
-      return [k.heute, bereiche[0], sprich, geschichte, k.fuerDich].concat(W.mischen(bereiche.slice(1), k.regale), [k.alle]);
+      return [k.heute, tagebuch, bereiche[0], sprich, geschichte, k.fuerDich].concat(W.mischen(bereiche.slice(1), k.regale), [k.alle]);
     }
   });
 })();

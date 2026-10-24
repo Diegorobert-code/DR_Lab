@@ -115,6 +115,7 @@
       ,{
         id: 'logbuch', emo: '📒', titel: 'Mein Logbuch heute',
         bau: function (H) {
+          if (window.WaefTagebuch) return window.WaefTagebuch(H); /* Hunde-Tagebuch (tagebuch.js) ersetzt das Logbuch */
           /* Alltags-Logbuch: 1 Tipp pro Ereignis, Zeitleiste heute, Muster «meist um …». Bleibt auf diesem Gerät. */
           var ARTEN = [['futter', '🥣', 'Füttern'], ['gassi', '🦮', 'Gassi'], ['pipi', '💧', 'Pipi'], ['gagi', '💩', 'Gagi'], ['wasser', '🚰', 'Wasser']];
           var NAME = {}; ARTEN.forEach(function (a) { NAME[a[0]] = a; });
