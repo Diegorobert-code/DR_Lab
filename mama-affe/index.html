@@ -2,31 +2,46 @@
 <html lang="de-CH">
 <head>
 <meta charset="utf-8">
+<script src="ton-ios.js"></script>
+<script src="nda-sperre.js" data-app="Mama Affe"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mama Affe">
 <meta name="theme-color" content="#10183a">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
 <title>Mama Affe – für Eltern und Kinder</title>
-<meta property="og:title" content="Mama Affe – für Eltern und Kinder"><meta property="og:description" content="Mama Affe begleitet Familien beim Grosswerden. Kommt 2027."><meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/mama-affe/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://diegorobert-code.github.io/DR_Lab/mama-affe/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
-<style>
-:root{--bg:#10183a;--ink:#f0ece4;--gold:#e8be5c;--muted:#aaaac8}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(#10183a,#241e46);color:var(--ink);font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",sans-serif;padding:16px;text-align:center}
-img{width:min(60vw,240px);height:auto;border-radius:22%;border:4px solid var(--gold)}
-h1{color:var(--gold);font-family:Georgia,serif;margin:24px 0 8px}
-p{margin:4px 0;line-height:1.5}
-.klein{color:var(--muted);font-size:.9rem;margin-top:24px}
-</style>
+<meta property="og:title" content="Mama Affe – für Eltern und Kinder"><meta property="og:description" content="Mama Affe, die Orang-Utan-Mutter, begleitet Familien beim Grosswerden: Wissen für Eltern, ein Schulhaus für Kinder, Affenfüsse, Superkräfte und ruhige Abende."><meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/mama-affe/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://diegorobert-code.github.io/DR_Lab/mama-affe/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="bereich.css" data-ma-css="1">
+<style>html,body{margin:0;background:#10183a}body{min-height:100vh}
+/* Runde 4: «Hilfe sofort» bleibt lesbar, auch wenn 💬 und Nova unten schweben */
+.ma.voll .ma-hilfe [data-to=hilfe]{padding-left:60px;padding-right:60px;white-space:normal;line-height:1.3}
+.fb-slot{position:fixed;left:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:50}
+/* Runde 3: Im Krisen- und Atemfenster nichts darüber legen, damit Notruf und «Schliessen» frei sind. */
+body:has(.ma .pause:not(.ma-ob)) .nova-btn,body:has(.ma .pause:not(.ma-ob)) .nova-panel,body:has(.ma .pause:not(.ma-ob)) .fb-slot{visibility:hidden}</style>
+<script src="../nova/intro.js" data-art="funken" data-bild="figur.jpg" data-text="Mama Affe öffnet ihr Schulhaus"></script>
+<link rel="stylesheet" href="../nova/puppe.css">
+<link rel="stylesheet" href="grafik.css">
 </head>
 <body>
-<main>
-<img src="icon-512.png" alt="Mama Affe">
-<h1>Mama Affe</h1>
-<p>Für Eltern und Kinder.</p>
-<p>Mama Affe wächst noch. Sie kommt 2027.</p>
-<p class="klein">DR Lab</p>
-</main>
+<!-- Standalone-Hülle. Der ganze Inhalt kommt aus bereich.js. -->
+<div data-mama-affe="standalone"></div>
+<div class="fb-slot" data-feedback-slot></div>
+<noscript><p style="color:#f5f1e8;padding:16px">Mama Affe braucht JavaScript.</p></noscript>
+<script src="../nova/seelen.js" defer></script>
+<script src="../nova/puppe.js" defer></script>
+<script src="bereich.js" defer></script>
+<script src="runde6.js" defer></script>
+<script src="runde7.js" defer></script>
+<script src="runde8.js" defer></script>
+<script src="grafik.js" data-modus="svg" data-nicht=".ma-kind" data-auch=".ma:not(.ma-kind) .tabs button .e" defer></script>
+<script src="../nova/nova.js" data-nova-app="Mama Affe" data-nova-bild="figur.jpg" data-nova-unten="90" defer></script>
+<script src="feedback.js" data-app="Mama Affe" defer></script>
+<script>
+/* Offline: Mama Affe geht auch ohne Netz (Netz zuerst, Kopie als Ersatz). Nicht im iPhone-Bundle. */
+if('serviceWorker' in navigator && location.protocol==='https:' && !window.Capacitor){ addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); }); }
+</script>
 </body>
 </html>
