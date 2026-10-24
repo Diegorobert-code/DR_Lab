@@ -1,110 +1,274 @@
 <!doctype html>
-<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<html lang="de"><head><meta charset="utf-8">
+<script src="ton-ios.js"></script>
+<script src="nda-sperre.js" data-app="Hasi"></script><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Hasis Programmladen</title>
-<link rel="apple-touch-icon" href="icon-180.png"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="Hasis Laden"><meta property="og:title" content="Hasis Laden"><meta property="og:description" content="Gute Werkzeuge, kuratiert."><meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/hasi/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://diegorobert-code.github.io/DR_Lab/hasi/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="icon-180.png"><link rel="apple-touch-icon" href="icon-180.png"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="Hasis Laden"><meta property="og:title" content="Hasis Laden"><meta property="og:description" content="Brauchst du ein Werkzeug? Geh zu Hasi."><meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/hasi/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://diegorobert-code.github.io/DR_Lab/hasi/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Nunito:wght@400;600;800&display=swap">
+<link rel="stylesheet" href="../nova/puppe.css">
 <style>
-/* Layout: Nachtstrasse oben (Ladenschild + Hasi), darunter Schaufenster-Regal mit Programmwürfeln, Detail als Tresen-Panel */
+/* Layout: Nachtstrasse als Trickfilm-Bühne (Hasis Laden, gegenüber Tinkos Werkstatt), darunter Berater, Regale, Tresen, Werkbank, Code-Leser, Erfinder-Regal. Hasi spricht nie: nur Holzschilder und Gesten. */
 :root{
   --nacht:#0d1630; --nacht2:#16224a; --nacht3:#1f2f62;
   --gold:#e8b94a; --gold2:#f6d98c; --cyan:#6fe3ff;
-  --text:#eef1fb; --mute:#a9b3d6; --holz:#5a3b22;
+  --text:#eef1fb; --mute:#a9b3d6; --holz:#5a3b22; --holz2:#7a5232; --gruen:#8fe3a8; --rot:#ff9aa8;
   --disp:"Fraunces",Georgia,serif; --body:"Nunito",system-ui,sans-serif;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
-body{background:var(--nacht);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.5;margin:0}
-.wrap{max-width:980px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.entwurf{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--nacht);background:var(--gold2);border-radius:4px;padding:2px 8px;font-weight:800}
-header{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:end;margin-top:14px}
-h1{font-family:var(--disp);font-weight:800;font-size:clamp(30px,6vw,52px);line-height:1.05;margin:6px 0 8px;color:var(--gold);text-wrap:balance;text-shadow:0 0 24px rgba(232,185,74,.35)}
-.sub{color:var(--mute);max-width:52ch;margin:0}
-.hasi{width:150px;max-width:34vw}
-.bubble{background:var(--nacht2);border:1px solid var(--nacht3);border-radius:14px;padding:12px 16px;margin:18px 0 22px;max-width:60ch;position:relative}
-.bubble b{color:var(--gold2)}
-.schild{display:inline-block;background:var(--holz);color:var(--gold2);font-family:var(--disp);font-weight:800;padding:2px 10px;border-radius:4px;border:2px solid var(--gold);margin:0 4px}
+[hidden]{display:none!important}
+html,body{overflow-x:hidden}
+body{background:radial-gradient(120% 50% at 50% 0%,#1d2c66 0%,var(--nacht) 60%) var(--nacht);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:980px;margin:0 auto;padding-block:max(16px,env(safe-area-inset-top,0px)) calc(120px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:22px}
+.wrap>*{min-width:0}
+.entwurf{display:inline-block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--nacht);background:var(--gold2);border-radius:4px;padding:2px 8px;font-weight:800}
+.kopf{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.kopf .fb-btn{min-width:42px;min-height:42px}
+h1{font-family:var(--disp);font-weight:800;font-size:clamp(30px,7vw,52px);line-height:1.05;margin:6px 0 4px;color:var(--gold);text-wrap:balance;text-shadow:0 0 24px rgba(232,185,74,.35)}
+h2{font-family:var(--disp);font-size:22px;margin:0 0 8px;color:var(--gold2)}
+.sub{color:var(--mute);max-width:56ch;margin:0}
 .geste{color:var(--mute);font-style:italic}
-.erfinder{margin-top:26px;border:2px dashed var(--nacht3);border-radius:10px;padding:18px}
-.erfinder h2{font-family:var(--disp);font-size:22px;margin:0 0 6px;color:var(--gold2)}
-.erfinder .regal{margin-top:12px}
-.wuerfel.fremd{border-style:dashed}
-.abz{font-size:12px;color:var(--cyan)}
-form{display:grid;gap:8px;margin-top:14px;max-width:520px}
-label{font-size:14px;color:var(--mute)}
-input{background:var(--nacht);color:var(--text);border:1px solid var(--nacht3);border-radius:6px;padding:9px 10px;font:inherit;width:100%}
-.ok{color:var(--gold2)}
-.fenster{background:linear-gradient(var(--nacht2),var(--nacht));border:3px solid var(--holz);border-radius:10px;padding:18px;box-shadow:inset 0 0 40px rgba(232,185,74,.12)}
-.fenster h2{font-family:var(--disp);font-size:22px;margin:0 0 14px;color:var(--gold2)}
-.regal{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}
-.wuerfel{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:10px;background:rgba(111,227,255,.06);border:1px solid rgba(111,227,255,.25);border-bottom:6px solid var(--holz);transition:transform .15s,box-shadow .15s;min-width:0}
+.schild{display:inline-block;background:linear-gradient(180deg,var(--holz2),var(--holz));color:var(--gold2);font-family:var(--disp);font-weight:800;padding:2px 10px;border-radius:4px;border:2px solid var(--gold);margin:0 4px}
+.box{background:var(--nacht2);border:1px solid var(--nacht3);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.box>*{min-width:0}
+.box.holz{border:3px solid var(--holz)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:10px;font:800 16px var(--body);min-height:44px;text-decoration:none;border:0;cursor:pointer}
+.btn.an{background:var(--gold);color:var(--nacht)}
+.btn.zwei{background:transparent;color:var(--gold2);border:1px solid var(--gold)}
+.btn.aus{background:transparent;color:var(--mute);border:1px dashed var(--mute);cursor:not-allowed}
+.knoepfe{display:flex;flex-wrap:wrap;gap:10px}
+.hinweis{font-size:16px;color:var(--mute);margin:0}
+label{font-size:16px;color:var(--mute)}
+input,select,textarea{background:var(--nacht);color:var(--text);border:1px solid var(--nacht3);border-radius:8px;padding:12px;min-height:48px;font:16px var(--body);width:100%}
+input[type=checkbox],input[type=radio]{width:24px!important;height:24px!important;min-width:24px;min-height:0;padding:0;flex:none;accent-color:var(--gold)}
+summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
+input[type=color]{padding:4px}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--gold2);outline-offset:3px}
+textarea{min-height:110px;resize:vertical}
+textarea.code{font:14px/1.4 ui-monospace,Menlo,Consolas,monospace;min-height:130px}
+.check{display:flex;gap:8px;align-items:flex-start}.check input{width:20px;height:20px;flex:none;margin-top:2px}
+
+/* Bühne */
+.buehne{position:relative;height:360px;border-radius:22px;overflow:hidden;border:3px solid var(--holz);background:linear-gradient(180deg,#0a1230 0%,#15215a 62%,#2a2240 62%,#1d1830 100%);box-shadow:0 18px 40px #0008}
+.buehne .stern{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff3c4;animation:funkeln 3s ease-in-out infinite}
+@keyframes funkeln{50%{opacity:.2;transform:scale(.6)}}
+.buehne .mond{position:absolute;left:46%;top:16px;width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff7cf,var(--gold));box-shadow:0 0 26px #e8b94a99}
+.werkstatt{all:unset;cursor:pointer;position:absolute;left:10px;top:70px;width:36%;height:155px;background:linear-gradient(180deg,#3d2a52,#2a1d3a);border-radius:12px 12px 0 0;border:2px solid #6b4e8a;box-shadow:0 0 18px #6fe3ff22}
+.werkstatt .tuer{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:38%;height:54%;border-radius:20px 20px 0 0;background:linear-gradient(90deg,#8a5a1e,#d9a441,#8a5a1e);border:2px solid #5a3a16}
+.werkstatt .fen{position:absolute;left:10%;top:14%;width:34%;height:26%;border-radius:8px;background:radial-gradient(circle,#ffe7a0,#e8b94a 70%);box-shadow:0 0 14px #e8b94a}
+.werkstatt .fen.b{left:auto;right:10%}
+.werkstatt .tinko{position:absolute;left:12%;top:8%;font-size:24px;animation:tinko 4s ease-in-out infinite}
+@keyframes tinko{0%,60%,100%{transform:translateY(0)}70%{transform:translateY(-6px) rotate(-8deg)}80%{transform:translateY(0) rotate(8deg)}}
+.werkstatt .funke{position:absolute;right:8%;top:-10px;width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:funke 1.6s ease-out infinite}
+.werkstatt .funke:nth-of-type(2){right:20%;animation-delay:.5s}.werkstatt .funke:nth-of-type(3){right:2%;animation-delay:1s}
+@keyframes funke{0%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate(10px,-28px)}}
+.werkstatt .etikett{position:absolute;left:0;right:0;bottom:-20px;text-align:center;font-size:13px;color:var(--mute)}
+.laden{position:absolute;right:10px;top:40px;width:56%;height:185px;background:linear-gradient(180deg,#24357a,#1a2758);border-radius:14px 14px 0 0;border:2px solid var(--gold);box-shadow:0 0 30px #e8b94a33}
+.laden .ladenschild{position:absolute;left:8%;right:8%;top:-16px;text-align:center;background:linear-gradient(180deg,var(--holz2),var(--holz));border:2px solid var(--gold);border-radius:8px;color:var(--gold2);font:800 13px var(--disp);padding:4px 6px;box-shadow:0 0 16px #e8b94a66;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.laden .glocke{position:absolute;left:10px;top:18px;font-size:18px;transform-origin:50% 0}
+.laden .glocke.bimm{animation:bimm .9s ease-in-out}
+@keyframes bimm{20%{transform:rotate(22deg)}45%{transform:rotate(-18deg)}70%{transform:rotate(10deg)}}
+.laden .schaufenster{position:absolute;left:10%;right:10%;top:22px;height:86px;border-radius:10px;background:linear-gradient(180deg,#ffe7a033,#e8b94a22);border:2px solid var(--holz);display:grid;grid-template-columns:repeat(4,1fr);align-items:end;padding:6px 6px 4px;gap:4px}
+.laden .schaufenster i{display:block;height:22px;border-radius:5px;background:var(--c,#6fe3ff);opacity:.85;box-shadow:0 0 12px var(--c,#6fe3ff);animation:glimm 3s ease-in-out infinite}
+.laden .schaufenster i:nth-child(2n){animation-delay:1s;height:28px}.laden .schaufenster i:nth-child(3n){animation-delay:2s}
+@keyframes glimm{50%{opacity:.5}}
+.laden .regalbrett{grid-column:1/-1;height:5px;background:var(--holz);border-radius:3px}
+.garten{position:absolute;left:0;right:0;bottom:0;height:38%;pointer-events:none}
+.garten .rueebli{position:absolute;bottom:14px;width:10px;height:22px;border-radius:50% 50% 50% 50%/30% 30% 70% 70%;background:linear-gradient(180deg,#ffd27a,#e8892b);transform-origin:50% 100%;animation:wachsen 4s ease-in-out infinite}
+.garten .rueebli::before{content:"";position:absolute;left:1px;top:-8px;width:8px;height:9px;border-radius:50% 50% 0 0;background:#4fbf6a}
+.garten .rueebli:nth-child(1){left:6%}.garten .rueebli:nth-child(2){left:13%;animation-delay:1.2s}.garten .rueebli:nth-child(3){left:20%;animation-delay:2.1s}
+@keyframes wachsen{50%{transform:scaleY(1.15) rotate(3deg)}}
+.hasi-fig{position:absolute;right:16%;bottom:6px;width:150px;height:180px;cursor:pointer}
+.hasi-fig svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 8px 14px #000a)}
+.hasi-fig svg *{transform-box:fill-box}
+#hKoerper{animation:atmen 4s ease-in-out infinite;transform-origin:50% 100%}
+@keyframes atmen{50%{transform:scale(1.015,.985)}}
+#hOhrL{transform-origin:50% 100%}#hOhrR{transform-origin:20% 100%}
+#hKopf{transform-origin:50% 90%}
+#hArmL{transform-origin:85% 10%;transform:rotate(-35deg);transition:transform .35s}#hArmR{transform-origin:15% 10%;transform:rotate(35deg);transition:transform .35s}
+#hSchild{transform-origin:50% 100%;opacity:0;transform:translateY(20px) scale(.6);transition:transform .35s cubic-bezier(.3,1.5,.5,1),opacity .25s}
+#hDaumen{opacity:0;transition:opacity .2s}
+.hasi-fig[data-pose=schild] #hSchild,.hasi-fig[data-pose=passt] #hSchild,.hasi-fig[data-pose=nein] #hSchild,.hasi-fig[data-pose=repariere] #hSchild{opacity:1;transform:none}
+.hasi-fig[data-pose=schild] #hArmR,.hasi-fig[data-pose=passt] #hArmR,.hasi-fig[data-pose=nein] #hArmR,.hasi-fig[data-pose=repariere] #hArmR{transform:rotate(-30deg)}
+.hasi-fig[data-pose=daumen] #hArmL{transform:rotate(110deg)}.hasi-fig[data-pose=daumen] #hDaumen,.hasi-fig[data-pose=passt] #hDaumen{opacity:1}
+.hasi-fig[data-pose=passt] #hArmL{transform:rotate(110deg)}
+.hasi-fig[data-pose=nicken] #hKopf{animation:nicken .45s ease-in-out 3}
+@keyframes nicken{50%{transform:translateY(5px) rotate(3deg)}}
+.hasi-fig[data-pose=nein] #hKopf{animation:schuetteln .35s ease-in-out 4}
+@keyframes schuetteln{25%{transform:rotate(-9deg)}75%{transform:rotate(9deg)}}
+.hasi-fig[data-pose=verbeugen] #hOben{transform:rotate(14deg) translateY(10px);transform-origin:50% 100%}
+#hOben{transition:transform .4s}
+.hasi-fig[data-pose=lesen] #hOhrL,.hasi-fig[data-pose=lesen] #hOhrR{animation:ohren .3s ease-in-out infinite alternate}
+@keyframes ohren{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
+.hasi-fig[data-pose=lesen] #hArmL{transform:rotate(60deg)}
+.hasi-fig[data-pose=gaehnen] #hKopf{transform:rotate(-8deg)}.hasi-fig[data-pose=gaehnen] #hMund{transform:scaleY(2.2);transform-origin:50% 0}
+.hasi-fig[data-pose=winken] #hArmL{animation:winken .4s ease-in-out 4 alternate}
+@keyframes winken{from{transform:rotate(100deg)}to{transform:rotate(140deg)}}
+.hasi-fig[data-pose=huepfen]{animation:huepfen .45s ease-out 3}
+@keyframes huepfen{50%{transform:translateY(-22px)}}
+.hasi-fig[data-pose=waage] #hArmL,.hasi-fig[data-pose=waage] #hArmR{transform:rotate(70deg)}.hasi-fig[data-pose=waage] #hArmR{transform:rotate(-70deg)}
+.requisit{position:absolute;right:8%;bottom:150px;font-size:34px;opacity:0;pointer-events:none;filter:drop-shadow(0 4px 6px #000a)}
+.requisit.zeig{animation:req 1.8s ease-out}
+@keyframes req{0%{opacity:0;transform:translateY(14px) scale(.4)}25%{opacity:1;transform:translateY(-6px) scale(1.15) rotate(8deg)}75%{opacity:1}100%{opacity:0;transform:translateY(-30px)}}
+.rueebli-flug{position:absolute;left:60%;bottom:40px;font-size:26px;pointer-events:none;animation:rflug 1.6s ease-in-out forwards}
+@keyframes rflug{0%{transform:translate(0,0)}60%{transform:translate(-140px,-60px) rotate(-200deg)}100%{transform:translate(-190px,-30px) rotate(-360deg);opacity:0}}
+.brief-flug{position:absolute;left:-30px;top:30px;font-size:26px;pointer-events:none;animation:bflug 2.2s ease-in-out forwards}
+@keyframes bflug{0%{transform:translate(0,0)}100%{transform:translate(260px,140px) rotate(20deg);opacity:0}}
+.zeile{display:flex;gap:10px;align-items:flex-start;min-height:3em}
+.zeile .schild{font-size:18px;padding:4px 12px;flex:none;max-width:60%;white-space:normal}
+.film-leiste{display:flex;align-items:center;gap:10px;font-size:16px;color:var(--mute)}
+.film-punkte{flex:1;display:flex;gap:4px}.film-punkte i{flex:1;height:6px;border-radius:3px;background:var(--nacht3)}.film-punkte i.an{background:var(--gold)}
+.untertitel{position:absolute;left:10px;right:10px;bottom:10px;background:#000b;color:#fff;border-radius:10px;padding:6px 10px;font-size:16px;line-height:1.35;text-align:center}
+.film-szene{position:absolute;left:12px;top:60px;font-size:36px;display:flex;gap:6px;filter:drop-shadow(0 4px 6px #000a)}
+.film-szene span{animation:fx 1.6s ease-in-out infinite}.film-szene span:nth-child(2){animation-delay:.3s}.film-szene span:nth-child(3){animation-delay:.6s}
+@keyframes fx{50%{transform:translateY(-8px)}}
+
+/* Berater */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--nacht3);background:var(--nacht);color:var(--text);border-radius:999px;padding:8px 14px;min-height:44px;font:700 16px var(--body);cursor:pointer}
+.chip[aria-pressed=true]{background:var(--gold);color:var(--nacht);border-color:var(--gold)}
+.treffer{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+
+/* Regale */
+.regal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.wuerfel{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:12px;background:rgba(111,227,255,.06);border:1px solid rgba(111,227,255,.25);border-bottom:6px solid var(--holz);transition:transform .15s,box-shadow .15s;min-width:0}
 .wuerfel:hover,.wuerfel:focus-visible{transform:translateY(-3px);box-shadow:0 0 22px rgba(111,227,255,.35)}
 .wuerfel:focus-visible{outline:2px solid var(--gold)}
-.wuerfel .icon{width:44px;height:44px}
-.wuerfel strong{font-size:17px}
-.wuerfel span{color:var(--mute);font-size:14px}
-.preis{color:var(--gold);font-weight:800;font-size:14px;font-variant-numeric:tabular-nums}
-.tresen{margin-top:22px;background:var(--nacht2);border:1px solid var(--gold);border-radius:12px;padding:18px;display:grid;gap:10px}
+.wuerfel.leuchtet{box-shadow:0 0 0 3px var(--gold),0 0 26px rgba(232,185,74,.6)}
+.wuerfel .icon{width:40px;height:40px}
+.wuerfel strong{font-size:16px}
+.wuerfel span{color:var(--mute);font-size:16px;line-height:1.4}
+.wuerfel.fremd{border-style:dashed}
+.preis{color:var(--gold);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums}
+.abz{font-size:14px;color:var(--cyan)}
+.reiter{display:flex;gap:6px;flex-wrap:wrap}
+.reiter button{border:1px solid var(--holz2);background:var(--nacht);color:var(--gold2);border-radius:10px 10px 0 0;padding:8px 14px;min-height:44px;font:800 16px var(--body);cursor:pointer}
+.reiter button[aria-selected=true]{background:var(--holz);color:var(--gold2)}
+
+/* Tresen + Hologramm */
+.tresen{background:var(--nacht2);border:1px solid var(--gold);border-radius:14px;padding:16px;display:grid;gap:10px}
 .tresen h3{font-family:var(--disp);font-size:24px;margin:0;color:var(--gold)}
 .tresen p{margin:0;max-width:62ch}
-.knoepfe{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
-.btn{display:inline-block;padding:10px 16px;border-radius:8px;font-weight:800;text-decoration:none;font-size:15px}
-.btn.an{background:var(--gold);color:var(--nacht)}
-.btn.aus{background:transparent;color:var(--mute);border:1px dashed var(--mute);cursor:not-allowed}
-.hinweis{font-size:13px;color:var(--mute)}
-details{margin-top:28px;background:var(--nacht2);border-radius:10px;padding:12px 16px}
-summary{cursor:pointer;font-weight:800;color:var(--gold2)}
-details li{margin:4px 0}
-footer{margin-top:24px;color:var(--mute);font-size:13px}
-@media (max-width:520px){header{grid-template-columns:1fr}.hasi{justify-self:center;width:130px;max-width:50vw}}
-@media (prefers-reduced-motion:reduce){.wuerfel{transition:none}}
-.werkbank{margin-top:26px;background:var(--nacht2);border:3px solid var(--holz);border-radius:10px;padding:18px;display:grid;gap:14px}
-.werkbank h2{font-family:var(--disp);font-size:22px;margin:0;color:var(--gold2)}
+.holo{position:relative;height:120px;display:flex;align-items:center;justify-content:center;perspective:500px}
+.holo .w{width:70px;height:70px;border-radius:12px;background:linear-gradient(135deg,var(--c,#6fe3ff),#e8b94a);box-shadow:0 0 40px var(--c,#6fe3ff);animation:entfalten 1.4s cubic-bezier(.3,1.3,.5,1) both}
+@keyframes entfalten{0%{transform:rotateX(60deg) rotateZ(45deg) scale(.3);opacity:0}60%{transform:rotateX(0) rotateZ(0) scale(1.25);opacity:1}100%{transform:scale(1)}}
+.holo .strahl{position:absolute;bottom:0;width:120px;height:120px;background:radial-gradient(ellipse at 50% 100%,#6fe3ff55,transparent 70%);pointer-events:none}
+.holo .emo{position:absolute;font-size:34px;animation:entfalten 1.4s .2s cubic-bezier(.3,1.3,.5,1) both}
+.klein{font-size:14px;color:var(--mute)}
+
+/* Werkbank */
 .wb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
 .wb-grid>*{min-width:0}
-select{background:var(--nacht);color:var(--text);border:1px solid var(--nacht3);border-radius:6px;padding:9px 10px;font:inherit;width:100%}
-.vorschau{background:#fff;color:#1b1b1b;border-radius:16px;padding:16px;border:6px solid var(--nacht3);min-height:220px}
+.vorschau{background:#fff;color:#1b1b1b;border-radius:16px;padding:16px;border:6px solid var(--nacht3);min-height:220px;overflow-wrap:anywhere}
 .vorschau h4{margin:0 0 10px;font-size:18px}
 .vorschau li{margin:6px 0}
 .vorschau button{border:0;border-radius:8px;padding:8px 12px;color:#fff;font-weight:800;cursor:pointer}
+.vorschau input{background:#f4f4f4;color:#111;border:1px solid #ccc}
+
+/* Waage */
+.waage-erg{display:flex;align-items:center;gap:12px;font-weight:800}
+.lampe{width:22px;height:22px;border-radius:50%;background:var(--nacht3);flex:none}
+.lampe.gruen{background:var(--gruen);box-shadow:0 0 14px var(--gruen)}.lampe.gelb{background:var(--gold);box-shadow:0 0 14px var(--gold)}.lampe.rot{background:var(--rot);box-shadow:0 0 14px var(--rot)}
+.kv{display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-size:16px;font-variant-numeric:tabular-nums}
+.kv span:nth-child(even){text-align:right;font-weight:800}
+details{background:var(--nacht2);border-radius:10px;padding:12px 16px}
+summary{cursor:pointer;font-weight:800;color:var(--gold2)}
+details li{margin:4px 0}
+footer{color:var(--mute);font-size:15px}
+@media (max-width:420px){.buehne{height:340px}.hasi-fig{right:8%;width:132px;height:160px}.laden{width:58%}}
+@media (prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important}}
 </style>
 
 <div class="wrap">
-  <span class="entwurf">Entwurf · nicht veröffentlicht</span>
-  <header>
+  <div class="kopf">
     <div>
+      <span class="entwurf">Entwurf · nicht veröffentlicht</span>
       <h1>Hasis Programmladen</h1>
-      <p class="sub">Kleine Programme aus dem DR Lab, die im Alltag helfen. Ansehen ist gratis. Wer mehr will, nimmt eine Version mit nach Hause.</p>
+      <p class="sub">Brauchst du ein Werkzeug? Geh zu Hasi. Kleine Programme, die im Alltag helfen. Ansehen ist gratis.</p>
     </div>
-    <svg class="hasi" viewBox="0 0 160 200" role="img" aria-label="Hasi, der Ladenbesitzer">
-      <ellipse cx="62" cy="40" rx="13" ry="38" fill="#f3ede2" transform="rotate(-8 62 40)"/>
-      <ellipse cx="62" cy="42" rx="6" ry="28" fill="#f2b8c0" transform="rotate(-8 62 42)"/>
-      <path d="M96 30 C120 -2 136 20 116 44 C110 52 104 56 98 60Z" fill="#f3ede2"/>
-      <path d="M100 38 C118 14 128 26 113 42Z" fill="#f2b8c0"/>
-      <ellipse cx="80" cy="150" rx="46" ry="48" fill="#d9d4cc"/>
-      <path d="M44 128 Q80 118 116 128 L120 196 L40 196Z" fill="#16224a"/>
-      <path d="M40 192 L120 192" stroke="#e8b94a" stroke-width="5"/>
-      <rect x="62" y="150" width="36" height="22" rx="4" fill="#1f2f62" stroke="#e8b94a" stroke-width="2"/>
-      <rect x="68" y="154" width="9" height="9" rx="2" fill="#6fe3ff" opacity=".9"/>
-      <rect x="82" y="155" width="9" height="9" rx="2" fill="#e8b94a"/>
-      <circle cx="80" cy="88" r="40" fill="#f3ede2"/>
-      <ellipse cx="80" cy="104" rx="20" ry="14" fill="#fffaf2"/>
-      <circle cx="66" cy="84" r="8" fill="#5a3b22"/><circle cx="94" cy="84" r="8" fill="#5a3b22"/>
-      <circle cx="68.5" cy="81.5" r="2.6" fill="#fff"/><circle cx="96.5" cy="81.5" r="2.6" fill="#fff"/>
-      <ellipse cx="80" cy="97" rx="5" ry="3.6" fill="#e89aa6"/>
-      <path d="M72 104 Q80 112 88 104" stroke="#5a3b22" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <rect x="76" y="106" width="4" height="6" rx="1" fill="#fff" stroke="#cfc8bb"/><rect x="80" y="106" width="4" height="6" rx="1" fill="#fff" stroke="#cfc8bb"/>
-      <circle cx="56" cy="100" r="5" fill="#f2b8c0" opacity=".6"/><circle cx="104" cy="100" r="5" fill="#f2b8c0" opacity=".6"/>
-    </svg>
-  </header>
+    <span data-feedback-slot></span>
+  </div>
 
-  <div class="bubble" id="sprech" aria-live="polite"><span class="geste">Hasi verbeugt sich, zeigt mit der Pfote aufs Schaufenster und hält ein Schild hoch:</span> <span class="schild">Tipp einen Würfel an</span></div>
+  <section class="buehne" id="buehne" aria-label="Nachtstrasse mit Hasis Laden und Tinkos Werkstatt">
+    <i class="stern" style="left:8%;top:6%"></i><i class="stern" style="left:30%;top:12%;animation-delay:.7s"></i><i class="stern" style="left:62%;top:5%;animation-delay:1.4s"></i><i class="stern" style="left:80%;top:8%;animation-delay:.3s"></i><i class="stern" style="left:20%;top:3%;animation-delay:2s"></i>
+    <i class="mond" aria-hidden="true"></i>
+    <button class="werkstatt" id="werkstatt" type="button" aria-label="Tinkos Werkstatt: Hasi schickt Tinko ein goldenes Rüebli">
+      <i class="fen"></i><i class="fen b"></i><span class="tinko" aria-hidden="true">🐙</span>
+      <i class="funke"></i><i class="funke"></i><i class="funke"></i>
+      <i class="tuer"></i>
+      <span class="etikett">Tinkos Werkstatt</span>
+    </button>
+    <div class="laden" aria-hidden="true">
+      <div class="ladenschild">Hasis Programmladen</div>
+      <span class="glocke" id="glocke">🔔</span>
+      <div class="schaufenster"><i style="--c:#e8b94a"></i><i style="--c:#6fe3ff"></i><i style="--c:#f2b8c0"></i><i style="--c:#9fb4ff"></i><span class="regalbrett"></span></div>
+    </div>
+    <div class="garten" aria-hidden="true"><i class="rueebli"></i><i class="rueebli"></i><i class="rueebli"></i></div>
+    <div class="film-szene" id="filmSzene" hidden aria-hidden="true"></div>
+    <div class="hasi-fig" id="hasi" data-pose="ruhig" role="img" aria-label="Hasi, der Hase im Laden. Er spricht nie, er zeigt alles mit Gesten und Holzschildern.">
+      <img id="hasiBild" alt="" hidden>
+      <svg viewBox="0 0 200 240" aria-hidden="true">
+        <g id="hKoerper">
+          <ellipse cx="100" cy="186" rx="50" ry="50" fill="#d9d4cc"/>
+          <path d="M58 160 Q100 148 142 160 L148 236 L52 236Z" fill="#16224a"/>
+          <path d="M52 230 L148 230" stroke="#e8b94a" stroke-width="5"/>
+          <rect x="80" y="182" width="40" height="24" rx="5" fill="#1f2f62" stroke="#e8b94a" stroke-width="2"/>
+          <rect x="86" y="186" width="10" height="10" rx="2" fill="#6fe3ff"/><rect x="101" y="187" width="10" height="10" rx="2" fill="#e8b94a"/>
+          <g transform="translate(130 196)"><circle r="7" fill="none" stroke="#e8b94a" stroke-width="3"/><rect x="-2" y="6" width="4" height="12" rx="1" fill="#e8b94a"/><rect x="2" y="12" width="5" height="3" fill="#e8b94a"/></g>
+        </g>
+        <g id="hOben">
+          <g id="hArmL"><rect x="38" y="150" width="34" height="16" rx="8" fill="#f3ede2"/><circle id="hDaumen" cx="36" cy="150" r="7" fill="#f3ede2" stroke="#d9d4cc"/></g>
+          <g id="hArmR"><rect x="128" y="150" width="34" height="16" rx="8" fill="#f3ede2"/></g>
+          <g id="hKopf">
+            <g id="hOhrL"><ellipse cx="80" cy="46" rx="14" ry="40" fill="#f3ede2" transform="rotate(-8 80 46)"/><ellipse cx="80" cy="48" rx="6" ry="29" fill="#f2b8c0" transform="rotate(-8 80 48)"/></g>
+            <g id="hOhrR"><path d="M116 38 C142 2 160 26 138 52 C132 60 126 64 120 68Z" fill="#f3ede2"/><path d="M120 46 C140 20 150 32 135 50Z" fill="#f2b8c0"/></g>
+            <circle cx="100" cy="100" r="42" fill="#f3ede2"/>
+            <ellipse cx="100" cy="118" rx="21" ry="14" fill="#fffaf2"/>
+            <circle cx="85" cy="96" r="8.5" fill="#5a3b22"/><circle cx="115" cy="96" r="8.5" fill="#5a3b22"/>
+            <circle cx="88" cy="93" r="2.8" fill="#fff"/><circle cx="118" cy="93" r="2.8" fill="#fff"/>
+            <ellipse cx="100" cy="110" rx="5" ry="3.6" fill="#e89aa6"/>
+            <g id="hMund"><path d="M92 117 Q100 125 108 117" stroke="#5a3b22" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="96" y="119" width="4" height="6" rx="1" fill="#fff" stroke="#cfc8bb"/><rect x="100" y="119" width="4" height="6" rx="1" fill="#fff" stroke="#cfc8bb"/></g>
+            <circle cx="75" cy="113" r="5" fill="#f2b8c0" opacity=".6"/><circle cx="125" cy="113" r="5" fill="#f2b8c0" opacity=".6"/>
+          </g>
+          <g id="hSchild"><rect x="166" y="96" width="6" height="56" fill="#5a3b22"/><rect x="146" y="56" width="80" height="42" rx="5" fill="#7a5232" stroke="#e8b94a" stroke-width="3"/><text id="hSchildText" x="186" y="83" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-weight="800" font-size="15" fill="#f6d98c">Passt!</text></g>
+        </g>
+      </svg>
+    </div>
+    <span class="requisit" id="requisit" aria-hidden="true"></span>
+    <div class="untertitel" id="untertitel" hidden></div>
+  </section>
 
-  <section class="fenster" aria-labelledby="sf">
-    <h2 id="sf">Im Schaufenster</h2>
+  <div class="zeile" aria-live="polite"><span class="schild" id="hSchildGross">Willkommen</span><span class="geste" id="hGeste">Hasi verbeugt sich und zeigt mit der Pfote auf den Laden.</span></div>
+  <div class="knoepfe">
+    <button class="btn an" id="filmBtn" type="button">▶ Film «Hasis Werkzeugladen»</button>
+    <button class="btn zwei" id="tinkoBtn" type="button">🥕 Rüebli für Tinko</button>
+  </div>
+  <button class="kinokarte" type="button" data-inhalt=""><span class="ke" aria-hidden="true">🎬</span><span><b>Hasis Kino und Tipps</b><small data-inhalt-heute>Stille Geschichten, Schilder-Tipps, Rätsel</small></span><span class="kl" aria-hidden="true">▶</span></button>
+  <button class="sprichkarte" type="button" data-sprich=""><span aria-hidden="true">💬</span> Sprich mit Hasi <small>(er antwortet mit Gesten)</small></button>
+  <div class="film-leiste" id="filmLeiste" hidden><span id="filmNr">Szene 1 / 8</span><div class="film-punkte" id="filmPunkte"></div><button class="btn zwei" id="filmStopp" type="button" style="padding:4px 10px">Stopp</button></div>
+
+  <section class="box holz" id="berater" aria-labelledby="bt">
+    <h2 id="bt">Was brauchst du?</h2>
+    <p class="sub">Tipp auf dein Problem. Hasi sucht dir 1 bis 3 Werkzeuge aus seinen Regalen.</p>
+    <div class="chips" id="probleme"></div>
+    <label for="eigenes">Oder beschreib es mit eigenen Worten</label>
+    <div style="display:flex;gap:8px"><input id="eigenes" placeholder="z. B. Ich vergesse immer, die Kasse zu zählen"><button class="btn an" id="suchen" type="button">Suchen</button></div>
+    <div class="treffer" id="treffer"></div>
+  </section>
+
+  <section class="box" aria-labelledby="rt">
+    <h2 id="rt">Hasis Regale</h2>
+    <div class="reiter" role="tablist">
+      <button role="tab" aria-selected="true" data-r="lab" type="button">Hasis Regal</button>
+      <button role="tab" aria-selected="false" data-r="offen" type="button">Grosses Regal</button>
+      <button role="tab" aria-selected="false" data-r="garten" type="button">Code-Garten</button>
+    </div>
+    <p class="hinweis" id="regalText"></p>
     <div class="regal" id="regal"></div>
   </section>
 
   <section class="tresen" id="tresen" hidden>
+    <div class="holo" id="holo" aria-hidden="true"></div>
     <h3 id="t-name"></h3>
     <p id="t-text"></p>
     <p><strong>Für wen:</strong> <span id="t-wer"></span></p>
@@ -113,76 +277,118 @@ select{background:var(--nacht);color:var(--text);border:1px solid var(--nacht3);
       <a class="btn an" id="t-link" href="#" target="_blank" rel="noopener">Gratis ansehen</a>
       <span class="btn aus" aria-disabled="true">Kaufen (Kasse noch nicht offen)</span>
     </div>
+    <p class="klein" id="t-lizenz"></p>
     <p class="hinweis">Bezahlt wird nur hier im Web-Laden, nie in einer iPhone-App. Preise sind Vorschläge.</p>
   </section>
 
-  <section class="werkbank" aria-labelledby="wb">
+  <section class="box holz" aria-labelledby="wb">
     <h2 id="wb">Hasis Werkbank</h2>
-    <p class="sub"><span class="geste">Hasi krempelt die Ärmel hoch und legt drei Vorlagen auf die Werkbank.</span> Wähle eine Vorlage, gib Name und Farbe ein, und dein kleines Programm entsteht. Ohne Programmieren.</p>
+    <p class="sub"><span class="geste">Hasi krempelt die Ärmel hoch und legt fünf Vorlagen auf die Werkbank.</span> Wähle eine Vorlage, gib Name, Farbe und Einträge ein. Dein kleines Programm entsteht daneben, ohne Programmieren.</p>
     <div class="wb-grid">
       <div style="display:grid;gap:8px;align-content:start">
         <label for="wb-art">Vorlage</label>
-        <select id="wb-art"><option value="liste">Checkliste</option><option value="rechner">Preisrechner</option><option value="erinnerung">Erinnerung</option></select>
+        <select id="wb-art"><option value="liste">Checkliste</option><option value="rechner">Preisrechner</option><option value="erinnerung">Erinnerung</option><option value="quiz">Quiz</option><option value="karte">Visitenkarte</option></select>
         <label for="wb-name">Name deines Programms</label>
-        <input id="wb-name" value="Bäckerei Sonne">
+        <input id="wb-name" value="Bäckerei Sonne" maxlength="60">
         <label for="wb-farbe">Farbe</label>
         <input id="wb-farbe" type="color" value="#c2702f" style="height:42px;padding:2px">
-        <label for="wb-text">Einträge (durch Komma getrennt)</label>
+        <label for="wb-text" id="wb-text-l">Einträge (durch Komma getrennt)</label>
         <input id="wb-text" value="Ofen an, Teig ruhen lassen, Kasse zählen, Tür abschliessen">
-        <p class="hinweis">Entwurf: Fertigstellen und Aufschalten folgen nach Go.</p>
+        <div class="knoepfe"><button class="btn an" id="wb-mit" type="button">⬇ Mitnehmen</button></div>
+        <p class="hinweis">«Mitnehmen» speichert eine HTML-Datei auf deinem Gerät. Sie läuft ohne Internet und ohne Konto. Aufschalten mit eigener Adresse folgt nach Go.</p>
       </div>
       <div class="vorschau" id="wb-vorschau" aria-live="polite"></div>
     </div>
+    <details>
+      <summary>Auf Bestellung: Hasi baut es für dich</summary>
+      <p class="sub" style="margin-top:8px">Nichts Passendes gefunden? Beschreib dein Werkzeug. Letti trägt den Wunsch als goldenen Brief zu Hasi. Im Entwurf bleibt der Brief auf diesem Gerät, es wird nichts gesendet.</p>
+      <label for="bestellung">Dein Wunsch</label>
+      <textarea id="bestellung" placeholder="Was soll das Werkzeug können? Für wen?"></textarea>
+      <div class="knoepfe" style="margin-top:8px"><button class="btn an" id="bestellen" type="button">✉ Brief an Hasi</button></div>
+      <p class="hinweis" id="briefe"></p>
+    </details>
   </section>
 
-  <section class="erfinder" aria-labelledby="ef">
+  <section class="box" aria-labelledby="cl">
+    <h2 id="cl">Hasi liest Code</h2>
+    <p class="sub">Hasi spricht nicht, aber er versteht jede Codiersprache. Gib ihm ein Stück Code. Er antwortet mit Gesten: Daumen hoch heisst «läuft», Kopfschütteln heisst «Fehler», der Schraubenschlüssel heisst «ich repariere».</p>
+    <label for="code">Dein Code (bleibt auf diesem Gerät, wird nie ausgeführt)</label>
+    <textarea id="code" class="code" spellcheck="false" placeholder='{"name": "Hasi", "laden": true}'></textarea>
+    <div class="knoepfe"><button class="btn an" id="lesen" type="button">Hasi lesen lassen</button><button class="btn zwei" id="reparieren" type="button" hidden>🔧 Hasi repariert</button></div>
+    <p class="waage-erg" id="codeErg" aria-live="polite"></p>
+  </section>
+
+  <section class="box" id="erfinder" aria-labelledby="ef">
     <h2 id="ef">Regal der Erfinder</h2>
-    <p class="sub">Hier stellen andere Leute ihre Programme von GitHub aus. Hasi prüft jeden Würfel mit seiner goldenen Waage, bevor er ihn einräumt. Vorerst nur Gratis-Programme.</p>
+    <p class="sub">Andere Leute können ihre Programme bei Hasi ausstellen. Hasi prüft jeden Würfel mit seiner goldenen Waage. Vorerst nur Gratis-Programme, nur mit freier Lizenz (MIT, Apache, BSD). Verkauft wird nichts von Dritten.</p>
     <div class="regal">
-      <div class="wuerfel fremd" aria-label="Beispiel"><strong>Beispiel: Vereinskasse</strong><span>Kleines Kassenbuch für Vereine.</span><span class="abz">Lizenz MIT · geprüft am 20.10.2026</span><span class="preis">Gratis · Link zum Repo</span></div>
+      <div class="wuerfel fremd" aria-label="Beispiel"><strong>Beispiel: Vereinskasse</strong><span>Kleines Kassenbuch für Vereine.</span><span class="abz">Lizenz MIT · Beispiel</span><span class="preis">Gratis · Link zum Programm</span></div>
       <div class="wuerfel fremd" aria-label="Beispiel"><strong>Beispiel: Wanderwetter</strong><span>Wetter für die nächste Tour.</span><span class="abz">Lizenz Apache · wird geprüft</span><span class="preis">Noch nicht im Regal</span></div>
     </div>
+    <h2 style="font-size:18px;margin-top:6px">Hasis goldene Waage</h2>
     <form id="anmelden">
-      <label for="f-repo">Dein öffentliches GitHub-Repo</label>
-      <input id="f-repo" placeholder="https://github.com/name/programm" required>
-      <label for="f-mail">Kontakt</label>
-      <input id="f-mail" placeholder="name@beispiel.ch" required>
-      <label><input type="checkbox" id="f-recht" required style="width:auto"> Ich besitze die Rechte an diesem Programm.</label>
-      <button class="btn an" type="submit" style="border:0;cursor:pointer;justify-self:start">Würfel zur Prüfung geben</button>
-      <p class="ok" id="f-ok" hidden></p>
+      <label for="f-repo">Adresse deines öffentlichen Programms</label>
+      <input id="f-repo" placeholder="https://…/name/programm" required>
+      <label for="f-lizenz">Lizenz</label>
+      <select id="f-lizenz"><option value="">Bitte wählen</option><option>MIT</option><option>Apache-2.0</option><option>BSD</option><option>GPL / AGPL</option><option>Keine Lizenz</option><option>Andere</option></select>
+      <label class="check"><input type="checkbox" id="f-schluessel"> Im Code stehen keine Schlüssel und Passwörter.</label>
+      <label class="check"><input type="checkbox" id="f-daten"> Es schickt keine Daten heimlich weg. Falls es Daten braucht, steht ein Datenschutz-Hinweis drin.</label>
+      <label class="check"><input type="checkbox" id="f-verspr"> Keine Heil-, Gesundheits- oder Geldversprechen, keine fremden Marken.</label>
+      <label class="check"><input type="checkbox" id="f-gepflegt"> In den letzten 12 Monaten gepflegt.</label>
+      <label class="check"><input type="checkbox" id="f-recht"> Ich besitze die Rechte an diesem Programm und hafte dafür.</label>
+      <div class="knoepfe" style="margin-top:6px"><button class="btn an" type="submit">Auf die goldene Waage</button></div>
+      <p class="waage-erg" id="f-ok" aria-live="polite"></p>
     </form>
   </section>
 
-  <footer>DR Lab · Entwurf 14.10.2026 · Figur und Preise noch nicht freigegeben</footer>
+  <section class="box" id="merkt" aria-labelledby="mt">
+    <h2 id="mt">Was Hasi sich merkt</h2>
+    <div class="kv" id="merkKv"></div>
+    <p class="geste" id="merkSatz"></p>
+    <label class="check"><input type="checkbox" id="merkTeilen"> Ich bin einverstanden, dass einmal pro Tag nur diese Zahlen an Hasis Server gehen, damit Hasi besser berät. Nie Texte, nie Code, nie Stimme, nie Bilder. Nur wenn ein Server eingerichtet ist.</label>
+    <div class="knoepfe"><button class="btn zwei" id="merkWeg" type="button">Gemerkte Zahlen löschen</button></div>
+  </section>
+
+  <details>
+    <summary>Kleingedrucktes</summary>
+    <ul>
+      <li>Grundprogramme im Grossen Regal sind gratis. Hasi verkauft nur Einrichten, Aufschalten und Hilfe, nie den fremden Code.</li>
+      <li>Bei jedem fremden Werkzeug stehen Lizenz und Name der Erfinder. Nur MIT, Apache 2.0 oder BSD. Ohne Lizenz nie.</li>
+      <li>Fremde Programme werden erst mit der GmbH und nach Prüfung durch eine Fachperson verkauft. Bis dahin nur gratis mit Link.</li>
+      <li>Aufnahme halbautomatisch: Claude prüft Lizenz und Sicherheit, Diego gibt pro Programm ein Go. Nichts geht von selbst live.</li>
+      <li>Bezahlt wird nur im Web, nie in einer iPhone-App.</li>
+      <li>Alles auf dieser Seite bleibt in deinem Browser. Ohne Server geht nichts weg.</li>
+      <li>Vorgemerkt, noch nicht gebaut: Gäste im KI-Verse können bewusst Geteiltes in Hasis Laden stellen.</li>
+      <li>Schrift: Fraunces und Nunito (SIL Open Font License).</li>
+    </ul>
+  </details>
+
+  <footer>Hasis Laden · Entwurf 19.10.2026 · Figur und Preise noch nicht freigegeben</footer>
 </div>
-
-<script>
-const base="https://diegorobert-code.github.io/DR_Lab/";
-const P=[
- {g:"Hasi legt die Pfote aufs Herz und nickt zweimal.",s:"Liebling für Praxen",n:"Erinnerung",k:"#e8b94a",t:"Termin-Erinnerungen mit Kalender und YouTube-Knopf. Wir richten sie mit deinem Logo und deinen Farben ein.",w:"Therapeutinnen, Praxen, Coaches",p:"Eingerichtet CHF 190 einmalig + CHF 9 pro Monat",l:"reminder/",h:"Das ist mein Liebling für Praxen. Weniger vergessene Termine, ohne dass du Nachrichten tippst."},
- {g:"Hasi tippt sich an den Mund, dann zeigt er auf ein Blatt, das sich von selbst füllt.",s:"Reden statt tippen",n:"Transkript",k:"#6fe3ff",t:"Reinreden statt tippen. Der Text ist sofort zum Kopieren bereit.",w:"Selbstständige, Vereine, alle mit vollen Köpfen",p:"Eingerichtet CHF 150 einmalig",l:"transkript/",h:"Wenn du lieber sprichst als schreibst, nimm den. Wenn du gern tippst, brauchst du ihn nicht."},
- {g:"Hasi zeigt einen kleinen Schritt mit zwei Fingern.",s:"Ein Schritt nach dem anderen",n:"Jackie's Advice",k:"#f2b8c0",t:"Erzähl, was los ist. Jackie gibt dir einen klaren nächsten Schritt.",w:"Alle, die kurz Ordnung im Kopf wollen",p:"Pro CHF 4 pro Monat",l:"jackie/",h:"Jackie ersetzt keine Therapie. Aber sie hilft, den nächsten kleinen Schritt zu sehen."},
- {g:"Hasi gähnt, legt die Pfoten unter die Wange und lächelt.",s:"Gute Nacht",n:"Mondschein",k:"#9fb4ff",t:"Otti, Kiki und Nova erzählen Gutenachtgeschichten.",w:"Familien mit Kindern von 3 bis 9",p:"Familien-Abo CHF 5 pro Monat",l:"mondschein/",h:"Der leuchtet am schönsten im Regal. Otti liest jeden Abend eine andere Geschichte."},
- {g:"Hasi schüttelt den Kopf beim Geldsack, dann zeigt er auf eine kleine Glocke.",s:"Keine Anlageberatung",n:"TradePing",k:"#8fe3a8",t:"Ein Ping, nur wenn es zählt. Radar für deine Titel. Keine Anlageberatung.",w:"Privatleute mit eigenem Depot",p:"Pro CHF 6 pro Monat",l:"tradeping/",h:"Ehrlich: Er sagt dir nicht, was du kaufen sollst. Er sagt dir nur, wann du hinschauen solltest."},
- {g:"Hasi winkt dich an den Tresen und zeigt auf einen Stuhl.",s:"Zuerst reden wir",n:"HumanSpark",k:"#ff9f7a",t:"Finger drauf, messen, reinreden. Für ruhigere Teams.",w:"Firmen-Teams",p:"Auf Anfrage",l:"humanspark/",h:"Den richten wir für jedes Team einzeln ein. Schreib uns, dann reden wir zuerst."},
- {g:"Hasi zieht ein goldenes Rüebli aus dem Code-Garten.",s:"Frisch gewachsen",n:"Lab Builder",k:"#c9a2ff",t:"Deine eigene kleine App. Du bringst die Idee, wir bauen.",w:"Kleinunternehmen",p:"Auf Anfrage, auch mit Ideen statt Geld",l:"apps/",h:"Hier wachsen neue Programme. Ich hole sie direkt aus meinem Code-Garten."}
-];
-const regal=document.getElementById("regal");
-function cube(c){return `<svg class="icon" viewBox="0 0 44 44" aria-hidden="true"><path d="M22 3 40 13v18L22 41 4 31V13Z" fill="${c}" opacity=".25"/><path d="M22 3 40 13 22 23 4 13Z" fill="${c}" opacity=".7"/><path d="M22 23v18M4 13l18 10 18-10" stroke="${c}" stroke-width="1.5" fill="none"/></svg>`}
-P.forEach((x,i)=>{const b=document.createElement("button");b.className="wuerfel";b.id="w"+i;b.innerHTML=cube(x.k)+`<strong>${x.n}</strong><span>${x.t.split(". ")[0]}.</span><span class="preis">${x.p}</span>`;b.onclick=()=>zeige(i);regal.appendChild(b)});
-function zeige(i){const x=P[i];document.getElementById("tresen").hidden=false;
- document.getElementById("t-name").textContent=x.n;document.getElementById("t-text").textContent=x.t;
- document.getElementById("t-wer").textContent=x.w;document.getElementById("t-preis").textContent=x.p;
- document.getElementById("t-link").href=base+x.l;
- document.getElementById("sprech").innerHTML='<span class="geste">'+x.g+'</span> <span class="schild">'+x.s+'</span>';
- document.getElementById("tresen").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"nearest"});}
-document.getElementById("anmelden").addEventListener("submit",e=>{e.preventDefault();const o=document.getElementById("f-ok");o.hidden=false;o.innerHTML='<span class="geste">Hasi nimmt den Würfel, legt ihn auf die goldene Waage und hält ein Schild hoch:</span> <span class="schild">Wird geprüft</span> (Entwurf, es wurde nichts gesendet)';});
-
-function wb(){const a=document.getElementById("wb-art").value,n=document.getElementById("wb-name").value||"Mein Programm",f=document.getElementById("wb-farbe").value,t=document.getElementById("wb-text").value.split(",").map(x=>x.trim()).filter(Boolean),v=document.getElementById("wb-vorschau"),esc=x=>x.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
- let h='<h4 style="color:'+f+'">'+esc(n)+'</h4>';
- if(a==="liste")h+='<ul style="list-style:none;padding:0">'+t.map((x,i)=>'<li><label><input type="checkbox" style="width:auto;accent-color:'+f+'"> '+esc(x)+'</label></li>').join("")+'</ul>';
- if(a==="rechner")h+='<p>Menge</p><input id="wb-m" type="number" value="3" min="0" style="background:#f4f4f4;color:#111;width:100%"><p>Preis pro Stück: CHF 4.50</p><p style="font-weight:800;color:'+f+'" id="wb-r">Total CHF 13.50</p>';
- if(a==="erinnerung")h+='<p>Nächster Termin: '+esc(t[0]||"Donnerstag 10:00")+'</p><button style="background:'+f+'">In meinen Kalender</button>';
- v.innerHTML=h;const m=document.getElementById("wb-m");if(m)m.oninput=()=>{document.getElementById("wb-r").textContent="Total CHF "+((+m.value||0)*4.5).toFixed(2)};}
-["wb-art","wb-name","wb-farbe","wb-text"].forEach(i=>document.getElementById(i).addEventListener("input",wb));wb();
-</script>
+<script src="aura/hasi-aura.js" defer></script>
+<script src="posen.js" defer></script>
+<script src="hasi.js" defer></script>
+<script src="../nova/puppe.js" defer></script>
+<script src="runde4.js" defer></script>
+<script src="runde6.js" defer></script>
+<script src="runde7.js" defer></script>
+<script src="runde8.js" defer></script>
+<script src="finder.js" defer></script>
+<script src="feedback.js" data-app="Hasis Laden" defer></script>
+<script src="../nova/seelen.js" defer></script>
+<script src="../nova/nova.js" data-nova-app="Hasis Laden" defer></script><link rel="stylesheet" href="feinschliff.css">
+<script src="feinschliff.js" defer></script>
+<script src="lernen.js" data-app="Hasis Laden" data-figur="hasi" data-name="Hasis Laden" data-kind="0" data-unten="16" defer></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="design.css">
+<link rel="stylesheet" href="aura/hasi-aura.css">
+<script src="design.js" defer></script>
+<link rel="stylesheet" href="inhalt/inhalt.css">
+<style>.kinokarte{display:flex;align-items:center;gap:12px;width:100%;min-height:72px;margin:12px 0 4px;padding:10px 14px;border-radius:18px;border:2px solid var(--gold);background:linear-gradient(160deg,#2a2a6a,#16224a);color:var(--text);text-align:left;font:16px var(--body);cursor:pointer;box-shadow:0 0 20px rgba(232,185,74,.25)}.kinokarte .ke{flex:none;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:26px;background:radial-gradient(circle at 40% 35%,#fff3c2,#e8b94a)}.kinokarte>span:nth-child(2){flex:1;display:flex;flex-direction:column;min-width:0}.kinokarte b{color:var(--gold2);font-size:17px}.kinokarte small{color:var(--mute);font-size:14px}.sprichkarte{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;margin:6px 0 4px;border-radius:999px;border:1.5px solid var(--gold);background:rgba(58,47,138,.6);color:var(--text);font:800 16px var(--body);cursor:pointer}.sprichkarte small{font-weight:400;color:var(--mute);font-size:13px}.kinokarte .kl{flex:none;width:36px;height:36px;border-radius:50%;background:var(--gold);color:var(--nacht);display:grid;place-items:center;font-size:14px}</style>
+<script src="inhalt/daten.js" defer></script>
+<script src="inhalt/inhalt.js" defer></script>
+<link rel="stylesheet" href="inhalt/sprich.css">
+<script src="inhalt/sprich-daten.js" defer></script>
+<script src="inhalt/sprich.js" defer></script>
+<script src="inhalt/homescreen.js" defer></script>
+<link rel="stylesheet" href="inhalt/wischen.css"><script src="inhalt/wischen.js" defer></script><script src="inhalt/wischen-app.js" defer></script>

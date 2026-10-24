@@ -9,6 +9,7 @@
      data-handystimme="nein"   ohne Audio-Datei nicht mit der Handystimme vorlesen
      data-saetze='{"gruss":["…"]}' eigene feste Sätze pro Kategorie (Fallback, solange keine Audios da sind)
      data-stil="sprachnachricht" Antwort als Sprachnachricht (Abspielknopf + Wellen, Text als Untertitel)
+   window.SPRECHEN_EINGABE = t => 'Antwort' | null: App verarbeitet das Gesagte selbst (null = normale Antwort)
    Verlauf bleibt auf dem Gerät. Ohne Endpunkt geht nichts weg. Keine Schlüssel in der App. */
 (() => {
   'use strict';
@@ -206,7 +207,9 @@
   async function senden(t){
     t = (t || '').trim(); if (!t) return;
     feld.value = ''; du.textContent = '«' + t + '»'; sie.textContent = '…'; sie.classList.remove('notfall');
-    const a = await antwort(t);
+    // Optional: die App verarbeitet das Gesagte selbst (z. B. Fompa füllt einen Zettel aus)
+    let eig = null; try{ if (typeof window.SPRECHEN_EINGABE === 'function') eig = window.SPRECHEN_EINGABE(t); }catch(e){}
+    const a = eig ? {text: String(eig)} : await antwort(t);
     if (SN){ nachricht(a, true); return; }
     sie.textContent = a.text; if (a.notfall) sie.classList.add('notfall');
     sprechen(a);
