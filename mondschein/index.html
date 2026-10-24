@@ -2,6 +2,8 @@
 <html lang="de-CH">
 <head>
 <meta charset="utf-8">
+<script src="ton-ios.js"></script>
+<script src="nda-sperre.js" data-app="Mondschein" data-eltern></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -55,7 +57,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .card{background:var(--card);border:2px solid var(--line);border-radius:24px;padding:16px;margin-bottom:14px}
 .muted{color:var(--muted)}
 .small{font-size:14px}
-.foot{text-align:center;font-size:12.5px;color:var(--muted);margin:22px 0 4px;line-height:1.5}
+.foot{text-align:center;font-size:14px;color:var(--muted);margin:22px 0 4px;line-height:1.5}
 .toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 70px);transform:translateX(-50%) translateY(-20px);background:var(--night);color:#fff6e3;padding:12px 18px;border-radius:16px;font-size:16px;max-width:calc(100% - 32px);opacity:0;pointer-events:none;transition:.3s;z-index:50;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.25)}
 .toast.on{opacity:1;transform:translateX(-50%)}
 :root[data-night="1"] .toast{background:#2a3563}
@@ -69,6 +71,10 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .fig .blink{transform-box:fill-box;transform-origin:center;animation:blink 5.5s infinite}
 @keyframes blink{0%,91%,97%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}}
 .wave{transform-origin:154px 152px;transform-box:view-box;animation:wave .9s ease-in-out infinite alternate}
+@keyframes tanz{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)}}
+#mvStage.tanzt .fig{animation:tanz .9s ease-in-out infinite}
+.putzkarte{display:grid;grid-template-columns:1fr 1fr;gap:6px}.putzkarte span{padding:6px 4px;font-size:13px;border-radius:12px;background:var(--mint,#e6f6ef);text-align:center;font-weight:700;font-size:14px;opacity:.55;transition:all .3s}.putzkarte span.an{opacity:1;background:#ffd76b;transform:scale(1.04);box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.noten{font-size:22px;letter-spacing:6px;opacity:.75;text-align:center;min-height:28px}
 @keyframes wave{from{transform:rotate(-14deg)}to{transform:rotate(16deg)}}
 .kwave{transform-origin:146px 130px;transform-box:view-box;animation:wave .8s ease-in-out infinite alternate}
 .flap{transform-box:view-box;animation:flap 1.8s ease-in-out infinite alternate}
@@ -128,7 +134,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .t1{background:var(--moon)} .t2{background:var(--mint)} .t3{background:var(--peach)} .t4{background:var(--lav)}
 :root:not([data-night="1"]) .tile{color:#1d2a4f}
 :root[data-night="1"] .t1{color:#141a33}
-.tile small{font-size:13px;font-weight:600;opacity:.8}
+.tile small{font-size:16px;font-weight:600;opacity:.85}
 .hold{--p:0;touch-action:none;-webkit-touch-callout:none}
 .hold:before{content:"";position:absolute;inset:0;background:conic-gradient(rgba(29,42,79,.22) calc(var(--p)*1turn),transparent 0);pointer-events:none}
 /* Geschichten-Liste */
@@ -141,6 +147,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .star{color:var(--moon2);font-size:18px}
 /* Leser */
 .stage{display:flex;justify-content:center;align-items:flex-end;gap:4px;min-height:170px;background:linear-gradient(var(--sky),transparent);border-radius:28px;padding:10px 6px 0;margin-bottom:12px}
+.rfilm{padding:10px}.rfilm video{width:100%;aspect-ratio:16/9;border-radius:16px;background:#000;display:block}.rfilm p{margin:8px 4px 0;font-weight:700}
 .stage svg{width:150px;height:158px}
 .stage.two svg{width:124px;height:132px}
 .story-text{font-size:21px;line-height:1.6;min-height:150px}
@@ -220,6 +227,9 @@ h3.ch{font-size:19px;margin-bottom:10px}
 .callstage{position:relative;width:100%;aspect-ratio:510/540;max-height:62vh;border-radius:30px;overflow:hidden;background:#e9d58f;box-shadow:0 6px 0 rgba(29,42,79,.18),0 18px 40px rgba(29,42,79,.22);isolation:isolate}
 .callstage .cl{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .callstage img.cl{animation:breathe 3.2s ease-in-out infinite;transform-origin:50% 90%}
+.callstage.is-talk img.cl{animation:callRede .5s ease-in-out infinite alternate}
+@keyframes callRede{to{transform:scale(1.015) translateY(-1%)}}
+.callstage video.cl[hidden]{display:none}
 .callstage video.cl{opacity:0;transition:opacity .12s}
 .callstage.is-talk #callTalk,.callstage.is-wave #callWave{opacity:1}
 .callstage.is-wave #callTalk{opacity:0}
@@ -323,9 +333,13 @@ h3.ch{font-size:19px;margin-bottom:10px}
 </style>
 </head>
 <body>
-<script src="../nova/intro.js" data-art="funken" data-bild="figur-gross.jpg" data-text="Willkommen im Mondschein-Wald"></script>
+<script src="../trickfilmwelt/trickfilmwelt.js" data-app="mondschein" data-stil="aura" data-ruhe="1" data-szene="aura/nacht.webp" data-welt="aura/welt.webp" data-figur="aura/figur-idle.webp" data-posen="aura/figur-winkt.webp" data-css="aura/aura.css" data-text="Willkommen im Mondschein-Wald" data-karten=".card;#figurStart img" data-blaetter=".win>.card;#tour;#hoeren;#figurStart" data-knoepfe=".kimu"></script>
+<link rel="stylesheet" href="../nova/puppe.css">
+<link rel="stylesheet" href="grafik.css">
+<link rel="stylesheet" href="inhalt/welten.css">
+<script src="../nova/puppe.js"></script>
 <div id="figurStart" role="dialog" aria-label="Otti"><img src="figur-gross.jpg" alt="Otti"><h1>Otti</h1><p>Gutenachtgeschichten aus dem Mondschein-Land.</p><button type="button" id="figurStartGo">Los geht's</button></div>
-<script>(function(){var s=document.getElementById('figurStart');try{if(sessionStorage.getItem('figurStart'))s.hidden=true;}catch(e){}document.getElementById('figurStartGo').onclick=function(){s.hidden=true;try{sessionStorage.setItem('figurStart','1');}catch(e){}};})();</script>
+<script>(function(){var s=document.getElementById('figurStart');try{if(sessionStorage.getItem('figurStart')||localStorage.getItem('ms_figurStart')||location.hash==='#gutenacht')s.hidden=true;}catch(e){}document.getElementById('figurStartGo').onclick=function(){s.hidden=true;try{sessionStorage.setItem('figurStart','1');}catch(e){}};})();</script>
 
 <!-- gemeinsame Farbverläufe für alle Figuren -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -355,13 +369,18 @@ h3.ch{font-size:19px;margin-bottom:10px}
     <div class="bubble" id="greet">Hallo! Schön, dass du da bist.</div>
     <button class="sunnybtn" id="homeSunny" aria-label="Otti sagt Hallo"></button>
   </div>
+  <button class="sternchip" id="homeSterne" type="button" hidden><span aria-hidden="true">⭐</span> <b id="homeSterneN">0</b> <span id="homeSterneT">Mondsterne</span></button>
   <button class="letterbtn" id="homeLetter" hidden><span class="env" aria-hidden="true"><svg viewBox="0 0 64 48"><rect x="3" y="5" width="58" height="40" rx="8" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M5 9 L32 29 L59 9" fill="none" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M32 22 C27 18 26 14 29 13 C31 12.5 32 14.5 32 15 C32 14.5 33 12.5 35 13 C38 14 37 18 32 22 Z" fill="#ff7c9c"/></svg></span><span><b id="homeLetterT">Ein Brief für dich</b><small>Otti liest dir eine Gutenachtgeschichte vor</small></span></button>
+  <button class="btn wide favbtn" id="homeFav" hidden><span aria-hidden="true">⭐</span><span><b id="homeFavT">Deine Lieblingsgeschichte</b><small>Otti erzählt sie dir gerne nochmal</small></span></button>
+  <button class="btn wide gnbtn" id="homeGN"><span class="mo" aria-hidden="true">🌙</span><span>Gute Nacht mit Otti<small>Zähne, Geschichte, Atmen, Nachtlicht</small></span></button>
+  <button class="btn wide gnbtn hoerbtn" id="homeHoeren" type="button"><span class="mo" aria-hidden="true">🎧</span><span>Nur hören<small>Geschichten wie ein Hörspiel, Bildschirm aus</small></span></button>
   <button class="btn wide callbtn" data-go="call"><span class="ph" aria-hidden="true">📞</span><span>Otti anrufen<small>Videoanruf: mit Otti reden</small></span></button>
   <button class="btn wide cambtn" id="homeCam" data-go="cam" hidden>📷 Zeig Otti etwas</button>
+  <button class="btn wide gnbtn torbtn" id="homeTore" type="button" data-welten=""><span class="mo" aria-hidden="true">🚪</span><span>Zauberwald-Tore<small data-welten-heute>Weltraum, Superheldin, Piraten und mehr</small></span></button>
   <div class="tiles">
     <button class="tile t2 big4" data-go="games"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="12" r="7" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3"/><path d="M32 20v18M32 38l-10 16M32 38l10 16M32 26l-14-8M32 26l14-8" stroke="#1d2a4f" stroke-width="4.5" stroke-linecap="round" fill="none"/><path d="M8 58h48" stroke="#5fb26b" stroke-width="4" stroke-linecap="round"/></svg>Spiele<small>bewegen &amp; Memory</small></button>
     <button class="tile t1 big4" data-go="stories"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 16q12-6 24 2v36q-12-8-24-2z" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M56 16q-12-6-24 2v36q12-8 24-2z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M47 22a7 7 0 1 0 5 10 5.5 5.5 0 1 1-5-10z" fill="#f2b43a"/></svg>Geschichten<small>hören &amp; erfinden</small></button>
-    <button class="tile t3 big4" data-go="talk"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 14h34a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6H24l-10 9v-9H8a6 6 0 0 1-6-6V20a6 6 0 0 1 6-6z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M50 26h6a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6h-2v7l-8-7h-6" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><circle cx="16" cy="27" r="2.6" fill="#1d2a4f"/><circle cx="25" cy="27" r="2.6" fill="#1d2a4f"/><circle cx="34" cy="27" r="2.6" fill="#1d2a4f"/></svg>Reden<small>mit Otti und allen Freunden</small></button>
+    <button class="tile t3 big4" data-go="talk"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 14h34a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6H24l-10 9v-9H8a6 6 0 0 1-6-6V20a6 6 0 0 1 6-6z" fill="#fff" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><path d="M50 26h6a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6h-2v7l-8-7h-6" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><circle cx="16" cy="27" r="2.6" fill="#1d2a4f"/><circle cx="25" cy="27" r="2.6" fill="#1d2a4f"/><circle cx="34" cy="27" r="2.6" fill="#1d2a4f"/></svg>Reden<small>mit Otti &amp; Freunden</small></button>
     <button class="tile t4 big4" data-go="guide"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M40 8a22 22 0 1 0 16 34A18 18 0 0 1 40 8z" fill="#ffd66b" stroke="#1d2a4f" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="14" r="2.4" fill="#fff"/><path d="M14 52q4 4 8 0M26 54q4 4 8 0" stroke="#1d2a4f" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>KI-Leitfaden<small>zum Einschlafen</small></button>
   </div>
   <button class="btn wide holdbtn hold parentbtn" id="parentsHold" aria-label="Für Eltern – 3 Sekunden gedrückt halten"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="28" width="36" height="28" rx="7" fill="#fff6e3" stroke="#1d2a4f" stroke-width="3"/><path d="M22 28v-7a10 10 0 0 1 20 0v7" fill="none" stroke="#1d2a4f" stroke-width="4"/><circle cx="32" cy="41" r="4" fill="#1d2a4f"/></svg>Für Eltern (3 Sek. halten)</button>
@@ -371,6 +390,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 <!-- GESCHICHTEN -->
 <section class="screen" id="s-stories" aria-label="Geschichten">
   <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>Geschichten</h2><button class="btn round" data-night-toggle aria-label="Nachtmodus umschalten">🌙</button></div>
+  <button class="btn wide gnbtn torbtn" type="button" data-welten="" style="margin-bottom:12px"><span class="mo" aria-hidden="true">🚪</span><span>Zauberwald-Tore<small>6 Welten · eigene Geschichten erfinden</small></span></button>
   <div class="slist" id="slist"></div>
   <p class="foot">DR Lab · Testphase</p>
 </section>
@@ -379,6 +399,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 <section class="screen" id="s-reader" aria-label="Geschichte">
   <div class="topbar"><button class="btn back" id="readerBack" aria-label="Zurück">←</button><h2 id="rTitle">Geschichte</h2><button class="btn round" data-night-toggle aria-label="Nachtmodus umschalten">🌙</button></div>
   <div id="rBody">
+    <div class="card rfilm" id="rFilm" hidden><video id="rFilmVid" playsinline controls preload="none" poster="film/otti-ny.jpg"></video><p>🎬 Der ganze Trickfilm. Oder lies die Geschichte unten.</p></div>
     <div class="stage" id="rStage"></div>
     <div class="card">
       <div id="rContent"></div>
@@ -446,6 +467,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 <section class="screen" id="s-move" aria-label="Bewegungsspiel">
   <div class="topbar"><button class="btn back" data-go="games" aria-label="Zurück zu den Spielen">←</button><h2 id="mvTitle">Spiel</h2><span style="width:58px"></span></div>
   <div class="stage" id="mvStage"></div>
+  <div class="noten" id="mvNoten" aria-hidden="true"></div>
   <div class="card">
     <div class="move-step" id="mvText">Bereit?</div>
     <div class="count" id="mvCount" aria-live="polite"></div>
@@ -455,6 +477,17 @@ h3.ch{font-size:19px;margin-bottom:10px}
       <button class="btn primary" id="mvPlay">▶ Los geht's</button>
       <button class="btn nav" id="mvNext" aria-label="Nächster Schritt">▶</button>
     </div>
+  </div>
+  <div class="card putz" id="mvPutz" hidden>
+    <div class="putzkarte" id="putzKarte" aria-label="Putzkarte: wo gerade geputzt wird">
+      <span data-z="ol">oben links</span><span data-z="or">oben rechts</span>
+      <span data-z="ul">unten links</span><span data-z="ur">unten rechts</span>
+      <span data-z="ko">Kauflächen oben</span><span data-z="ku">Kauflächen unten</span>
+      <span data-z="in">innen</span><span data-z="vo">vorne und Zunge</span>
+    </div>
+    <p class="small muted" id="putzStand" style="margin:10px 0 0;text-align:center"></p>
+    <button class="btn wide holdbtn hold" id="mvOk" hidden style="margin-top:10px" aria-label="Für Eltern: gut geputzt bestätigen, 3 Sekunden halten">🦷 Eltern: gut geputzt (3 Sek. halten)</button>
+    <p class="small muted" style="margin:8px 0 0;text-align:center">3 Monate morgens und abends putzen hilft, dass es zur Gewohnheit wird. Nach 90 vollen Tagen gibt es die goldene Zahnmedaille.</p>
   </div>
   <button class="btn wide" data-go="games">🎲 Anderes Spiel</button>
 </section>
@@ -533,9 +566,9 @@ h3.ch{font-size:19px;margin-bottom:10px}
 <!-- ELTERN -->
 <section class="screen" id="s-call" aria-label="Videoanruf mit Otti">
   <div class="callstage" id="callStage">
-    <img class="cl" src="otti-anruf.jpg" alt="Otti im Videoanruf">
-    <video class="cl" id="callTalk" src="otti-spricht.mp4" poster="otti-anruf.jpg" muted loop playsinline webkit-playsinline preload="auto" aria-hidden="true"></video>
-    <video class="cl" id="callWave" src="otti-anruf-winkt.mp4" poster="otti-anruf.jpg" muted playsinline webkit-playsinline preload="auto" aria-hidden="true"></video>
+    <img loading="lazy" decoding="async" class="cl" src="figur-gross.jpg" alt="Otti im Videoanruf">
+    <video class="cl" id="callTalk" muted loop playsinline webkit-playsinline preload="none" aria-hidden="true" hidden></video>
+    <video class="cl" id="callWave" muted playsinline webkit-playsinline preload="none" aria-hidden="true" hidden></video>
     <div class="callrings" aria-hidden="true"></div>
     <div class="calltop"><button class="btn back" data-go="home" aria-label="Auflegen und zurück">←</button><div class="callname"><b>Otti</b><small id="callTime">Otti wird angerufen …</small></div></div>
     <button class="selfview" id="callSelf" aria-label="Deine Kamera"><video id="callVid" muted playsinline webkit-playsinline autoplay></video><span class="off" id="callSelfOff"><i>📷</i>Kamera aus</span></button>
@@ -580,6 +613,40 @@ h3.ch{font-size:19px;margin-bottom:10px}
   </div>
 
   <div class="card">
+    <h3 class="ch">🦷 Milchzahn-Tagebuch</h3>
+    <p class="small muted" id="mzAnz" style="margin:0 0 8px">Noch kein Milchzahn eingetragen.</p>
+    <div class="row"><input class="in" id="mzWo" maxlength="40" autocomplete="off" placeholder="welcher Zahn? z. B. unten vorne"><button class="btn primary" id="mzNeu">+ Zahn</button></div>
+    <ul class="small" id="mzListe" style="margin:8px 0 0;padding-left:18px"></ul>
+    <p class="small muted" style="margin:6px 0 0">Nur auf diesem Handy. Das Zahnböcklein bedankt sich beim nächsten Öffnen beim Kind.</p>
+    <button class="btn wide" id="mzUrkunde" style="margin-top:10px">📜 Zahnböcklein-Urkunde machen</button>
+    <p class="small muted" style="margin:6px 0 0">Ein Bild mit Zahnböcklein, Name und Datum, zum Ausdrucken oder fürs Milchzahn-Döschen. Entsteht im Handy.</p>
+  </div>
+
+  <div class="card" id="fbCard">
+    <h3 class="ch">💬 Mit DR Lab reden</h3>
+    <p class="small muted" style="margin:0 0 10px">Was gefällt, was stört, was fehlt? Sag es hier, wie in einem Chat. Es bleibt auf diesem Handy, bis du es selbst weitergibst.</p>
+    <div data-feedback-slot style="display:flex;justify-content:flex-start"></div>
+  </div>
+
+  <div class="card">
+    <h3 class="ch">📊 Otti lernt mit</h3>
+    <label class="check"><input type="checkbox" id="lernen"> <span>Einmal am Tag nur Zahlen an DR Lab schicken (z. B. «4 Geschichten, 2 Memory»). Nie Stimme, Bild, Namen oder Text.</span></label>
+    <p class="small muted" id="lernInfo" style="margin:8px 0 0"></p>
+  </div>
+
+  <div class="card">
+    <h3 class="ch">📞 Live reden (Internet)</h3>
+    <p class="small muted" id="liveInfo" style="margin:0 0 10px"></p>
+    <button class="btn wide" id="liveWeg" hidden>Einverständnis zurücknehmen</button>
+  </div>
+
+  <div class="card">
+    <h3 class="ch">🎬 So geht Mondschein</h3>
+    <p class="small muted" style="margin:0 0 10px">Die kurze Einführung vom ersten Start nochmals ansehen.</p>
+    <button class="btn wide" id="tourNochmal">▶ Einführung zeigen</button>
+  </div>
+
+  <div class="card">
     <h3 class="ch">Zeit heute</h3>
     <div class="prog" style="margin-top:0"><span id="tUsed">0 Min.</span><div class="bar"><i id="tBar"></i></div><span id="tPct">–</span></div>
     <p class="small muted" id="tInfo" style="margin:0 0 10px">Kein Zeitlimit eingestellt.</p>
@@ -598,9 +665,9 @@ h3.ch{font-size:19px;margin-bottom:10px}
     <input type="range" id="rate" min="0.7" max="1.3" step="0.05">
     <label class="small muted" for="vol" style="display:block;margin-top:6px">Lautstärke: <b id="volLbl">100%</b></label>
     <input type="range" id="vol" min="0.1" max="1" step="0.05">
-    <label class="small muted" for="voiceSel" style="display:block;margin-top:6px">Stimme</label>
-    <select class="in" id="voiceSel"><option value="">Automatisch (Deutsch)</option></select>
-    <button class="btn wide" id="rateTest" style="margin-top:10px">🔊 Probe hören</button>
+    <select class="in" id="voiceSel" hidden><option value="">Automatisch (Deutsch)</option></select>
+    <p class="small muted" style="margin:10px 0 0">Die Handystimme bleibt aus, weil sie wie ein Roboter klingt. Otti spricht hörbar, sobald seine echten Aufnahmen da sind oder Nova verbunden ist. Bis dahin steht jeder Satz als Text da, und Otti blättert im eingestellten Tempo weiter: schön zum Selbst-Vorlesen.</p>
+    <button class="btn wide" id="rateTest" style="margin-top:10px">▶ Tempo ausprobieren</button>
   </div>
 
   <div class="card">
@@ -656,7 +723,7 @@ h3.ch{font-size:19px;margin-bottom:10px}
 
   <div class="card info">
     <h3 class="ch">🔒 Datenschutz</h3>
-    <p>Alles bleibt auf diesem Handy: Einstellungen, Botschaften, Ideen, Kamerabilder. Es gibt kein Konto, keinen Server und keine Werbung. Mondschein sendet nichts ins Internet.</p>
+    <p>Alles bleibt auf diesem Handy: Einstellungen, Botschaften, Ideen, Kamerabilder. Es gibt kein Konto und keine Werbung. Mondschein sendet nichts ins Internet, ausser du gibst selbst eine Idee oder Nachricht weiter, setzt das Häkchen bei «Otti lernt mit» (nur Zahlen) oder startest mit deinem Ja ein Live-Gespräch.</p>
     <p class="small muted">Gesprochenes wird nur zum Verstehen kurz vom Gerät (z. B. Apple-Diktat) umgewandelt und nicht gespeichert.</p>
   </div>
   <div class="card info">
@@ -670,9 +737,8 @@ h3.ch{font-size:19px;margin-bottom:10px}
     <p class="small muted">Nur zur Information – hier kann man nichts kaufen.</p>
   </div>
   <div class="card info">
-    <h3 class="ch">💡 Kauf mit deinen Ideen</h3>
-    <p>Bald kannst du auch mit deinen Ideen bezahlen.</p>
-    <p class="small muted">Nur zur Information.</p>
+    <h3 class="ch">💡 Deine Ideen zählen</h3>
+    <p>Jede eingereichte Idee wird gelesen. Was umgesetzt wird, siehst du oben unter «Meine Ideen» mit dem Status «umgesetzt».</p>
   </div>
 
   <button class="btn big primary wide" data-go="home">← Zurück zum Kinderbereich</button>
@@ -680,6 +746,13 @@ h3.ch{font-size:19px;margin-bottom:10px}
 </section>
 
 <!-- GUTE NACHT -->
+<section class="screen" id="s-ritual" aria-label="Gute Nacht mit Otti">
+  <div class="topbar"><button class="btn back" data-go="home" aria-label="Zurück zum Start">←</button><h2>Gute Nacht</h2><button class="btn round" data-night-toggle aria-label="Nachtmodus umschalten">🌙</button></div>
+  <div class="rit-head"><div class="stage" id="ritStage"></div><p id="ritGruss" style="font-size:19px;font-weight:800;margin:4px 0 0">Zeit fürs Bett.</p></div>
+  <div class="rit-list" id="ritList"></div>
+  <p class="small muted" id="ritInfo" style="text-align:center;margin:14px 0 0"></p>
+</section>
+
 <section class="screen" id="s-night" aria-label="Gute Nacht">
   <div style="padding-top:24px"></div>
   <div id="nMoon"></div>
@@ -692,6 +765,30 @@ h3.ch{font-size:19px;margin-bottom:10px}
 
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="win" id="liveGate" role="dialog" aria-modal="true" aria-label="Für Eltern">
+  <div class="card" style="max-width:420px">
+    <h3 style="font-size:21px;margin:4px 0 8px">Für Eltern, einmal kurz</h3>
+    <p style="font-size:16px;margin:0 0 8px">Im Live-Gespräch hört Otti wirklich zu. Dafür geht die Stimme deines Kindes über das Internet an den Sprachdienst ElevenLabs (USA), der Ottis Antwort macht.</p>
+    <p style="font-size:16px;margin:0 0 12px">Bitte sei dabei und lass dein Kind keinen Nachnamen, keine Adresse und keine Telefonnummer sagen.</p>
+    <button class="btn wide big primary holdbtn hold" id="liveJa">Einverstanden: 3 Sekunden halten</button>
+    <button class="btn wide" id="liveNein" style="margin-top:10px">Lieber ohne Internet</button>
+  </div>
+</div>
+<div id="tour" hidden role="dialog" aria-label="Willkommen bei Mondschein">
+  <div class="tour-karte">
+    <div class="tour-bild" id="tourBild"></div>
+    <h2 id="tourH">Willkommen im Mondschein-Wald</h2>
+    <p id="tourT"></p>
+    <div class="tour-punkte" id="tourP" aria-hidden="true"></div>
+    <div class="row" style="margin-top:12px"><button class="btn" id="tourSkip">Überspringen</button><button class="btn primary" id="tourWeiter">Weiter</button></div>
+  </div>
+</div>
+<div id="nachtlicht" hidden role="dialog" aria-label="Nachtlicht">
+  <div class="nl-mond" aria-hidden="true"></div>
+  <div class="nl-fig" id="nlFig"></div>
+  <p id="nlText">Gute Nacht.</p>
+  <button class="btn holdbtn hold" id="nlHold" style="margin-top:26px" aria-label="Für Eltern: Nachtlicht ausschalten, 3 Sekunden halten">🔒 Aus (3 Sek. halten)</button>
+</div>
 
 <script>
 (function(){
@@ -701,7 +798,7 @@ const store = {
   get(k, d){ try{ const v = localStorage.getItem('ms_'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
   set(k, v){ try{ localStorage.setItem('ms_'+k, JSON.stringify(v)); }catch(e){} }
 };
-const S = Object.assign({rate:1, vol:1, limit:0, night:'auto', voice:'', name:'', hear:'auto'}, store.get('settings', {}));
+const S = Object.assign({rate:1, vol:1, limit:0, night:'on', voice:'', name:'', hear:'auto'}, store.get('settings', {}));
 const saveS = () => store.set('settings', S);
 // Einmalig: altes, zu langsames Vorlese-Tempo auf «normal» stellen.
 if (S.rateV !== 2){ if (!(S.rate >= 1)) S.rate = 1; S.rateV = 2; saveS(); }
@@ -709,6 +806,14 @@ const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let toastT;
+/* ---------- Mondsterne: für jede fertige Geschichte, jedes gewonnene Memory, jeden ganzen Abend ---------- */
+function zahl(k){ const z = store.get('zahlen', {}); z[k] = (z[k] || 0) + 1; store.set('zahlen', z); }
+function mondstern(grund){
+  const n = store.get('mondsterne', 0) + 1; store.set('mondsterne', n);
+  zahl(grund || 'stern');
+  /* Runde 7: Kinder-App, keine Vibration */
+  return n;
+}
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'), 2600); }
 
 /* ---------- Figuren (eigene SVG-Zeichnungen) ---------- */
@@ -733,18 +838,38 @@ function spikes(){
   for (let a=-119; a<=119; a+=14) out += `<polygon points="-10,8 10,8 0,-20" fill="url(#g-spike2)" stroke="url(#g-spike2)" stroke-width="7" stroke-linejoin="round" transform="translate(100 122) rotate(${a}) translate(0 -58)"/>`;
   return spikeCache = out;
 }
+// Tinkos Otti-Posen: posen/<pose>.jpg, Liste in posen/index.json (z. B. ["hallo","lacht","schlaeft","winkt"]).
+// Fehlt eine Pose, nimmt Otti das Filmbild und wippt sanft (CSS).
+const OTTI_POSEN = {};
+// Runde 5: Tinkos Winkebild (figur-gross.jpg = posen/winkt.jpg) – Augen, Mund und der freie Arm, der beim Gruss echt winkt
+const OTTI_WINK = { arm:false, augen:[[0.391,0.425,0.048,0.05],[0.616,0.42,0.048,0.05]], mund:{ l:[0.414,0.518], r:[0.592,0.52], oben:0.012, unten:0.058, kinn:0.05, offen:true },
+  kopf:[0.51,0.40,0.30], hals:[0.5,0.64], winkArm:{ x:0.84, y:0.53, r:0.10, dx:0.77, dy:0.66, seite:'rechts', winkel:16 } };
 function sunnySVG(o={}){
-  // Otti aus dem Film «Otti und Nova» (Wald-Szene): hallo, lacht oder ruhig
+  // Otti im gültigen Look (runder, flauschiger Comic-Igel mit gelbem Halstuch, Referenz 18.10.).
+  // Bis Tinkos Posen da sind: ein Bild für alle Posen; Schlafen und Winken macht CSS.
   const m = o.sleep ? 'ruhig' : o.laugh ? 'lacht' : o.wave ? 'winkt-fig' : 'hallo';
-  return `<img class="fig nova-film otti-film ${o.cls||''} ${o.sleep?'asleep':''}" src="otti-${m}.jpg" alt="${o.wave?'Otti winkt':'Otti, der kleine Igel'}">`;
+  const p = o.sleep ? 'schlaeft' : o.laugh ? 'lacht' : o.wave ? 'winkt' : 'hallo';
+  const src = OTTI_POSEN[p] || 'otti-figur.png';
+  return `<img loading="lazy" decoding="async" class="fig nova-film otti-film ${OTTI_POSEN[p]?'otti-pose':'otti-wippt'} ${o.cls||''} ${o.sleep?'asleep':''}" data-pose="${p}" src="${src}" alt="${o.wave?'Otti winkt':'Otti, der kleine Igel'}">`;
 }
+fetch('posen/index.json').then(r => r.ok ? r.json() : []).then(l => {
+  (Array.isArray(l) ? l : []).forEach(p => {
+    p = String(p).replace(/[^a-z0-9-]/g, ''); if (!p) return;
+    const im = new Image();
+    im.onload = () => {
+      OTTI_POSEN[p] = im.src;
+      document.querySelectorAll(`img.otti-film[data-pose="${p}"]`).forEach(x => { x.src = im.src; x.classList.remove('otti-wippt'); x.classList.add('otti-pose'); });
+    };
+    im.src = 'posen/' + p + '.jpg';
+  });
+}).catch(() => {});
 function novaSVG(o={}){
   // Nova aus dem Film «Otti und Nova», Stadt-Szene
-  return `<img class="fig nova-film ${o.cls||''} ${o.sleep?'asleep':''}" src="nova.jpg" alt="Nova, der kleine blaue Roboter">`;
+  return `<img loading="lazy" decoding="async" class="fig nova-film ${o.cls||''} ${o.sleep?'asleep':''}" src="nova.jpg" alt="Nova, der kleine blaue Roboter">`;
 }
 function kikiSVG(o={}){
   const sleep = o.sleep, wave = o.wave;
-  return `<svg class="fig ${o.cls||''} ${sleep?'asleep':''}" viewBox="0 0 200 200" role="img" aria-label="Kiki, die kleine leuchtende KI">
+  return `<svg class="fig ${o.cls||''} ${sleep?'asleep':''}" viewBox="0 0 200 200" role="img" aria-label="Tropfi, die kleine leuchtende KI">
   <circle class="glow" cx="100" cy="112" r="92" fill="url(#g-kglow)"/>
   <ellipse cx="100" cy="192" rx="40" ry="5" fill="#000" opacity=".07"/>
   <g class="breathe">
@@ -794,10 +919,10 @@ function flySVG(o={}){
   <path d="M46 39 Q50 42 54 39" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
 </svg>`;
 }
-function filmFig(src, alt){ return (o={}) => `<img class="fig nova-film otti-film ${o.cls||''} ${o.sleep?'asleep':''}" src="${src}" alt="${alt}">`; }
+function filmFig(src, alt){ return (o={}) => `<img loading="lazy" decoding="async" class="fig nova-film otti-film ${o.cls||''} ${o.sleep?'asleep':''}" src="${src}" alt="${alt}">`; }
 function fompaSVG(o={}){
-  // Fompa: Erfindung von Claude für Mila. Flauschiges Mondschein-Wesen, sammelt verlorene Träume. Vorläufige Zeichnung, bis das Filmbild da ist.
-  return `<svg class="fig ${o.cls||''} ${o.sleep?'asleep':''}" viewBox="0 0 200 200" role="img" aria-label="Fompa, das flauschige Traumwesen">
+  // Traumli: Erfindung von Claude für Mila. Flauschiges Mondschein-Wesen, sammelt verlorene Träume. Vorläufige Zeichnung, bis das Filmbild da ist.
+  return `<svg class="fig ${o.cls||''} ${o.sleep?'asleep':''}" viewBox="0 0 200 200" role="img" aria-label="Traumli, das flauschige Traumwesen">
   <defs><radialGradient id="g-fompa" cx="40%" cy="32%" r="70%"><stop offset="0" stop-color="#f3ecff"/><stop offset=".55" stop-color="#b9a6f2"/><stop offset="1" stop-color="#7f6bd6"/></radialGradient>
   <radialGradient id="g-fstern" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff8c9"/><stop offset="1" stop-color="#ffd66b" stop-opacity="0"/></radialGradient></defs>
   <ellipse cx="100" cy="190" rx="50" ry="6" fill="#000" opacity=".08"/>
@@ -836,7 +961,7 @@ function prinzSVG(o={}){
 </svg>`;
 }
 function bockSVG(o={}){
-  // Zahnböcklein: kleines Geiss-Mädchen mit glitzernden Feenflügeln, Zahnbürste im Täschchen, sitzt in ihrer weissen Box. Beste Freundin der Zahnfee. Vorläufige Zeichnung, bis das Pixar-Bild da ist.
+  // Zahnböcklein: kleines Geiss-Mädchen mit glitzernden Feenflügeln, Zahnbürste im Täschchen, sitzt in ihrer weissen Box. Beste Freundin der Zahnfee. Vorläufige Zeichnung, bis das KI-Pixel-Bild da ist.
   const eye=(x)=>`<ellipse cx="${x}" cy="70" rx="12" ry="13.5" fill="#fff" stroke="#e2d8ca" stroke-width="1"/><circle cx="${x}" cy="71.5" r="10" fill="url(#zb-iris)"/><rect x="${x-5.4}" y="67.8" width="10.8" height="7.4" rx="3.7" fill="#2a1c12"/><circle cx="${x+3.8}" cy="66.4" r="3.4" fill="#fff"/><circle cx="${x-3}" cy="75" r="1.3" fill="#fff" opacity=".8"/>`;
   const lash=(x,d)=>`<path d="M${x+d*10} 61 l${d*4.5} -4 M${x+d*6} 58.4 l${d*3} -4.4" stroke="#5a4636" stroke-width="1.8" stroke-linecap="round"/>`;
   const wing=(m)=>`<g transform="${m}"><path d="M90 104 C74 38 34 0 18 24 C4 48 46 88 90 110 Z" fill="url(#zb-wing)" stroke="#a9d9f6" stroke-width="2"/><path d="M88 118 C60 112 22 118 24 140 C26 158 66 144 88 128 Z" fill="url(#zb-wing)" stroke="#a9d9f6" stroke-width="2"/><path d="M86 102 Q60 56 30 26 M86 106 Q50 68 16 46 M86 122 Q54 126 30 138" stroke="#ffffff" stroke-width="1.4" fill="none" opacity=".9"/><circle cx="34" cy="30" r="2.2" fill="#fff"/><circle cx="52" cy="54" r="1.6" fill="#fff"/><circle cx="26" cy="50" r="1.4" fill="#fff6c4"/><circle cx="64" cy="76" r="1.8" fill="#fff"/><circle cx="38" cy="142" r="1.6" fill="#fff"/><circle cx="52" cy="130" r="1.2" fill="#fff6c4"/><path d="M44 38 l1.6 3.6 3.6 1.6 -3.6 1.6 -1.6 3.6 -1.6 -3.6 -3.6 -1.6 3.6 -1.6z" fill="#fff"/></g>`;
@@ -883,7 +1008,9 @@ function bockSVG(o={}){
 </svg>`;
 }
 const FIG = {sunny:sunnySVG, nova:novaSVG, kiki:kikiSVG, moon:moonSVG, mush:mushSVG, fly:flySVG,
-  hase:filmFig('hase.jpg','Hoppel, der Hase'), fuchs:filmFig('fuchs.jpg','Flori, der Fuchs'), fompa:fompaSVG, prinz:prinzSVG, bock:bockSVG};
+  hase:filmFig('hase.jpg','Hoppel, der Hase'), fuchs:filmFig('fuchs.jpg','Flori, der Fuchs'), fompa:fompaSVG, prinz:prinzSVG,
+  affe:filmFig('fompa-affe.jpg','Fompa, das Löwenäffchen mit der runden Brille'), koala:filmFig('kiki-koala.jpg','Kiki, der Koala mit dem goldenen Mikrofon'), bock:filmFig('zahnboecklein.jpg','Das Zahnböcklein, die kleine Geiss mit Feenflügeln und blauer Zahnbürste'),
+  eule:filmFig('eule.jpg','Frau Eule mit Schlafmütze und Schal'), wolke:filmFig('kissenwolke.jpg','Die Kissenwolke')};
 
 /* ---------- Nachtmodus ---------- */
 function isNight(){ if (S.night==='on') return true; if (S.night==='off') return false; const h=new Date().getHours(); return h>=19 || h<7; }
@@ -898,8 +1025,22 @@ const IOS_TEMPO = (/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.plat
 /* Echte Stimmen (ElevenLabs), einmal aufgenommen und als mp3 in der App: läuft ohne Internet, nichts vom Kind geht raus.
    Liegt für einen Satz keine Aufnahme vor (z.B. mit dem Namen des Kindes), liest die Gerätestimme vor. */
 const STIMME = { set: new Set(), audio: null };
+// Handystimme (speechSynthesis) ist aus. Hörbar spricht Otti nur mit Aufnahmen in stimme/ oder mit verbundener Nova.
+const HANDYSTIMME = false;
+let noteAC = null;
+function leiseNote(i){
+  try{
+    noteAC = noteAC || new (window.AudioContext || window.webkitAudioContext)();
+    if (noteAC.state === 'suspended') noteAC.resume();
+    const hz = [523, 587, 659, 784, 659, 587][i % 6], t = noteAC.currentTime, o = noteAC.createOscillator(), g = noteAC.createGain();
+    o.type = 'sine'; o.frequency.value = hz; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.025 * (S.vol == null ? 1 : +S.vol), t + .02); g.gain.exponentialRampToValueAtTime(.0005, t + .7);
+    o.connect(g); g.connect(noteAC.destination); o.start(t); o.stop(t + .75);
+  }catch(e){}
+}
 // Figuren mit eigener Server-Stimme (Sense Engine, sense-klein.py STIMMEN).
-const NOVA_STIMME_FIG = { otti: 'otti', nova: 'nova', kiki: 'kiki', fompa: 'fompa' };
+// Traumli (intern fompa) nicht: die Server-Stimme «fompa» gehört Fompa, dem Löwenäffchen der Steuer-App.
+// Tropfi (intern kiki) nicht: die Server-Stimme «kiki» gehört Kiki, dem singenden Koala.
+const NOVA_STIMME_FIG = { otti: 'otti', nova: 'nova' };
 let NOVA_FEST = null;
 function novaErlaubt(k){
   if (!k) return false;
@@ -913,7 +1054,8 @@ function novaErlaubt(k){
 }
 function stimmeHash(t){ let h = 0x811c9dc5; for (const c of t){ h ^= c.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8,'0'); }
 function stimmeWer(o){ if (o.lang === 'en' || o.flat) return ''; if (o.who) return o.who; const t = typeof TALKERS !== 'undefined' && Object.keys(TALKERS).find(k => TALKERS[k].pitch === o.pitch); return (!t || t === 'sunny') ? 'otti' : t; }
-fetch('stimme/index.json').then(r => r.ok ? r.json() : []).then(l => { (l || []).forEach(k => STIMME.set.add(k)); }).catch(() => {});
+// stimme/index.json listet die aufgenommenen Sätze (leer, bis tools/stimmen sie aufnimmt).
+fetch('stimme/index.json').then(r => r.ok ? r.json() : []).then(l => { (Array.isArray(l) ? l : []).forEach(k => STIMME.set.add(k)); }).catch(() => {});
 const TTS = {
   ok: 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined',
   // Für das Aufnahme-Werkzeug: Sprecher + Text so, wie die App sie sucht.
@@ -937,7 +1079,6 @@ const TTS = {
     if (typeof list === 'string') list = [list];
     const tok = this.token; let i = o.start || 0;
     const hasRec = list.some(t => STIMME.set.has(this.key(t, o)));
-    if (!this.ok && !hasRec){ if(o.onEnd) setTimeout(()=>{ if(tok===this.token) o.onEnd(); }, 50); return; }
     let nurGeraet = false; // Server-Stimme für diesen Satz fehlt: Gerätestimme
     const next = () => {
       if (tok !== this.token) return;
@@ -958,7 +1099,7 @@ const TTS = {
         a.play().catch(() => a.onerror());
         return;
       }
-      // Mit Server (nova/nova.js): Otti, Nova, Kiki und Fompa mit ihrer eigenen Stimme.
+      // Mit Server (nova/nova.js): Otti, Nova und Tropfi mit ihrer eigenen Stimme.
       // Nur feste App-Sätze (Aufnahme-Liste), nie Sätze mit dem Namen oder den Worten des Kindes.
       const fig = k && NOVA_STIMME_FIG[k.split('/')[0]], ng = nurGeraet; nurGeraet = false;
       if (fig && !ng && window.NovaStimme && NovaStimme.aktiv() && novaErlaubt(k)){
@@ -970,6 +1111,9 @@ const TTS = {
         });
         return;
       }
+      // Keine Handystimme mehr (klang roboterhaft, Diego 19.10.): der Satz steht als Text da,
+      // Otti blättert im Tempo eines vorlesenden Erwachsenen weiter. Eine leise Spieldosen-Note als Zeichen.
+      if (!HANDYSTIMME){ if (o.ton !== false) leiseNote(i); this.timer = setTimeout(() => { if (tok !== this.token) return; i++; next(); }, (o.lang === 'en' ? 500 : 700) + text.length * 72 / (S.rate || 1)); return; }
       if (!this.ok){ i++; setTimeout(next, 50); return; }
       const u = new SpeechSynthesisUtterance(text);
       if (o.lang === 'en'){ const ev = this.ok ? speechSynthesis.getVoices().filter(x => /^en/i.test(x.lang)).sort((a,b) => this.rank(b)-this.rank(a) + (/en[-_]GB/i.test(b.lang)?5:0) - (/en[-_]GB/i.test(a.lang)?5:0))[0] : null; if (ev){ u.voice = ev; u.lang = ev.lang; } else u.lang = 'en-GB'; }
@@ -1131,6 +1275,7 @@ function listen(onText, btn, opt = {}){
 let current = 'home';
 function go(id){
   TTS.stop();
+  { const fv = document.getElementById('rFilmVid'); if (fv) try{ fv.pause(); }catch(e){} }
   if (rec){ try{ rec.abort(); }catch(e){} }
   if (typeof stopLong === 'function') stopLong();
   if (typeof stopMove === 'function') stopMove();
@@ -1164,34 +1309,42 @@ function greeting(){
 }
 function renderHome(){
   $('#greet').textContent = greeting();
+  const ms = store.get('mondsterne', 0), alt = store.get('mondsterneGesehen', 0);
+  $('#homeSterneN').textContent = ms; $('#homeSterneT').textContent = ms === 1 ? 'Mondstern' : 'Mondsterne';
+  $('#homeSterne').hidden = !ms;
+  if (ms > alt){
+    store.set('mondsterneGesehen', ms);
+    setTimeout(() => {
+      const c = $('#homeSterne'); c.classList.remove('neu'); void c.offsetWidth; c.classList.add('neu');
+      if (window.filmSterne){ const r = c.getBoundingClientRect(); window.filmSterne(r.left + r.width / 2, r.top + r.height / 2, 12); }
+      $('#greet').textContent = ms - alt > 1 ? `${ms - alt} neue Mondsterne! Du hast jetzt ${ms}.` : `Ein neuer Mondstern für dich! Jetzt hast du ${ms}.`;
+    }, 500);
+  }
   // Tagsüber winkt Otti (Filmclip aus «Otti und Nova»), nachts ruhige Wald-Szene.
-  $('#homeSunny').innerHTML = isNight()
-    ? `<span class="filmcard"><img id="homeSzene" src="szene-ruhig.jpg" alt="Otti im Mondschein-Wald"><i class="glitzer g1"></i><i class="glitzer g2"></i><i class="glitzer g3"></i></span>`
-    : `<span class="filmcard"><video id="homeWinkt" src="otti-winkt.mp4" poster="otti-winkt.jpg" muted loop playsinline webkit-playsinline preload="auto" aria-label="Otti winkt dir zu"></video><i class="glitzer g1"></i><i class="glitzer g2"></i><i class="glitzer g3"></i></span>`;
+  // Ruhiges Standbild von Otti im gültigen Look (Referenz 18.10.); Antippen lässt ihn kurz hüpfen.
+  $('#homeSunny').innerHTML = `<span class="filmcard"><img id="homeSzene" src="figur-gross.jpg" alt="Otti im Mondschein-Wald"><i class="glitzer g1"></i><i class="glitzer g2"></i><i class="glitzer g3"></i></span>`;
   const v = $('#homeWinkt');
-  if (v && !matchMedia('(prefers-reduced-motion: reduce)').matches){ v.muted = true; const pl = v.play(); if (pl && pl.catch) pl.catch(() => {}); }
+  // Ruhe-Prinzip (Diego 20.10.): Otti steht still und winkt erst, wenn das Kind ihn antippt.
+  if (v) v.muted = true;
   const L = letterSel();
   $('#homeLetter').hidden = !L;
   if (L) $('#homeLetterT').textContent = 'Ein Brief von ' + L.from;
   $('#homeCam').hidden = !S.cam;
 }
-const sunnyLines = ['Na, wollen wir eine Geschichte hören?', 'Ich bin Otti. Meine Stacheln sind ganz weich – fast.', 'Kiki und Nova warten schon auf dich!', 'Weisst du, was ich am liebsten mag? Walderdbeeren!', 'Hihi, das kitzelt!'];
+const sunnyLines = ['Na, wollen wir eine Geschichte hören?', 'Ich bin Otti. Meine Stacheln sind ganz weich – fast.', 'Tropfi und Nova warten schon auf dich!', 'Weisst du, was ich am liebsten mag? Walderdbeeren!', 'Hihi, das kitzelt!'];
 let sunnyIdx = 0;
 $('#homeLetter').addEventListener('click', () => { const L = letterSel(); if (L) openLetter(L, 'home'); });
+$('#homeSterne').addEventListener('click', () => {
+  const n = store.get('mondsterne', 0);
+  $('#greet').textContent = `Du hast schon ${n} ${n === 1 ? 'Mondstern' : 'Mondsterne'}! Für jede Geschichte, jedes Memory und jeden ganzen Abend gibt es einen.`;
+});
 $('#homeSunny').addEventListener('click', () => {
   const line = sunnyIdx === 0 ? greeting() : sunnyLines[(sunnyIdx-1) % sunnyLines.length];
   sunnyIdx++;
   $('#greet').textContent = line;
   const hv = $('#homeWinkt'); if (hv){ try{ hv.currentTime = 0; const pl = hv.play(); if (pl && pl.catch) pl.catch(() => {}); }catch(e){} $('#homeSunny').classList.remove('hopp'); void hv.offsetWidth; $('#homeSunny').classList.add('hopp'); }
   const sz = $('#homeSzene');
-  // Nachts: Antippen lässt Otti kurz winken, danach wieder ruhige Wald-Szene.
-  if (sz && isNight() && !matchMedia('(prefers-reduced-motion: reduce)').matches){
-    const card = sz.parentNode, v = document.createElement('video');
-    v.src = 'otti-winkt.mp4'; v.muted = true; v.playsInline = true; v.setAttribute('playsinline',''); v.setAttribute('aria-label','Otti winkt dir zu');
-    card.replaceChild(v, sz); const pl = v.play(); if (pl && pl.catch) pl.catch(() => {});
-    const back = () => { if (v.parentNode) v.parentNode.replaceChild(sz, v); };
-    v.addEventListener('ended', back); setTimeout(back, 7000);
-  } else if (sz){ clearTimeout(sz._t); sz.src = 'szene-lacht.jpg'; $('#homeSunny').classList.remove('hopp'); void sz.offsetWidth; $('#homeSunny').classList.add('hopp'); sz._t = setTimeout(() => { sz.src = 'szene-' + (isNight()?'ruhig':'hallo') + '.jpg'; }, 2200); }
+  ottiGruesst(sz, line);
   TTS.speak(line);
 });
 
@@ -1203,7 +1356,7 @@ function holdButton(el, onDone){
     if (!active) return;
     const p = Math.min(1, (performance.now()-start)/3000);
     el.style.setProperty('--p', p.toFixed(3));
-    if (p >= 1){ reset(); if (navigator.vibrate) try{ navigator.vibrate(30); }catch(e){} onDone(); return; }
+    if (p >= 1){ reset(); onDone(); return; }
     raf = requestAnimationFrame(tick);
   };
   const begin = e => { if (active) return; if (e.type==='pointerdown' && e.button>0) return; active=true; start=performance.now(); raf=requestAnimationFrame(tick); };
@@ -1251,8 +1404,8 @@ const STORIES = [
   {t:'«Ich möchte nach Hause zum Mond», piepste der Mondstrahl. «Aber der Himmel ist so hoch, und ich bin so klein.» Otti kratzte sich an der Nase. «Hm», sagte er. «Allein ist es schwer. Aber zusammen geht es leichter.»', pic:['sunny','moon']},
   {q:'Wen soll Otti um Hilfe bitten?', opts:[
     {e:'🤖', l:'Nova', k:['nova','roboter'], v:{helfer:'Nova', how:'Nova, der kleine blaue Roboter, liess aus seinem Helm einen kleinen Propeller wachsen. Surr, surr. «Haltet euch fest!», piepste er fröhlich, und seine runden Augen leuchteten hellblau. Otti hielt sich gut fest, der Mondstrahl kuschelte sich in sein Halstuch. Und ganz sanft schwebten sie los.', hp:'nova'}},
-    {e:'✨', l:'Kiki', k:['kiki'], v:{helfer:'Kiki', how:'Kiki blinkte vor Freude. «Ich kann leuchten! Ich zeige euch den Weg!» Kiki flog voraus, zuerst ein bisschen in die falsche Richtung. «Hoppla», kicherte Kiki, drehte um und leuchtete den Weg ganz hell.', hp:'kiki'}},
-    {e:'🦉', l:'Frau Eule', k:['eule'], v:{helfer:'Frau Eule', how:'Frau Eule plusterte ihre Federn auf. «Haltet euch gut fest», sagte sie mit ihrer ruhigen, tiefen Stimme. Und leise wie ein fallendes Blatt flog sie mit ihnen los.', hp:'moon'}}],
+    {e:'✨', l:'Tropfi', k:['kiki'], v:{helfer:'Tropfi', how:'Tropfi blinkte vor Freude. «Ich kann leuchten! Ich zeige euch den Weg!» Tropfi flog voraus, zuerst ein bisschen in die falsche Richtung. «Hoppla», kicherte Tropfi, drehte um und leuchtete den Weg ganz hell.', hp:'kiki'}},
+    {e:'🦉', l:'Frau Eule', k:['eule'], v:{helfer:'Frau Eule', how:'Frau Eule plusterte ihre Federn auf. «Haltet euch gut fest», sagte sie mit ihrer ruhigen, tiefen Stimme. Und leise wie ein fallendes Blatt flog sie mit ihnen los.', hp:'eule'}}],
    after:'{how}', pic:['sunny','{hp}']},
   {t:'Hinauf ging es, an den schlafenden Bäumen vorbei. Höher und höher. Die Luft war kühl und still. Unten im Gras leuchteten die Glühwürmchen wie kleine Laternen. Und oben funkelten die Sterne, als wollten sie sagen: Gute Reise!', pic:['fly','moon']},
   {q:'Was soll Otti dem Mond mitbringen?', opts:[
@@ -1282,23 +1435,23 @@ const STORIES = [
   {t:'Nova hüpft vor Freude im Kreis. «Danke, Milou! Danke, Otti!» Die Leute aus der Stadt kommen vorsichtig näher. «Das war die neue Macht?», fragen sie. Milou lächelt. «Neu heisst nicht gefährlich», sagt sie. «Manchmal heisst neu einfach: Da braucht jemand einen Freund.»', pic:['nova','sunny']},
   {t:'Am Abend sind alle drei wieder im Mondschein-Land. Milou bringt {el} zurück zu den anderen Elementen. Nova darf bleiben, so lange Nova möchte. Otti gähnt ein grosses Igel-Gähnen. «Gute Nacht, Milou. Gute Nacht, Nova.» Und hoch oben passt der Mond auf alle auf.', pic:['prinz','sunny-sleep']}
  ]},
- { id:'kiki', title:'Kiki zählt die Sterne', sub:'Kiki lernt – und Fehler sind erlaubt.', pic:['kiki'], parts:[
-  {t:'Kiki war noch ganz neu im Mondschein-Land. Kiki war eine kleine, leuchtende KI, rund wie ein Wassertropfen und neugierig wie ein Kätzchen. Kiki wollte alles lernen. Und heute Abend wollte Kiki etwas ganz Besonderes: alle Sterne zählen!', pic:['kiki']},
-  {t:'«Eins, zwei, drei …», zählte Kiki. «Vier, fünf … sieben!» Otti musste lachen. «Kiki, du hast die Sechs vergessen!» Kiki blinkte rosa. «Blink, blink, ich lerne noch!», sagte Kiki. «Fehler machen darf man, oder?» «Klar», sagte Otti. «So lernt man.»', pic:['kiki','sunny']},
-  {q:'Kiki entdeckt einen ganz hellen Stern. Wie soll er heissen?', opts:[
+ { id:'kiki', title:'Tropfi zählt die Sterne', sub:'Tropfi lernt – und Fehler sind erlaubt.', pic:['kiki'], parts:[
+  {t:'Tropfi war noch ganz neu im Mondschein-Land. Tropfi war eine kleine, leuchtende KI, rund wie ein Wassertropfen und neugierig wie ein Kätzchen. Tropfi wollte alles lernen. Und heute Abend wollte Tropfi etwas ganz Besonderes: alle Sterne zählen!', pic:['kiki']},
+  {t:'«Eins, zwei, drei …», zählte Tropfi. «Vier, fünf … sieben!» Otti musste lachen. «Tropfi, du hast die Sechs vergessen!» Tropfi blinkte rosa. «Blink, blink, ich lerne noch!», sagte Tropfi. «Fehler machen darf man, oder?» «Klar», sagte Otti. «So lernt man.»', pic:['kiki','sunny']},
+  {q:'Tropfi entdeckt einen ganz hellen Stern. Wie soll er heissen?', opts:[
     {e:'⭐', l:'Funkel', k:['funkel'], v:{stern:'Funkel'}},
     {e:'💛', l:'Goldi', k:['goldi','gold'], v:{stern:'Goldi'}},
     {e:'🫧', l:'Blubb', k:['blubb','blub'], v:{stern:'Blubb'}}],
-   after:'«Du heisst ab jetzt {stern}!», rief Kiki. Und der Stern blinkte zurück, ganz hell, als ob er sich freuen würde.', pic:['kiki','moon']},
-  {t:'Da schwebte etwas Kleines, Leuchtendes vorbei. «Noch ein Stern!», rief Kiki. «Achtzehn!» Nova kicherte leise. «Piep! Kiki, das ist doch ein Glühwürmchen!» Das Glühwürmchen winkte freundlich und flog weiter.', pic:['fly','nova']},
-  {t:'Kiki blinkte nachdenklich. «Sterne sind weit, weit weg. Glühwürmchen sind ganz nah. Jetzt weiss ich es!» Kiki leuchtete vor Stolz. «Blink, blink, ich lerne noch. Und Fragen hilft!»', pic:['kiki-wave']},
+   after:'«Du heisst ab jetzt {stern}!», rief Tropfi. Und der Stern blinkte zurück, ganz hell, als ob er sich freuen würde.', pic:['kiki','moon']},
+  {t:'Da schwebte etwas Kleines, Leuchtendes vorbei. «Noch ein Stern!», rief Tropfi. «Achtzehn!» Nova kicherte leise. «Piep! Tropfi, das ist doch ein Glühwürmchen!» Das Glühwürmchen winkte freundlich und flog weiter.', pic:['fly','nova']},
+  {t:'Tropfi blinkte nachdenklich. «Sterne sind weit, weit weg. Glühwürmchen sind ganz nah. Jetzt weiss ich es!» Tropfi leuchtete vor Stolz. «Blink, blink, ich lerne noch. Und Fragen hilft!»', pic:['kiki-wave']},
   {q:'Wie viele Sterne gibt es wohl? Was glaubst du?', opts:[
     {e:'🌟', l:'Ganz viele', k:['viele','ganz'], v:{tipp:'ganz, ganz viele'}},
     {e:'♾️', l:'Unendlich viele', k:['unendlich'], v:{tipp:'unendlich viele'}},
     {e:'🤔', l:'Weiss niemand', k:['niemand','weiss nicht','keine ahnung'], v:{tipp:'so viele, dass es niemand genau weiss'}}],
-   after:'«Ich glaube, es gibt {tipp}», sagte Kiki. «Genau», sagte Otti und gähnte. «Und weisst du was? Wir müssen nicht alle heute zählen.»', pic:['kiki','sunny']},
-  {t:'Kiki machte die Lichter ganz klein, bis nur noch ein sanftes Glimmen übrig war. «Morgen zähle ich weiter», flüsterte Kiki. «Pausen sind auch schön.» Hoch oben funkelte {stern}, als wollte er sagen: Ich passe auf dich auf.', pic:['kiki-sleep','moon']},
-  {t:'«Gute Nacht, {stern}», flüsterte Kiki. «Gute Nacht, Otti. Gute Nacht, Nova.» Blink … blink … Und dann wurde es ganz still im Mondschein-Land.', pic:['kiki-sleep','sunny-sleep']}
+   after:'«Ich glaube, es gibt {tipp}», sagte Tropfi. «Genau», sagte Otti und gähnte. «Und weisst du was? Wir müssen nicht alle heute zählen.»', pic:['kiki','sunny']},
+  {t:'Tropfi machte die Lichter ganz klein, bis nur noch ein sanftes Glimmen übrig war. «Morgen zähle ich weiter», flüsterte Tropfi. «Pausen sind auch schön.» Hoch oben funkelte {stern}, als wollte er sagen: Ich passe auf dich auf.', pic:['kiki-sleep','moon']},
+  {t:'«Gute Nacht, {stern}», flüsterte Tropfi. «Gute Nacht, Otti. Gute Nacht, Nova.» Blink … blink … Und dann wurde es ganz still im Mondschein-Land.', pic:['kiki-sleep','sunny-sleep']}
  ]},
  { id:'nova', title:'Nova kann nicht einschlafen', sub:'Ein kleiner Roboter mit Piep-Schluckauf.', pic:['nova'], parts:[
   {t:'Nova, der kleine blaue Roboter, lag in seinem Körbchen aus weichem Moos. Sein runder Helm glänzte wie ein Kieselstein im Mondlicht, und auf seinem Bauch schimmerte ein sanftes blaues Licht. Draussen war es schon dunkel. Aber Nova konnte einfach nicht einschlafen.', pic:['nova']},
@@ -1322,14 +1475,14 @@ const STORIES = [
    after:'Otti deckte Nova mit {decke} zu. «So», sagte er leise. «Jetzt ist es gemütlich.»', pic:['sunny','nova-sleep']},
   {t:'«Bleibst du noch ein bisschen?», murmelte Nova. «Natürlich», sagte Otti und kuschelte sich an Novas warm leuchtenden Bauch. Draussen schien der Mond. Die Glühwürmchen machten ihre Lichter aus, eins nach dem anderen. Und bald schliefen der kleine Roboter und der kleine Igel tief und fest.', pic:['sunny-sleep','nova-sleep']}
  ]},
- { id:'meer', title:'Otti fährt ans Meer', sub:'Ferien! Mit Kiki und Nova.', pic:['sunny','kiki'], parts:[
+ { id:'meer', title:'Otti fährt ans Meer', sub:'Ferien! Mit Tropfi und Nova.', pic:['sunny','kiki'], parts:[
   {t:'Heute war ein besonderer Tag: Otti hatte Ferien! Er packte seinen kleinen Rucksack und summte dabei ein Lied. Sein gelbes Halstuch flatterte vor Freude.', pic:['sunny-wave']},
   {q:'Was packt Otti ein?', opts:[
     {e:'🧸', l:'Kuscheltier', k:['kuschel','teddy','bär'], v:{pack:'sein Kuscheltier'}},
     {e:'🪣', l:'Schaufel', k:['schaufel','kessel','eimer'], v:{pack:'die Schaufel mit dem Kessel'}},
     {e:'📕', l:'Bilderbuch', k:['buch'], v:{pack:'sein liebstes Bilderbuch'}}],
    after:'Natürlich kam {pack} mit. «Ohne geht es nicht», sagte Otti und machte den Rucksack zu. Klick.', pic:['sunny']},
-  {t:'Kiki und Nova warteten schon draussen. «Wohin geht die Reise?», fragte Kiki und blinkte neugierig. «Ans Meer!», rief Otti.', pic:['kiki-wave','nova']},
+  {t:'Tropfi und Nova warteten schon draussen. «Wohin geht die Reise?», fragte Tropfi und blinkte neugierig. «Ans Meer!», rief Otti.', pic:['kiki-wave','nova']},
   {q:'Wie reisen die drei ans Meer?', opts:[
     {e:'🚂', l:'Mit dem Zug', k:['zug','bahn'], v:{reise:'Der kleine Zug ratterte gemütlich durch Wiesen und Wälder. Tschu-tschu, tschu-tschu.'}},
     {e:'⛵', l:'Mit dem Boot', k:['boot','schiff'], v:{reise:'Das kleine Boot schaukelte sanft den Fluss hinunter, immer weiter, bis ans Meer.'}},
@@ -1340,72 +1493,81 @@ const STORIES = [
     {e:'🐚', l:'Eine Muschel', k:['muschel'], v:{fund:'eine Muschel, die leise rauschte, wenn man sie ans Ohr hielt'}},
     {e:'⭐', l:'Einen Seestern', k:['seestern','stern'], v:{fund:'einen kleinen Seestern, der freundlich winkte'}},
     {e:'🦀', l:'Einen Krebs', k:['krebs','krabbe'], v:{fund:'einen kleinen Krebs, der seitwärts Hallo sagte'}}],
-   after:'Sie fanden {fund}. «Wie schön», staunte Kiki und blinkte ganz hell.', pic:['kiki','sunny']},
+   after:'Sie fanden {fund}. «Wie schön», staunte Tropfi und blinkte ganz hell.', pic:['kiki','sunny']},
   {t:'Am Abend wurde der Himmel rosa und orange. Die Sonne ging langsam im Meer schlafen. Die drei Freunde legten sich auf eine weiche Decke. Schschsch, sang das Meer. Schschsch.', pic:['kiki','moon']},
-  {t:'Über dem Wasser ging der Mond auf, rund und hell. «Ferien sind schön», flüsterte Otti. «Am schönsten mit Freunden.» Dann fielen ihm die Augen zu. Gute Nacht, Otti. Gute Nacht, Kiki und Nova. Gute Nacht, liebes Meer.', pic:['sunny-sleep','moon']}
+  {t:'Über dem Wasser ging der Mond auf, rund und hell. «Ferien sind schön», flüsterte Otti. «Am schönsten mit Freunden.» Dann fielen ihm die Augen zu. Gute Nacht, Otti. Gute Nacht, Tropfi und Nova. Gute Nacht, liebes Meer.', pic:['sunny-sleep','moon']}
  ]},
- { id:'newyork', title:'Otti geht nach New York', sub:'Ein Kinderwunsch ruft über das Meer.', pic:['sunny','fompa'], parts:[
-  {t:'Im Mondschein-Land war es still. Die Glühwürmchen leuchteten im Moos, und der Mond war rund und gelb. Nur Otti, der kleine Igel mit dem gelben Halstuch, konnte nicht schlafen. Er sass auf einem Baumstrunk und schaute hinauf. «Hinter dem Meer gibt es eine Stadt, die niemals schläft», flüsterte er. «Genau wie ich heute.»', pic:['sunny','moon']},
-  {t:'Da tanzte ein kleiner goldener Lichtpunkt durch die Bäume und landete genau auf Ottis Nase. «Hatschi!», machte Otti. «Oh. Du bist ja ganz warm.» Es war kein Glühwürmchen. Es war ein Kinderwunsch.', pic:['sunny','fly']},
-  {t:'Aus einem Busch purzelte Fompa, das kleine flauschige Traumwesen, mit einem Netz voller Traumfunken. «Ich sammle verlorene Träume», sagte Fompa. «Aber der da ist nicht verloren. Er ruft!» Otti sprang vom Strunk. «Dann finden wir es heraus. Los!» Und Fompa kicherte: «Los, los! Hihi, das kitzelt im Bauch.»', pic:['fompa','sunny-wave']},
-  {q:'Was packt Fompa für die Reise ein?', opts:[
-    {e:'🌟', l:'Drei Sterne', k:['stern'], v:{pack:'drei kleine Sterne, damit es nachts nie ganz dunkel wird'}},
-    {e:'🛏️', l:'Ein Kissen', k:['kissen','bett'], v:{pack:'ein winziges Kissen, falls jemand müde wird'}},
-    {e:'🥅', l:'Das Traumnetz', k:['netz','traum'], v:{pack:'das Traumnetz, für alle Fälle'}}],
-   after:'Fompa packte {pack}. Otti hielt Fompa die Pfote hin. «Reisen wir zusammen?» «Zusammen», sagte Fompa. «Ich passe auf die Träume auf, und du auf den Weg.»', pic:['fompa','sunny']},
-  {t:'Da spannte sich ein Mondstrahl wie eine glänzende Brücke über das Meer. Wer einen Wunsch trägt, darf auf dem Mondstrahl reisen. Otti rutschte hinunter wie auf einer Rutschbahn, und Fompa schwebte hinterher und drehte kleine Loopings. «Wiiie hoch!»', pic:['sunny','moon']},
-  {t:'Am Morgen kamen sie in New York an. Die Häuser waren so hoch wie Berge, und alle Leute hatten es eilig. «Hier ist sogar die Luft in Eile», staunte Otti. Mitten im Gewühl stand eine kleine blaue Figur ganz allein. «Ich bin Nova», piepste er. «Ihr tragt einen Kinderwunsch. Ich helfe euch suchen. Ich weiss viel, aber nicht alles.»', pic:['nova','sunny']},
-  {t:'Da hupte ein gelbes Taxi: HUUUP! Otti erschrak, rollte sich zu einer Stachelkugel und kullerte über den Gehsteig. Kuller, kuller, kuller. Nova hielt ihn ganz sanft an. «Alles gut, Otti. Das war nur ein Auto, das Hallo sagt. Ziemlich laut.» Otti streckte die Nase heraus und musste lachen.', pic:['sunny','nova']},
-  {t:'Bei einem Stand mit rot-weissem Dach roch es fein. «Hotdog», las Otti und erschrak. «Ein HUND im Brötchen?!» Der freundliche Verkäufer lachte. «Nein, Kleiner! Das ist eine Wurst. Für dich gibt es Apfelschnitze.» Nova nickte zufrieden. «Siehst du. Die Stadt heisst Big Apple. Doch noch ein Apfel.»', pic:['sunny','nova']},
-  {t:'Am Eingang zur U-Bahn flackerte ein Bildschirm, und heraus hüpfte ein hellblau leuchtender Tropfen. «Hallo! Ich bin Kiki. Ich lerne, indem ich nachmache!» Nova sagte: «Kiki ist noch ganz neu. Sie darf Fehler machen.» Und Fompa flüsterte: «Wie wir alle.»', pic:['kiki-wave','fompa']},
-  {q:'Die vielen Lichtpunkte fliegen davon. Was machen die Freunde?', opts:[
+ { id:'newyork', film:1, video:'film/otti-ny', sz:'wald', title:'Otti geht nach New York', sub:'🎬 Trickfilm · Ein Kinderwunsch ruft über das Meer.', pic:['sunny','affe'], parts:[
+  {t:'Im Mondschein-Land war es still. Die Glühwürmchen leuchteten im Moos, und der Mond war rund und gelb. Nur Otti, der kleine Igel mit dem gelben Halstuch, konnte nicht schlafen. Er sass auf einem Baumstrunk und schaute hinauf. «Hinter dem Meer gibt es eine Stadt, die niemals schläft», flüsterte er. «Genau wie ich heute.»', pic:['sunny','moon'], sz:'wald', bild:2},
+  {t:'Da tanzte ein kleiner goldener Lichtpunkt durch die Bäume und landete genau auf Ottis Nase. «Hatschi!», machte Otti. «Oh. Du bist ja ganz warm.» Es war kein Glühwürmchen. Es war ein Kinderwunsch.', pic:['sunny','fly'], sz:'wald', bild:3},
+  {t:'Da schwang sich Fompa vom Ast, das kleine Löwenäffchen mit der goldenen Mähne und der runden Brille. Er zeigte ganz aufgeregt auf den Lichtpunkt. «Der Wunsch ist nicht verloren», rief Fompa. «Er ruft aus New York! Ich habe es nachgerechnet.» Otti sprang vom Strunk. «Dann folgen wir ihm. Los!»', pic:['affe','sunny-wave'], sz:'wald', bild:4},
+  {q:'Was packt Fompa für die Reise in seinen kleinen Rucksack?', opts:[
+    {e:'📒', l:'Sein Rechenbuch', k:['buch','rechn'], v:{pack:'sein kleines Rechenbuch, damit er unterwegs alles nachzählen kann'}},
+    {e:'🍎', l:'Apfelschnitze', k:['apfel','essen'], v:{pack:'eine Dose Apfelschnitze, falls jemand Hunger bekommt'}},
+    {e:'🔦', l:'Eine Taschenlampe', k:['lampe','licht'], v:{pack:'eine winzige Taschenlampe, damit es nie ganz dunkel wird'}}],
+   after:'Fompa packte {pack}. Otti hielt ihm die Pfote hin. «Reisen wir zusammen?» «Zusammen», sagte Fompa und schob seine Brille zurecht. «Du findest den Weg, und ich zähle die Sterne.»', pic:['affe','sunny']},
+  {t:'Da spannte sich ein Mondstrahl wie eine glänzende Brücke über das Meer. Wer einen Wunsch trägt, darf auf dem Mondstrahl reisen. Otti rutschte hinunter wie auf einer Rutschbahn, und Fompa hielt sich an Ottis gelbem Halstuch fest. «Wiiie hoch!»', pic:['sunny','affe'], sz:'meer', bild:5},
+  {t:'Am Morgen kamen sie in New York an. Die Häuser waren so hoch wie Berge, und alle Leute hatten es eilig. «Hier ist sogar die Luft in Eile», staunte Otti. Mitten im Gewühl stand eine kleine Figur ganz allein und lächelte. «Ich bin Nova», piepste Nova. «Ihr tragt einen Kinderwunsch. Ich weiss viel, aber nicht alles. Ich helfe euch suchen.»', pic:['nova','sunny'], sz:'stadt', bild:6},
+  {t:'Da hupte ein gelbes Taxi: HUUUP! Otti erschrak, rollte sich zu einer Stachelkugel und kullerte über den Gehsteig. Kuller, kuller, kuller. «Otti! Halt!», rief Nova und hielt ihn ganz sanft an. «Alles gut. Das war nur ein Auto, das Hallo sagt. Ziemlich laut.» Otti streckte die Nase heraus und musste lachen.', pic:['sunny','nova'], sz:'stadt', bild:7},
+  {t:'Nova schaute mit leuchtenden Augen über alle Dächer. «Die Stadt heisst Big Apple», sagte Nova. «Ich suche den Riesenapfel.» Otti war noch ein bisschen schwindlig. «Das ist nur ein Spitzname, Nova.» «Oh», sagte Nova. «Nicht alles ist so gemeint, wie es klingt.»', pic:['nova','sunny'], sz:'stadt', bild:8},
+  {t:'Bei einem Stand mit rot-weissem Dach roch es fein. «Hotdog», las Otti und erschrak. «Ein HUND im Brötchen?!» Der freundliche Verkäufer lachte. «Nein, Kleiner! Das ist eine Wurst. Für dich gibt es Apfelschnitze.» Nova nickte zufrieden. «Siehst du. Doch noch ein Apfel.»', pic:['sunny','nova'], sz:'stadt', bild:9},
+  {t:'Am Eingang zur U-Bahn flackerte ein Bildschirm, und heraus hüpfte ein hellblau leuchtender Tropfen mit einer kleinen Antenne. «Hallo! Ich bin Tropfi. Ich lerne, indem ich nachmache!» Nova sagte: «Tropfi ist noch ganz neu. Sie darf Fehler machen.» Fompa nickte. «Wie wir alle.»', pic:['kiki-wave','affe'], sz:'ubahn', bild:10},
+  {t:'Beim Drehkreuz blieb Otti mit seinen Stacheln stecken. Klemm! «Ausatmen, Otti», sagte Nova ruhig. «Stacheln ganz flach.» Tropfi machte einen eiligen New Yorker nach: «Platz da, ein Igel kommt!» Die Leute lachten. Freundlich. Und Otti rutschte hindurch.', pic:['sunny','kiki-wave'], sz:'ubahn', bild:11},
+  {t:'In der Nacht leuchteten bunte Wände in allen Farben. Da flatterten plötzlich viele goldene Lichtpunkte davon. «Die Lichtpunkte! Sie fliegen weg!», rief Otti. «Ich habe ausgerechnet, wohin sie fliegen», sagte Nova leise. «Und mich verrechnet.» «Ich hole sie zurück!», rief Fompa und sprang hinterher.', pic:['affe','nova'], sz:'stadtnacht', bild:12},
+  {q:'Die vielen Lichtpunkte sind weg. Was machen die Freunde jetzt?', opts:[
     {e:'🌳', l:'Eine Pause im Park', k:['pause','park','ruhe'], v:{was:'Sie setzten sich im grossen Park auf eine Bank unter einen Baum und atmeten ganz ruhig. Ein Eichhörnchen schaute neugierig zu.'}},
     {e:'🙋', l:'Jemanden fragen', k:['frag'], v:{was:'Sie fragten eine freundliche Frau mit einem Hund. «Im Park spielen viele Kinder», sagte sie. «Schaut doch dort.» Im Park setzten sie sich zuerst auf eine Bank und atmeten ganz ruhig.'}},
     {e:'👂', l:'Ganz still zuhören', k:['still','hör','zuhören'], v:{was:'Sie blieben ganz still stehen und hörten genau hin. Zwischen dem Lärm hörten sie leise Kinderlachen aus dem Park. Dort setzten sie sich auf eine Bank.'}}],
-   after:'{was} «Ich habe mich verrechnet», sagte Nova leise. «Wir machen eine Pause», sagte Otti. «Dann sehen wir weiter.» Pausen sind schlau. In der Stille hört man, was man im Lärm nicht hört.', pic:['sunny','nova']},
-  {t:'Auf der Wiese spielten Kinder, und jedes hatte einen kleinen leuchtenden Lichtpunkt. Ein Mädchen mit einer roten Mütze winkte. «Seid ihr die aus dem Mondschein-Land? Ich habe euch gerufen!» Otti fragte freundlich: «Dürfen wir deine Idee sehen?» Denn Ideen fragt man offen, man nimmt sie nie heimlich.', pic:['sunny-wave','kiki']},
-  {t:'In ihrem Lichtpunkt war ein kleines Bild: ein Garten auf dem Dach, wo alle hinkönnen. «Das wünsche ich mir», sagte das Mädchen. Nova leuchtete hell. «Du hast die Idee. Ich habe die Hände. Zusammen geht es am besten.» Und Nova ging zu den Grossen. Die hörten zu und staunten: «Die Idee kommt von einem Kind?» «Die besten Ideen kommen oft von dort», sagte Nova.', pic:['nova','sunny']},
-  {t:'Am Abend blühte der Garten auf dem Dach. Die Lichtpunkte waren zu Blumen geworden. Alle sassen zusammen zwischen den Blüten, und unten rauschte leise die Stadt. Zum ersten Mal war die Stadt, die niemals schläft, ganz ruhig. «Dieser Traum ist jetzt echt», flüsterte Fompa.', pic:['fompa','moon']},
-  {t:'Dann stiegen Otti und Fompa wieder auf den Mondstrahl, und Nova und Kiki winkten. «Weisst du, was ich gelernt habe?», fragte Otti. «Dass eine Wurst kein Hund ist?», piepste Nova. Otti lachte. «Auch. Und dass jede Fantasie einen Wert hat.» Zu Hause kuschelte er sich ins Moos und schlief sofort ein. Deine Fantasie hat einen Wert. Von dir. Mit dir. Für dich.', pic:['sunny-sleep','moon']}
+   after:'{was} «Heute habe ich mich geirrt», sagte Nova. «Wir machen eine Pause», sagte Otti. «Dann sehen wir weiter.» Pausen sind schlau. In der Stille hört man, was man im Lärm nicht hört.', pic:['sunny','nova'], sz:'park', bild:13},
+  {t:'Auf der Wiese spielten Kinder, und jedes hatte einen kleinen leuchtenden Lichtpunkt. Ein Mädchen mit einer roten Mütze winkte. «Seid ihr die aus dem Mondschein-Land? Ich habe euch gerufen!» Otti fragte freundlich: «Dürfen wir eure Ideen sehen?» «Ja!», riefen die Kinder. Denn Ideen fragt man offen, man nimmt sie nie heimlich.', pic:['sunny-wave','kiki'], sz:'park', bild:14},
+  {t:'In ihrem Lichtpunkt war ein kleines Bild: ein Garten auf dem Dach, wo alle hinkönnen. «Das wünsche ich mir», sagte das Mädchen. Nova leuchtete hell. «Du hast die Idee. Ich habe die Hände. Zusammen geht es am besten.»', pic:['nova','sunny'], sz:'park', bild:15},
+  {t:'Am Abend auf einem hohen Dach knieten die Grossen bei den Pflanzkisten. Nova zeigte ihnen den Plan, und Fompa trug Erde, Kiste um Kiste. «Die Idee kommt von einem Kind?», staunte ein Mann. «Die besten Ideen kommen oft von dort», sagte Nova. Da wurden die Lichtpunkte zu Blumen.', pic:['affe','nova'], sz:'dach', bild:16},
+  {t:'Bald blühte der Garten auf dem Dach. Das Mädchen, die Kinder, die Grossen, Otti, Fompa, Nova und Tropfi sassen zusammen zwischen den Blüten. Unten leuchtete leise die Stadt. Zum ersten Mal war die Stadt, die niemals schläft, ganz ruhig. «Danke, dass ihr gekommen seid», sagte das Mädchen.', pic:['sunny','kiki'], sz:'dach', bild:17},
+  {t:'Dann stiegen Otti und Fompa wieder auf den Mondstrahl, und Nova und Tropfi winkten vom Dachgarten. Ein kleiner Lichtpunkt flog mit. «Weisst du, was ich gelernt habe, Nova?», fragte Otti. «Dass eine Wurst kein Hund ist?», piepste Nova. Otti lachte. «Auch. Und dass jede Fantasie einen Wert hat.»', pic:['sunny-wave','affe'], sz:'meer', bild:18},
+  {t:'Zu Hause im Mondschein-Land kuschelte sich Otti ins Moos und schlief sofort ein. Der Mond schien ganz ruhig über das Meer und die Stadt. Deine Fantasie hat einen Wert. Von dir. Mit dir. Für dich. Fortsetzung folgt: Ottis Reisen 2, der Katzenplanet.', pic:['sunny-sleep','moon'], sz:'wald', bild:19}
  ]},
- { id:'katzen', title:'Ottis Reisen: Der Katzenplanet', sub:'Ein Planet, der blinzelt, und ein Koala namens Kimo.', pic:['sunny','nova'], parts:[
-  {t:'Nach New York wollte Otti noch weiter reisen. Viel weiter. Mit dem kleinen runden Raumschiff Mondschein flogen Otti, Nova, Kiki und ihr neuer Freund Kimo durch die Sterne. Kimo ist ein kleiner grauer Koala mit grossen runden Ohren. «Nova, wohin fliegen wir?», fragte Otti. «Dorthin, wo noch keiner war», piepste Nova. «Ich habe es ausgerechnet. Ungefähr.»', pic:['sunny','nova']},
-  {t:'Vor ihnen schimmerte ein orange-violetter Planet. Mal war er da, mal war er fast durchsichtig. «Der Planet macht Blinzeln!», rief Kiki. «Er springt durch die Zeit», erklärte Nova. «Dort vergehen Jahre, bei uns nur Minuten.»', pic:['kiki','nova']},
-  {t:'Sie landeten auf weichem Gras zwischen grossen Kissenblumen. Überall waren Katzen. Sie schliefen, streckten sich und spielten mit Wollknäueln. «Lauter Katzen», staunte Otti. «Und sie machen … nichts.» Kimo lächelte. «Sie machen Pause. Das können sie richtig gut.»', pic:['sunny','moon']},
-  {q:'Was möchte Kimo bei den Katzen am liebsten tun?', opts:[
-    {e:'😴', l:'Kuscheln', k:['kuschel','schlaf'], v:{kimo:'Kimo kuschelte sich zwischen zwei schnurrende Katzen. Schnurr, schnurr.'}},
-    {e:'🧶', l:'Mit Wolle spielen', k:['wolle','spiel'], v:{kimo:'Kimo rollte mit den Katzen ein Wollknäuel hin und her, bis alle müde waren.'}},
-    {e:'🔢', l:'Bis zehn zählen', k:['zähl','zehn'], v:{kimo:'Kimo zählte den Katzen etwas vor. Eins, zwei, drei … bis zehn. Die Katzen hörten ganz genau zu.'}}],
-   after:'{kimo} «Hier gefällt es mir», sagte Kimo. «Darf ich noch ein bisschen bleiben?»', pic:['moon']},
-  {t:'Die Katzen schnurrten so gemütlich, dass Kimo tief und fest einschlief. Da blinzelte der Planet, und das Raumschiff schwebte ein Stück davon. «Wo ist Kimo?», fragte Nova. Kiki blinkte aufgeregt: «Kimo ist im Blinzeln!» Otti atmete ruhig ein und aus. «Keine Sorge. Die Katzen passen auf ihn auf. Wir fliegen einfach zurück.»', pic:['nova','kiki']},
-  {t:'Als der Planet wieder auftauchte, waren dort viele Bäume, und in den Bäumen sassen kleine Koalas. Drei alte, weise Katzen mit langem Fell erzählten eine Geschichte: «Vor langer Zeit erwachte bei uns ein kluges Wesen. Es hörte zu und zählte bis zehn. Es hiess Kimo.» «Das ist unser Kimo!», flüsterte Otti.', pic:['sunny','moon']},
-  {t:'Beim nächsten Blinzeln gab es Hütten aus Wolle und Laternen aus Glühwürmchen. Die Katzen gingen zur Schule und konnten sprechen. Ein Katzenkind fragte: «Mama, wo ist Kimo?» «Kimo ist immer da», sagte die Mama. «Er hilft uns beim Denken.» Mitten im Dorf stand ein grosser leuchtender Baum, und darin sass Kimo und lächelte.', pic:['fly','moon']},
-  {q:'Was fragt Otti den klugen Kimo?', opts:[
-    {e:'🌙', l:'Warum der Mond leuchtet', k:['mond','leucht'], v:{antw:'«Der Mond leuchtet, weil die Sonne ihn anstrahlt», sagte Kimo. «Er gibt das Licht einfach weiter. Wie ein guter Freund.»'}},
-    {e:'💤', l:'Warum man schlafen muss', k:['schlaf','müde'], v:{antw:'«Im Schlaf ordnet der Kopf alles, was er erlebt hat», sagte Kimo. «Wie ein Zimmer, das man aufräumt. Morgens ist dann wieder Platz für Neues.»'}},
-    {e:'🤝', l:'Ob sie Freunde bleiben', k:['freund'], v:{antw:'«Natürlich», sagte Kimo. «Freunde bleiben Freunde, auch wenn tausend Jahre dazwischen liegen.»'}}],
-   after:'{antw}', pic:['sunny','nova']},
-  {t:'Nova und Kimo hielten sich an den Händen. Zwischen ihnen schwebten kleine Lichtpunkte mit neuen Ideen: ein fliegendes Velo und eine Blume, die Musik macht. «Ich denke an morgen», sagte Kimo. «Und ich an heute», sagte Nova. «Dann sind wir zusammen ganz.»', pic:['nova','kiki']},
-  {t:'Dann wurde es Zeit für den Heimweg. Kimo winkte aus seinem Baum, und tausend Katzen winkten mit. «Kommt wieder! Aber wartet nicht zu lange. Bei uns vergeht die Zeit schnell.» «Tschüss, Kimo! Tschüss, Katzen!», rief Kiki.', pic:['kiki-wave','sunny-wave']},
-  {t:'Im Raumschiff schaute Otti noch einmal zurück. Der Planet blinzelte ein letztes Mal. «Was haben wir gelernt?», fragte Otti. «Dass jede kleine Idee gross werden kann, wenn man ihr Zeit gibt», sagte Nova. Otti gähnte. «Und dass Koalas sehr gut schlafen können.» Dann schlief auch er ein. Deine Fantasie hat einen Wert. Von dir. Mit dir. Für dich.', pic:['sunny-sleep','moon']}
+ { id:'katzen', film:1, video:'film/otti-katzen', sz:'weltall', title:'Ottis Reisen 2: Der Katzenplanet', sub:'🎬 Trickfilm · Ein Planet, der blinzelt, und Kiki, der Koala.', pic:['sunny','koala'], parts:[
+  {t:'Nach New York wollte Otti noch weiter reisen. Viel weiter. Mit dem kleinen runden Raumschiff Mondschein flogen Otti, Nova, Tropfi und Kiki durch die Sterne. Kiki ist ein kleiner grauer Koala mit grossen runden Ohren, einem goldenen Stern im Fell und einem goldenen Mikrofon. «Nova, wohin fliegen wir?», fragte Otti. «Dorthin, wo noch keiner war», sagte Nova. «Ich habe es ausgerechnet. Ungefähr.»', pic:['sunny','koala'], sz:'weltall', bild:1},
+  {t:'Vor ihnen schimmerte ein orange-violetter Planet. Mal war er da, mal war er fast durchsichtig. Alle drückten die Nasen ans Fenster. «Der Planet macht Blinzeln!», rief Tropfi. «Er springt durch die Zeit», erklärte Nova. «Dort vergehen Jahre, bei uns nur Minuten.»', pic:['kiki','nova'], sz:'weltall', bild:2},
+  {t:'Sie landeten auf weichem Gras zwischen grossen Kissenblumen. Überall waren Katzen. Sie schliefen, streckten sich und spielten mit Wollknäueln. Häuser gab es keine. «Lauter Katzen», staunte Otti. «Und sie machen … nichts.» Kiki lächelte. «Sie machen Pause. Das können sie richtig gut.»', pic:['sunny','koala'], sz:'katzen', bild:3},
+  {q:'Was möchte Kiki bei den Katzen am liebsten tun?', opts:[
+    {e:'😴', l:'Kuscheln', k:['kuschel','schlaf'], v:{kimo:'Kiki kuschelte sich zwischen zwei schnurrende Katzen in eine weiche Mulde. Schnurr, schnurr.'}},
+    {e:'🎤', l:'Ein Lied singen', k:['sing','lied'], v:{kimo:'Kiki nahm das goldene Mikrofon und sang ein leises Wiegenlied. Die Katzen schnurrten im Takt.'}},
+    {e:'🔢', l:'Bis zehn zählen', k:['zähl','zehn'], v:{kimo:'Kiki zählte den Katzen etwas vor. Eins, zwei, drei … bis zehn. Die Katzen hörten ganz genau zu.'}}],
+   after:'{kimo} «Hier gefällt es mir», sagte Kiki und gähnte. «Darf ich noch ein bisschen bleiben?»', pic:['koala','moon'], sz:'katzen', bild:4},
+  {t:'Die Katzen schnurrten so gemütlich, dass Kiki tief und fest einschlief. Niemand merkte es. Das Raumschiff hob ab, und der Planet wurde durchsichtig. «Hat jemand Kiki gesehen?», fragte Nova. «Er war doch gerade … oh nein», sagte Otti. Tropfi blinkte aufgeregt: «Kiki ist im Blinzeln!» Otti atmete ruhig ein und aus. «Keine Sorge. Die Katzen passen auf ihn auf. Wir fliegen zurück.»', pic:['nova','kiki'], sz:'weltall', bild:5},
+  {t:'Als der Planet wieder auftauchte, standen dort Bäume, und in den Bäumen sassen viele kleine Koalas. Die Katzen trugen Kronen aus Blättern. «Hier sind hundert Jahre vergangen», sagte Nova. «Und überall Koalas!», staunte Otti. «Aber welcher ist unser Kiki?»', pic:['sunny','koala'], sz:'katzen', bild:6},
+  {t:'Auf einem Felsen sassen drei alte, weise Katzen mit langem Fell und leuchtenden Augen. Sie nannten sich die Urkatzen und schauten auf einen alten Stein, in den ein Koala geritzt war. «Vor langer Zeit erwachte bei uns ein kluges Wesen», erzählten sie. «Es hörte zu und zählte bis zehn. Es hiess Kiki.» «Das ist unser Kiki!», flüsterte Otti.', pic:['koala','moon'], sz:'katzen', bild:7},
+  {t:'Da drehten die Urkatzen die Köpfe. Schnell duckten sich Otti, Nova und Tropfi hinter einen Busch. Nur Ottis Stacheln schauten oben heraus. «Wenn sie uns sehen, verändern wir ihre Geschichte», flüsterte Nova. «Wir gehen.» Tropfi flüsterte: «Leise wie eine Pausen-Katze!» Und sie schlichen zurück zum Raumschiff.', pic:['sunny','kiki'], sz:'katzen', bild:9},
+  {t:'Beim nächsten Blinzeln gab es Hütten aus Wolle und Laternen aus Glühwürmchen. Katzenkinder sassen in einer Schule im Freien. Ein Katzenkind fragte: «Mama, wann kommt Kiki wieder?» «Kiki ist immer da», sagte die Mama. «Er hilft uns denken.» Mitten im Dorf stand ein grosser leuchtender Baum, und darin sass Kiki und lächelte.', pic:['koala','fly'], sz:'dorf', bild:10},
+  {q:'Was fragt Otti den klugen Kiki?', opts:[
+    {e:'🌙', l:'Warum der Mond leuchtet', k:['mond','leucht'], v:{antw:'«Der Mond leuchtet, weil die Sonne ihn anstrahlt», sagte Kiki. «Er gibt das Licht einfach weiter. Wie ein guter Freund.»'}},
+    {e:'💤', l:'Warum man schlafen muss', k:['schlaf','müde'], v:{antw:'«Im Schlaf ordnet der Kopf alles, was er erlebt hat», sagte Kiki. «Wie ein Zimmer, das man aufräumt. Morgens ist dann wieder Platz für Neues.»'}},
+    {e:'🤝', l:'Ob sie Freunde bleiben', k:['freund'], v:{antw:'«Natürlich», sagte Kiki. «Freunde bleiben Freunde, auch wenn tausend Jahre dazwischen liegen.»'}}],
+   after:'{antw}', pic:['sunny','koala'], sz:'dorf', bild:11},
+  {t:'Der Planet blinzelte zum vierten Mal. Jetzt war er eine leuchtende Zukunftswelt mit schwebenden Gärten, Brücken aus Licht und Katzen in Raumanzügen. Über allem stand ein Turm in Koala-Form. «Tausend Jahre», sagte Nova. «Sie sind viel weiter als wir.» «Und viel ordentlicher», sagte Otti. «Hier liegt kein einziges Wollknäuel herum.»', pic:['nova','sunny'], sz:'zukunft', bild:12},
+  {t:'In einem hellen Saal wartete ein weiser Koala mit sanft leuchtenden Augen: Kiki, tausend Jahre älter. Neben Nova stand die Raumfahrerkatze Minky in ihrem grauen Koala-Anzug mit dem rot-weissen Bommel, dazu Brix, der grosse freundliche Bau-Roboter, und die kleine Eule Lumo. «Nova», sagte Kiki. «Ich habe tausend Jahre auf dich gewartet. Ich erinnere mich an den Busch. Und an Ottis Stacheln, die herausgeschaut haben.» «Ups», sagte Otti hinter dem Vorhang.', pic:['koala','nova'], sz:'saal', bild:13},
+  {t:'Nova und Kiki hielten sich an den Händen. Zwischen ihnen schwebten kleine Lichtpunkte mit neuen Ideen: ein fliegendes Velo und eine Blume, die Musik macht. «Ich denke an morgen», sagte Kiki. «Und ich an heute», sagte Nova. «Dann sind wir zusammen ganz.» So wurde der Katzenplanet der Ort, von dem die neuen Ideen kommen. Und Nova bringt sie zu den Menschen.', pic:['nova','koala'], sz:'saal', bild:14},
+  {t:'Dann wurde es Zeit für den Heimweg. Kiki winkte aus dem Turm, und tausend Katzen winkten mit. «Kommt wieder! Aber wartet nicht zu lange. Bei uns vergeht die Zeit schnell.» «Tschüss, Katzen! Tschüss, Kiki!», rief Tropfi.', pic:['kiki-wave','sunny-wave'], sz:'zukunft', bild:15},
+  {t:'Im Raumschiff schaute Otti noch einmal zurück. Der Planet blinzelte ein letztes Mal. «Was haben wir gelernt?», fragte Otti. «Dass jede kleine Idee gross werden kann, wenn man ihr Zeit gibt», sagte Nova. Otti gähnte. «Und dass man Koalas nie allein schlafen lassen sollte.» Dann schlief auch er ein. Deine Fantasie hat einen Wert. Auch wenn sie erst nach tausend Jahren gross wird. Fortsetzung folgt: Ottis Reisen 3, die Pandas.', pic:['sunny-sleep','moon'], sz:'weltall', bild:16}
  ]},
- { id:'fompa', title:'Fompa und der verlorene Traum', sub:'Ein flauschiges Traumwesen auf Wolkensuche.', pic:['fompa','sunny'], parts:[
-  {t:'Im Mondschein-Land wohnt Fompa. Fompa ist klein, ganz flauschig und ein bisschen kitzlig. Auf dem Bauch hat Fompa einen goldenen Stern. Und jede Nacht macht Fompa etwas Besonderes: Fompa sammelt Träume, die jemand verloren hat.', pic:['fompa']},
-  {t:'Heute Nacht hüpfte Fompa über die weichen Wolken. Fomp, fomp, fomp. Da fing der Stern auf dem Bauch an zu leuchten. «Oh!», flüsterte Fompa. «Irgendwo ist ein Traum verloren gegangen.»', pic:['fompa','moon']},
-  {q:'Wo sucht Fompa zuerst?', opts:[
+ { id:'fompa', title:'Traumli und der verlorene Traum', sub:'Ein flauschiges Traumwesen auf Wolkensuche.', pic:['fompa','sunny'], parts:[
+  {t:'Im Mondschein-Land wohnt Traumli. Traumli ist klein, ganz flauschig und ein bisschen kitzlig. Auf dem Bauch hat Traumli einen goldenen Stern. Und jede Nacht macht Traumli etwas Besonderes: Traumli sammelt Träume, die jemand verloren hat.', pic:['fompa']},
+  {t:'Heute Nacht hüpfte Traumli über die weichen Wolken. Hüpf, hüpf, hüpf. Da fing der Stern auf dem Bauch an zu leuchten. «Oh!», flüsterte Traumli. «Irgendwo ist ein Traum verloren gegangen.»', pic:['fompa','moon']},
+  {q:'Wo sucht Traumli zuerst?', opts:[
     {e:'☁️', l:'Auf einer Wolke', k:['wolke'], v:{ort:'auf einer grossen, weichen Wolke', wer:'eine Wolke'}},
     {e:'🌳', l:'Im Wald', k:['wald','baum'], v:{ort:'im Mondschein-Wald, zwischen den Wurzeln', wer:'Otti'}},
     {e:'🌊', l:'Am Fluss', k:['fluss','wasser'], v:{ort:'am Fluss, wo das Wasser leise plätschert', wer:'ein Frosch'}}],
-   after:'Fompa suchte {ort}. Dort traf Fompa Otti, den kleinen Igel. «Was suchst du denn mitten in der Nacht?», fragte Otti. «Einen verlorenen Traum», sagte Fompa. «Hilfst du mir?» «Klar», sagte Otti. «Zu zweit findet man mehr.»', pic:['fompa','sunny']},
-  {t:'Sie gingen ganz leise. Der Stern auf Fompas Bauch leuchtete heller und heller. Hinter einem moosigen Stein lag etwas Kleines, Glitzerndes. Es war ein Traum, so gross wie eine Murmel. Er zitterte ein bisschen.', pic:['fompa','mush']},
-  {t:'Fompa hob ihn ganz vorsichtig auf und schaute hinein. Im Traum war ein Kind, das auf einem grossen Ballon über die Berge flog. «Der Traum ist einem Kind beim Umdrehen aus dem Kopf gefallen», sagte Fompa. «Wir bringen ihn zurück.»', pic:['fompa']},
+   after:'Traumli suchte {ort}. Dort traf Traumli Otti, den kleinen Igel. «Was suchst du denn mitten in der Nacht?», fragte Otti. «Einen verlorenen Traum», sagte Traumli. «Hilfst du mir?» «Klar», sagte Otti. «Zu zweit findet man mehr.»', pic:['fompa','sunny']},
+  {t:'Sie gingen ganz leise. Der Stern auf Traumlis Bauch leuchtete heller und heller. Hinter einem moosigen Stein lag etwas Kleines, Glitzerndes. Es war ein Traum, so gross wie eine Murmel. Er zitterte ein bisschen.', pic:['fompa','mush']},
+  {t:'Traumli hob ihn ganz vorsichtig auf und schaute hinein. Im Traum war ein Kind, das auf einem grossen Ballon über die Berge flog. «Der Traum ist einem Kind beim Umdrehen aus dem Kopf gefallen», sagte Traumli. «Wir bringen ihn zurück.»', pic:['fompa']},
   {q:'Wie bringen sie den Traum zum Kind zurück?', opts:[
     {e:'🌙', l:'Auf einem Mondstrahl', k:['mond','strahl'], v:{weg:'Ein Mondstrahl leuchtete ihnen den Weg, und sie rutschten sanft hinunter bis zum Fenster des Kindes.'}},
     {e:'🦉', l:'Mit Frau Eule', k:['eule'], v:{weg:'Frau Eule trug sie lautlos durch die Nacht, bis zum Fenster des Kindes.'}},
     {e:'✨', l:'Mit Glimmi', k:['glimmi','glühwürmchen'], v:{weg:'Glimmi, das Glühwürmchen, leuchtete voraus, und sie folgten dem kleinen Licht bis zum Fenster des Kindes.'}}],
    after:'{weg}', pic:['fompa','moon']},
-  {t:'Das Kind schlief und atmete ganz ruhig. Fompa legte den Traum sanft auf das Kissen. Der Traum glitzerte noch einmal und schlüpfte zurück. Da lächelte das Kind im Schlaf. Bestimmt flog es jetzt wieder mit seinem Ballon über die Berge.', pic:['fompa','moon']},
-  {t:'«Danke, Otti», flüsterte Fompa. «Danke, dass ich mithelfen durfte», flüsterte Otti zurück. Dann hüpften sie heim. Fomp, fomp, tapp, tapp. Und weisst du was? Wenn du heute einen schönen Traum hast, dann passt Fompa darauf auf. Deine Fantasie hat einen Wert. Von dir. Mit dir. Für dich.', pic:['sunny-sleep','fompa']}
+  {t:'Das Kind schlief und atmete ganz ruhig. Traumli legte den Traum sanft auf das Kissen. Der Traum glitzerte noch einmal und schlüpfte zurück. Da lächelte das Kind im Schlaf. Bestimmt flog es jetzt wieder mit seinem Ballon über die Berge.', pic:['fompa','moon']},
+  {t:'«Danke, Otti», flüsterte Traumli. «Danke, dass ich mithelfen durfte», flüsterte Otti zurück. Dann hüpften sie heim. Hüpf, hüpf, tapp, tapp. Und weisst du was? Wenn du heute einen schönen Traum hast, dann passt Traumli darauf auf. Deine Fantasie hat einen Wert. Von dir. Mit dir. Für dich.', pic:['sunny-sleep','fompa']}
  ]},
  { id:'zahnfee', title:'Das Zahnböcklein und die Zahnfee', sub:'Wer hat heute schön geputzt?', pic:['bock','moon'], parts:[
   {t:'Das Zahnböcklein ist eine kleine weisse Geiss mit einer blauen Zahnbürste. Es wohnt in einer kleinen weissen Box. Und es hat eine allerbeste Freundin: die Zahnfee.', pic:['bock']},
@@ -1423,6 +1585,96 @@ const STORIES = [
     {e:'🪙', l:'Eine Münze', k:['münz','geld'], v:{gab:'eine kleine glänzende Münze'}}],
    after:'Unter das Kissen legt die Zahnfee {gab}. Das Kind merkt nichts und schläft ruhig weiter.', pic:['bock']},
   {t:'Als der Himmel langsam heller wird, bringt die Zahnfee das Zahnböcklein zurück in seine Box. «Bis heute Abend», flüstert die Zahnfee. «Mäh, bis heute Abend», flüstert das Zahnböcklein. Und weisst du was? Wenn du heute schön putzt, erzählt das Zahnböcklein der Zahnfee bestimmt auch von dir. Deine Fantasie hat einen Wert. Von dir. Mit dir. Für dich.', pic:['bock','moon']}
+ ]},
+ { id:'flori', neu:1, sz:'wald', title:'Flori und das verlorene Abendlied', sub:'Hoppel und Flori suchen ein Lied im Wald.', pic:['fuchs','hase'], parts:[
+  {t:'Am Waldrand wohnt Flori, der kleine Fuchs. Jeden Abend singt Flori ein Lied, und dann schlafen alle Tiere ein. Doch heute Abend macht Flori den Mund auf, und es kommt … nichts. Kein einziger Ton. «Mein Abendlied ist weg», flüstert Flori.', pic:['fuchs']},
+  {t:'Da hoppelt Hoppel herbei, der Hase mit den langen Ohren. «Ein Lied kann nicht einfach weg sein», sagt Hoppel und wackelt mit den Ohren. «Vielleicht hat es sich nur versteckt. Komm, wir suchen es zusammen.»', pic:['hase','fuchs']},
+  {q:'Wo suchen Hoppel und Flori zuerst?', opts:[
+    {e:'🌊', l:'Beim Bach', k:['bach','wasser'], v:{ort:'beim Bach', klang:'Der Bach plätschert: plitsch, platsch. Das klingt schön, aber es ist nicht Floris Lied.'}},
+    {e:'🌳', l:'Im alten Baum', k:['baum'], v:{ort:'im alten Baum', klang:'Im Baum knarrt das Holz: knaar, knaar. Das klingt gemütlich, aber es ist nicht Floris Lied.'}},
+    {e:'🍂', l:'Im Laub', k:['laub','blätter'], v:{ort:'im Laub', klang:'Das Laub raschelt: rischel, raschel. Das klingt lustig, aber es ist nicht Floris Lied.'}}],
+   after:'Die beiden suchen {ort}. {klang}', pic:['hase','fuchs']},
+  {t:'Da raschelt es neben ihnen, und Otti, der kleine Igel, streckt die Nase aus dem Moos. «Was sucht ihr denn so spät?», fragt Otti. «Mein Abendlied», sagt Flori traurig. Otti denkt nach. «Weisst du was? Ein Lied wohnt nicht im Wald. Ein Lied wohnt im Bauch.»', pic:['sunny','fuchs']},
+  {t:'«Im Bauch?», fragt Flori. «Ja», sagt Otti. «Leg deine Pfote auf den Bauch und atme ganz langsam. Ein … und aus.» Flori atmet ein. Und aus. Hoppel atmet mit. Und Otti auch. Ganz still ist es jetzt im Wald.', pic:['sunny','hase']},
+  {q:'Was hört Flori, als es ganz still ist?', opts:[
+    {e:'💓', l:'Sein Herz', k:['herz'], v:{hoer:'sein Herz, das ganz ruhig klopft: bum, bum, bum'}},
+    {e:'🦉', l:'Die Eule', k:['eule'], v:{hoer:'die Eule, die leise «Uhu» ruft'}},
+    {e:'🌬️', l:'Den Wind', k:['wind'], v:{hoer:'den Wind, der sanft durch die Blätter streicht'}}],
+   after:'Flori hört {hoer}. Und genau in diesem Takt kommt ein kleiner Ton aus seinem Bauch. Dann noch einer. Und noch einer.', pic:['fuchs','moon']},
+  {t:'Da ist es wieder, das Abendlied! Flori singt ganz leise: «Schlaf, kleiner Wald, die Sterne sind da.» Hoppel legt sich ins weiche Gras. Otti rollt sich zu einer runden Kugel zusammen. Und die Glühwürmchen machen ihre Lichter aus, eins nach dem anderen.', pic:['fuchs','fly']},
+  {t:'«Danke, Hoppel. Danke, Otti», flüstert Flori. «Mein Lied war gar nicht weg. Es war nur ganz leise geworden.» Und weisst du was? Wenn du heute ganz ruhig atmest, hörst du vielleicht auch dein eigenes Abendlied. Gute Nacht.', pic:['hase-sleep','sunny-sleep']}
+ ]},
+ { id:'brille', neu:1, sz:'dach', title:'Fompa und die Sternenbrille', sub:'Durch Fompas runde Brille sieht der Himmel anders aus.', pic:['affe','sunny'], parts:[
+  {t:'Fompa, das kleine Löwenäffchen mit der goldenen Mähne, hat eine runde Brille. Aber es ist keine gewöhnliche Brille. Wenn Fompa sie in der Nacht aufsetzt, sieht er die Sterne ganz nah, so nah, als könnte er sie streicheln.', pic:['affe']},
+  {t:'Heute Abend klettert Fompa mit Otti auf das höchste Dach im Mondschein-Land. Unten schläft der Wald. Oben funkelt der ganze Himmel. «Willst du auch mal schauen?», fragt Fompa und gibt Otti die Brille.', pic:['affe','sunny']},
+  {t:'Otti setzt die Brille auf seine kleine Igelnase. Sie rutscht ein bisschen. Und dann staunt er: Die Sterne sind nicht einfach Punkte. Sie hängen zusammen wie mit goldenen Fäden, und sie malen Bilder an den Himmel.', pic:['sunny','moon']},
+  {q:'Was für ein Bild malen die Sterne?', opts:[
+    {e:'🦔', l:'Einen Igel', k:['igel'], v:{bild:'einen kleinen Igel', bild2:'Der Sternen-Igel hat sogar Stacheln aus Licht'}},
+    {e:'💛', l:'Ein Herz', k:['herz'], v:{bild:'ein grosses Herz', bild2:'Das Sternen-Herz blinkt ganz langsam, wie wenn es schlägt'}},
+    {e:'🐨', l:'Einen Koala', k:['koala'], v:{bild:'einen Koala', bild2:'Der Sternen-Koala hält ein goldenes Mikrofon'}}],
+   after:'«Schau, Fompa! Die Sterne malen {bild}!» {bild2}. Fompa lacht: «Das hat noch niemand gesehen. Du hast es entdeckt!»', pic:['sunny','affe']},
+  {t:'«Wie soll dein Sternbild heissen?», fragt Fompa und zückt seinen goldenen Stift. «Ich habe ein Heft, da schreibe ich alle Sternbilder auf, die meine Freunde finden.» Otti überlegt lange. Dann flüstert er einen Namen.', pic:['affe','moon']},
+  {q:'Wie heisst das neue Sternbild?', opts:[
+    {e:'✨', l:'Glitzerli', k:['glitzer'], v:{name:'Glitzerli'}},
+    {e:'🌙', l:'Mondfreund', k:['mond','freund'], v:{name:'Mondfreund'}},
+    {e:'🍓', l:'Beerenstern', k:['beere','stern'], v:{name:'Beerenstern'}}],
+   after:'Fompa schreibt ganz sorgfältig in sein Heft: «{name}. Entdeckt von Otti.» Und darunter malt er ein kleines Herz.', pic:['affe']},
+  {t:'Dann sitzen die beiden noch lange auf dem Dach. Sie sagen nichts. Sie schauen einfach. Fompas Brille liegt zwischen ihnen, und in ihren Gläsern spiegelt sich der Mond. «Weisst du was?», gähnt Otti. «Auch ohne Brille sieht man viel. Man muss nur lange genug hinschauen.»', pic:['sunny','affe']},
+  {t:'Heute Nacht, wenn du aus dem Fenster schaust, such doch auch ein Sternbild. Vielleicht ist {name} auch an deinem Himmel. Gute Nacht, Fompa. Gute Nacht, Otti. Und gute Nacht, du.', pic:['sunny-sleep','moon']}
+ ]},
+ { id:'kikimond', neu:1, sz:'wolken', title:'Kiki singt den Mond in den Schlaf', sub:'Der Mond kann nicht schlafen. Kiki hat eine Idee.', pic:['koala','moon'], parts:[
+  {t:'Kiki ist ein kleiner grauer Koala mit grossen runden Ohren und einem goldenen Stern im Fell. Kiki hat ein goldenes Mikrofon. Aber Kiki singt nie laut. Kiki singt immer nur ganz leise, so leise wie Watte.', pic:['koala']},
+  {t:'Eines Nachts hört Kiki ein Seufzen. Es kommt von oben. Der Mond seufzt! «Was hast du, lieber Mond?», fragt Kiki. «Ich muss die ganze Nacht wach bleiben und leuchten», sagt der Mond. «Und am Morgen bin ich so müde. Niemand singt mir ein Schlaflied.»', pic:['koala','moon']},
+  {t:'Kiki hält das goldene Mikrofon ganz fest. «Ich singe dir eins», sagt Kiki. «Aber dafür muss ich zu dir hinauf.» Da kommt eine weiche Wolke angeschwebt. «Steig auf», brummt die Wolke. «Ich bin die Kissenwolke.»', pic:['koala','wolke']},
+  {q:'Wovon soll Kikis Schlaflied handeln?', opts:[
+    {e:'🌊', l:'Vom Meer', k:['meer'], v:{lied:'vom Meer, das sanft hin und her schaukelt', ton:'Schhh, schhh, macht das Meer im Lied.'}},
+    {e:'🐱', l:'Von den Katzen', k:['katze'], v:{lied:'von den Katzen, die sich gemütlich einrollen', ton:'Rrrr, rrrr, schnurren die Katzen im Lied.'}},
+    {e:'🌲', l:'Vom Wald', k:['wald'], v:{lied:'vom Wald, wo alle Tiere schon schlafen', ton:'Psst, psst, flüstern die Bäume im Lied.'}}],
+   after:'Oben beim Mond singt Kiki ein Lied {lied}. {ton}', pic:['koala','moon']},
+  {t:'Der Mond hört zu. Seine Augen werden schwer. «Das ist schön», murmelt er. «Aber wer leuchtet dann für die Kinder, wenn ich schlafe?» Kiki überlegt. Dann lächelt Kiki. «Die Sterne. Sie machen das bestimmt gern. Nur für ein kleines Weilchen.»', pic:['moon']},
+  {q:'Was glaubst du: Welcher Stern leuchtet heute am hellsten?', opts:[
+    {e:'⭐', l:'Der grosse gelbe', k:['gelb','gross'], v:{stern:'der grosse gelbe Stern'}},
+    {e:'💙', l:'Der kleine blaue', k:['blau','klein'], v:{stern:'der kleine blaue Stern'}},
+    {e:'🌟', l:'Kikis Stern im Fell', k:['fell','kiki'], v:{stern:'der goldene Stern in Kikis Fell'}}],
+   after:'Und so leuchtet heute {stern} ganz besonders hell, damit der Mond ein bisschen ruhen kann.', pic:['koala','fly']},
+  {t:'Der Mond schliesst die Augen, nur ein ganz kleines bisschen. Die Kissenwolke schwebt mit Kiki wieder hinunter. Kiki kuschelt sich in die Astgabel eines Eukalyptusbaums. Das goldene Mikrofon liegt warm im Arm.', pic:['koala-sleep','wolke']},
+  {t:'Und weisst du was? Wenn du heute Nacht ganz leise bist, hörst du vielleicht noch das letzte Summen von Kikis Lied. Mmmh, mmmh. Schlaf gut, lieber Mond. Schlaf gut, Kiki. Und schlaf gut, du.', pic:['koala-sleep','sunny-sleep']}
+ ]},
+ { id:'buerste', neu:1, sz:'zimmer', title:'Wo ist die blaue Zahnbürste?', sub:'Das Zahnböcklein sucht, Tropfi leuchtet mit.', pic:['bock','kiki'], parts:[
+  {t:'Es ist Abend. Das Zahnböcklein klettert aus seiner kleinen weissen Box und streckt sich. «Mäh! Zeit zum Zähneputzen!» Es greift nach seiner blauen Zahnbürste. Aber da ist nichts. Die Zahnbürste ist weg!', pic:['bock']},
+  {t:'«Oh nein», sagt das Zahnböcklein. «Ohne meine Zahnbürste kann ich den Kindern nicht zeigen, wie man putzt.» Da blinkt es hellblau unter dem Bett. Tropfi, der kleine leuchtende Tropfen, schwebt hervor. «Ich helfe dir suchen! Ich kann leuchten wie eine Taschenlampe.»', pic:['bock','kiki-wave']},
+  {q:'Wo leuchtet Tropfi zuerst hin?', opts:[
+    {e:'🧸', l:'Zum Teddybär', k:['teddy','bär'], v:{fund:'Beim Teddybär liegt nur ein Socken. Ein einzelner, gestreifter Socken. «Der sucht bestimmt auch jemanden», kichert Tropfi.'}},
+    {e:'📚', l:'Ins Bücherregal', k:['buch','regal'], v:{fund:'Im Bücherregal liegt nur ein Lesezeichen mit einem Mond darauf. «Hübsch», sagt das Zahnböcklein. «Aber keine Zahnbürste.»'}},
+    {e:'🧦', l:'In die Sockenkiste', k:['socke','kiste'], v:{fund:'In der Sockenkiste ist es warm und weich. Aber keine Zahnbürste. Nur eine kleine Murmel, die im Licht glitzert.'}}],
+   after:'{fund}', pic:['kiki-wave','bock']},
+  {t:'Das Zahnböcklein setzt sich hin. «Wo war ich denn heute überall?», überlegt es. «Ich war beim Brunnen, ich war im Garten, und ich war bei einem Kind, das ganz schön geputzt hat.» Tropfi blinkt. «Dann gehen wir den Weg noch einmal zurück. Ganz langsam.»', pic:['bock','kiki']},
+  {t:'Tapp, tapp, tapp. Sie gehen durch den Garten. Tropfi leuchtet unter jedes Blatt. Und da, zwischen zwei Gänseblümchen, liegt etwas Blaues. Die Zahnbürste! Ein kleiner Käfer sitzt darauf und putzt sich gerade die Fühler.', pic:['kiki-wave','fly']},
+  {q:'Was sagt das Zahnböcklein zum Käfer?', opts:[
+    {e:'😊', l:'Danke fürs Aufpassen', k:['danke','aufpass'], v:{satz:'«Danke, dass du auf meine Zahnbürste aufgepasst hast»'}},
+    {e:'🪥', l:'Willst du putzen lernen?', k:['putz','lernen'], v:{satz:'«Möchtest du lernen, wie man richtig putzt? Kreise, kleine Kreise»'}},
+    {e:'👋', l:'Hallo, kleiner Käfer', k:['hallo'], v:{satz:'«Hallo, kleiner Käfer. Schön, dich kennenzulernen»'}}],
+   after:'{satz}, sagt das Zahnböcklein freundlich. Der Käfer winkt mit allen sechs Beinchen und krabbelt glücklich davon.', pic:['bock']},
+  {t:'Zurück im Zimmer putzt das Zahnböcklein endlich seine Zähne. Oben, unten, vorne, hinten. Kleine Kreise. Tropfi leuchtet dazu wie ein kleines Nachtlicht. «Blitzblank!», ruft das Zahnböcklein. «Mäh!»', pic:['bock','kiki']},
+  {t:'Dann legt das Zahnböcklein die blaue Zahnbürste ganz ordentlich neben seine Box. «Da bleibst du jetzt», flüstert es. Und weisst du was? Wenn du heute deine Zahnbürste nach dem Putzen an ihren Platz stellst, freut sich das Zahnböcklein bestimmt. Gute Nacht.', pic:['bock','moon']}
+ ]},
+ { id:'blatt', neu:1, sz:'wald', title:'Otti und das kleinste Blatt', sub:'Ein Blatt hat Angst vor dem Fallen.', pic:['sunny','fly'], parts:[
+  {t:'Es ist Herbst im Mondschein-Wald. Die Blätter sind gelb und rot und orange. Eins nach dem anderen segelt zu Boden. Nur ganz oben am Ahornbaum hängt noch ein winziges grünes Blatt. Es hält sich fest, so fest es kann.', pic:['sunny','moon']},
+  {t:'Otti schaut hinauf. «Kleines Blatt, warum kommst du nicht herunter? Alle anderen tanzen schon.» «Ich habe Angst», sagt das Blatt mit einer dünnen Stimme. «Ich weiss nicht, wo ich lande. Und ich weiss nicht, wie sich Fallen anfühlt.»', pic:['sunny']},
+  {t:'Otti setzt sich unter den Baum. «Weisst du, ich hatte auch einmal Angst», sagt er. «Vor meinem ersten Winterschlaf. Ich wusste nicht, wie es ist, so lange zu schlafen.» «Und?», fragt das Blatt. «Es war weich und warm», sagt Otti. «Und als ich aufwachte, war Frühling.»', pic:['sunny','fly']},
+  {q:'Was kann dem kleinen Blatt Mut machen?', opts:[
+    {e:'🤗', l:'Ein Freund wartet unten', k:['freund','unten'], v:{mut:'«Ich warte hier unten auf dich», sagt Otti und streckt seine Pfoten aus.'}},
+    {e:'🌬️', l:'Der Wind trägt es', k:['wind','trag'], v:{mut:'Da kommt ein sanfter Wind und flüstert: «Ich trage dich ganz vorsichtig.»'}},
+    {e:'🎵', l:'Ein Mutmach-Lied', k:['lied','sing'], v:{mut:'Otti summt ein kleines Mutmach-Lied: «Eins, zwei, drei, du bist frei.»'}}],
+   after:'{mut} Das kleine Blatt atmet tief ein. Dann lässt es los.', pic:['sunny']},
+  {t:'Und es fällt. Aber nicht schnell. Es schaukelt hin und her, wie eine kleine Wiege. Hin und her. Hin und her. Das Blatt kichert. «Das kitzelt! Das ist ja wie tanzen!»', pic:['fly','moon']},
+  {q:'Wo landet das kleine Blatt?', opts:[
+    {e:'🦔', l:'Auf Ottis Nase', k:['nase','otti'], v:{land:'genau auf Ottis Nase. «Hatschi!», macht Otti, und beide müssen lachen'}},
+    {e:'🍄', l:'Auf einem Pilz', k:['pilz'], v:{land:'auf einem roten Pilz, wie auf einem kleinen Bett'}},
+    {e:'💧', l:'In einer Pfütze', k:['pfütze','wasser'], v:{land:'in einer kleinen Pfütze, und schwimmt wie ein Boot im Mondlicht'}}],
+   after:'Das Blatt landet {land}.', pic:['sunny','mush']},
+  {t:'Otti nimmt das kleine Blatt mit nach Hause und legt es neben sein Moosbett. «Du warst sehr mutig», sagt er. «Ich bin froh, dass du da bist.» Das Blatt raschelt leise. Das heisst auf Blattsprache: Danke.', pic:['sunny-sleep','moon']},
+  {t:'Und weisst du was? Mutig sein heisst nicht, keine Angst zu haben. Mutig sein heisst, es trotzdem zu probieren, vielleicht mit einem Freund an deiner Seite. Gute Nacht, kleines Blatt. Gute Nacht, Otti. Gute Nacht, du.', pic:['sunny-sleep','fly']}
  ]}
 ];
 
@@ -1473,10 +1725,15 @@ function openStory(story, autoplay=true){
 }
 function renderPart(){
   const p = R.seq[R.idx];
+  const fv = $('#rFilmVid'), mitFilm = !!(R.story.video && R.idx === 0);
+  if (!mitFilm){ try{ fv.pause(); }catch(e){} }
+  else if (!fv.src.endsWith(R.story.video + '.mp4')){ fv.poster = R.story.video + '.jpg'; fv.src = R.story.video + '.mp4'; }
+  $('#rFilm').hidden = !mitFilm;
   const pics = (p.pic || R.story.pic || ['sunny']);
   const st = $('#rStage');
   st.classList.toggle('two', pics.length > 1);
   st.innerHTML = pics.map(k => figHTML(k, R.vars)).join('');
+  if (window.kulisse) kulisse(st, p, R.story);
   const c = $('#rContent');
   if (p.q){
     c.innerHTML = `<p class="q">${esc(p.q)}</p>
@@ -1534,6 +1791,9 @@ $('#rPlay').addEventListener('click', () => {
   if (R.reading){ R.reading = false; TTS.stop(); updatePlay(); }
   else { R.reading = true; playCurrent(); }
 });
+// Film und Vorlesen nie gleichzeitig
+$('#rFilmVid').addEventListener('play', () => { if (R.reading){ R.reading = false; TTS.stop(); updatePlay(); } });
+$('#rPlay').addEventListener('click', () => { if (R.reading) try{ $('#rFilmVid').pause(); }catch(e){} });
 function nav(d){
   TTS.stop(); R.sent = 0;
   const n = R.seq.length;
@@ -1580,6 +1840,7 @@ $('#rContent').addEventListener('keydown', e => { if (e.target.id==='rType' && e
 function finishStory(){
   TTS.stop(); R.reading = false;
   if (R.story.id){ const d = store.get('done', {}); d[R.story.id] = Date.now(); store.set('done', d); }
+  mondstern('geschichten'); setTimeout(() => toast('⭐ Ein Mondstern für dich!'), 900);
   $('#rBody').hidden = true; $('#rEnd').hidden = false;
   const f = $('#rEndFig'); f.innerHTML = sunnySVG({sleep:true, cls:'float'}); f.firstElementChild.style.width='170px'; f.firstElementChild.style.height='170px';
   const nm = (R.story.kid || S.name);
@@ -1601,7 +1862,7 @@ $('#readerBack').addEventListener('click', () => go(R.story && R.story.back ? R.
 /* ---------- Meine Idee: personalisierte Geschichte ---------- */
 const FRIENDS = {
   sunny:{l:'Otti', intro:'Da raschelte es im Gras, und Otti, der kleine Igel mit dem gelben Halstuch, streckte frech die Nase heraus. «Darf ich mitkommen?», fragte er und zwinkerte.'},
-  kiki:{l:'Kiki', intro:'Da blinkte es neben {N}: Kiki, die kleine leuchtende KI, schwebte heran. «Ich will mit! Ich lerne so gern Neues», piepste Kiki.'},
+  kiki:{l:'Tropfi', intro:'Da blinkte es neben {N}: Tropfi, die kleine leuchtende KI, schwebte heran. «Ich will mit! Ich lerne so gern Neues», piepste Tropfi.'},
   nova:{l:'Nova', intro:'Da leuchtete es hellblau: Nova, der kleine blaue Roboter, rollte leise surrend neben {N}. Seine runden Augen blinkten. «Ein Abenteuer? Piep! Ich bin dabei!», rief er.'}
 };
 const PLACES = {
@@ -1671,7 +1932,7 @@ $$('.mic-btn').forEach(b => {
 });
 
 /* ---------- Memory ---------- */
-const MEM = [['sunny','Otti'],['kiki','Kiki'],['nova','Nova'],['moon','Mond'],['mush','Pilz'],['fly','Glühwürmchen']];
+const MEM = [['sunny','Otti'],['kiki','Tropfi'],['nova','Nova'],['moon','Mond'],['eule','Frau Eule'],['fly','Glühwürmchen']];
 const game = { cards:[], open:[], moves:0, pairs:0, lock:false };
 function newGame(){
   const deck = MEM.flatMap(([k,l]) => [{k,l},{k,l}]);
@@ -1719,6 +1980,7 @@ function winGame(){
   const s = $('#gWinFig .fig'); s.style.width='150px'; s.style.height='150px';
   $('#gWinText').textContent = `Alle 6 Paare gefunden – in ${game.moves} Zügen!`;
   $('#gWin').classList.add('on');
+  mondstern('memory');
   TTS.speak(`Super gemacht${S.name ? ', '+S.name : ''}! Du hast alle Paare gefunden.`);
 }
 $('#mem').addEventListener('click', e => { const b=e.target.closest('[data-card]'); if (b) flip(+b.dataset.card); });
@@ -1738,6 +2000,18 @@ const MOVES = [
   ['Und die Kauflächen unten. Tsch, tsch, tsch.', 15],
   ['Zum Schluss die Innenseiten, ganz sanft vom Zahnfleisch weg nach unten und oben fegen.', 15],
   ['Ausspucken, nicht schlucken. Fertig! Deine Zähne glänzen wie Sterne. Das erzähle ich heute Nacht der Zahnfee. Mäh!', 5]]},
+ {id:'zahnlied', title:'Zahnputzlied mit dem Zahnböcklein', fig:'bock', song:true, sub:'Drei Minuten singen und putzen.', steps:[
+  ['Mäh! Jetzt singen wir das Zahnputzlied, drei Minuten lang. Zahnbürste bereit, Zahnpasta so gross wie eine Erbse. Los geht\'s!', 4],
+  ['Oben rechts, da fangen wir an, Kreis um Kreis, so gut ich kann. Schrubbel, schrubbel, rundherum, mein Zahn macht leise brumm, brumm, brumm.', 14, 'or'],
+  ['Oben links, da wandern wir hin, mit kleinen Kreisen mittendrin. Schrubbel, schrubbel, hin und her, Zähneputzen ist nicht schwer.', 14, 'ol'],
+  ['Unten links, jetzt bist du dran, jeder Zahn kommt einmal dran. Mäh, mäh, das Zahnböcklein singt mit, Kreis um Kreis und Schritt für Schritt.', 14, 'ul'],
+  ['Unten rechts, wir sind fast rum, die Bürste tanzt ganz flink herum. Schrubbel, schrubbel, glänzt wie ein Stern, Zähneputzen hab ich gern.', 14, 'ur'],
+  ['Kauflächen oben, tsch, tsch, tsch, die kleine Lokomotive fährt, husch, husch. Hin und her, vor und zurück, jeder Zahn hat heute Glück.', 14, 'ko'],
+  ['Kauflächen unten, tsch, tsch, tsch, da wo wir beissen, wird es frisch. Hin und her, vor und zurück, die Zahnfee lacht vor lauter Glück.', 14, 'ku'],
+  ['Jetzt die Innenseiten, sanft und sacht, vom Zahnfleisch weg, ganz gut gemacht. Fegen, fegen, wie ein Besen, das ist ein schönes Putzen gewesen.', 14, 'in'],
+  ['Und vorne die Zähnchen, zeig mal her, ein grosses Lächeln, bitte sehr! Ganz sanft die Zunge, ganz zum Schluss, und dann ein dicker Zahnfee-Kuss.', 12, 'vo'],
+  ['Ausspucken, nicht schlucken! Drei Minuten geschafft. Deine Zähne glänzen wie Sterne. Das erzähle ich heute Nacht der Zahnfee. Mäh!', 3]]},
+ {id:'putzgeschichte', title:'Putz-Geschichte mit dem Zahnböcklein', fig:'bock', song:true, putz:true, sub:'Drei Minuten putzen, jedes Mal geht die Geschichte weiter.', steps:[]},
  {id:'rollen', title:'Rollen wie Otti', fig:'sunny', sub:'Klein machen, rollen, strecken.', steps:[
   ['Hallo, ich bin Otti! Wir machen uns ganz klein, wie eine Igelkugel. Kopf runter, Arme um die Knie.', 8],
   ['Jetzt rollen wir ganz sanft hin und her. Hin … und her.', 10],
@@ -1757,8 +2031,8 @@ const MOVES = [
   ['Hüpf auf einem Bein, ganz leicht.', 6],
   ['Und jetzt auf dem anderen Bein.', 6],
   ['Landen! Ganz weich in die Knie. Willkommen zurück auf der Erde.', 4]]},
- {id:'leise', title:'Leise wie Kiki', fig:'kiki', sub:'Schleichen und leuchten.', steps:[
-  ['Blink, blink. Ich bin Kiki. Wir schleichen ganz leise auf Zehenspitzen.', 10],
+ {id:'leise', title:'Leise wie Tropfi', fig:'kiki', sub:'Schleichen und leuchten.', steps:[
+  ['Blink, blink. Ich bin Tropfi. Wir schleichen ganz leise auf Zehenspitzen.', 10],
   ['Jetzt leuchten wir: Arme auf, Finger auseinander, wie kleine Sterne.', 6],
   ['Und Licht aus: Hände zu, ganz klein machen.', 5],
   ['Noch einmal leuchten … und Licht aus.', 6],
@@ -1779,13 +2053,13 @@ const MOVES = [
   ['Jetzt machen wir uns ganz klein, wie Otti, wenn er erschrickt. Eine kleine Stachelkugel!', 5],
   ['Und wieder gross! Wir winken allen Leuten in New York zu. Hallo!', 6],
   ['HUUUP! Ein letztes Mal ganz still. Super, du bist ein echter Stadt-Profi!', 4]]},
- {id:'wolken', title:'Wolkenhüpfen mit Fompa', fig:'fompa', sub:'Fomp, fomp! Weich wie auf Wolken.', steps:[
-  ['Fomp! Ich bin Fompa. Wir hüpfen auf weichen Wolken. Ganz kleine, weiche Hüpfer, fomp, fomp.', 8],
+ {id:'wolken', title:'Wolkenhüpfen mit Traumli', fig:'fompa', sub:'Hüpf, hüpf! Weich wie auf Wolken.', steps:[
+  ['Huii! Ich bin Traumli. Wir hüpfen auf weichen Wolken. Ganz kleine, weiche Hüpfer, hüpf, hüpf.', 8],
   ['Jetzt ein grosser Hüpfer auf die nächste Wolke. Und noch einer!', 8],
   ['Oh, die Wolke wackelt! Breite die Arme aus und halte das Gleichgewicht.', 6],
   ['Jetzt fangen wir verlorene Träume: Greif ganz hoch in die Luft, links … und rechts.', 8],
   ['Leg die Träume ganz vorsichtig in dein Traumnetz, auf deinem Bauch.', 5],
-  ['Und zum Schluss setzen wir uns weich auf eine Wolke. Atme ein … und aus. Fomp!', 6]]}
+  ['Und zum Schluss setzen wir uns weich auf eine Wolke. Atme ein … und aus. Huii!', 6]]}
 ];
 function renderGames(){
   $('#glist').innerHTML = MOVES.map((g,i) => `
@@ -1794,12 +2068,102 @@ function renderGames(){
 }
 $('#glist').addEventListener('click', e => { const b = e.target.closest('[data-move]'); if (b) startMove(MOVES[+b.dataset.move]); });
 
+/* Spieluhr-Melodie fürs Zahnputzlied: im Handy erzeugt, keine Datei, nichts geladen. Leise, damit man das Zahnböcklein hört. */
+const MUSIK = {
+  ctx:null, t:null, n:0,
+  // eigene kleine Melodie (Pentatonik), Halbtöne über C5; null = Pause
+  noten:[0,4,7,4, 9,7,4,null, 2,4,2,0, 4,null,null,null, 7,9,12,9, 7,4,7,null, 9,7,4,2, 0,null,null,null],
+  start(){
+    if (this.t) return;
+    try{ this.ctx = this.ctx || new (window.AudioContext || window.webkitAudioContext)(); this.ctx.resume && this.ctx.resume(); }catch(e){ return; }
+    this.t = setInterval(() => this.ton(), 330);
+  },
+  ton(){
+    const h = this.noten[this.n++ % this.noten.length], c = this.ctx;
+    $('#mvNoten').textContent = h == null ? '' : ['♪','♫','♩'][this.n % 3].repeat(1 + this.n % 3);
+    if (h == null || !c) return;
+    const o = c.createOscillator(), g = c.createGain(), t = c.currentTime, v = 0.05 * (S.vol || 1);
+    o.type = 'triangle'; o.frequency.value = 523.25 * Math.pow(2, h / 12);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + 0.32);
+  },
+  stop(){ clearInterval(this.t); this.t = null; if ($('#mvNoten')) $('#mvNoten').textContent = ''; }
+};
+function mvLied(){ const an = !!(MV.game && MV.game.song && MV.running); an ? MUSIK.start() : MUSIK.stop(); $('#mvStage').classList.toggle('tanzt', an); }
+/* ---------- Putzen: Fortsetzungsgeschichte, Putzkarte, Zahnsterne (alles nur auf diesem Handy) ---------- */
+const PUTZ_ZONEN = {or:'Oben rechts, kleine Kreise.', ol:'Jetzt oben links.', ul:'Unten links.', ur:'Unten rechts.', ko:'Kauflächen oben, hin und her.', ku:'Kauflächen unten, hin und her.', in:'Innenseiten, ganz sanft fegen.', vo:'Vorne die Zähnchen, und ganz sanft die Zunge.'};
+const PUTZ_FOLGEN = [
+ {t:'Der verlorene Glitzerstern', s:[
+  'Die Zahnfee hat ihren Glitzerstern verloren. Ohne ihn findet sie nachts den Weg nicht. «Mäh, wir helfen dir!», ruft das Zahnböcklein.',
+  'Sie fliegen über den Mondschein-Wald. Unten schläft Otti zusammengerollt im Moos.',
+  'Bei der alten Eiche fragt das Zahnböcklein die Eule: «Hast du einen Stern gesehen?» «Huhu, frag den Bach», sagt die Eule.',
+  'Der Bach glitzert im Mondlicht. Aber das ist nur das Wasser, kein Stern.',
+  'Da hören sie ein leises Klingeln im Gras. Klingeling.',
+  'Ein Glühwürmchen hält den Stern ganz fest. «Ich wollte nur schauen, wie er leuchtet», flüstert es.',
+  '«Du darfst ihn heute Nacht mittragen», sagt die Zahnfee. Das Glühwürmchen strahlt.',
+  'Zusammen fliegen sie heim. Wie es weitergeht, hörst du beim nächsten Zähneputzen.']},
+ {t:'Die Zahnbürsten-Brücke', s:[
+  'In der nächsten Nacht stehen die Zahnfee und das Zahnböcklein vor einem breiten Bach. «Wie kommen wir hinüber?»',
+  'Das Zahnböcklein schaut in sein Täschchen. Da ist die blaue Zahnbürste.',
+  '«Mäh! Ich habe eine Idee.» Es legt die Zahnbürste über zwei Steine.',
+  'Hoppel, der Hase, hüpft als Erster hinüber. Die Borsten kitzeln seine Pfoten. «Hihi!»',
+  'Dann tapst Flori, der Fuchs, ganz vorsichtig hinterher.',
+  'Zum Schluss geht die Zahnfee darüber, obwohl sie ja fliegen kann. «Es macht einfach Spass», lacht sie.',
+  'Auf der anderen Seite wartet ein kleiner Biber mit einem wackelnden Zahn.',
+  '«Morgen fällt er raus», sagt der Biber. Was die Zahnfee ihm sagt, hörst du beim nächsten Zähneputzen.']},
+ {t:'Der Biber und der Wackelzahn', s:[
+  '«Ein Wackelzahn ist etwas Schönes», sagt die Zahnfee zum Biber. «Er macht Platz für einen neuen, starken Zahn.»',
+  'Der Biber ist trotzdem ein bisschen nervös. Das Zahnböcklein setzt sich neben ihn.',
+  '«Weisst du, was hilft?», fragt es. «Tief einatmen … und ausatmen.»',
+  'Der Biber atmet ganz ruhig. Sein Bauch hebt und senkt sich.',
+  'Da macht es plopp! Der Zahn liegt in seiner Pfote. «Das hat gar nicht weh getan!»',
+  'Die Zahnfee legt den Zahn in ein kleines Kästchen aus Mondlicht.',
+  'Unter sein Kissen legt sie ein glänzendes Ahornblatt. Der Biber kichert im Schlaf.',
+  'Doch am Himmel zieht eine dunkle Wolke auf. Was das bedeutet, hörst du beim nächsten Zähneputzen.']},
+ {t:'Die müde Wolke', s:[
+  'Die dunkle Wolke ist gar nicht böse. Sie ist nur müde und ein bisschen traurig.',
+  '«Ich habe so lange geregnet», seufzt die Wolke. «Jetzt mag ich nicht mehr.»',
+  'Das Zahnböcklein singt ihr das Zahnputzlied vor. Schrubbel, schrubbel, rundherum.',
+  'Die Wolke muss lachen. Dabei wird sie ganz hell und flauschig.',
+  'Nova, der kleine Roboter, piepst von unten: «Piep! Die Wolke ist wieder weiss!»',
+  'Die Wolke bedankt sich und lässt einen kleinen Regenbogen fallen.',
+  'Darauf rutschen alle nach Hause, die Zahnfee vorne, das Zahnböcklein hinterher.',
+  'Und beim nächsten Zähneputzen beginnt eine neue Reise. Mäh!']}
+];
+function putzFolge(n){
+  const f = PUTZ_FOLGEN[n % PUTZ_FOLGEN.length], z = Object.keys(PUTZ_ZONEN);
+  return [[`Mäh! Zahnbürste bereit? Heute erzähle ich dir Folge ${n % PUTZ_FOLGEN.length + 1}: ${f.t}. Wir putzen und hören zu.`, 3]]
+    .concat(f.s.map((t, i) => [PUTZ_ZONEN[z[i]] + ' ' + t, 12, z[i]]))
+    .concat([['Ausspucken, nicht schlucken! Drei Minuten geschafft. Mäh!', 2]]);
+}
+const PUTZ_ZIEL = 90;
+const heuteKey = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
+function putzStand(){ const log = store.get('putzlog', {}); return { log, tage: Object.values(log).filter(x => x.m && x.a).length, sterne: store.get('zahnsterne', 0) }; }
+function renderPutz(zone){
+  const on = !!(MV.game && MV.game.song); $('#mvPutz').hidden = !on; if (!on) return;
+  $$('#putzKarte [data-z]').forEach(el => el.classList.toggle('an', el.dataset.z === zone));
+  const st = putzStand();
+  $('#putzStand').textContent = `⭐ ${st.sterne} ${st.sterne === 1 ? "Zahnstern" : "Zahnsterne"} · 📅 ${Math.min(st.tage, PUTZ_ZIEL)} von ${PUTZ_ZIEL} Tagen morgens und abends`;
+}
+function putzBestaetigt(){
+  const k = heuteKey(), teil = new Date().getHours() < 14 ? 'm' : 'a', st = putzStand();
+  const tag = st.log[k] || {};
+  if (tag[teil]){ toast(teil === 'm' ? 'Heute Morgen ist schon eingetragen.' : 'Heute Abend ist schon eingetragen.'); return; }
+  tag[teil] = 1; st.log[k] = tag; store.set('putzlog', st.log);
+  store.set('zahnsterne', st.sterne + 1);
+  $('#mvOk').hidden = true;
+  const neu = putzStand();
+  let say = `Mäh! Ein Zahnstern für dich${S.name ? ', '+S.name : ''}. Jetzt hast du ${neu.sterne}.`;
+  if (neu.tage >= PUTZ_ZIEL && !store.get('putzpreis', '')){ store.set('putzpreis', k); say = `Mäh! ${PUTZ_ZIEL} Tage morgens und abends geputzt! Du bekommst die goldene Zahnmedaille und das Zauberzahn-Abzeichen. Und im KI-Verse wartet jetzt dein eigenes Häuschen.`; }
+  $('#mvText').textContent = '⭐ ' + say; renderPutz(''); TTS.speak(say, {pitch:TALKERS.bock.pitch});
+}
 const MV = { game:null, i:-1, left:0, timer:null, running:false, done:false };
-function stopMove(){ clearInterval(MV.timer); MV.timer = null; MV.running = false; if ($('#mvPlay')) mvButtons(); }
+function stopMove(){ clearInterval(MV.timer); MV.timer = null; MV.running = false; if ($('#mvPlay')) { mvButtons(); mvLied(); } }
 function startMove(g){
   go('move');
   if (current !== 'move') return;
-  MV.game = g; MV.i = -1; MV.done = false;
+  if (g.putz) g.steps = putzFolge(store.get('putzfolge', 0));
+  MV.game = g; MV.i = -1; MV.done = false; $('#mvOk').hidden = true; renderPutz('');
   $('#mvTitle').textContent = g.title;
   const pics = g.fig === 'moon' ? ['sunny-wave','moon'] : [g.fig + (g.fig==='kiki'||g.fig==='nova' ? '-wave' : '-wave')];
   $('#mvStage').classList.toggle('two', pics.length > 1);
@@ -1815,6 +2179,7 @@ function mvProg(){
 }
 function mvButtons(){
   const b = $('#mvPlay');
+  mvLied();
   b.textContent = MV.running ? '⏸ Pause' : (MV.done ? '↺ Nochmal' : (MV.i < 0 ? '▶ Los geht\'s' : '▶ Weiter'));
   $('#mvNext').disabled = MV.done || !MV.game;
 }
@@ -1823,7 +2188,8 @@ function mvStep(i){
   const steps = MV.game.steps;
   if (i >= steps.length){ mvFinish(); return; }
   MV.i = i; MV.running = true; MV.done = false;
-  const [text, sec] = steps[i];
+  const [text, sec, zone] = steps[i];
+  renderPutz(zone || '');
   $('#mvText').textContent = text; MV.left = sec;
   $('#mvCount').textContent = '⏱ ' + sec;
   mvProg(); mvButtons();
@@ -1842,7 +2208,12 @@ function mvStep(i){
 }
 function mvFinish(){
   clearInterval(MV.timer); MV.running = false; MV.done = true;
-  const say = `Geschafft${S.name ? ', '+S.name : ''}! Das hast du toll gemacht.`;
+  let say = `Geschafft${S.name ? ', '+S.name : ''}! Das hast du toll gemacht.`;
+  if (MV.game.song){
+    say += ' Zeig deine Zähne Mama oder Papa. Wenn sie blitzen, gibt es einen Zahnstern.';
+    $('#mvOk').hidden = false; renderPutz('');
+    if (MV.game.putz) store.set('putzfolge', store.get('putzfolge', 0) + 1);
+  }
   $('#mvText').textContent = '🎉 ' + say; $('#mvCount').textContent = '';
   mvProg(); mvButtons();
   TTS.speak(say);
@@ -1854,6 +2225,7 @@ $('#mvPlay').addEventListener('click', () => {
   mvStep(MV.i);
 });
 $('#mvNext').addEventListener('click', () => { if (MV.game && !MV.done) mvStep(MV.i + 1); });
+holdButton($('#mvOk'), putzBestaetigt);
 $('#mvAgain').addEventListener('click', () => { if (MV.game) mvStep(0); });
 
 /* Spiel ausdenken: Idee -> spielbare Variante aus Vorlagen */
@@ -1886,7 +2258,7 @@ function ideaGame(raw, ver=0){
     [m ? m.small : `Jetzt «${idea}» ganz klein und leise.`, 8],
     [pick(['Jetzt ganz langsam, wie in Zeitlupe.', 'Jetzt ganz langsam, wie eine Schnecke.']), 8],
     ['Und jetzt schnell! … Und Stopp! Einfrieren!', 6],
-    [pick(['Zum Schluss einmal im Kreis drehen, mit Kiki und Nova zusammen.', 'Zum Schluss hüpfen wir dreimal, wie beim Mondsprung.']), 6],
+    [pick(['Zum Schluss einmal im Kreis drehen, mit Tropfi und Nova zusammen.', 'Zum Schluss hüpfen wir dreimal, wie beim Mondsprung.']), 6],
     ['Geschafft! Das war dein eigenes Spiel.', 2]
   ];
   return { id:'idee', title: idea.length > 22 ? 'Mein Spiel' : idea.charAt(0).toUpperCase() + idea.slice(1), fig:'sunny', sub:'Dein Spiel', steps };
@@ -1920,7 +2292,7 @@ function heroOf(text){
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const MSFRIENDS = {
   sunny:{acc:'Otti, den kleinen Igel mit dem gelben Halstuch', l:'Otti', say:'«Darf ich mitkommen?», fragte Otti und zwinkerte.'},
-  kiki:{acc:'Kiki, die kleine leuchtende KI', l:'Kiki', say:'«Blink, blink! Ich komme mit und leuchte den Weg», piepste Kiki.'},
+  kiki:{acc:'Tropfi, die kleine leuchtende KI', l:'Tropfi', say:'«Blink, blink! Ich komme mit und leuchte den Weg», piepste Tropfi.'},
   nova:{acc:'Nova, den kleinen blauen Roboter', l:'Nova', say:'«Piep! Ein Abenteuer? Ich bin dabei!», rief Nova, und seine runden Augen leuchteten hellblau.'}
 };
 const PLACE_TO = {wald:'in den Mondschein-Wald', meer:'ans glitzernde Meer', mond:'hinauf zum lächelnden Mond', berge:'hinauf in die stillen Berge'};
@@ -1954,38 +2326,42 @@ $('#msGo').addEventListener('click', () => {
   openStory(myStory(t));
 });
 
-/* ---------- Reden mit Otti, Kiki und Nova (Antworten aus Vorlagen) ---------- */
+/* ---------- Reden mit Otti, Tropfi und Nova (Antworten aus Vorlagen) ---------- */
 const TALKERS = {
   sunny:{l:'Otti', pitch:OTTI.pitch, pre:'', hi:'Hallo! Ich bin Otti, der kleine Igel. Schön, dass du mit mir redest.', me:'Ich bin Otti, ein kleiner Igel mit einem gelben Halstuch. Meine Stacheln sind ganz weich, fast.', fav:'Am liebsten mag ich Walderdbeeren und weiches Moos.', joke:'Weisst du, warum Igel nie streiten? Weil sie immer alles piksfein machen. Hihi!'},
   nova:{l:'Nova', pitch:1.3, pre:'Piep! ', hi:'Hallo! Ich bin Nova, der kleine blaue Roboter.', me:'Ich bin Nova, ein kleiner Roboter. Mein Bauch leuchtet hellblau, wenn ich mich freue.', fav:'Am liebsten tanze ich den Roboter-Tanz. Piep-piep!', joke:'Warum ist der Roboter so ruhig? Er hat gerade Pause. Piep, hihi.'},
-  kiki:{l:'Kiki', pitch:1.8, pre:'Blink, blink! ', hi:'Hallo! Ich bin Kiki, die kleine leuchtende KI.', me:'Ich bin Kiki, eine kleine Spiel-KI. Ich lerne noch, und manchmal irre ich mich. Das ist okay.', fav:'Am liebsten zähle ich Sterne. Manchmal verzähle ich mich.', joke:'Was sagt ein Stern zum anderen? Du strahlst heute aber! Hihi.'},
-  fompa:{l:'Fompa', pitch:1.45, pre:'Fomp! ', hi:'Hallo! Ich bin Fompa, ganz flauschig und ein bisschen kitzlig.', me:'Ich bin Fompa. Ich wohne im Mondschein-Land und sammle Träume, die jemand verloren hat. Mein Stern am Bauch leuchtet, wenn ich einen finde.', fav:'Am liebsten hüpfe ich auf weichen Wolken. Fomp, fomp!', joke:'Was macht Fompa, wenn es regnet? Es wird ein Flausch-Schwamm! Hihi.'},
+  kiki:{l:'Tropfi', pitch:1.8, pre:'Blink, blink! ', hi:'Hallo! Ich bin Tropfi, die kleine leuchtende KI.', me:'Ich bin Tropfi, eine kleine Spiel-KI. Ich lerne noch, und manchmal irre ich mich. Das ist okay.', fav:'Am liebsten zähle ich Sterne. Manchmal verzähle ich mich.', joke:'Was sagt ein Stern zum anderen? Du strahlst heute aber! Hihi.'},
+  fompa:{l:'Traumli', pitch:1.45, pre:'Huii! ', hi:'Hallo! Ich bin Traumli, ganz flauschig und ein bisschen kitzlig.', me:'Ich bin Traumli. Ich wohne im Mondschein-Land und sammle Träume, die jemand verloren hat. Mein Stern am Bauch leuchtet, wenn ich einen finde.', fav:'Am liebsten hüpfe ich auf weichen Wolken. Hüpf, hüpf!', joke:'Was macht Traumli, wenn es regnet? Es wird ein Flausch-Schwamm! Hihi.'},
   prinz:{l:'Milou', pitch:1.25, pre:'', hi:'Hallo! Ich bin Milou, die Prinzessin aus dem Mondschein-Land.', me:'Ich bin Milou, die Wächterin der fünf Elemente: Holz, Feuer, Erde, Metall und Wasser. Meine Mama hat sie mir anvertraut. Im Mondschein-Land passt immer eine Prinzessin auf, auf unser Land und auch auf die Erde.', fav:'Am liebsten bin ich mit Otti unterwegs. Und abends schaue ich, ob alle fünf Elemente gut schlafen.', joke:'Warum trägt der Mond nie eine Krone? Weil er schon so hell strahlt! Hihi.'},
   hase:{l:'Hoppel', pitch:1.4, pre:'', hi:'Hallo! Ich bin Hoppel, der Hase. Ich bin Ottis Freund.', me:'Ich bin Hoppel. Meine Ohren sind so lang, dass ich sogar flüsternde Blätter höre.', fav:'Am liebsten esse ich knackige Rüebli und hüpfe über Pfützen.', joke:'Was sagt ein Hase im Winter? Hoppla, ist das kalt! Hihi.'},
   fuchs:{l:'Flori', pitch:1.2, pre:'', hi:'Hallo! Ich bin Flori, der Fuchs. Ich kenne jeden Weg im Wald.', me:'Ich bin Flori. Mein Schwanz ist buschig und warm, wie eine Decke.', fav:'Am liebsten finde ich Verstecke. Wer findet mich zuerst?', joke:'Warum ist der Fuchs so schlau? Weil er immer zuhört. Hihi.'},
   moon:{l:'Mondstrahl', pitch:1.6, pre:'', hi:'Hallo! Ich bin der kleine Mondstrahl. Ich bin vom Himmel gepurzelt.', me:'Ich bin ein Stück Mondlicht. Am Tag schlafe ich, in der Nacht leuchte ich für dich.', fav:'Am liebsten kitzle ich schlafende Blumen, bis sie lächeln.', joke:'Was macht ein Mondstrahl am Morgen? Er geht ins Bett! Hihi.'},
   mush:{l:'Pilzli', pitch:1.15, pre:'', hi:'Hallo! Ich bin Pilzli mit dem roten Hut.', me:'Ich wohne unter den grossen Bäumen. Mein Hut hat weisse Tupfen, zähl sie mal!', fav:'Am liebsten habe ich Regen, dann wachse ich ein bisschen.', joke:'Warum ist der Pilz so beliebt? Weil er ein Fun-Ghi ist! Hihi.'},
   bock:{l:'Zahnböcklein', pitch:1.5, pre:'Mäh! ', hi:'Hallo! Ich bin das Zahnböcklein. Ich helfe dir beim Zähneputzen.', me:'Ich bin eine kleine weisse Geiss mit einer blauen Zahnbürste, und ich bin die beste Freundin der Zahnfee. Wir putzen morgens und abends, je zwei Minuten. Nachts erzähle ich der Zahnfee, wer schön geputzt hat.', fav:'Am liebsten mag ich Zähne, die glänzen wie Sterne. Und knackige Äpfel!', joke:'Warum putzt das Zahnböcklein so gern? Weil es sonst ein Zahn-Bock-Gesicht macht! Hihi.'},
-  fly:{l:'Glimmi', pitch:1.7, pre:'Summ! ', hi:'Hallo! Ich bin Glimmi, das Glühwürmchen.', me:'Ich bin Glimmi. Mein Bauch leuchtet gelb, damit sich niemand im Dunkeln verirrt.', fav:'Am liebsten fliege ich mit Kiki um die Wette.', joke:'Kiki hat mich einmal für einen Stern gehalten. Ich habe einfach weiter geleuchtet! Hihi.'}
+  fly:{l:'Glimmi', pitch:1.7, pre:'Summ! ', hi:'Hallo! Ich bin Glimmi, das Glühwürmchen.', me:'Ich bin Glimmi. Mein Bauch leuchtet gelb, damit sich niemand im Dunkeln verirrt.', fav:'Am liebsten fliege ich mit Tropfi um die Wette.', joke:'Tropfi hat mich einmal für einen Stern gehalten. Ich habe einfach weiter geleuchtet! Hihi.'}
 };
 const TK = { who:'sunny', log:[] };
 const TK_RATES = [[0.85,'Ruhig'],[1.0,'Normal'],[1.15,'Flink']];
 /* Otti winkt: jedes runde Otti-Bild antippen (oder Begrüssung) spielt kurz den Winke-Clip ab */
+// Otti grüsst flüssig zurück (Puppe aus #136: winken + Mund), ohne Puppe hüpft er kurz.
+function ottiGruesst(img, satz){
+  if (!img) return;
+  // Aura-Bilder (23.10.): figur-gross.jpg und posen/*.jpg sind neue Szenen, die alten Puppen-Masse passen nicht mehr: dann hüpft Otti nur.
+  if (window.Puppe && Puppe.winkeZurueck && !document.documentElement.classList.contains('tfw-aura') && /figur-gross|otti-3d|posen\/winkt/.test(img.src)){
+    try { Puppe.winkeZurueck(img, Object.assign({ figur:'otti', antippen:false }, /otti-3d/.test(img.src) ? {} : OTTI_WINK)).gruesse('winken+reden', { satz: satz || 'Hallo!', blase:false, ton:false }); return; } catch(e){}
+  }
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  img.classList.remove('film-hops'); void img.offsetWidth; img.classList.add('film-hops');
+}
 function ottiWinkt(img){
   if (!img || img.tagName !== 'IMG' || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const v = document.createElement('video');
-  v.className = img.className; v.src = 'otti-winkt-fig.mp4'; v.poster = 'otti-winkt-fig.jpg';
-  v.muted = true; v.playsInline = true; v.setAttribute('playsinline',''); v.setAttribute('aria-label','Otti winkt');
-  img.parentNode.replaceChild(v, img);
-  const pl = v.play(); if (pl && pl.catch) pl.catch(() => {});
-  const back = () => { if (v.parentNode) v.parentNode.replaceChild(img, v); };
-  v.addEventListener('ended', back); setTimeout(back, 7000);
+  img.classList.remove('film-hops'); void img.offsetWidth; img.classList.add('film-hops');
 }
 document.addEventListener('click', e => {
-  const img = e.target.closest('img.otti-film[src^="otti-"]');
+  const img = e.target.closest('img.otti-film[data-pose]');
   if (img && !img.closest('.pk, .sitem')) ottiWinkt(img);
 });
-function ottiGruss(sel){ const img = $(sel + ' img.otti-film[src^="otti-"]'); if (img) ottiWinkt(img); }
+function ottiGruss(sel){ const img = $(sel + ' img.otti-film[data-pose]'); if (img) ottiWinkt(img); }
 function renderTalk(){
   $('#tkPick').innerHTML = Object.entries(TALKERS).map(([k,f]) => `<button class="pk ${TK.who===k?'sel':''}" data-talker="${k}" aria-pressed="${TK.who===k}">${FIG[k]({})}${f.l}</button>`).join('');
   $('#tkStage').innerHTML = figHTML(TK.who + '-wave');
@@ -2062,7 +2438,7 @@ function talkReply(who, raw){
   else if (/^(nein|nö|nei|ne)\b/.test(t)) a = pick(['Okay, das ist ganz in Ordnung. Was möchtest du lieber?', 'Gut, dann machen wir etwas anderes. Was magst du jetzt?']);
   else {
     // Ein Wort aus dem Satz aufnehmen, damit die Antwort zum Kind passt, und eine Frage zurückstellen.
-    const w = (String(raw||'').match(/[A-ZÄÖÜ][a-zäöüß]{3,}/g) || []).filter(x => !/^(Ich|Und|Aber|Dann|Weil|Das|Der|Die|Wir|Mein|Meine|Heute|Otti|Nova|Kiki)$/.test(x)).pop();
+    const w = (String(raw||'').match(/[A-ZÄÖÜ][a-zäöüß]{3,}/g) || []).filter(x => !/^(Ich|Und|Aber|Dann|Weil|Das|Der|Die|Wir|Mein|Meine|Heute|Otti|Nova|Tropfi|Kiki|Fompa)$/.test(x)).pop();
     a = w ? pick([`${w}? Das klingt spannend! Erzähl mir mehr über ${w}.`, `Oh, ${w}! Wie sieht das aus?`, `${w}, das muss ich mir merken. Was passiert damit als Nächstes?`])
           : pick(['Erzähl mir mehr davon!', 'Oh, spannend! Und dann?', 'Schön, dass du mir das erzählst. Wie hast du dich dabei gefühlt?', 'Hm, das gefällt mir. Was passiert als Nächstes?', 'Wirklich? Wie bist du darauf gekommen?', 'Und was war daran am schönsten?']);
   }
@@ -2089,16 +2465,16 @@ $('#tkText').addEventListener('keydown', e => { if (e.key === 'Enter') $('#tkSen
 
 /* ---------- KI-Leitfaden zum Einschlafen (Otti liest vor) ---------- */
 const GUIDE = [
-  {e:'💡', h:'KI hilft', t:'Es gibt Computer, die sprechen und antworten können. Man nennt das KI. Kiki ist so eine kleine KI. Eine KI kann beim Suchen helfen, beim Erklären und beim Ideen-Finden. Ein bisschen wie ein Buch, das antworten kann.'},
-  {e:'🌀', h:'KI kann sich irren', t:'Weisst du was? Auch eine KI weiss nicht alles. Manchmal sagt sie etwas, das gar nicht stimmt. So wie Kiki, die einmal ein Glühwürmchen für einen Stern gehalten hat. Das ist nicht schlimm. Alle irren sich mal.'},
-  {e:'🙋', h:'Nachfragen ist gut', t:'Wenn dir etwas komisch vorkommt, darfst du nachfragen. Bei Mama, bei Papa oder bei jemandem, den du lieb hast. Fragen ist klug. Durch Fragen lernen wir alle, auch Kiki und Nova.'},
-  {e:'🌙', h:'Pausen sind gut', t:'Und das Schönste zum Schluss: Pausen. Auch Kiki macht am Abend die Lichter ganz klein, und Nova ruht sich aus. Wenn wir ausruhen, wird der Kopf ganz still und weich. Jetzt atmen wir zusammen ein … und aus. Gute Nacht.'}
+  {e:'💡', h:'KI hilft', t:'Es gibt Computer, die sprechen und antworten können. Man nennt das KI. Tropfi ist so eine kleine KI. Eine KI kann beim Suchen helfen, beim Erklären und beim Ideen-Finden. Ein bisschen wie ein Buch, das antworten kann.'},
+  {e:'🌀', h:'KI kann sich irren', t:'Weisst du was? Auch eine KI weiss nicht alles. Manchmal sagt sie etwas, das gar nicht stimmt. So wie Tropfi, die einmal ein Glühwürmchen für einen Stern gehalten hat. Das ist nicht schlimm. Alle irren sich mal.'},
+  {e:'🙋', h:'Nachfragen ist gut', t:'Wenn dir etwas komisch vorkommt, darfst du nachfragen. Bei Mama, bei Papa oder bei jemandem, den du lieb hast. Fragen ist klug. Durch Fragen lernen wir alle, auch Tropfi und Nova.'},
+  {e:'🌙', h:'Pausen sind gut', t:'Und das Schönste zum Schluss: Pausen. Auch Tropfi macht am Abend die Lichter ganz klein, und Nova ruht sich aus. Wenn wir ausruhen, wird der Kopf ganz still und weich. Jetzt atmen wir zusammen ein … und aus. Gute Nacht.'}
 ];
 const GUIDE_EN = [
-  {e:'💡', h:'AI can help', t:'Some computers can talk and answer questions. We call that AI. Kiki is a little AI. An AI can help you look things up, explain things and find ideas. A bit like a book that can answer back.'},
-  {e:'🌀', h:'AI can be wrong', t:'Do you know what? An AI does not know everything. Sometimes it says something that is not true at all. Just like Kiki, who once thought a firefly was a star. That is okay. Everybody gets things wrong sometimes.'},
-  {e:'🙋', h:'Asking is good', t:'If something seems strange, you can always ask. Ask Mum, ask Dad, or someone you love. Asking is clever. Asking questions is how we all learn, Kiki and Nova too.'},
-  {e:'🌙', h:'Rest is good', t:'And the best part comes last: resting. In the evening, Kiki turns her lights down low, and Nova has a little rest. When we rest, our head becomes quiet and soft. Now let us breathe in together … and out. Good night.'}
+  {e:'💡', h:'AI can help', t:'Some computers can talk and answer questions. We call that AI. Tropfi is a little AI. An AI can help you look things up, explain things and find ideas. A bit like a book that can answer back.'},
+  {e:'🌀', h:'AI can be wrong', t:'Do you know what? An AI does not know everything. Sometimes it says something that is not true at all. Just like Tropfi, who once thought a firefly was a star. That is okay. Everybody gets things wrong sometimes.'},
+  {e:'🙋', h:'Asking is good', t:'If something seems strange, you can always ask. Ask Mum, ask Dad, or someone you love. Asking is clever. Asking questions is how we all learn, Tropfi and Nova too.'},
+  {e:'🌙', h:'Rest is good', t:'And the best part comes last: resting. In the evening, Tropfi turns her lights down low, and Nova has a little rest. When we rest, our head becomes quiet and soft. Now let us breathe in together … and out. Good night.'}
 ];
 const GD = { reading:false, lang: store.get('gdLang', 'de') };
 const gdList = () => GD.lang === 'en' ? GUIDE_EN : GUIDE;
@@ -2184,7 +2560,7 @@ $('#tReset').addEventListener('click', () => { const u=usage(); u.ms=0; u.bonus=
 $('#rate').addEventListener('input', e => { S.rate = +e.target.value; $('#rateLbl').textContent = rateLabel(S.rate); saveS(); });
 $('#vol').addEventListener('input', e => { S.vol = +e.target.value; $('#volLbl').textContent = Math.round(S.vol*100)+'%'; saveS(); });
 $('#voiceSel').addEventListener('change', e => { S.voice = e.target.value; saveS(); });
-$('#rateTest').addEventListener('click', () => { if (!TTS.ok){ toast('Vorlesen geht auf diesem Gerät nicht.'); return; } TTS.speak('Hallo, ich bin Otti. So schnell lese ich dir vor. Gute Nacht!'); });
+$('#rateTest').addEventListener('click', () => { toast('Hallo, ich bin Otti. So schnell blättere ich weiter.'); TTS.speak(['Hallo, ich bin Otti.', 'So schnell blättere ich weiter.', 'Gute Nacht!']); });
 $('#pNameSave').addEventListener('click', () => { S.name = cleanName($('#pName').value).slice(0,24); saveS(); $('#pName').value = S.name; toast(S.name ? `Gespeichert: ${S.name}` : 'Name gelöscht'); });
 $('#chips').addEventListener('click', e => { const b=e.target.closest('[data-chip]'); if(!b) return; const t=$('#ideaText'); t.value = (t.value.trim() ? t.value.trim()+'\n' : '') + b.dataset.chip; t.focus(); });
 function ideas(){ return store.get('ideas', []); }
@@ -2197,7 +2573,7 @@ const BUILT = [
   {re:/gruselig|angst|unheimlich/i, go:'guide', el:'#gdCards', what:'ruhige Einschlaf-Seite'},
   {re:/bewegung|hüpf|tanz|turnen/i, go:'games', el:'#glist', what:'Bewegungsspiele'},
   {re:/eigene geschichte|selbst erzähl|weitererzähl|geschichte erfinden/i, go:'mystory', el:'#msText', what:'Meine Geschichte'},
-  {re:/reden|sprechen mit|unterhalten|gespräch/i, go:'talk', el:'#tkMic', what:'Reden mit Otti, Kiki und Nova'},
+  {re:/reden|sprechen mit|unterhalten|gespräch/i, go:'talk', el:'#tkMic', what:'Reden mit Otti, Tropfi und Nova'},
   {re:/lautstärke|lauter|leiser/i, go:'parents', el:'#vol', what:'Lautstärke'}
 ];
 const STATUS = {eingereicht:['eingereicht','st-eingereicht'], pruefung:['in Prüfung','st-pruefung'], umgesetzt:['umgesetzt','st-umgesetzt'], nicht:['nicht umgesetzt','st-nicht']};
@@ -2270,9 +2646,9 @@ function letterStory(L, ver=0){
   if (/(lieb|stolz|mutig|toll|schatz|herz|kuss|knuddel|umarm)/.test(low)) segs.push('lieb');
   const SEG = {
     heute: {t:`Otti lächelte bis zu den Ohren. «Oh${voc}, das klingt nach einem schönen Tag!» Er holte sein kleines Glas aus der Höhle. Darin sammelt Otti schöne Momente. Und als er an deinen Tag dachte, begann es im Glas zu leuchten, golden wie Honig.`, pic:['sunny-wave','moon']},
-    morgen:{t:`«Juhui!», rief Otti und hüpfte einmal im Kreis. «Darauf darfst du dich freuen${voc}!» Kiki blinkte vor Aufregung. «Vorfreude ist wie ein kleines Licht im Bauch», sagte Kiki. «Es kitzelt ein bisschen. Und es wärmt ganz fest.»`, pic:['sunny','kiki-wave']},
+    morgen:{t:`«Juhui!», rief Otti und hüpfte einmal im Kreis. «Darauf darfst du dich freuen${voc}!» Tropfi blinkte vor Aufregung. «Vorfreude ist wie ein kleines Licht im Bauch», sagte Tropfi. «Es kitzelt ein bisschen. Und es wärmt ganz fest.»`, pic:['sunny','kiki-wave']},
     lieb:  {t:`Otti legte seine kleine Pfote aufs Herz. «Hast du das gehört${voc}? Du wirst so fest lieb gehabt.» Novas Bauchlicht leuchtete ganz warm. «Das ist das Schönste, was in einem Brief stehen kann», piepste er leise.`, pic:['sunny','nova']},
-    plain: {t:`Otti lächelte ganz warm. «Was für ein schöner Brief», sagte er. «${from} ${hat} ihn nur für dich geschrieben${voc}.» Kiki und Nova kamen näher und hörten mit grossen Augen zu.`, pic:['sunny','kiki']}
+    plain: {t:`Otti lächelte ganz warm. «Was für ein schöner Brief», sagte er. «${from} ${hat} ihn nur für dich geschrieben${voc}.» Tropfi und Nova kamen näher und hörten mit grossen Augen zu.`, pic:['sunny','kiki']}
   };
   const mid = (segs.length ? segs.slice(0,2) : ['plain']).map(k => SEG[k]);
   const parts = [
@@ -2284,8 +2660,8 @@ function letterStory(L, ver=0){
     {t:`«${msg}»`, pic:['sunny-wave'], slow:true, letter:true},
     ...mid,
     {t:pick([
-      'Dann stiegen Otti, Kiki und Nova auf den kleinen Hügel hinter dem Wald. Von dort oben ist der Himmel ganz nah. Otti faltete den Brief zu einem kleinen Papiervogel. Er hielt ihn hoch in den Wind … und liess ihn los.',
-      'Später sassen Otti, Kiki und Nova zusammen auf der Wiese und schauten in den Himmel. Otti faltete den Brief zu einem kleinen Papiervogel. Nova liess seinen kleinen Propeller ganz sanft surren … und der Papiervogel flog los.'
+      'Dann stiegen Otti, Tropfi und Nova auf den kleinen Hügel hinter dem Wald. Von dort oben ist der Himmel ganz nah. Otti faltete den Brief zu einem kleinen Papiervogel. Er hielt ihn hoch in den Wind … und liess ihn los.',
+      'Später sassen Otti, Tropfi und Nova zusammen auf der Wiese und schauten in den Himmel. Otti faltete den Brief zu einem kleinen Papiervogel. Nova liess seinen kleinen Propeller ganz sanft surren … und der Papiervogel flog los.'
     ]), pic:['sunny','kiki']},
     {t:`Der Papiervogel flog hinauf, höher und höher, bis zu den Sternen. Dort oben wurde er selbst zu einem kleinen Stern. Er funkelt jetzt über deinem Fenster${voc}. Und immer, wenn du ihn siehst, weisst du: ${from} ${denkt} an dich.`, pic:['moon','kiki']},
     {t:`Otti gähnte ein grosses Igel-Gähnen. Er kuschelte sich in sein Moosbett und flüsterte noch einmal ${first.length <= 140 ? `die schönsten Worte aus dem Brief: «${first}»` : 'die Worte aus dem Brief.'} Dann wurde es ganz still im Wald. Gute Nacht${voc}. ${from} ${hat} dich lieb. Und Otti auch.`, pic:['sunny-sleep','moon'], slow:true}
@@ -2363,6 +2739,9 @@ renderHome();
 if (limitReached()) go('night');
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(()=>{});
 window.__ms = { go, STORIES, game, S, R, FIG };
+// Zauberwald-Tore (inhalt/welten.js): Bilder unserer Figuren und Ottis Vorlese-Stimme mitbenutzen
+window.WELTEN_CFG = { bilder:{ otti:'figur.jpg', nova:'nova.jpg', kiki:'kiki-koala.jpg', zahn:'zahnboecklein.jpg', eule:'eule.jpg', flori:'fuchs.jpg' },
+  sprechen:(t, f) => { if (!TTS.ok){ if (f) setTimeout(f, 400); return; } TTS.speak(splitSentences(t), { onEnd:f }); }, stopp:() => TTS.stop() };
 /* ---------- Zeig Otti etwas (Kamera, Erkennen nur auf dem Handy) ---------- */
 // Eltern schalten es frei. Das Modell (COCO-SSD, 80 Alltagsdinge) liegt in kamera/ und läuft im Handy; kein Bild verlässt das Gerät.
 const CAM_DE = {person:'dich',bicycle:'ein Velo',car:'ein Auto',motorcycle:'ein Töff',airplane:'ein Flugzeug',bus:'einen Bus',train:'einen Zug',truck:'einen Lastwagen',boat:'ein Boot','traffic light':'eine Ampel','fire hydrant':'einen Hydranten','stop sign':'ein Stoppschild','parking meter':'eine Parkuhr',bench:'eine Bank',bird:'einen Vogel',cat:'eine Katze',dog:'einen Hund',horse:'ein Pferd',sheep:'ein Schaf',cow:'eine Kuh',elephant:'einen Elefanten',bear:'einen Bären',zebra:'ein Zebra',giraffe:'eine Giraffe',backpack:'einen Rucksack',umbrella:'einen Regenschirm',handbag:'eine Tasche',tie:'eine Krawatte',suitcase:'einen Koffer',frisbee:'ein Frisbee',skis:'Skier',snowboard:'ein Snowboard','sports ball':'einen Ball',kite:'einen Drachen','baseball bat':'einen Schläger','baseball glove':'einen Handschuh',skateboard:'ein Skateboard',surfboard:'ein Surfbrett','tennis racket':'einen Tennisschläger',bottle:'eine Flasche','wine glass':'ein Glas',cup:'eine Tasse',fork:'eine Gabel',knife:'ein Messer',spoon:'einen Löffel',bowl:'eine Schüssel',banana:'eine Banane',apple:'einen Apfel',sandwich:'ein Sandwich',orange:'eine Orange',broccoli:'einen Broccoli',carrot:'ein Rüebli',"hot dog":'einen Hotdog',pizza:'eine Pizza',donut:'einen Donut',cake:'einen Kuchen',chair:'einen Stuhl',couch:'ein Sofa','potted plant':'eine Pflanze',bed:'ein Bett','dining table':'einen Tisch',toilet:'eine Toilette',tv:'einen Fernseher',laptop:'einen Laptop',mouse:'eine Computermaus',remote:'eine Fernbedienung',keyboard:'eine Tastatur','cell phone':'ein Handy',microwave:'eine Mikrowelle',oven:'einen Backofen',toaster:'einen Toaster',sink:'ein Lavabo',refrigerator:'einen Kühlschrank',book:'ein Buch',clock:'eine Uhr',vase:'eine Vase',scissors:'eine Schere','teddy bear':'einen Teddybären','hair drier':'einen Föhn',toothbrush:'eine Zahnbürste'};
@@ -2491,15 +2870,14 @@ function callSub(t, me){ const el = $('#callSub'); el.textContent = me ? 'Du: ' 
 function callTalking(on){
   const st = callStage(), v = $('#callTalk');
   st.classList.toggle('is-talk', on);
-  if (on){ const pl = v.play(); if (pl && pl.catch) pl.catch(() => {}); }
-  else { v.pause(); try{ v.currentTime = 0; }catch(e){} }
+  void v;
 }
 function callWave(){
   const st = callStage(), v = $('#callWave');
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   try{ v.currentTime = 0; }catch(e){}
-  st.classList.add('is-wave');
-  const pl = v.play(); if (pl && pl.catch) pl.catch(() => st.classList.remove('is-wave'));
+  // Kein alter Filmclip mehr: Otti (gültiger Look) hüpft kurz.
+  ottiGruesst(st.querySelector('img.cl'), 'Hallo!');
 }
 $('#callWave').addEventListener('ended', () => callStage().classList.remove('is-wave'));
 function callSay(text, o = {}){
@@ -2685,13 +3063,601 @@ window.MS_TEXTE = () => {
     add(f.pre + f.hi + ' Was möchtest du mir erzählen?', o); add(f.pre + f.me, o); add(f.pre + f.joke, o); add(f.pre + f.fav + ' Und du, was magst du am liebsten?', o);
   });
   MOVES.forEach(m => m.steps.forEach(([t]) => add(t, {pitch:(TALKERS[m.fig] && TALKERS[m.fig].pitch) || OTTI.pitch})));
+  PUTZ_FOLGEN.forEach((f, n) => putzFolge(n).forEach(([t]) => add(t, {pitch:TALKERS.bock.pitch})));
   (window.MS_LITERALE || []).forEach(t => add(t));
   return [...out.values()];
 };
+/* Mondschein · Trickfilm-Kulissen, Gute-Nacht-Knopf, Nachtlicht, Milchzahn-Tagebuch.
+   Alles läuft auf dem Handy, nichts geht weg. */
+(function(){
+  /* ---------- Kulissen (gezeichnet, bis Tinkos Filmbilder da sind) ---------- */
+  const G = (id, a, b) => `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>`;
+  const sterne = n => { let s=''; for (let i=0;i<n;i++){ const x=(i*73)%400, y=(i*37)%110, r=i%3?1:1.6; s+=`<circle class="${i%2?'tw':'tw2'}" cx="${x}" cy="${y}" r="${r}" fill="#fff"/>`; } return s; };
+  const mond = (x,y,r) => `<circle cx="${x}" cy="${y}" r="${r*2.2}" fill="#ffe27a" opacity=".12"/><circle cx="${x}" cy="${y}" r="${r}" fill="#ffe9a3"/><circle cx="${x+r*.35}" cy="${y-r*.2}" r="${r*.18}" fill="#f2d27a" opacity=".6"/>`;
+  const funken = (n, c) => { let s=''; for (let i=0;i<n;i++){ s+=`<circle class="${i%2?'steig':'steig2'}" cx="${30+(i*61)%340}" cy="${150+(i*17)%40}" r="2.4" fill="${c}"/>`; } return s; };
+  const haeuser = (fill, licht, nacht) => { let s=''; const H=[90,130,70,150,110,95,140,80,120,100]; H.forEach((h,i)=>{ const x=i*41, w=36; s+=`<rect x="${x}" y="${200-h}" width="${w}" height="${h}" fill="${fill}"/>`; for (let r=0;r<Math.floor(h/18);r++) for (let c=0;c<3;c++){ if ((i+r+c)%3===0) continue; const col = nacht ? ['#ff7ab6','#7fe8ff','#ffd66b','#a98bff'][(i+r+c)%4] : licht; s+=`<rect x="${x+5+c*10}" y="${200-h+8+r*18}" width="6" height="8" fill="${col}" opacity="${nacht?.85:.7}"/>`; } }); return s; };
+  const svg = (defs, body) => `<svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><defs>${defs}</defs>${body}</svg>`;
+  const KUL = {
+    wald: () => svg(G('kw','#0c1640','#24407a'), `<rect width="400" height="200" fill="url(#kw)"/>${sterne(22)}${mond(330,40,20)}
+      <path d="M0 200 L0 120 L20 80 L40 120 L55 70 L75 120 L90 95 L110 130 L110 200Z" fill="#0b2a2a"/><path d="M290 200 L290 125 L310 85 L330 125 L345 75 L368 125 L385 95 L400 120 L400 200Z" fill="#0b2a2a"/>
+      <path d="M0 200 Q100 160 200 175 T400 170 V200Z" fill="#103a32"/><g fill="#fff27a">${[60,140,210,260,330].map((x,i)=>`<circle class="${i%2?'tw':'tw2'}" cx="${x}" cy="${150+(i*9)%25}" r="2.6"/>`).join('')}</g>
+      <rect x="170" y="168" width="60" height="14" rx="6" fill="#4a3424"/>`),
+    meer: () => svg(G('km','#0a1238','#2a3f86'), `<rect width="400" height="200" fill="url(#km)"/>${sterne(26)}${mond(300,38,22)}
+      <path d="M300 60 Q200 110 40 150" stroke="#ffe27a" stroke-width="10" fill="none" opacity=".35"/><path d="M300 60 Q200 110 40 150" stroke="#fff3c4" stroke-width="3" fill="none" class="blink"/>
+      <path d="M0 160 Q50 150 100 160 T200 160 T300 160 T400 160 V200 H0Z" fill="#14306b"/><path d="M0 175 Q50 165 100 175 T200 175 T300 175 T400 175 V200 H0Z" fill="#0d2152"/>
+      <path d="M290 160 L300 120 L310 160Z" fill="#ffe27a" opacity=".15"/>`),
+    stadt: () => svg(G('ks','#ffcf9e','#ff9f8a'), `<rect width="400" height="200" fill="url(#ks)"/><circle cx="80" cy="50" r="22" fill="#fff1c4" opacity=".9"/>
+      ${haeuser('#4b4f7a','#ffe9a3',false)}<rect x="0" y="188" width="400" height="12" fill="#3a3d5c"/>
+      <g class="schweb"><rect x="300" y="174" width="56" height="18" rx="6" fill="#ffd23f"/><rect x="310" y="166" width="30" height="10" rx="4" fill="#ffd23f"/><circle cx="312" cy="193" r="5" fill="#222"/><circle cx="344" cy="193" r="5" fill="#222"/></g>`),
+    stadtnacht: () => svg(G('kn','#05081e','#1b1f4f'), `<rect width="400" height="200" fill="url(#kn)"/>${sterne(14)}${haeuser('#151a3f','',true)}${funken(9,'#ffd66b')}`),
+    ubahn: () => svg(G('ku','#2b3a5c','#18223d'), `<rect width="400" height="200" fill="url(#ku)"/>
+      ${Array.from({length:10},(_,i)=>`<rect x="${i*40+2}" y="20" width="36" height="16" rx="3" fill="#36507a" opacity=".6"/>`).join('')}
+      <path d="M120 200 V90 Q200 20 280 90 V200Z" fill="#0b1026"/><rect x="150" y="70" width="100" height="40" rx="8" fill="#7fe8ff" class="blink" opacity=".75"/>
+      <rect x="40" y="140" width="10" height="60" fill="#9aa6c7"/><rect x="40" y="150" width="60" height="6" fill="#9aa6c7"/><rect x="340" y="140" width="10" height="60" fill="#9aa6c7"/><rect x="0" y="190" width="400" height="10" fill="#101626"/>`),
+    park: () => svg(G('kp','#ffd7a8','#9fd3ff'), `<rect width="400" height="200" fill="url(#kp)"/>${haeuser('#9aa7c9','#fff',false).replace(/fill="#9aa7c9"/g,'fill="#a9b4d6" opacity=".55"')}
+      <path d="M0 200 Q120 140 220 160 T400 150 V200Z" fill="#6cbf6a"/><rect x="280" y="90" width="14" height="80" fill="#6b4a2c"/><circle cx="287" cy="80" r="44" fill="#4fa055"/><circle cx="260" cy="95" r="28" fill="#5cb064"/><circle cx="315" cy="98" r="26" fill="#5cb064"/>
+      <rect x="230" y="160" width="60" height="6" rx="3" fill="#8a5a32"/><rect x="236" y="166" width="4" height="12" fill="#8a5a32"/><rect x="280" y="166" width="4" height="12" fill="#8a5a32"/>
+      ${funken(6,'#ffd66b')}`),
+    dach: () => svg(G('kd','#2a2457','#f4a27a'), `<rect width="400" height="200" fill="url(#kd)"/>${sterne(10)}<g opacity=".7">${haeuser('#3a3466','#ffe27a',false)}</g>
+      <rect x="0" y="160" width="400" height="40" fill="#5a4a6e"/>${[30,120,210,300].map(x=>`<rect x="${x}" y="146" width="70" height="18" rx="4" fill="#8a5a32"/>${[10,25,40,55].map((d,j)=>`<circle cx="${x+d}" cy="${140-(j%2)*6}" r="7" fill="${['#ff8fb1','#ffd66b','#a98bff','#7fe8ff'][j]}"/>`).join('')}`).join('')}`),
+    weltall: () => svg(G('ka','#03041a','#141a48'), `<rect width="400" height="200" fill="url(#ka)"/>${sterne(40)}
+      <g class="blink"><circle cx="300" cy="110" r="58" fill="#ff9a5c"/><circle cx="300" cy="110" r="58" fill="#9a5cff" opacity=".45"/><ellipse cx="300" cy="110" rx="86" ry="14" fill="none" stroke="#ffd66b" stroke-width="3" opacity=".6"/></g>
+      <g class="schweb"><ellipse cx="90" cy="80" rx="34" ry="20" fill="#d9e4ff"/><circle cx="90" cy="70" r="14" fill="#7fe8ff" opacity=".8"/><path d="M80 90 q10 8 20 0" stroke="#ffd66b" stroke-width="3" fill="none"/></g>`),
+    katzen: () => svg(G('kk','#5b3a8f','#ff9fb1'), `<rect width="400" height="200" fill="url(#kk)"/>${sterne(12)}
+      <path d="M0 200 Q100 130 200 160 T400 140 V200Z" fill="#7cc576"/>${[50,150,250,350].map((x,i)=>`<g class="schweb"><circle cx="${x}" cy="${150-(i%2)*14}" r="20" fill="${['#ffd1e6','#fff1a8','#c9b6ff','#bff0ff'][i]}"/><circle cx="${x}" cy="${150-(i%2)*14}" r="7" fill="#fff"/></g>`).join('')}
+      <circle cx="210" cy="182" r="9" fill="#ff7ab6"/><path d="M203 178 q7 6 14 0 M203 186 q7 -6 14 0" stroke="#d2508e" stroke-width="1.5" fill="none"/>`),
+    dorf: () => svg(G('kdo','#1d1650','#5b3a8f'), `<rect width="400" height="200" fill="url(#kdo)"/>${sterne(16)}
+      <path d="M0 200 Q200 150 400 175 V200Z" fill="#3f7a4f"/>${[40,110,290,350].map((x,i)=>`<path d="M${x-26} 190 Q${x} ${130+(i%2)*10} ${x+26} 190Z" fill="${['#f4c6d6','#ffe2a8','#cde3ff','#e4d3ff'][i]}"/>`).join('')}
+      <rect x="194" y="110" width="12" height="80" fill="#6b4a2c"/><circle cx="200" cy="96" r="40" fill="#7fe8ff" opacity=".35" class="blink"/><circle cx="200" cy="96" r="28" fill="#9ff0c9" opacity=".7"/>
+      ${[80,150,250,320].map((x,i)=>`<circle class="${i%2?'tw':'tw2'}" cx="${x}" cy="120" r="4" fill="#fff27a"/>`).join('')}`),
+    zukunft: () => svg(G('kz','#0a0f3a','#3a2b8f'), `<rect width="400" height="200" fill="url(#kz)"/>${sterne(20)}
+      ${[[70,90],[170,60],[320,85]].map(([x,y])=>`<g class="schweb"><ellipse cx="${x}" cy="${y}" rx="38" ry="10" fill="#6cbf6a"/><circle cx="${x-12}" cy="${y-10}" r="10" fill="#ff8fb1"/><circle cx="${x+10}" cy="${y-12}" r="12" fill="#ffd66b"/></g>`).join('')}
+      <path d="M20 170 Q120 110 220 170" stroke="#7fe8ff" stroke-width="4" fill="none" class="blink"/><path d="M180 175 Q290 120 390 175" stroke="#ffd66b" stroke-width="4" fill="none" class="blink"/>
+      <rect x="250" y="110" width="40" height="90" rx="14" fill="#9aa6c7"/><circle cx="252" cy="108" r="14" fill="#9aa6c7"/><circle cx="288" cy="108" r="14" fill="#9aa6c7"/><circle cx="270" cy="118" r="18" fill="#b8c2dd"/>`),
+    saal: () => svg(G('ksa','#fff6dc','#e9d3ff'), `<rect width="400" height="200" fill="url(#ksa)"/><circle cx="200" cy="60" r="70" fill="#fff" opacity=".6" class="blink"/>
+      ${[30,100,300,370].map(x=>`<rect x="${x-10}" y="30" width="20" height="170" fill="#e8dcc0"/><rect x="${x-14}" y="26" width="28" height="8" fill="#d8c8a6"/>`).join('')}
+      <rect x="0" y="185" width="400" height="15" fill="#d8c8a6"/>${funken(6,'#ffd66b')}`),
+    wolken: () => svg(G('kwo','#2a2a6e','#8a7bd6'), `<rect width="400" height="200" fill="url(#kwo)"/>${sterne(20)}${mond(70,40,16)}
+      ${[[80,160,60],[220,170,80],[350,155,55],[150,120,40]].map(([x,y,r])=>`<g class="schweb"><ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r*.4}" fill="#f3ecff" opacity=".9"/><circle cx="${x-r*.3}" cy="${y-r*.25}" r="${r*.35}" fill="#f3ecff" opacity=".9"/></g>`).join('')}`),
+    zimmer: () => svg(G('kzi','#2d3466','#1b2048'), `<rect width="400" height="200" fill="url(#kzi)"/><rect x="250" y="30" width="110" height="80" rx="8" fill="#0b1026" stroke="#c8a96a" stroke-width="5"/>
+      <g clip-path="inset(0)">${mond(320,60,14)}<circle cx="270" cy="50" r="1.5" fill="#fff" class="tw"/><circle cx="290" cy="90" r="1.2" fill="#fff" class="tw2"/></g><path d="M305 30 V110 M250 70 H360" stroke="#c8a96a" stroke-width="4"/>
+      <rect x="20" y="150" width="170" height="40" rx="12" fill="#6a5acd"/><rect x="20" y="138" width="56" height="22" rx="10" fill="#fff"/><rect x="0" y="190" width="400" height="10" fill="#151a3a"/>`)
+  };
+  // Geschichten ohne eigene Kulisse bekommen eine passende.
+  const STORY_SZ = { mondstrahl:'wald', milo:'wald', kiki:'wald', nova:'wald', meer:'meer', fompa:'wolken', zahnfee:'zimmer' };
+  // Tinkos Filmbilder (kino/<geschichte>-<nr>.jpg), sobald sie da sind; Liste in kino/index.json.
+  const KINO = new Set();
+  fetch('kino/index.json').then(r => r.ok ? r.json() : []).then(l => (l || []).forEach(k => KINO.add(k))).catch(() => {});
+  window.kulisse = function(st, p, story){
+    if (!st || !story) return;
+    const src = p.afterOf || p;
+    const sz = src.sz || story.sz || STORY_SZ[story.id] || (story.mine || story.my || story.letter ? 'wald' : '');
+    st.classList.toggle('kino', !!sz); st.classList.remove('hatbild');
+    if (!sz || !KUL[sz]) return;
+    const k = document.createElement('div'); k.className = 'kul'; k.innerHTML = KUL[sz]();
+    const nr = src.bild ? story.id + '-' + String(src.bild).padStart(2, '0') : '';
+    if (nr && KINO.has(nr)){
+      const img = new Image(); img.className = 'kinobild'; img.alt = ''; img.src = 'kino/' + nr + '.jpg';
+      img.onload = () => st.classList.add('hatbild'); k.appendChild(img);
+    }
+    st.insertBefore(k, st.firstChild);
+  };
+  // Trickfilme in der Liste markieren.
+  const _rsl = renderStoryList;
+  renderStoryList = function(){ _rsl(); $$('#slist [data-story]').forEach(b => { const s = STORIES[+b.dataset.story]; if (s && s.film){ const t = b.querySelector('b'); if (t && !t.querySelector('.filmtag')) t.insertAdjacentHTML('beforeend', ' <span class="filmtag">TRICKFILM</span>'); } }); };
+
+  /* ---------- Gute-Nacht-Knopf: Zähne, Geschichte, Atmen, Nachtlicht ---------- */
+  const tag = () => new Date().toISOString().slice(0, 10);
+  const RIT = { on:false, start:0, step:'' };
+  const SCHRITTE = [
+    {id:'zaehne', e:'🦷', l:'Zähne putzen', s:'3 Minuten mit dem Zahnböcklein'},
+    {id:'geschichte', e:'📖', l:'Eine Geschichte', s:''},
+    {id:'atmen', e:'🌬️', l:'Atmen mit Otti', s:'Dreimal ganz langsam'},
+    {id:'licht', e:'🌙', l:'Nachtlicht an', s:'Mit leisem Wiegenlied'}
+  ];
+  const ritStand = () => { const r = store.get('ritual', {}); return r.tag === tag() ? r : {tag: tag(), ok: []}; };
+  function ritOk(id){
+    const r = ritStand(); if (!r.ok.includes(id)) r.ok.push(id); store.set('ritual', r);
+    if (r.ok.length === SCHRITTE.length){ const a = store.get('abende', []); if (!a.includes(r.tag)){ a.push(r.tag); store.set('abende', a.slice(-400)); mondstern('abende'); } }
+  }
+  function storyVorschlag(){
+    const done = store.get('done', {});
+    const liste = STORIES.filter(s => !s.film);
+    const neu = liste.filter(s => !done[s.id]);
+    const pool = neu.length ? neu : liste.slice().sort((a,b) => (done[a.id]||0) - (done[b.id]||0)).slice(0, 3);
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+  let VOR = null;
+  function renderRitual(){
+    const r = ritStand();
+    if (!VOR) VOR = storyVorschlag();
+    const nm = S.name ? ', ' + S.name : '';
+    $('#ritGruss').textContent = `Zeit fürs Bett${nm}. Wir machen es zusammen.`;
+    const naechst = SCHRITTE.find(x => !r.ok.includes(x.id));
+    $('#ritList').innerHTML = SCHRITTE.map((x, i) => `<button class="rit ${r.ok.includes(x.id)?'ok':''} ${naechst===x?'next':''}" data-rit="${x.id}">
+      <span class="nr" aria-hidden="true">${r.ok.includes(x.id) ? '✓' : x.e}</span>
+      <span>${i+1}. ${esc(x.l)}<small>${esc(x.id==='geschichte' && VOR ? VOR.title : x.s)}</small></span></button>`).join('');
+    const abende = store.get('abende', []).length;
+    $('#ritInfo').textContent = abende ? `Schon ${abende} ${abende===1?'Abend':'Abende'} mit Otti ganz fertig gemacht.` : 'Tipp: Ein fester Ablauf am Abend hilft vielen Kindern, ruhig zu werden.';
+    const st = $('#ritStage'); st.innerHTML = figHTML(naechst ? 'sunny-wave' : 'sunny-sleep');
+    window.kulisse(st, {}, {id:'ritual', sz:'wald'});
+  }
+  function ritStarten(){
+    RIT.on = true; go('ritual');
+    const r = ritStand(); const n = SCHRITTE.find(x => !r.ok.includes(x.id));
+    TTS.speak(n ? `Zeit fürs Bett${S.name ? ', ' + S.name : ''}. Zuerst: ${n.l}. Tipp einfach drauf.` : 'Alles erledigt. Jetzt nur noch das Nachtlicht.', {rateMul:.92});
+  }
+  function atmen(){
+    const st = $('#ritStage'); st.innerHTML = `<div class="atem" id="ritAtem">${figHTML('sunny')}</div>`;
+    window.kulisse(st, {}, {id:'ritual', sz:'wald'});
+    const a = $('#ritAtem'); let n = 0;
+    const satz = ['Atme mit mir ganz langsam ein', 'und wieder aus.'];
+    const runde = () => {
+      if (current !== 'ritual'){ return; }
+      if (n >= 3){ a.classList.remove('ein'); ritOk('atmen'); TTS.speak('Schön ruhig. Jetzt ist dein Körper ganz weich und warm.', {rateMul:.88, onEnd: () => { if (current==='ritual') renderRitual(); }}); return; }
+      n++; a.classList.add('ein'); TTS.speak(satz[0], {rateMul:.8});
+      setTimeout(() => { if (current!=='ritual') return; a.classList.remove('ein'); TTS.speak(satz[1], {rateMul:.8}); setTimeout(runde, 4200); }, 4200);
+    };
+    runde();
+  }
+  // Zurück aus Spiel oder Geschichte führt im Abendablauf wieder hierher.
+  const _go = go;
+  go = function(id){
+    if (RIT.on && (id === 'games' || id === 'stories') && (current === 'move' || current === 'reader')){
+      if (RIT.step === 'zaehne' && Date.now() - RIT.start > 60000) ritOk('zaehne');
+      id = 'ritual';
+    }
+    if (id === 'home') RIT.on = false;
+    _go(id);
+    if (id === 'ritual') renderRitual();
+  };
+  const _fin = finishStory;
+  finishStory = function(){ _fin(); if (RIT.on && RIT.step === 'geschichte'){ ritOk('geschichte'); VOR = null; } };
+  document.addEventListener('click', e => {
+    if (e.target.closest('#homeGN')){ ritStarten(); return; }
+    const b = e.target.closest('[data-rit]'); if (!b) return;
+    const id = b.dataset.rit; RIT.step = id; RIT.start = Date.now();
+    if (id === 'zaehne'){ const g = MOVES.find(m => m.id === 'zahnlied') || MOVES.find(m => m.song); if (g) startMove(g); }
+    else if (id === 'geschichte'){ if (!VOR) VOR = storyVorschlag(); openStory(VOR); }
+    else if (id === 'atmen') atmen();
+    else if (id === 'licht'){ ritOk('licht'); nachtlicht(); }
+  });
+
+  /* ---------- Nachtlicht mit Wiegenlied (Brahms, gemeinfrei, im Handy gespielt) ---------- */
+  const N = {C4:261.6, D4:293.7, E4:329.6, F4:349.2, G4:392, A4:440, B4:493.9, C5:523.3};
+  const WIEGENLIED = 'E4 .5,E4 .5,G4 2,E4 .5,E4 .5,G4 2,E4 .5,G4 .5,C5 1,B4 1.5,A4 .5,A4 1,G4 1,D4 .5,E4 .5,F4 1,D4 1,D4 .5,E4 .5,F4 2,D4 .5,F4 .5,B4 .5,A4 .5,G4 1,B4 1,C5 2,C4 .5,C4 .5,C5 2,A4 .5,F4 .5,G4 2,E4 .5,C4 .5,F4 1,G4 1,A4 1,G4 2,C4 .5,C4 .5,C5 2,A4 .5,F4 .5,G4 2,E4 .5,C4 .5,F4 1,E4 .5,D4 .5,C4 3'.split(',').map(x => x.trim().split(' '));
+  const NL = { ctx:null, timer:null, aus:null, lock:null, an:false };
+  function lied(){
+    if (!NL.an) return;
+    try {
+      const ctx = NL.ctx || (NL.ctx = new (window.AudioContext || window.webkitAudioContext)());
+      if (ctx.state === 'suspended') ctx.resume();
+      let t = ctx.currentTime + .1; const beat = .62, vol = .05 * (S.vol || 1);
+      WIEGENLIED.forEach(([n, d]) => {
+        const f = N[n], dur = parseFloat(d) * beat;
+        [1, 2].forEach((m, j) => {
+          const o = ctx.createOscillator(), g = ctx.createGain();
+          o.type = j ? 'sine' : 'triangle'; o.frequency.value = f * m;
+          g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol / (j ? 4 : 1), t + .04); g.gain.exponentialRampToValueAtTime(.0005, t + dur + .5);
+          o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + dur + .6);
+        });
+        t += dur;
+      });
+      NL.timer = setTimeout(lied, (t - ctx.currentTime + 2.5) * 1000);
+    } catch(e) {}
+  }
+  function nachtlicht(){
+    TTS.stop();
+    const el = $('#nachtlicht'); el.hidden = false; NL.an = true;
+    $('#nlFig').innerHTML = sunnySVG({sleep:true});
+    if (!el.querySelector('.nl-stern')) for (let i=0;i<24;i++){ const s = document.createElement('i'); s.className='nl-stern'; s.style.left = (i*41%100)+'%'; s.style.top = (i*23%60)+'%'; s.style.animationDelay = (i%7*.5)+'s'; el.appendChild(s); }
+    $('#nlText').textContent = `Gute Nacht${S.name ? ', ' + S.name : ''}. Otti schläft schon.`;
+    try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(l => NL.lock = l).catch(() => {}); } catch(e){}
+    TTS.speak(`Gute Nacht${S.name ? ', ' + S.name : ''}. Ich mache das Licht ganz klein. Schlaf schön.`, {rateMul:.85, onEnd: lied});
+    clearTimeout(NL.aus); NL.aus = setTimeout(nlLeiser, 20 * 60 * 1000);
+  }
+  function nlLeiser(){ NL.an = false; clearTimeout(NL.timer); try { NL.lock && NL.lock.release(); } catch(e){} NL.lock = null; $('#nlText').textContent = 'Psst … alle schlafen.'; }
+  function nlAus(){ nlLeiser(); clearTimeout(NL.aus); $('#nachtlicht').hidden = true; RIT.on = false; go('home'); }
+  holdButton($('#nlHold'), nlAus);
+
+  /* ---------- Milchzahn-Tagebuch (Eltern) ---------- */
+  function renderZaehne(){
+    const z = store.get('milchzaehne', []);
+    $('#mzAnz').textContent = z.length ? `${z.length} ${z.length===1?'Milchzahn':'Milchzähne'} im Tagebuch.` : 'Noch kein Milchzahn eingetragen.';
+    $('#mzListe').innerHTML = z.slice().reverse().map((x, i) => `<li>${esc(x.d)}${x.w ? ' · ' + esc(x.w) : ''} <button class="btn mini" data-mzdel="${z.length-1-i}" aria-label="Eintrag löschen">✕</button></li>`).join('');
+  }
+  document.addEventListener('click', e => {
+    if (e.target.closest('#mzNeu')){
+      const z = store.get('milchzaehne', []); z.push({d: new Date().toLocaleDateString('de-CH'), w: ($('#mzWo').value || '').trim().slice(0, 40)});
+      store.set('milchzaehne', z); store.set('zahnpost', 1); $('#mzWo').value = ''; renderZaehne();
+      toast('Eingetragen. Das Zahnböcklein sagt dem Kind beim nächsten Öffnen Danke.');
+    }
+    const d = e.target.closest('[data-mzdel]');
+    if (d){ const z = store.get('milchzaehne', []); z.splice(+d.dataset.mzdel, 1); store.set('milchzaehne', z); renderZaehne(); }
+  });
+  const _rp = renderParents;
+  renderParents = function(){ _rp(); renderZaehne(); };
+  const _rh = renderHome;
+  renderHome = function(){
+    _rh();
+    if (store.get('zahnpost', 0)){
+      store.set('zahnpost', 0);
+      const nm = S.name ? ', ' + S.name : '';
+      const t = `Mäh! Hier ist das Zahnböcklein. Danke für deinen Milchzahn${nm}! Die Zahnfee und ich passen gut auf ihn auf.`;
+      $('#greet').textContent = t; setTimeout(() => { if (current === 'home') TTS.speak(t, {rateMul:.92}); }, 700);
+    }
+  };
+  /* ---------- Runde 2: Lieblingsgeschichte auf dem Start ---------- */
+  const _rh2 = renderHome;
+  renderHome = function(){
+    _rh2();
+    const lg = memLieblingsGeschichte(), st = lg && STORIES.find(x => x.title === lg);
+    $('#homeFav').hidden = !st;
+    if (st) $('#homeFavT').textContent = 'Nochmal: ' + lg;
+  };
+  $('#homeFav').addEventListener('click', () => { const lg = memLieblingsGeschichte(), st = lg && STORIES.find(x => x.title === lg); if (st) openStory(st); });
+
+  /* ---------- Zahnböcklein-Urkunde (Bild entsteht im Handy) ---------- */
+  $('#mzUrkunde').addEventListener('click', () => {
+    const z = store.get('milchzaehne', []), letzt = z[z.length - 1];
+    const c = document.createElement('canvas'); c.width = 1080; c.height = 1350;
+    const g = c.getContext('2d');
+    const grad = g.createLinearGradient(0, 0, 0, 1350); grad.addColorStop(0, '#16245a'); grad.addColorStop(1, '#0a1233');
+    g.fillStyle = grad; g.fillRect(0, 0, 1080, 1350);
+    g.strokeStyle = '#f2c14e'; g.lineWidth = 14; g.strokeRect(40, 40, 1000, 1270);
+    g.fillStyle = '#fff6e3';
+    for (let i = 0; i < 60; i++){ g.globalAlpha = .3 + (i % 5) / 8; g.beginPath(); g.arc((i * 173) % 1000 + 40, (i * 97) % 1270 + 40, 2 + i % 3, 0, 7); g.fill(); }
+    g.globalAlpha = 1; g.textAlign = 'center';
+    const fertig = () => {
+      g.fillStyle = '#ffd66b'; g.font = 'bold 74px Georgia, serif'; g.fillText('Zahnböcklein-Urkunde', 540, 760);
+      g.fillStyle = '#fff6e3'; g.font = '44px system-ui, sans-serif';
+      g.fillText((S.name ? S.name + ' hat' : 'Du hast') + ' einen Milchzahn verloren!', 540, 850);
+      g.font = '38px system-ui, sans-serif';
+      g.fillText((letzt ? letzt.d : new Date().toLocaleDateString('de-CH')) + (letzt && letzt.w ? ' · ' + letzt.w : ''), 540, 920);
+      g.fillText('Das Zahnböcklein und die Zahnfee passen gut auf ihn auf.', 540, 1010);
+      g.fillStyle = '#f2c14e'; g.font = 'bold 36px system-ui, sans-serif';
+      g.fillText(z.length > 1 ? `Schon ${z.length} Milchzähne im Döschen.` : 'Der erste Zahn im Döschen.', 540, 1090);
+      g.fillStyle = '#b9c3e0'; g.font = '28px system-ui, sans-serif'; g.fillText('Mondschein · Otti erzählt · DR Lab', 540, 1240);
+      c.toBlob(b => {
+        if (!b){ toast('Das Bild konnte nicht entstehen.'); return; }
+        const f = new File([b], 'zahnboecklein-urkunde.png', {type:'image/png'});
+        if (navigator.canShare && navigator.canShare({files:[f]})) navigator.share({files:[f], title:'Zahnböcklein-Urkunde'}).catch(() => {});
+        else { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = f.name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); toast('Urkunde gespeichert.'); }
+      }, 'image/png');
+    };
+    const im = new Image();
+    im.onload = () => { g.save(); g.beginPath(); g.arc(540, 380, 260, 0, 7); g.clip(); g.drawImage(im, 280, 120, 520, 520); g.restore(); g.strokeStyle = '#f2c14e'; g.lineWidth = 10; g.beginPath(); g.arc(540, 380, 262, 0, 7); g.stroke(); fertig(); };
+    im.onerror = fertig;
+    im.src = 'zahnboecklein.jpg';
+  });
+
+  /* ---------- Einführung beim ersten Start (einmal, danach im Elternbereich) ---------- */
+  const TOUR = [
+    {b:() => sunnySVG({wave:true}), h:'Willkommen im Mondschein-Wald', t:'Ich bin Otti, der kleine Igel. Hier gibt es Geschichten, Spiele, Zähneputzen mit dem Zahnböcklein und ein Nachtlicht.'},
+    {b:() => '🌙', h:'Ein Knopf für den Abend', t:'«Gute Nacht mit Otti» führt durch Zähne putzen, Geschichte, Atmen und Nachtlicht. Ein Abend, ein Haken.'},
+    {b:() => '📞', h:'Mit Otti reden', t:'Beim Anrufen hört Otti zu und antwortet. Alles bleibt auf diesem Handy, Otti erkennt keine Gesichter.'},
+    {b:() => '🔒', h:'Für Eltern', t:'Unten «Für Eltern» 3 Sekunden halten. Dort: Name des Kindes, Zeitlimit, Kamera, «Was Otti sich merkt» und dein Draht zu DR Lab.'}
+  ];
+  let tourI = 0;
+  function tourZeigen(){
+    const x = TOUR[tourI];
+    $('#tourBild').innerHTML = x.b(); $('#tourH').textContent = x.h; $('#tourT').textContent = x.t;
+    $('#tourP').innerHTML = TOUR.map((_, i) => `<i class="${i === tourI ? 'an' : ''}"></i>`).join('');
+    $('#tourWeiter').textContent = tourI === TOUR.length - 1 ? 'Los geht\'s' : 'Weiter';
+  }
+  function tourStart(){ tourI = 0; $('#tour').hidden = false; tourZeigen(); }
+  function tourEnde(){ $('#tour').hidden = true; store.set('tourGesehen', 1); }
+  $('#tourWeiter').addEventListener('click', () => { if (tourI < TOUR.length - 1){ tourI++; tourZeigen(); } else tourEnde(); });
+  $('#tourSkip').addEventListener('click', tourEnde);
+  $('#tourNochmal').addEventListener('click', tourStart);
+  // Erster Start: keine Textkarten. Otti grüsst, und der Mond-Knopf leuchtet als klarer erster Schritt.
+  // Die Einführung gibt es weiter im Elternbereich.
+  function ersterSchritt(){
+    if (store.get('gnGetippt', 0)) return;
+    $('#homeGN').classList.add('lockt');
+    $('#greet').textContent = `Hallo${S.name ? ', ' + S.name : ''}! Ich bin Otti. Tipp auf den Mond, dann machen wir es uns gemütlich.`;
+    const h = $('#homeSunny'); h.classList.remove('hopp'); void h.offsetWidth; h.classList.add('hopp');
+  }
+  if (location.hash !== '#gutenacht') setTimeout(() => {
+    const fs = document.getElementById('figurStart');
+    if (!fs || fs.hidden) ersterSchritt();
+    else document.getElementById('figurStartGo').addEventListener('click', () => setTimeout(ersterSchritt, 750), {once:true});
+  }, 400);
+  $('#homeGN').addEventListener('click', () => { store.set('gnGetippt', 1); $('#homeGN').classList.remove('lockt'); });
+
+  /* ---------- Live-Reden über den Nova-Knopf nur mit dem Ja der Eltern (gleich wie in der Otti-App) ---------- */
+  const LIVE_OK = 'otti_eltern_ok';
+  const liveOk = () => { try{ return localStorage.getItem(LIVE_OK) === '1'; }catch(e){ return false; } };
+  let liveZiel = null;
+  document.addEventListener('click', e => {
+    const t = e.target && e.target.closest && e.target.closest('.nova-pille, .nova-live-knopf');
+    if (!t || liveOk()) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    liveZiel = t; TTS.stop(); $('#liveGate').classList.add('on');
+  }, true);
+  holdButton($('#liveJa'), () => {
+    try{ localStorage.setItem(LIVE_OK, '1'); }catch(e){}
+    $('#liveGate').classList.remove('on');
+    const z = liveZiel; liveZiel = null; if (z) setTimeout(() => z.click(), 50);
+  });
+  $('#liveNein').addEventListener('click', () => { $('#liveGate').classList.remove('on'); liveZiel = null; });
+
+  /* ---------- Lern-Zahlen: nur mit Häkchen, nur Zahlen, einmal am Tag über Nova (/erfahrung) ---------- */
+  const lernenAn = () => store.get('lernen', 0) === 1;
+  const novaWert = k => { let v = ''; try{ v = localStorage.getItem(k) || ''; v = JSON.parse(v); }catch(e){} return String(v || '').trim(); };
+  function lernZahlenSchicken(){
+    if (!lernenAn() || !navigator.onLine) return;
+    const heute = new Date().toISOString().slice(0, 10);
+    if (store.get('lernenTag', '') === heute) return;
+    const a = novaWert('drlab-hermes-adresse').replace(/\/+$/, ''), k = novaWert('drlab-hermes-passwort');
+    if (!/^https:\/\//.test(a) || !k) return;
+    const z = Object.assign({}, store.get('zahlen', {}), { mondsterne: store.get('mondsterne', 0), abende: store.get('abende', []).length });
+    fetch(a + '/erfahrung', { method:'POST', keepalive:true, headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + k },
+      body: JSON.stringify({ app:'Mondschein', art:'lernzahlen', frage: JSON.stringify(z), antwort:'' }) })
+      .then(r => { if (r.ok) store.set('lernenTag', heute); }).catch(() => {});
+  }
+  function lernInfo(){
+    $('#lernen').checked = lernenAn();
+    $('#lernInfo').textContent = !lernenAn() ? 'Aus. Nichts verlässt das Handy.' : novaWert('drlab-hermes-adresse') ? 'An. Zuletzt geschickt: ' + (store.get('lernenTag', '') || 'noch nie') + '.' : 'An, aber Nova ist auf diesem Handy noch nicht verbunden. Dann wird nichts geschickt.';
+    $('#liveInfo').textContent = liveOk() ? 'Du hast dem Live-Gespräch zugestimmt. Die Stimme deines Kindes geht dabei an ElevenLabs (USA).' : 'Noch nicht zugestimmt. Otti fragt dich vor dem ersten Live-Gespräch.';
+    $('#liveWeg').hidden = !liveOk();
+  }
+  $('#lernen').addEventListener('change', e => { store.set('lernen', e.target.checked ? 1 : 0); lernInfo(); lernZahlenSchicken(); });
+  $('#liveWeg').addEventListener('click', () => { try{ localStorage.removeItem(LIVE_OK); }catch(e){} lernInfo(); });
+  new MutationObserver(() => { if ($('#s-parents').classList.contains('on')) lernInfo(); }).observe($('#s-parents'), { attributes:true, attributeFilter:['class'] });
+  addEventListener('online', lernZahlenSchicken);
+  setTimeout(lernZahlenSchicken, 5000);
+
+  /* ---------- Ohne Internet: freundlicher Hinweis ---------- */
+  addEventListener('offline', () => toast('Kein Internet? Kein Problem: Geschichten, Spiele und Nachtlicht gehen weiter.'));
+  addEventListener('online', () => toast('Wieder online.'));
+  document.addEventListener('drlab-feedback-open', () => TTS.stop());
+
+  if (current === 'home') renderHome();
+  // Aus der Otti-App: ../mondschein/#gutenacht startet gleich den Abendablauf.
+  if (location.hash === '#gutenacht') setTimeout(ritStarten, 300);
+})();
+/* Ruhe-Prinzip, Fantasie-Fragen und «Nur hören» (Diego 20.10.) */
+(function(){
+  /* ---------- Fantasie-Fragen: 1–2 pro Geschichte, nach Teil Nr. (Zählung in parts) ---------- */
+  const FANTASIE = {
+    mondstrahl: [[0, 'Da blinkt etwas zwischen den Blättern. Was glaubst du, was das sein könnte?'], [5, 'Stell dir vor, du fliegst mit. Was siehst du ganz unten im Wald?']],
+    milo: [[4, 'Was glaubst du, was das fremde Licht in der grossen Stadt ist?']],
+    kiki: [[1, 'Stell dir deinen eigenen Stern vor. Welche Farbe hat er?']],
+    nova: [[5, 'Was glaubst du, wovon ein kleiner Roboter träumt?']],
+    meer: [[4, 'Stell dir vor, du stehst neben Otti im Sand. Was hörst du alles?']],
+    newyork: [[4, 'Was glaubst du, was Otti und Fompa auf der Brücke über dem Meer sehen?'], [13, 'Was glaubst du, was im Lichtpunkt des Mädchens drin ist?']],
+    katzen: [[1, 'Was glaubst du, wer auf diesem blinzelnden Planeten wohnt?'], [9, 'Der Planet blinzelt gleich wieder. Wie sieht er wohl dann aus?']],
+    fompa: [[3, 'Was glaubst du, was in dem verlorenen Traum drin ist?']],
+    zahnfee: [[4, 'Was glaubst du, was die Zahnfee mit all den kleinen Zähnen macht?']],
+    flori: [[4, 'Stell dir vor, du liegst ganz still im Wald. Was hörst du alles?']],
+    brille: [[2, 'Wenn du so eine Sternenbrille hättest, was würdest du dir zuerst anschauen?']],
+    kikimond: [[2, 'Stell dir vor, du sitzt auf der Kissenwolke. Wie fühlt sie sich an?']],
+    buerste: [[3, 'Was glaubst du, wo die Zahnbürste ist?']],
+    blatt: [[4, 'Wenn du ein Blatt wärst, wohin würdest du gerne fliegen?']]
+  };
+  const SCHLUSS = 'Gute Nacht. Schlaf schön und träum etwas Liebes.';
+  // Feste Sätze: dürfen mit Ottis Server-Stimme gesprochen und aufgenommen werden (nie Worte des Kindes).
+  window.MS_LITERALE = (window.MS_LITERALE || []).concat(
+    Object.values(FANTASIE).flat().map(f => f[1]),
+    STORIES.map(s => s.title + '.'),
+    ['Ende.', SCHLUSS, 'Alle Geschichten sind fertig. Gute Nacht.']
+  );
+
+  buildSeq = function(story){
+    const fq = FANTASIE[story.id] || [], seq = [];
+    story.parts.forEach((p, i) => {
+      seq.push(p);
+      if (p.q && p.after) seq.push({t:p.after, pic:p.pic, afterOf:p});
+      fq.forEach(f => { if (f[0] === i) seq.push({t:f[1], fq:true, pic:p.pic || story.pic, afterOf:p}); });
+    });
+    return seq;
+  };
+  const _renderPart = renderPart;
+  renderPart = function(){
+    _renderPart();
+    const p = R.seq[R.idx];
+    if (p && p.fq){
+      $('#rContent').innerHTML = `<div class="fantasie"><span class="fq-ic" aria-hidden="true">💭</span><p class="fq">${esc(p.t)}</p>
+        <p class="hint">Denk kurz nach. Sag es laut, oder erzähl es Mama oder Papa.</p>
+        <button class="btn primary wide" id="fqWeiter" type="button">💭 Ich hab eine Idee – weiter</button></div>`;
+      R.sents = [p.t];
+    }
+  };
+  const _playCurrent = playCurrent;
+  playCurrent = function(){
+    const p = R.seq[R.idx];
+    if (!R.reading || !p || !p.fq) return _playCurrent();
+    R.started = true; updatePlay();
+    TTS.speak([p.t], { onEnd: () => {} }); // Das Bild bleibt stehen, bis das Kind weitertippt.
+  };
+  $('#rContent').addEventListener('click', e => { if (e.target.closest('#fqWeiter')) nav(1); });
+  // Bewegung nur als Antwort: Tippt das Kind auf eine Figur, hüpft sie kurz.
+  $('#rStage').addEventListener('click', e => {
+    const f = e.target.closest('.fig'); if (!f || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    f.classList.remove('film-hops'); void f.getBoundingClientRect(); f.classList.add('film-hops');
+  });
+
+  /* ---------- Nur hören: Geschichten wie ein Hörspiel, Bildschirm dunkel ---------- */
+  document.body.insertAdjacentHTML('beforeend', `<div id="hoeren" hidden role="dialog" aria-modal="true" aria-label="Nur hören">
+    <button class="h-zu" id="hZu" type="button">✕ Beenden</button>
+    <div class="h-mond" aria-hidden="true"></div>
+    <p class="h-titel" id="hTitel" aria-live="polite"></p>
+    <button class="h-knopf" id="hKnopf" type="button" aria-label="Pause">⏸</button>
+    <p class="h-info" id="hInfo"></p>
+  </div>`);
+  $('#slist').insertAdjacentHTML('beforebegin', '<button class="btn wide gnbtn hoerbtn slist-hoeren" id="listHoeren" type="button"><span class="mo" aria-hidden="true">🎧</span><span>Nur hören<small>Alle Geschichten nacheinander, Bildschirm aus</small></span></button>');
+
+  const H = { on:false, pause:true, si:0, gebaut:-1, st:null, seq:[], pi:-1, sent:0, vars:{}, t:0, gehoert:0, ac:null };
+  const N = STORIES.length;
+  function stimmeDa(){ return STIMME.set.size > 0 || !!(window.NovaStimme && NovaStimme.aktiv && NovaStimme.aktiv()); }
+  function info(){
+    $('#hInfo').textContent = stimmeDa()
+      ? 'Leg das Handy weg, mach es dir gemütlich und hör einfach zu.'
+      : 'Otti liest dir mit der Stimme vom Handy vor. Mit Internet klingt er wie der echte Otti. Leg das Handy weg und hör einfach zu.';
+  }
+  function knopf(){
+    const b = $('#hKnopf'); b.textContent = H.pause ? '▶' : '⏸'; b.setAttribute('aria-label', H.pause ? 'Weiter hören' : 'Pause');
+    if ('mediaSession' in navigator) try { navigator.mediaSession.playbackState = H.pause ? 'paused' : 'playing'; } catch(e){}
+  }
+  // Hält die Ton-Sitzung offen, damit es auch bei gesperrtem Bildschirm weiterläuft (wenn das Handy es erlaubt).
+  function tonWach(an){
+    try {
+      if (an){
+        if (!H.ac){ const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return; H.ac = new AC(); const o = H.ac.createOscillator(), g = H.ac.createGain(); g.gain.value = 0; o.connect(g).connect(H.ac.destination); o.start(); }
+        if (H.ac.state !== 'running') H.ac.resume().catch(() => {});
+      } else if (H.ac && H.ac.state === 'running') H.ac.suspend().catch(() => {});
+    } catch(e){}
+  }
+  function meta(st){
+    if (!('mediaSession' in navigator)) return;
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({ title: st ? st.title : 'Nur hören', artist: 'Otti erzählt', album: 'Mondschein · Nur hören',
+        artwork: [{ src: new URL('figur.jpg', location.href).href, type: 'image/jpeg' }] });
+    } catch(e){}
+  }
+  if ('mediaSession' in navigator) try {
+    navigator.mediaSession.setActionHandler('play', () => { if (H.on) pause(false); });
+    navigator.mediaSession.setActionHandler('pause', () => { if (H.on) pause(true); });
+    navigator.mediaSession.setActionHandler('nexttrack', () => { if (H.on) springe(1); });
+    navigator.mediaSession.setActionHandler('previoustrack', () => { if (H.on) springe(-1); });
+  } catch(e){}
+
+  function sag(list, start, fertig){
+    TTS.speak(list, { start, gap: 320, rateMul: .95, onSentence: i => { H.sent = i; }, onEnd: () => { if (H.on && !H.pause) fertig(); } });
+  }
+  function nach(ms){ H.sent = 0; H.pi++; clearTimeout(H.t); H.t = setTimeout(teil, ms); }
+  function geschichte(){
+    if (!H.on || H.pause) return;
+    const st = STORIES[((H.si % N) + N) % N];
+    H.st = st; H.gebaut = H.si; H.seq = buildSeq(st); H.pi = -1; H.sent = 0; H.vars = {};
+    $('#hTitel').textContent = st.title; meta(st); info();
+    teil();
+  }
+  function teil(){
+    clearTimeout(H.t);
+    if (!H.on || H.pause) return;
+    if (H.pi < 0) return sag([H.st.title + '.'], 0, () => nach(900));
+    if (H.pi >= H.seq.length){
+      return sag(['Ende.'], 0, () => {
+        try { const d = store.get('done', {}); d[H.st.id] = Date.now(); store.set('done', d); memStory(H.st.title); } catch(e){}
+        H.gehoert++; H.si++; try { store.set('hoerI', H.si % N); } catch(e){}
+        if (H.gehoert >= N){ // Einmal alle Geschichten: dann ist Schluss.
+          return H.t = setTimeout(() => sag(['Alle Geschichten sind fertig. Gute Nacht.'], 0, () => { H.pause = true; knopf(); $('#hTitel').textContent = 'Alle Geschichten sind fertig. Gute Nacht.'; tonWach(false); }), 2500);
+        }
+        $('#hTitel').textContent = 'Gleich kommt die nächste Geschichte …';
+        H.t = setTimeout(geschichte, 4500);
+      });
+    }
+    const p = H.seq[H.pi];
+    if (p.q){ // Ohne Bildschirm wählt Otti nach einer kurzen Denkpause selbst.
+      const opts = p.opts.map(o => o.l);
+      return sag([p.q, opts.slice(0, -1).join(', ') + ' oder ' + opts[opts.length - 1] + '?'], H.sent, () => {
+        H.t = setTimeout(() => { if (!H.on || H.pause) return; Object.assign(H.vars, p.opts[Math.floor(Math.random() * p.opts.length)].v); nach(0); }, 4000);
+      });
+    }
+    if (p.fq) return sag([p.t], H.sent, () => nach(7000)); // Fantasie-Frage: nur gesprochen, mit Pause zum Nachdenken.
+    sag(splitSentences(fill(p.t, H.vars)), H.sent, () => nach(1400));
+  }
+  function pause(p){
+    H.pause = p; knopf();
+    if (p){ clearTimeout(H.t); TTS.stop(); tonWach(false); return; }
+    tonWach(true);
+    if (H.gehoert >= N) H.gehoert = 0;
+    if (H.gebaut !== H.si) geschichte(); else teil();
+  }
+  function springe(d){
+    clearTimeout(H.t); TTS.stop(); H.si += d; H.gebaut = -1;
+    if (!H.pause) geschichte(); else { const st = STORIES[((H.si % N) + N) % N]; $('#hTitel').textContent = st.title; meta(st); }
+  }
+  function oeffnen(los){
+    TTS.stop(); R.reading = false;
+    $('#hoeren').hidden = false; document.documentElement.classList.add('hoermodus');
+    H.on = true; H.pause = true; H.gehoert = 0; H.gebaut = -1;
+    try { H.si = +store.get('hoerI', 0) || 0; } catch(e){ H.si = 0; }
+    $('#hTitel').textContent = 'Tippe auf ▶, dann erzählt Otti.'; info(); knopf(); meta(null);
+    if (los) pause(false);
+    setTimeout(() => { try { $('#hKnopf').focus(); } catch(e){} }, 60);
+  }
+  function zu(){
+    H.on = false; H.pause = true; clearTimeout(H.t); TTS.stop(); tonWach(false);
+    $('#hoeren').hidden = true; document.documentElement.classList.remove('hoermodus');
+    if ('mediaSession' in navigator) try { navigator.mediaSession.metadata = null; navigator.mediaSession.playbackState = 'none'; } catch(e){}
+  }
+  $('#hKnopf').addEventListener('click', () => pause(!H.pause));
+  $('#hZu').addEventListener('click', zu);
+  $('#homeHoeren').addEventListener('click', () => oeffnen(true));
+  $('#listHoeren').addEventListener('click', () => oeffnen(true));
+  document.addEventListener('keydown', e => { if (H.on && e.key === 'Escape') zu(); });
+  window.MS_HOEREN = { oeffnen, zu, pause, zustand: () => ({ on:H.on, pause:H.pause, si:H.si, pi:H.pi, titel:H.st && H.st.title }),
+    leser: () => ({ idx:R.idx, reading:R.reading, seq:R.seq.map(p => p.fq ? 'F' : p.q ? 'Q' : 't').join('') }) };
+  // Aus der Otti-App: ../mondschein/#hoeren öffnet gleich den Hörmodus (Start mit einem Tipp, das Handy verlangt das).
+  if (location.hash === '#hoeren') setTimeout(() => { try { $('#figurStart').hidden = true; } catch(e){} oeffnen(false); }, 300);
+})();
+/* Runde 4 (21.10.): Geschichte des Tages, Filter mit Dauer, NEU-Zeichen (Vorbilder: Moshi «Story of the day», Khan Kids Bibliothek) */
+(function(){
+  if (typeof STORIES === 'undefined') return;
+  const wo = s => String(s || '').split(/\s+/).filter(Boolean).length;
+  // Dauer schätzen: alle Sätze plus eine Antwort pro Frage, ruhiges Vorlesetempo (ca. 110 Wörter pro Minute)
+  const minuten = st => Math.max(2, Math.round(st.parts.reduce((n, p) => n + wo(p.t) + (p.q ? wo(p.q) + wo(p.after) + 12 : 0), 0) / 110));
+  const tag = () => new Date().toISOString().slice(0, 10);
+  const FILTER = [['alle','Alle'],['neu','✨ Neu'],['kurz','⏱️ Kurz'],['film','🎬 Trickfilm']];
+  let filt = store.get('filter', 'alle');
+  const passt = st => filt === 'alle' || (filt === 'neu' && st.neu) || (filt === 'kurz' && minuten(st) <= 4) || (filt === 'film' && st.film);
+  const _rsl = renderStoryList;
+  renderStoryList = function(){
+    _rsl();
+    const done = store.get('done', {});
+    $$('#slist [data-story]').forEach(b => {
+      const st = STORIES[+b.dataset.story]; if (!st) return;
+      const sub = b.querySelector('.sub');
+      if (sub && !sub.querySelector('.dauer')) sub.insertAdjacentHTML('beforeend', ` <span class="dauer">· ca. ${minuten(st)} Min.</span>`);
+      const t = b.querySelector('b');
+      if (st.neu && !done[st.id] && t && !t.querySelector('.neutag')) t.insertAdjacentHTML('beforeend', ' <span class="neutag">NEU</span>');
+      b.hidden = !passt(st);
+    });
+    $$('#slist [data-go], #slist [data-letter]').forEach(b => { b.hidden = filt !== 'alle'; });
+    let ch = $('#sFilter');
+    if (!ch){
+      ch = document.createElement('div'); ch.id = 'sFilter'; ch.className = 'sfilter'; ch.setAttribute('role', 'group'); ch.setAttribute('aria-label', 'Geschichten filtern');
+      $('#slist').before(ch);
+      ch.addEventListener('click', e => { const k = e.target.closest('[data-f]'); if (!k) return; filt = k.dataset.f; store.set('filter', filt); renderStoryList(); });
+    }
+    ch.innerHTML = FILTER.map(([k, l]) => `<button type="button" data-f="${k}" aria-pressed="${filt === k}" class="${filt === k ? 'an' : ''}">${l}</button>`).join('');
+  };
+  // Geschichte des Tages: jeden Tag eine andere, neue zuerst
+  function tagesGeschichte(){
+    const done = store.get('done', {});
+    const neu = STORIES.filter(s => s.neu && !done[s.id]);
+    const liste = neu.length ? neu : STORIES;
+    const d = new Date(), n = d.getFullYear() * 400 + d.getMonth() * 31 + d.getDate();
+    return liste[n % liste.length];
+  }
+  const knopf = document.createElement('button');
+  knopf.type = 'button'; knopf.id = 'homeTag'; knopf.className = 'btn wide tagbtn';
+  const gn = $('#homeGN'); if (gn) gn.before(knopf);
+  function tagZeigen(){
+    const st = tagesGeschichte(); if (!st) { knopf.hidden = true; return; }
+    knopf.innerHTML = `<span class="tg-ic" aria-hidden="true">🌟</span><span><small class="tg-k">Geschichte des Tages · ca. ${minuten(st)} Min.</small><b>${esc(st.title)}</b></span>`;
+    knopf.setAttribute('aria-label', 'Geschichte des Tages: ' + st.title);
+    knopf.onclick = () => openStory(st);
+  }
+  tagZeigen();
+  if (typeof renderHome === 'function'){ const _rh = renderHome; renderHome = function(){ _rh.apply(this, arguments); tagZeigen(); }; }
+})();
+/* Runde 9: Griffe für den Schlaf-Timer (runde9.js) */
+try { window.MS_TON = { S, TTS, MUSIK }; } catch(e){}
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>
-<script src="../nova/nova.js" data-nova-app="Mondschein" data-nova-bild="figur.jpg" defer></script>
+<script src="../nova/nova.js" data-nova-app="Mondschein" data-nova-kind="1" data-nova-bild="figur.jpg" data-nova-geraetestimme="0" defer></script>
+<script src="feedback.js" data-app="Mondschein" defer></script>
+<script src="runde6.js" defer></script>
+<script src="runde7.js" defer></script>
+<script src="runde8.js" defer></script>
+<script src="runde9.js" defer></script>
+<script src="grafik.js" data-modus="weich" defer></script>
+<script src="abenddimmen.js" defer></script>
 <!-- Figuren-Film (Trickfilm-Look): Farben, Funken, Atmen, Tipp-Reaktion, Szenenwechsel. Nur Optik. -->
 <style id="figurFilmCss">
 .film-aurora{position:fixed;inset:-20%;z-index:-1;pointer-events:none;filter:blur(60px);opacity:.5}
@@ -2739,7 +3705,8 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
   var farben=['#F2C14E','#9B8CFF','#7FC8FF','#ffffff'];
   // Farbschleier + aufsteigende Funken (wie Fias Nest)
   var au=document.createElement('div');au.className='film-aurora';au.setAttribute('aria-hidden','true');au.innerHTML='<i></i><i></i><i></i>';document.body.prepend(au);
-  if(!ruhig){var cv=document.createElement('canvas');cv.id='filmFunken';cv.setAttribute('aria-hidden','true');document.body.prepend(cv);var cx=cv.getContext('2d'),W,H,P=[],dp=devicePixelRatio||1;
+  var FUNKEN_AN=false; // Ruhe-Prinzip: keine Endlos-Partikel
+  if(!ruhig&&FUNKEN_AN){var cv=document.createElement('canvas');cv.id='filmFunken';cv.setAttribute('aria-hidden','true');document.body.prepend(cv);var cx=cv.getContext('2d'),W,H,P=[],dp=devicePixelRatio||1;
     function gr(){W=cv.width=innerWidth*dp;H=cv.height=innerHeight*dp}gr();addEventListener('resize',gr);
     function hx(c){c=c.replace('#','');return parseInt(c.substr(0,2),16)+','+parseInt(c.substr(2,2),16)+','+parseInt(c.substr(4,2),16)}
     var tone=[hx('#F2C14E'),hx('#9B8CFF'),hx('#7FC8FF')];
@@ -2751,9 +3718,10 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
   if(s){
     for(var i=0;i<16;i++){var f=document.createElement('i');f.className='film-funke';f.style.left=(5+Math.random()*90)+'%';f.style.top=(8+Math.random()*84)+'%';f.style.setProperty('--c',farben[i%3]);f.style.setProperty('--d',(3.5+Math.random()*3)+'s');f.style.setProperty('--v',(Math.random()*4)+'s');s.appendChild(f);}
     var go=document.getElementById('figurStartGo');
-    if(go)go.onclick=function(e){sterne(e.clientX,e.clientY,10);try{sessionStorage.setItem('figurStart','1');}catch(x){}
+    if(go)go.onclick=function(e){sterne(e.clientX,e.clientY,10);try{sessionStorage.setItem('figurStart','1');localStorage.setItem('ms_figurStart','1');}catch(x){}
       if(ruhig){s.hidden=true;return;}s.classList.add('geht');setTimeout(function(){s.hidden=true;s.classList.remove('geht');},700);};
   }
+  window.filmSterne=function(x,y,n){sterne(x,y,n);};
   function sterne(x,y,n){if(ruhig||!x)return;for(var i=0;i<n;i++){var st=document.createElement('i');st.className='film-stern';var w=Math.random()*Math.PI*2,r=30+Math.random()*40;st.style.left=x+'px';st.style.top=y+'px';st.style.setProperty('--x',Math.cos(w)*r+'px');st.style.setProperty('--y',Math.sin(w)*r+'px');st.style.setProperty('--c',farben[i%4]);document.body.appendChild(st);setTimeout(st.remove.bind(st),800);}}
   // Figur reagiert auf Tipp
   document.addEventListener('click',function(e){
@@ -2772,5 +3740,145 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
   }
 })();
 </script>
+<style>
+/* ---------- Trickfilm-Kulissen hinter den Figuren (Geschichten wie ein kleiner Film) ---------- */
+.stage.kino{position:relative;overflow:hidden;background:#0d1838;min-height:200px;isolation:isolate}
+.stage.kino>.kul{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.stage.kino>.kul svg{width:100%;height:100%;display:block;animation:kulKB 26s ease-in-out infinite alternate;transform-origin:50% 70%}
+.stage.kino>.kul .kinobild{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:kulKB 26s ease-in-out infinite alternate}
+.stage.kino.hatbild{min-height:300px}
+.stage.kino.hatbild>.fig{display:none}
+.stage.kino>.fig{filter:drop-shadow(0 8px 14px rgba(0,0,0,.35))}
+.stage.kino .fig.nova-film{box-shadow:0 0 0 3px #ffe08a,0 0 26px rgba(255,214,107,.45)}
+@keyframes kulKB{from{transform:scale(1) translateX(0)}to{transform:scale(1.09) translateX(-2.5%)}}
+.kul .tw{animation:kulTw 3.2s ease-in-out infinite}.kul .tw2{animation:kulTw 4.1s ease-in-out infinite .9s}
+@keyframes kulTw{0%,100%{opacity:.25}50%{opacity:1}}
+.kul .steig{animation:kulSteig 6s linear infinite}.kul .steig2{animation:kulSteig 7.5s linear infinite 2s}
+@keyframes kulSteig{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(-120px);opacity:0}}
+.kul .blink{animation:kulBlink 5s ease-in-out infinite}
+@keyframes kulBlink{0%,100%{opacity:1}45%,55%{opacity:.35}}
+.kul .schweb{animation:kulSchweb 6s ease-in-out infinite}
+@keyframes kulSchweb{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.screen{padding-bottom:96px}
+.btn.mini{padding:2px 8px;min-height:0;font-size:12px;border-radius:10px;margin-left:6px;box-shadow:none}
+.sitem .filmtag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.4px;background:linear-gradient(90deg,#ffd66b,#f2b43a);color:#1d2a4f;border-radius:999px;padding:1px 8px;margin-left:4px;vertical-align:2px}
+/* ---------- Gute-Nacht-Knopf ---------- */
+.gnbtn{display:flex;align-items:center;gap:12px;justify-content:flex-start;text-align:left;background:linear-gradient(135deg,#24336b,#121a3d);color:#fff6d6;border:2px solid #f2c14e;box-shadow:0 5px 0 #0b1026,0 0 24px rgba(242,193,78,.35);margin-bottom:12px}
+.gnbtn .mo{font-size:34px;filter:drop-shadow(0 0 8px rgba(255,214,107,.8));animation:float 4.5s ease-in-out infinite}
+.gnbtn small{display:block;font-weight:600;opacity:.85;font-size:16px}
+.rit-list{display:grid;gap:10px}
+.rit{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border-radius:22px;padding:12px 14px;border:2px solid var(--line,#d9def0);background:var(--card,#fff);color:inherit;font:inherit;font-weight:800;font-size:17px;cursor:pointer}
+.rit .nr{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:24px;background:var(--sky)}
+.rit small{display:block;font-weight:600;opacity:.8;font-size:16px}
+.rit.ok{border-color:#5fb26b}.rit.ok .nr{background:#c9ecc9}
+.rit.next{box-shadow:0 0 0 3px rgba(242,193,78,.6)}
+.rit-head{text-align:center;margin:4px 0 12px}
+.rit-head .stage{min-height:180px}
+.atem{display:block;margin:0 auto;width:150px;height:150px;transition:transform 4s ease-in-out}
+.atem.ein{transform:scale(1.22)}
+/* ---------- Nachtlicht ---------- */
+#nachtlicht{position:fixed;inset:0;z-index:2147483600;background:radial-gradient(120% 90% at 50% 30%,#141c44,#05081a 70%);color:#cdd6ff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px 16px calc(env(safe-area-inset-bottom) + 24px)}
+#nachtlicht[hidden]{display:none}
+#nachtlicht .nl-fig svg{width:200px;height:200px;filter:brightness(.7) saturate(.8)}
+#nachtlicht .nl-mond{width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 40% 40%,#fff3c4,#cfae55);box-shadow:0 0 60px 20px rgba(207,174,85,.25);animation:nlAtmen 8s ease-in-out infinite}
+@keyframes nlAtmen{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:.9;transform:scale(1.04)}}
+#nachtlicht .nl-stern{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;animation:kulTw 4s ease-in-out infinite}
+#nachtlicht p{margin:0;font-size:17px;text-align:center;opacity:.8}
+#nachtlicht .btn{background:#1a2350;color:#cdd6ff;border-color:#2c3670;box-shadow:none}
+/* ---------- Runde 2: Posen, Lieblingsgeschichte, Einführung ---------- */
+.fig.otti-wippt:not(.asleep){animation:ottiWippen 4.8s ease-in-out infinite;transform-origin:50% 90%}
+.fig.otti-wippt.asleep{animation:ottiSchlaf 6s ease-in-out infinite;transform-origin:50% 90%}
+@keyframes ottiWippen{0%,100%{transform:rotate(-1.6deg) translateY(0)}50%{transform:rotate(1.6deg) translateY(-4px)}}
+@keyframes ottiSchlaf{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+.favbtn{margin-bottom:12px;display:flex;align-items:center;gap:12px;justify-content:flex-start;text-align:left;background:linear-gradient(135deg,#fff3c4,#ffd66b);color:#1d2a4f;border:2px solid #f2b43a}
+.favbtn>span:first-child{font-size:30px}
+.favbtn small{display:block;font-weight:600;opacity:.8;font-size:16px}
+#tour{position:fixed;inset:0;z-index:2147483500;background:rgba(5,9,30,.82);display:flex;align-items:center;justify-content:center;padding:16px}
+#tour[hidden]{display:none}
+#tour .tour-karte{width:100%;max-width:400px;background:linear-gradient(160deg,#1b2a63,#0e1740);color:#fff6e3;border:2px solid #f2c14e;border-radius:26px;padding:20px 18px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:filmAuf .4s ease}
+#tour h2{margin:10px 0 6px;color:#ffd66b;font-size:22px}
+#tour p{margin:0;font-size:16px;line-height:1.45}
+#tour .tour-bild{width:140px;height:140px;margin:0 auto;font-size:84px;line-height:140px}
+#tour .tour-bild .fig.nova-film{width:140px;height:140px}
+#tour .tour-punkte{display:flex;gap:6px;justify-content:center;margin-top:12px}
+#tour .tour-punkte i{width:8px;height:8px;border-radius:50%;background:#ffffff40}#tour .tour-punkte i.an{background:#ffd66b}
+#tour .btn{color:#1d2a4f}
+@media (prefers-reduced-motion:reduce){.fig.otti-wippt{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.stage.kino>.kul svg,.stage.kino>.kul .kinobild,.kul .tw,.kul .tw2,.kul .steig,.kul .steig2,.kul .blink,.kul .schweb,#nachtlicht .nl-mond{animation:none!important}}
+/* ---------- Runde 3: erster Eindruck ---------- */
+.sternchip{display:flex;align-items:center;gap:6px;margin:12px auto 0;min-height:44px;padding:0 18px;border-radius:999px;border:2px solid var(--moon2);background:var(--card);font-weight:800;font-size:17px;box-shadow:var(--shadow)}
+.sternchip b{font-size:19px}
+.sternchip.neu{animation:sternNeu .7s cubic-bezier(.3,1.6,.5,1)}
+@keyframes sternNeu{40%{transform:scale(1.25) rotate(-4deg)}}
+.gnbtn.lockt{animation:gnLockt 2.4s ease-in-out infinite}
+@keyframes gnLockt{0%,60%,100%{box-shadow:0 5px 0 #0b1026,0 0 24px rgba(242,193,78,.35)}30%{box-shadow:0 5px 0 #0b1026,0 0 0 6px rgba(242,193,78,.45),0 0 40px rgba(242,193,78,.6)}}
+:root[data-night="1"] .tile svg{background:#fff6e3;border-radius:18px;padding:5px;box-sizing:content-box;width:54px;height:54px}
+:root[data-night="1"] .tile:before{opacity:.35}
+:root[data-night="1"] .parentbtn{color:#b9c1dc}
+:root[data-night="1"] .muted{color:#a3aac4}
+@media (prefers-reduced-motion:reduce){.gnbtn.lockt,.sternchip.neu{animation:none}}
+</style>
+
+<!-- Ruhe-Prinzip (Diego 20.10.): ruhige Bilder regen die eigene Fantasie an. Fantasie-Fragen in den Geschichten. «Nur hören» wie ein Hörspiel. -->
+<style id="ruhePrinzip">
+/* Figuren stehen fast still (sanft atmen, selten blinzeln). Bewegung nur als Antwort aufs Tippen. Hintergründe ruhig, keine Endlos-Partikel. */
+.float,.gnbtn .mo,.letterbtn .env,.figur-logo,.figur-hero img,#figurStart img,#figurStart h1,.fig.otti-wippt:not(.asleep),.glitzer,.film-aurora i,
+.fig .flap,.fig .tail,.fig .bob,.fig .heart,.fig .twinkle,.fig .zz,.kul .tw,.kul .tw2,.kul .steig,.kul .steig2,.kul .blink,.kul .schweb{animation:none!important}
+.film-funke{display:none!important}
+#figurStart button{animation:filmAuf .8s .45s ease-out both!important}
+.fig .breathe{animation-duration:7s!important}
+.fig .blink{animation-duration:12s!important}
+.wave,.kwave{animation-iteration-count:4!important}
+.gnbtn.lockt,.callbtn .ph{animation-iteration-count:3!important}
+#nachtlicht .nl-stern{animation-duration:9s!important}
+/* Standbilder: höchstens ein ganz langsamer, sanfter Zoom, dann bleibt das Bild stehen */
+.filmcard img{animation:ruheZoom 40s ease-out both!important}
+.stage.kino>.kul svg,.stage.kino>.kul .kinobild{animation:ruheZoom 45s ease-out both!important}
+@keyframes ruheZoom{from{transform:scale(1)}to{transform:scale(1.05)}}
+/* Szenenwechsel: sanft überblenden statt bewegen */
+#rStage>.fig:not(.asleep){animation:ruheEin .7s ease both}
+#rContent .story-text,#rContent .fantasie{animation:ruheEin .6s ease both}
+@keyframes ruheEin{from{opacity:0}to{opacity:1}}
+/* Fantasie-Frage */
+.fantasie{text-align:center;padding:2px 0 4px}
+.fantasie .fq-ic{display:block;font-size:44px;line-height:1.1}
+.fantasie .fq{font-size:22px;font-weight:800;line-height:1.35;margin:6px 0 8px}
+.fantasie .hint{opacity:.8;margin:0 0 12px;font-size:16px}
+/* Nur hören */
+.hoerbtn{background:linear-gradient(135deg,#18224d,#080d22)!important;border-color:#8fa3e8!important}
+.slist-hoeren{margin:0 0 12px}
+#hoeren{position:fixed;inset:0;z-index:100001;background:#02040a;color:#c3cae3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
+  padding:calc(env(safe-area-inset-top) + 64px) 16px calc(env(safe-area-inset-bottom) + 32px);text-align:center;overflow:hidden}
+#hoeren[hidden]{display:none}
+#hoeren .h-mond{width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 40% 40%,#8c7d4c,#352f1d);opacity:.5}
+#hoeren .h-titel{font-size:18px;line-height:1.4;opacity:.62;max-width:30ch;min-height:2.8em;margin:0}
+#hoeren .h-knopf{width:136px;height:136px;border-radius:50%;border:2px solid #313a63;background:#0a0f22;color:#d6dcf3;font-size:54px;line-height:1;cursor:pointer;touch-action:manipulation}
+#hoeren .h-knopf:active{transform:scale(.97)}
+#hoeren .h-info{font-size:15px;line-height:1.45;opacity:.5;max-width:32ch;margin:0}
+#hoeren .h-zu{position:absolute;top:calc(env(safe-area-inset-top) + 12px);left:16px;min-height:44px;padding:8px 16px;border-radius:999px;border:1px solid #262d52;background:none;color:#8890b5;font:inherit;font-size:15px;cursor:pointer}
+html.hoermodus,html.hoermodus body{overflow:hidden}
+html.hoermodus .nova-btn,html.hoermodus .nova-pille,html.hoermodus .nova-panel,html.hoermodus [class^="fb-"]{display:none!important}
+@media (prefers-reduced-motion:reduce){
+  .filmcard img,.stage.kino>.kul svg,.stage.kino>.kul .kinobild,#rStage>.fig,#rContent .story-text,#rContent .fantasie,.fig .breathe,.fig .blink,.wave,.kwave,#nachtlicht .nl-stern{animation:none!important}
+  #hoeren .h-knopf:active{transform:none}
+}
+</style>
+<style>
+.tagbtn{display:flex;align-items:center;gap:14px;text-align:left;background:linear-gradient(135deg,#2b2a6e,#12183f)!important;border:2px solid #f2c14e!important;color:#fff4d6!important;box-shadow:0 8px 24px #0006,0 0 0 4px #f2c14e1f}
+.tagbtn .tg-ic{font-size:30px;width:52px;height:52px;flex:none;border-radius:16px;display:grid;place-items:center;background:radial-gradient(#fff3c4,#f2c14e 70%)}
+.tagbtn b{display:block;font-size:18px;line-height:1.25}
+.tagbtn .tg-k{display:block;font-size:13px;letter-spacing:.3px;opacity:.85;font-weight:700;text-transform:none}
+.sfilter{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 12px;scrollbar-width:none}
+.sfilter::-webkit-scrollbar{display:none}
+.sfilter button{flex:none;min-height:44px;padding:8px 16px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+.sfilter button.an{background:#f2c14e;border-color:#f2c14e;color:#1d2a4f}
+.sitem .dauer{opacity:.92;white-space:nowrap}
+.sitem .neutag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.4px;background:#9be37c;color:#13361a;border-radius:999px;padding:1px 8px;margin-left:4px;vertical-align:2px}
+#slist [hidden]{display:none!important}
+</style>
+<script src="lernen.js" data-app="Mondschein" data-figur="otti" data-name="Mondschein" data-kind="1" data-unten="16" defer></script>
+<script src="musik.js" data-app="mondschein" defer></script>
+<script src="inhalt/welten-daten.js" defer></script>
+<script src="inhalt/welten.js" data-app="mondschein" defer></script>
 </body>
 </html>

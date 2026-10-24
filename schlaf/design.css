@@ -1,0 +1,173 @@
+/* Fias Nest – Design «Wolldecke» (23.10.): gemütlich wie Wolle und Holz, ruhig und warm.
+   Young Serif + Nunito, Radius 12, Startseite als ruhige Liste.
+   Tagsüber helle Wolle (#EFE7DC); ab drei Stunden vor dem Schlafen, nachts, im Bett, im Glutmodus
+   und bei dunklem System: dunkle Wolle (warmes Braun, nie grelles Weiss). Nur Darstellung. */
+
+html:root{
+  --w-bg:#EFE7DC; --w-surface:#F8F3EC; --w-ink:#3A2E25; --w-muted:#6B5A4C; --w-accent:#8A6A4F; --w-accent-text:#74563C;
+  --w-on:#FFFFFF; --w-line:rgba(58,46,37,.13); --w-line2:rgba(58,46,37,.26); --w-soft:#EADFD0; --w-field:#FFFDF9;
+  --w-shadow:0 1px 2px rgba(58,46,37,.06),0 8px 22px -16px rgba(58,46,37,.35);
+  --w-fd:"Young Serif",Georgia,"Times New Roman",serif; --w-fb:"Nunito",ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif; --w-r:12px;
+  /* alte Variablen der App auf Wolle umbiegen */
+  --cream:var(--w-ink); --muted:var(--w-muted); --gold:var(--w-accent); --line:var(--w-line); --night:var(--w-bg);
+  --display:var(--w-fd); --body:var(--w-fb);
+  /* Runde-8-Tokens */
+  --t-bg:var(--w-bg); --t-text:var(--w-ink); --t-leise:var(--w-muted); --t-karte:var(--w-surface); --t-flaeche:var(--w-soft);
+  --t-rand:var(--w-line); --t-rand2:var(--w-line2); --t-primaer:var(--w-accent); --t-primaer-text-auf-hell:var(--w-accent-text);
+  --t-auf-primaer:var(--w-on); --t-kopf:var(--w-ink); --t-akzent:var(--w-accent); --t-auf-akzent:var(--w-on);
+  --t-primaer-zart:rgba(138,106,79,.14); --t-schatten:var(--w-shadow); --t-radius:var(--w-r); --t-kopffont:var(--w-fd);
+  --t-toast:#3A2E25; --t-sos:var(--w-surface); --t-feld:var(--w-field); --t-knopf2:transparent; --t-fokus:var(--w-accent);
+  --g9-akzent:var(--w-accent); --g9-fokus:var(--w-accent); --g9-auswahl:rgba(138,106,79,.25);
+  --g9-ico-bg:var(--w-soft); --g9-ico-fg:var(--w-accent-text); --g9-ico-rand:var(--w-line);
+  --g9-lade-a:var(--w-soft); --g9-lade-b:rgba(255,255,255,.5);
+  color-scheme:light;
+}
+/* Dunkle Wolle: Abend, Nacht, Bett, Glut, dunkles System */
+html.dz-nacht:root{
+  --w-bg:#1D1713; --w-surface:#2A211B; --w-ink:#EFE4D6; --w-muted:#C2B2A1; --w-accent:#C9A27E; --w-accent-text:#D8B592;
+  --w-on:#1D1713; --w-line:rgba(239,228,214,.12); --w-line2:rgba(239,228,214,.26); --w-soft:#342920; --w-field:#231B16;
+  --w-shadow:0 1px 2px rgba(0,0,0,.25),0 10px 26px -16px rgba(0,0,0,.7);
+  --t-primaer-zart:rgba(201,162,126,.16); --t-toast:#3A2E25; --g9-auswahl:rgba(201,162,126,.3); --g9-lade-b:rgba(255,255,255,.06);
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){html:root:not(.dz-tag){
+  --w-bg:#1D1713; --w-surface:#2A211B; --w-ink:#EFE4D6; --w-muted:#C2B2A1; --w-accent:#C9A27E; --w-accent-text:#D8B592;
+  --w-on:#1D1713; --w-line:rgba(239,228,214,.12); --w-line2:rgba(239,228,214,.26); --w-soft:#342920; --w-field:#231B16;
+  --w-shadow:0 1px 2px rgba(0,0,0,.25),0 10px 26px -16px rgba(0,0,0,.7);
+  --t-primaer-zart:rgba(201,162,126,.16); color-scheme:dark}}
+
+/* Grund: Wollfläche, keine Sterne, kein Nordlicht */
+html body{background:var(--w-bg)!important;color:var(--w-ink);font-family:var(--w-fb)}
+html body::before,html body .aurora{display:none!important}
+html body .zeitlicht{opacity:.5}
+html:not(.dz-nacht) body #sparks{opacity:0!important}
+html.dz-nacht body #sparks{opacity:.3!important}
+
+/* Schrift: Young Serif für Titel, Nunito für Text */
+html body h1{background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;color:var(--w-ink)!important;font-family:var(--w-fd)!important;font-weight:400!important;letter-spacing:-.01em}
+html body h2,html.g9 body .screen h2{font-family:var(--w-fd);font-weight:400!important;color:var(--w-ink);letter-spacing:0}
+html body .say{color:var(--w-ink)!important;font-family:var(--w-fd);font-style:normal}
+html body .muted,html body header p{color:var(--w-muted)}
+html body .tag{background:var(--w-soft);color:var(--w-accent-text);border-color:var(--w-line)}
+
+/* ── Startseite als Liste (wie die Vorschau): Kopfzeile, grosser Titel, Fia klein als Zeichen ── */
+html body #home .hero{display:grid;grid-template-columns:1fr auto;grid-template-areas:"titel fia" "sagt sagt";align-items:center;text-align:left;gap:12px 14px}
+html body #home .hero h1{grid-area:titel;font-size:2.5rem!important;line-height:1.02;margin:0}
+html body #home .buehne{grid-area:fia;padding:0;width:64px;height:64px;display:block}
+html body #home .buehne .halo{display:none}
+html body #home .cover{width:64px!important;height:64px!important;border-radius:50%!important;border:2px solid var(--w-surface)!important;box-shadow:0 0 0 1px var(--w-line2),0 6px 14px -8px rgba(58,46,37,.5)!important;animation:none}
+html body #home .tipp{bottom:-10px;font-size:.6875rem;padding:2px 8px;background:var(--w-accent);color:var(--w-on);box-shadow:none;font-weight:700}
+html body #home .tipp::before{border-bottom-color:var(--w-accent)}
+html body #home .say.bubble{grid-area:sagt;max-width:none;width:100%;box-sizing:border-box;margin:0;text-align:left;font-size:1.125rem!important;line-height:1.4;padding:12px 16px;border-radius:var(--w-r);background:var(--w-surface);border:1px solid var(--w-line);box-shadow:none}
+
+/* «Jetzt dran»: hervorgehobene erste Zeile der Liste */
+html body .jetzt{background:var(--w-surface)!important;border:1px solid var(--w-line)!important;border-left:4px solid var(--w-accent)!important;border-radius:var(--w-r);color:var(--w-ink)!important;box-shadow:var(--w-shadow)!important;min-height:72px;padding:14px 16px}
+html body .jetzt *{color:var(--w-ink)!important}
+html body .jetzt small{color:var(--w-accent-text)!important;opacity:1;letter-spacing:.08em}
+html body .jetzt b{font-family:var(--w-fd);font-weight:400;font-size:1.25rem}
+html body .jetzt em{color:var(--w-muted)!important;opacity:1}
+html body .jetzt .ic,html.g9 body .jetzt .ic.g9-ico-inhalt{width:44px;height:44px;border-radius:10px;background:var(--w-soft)!important;color:var(--w-accent-text)!important;box-shadow:none!important;font-size:1.5rem}
+html body .jetzt .pfeil{color:var(--w-accent-text)!important}
+
+/* Abschnittstitel klein und gesperrt wie in der Liste */
+html body h2.abschnitt{font-family:var(--w-fb)!important;font-size:.8125rem!important;font-weight:700!important;letter-spacing:.09em;text-transform:uppercase;color:var(--w-muted)!important;margin:10px 4px -6px}
+
+/* Kacheln des Tages: eine gruppierte Liste mit feinen Linien und Pfeil */
+html body #tiles{display:flex;flex-direction:column;gap:0;background:var(--w-surface);border:1px solid var(--w-line);border-radius:var(--w-r);padding:0 14px;box-shadow:var(--w-shadow)}
+html body #tiles .tile{display:grid;grid-template-columns:40px 1fr 16px;grid-template-rows:auto auto;column-gap:12px;row-gap:1px;align-items:center;min-height:64px!important;padding:12px 0;background:none!important;border:0!important;border-bottom:1px solid var(--w-line)!important;border-radius:0!important;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+html body #tiles .tile:last-child{border-bottom:0!important}
+html body #tiles .tile .ic{grid-row:1/3;grid-column:1}
+html body #tiles .tile b{grid-column:2;grid-row:1;align-self:end;font-size:1.0625rem;font-weight:700}
+html body #tiles .tile small{grid-column:2;grid-row:2;align-self:start;color:var(--w-muted)}
+html body #tiles .tile::after{content:"›";grid-column:3;grid-row:1/3;color:var(--w-muted);font-size:1.4rem;line-height:1}
+html body #tiles .tile.now{position:relative}
+html body #tiles .tile.now b{color:var(--w-accent-text)}
+html body #tiles .tile.now::before{content:"";position:absolute;left:-14px;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--w-accent)}
+
+/* Icons in den Zeilen: Holzton im ruhigen Feld statt Goldglanz */
+html.g9 body .tile .ic.g9-ico-inhalt,html body .tile .ic{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:1.3rem;color:var(--w-accent-text)!important;background:var(--w-soft)!important;box-shadow:none!important}
+html.g9 body .tile.now .ic.g9-ico-inhalt{background:var(--t-primaer-zart)!important}
+html.g9 body .tile.wide .ic.g9-ico-inhalt{width:40px;height:40px}
+
+/* Karten und Schritte: Wollfläche, Radius 12, kaum Schatten */
+html body .card,html body .tile,html body li.step,html.g9 body .card,html.g9 body .tile,html.g9 body li.step{background:var(--w-surface)!important;border:1px solid var(--w-line)!important;border-radius:var(--w-r)!important;box-shadow:var(--w-shadow)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;color:var(--w-ink)}
+html.g9 body :is(.r6-karte,.r7-karte,.r8-karte,.r7-was){border-radius:var(--w-r)!important}
+html body .tile.now,html body li.step.active{border-color:var(--w-accent)!important;box-shadow:0 0 0 1px var(--w-accent),var(--w-shadow)!important}
+html body .tile small,html body li.step p{color:var(--w-muted)}
+html body .tile b{color:var(--w-ink)}
+html body .dot{background:var(--w-accent);box-shadow:none}
+html body li.step.done .dot{background:var(--w-line2)}
+html body li.step.active .dot{animation:none;box-shadow:0 0 0 4px var(--t-primaer-zart)}
+html body .chain span{background:var(--w-soft);box-shadow:inset 0 0 0 1px var(--w-line)}
+html body .chain span.on{background:var(--w-accent);box-shadow:none}
+html body .chain span.pearl{background:radial-gradient(circle,#F6E7C8,var(--w-accent) 70%);box-shadow:none}
+html body .glutzahl,html body .count,html body .big-num,html body .plan li b,html body .worries li small{color:var(--w-accent-text)}
+html body .welt{background:var(--w-surface);border:1px solid var(--w-line);border-radius:var(--w-r);color:var(--w-ink);box-shadow:var(--w-shadow)}
+html body .welt img{border-color:var(--w-surface);box-shadow:0 0 0 1px var(--w-line2);width:48px;height:48px}
+html body .welt small,html body .welt .pfeil{color:var(--w-accent-text)}
+html body .welt em{color:var(--w-muted)}
+
+/* Knöpfe: Holz-Braun, Radius 12, ruhige Schrift */
+html body button{font-family:var(--w-fb);border-radius:var(--w-r)}
+html body .screen button:not(.r8-btn):not(.r7-btn):not(.tile):not(.jetzt):not(.r8-sosb):not(.iconbtn):not(.r8-heute):not([class*=nova]):not(:is(.r6,.r7,.r8,.r7-was,.links) *):not(.r6-k):not(.ghost):not(.chip):not(.mic):not(:is(.faces,.figs,.worries,li.step.done) *){background:var(--w-accent)!important;color:var(--w-on)!important;box-shadow:none!important;border-radius:var(--w-r);font-weight:700;letter-spacing:.02em}
+html body .screen button:not(.r8-btn):not(.r7-btn):not(.tile):not(.jetzt):not(.r8-sosb):not(.iconbtn):not(.r8-heute):not([class*=nova]):not(:is(.r6,.r7,.r8,.r7-was,.links) *):not(.r6-k):not(.ghost):not(.chip):not(.mic):not(:is(.faces,.figs,.worries,li.step.done) *) :is(small,span,em){color:inherit!important}
+/* Nebenknöpfe: gleiche (hohe) Gewichtung wie die Runde-8-Regel, damit sie gewinnen */
+html body .screen button:not(.r8-btn):not(.r7-btn):not(.tile):not(.jetzt):not(.r8-sosb):not(.iconbtn):not(.r8-heute):not([class*=nova]):not(:is(.r6,.r7,.r8,.r7-was,.links) *):not(.r6-k):is(.ghost,.chip,.mic,:is(.faces,.figs,.worries,li.step.done) *){background:transparent!important;color:var(--w-accent-text)!important;border:1px solid var(--w-line2)!important;box-shadow:none!important}
+html body .screen button:not(.r8-btn):not(.r7-btn):not(.tile):not(.jetzt):not(.r8-sosb):not(.iconbtn):not(.r8-heute):not([class*=nova]):not(:is(.r6,.r7,.r8,.r7-was,.links) *):not(.r6-k):is(.figs *){background:var(--w-surface)!important;color:var(--w-ink)!important}
+html body .screen button:not(.r8-btn):not(.r7-btn):not(.tile):not(.jetzt):not(.r8-sosb):not(.iconbtn):not(.r8-heute):not([class*=nova]):not(:is(.r6,.r7,.r8,.r7-was,.links) *):not(.r6-k):is(.figs *) :is(small,span,em){color:var(--w-muted)!important}
+html body .screen button:not(.r8-btn):not(.r7-btn):not(.tile):not(.jetzt):not(.r8-sosb):not(.iconbtn):not(.r8-heute):not([class*=nova]):not(:is(.r6,.r7,.r8,.r7-was,.links) *):not(.r6-k):is(.chip.sel,.chip.done,:is(.faces,.figs) *.sel){background:var(--t-primaer-zart)!important;color:var(--w-ink)!important;border:1px solid var(--w-accent)!important}
+html body .screen button:not(.r8-btn):not(.r7-btn):not(.tile):not(.jetzt):not(.r8-sosb):not(.iconbtn):not(.r8-heute):not([class*=nova]):not(:is(.r6,.r7,.r8,.r7-was,.links) *):not(.r6-k).mic.an{background:#8A2A16!important;color:#fff!important}
+html body button[disabled]:not(.ghost){background:var(--w-soft)!important;color:var(--w-muted)!important;border:1px solid var(--w-line)!important}
+html body .links button{background:none!important;color:var(--w-muted)!important}
+html body .iconbtn{background:var(--w-surface)!important;color:var(--w-ink)!important;border:1px solid var(--w-line)!important;box-shadow:none!important;border-radius:var(--w-r)!important}
+html body .tel{color:var(--w-accent-text);border-color:var(--w-line2);border-radius:var(--w-r)}
+html body .dauer{color:var(--w-accent-text);border-color:var(--w-line);background:var(--w-soft)}
+
+/* Felder */
+html body :is(input,textarea),html.g9 body select{background:var(--w-field);color:var(--w-ink);border:1px solid var(--w-line2);border-radius:10px}
+html.g9 body select option{color:var(--w-ink);background:var(--w-surface)}
+html.g9 body input[type=time],html.g9 body input[type=date]{color-scheme:inherit}
+html body :is(input,textarea)::placeholder{color:var(--w-muted)!important;opacity:.85}
+html body :is(input,textarea):focus{outline-color:var(--w-accent)}
+html body label,html body .switch,html body .mix label,html body label.nurhoeren{color:var(--w-ink)}
+
+/* Listen, Geschichten, Sorgen, Monde */
+html body :is(.worries li,.list li,.story,.monde button,.chip){background:var(--w-surface);border-color:var(--w-line);color:var(--w-ink);border-radius:var(--w-r)}
+html body .monde button.sel{background:var(--t-primaer-zart);border-color:var(--w-accent);box-shadow:none}
+html body .story.heute{border-color:var(--w-accent)}
+html body .nurhoeren{background:var(--w-surface);border-color:var(--w-line);border-radius:var(--w-r)}
+html body .note{border-top-color:var(--w-line);color:var(--w-muted)}
+html body .plan li{border-bottom-color:var(--w-line)}
+html body .kugel .t small,html body .list li small,html body .story small,html body .mondwoche small,html body .mix output,html body .wahl h3{color:var(--w-muted)}
+
+/* Tagesband */
+html body .band .bar{background:linear-gradient(90deg,#E8D3B4,var(--w-accent) 55%,#4A3426)}
+html body .band .mk{background-color:var(--w-soft);color:var(--w-ink)}
+html body .band .mk.next{background:var(--w-accent);filter:none}
+html body .band .fly{border-color:var(--w-surface);box-shadow:0 0 0 1px var(--w-line2)}
+html body .scene{border-color:var(--w-line);border-radius:10px}
+html body .scene .cap{color:#F8F3EC}
+
+/* Mehr-Blatt, Einführung, Meldung */
+html body .sheet.auf{background:rgba(29,23,19,.45)}
+html body .sheet-box{background:var(--w-bg);border-color:var(--w-line);border-radius:18px 18px 0 0}
+html body .sheet h2{color:var(--w-ink)}
+html body .griff{background:var(--w-line2)}
+html body .onb{background:rgba(29,23,19,.72)}
+html body .onb-box{background:var(--w-surface);border-color:var(--w-line);border-radius:16px}
+html body .onb-box h2{color:var(--w-ink)}
+html body .onb-box p{color:var(--w-ink)}
+html body .onb-box>img{border-color:var(--w-surface);box-shadow:0 0 0 1px var(--w-line2)}
+html body .onb-punkte span{background:var(--w-line2)}
+html body .onb-punkte span.on{background:var(--w-accent)}
+html body .flash{background:#3A2E25;color:#F8F3EC;border-color:transparent;border-radius:var(--w-r)}
+
+/* Bühnenbilder (Ausglühen, Zuhören): Fia bleibt klein und ruhig */
+html body .fia{border-color:var(--w-surface);box-shadow:0 0 0 1px var(--w-line2),0 10px 24px -14px rgba(58,46,37,.6)}
+html body .glow{opacity:.45}
+html body .begleiter{border-color:var(--w-surface)}
+
+/* Nacht-Ebenen (Im Bett dunkel, Glut, Wecker, Film) bleiben wie sie sind: dunkel und rot */
+/* Film liegt immer auf Schwarz: Titel und Überspringen hell, nicht in Tinte */
+html body .film .titel,html body .film .skip{color:#F8F3EC}
+html body .film .skip{border-color:rgba(248,243,236,.3)}

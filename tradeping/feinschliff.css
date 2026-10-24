@@ -1,0 +1,78 @@
+/* feinschliff.css – grafischer Feinschliff tradeping (Runde g9, 22.10.2026). Nur Optik, keine Funktion. */
+:root{--fs-accent:var(--m-accent);--fs-accent-ink:var(--m-accent-ink,var(--m-accent));--fs-focus:var(--m-focus,var(--m-accent-ink));--fs-ink:var(--m-ink);--fs-ink2:var(--m-ink2);--fs-ink3:var(--m-ink3,var(--m-ink2));--fs-line:var(--m-line);--fs-line2:var(--m-line2,var(--m-line));--fs-surface:var(--m-surface,var(--m-bg,#fff));--fs-surface2:var(--m-surface2,var(--m-soft));--fs-sk1:color-mix(in srgb,var(--fs-ink) 5%,var(--fs-surface));--fs-sk2:color-mix(in srgb,var(--fs-ink) 11%,var(--fs-surface));--fs-r-l:24px;--fs-r-m:16px;--fs-r-s:12px;--fs-sh-1:var(--m-shadow-s,var(--m-shadow));--fs-sh-2:var(--m-shadow)}
+/* ---------- Grundlagen: Raster 4/8, Schrift, Fokus, Bewegung ---------- */
+:root{--fs-1:4px;--fs-2:8px;--fs-3:12px;--fs-4:16px;--fs-5:24px;--fs-6:32px;--fs-ease:cubic-bezier(.2,.7,.2,1);--fs-dauer:.2s}
+html{-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+::selection{background:color-mix(in srgb,var(--fs-accent) 24%,transparent)}
+:where(h1,h2,h3,h4){text-wrap:balance}
+:where(p,li,figcaption,dd){text-wrap:pretty}
+:where(input,select,textarea,button){font-family:inherit}
+:where(input[type=checkbox],input[type=radio],input[type=range],progress,meter){accent-color:var(--fs-accent)}
+:where(input,textarea)::placeholder{color:var(--fs-ink3,var(--fs-ink2));opacity:.85}
+:where(img){image-rendering:auto}
+:where(.fs-zahl,time,output,meter,progress){font-variant-numeric:tabular-nums}
+
+/* Fokus-Ring: einheitlich, gut sichtbar, nur bei Tastatur */
+html :focus-visible:not([tabindex="-1"]){outline:2px solid var(--fs-focus)!important;outline-offset:2px!important}
+html :where(input,select,textarea):focus-visible{outline-offset:1px!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--fs-focus) 18%,transparent)}
+html :where(input,select,textarea):focus:not(:focus-visible){border-color:var(--fs-focus)}
+
+/* Emoji als Linien-Icon */
+.fs-emo{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important;border:0!important}
+.fs-ic{display:inline-block;width:1.15em;height:1.15em;flex:none;vertical-align:-.2em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:.45em;overflow:visible}
+.fs-nur-ic>.fs-ic,.fs-nur-ic .fs-ic:only-of-type{margin-right:0}
+.fs-ic-play{fill:currentColor;stroke-width:1.2}
+h1>.fs-ic,h2>.fs-ic,h3>.fs-ic,h4>.fs-ic{color:var(--fs-accent-ink,var(--fs-accent));width:1em;height:1em;vertical-align:-.12em;stroke-width:1.9}
+
+/* Bilder: Zuschnitt, Platzhalter beim Laden, weiches Einblenden */
+img.fs-lade{background:linear-gradient(100deg,var(--fs-sk1) 30%,var(--fs-sk2) 50%,var(--fs-sk1) 70%) 0 0/300% 100% var(--fs-sk1);color:transparent}
+:where(img.fs-lade){min-height:24px}
+
+/* Leere Zustände */
+.fs-leer:not([hidden]){position:relative;text-align:left;color:var(--fs-ink2);padding:var(--fs-3) var(--fs-4) var(--fs-3) 48px!important;border:1px dashed var(--fs-line2,var(--fs-line));border-radius:var(--fs-r-m);background:color-mix(in srgb,var(--fs-surface2) 70%,transparent);line-height:1.45}
+.fs-leer::before{content:"";position:absolute;left:16px;top:50%;width:20px;height:20px;margin-top:-10px;background:var(--fs-accent-ink,var(--fs-accent));opacity:.8;-webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M22%2012h-6l-2%203h-4l-2-3H2%22/%3E%3Cpath%20d%3D%22M5.5%205.1L2%2012v6a2%202%200%200%200%202%202h16a2%202%200%200%200%202-2v-6l-3.5-6.9A2%202%200%200%200%2016.8%204H7.2a2%202%200%200%200-1.7%201.1z%22/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M22%2012h-6l-2%203h-4l-2-3H2%22/%3E%3Cpath%20d%3D%22M5.5%205.1L2%2012v6a2%202%200%200%200%202%202h16a2%202%200%200%200%202-2v-6l-3.5-6.9A2%202%200%200%200%2016.8%204H7.2a2%202%200%200%200-1.7%201.1z%22/%3E%3C/svg%3E") center/contain no-repeat}
+*+.fs-leer{margin-top:var(--fs-3)}
+
+/* Bewegung: weich, aber nur wenn erwünscht */
+@media (prefers-reduced-motion:no-preference){
+  :where(button,a,[role=button],summary,input,select,textarea,.chip){transition:background-color var(--fs-dauer) var(--fs-ease),border-color var(--fs-dauer) var(--fs-ease),color var(--fs-dauer) var(--fs-ease),box-shadow var(--fs-dauer) var(--fs-ease),opacity var(--fs-dauer) var(--fs-ease),scale .14s var(--fs-ease)}
+  :where(button,[role=button],a[class]):not(:disabled):active{scale:.97}
+  img.fs-lade{animation:fs-schimmer 1.4s linear infinite}
+  img.fs-da{animation:fs-ein .45s var(--fs-ease) both}
+  details[open]>:not(summary){animation:fs-auf .28s var(--fs-ease) both}
+  .fs-leer{animation:fs-ein .4s var(--fs-ease) both}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+@keyframes fs-schimmer{to{background-position:-150% 0}}
+@keyframes fs-ein{from{opacity:0}to{opacity:1}}
+@keyframes fs-auf{from{opacity:0;translate:0 -4px}to{opacity:1;translate:0 0}}
+
+/* ---------- Gemeinsame Bausteine der Runden 6–8 (in allen Apps gleich gebaut) ---------- */
+/* «Neu bei …»: Kacheln mit ruhigem Icon-Feld statt bunter Emojis */
+.r7-neu-k{border-radius:var(--fs-r-m)!important}
+.r7-neu-k .e{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:12px;background:color-mix(in srgb,var(--fs-accent) 11%,var(--fs-surface));color:var(--fs-accent-ink,var(--fs-accent));font-size:20px;line-height:1;margin-bottom:var(--fs-2)}
+.r7-neu-k .e .fs-ic{width:20px;height:20px;margin:0;vertical-align:0;stroke-width:1.7}
+@media (hover:hover){.r7-neu-k:hover{border-color:color-mix(in srgb,var(--fs-accent) 40%,var(--fs-line))!important;box-shadow:var(--fs-sh-1)}}
+.r7-schalter,.r7-knopf{min-height:44px}
+.r7-schalter .fs-ic,.r7-knopf .fs-ic{width:1.05em;height:1.05em}
+.r6-sais-e,.r6-ue-e{line-height:1}
+/* «Wächst mit dir»: Fortschrittsbalken in hell und dunkel klar sichtbar, Figur mit Gesicht im Ausschnitt */
+.r8-wm .bar{background:color-mix(in srgb,var(--fs-ink) 12%,transparent)!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--fs-ink) 6%,transparent)}
+.r8-wm .fig img{object-position:50% 22%}
+
+/* ---------- App-eigene Feinheiten ---------- */
+/* Börse ruhig erklärt: Glocken als feine Linien in Akzentfarbe */
+.mp-glocke .fs-ic,summary .fs-ic{color:var(--fs-accent-ink)}
+/* Knöpfe mit Icon: Icon und Text sauber auf einer Achse */
+.btn.fs-mit-ic,.r7-knopf.fs-mit-ic,.ping-an.fs-mit-ic{display:inline-flex;align-items:center;justify-content:center;gap:var(--fs-2)}
+.btn.fs-mit-ic>.fs-ic,.r7-knopf.fs-mit-ic>.fs-ic,.ping-an.fs-mit-ic>.fs-ic{margin-right:0}
+.ping-glocke.fs-nur-ic .fs-ic{width:22px;height:22px}
+/* Karten-Radien und Abstände angleichen */
+.card{border-radius:var(--fs-r-l)}
+.item{border-radius:var(--fs-r-m)}
+.sym{border-radius:var(--fs-r-s)}
+summary{min-height:44px;display:flex;align-items:center;gap:var(--fs-2)}
+/* Zahlen ruhig untereinander */
+.big,.kv,.mp-tafel,table,.chf,.wert,.kurs{font-variant-numeric:tabular-nums}
