@@ -1,0 +1,62 @@
+/* design.css – Fompa im Look «Ordner Pastell» (Design-Umbau 23.10.2026).
+   Übersichtlich und leicht: jede Steuer-Kategorie ein grosser Pastell-Ordner, Violett als Aktionsfarbe,
+   Atkinson Hyperlegible für gute Lesbarkeit. Nur Optik, als letztes Stylesheet geladen. */
+html:root{
+  --m-bg:#F4F2FA;--m-surface:#FFFFFF;--m-surface2:#EFECF8;--m-soft:#E4DEFA;
+  --m-ink:#26213A;--m-ink2:#4A4463;--m-ink3:#5E5878;--m-line:#E4E0F0;--m-line2:#D0CAE3;
+  --m-accent:#5B4BC4;--m-on-accent:#FFFFFF;--m-accent-ink:#4B3CAE;--m-focus:#4B3CAE;
+  --m-shadow:0 1px 2px rgba(38,33,58,.04),0 8px 22px -14px rgba(38,33,58,.18);
+  --m-font-title:"Atkinson Hyperlegible",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --m-font-body:"Atkinson Hyperlegible",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --f:var(--m-font-body);
+  --d-r:18px;
+  --p1:#E4DEFA;--p1i:#26213A;--p2:#DDF0E6;--p2i:#1E3A2C;--p3:#FCE6D6;--p3i:#4A2A14;--p4:#E0ECFA;--p4i:#18304D;
+  --fs-r-l:var(--d-r);--fs-r-m:14px;--fs-r-s:12px;
+}
+html body{background:var(--m-bg)!important;font-family:var(--m-font-body)!important;color:var(--m-ink)}
+html body :where(button,input,select,textarea){font-family:var(--m-font-body)}
+html .w :is(h1,h2,h3){font-family:var(--m-font-title);letter-spacing:-.005em}
+
+/* Kopf: grosser Titel, Fompa klein als Zeichen */
+html .w>header h1{font-size:34px;font-weight:700;line-height:1.05}
+html .w>header img{border-radius:14px}
+
+/* Bereiche oben: drei Ordner-Reiter in Pastell */
+html .mode{background:transparent!important;padding:0!important;gap:8px!important;border:0!important}
+html .mode button{border-radius:14px!important;min-height:52px!important;font-weight:700!important;color:var(--p1i)!important;background:var(--p1)!important;box-shadow:none!important;border:2px solid transparent!important}
+html .mode button:nth-child(2){background:var(--p2)!important;color:var(--p2i)!important}
+html .mode button:nth-child(3){background:var(--p4)!important;color:var(--p4i)!important}
+html .mode button.on{border-color:var(--m-accent)!important;box-shadow:0 6px 16px -10px rgba(91,75,196,.6)!important}
+
+/* Karten: weiss, weich gerundet, ohne harten Rand */
+html .w :is(.card,section.nb-buehne,section.r8-wm,section.r6,section.r7-neu,section.r8-fo){border-radius:var(--d-r)!important;border:1px solid var(--m-line)!important;box-shadow:var(--m-shadow)!important}
+
+/* Startbereich als Ordner-Kacheln: jede Karte ein eigener Pastellton */
+html .w section.nb-buehne{background:var(--p1)!important;border-color:transparent!important}
+html .w #szene.card{background:var(--p2)!important;border-color:transparent!important}
+html .w section.r8-wm{background:var(--p3)!important;border-color:transparent!important}
+html .w section.r8-wm .info{background:rgba(255,255,255,.6)!important;border-radius:12px}
+html .w #jahrRow .card.total{background:var(--p4)!important;border-color:transparent!important;color:var(--p4i)}
+html .w #jahrRow .card.total b,html .w #jahrRow .card.total strong{font-size:26px}
+
+/* «Neu bei Fompa»: Kacheln wie Ordner, vier Pastelltöne im Wechsel */
+html .r7-neu-k{border-radius:16px!important;border:0!important;background:var(--p1)!important;color:var(--p1i)!important;min-height:110px!important}
+html .r7-neu-k:nth-child(4n+2){background:var(--p2)!important;color:var(--p2i)!important}
+html .r7-neu-k:nth-child(4n+3){background:var(--p3)!important;color:var(--p3i)!important}
+html .r7-neu-k:nth-child(4n+4){background:var(--p4)!important;color:var(--p4i)!important}
+html .r7-neu-k :is(b,strong,small,span){color:inherit!important}
+html .r7-neu-k small{opacity:.85}
+
+/* Untere Reiter Zettel / Monat / Export */
+html .tabs .tab{border-radius:14px!important;font-weight:700!important;background:var(--m-surface)!important;color:var(--m-ink2)!important;border:1px solid var(--m-line)!important}
+html .tabs .tab.on{background:var(--m-accent)!important;border-color:var(--m-accent)!important;color:var(--m-on-accent)!important}
+
+/* Knöpfe: Violett, klar lesbar */
+html .w .btn.main,html .w .btn:not(.small):not(.del):not(.ghost){border-radius:14px!important}
+html .w .btn.main{background:var(--m-accent)!important;color:var(--m-on-accent)!important;font-weight:700!important;min-height:52px}
+html .w .fuss-links .btn.small{border-radius:12px!important}
+html .w :is(input,select,textarea){border-radius:12px!important}
+html .w .shot{border-radius:var(--d-r)!important;background:var(--p1)!important;border-color:var(--m-line2)!important}
+html #fahrtenEinstieg{border-radius:var(--d-r)!important;background:var(--p4)!important;border-color:transparent!important;color:var(--p4i)!important}
+/* Platz unter der letzten Knopf-Reihe, damit «Lernen» und Fompa unten rechts nichts verdecken */
+html body{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}

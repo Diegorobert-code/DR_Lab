@@ -2,59 +2,145 @@
 <html lang="de-CH">
 <head>
 <meta charset="utf-8">
+<script src="ton-ios.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Transkript – DR Lab</title>
-<meta name="theme-color" content="#2f4f6f">
+<title>Fompa · Transkript</title>
+<meta name="theme-color" content="#0b1636">
+<meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Transkript">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="../fompa/icon-96.png" type="image/png">
+<link rel="apple-touch-icon" href="../fompa/icon-180.png">
 <style>
-:root{--bg:#f4f1ea;--card:#fff;--ink:#1d1f24;--muted:#646a75;--accent:#2f4f6f;--rec:#d94c16;--line:#e3ddd2;--ok:#3d7a4a;--f:-apple-system,system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root{--bg:#16181c;--card:#20242a;--ink:#eceae6;--muted:#9aa0aa;--accent:#7fa6cc;--rec:#ff7a45;--line:#2f343c;--ok:#7fc28c}}
+:root{--bg:#0b1636;--card:rgba(19,31,72,.88);--card2:rgba(28,44,96,.9);--ink:#f3ece4;--muted:#aeb7d0;--accent:#f2c14e;--rec:#ff6a4a;--line:rgba(242,193,78,.24);--ok:#86d39a;--f:-apple-system,system-ui,sans-serif;--serif:ui-rounded,'SF Pro Rounded',-apple-system,system-ui,sans-serif;color-scheme:dark}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink)}
-body{font:400 17px/1.5 var(--f);padding:max(16px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom))}
-.w{max-width:640px;margin:0 auto;display:grid;gap:14px}
-h1{font-size:24px;margin:4px 0 0}
-.sub{color:var(--muted);margin:0;font-size:15px}
-.mic{justify-self:center;width:150px;height:150px;border-radius:50%;border:0;background:var(--accent);color:#fff;font:600 18px/1.2 var(--f);display:grid;place-items:center;gap:4px;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.18);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+html{background:var(--bg)}
+body{margin:0;color:var(--ink);font:400 17px/1.5 var(--f);padding:max(16px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));background:radial-gradient(120% 60% at 50% 0%,#1d3278 0%,var(--bg) 60%) fixed;overflow-x:hidden;min-height:100vh}
+.himmel{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.himmel i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.5;animation:funkeln 4s ease-in-out infinite}
+@keyframes funkeln{50%{opacity:1;transform:scale(1.6)}}
+.w{position:relative;z-index:1;max-width:640px;margin:0 auto;display:grid;gap:14px}
+.kopf{display:flex;gap:14px;align-items:center}
+.kopf > div:not(.fompa){flex:1;min-width:0}
+.fompa{width:72px;height:72px;border-radius:50%;overflow:hidden;flex:none;box-shadow:0 0 0 3px var(--accent),0 8px 22px rgba(0,0,0,.45);animation:atmen 4.5s ease-in-out infinite;transform-origin:50% 95%}
+.fompa img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.3,1.4,.5,1);transform-origin:52% 32%}
+.fompa.hoert{animation:hoeren 1.2s ease-in-out infinite}
+.fompa.hoert img{transform:scale(1.25)}
+.fompa.freut{animation:hops .7s cubic-bezier(.3,1.6,.5,1) 2}
+@keyframes atmen{50%{transform:translateY(-3px) scale(1.015)}}
+@keyframes hoeren{25%{transform:rotate(-8deg)}75%{transform:rotate(4deg)}}
+@keyframes hops{35%{transform:translateY(-16px) scale(1.04,.96)}60%{transform:translateY(0) scale(1.06,.92)}}
+h1{font:700 26px/1.1 var(--serif);margin:0;color:var(--accent)}
+.sub{color:var(--muted);margin:2px 0 0;font-size:14px}
+a{color:var(--accent)}
+.sub a{color:var(--muted)}
+.mic{justify-self:center;width:150px;height:150px;border-radius:50%;border:0;background:linear-gradient(180deg,#f7d47a,#e9b23a);color:#2a1d00;font:700 18px/1.2 var(--f);display:grid;place-items:center;gap:4px;cursor:pointer;box-shadow:0 10px 30px -6px rgba(242,193,78,.55);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .mic svg{width:46px;height:46px}
-.mic.on{background:var(--rec);animation:pulse 1.4s ease-in-out infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(217,76,22,.45)}50%{box-shadow:0 0 0 22px rgba(217,76,22,0)}}
+.mic.on{background:var(--rec);color:#fff;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,106,74,.5)}50%{box-shadow:0 0 0 22px rgba(255,106,74,0)}}
 .state{text-align:center;color:var(--muted);font-size:15px;min-height:22px;margin:0}
-textarea{width:100%;min-height:42vh;resize:vertical;border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);font:400 18px/1.55 var(--f);padding:14px}
+textarea{width:100%;min-height:42vh;resize:vertical;border:1px solid var(--line);border-radius:16px;background:rgba(6,12,34,.7);color:var(--ink);font:400 18px/1.55 var(--f);padding:14px}
+textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:1px}
 .interim{color:var(--muted);font-style:italic;min-height:24px;margin:-6px 4px 0;font-size:16px}
 .row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.btn{min-height:52px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 16px var(--f);cursor:pointer}
-.send{display:grid;gap:8px}.send p{margin:0;color:var(--muted);font-size:14px}
-.btn.main{background:var(--accent);border-color:var(--accent);color:#fff}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{min-height:52px;border-radius:14px;border:1px solid var(--line);background:var(--card2);color:var(--ink);font:600 16px var(--f);cursor:pointer;padding:0 8px}
+.btn:active{transform:scale(.97)}
+.send{display:grid;gap:8px}.send p{margin:0;color:var(--muted);font-size:15px}
+.btn.main{background:linear-gradient(180deg,#f7d47a,#e9b23a);border-color:#f2c14e;color:#2a1d00}
 .note{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:15px}
 .hidden{display:none}
 .opts{display:flex;gap:16px;flex-wrap:wrap;font-size:15px;color:var(--muted)}
 .opts label{display:flex;align-items:center;gap:6px}
+input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent)}
 details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
 summary{font-weight:600;cursor:pointer}
 .answer{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;white-space:pre-wrap;font-size:16px}
 .answer b{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
 .cfg{display:grid;gap:8px;margin-top:8px}
-.cfg input{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:400 16px var(--f);padding:10px 12px}
-.cfg small{color:var(--muted)}
+.cfg input,.cfg textarea{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;background:rgba(6,12,34,.7);color:var(--ink);font:400 16px var(--f);padding:10px 12px}
+.cfg textarea{min-height:120px;font-size:15px}
+.cfg small,.hint{color:var(--muted);font-size:14px}
+.zahlen{display:grid;gap:0;margin-top:8px}
+.zahlen div{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:6px 0;font-size:15px}
 .hist{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
-.hist li{border-top:1px solid var(--line);padding-top:8px;font-size:15px;cursor:pointer}
+.hist li{border-top:1px solid var(--line);padding-top:8px;font-size:15px;cursor:pointer;overflow-wrap:anywhere}
 .hist .hdel{min-height:44px;margin-top:6px;padding:0 14px;font-size:14px}
 .hist time{display:block;color:var(--muted);font-size:13px}
 .foot{color:var(--muted);font-size:13px;text-align:center}
-.toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ok);color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none}
+.willkommen{background:rgba(242,193,78,.13);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:15px}
+.willkommen b{color:#f2c14e}
+.answer .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);background:#1f6b3a;color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;z-index:99}
 .toast.show{opacity:1}
+
+/* ---------- Runde 3: erster Eindruck ---------- */
+html{-webkit-text-size-adjust:100%}
+body{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right));-webkit-tap-highlight-color:transparent}
+.w{gap:16px}
+h1{font-size:30px;font-weight:800;letter-spacing:-.2px}
+.dach{display:block;font:700 13px/1 var(--f);letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.sub{font-size:16px;line-height:1.35;margin-top:4px}
+.hint,.cfg small{font-size:15px}
+.foot{font-size:14px;line-height:1.5;margin:0}
+.opts{font-size:16px}
+.opts label{min-height:44px}
+.btn{transition:transform .14s cubic-bezier(.3,.7,.4,1),opacity .25s,background-color .2s;touch-action:manipulation}
+.btn:active{transform:scale(.96)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+details{border-radius:16px;padding:4px 16px}
+details > summary{min-height:48px;display:flex;align-items:center;gap:10px;list-style:none}
+details > summary::-webkit-details-marker{display:none}
+details > summary::before{content:'';flex:none;width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .2s;margin:0 2px}
+details[open] > summary::before{transform:rotate(45deg)}
+details[open]{padding-bottom:16px}
+.willkommen{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center;padding:16px;border-radius:20px 20px 20px 6px;font-size:16px;animation:auftauchen .5s cubic-bezier(.2,.8,.2,1) both}
+.willkommen.hidden{display:none}
+.willkommen .btn{grid-column:1/-1;margin-top:8px}
+.willkommen .winken{font-size:30px;display:inline-block;transform-origin:70% 80%;animation:winken 1.6s ease-in-out .6s 2}
+@keyframes winken{20%,60%{transform:rotate(16deg)}40%,80%{transform:rotate(-8deg)}}
+@keyframes auftauchen{from{opacity:0;transform:translateY(10px)}}
+/* Mikrofon: atmet ruhig, beim Zuhören pulsiert ein Ring (nur transform/opacity) */
+.mic{position:relative;width:160px;height:160px;transition:transform .16s cubic-bezier(.3,.7,.4,1)}
+.mic:active{transform:scale(.95)}
+.mic::before,.mic::after{content:'';position:absolute;inset:0;border-radius:50%;pointer-events:none}
+.mic::before{border:2px solid rgba(242,193,78,.55);animation:ring 2.8s ease-out infinite}
+.mic::after{border:2px solid rgba(242,193,78,.35);animation:ring 2.8s ease-out 1.4s infinite}
+.mic.on{animation:none}
+.mic.on::before,.mic.on::after{border-color:rgba(255,106,74,.7);animation-duration:1.3s}
+.mic.on::after{animation-delay:.65s}
+@keyframes ring{0%{transform:scale(1);opacity:.9}100%{transform:scale(1.45);opacity:0}}
+.state{font-size:16px}
+textarea{min-height:30vh;border-radius:20px}
+.aktionen{display:grid;gap:12px}
+.aktionen.leer{display:none}
+.aktionen.neu{animation:auftauchen .4s cubic-bezier(.2,.8,.2,1) both}
+.leerhinweis{text-align:center;color:var(--muted);font-size:16px;margin:-4px 0 0}
+.fuss-links{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:120px}
+.fuss-links .btn{min-height:44px;display:inline-flex;align-items:center;text-decoration:none;padding:0 14px;font-size:15px}
+.toast{bottom:calc(env(safe-area-inset-bottom) + 96px);background:rgba(16,28,66,.94);color:var(--ink);border:1px solid rgba(242,193,78,.5);box-shadow:0 12px 30px rgba(0,0,0,.4);padding:12px 20px;font-size:16px;transform:translate(-50%,12px);transition:opacity .25s,transform .35s cubic-bezier(.2,.9,.3,1.2);z-index:2147483600;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.toast.show{transform:translate(-50%,0)}
+.feier{position:fixed;z-index:9996;width:10px;height:10px;pointer-events:none;background:var(--accent);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
+<div class="himmel" id="himmel" aria-hidden="true"></div>
 <div class="w">
-  <div>
-    <h1>Sense Engine · Transkript</h1>
-    <p class="sub">Tippen, reinreden, fertig. Der Text bleibt auf deinem Handy. <a href="https://diegorobert-code.github.io/Stimmraum/sense/">Zur Sense Engine</a> · <a href="../apps/">Alle Apps</a></p>
+  <div class="kopf">
+    <div class="fompa" id="fompa"><img src="../fompa/fompa-posen.jpg" alt="Fompa hört zu" width="360" height="360"></div>
+    <div>
+      <h1><span class="dach">Fompa</span>Transkript</h1>
+      <p class="sub">Du redest, ich schreibe mit.</p>
+    </div>
+    <span data-feedback-slot></span>
+  </div>
+
+  <div class="willkommen hidden" id="willkommen">
+    <span class="winken" aria-hidden="true">👋</span><span><b>Hoi, ich bin Fompa.</b> Tipp auf den goldenen Knopf und sprich. Ich schreibe mit und korrigiere Verhörer.</span>
+    <button class="btn main" id="willkommenOk" style="width:100%">Alles klar</button>
   </div>
 
   <button class="mic" id="mic" aria-label="Reinreden starten">
@@ -63,13 +149,24 @@ summary{font-weight:600;cursor:pointer}
   </button>
   <p class="state" id="state"></p>
 
-  <textarea id="text" placeholder="Hier erscheint dein Text. Du kannst ihn auch direkt bearbeiten."></textarea>
+  <textarea id="text" placeholder="Hier erscheint dein Text. Du kannst auch direkt tippen."></textarea>
+  <div class="aktionen leer" id="aktionen">
 
   <div class="row">
     <button class="btn main" id="copy">Kopieren</button>
     <button class="btn" id="share">Teilen</button>
     <button class="btn" id="new">Neu</button>
   </div>
+  <div class="row2">
+    <button class="btn" id="anFompa">An Fompa (Zettel)</button>
+    <button class="btn" id="brief">Als Brief kopieren</button>
+  </div>
+  <div class="row">
+    <button class="btn" id="aufraeumen">Aufräumen</button>
+    <button class="btn" id="stichworte">Stichworte</button>
+    <button class="btn" id="vorlesen">🔊 Vorlesen</button>
+  </div>
+  <div class="answer hidden" id="fompaAntwort" aria-live="polite"></div>
 
   <div class="send">
     <p>Direkt senden (Text wird auch kopiert):</p>
@@ -80,17 +177,22 @@ summary{font-weight:600;cursor:pointer}
     </div>
   </div>
 
-  <div class="note hidden" id="note"></div>
-
-  <div class="opts">
-    <label><input type="checkbox" id="fix" checked> Verhörer korrigieren</label>
-    <label><input type="checkbox" id="punct" checked> Satzzeichen per Wort</label>
   </div>
+  <p class="leerhinweis" id="leerhinweis">Sobald Text da ist, kannst du ihn kopieren, aufräumen oder an Fompa geben.</p>
+  <div class="note hidden" id="note"></div>
 
   <div class="answer hidden" id="answer"></div>
 
+  <details id="einstBox">
+    <summary>Einstellungen</summary>
+    <div class="opts" style="margin-top:4px">
+      <label><input type="checkbox" id="fix" checked> Verhörer korrigieren</label>
+      <label><input type="checkbox" id="punct" checked> Satzzeichen per Wort («Punkt», «Komma»)</label>
+    </div>
+  </details>
+
   <details id="hermesBox">
-    <summary>Hermes-Verbindung <span id="hermesState"></span></summary>
+    <summary><span>Hermes-Verbindung <span id="hermesState"></span></span></summary>
     <div class="cfg">
       <input id="hAddr" type="url" inputmode="url" autocomplete="off" placeholder="Adresse, z. B. https://hermes-….sslip.io">
       <input id="hKey" type="password" autocomplete="off" placeholder="Passwort">
@@ -103,12 +205,29 @@ summary{font-weight:600;cursor:pointer}
     </div>
   </details>
 
+  <details id="woerterBox">
+    <summary>Eigene Wörter</summary>
+    <div class="cfg">
+      <small>Eine Zeile pro Wort: <code>falsch = richtig</code>, z. B. <code>Pompa = Fompa</code>. Fompa korrigiert das beim Mitschreiben. Nur auf diesem Handy.</small>
+      <textarea id="woerter" spellcheck="false" placeholder="Pompa = Fompa&#10;Tinker = Tinko"></textarea>
+      <button class="btn main" id="woerterSave">Speichern</button>
+    </div>
+  </details>
+
+  <details id="lernBox">
+    <summary>Was Fompa sich merkt</summary>
+    <div class="zahlen" id="zahlen"></div>
+    <small class="hint">Nur Zählungen, nur auf diesem Handy. Nie Stimme, nie Text.</small>
+    <label class="hint" style="display:flex;gap:10px;align-items:flex-start;margin-top:10px"><input type="checkbox" id="lernOk" style="flex:none;margin-top:2px"> <span>Zählungen einmal am Tag an meinen DR-Lab-Server geben (nur mit eingerichteter Verbindung).</span></label>
+  </details>
+
   <details id="histBox">
     <summary>Verlauf</summary>
     <ul class="hist" id="hist"></ul>
   </details>
 
-  <p class="foot">DR Lab · Testphase · Spracherkennung des Browsers</p>
+  <p class="foot">Spracherkennung deines Browsers. «An Fompa» macht aus Sätzen mit Betrag Zettel für die Buchhaltung.</p>
+  <div class="fuss-links"><a class="btn" href="../fompa/">Fompa</a><a class="btn" href="https://diegorobert-code.github.io/Stimmraum/sense/">Sense Engine</a><a class="btn" href="../apps/">Alle Apps</a></div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -137,6 +256,17 @@ var FIXES = [
   [/\b(dear lab|air ?lab|ir[- ]lab|gr[- ]lab|dia ?lab|di ar lab|dr läb|d r lab|doktor lab)\b/gi, 'DR Lab'],
   [/\b(v ?com|wipe code|wild ?code|vibe code)\b/gi, 'Vibecode'],
   [/\b(sense engine|sens engine|sense ensch[ie]n)\b/gi, 'Sense Engine'],
+  [/\bpompa\b/gi, 'Fompa'],
+  [/\b(mamaf|mama af)\b/gi, 'Mama Affe'],
+  [/\bsparki\b/gi, 'Sparky'],
+  [/\bmoonshine\b/gi, 'Mondschein'],
+  [/\bk(ü|ue)ppen\b/gi, 'Coin Maker'],
+  [/\btinker\b/gi, 'Tinko'],
+  [/\b(kaiverse|ki[- ]voice|kai[- ]?vers(e|um))\b/gi, 'KI-Verse'],
+  [/\b(lomo|lumu)\b/gi, 'Lumo'],
+  [/\bletty\b/gi, 'Letti'],
+  [/\bbriggs\b/gi, 'Brix'],
+  [/\bfiver\b/gi, 'Fiverr'],
   [/ß/g, 'ss']
 ];
 var PUNCT = [
@@ -144,7 +274,17 @@ var PUNCT = [
   [/\s*\b(ausrufezeichen)\b/gi, '!'], [/\s*\b(doppelpunkt)\b/gi, ':'],
   [/\s*\b(neue zeile|neuer absatz|absatz)\b\s*/gi, '\n']
 ];
+/* Eigene Wörter: «falsch = richtig», nur auf dem Gerät */
+var WKEY = 'drlab-transkript-woerter', eigene = [];
+function escRe(x){ return x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+function ladeWoerter(){
+  var t = get(WKEY, '');
+  $('woerter').value = t;
+  eigene = String(t).split('\n').map(function(l){ var i = l.indexOf('='); return i < 1 ? null : [l.slice(0, i).trim(), l.slice(i + 1).trim()]; })
+    .filter(function(x){ return x && x[0]; }).map(function(x){ return [new RegExp('(^|[^\\wäöüÄÖÜ])' + escRe(x[0]) + '(?=$|[^\\wäöüÄÖÜ])', 'gi'), x[1]]; });
+}
 function clean(s){
+  if ($('fix').checked) eigene.forEach(function(f){ s = s.replace(f[0], function(m, vor){ return vor + f[1]; }); });
   if ($('fix').checked) FIXES.forEach(function(f){ s = s.replace(f[0], f[1]); });
   if ($('punct').checked) PUNCT.forEach(function(f){ s = s.replace(f[0], f[1]); });
   return s;
@@ -160,6 +300,7 @@ function note(t){ var n = $('note'); n.textContent = t || ''; n.classList.toggle
 function state(t){ $('state').textContent = t || ''; }
 function ui(on){
   $('mic').classList.toggle('on', on);
+  if (window.fompa) fompa(on ? 'hoert' : null);
   $('micLabel').textContent = on ? 'Stopp' : 'Reinreden';
   $('mic').setAttribute('aria-label', on ? 'Aufnahme stoppen' : 'Reinreden starten');
   state(on ? 'Ich höre zu …' : (ta.value ? 'Gespeichert auf diesem Handy.' : ''));
@@ -268,6 +409,7 @@ function saveHist(){
   var h = get(HKEY, []);
   if (h.length && h[0].t === t) return;
   h.unshift({ d: Date.now(), t: t });
+  if (window.zaehl){ zaehl('diktate'); zaehl('woerter', t.split(/\s+/).length); }
   put(HKEY, h.slice(0, 50));
 }
 $('new').addEventListener('click', function(){
@@ -345,6 +487,37 @@ function askHermes(t){
 }
 hState();
 
+/* Fompa: hört zu, freut sich */
+window.fompa = function(p){ var f = $('fompa'); f.classList.remove('hoert', 'freut'); void f.offsetWidth; if (p) f.classList.add(p); }
+/* Lern-Zahlen nur auf dem Gerät */
+var LKEY = 'drlab-transkript-lernen', lern = get(LKEY, {});
+var zaehlT = null;
+window.zaehl = function(k, n){ lern[k] = (lern[k] || 0) + (n || 1); clearTimeout(zaehlT); zaehlT = setTimeout(function(){ put(LKEY, lern); renderZahlen(); }, 400); }
+function renderZahlen(){
+  var z = [['Diktate gespeichert', lern.diktate || 0], ['Wörter insgesamt', lern.woerter || 0], ['An Fompa geschickt', lern.fompa || 0], ['Als Brief kopiert', lern.brief || 0], ['Aufgeräumt', lern.aufgeraeumt || 0], ['Stichworte gemacht', lern.stichworte || 0]];
+  var el = $('zahlen'); el.textContent = '';
+  z.forEach(function(x){ var d = document.createElement('div'), a = document.createElement('span'), b = document.createElement('span'); a.textContent = x[0]; b.textContent = x[1]; d.appendChild(a); d.appendChild(b); el.appendChild(d); });
+}
+$('woerterSave').addEventListener('click', function(){ put(WKEY, $('woerter').value); ladeWoerter(); toast('Wörter gespeichert'); fompa('freut'); });
+ladeWoerter(); renderZahlen();
+$('anFompa').addEventListener('click', function(){
+  var t = ta.value.trim(); if (!t){ toast('Noch kein Text'); return; }
+  t = clean(t);
+  if (want){ stopAll(''); if (rec) try { rec.stop(); } catch(e){} }
+  saveHist(); renderHist(); zaehl('fompa');
+  try { localStorage.setItem('fompa-eingang', t); } catch(e){}
+  fompa('freut');
+  setTimeout(function(){ location.href = '../fompa/#eingang'; }, 500);
+});
+$('brief').addEventListener('click', function(){
+  var t = ta.value.trim(); if (!t) return;
+  var b = '```\n' + t + '\n```';
+  zaehl('brief'); saveHist(); renderHist();
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(b).then(function(){ toast('Brief kopiert'); fompa('freut'); }, function(){ ta.select(); toast('Text ist markiert'); });
+  else { ta.select(); toast('Text ist markiert'); }
+});
+(function(){ var h = $('himmel'), s = ''; for (var i = 0; i < 40; i++) s += '<i style="left:' + (Math.random()*100).toFixed(1) + '%;top:' + (Math.random()*100).toFixed(1) + '%;animation-delay:' + (Math.random()*4).toFixed(1) + 's"></i>'; h.innerHTML = s; })();
+
 /* Verlauf */
 function fmt(d){ d = new Date(d); return d.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' }); }
 function renderHist(){
@@ -367,10 +540,102 @@ function renderHist(){
 }
 renderHist();
 ui(false);
+
+/* Runde 2: Aufräumen, Stichworte, Vorlesen, Willkommen, Posen-Bilder */
+var FUELL = /(^|\s)(äh+m?|ähm|ehm|öhm|hm+|halt so|sozusagen|irgendwie so)(?=[\s,.!?]|$)/gi;
+function aufraeumenLokal(t){
+  t = clean(t).replace(FUELL, '$1');
+  t = t.replace(/\b(\w+)(\s+\1\b)+/gi, '$1');           // «der der» → «der»
+  t = t.replace(/\b(genau|also|okay|ok)([,.]?\s+\1\b)+/gi, '$1');
+  t = t.replace(/[ \t]{2,}/g, ' ').replace(/\s+([,.!?:])/g, '$1').replace(/,\s*,/g, ',');
+  return cap(t.trim());
+}
+function stichworteLokal(t){
+  t = aufraeumenLokal(t);
+  return t.replace(/([.!?])\s+/g, '$1\n').split(/\n+/).map(function(x){ return x.trim().replace(/^(also|genau|und|dann|okay),?\s+/i, ''); })
+    .filter(function(x){ return x.split(/\s+/).length >= 3; })
+    .map(function(x){ return '• ' + (x.length > 110 ? x.slice(0, 107) + ' …' : x); }).join('\n');
+}
+function zeigeFompa(titel, text, ersetzen){
+  var el = $('fompaAntwort'); el.textContent = '';
+  var h = document.createElement('b'); h.textContent = titel; el.appendChild(h);
+  var p = document.createElement('div'); p.style.whiteSpace = 'pre-wrap'; p.textContent = text; el.appendChild(p);
+  var k = document.createElement('div'); k.className = 'chips';
+  [['Übernehmen', function(){ ta.value = text; put(KEY, text); base = text; skip = raw.length; el.classList.add('hidden'); toast('Übernommen'); fompa('freut'); }, ersetzen],
+   ['Kopieren', function(){ try { navigator.clipboard.writeText(text).then(function(){ toast('Kopiert'); }); } catch(e){} }, true],
+   ['Schliessen', function(){ el.classList.add('hidden'); }, true]].forEach(function(x){
+    if (!x[2]) return; var b = document.createElement('button'); b.className = 'btn'; b.textContent = x[0]; b.addEventListener('click', x[1]); k.appendChild(b); });
+  el.appendChild(k); el.classList.remove('hidden');
+}
+function mitServer(auftrag, t, lokal, titel, ersetzen){
+  if (!t){ toast('Noch kein Text'); return; }
+  if (want){ stopAll(''); if (rec) try { rec.stop(); } catch(e){} }
+  var l = lokal(t); fompa('freut');
+  if (!hermesReady()){ zeigeFompa(titel, l || t, ersetzen); return; }
+  zeigeFompa(titel + ' (Fompa denkt nach …)', l || t, ersetzen);
+  callHermes(auftrag + '\n\n' + t).then(function(a){ zeigeFompa(titel, String(a).trim(), ersetzen); }, function(){ zeigeFompa(titel + ' (ohne Server)', l || t, ersetzen); });
+}
+$('aufraeumen').addEventListener('click', function(){ zaehl('aufgeraeumt'); mitServer('Korrigiere in diesem diktierten Text nur Verhörer, Satzzeichen und Füllwörter. Inhalt und Reihenfolge bleiben gleich, Schweizer Schreibweise ohne ß. Gib nur den Text zurück.', ta.value.trim(), aufraeumenLokal, 'Aufgeräumt', true); });
+$('stichworte').addEventListener('click', function(){ zaehl('stichworte'); mitServer('Mach aus diesem diktierten Text eine kurze Stichwortliste mit «• » am Zeilenanfang, höchstens zehn Punkte, Schweizer Schreibweise ohne ß. Nur die Liste.', ta.value.trim(), stichworteLokal, 'Stichworte', true); });
+$('vorlesen').addEventListener('click', function(){
+  var t = ta.value.trim(); if (!t){ toast('Noch kein Text'); return; }
+  fompa('freut');
+  if (window.NovaStimme && NovaStimme.sprich){ NovaStimme.sprich(t.slice(0, 1500)); return; }
+  try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t.slice(0, 1500)); u.lang = 'de-CH'; speechSynthesis.speak(u); } catch(e){ toast('Vorlesen geht hier nicht'); }
+});
+if (!get('drlab-transkript-willkommen', false)) $('willkommen').classList.remove('hidden');
+$('willkommenOk').addEventListener('click', function(){ put('drlab-transkript-willkommen', true); $('willkommen').classList.add('hidden'); fompa('freut'); });
+/* Tinko-Posen von Fompa: ../fompa/posen/<pose>.jpg, wenn in posen.json eingetragen */
+var POSEN = [];
+fetch('../fompa/posen/posen.json', { cache: 'no-cache' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ if (j && j.posen) POSEN = j.posen; }).catch(function(){});
+var alteFompa = window.fompa;
+window.fompa = function(p){ alteFompa(p); var img = $('fompa').querySelector('img'), n = p === 'hoert' ? 'hoert' : p || 'ruhe'; img.src = POSEN.indexOf(n) >= 0 ? '../fompa/posen/' + n + '.jpg' : '../fompa/fompa-posen.jpg'; };
+
+/* Runde 3: Aktionen erst mit Text, kleine Feiern, Lern-Zahlen nur mit Häkchen */
+var ruhig = function(){ return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; };
+function summ(m){ try { if (navigator.vibrate) navigator.vibrate(m); } catch(e){} }
+function feier(el, n){
+  if (!el || ruhig() || !Element.prototype.animate) return; n = n || 14;
+  var r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+  for (var i = 0; i < n; i++){
+    var f = document.createElement('i'); f.className = 'feier'; document.body.appendChild(f);
+    var a = Math.PI * 2 * i / n + Math.random() * .4, d = 50 + Math.random() * 60;
+    f.style.left = (x - 5) + 'px'; f.style.top = (y - 5) + 'px';
+    f.animate([{ transform: 'translate(0,0) scale(.3)', opacity: 1 }, { transform: 'translate(' + Math.cos(a) * d + 'px,' + (Math.sin(a) * d + 24) + 'px) scale(' + (.6 + Math.random() * .8) + ') rotate(240deg)', opacity: 0 }],
+      { duration: 700 + Math.random() * 350, easing: 'cubic-bezier(.2,.7,.3,1)' }).onfinish = (function(e){ return function(){ e.remove(); }; })(f);
+  }
+}
+var warLeer = null;
+function aktionenZeigen(){
+  var leer = !ta.value.trim();
+  if (leer === warLeer) return;
+  var a = $('aktionen');
+  a.classList.toggle('leer', leer); $('leerhinweis').classList.toggle('hidden', !leer);
+  if (!leer && warLeer === true){ a.classList.remove('neu'); void a.offsetWidth; a.classList.add('neu'); }
+  warLeer = leer;
+}
+aktionenZeigen();
+ta.addEventListener('input', aktionenZeigen);
+setInterval(aktionenZeigen, 400); // auch beim Mitschreiben (Wert wird per Skript gesetzt)
+$('mic').addEventListener('click', function(){ summ(12); });
+['copy', 'brief'].forEach(function(id){ $(id).addEventListener('click', function(){ if (ta.value.trim()){ summ([10, 30, 14]); feier($(id), 12); } }); });
+$('willkommenOk').addEventListener('click', function(){ summ(12); feier($('mic'), 16); });
+$('lernOk').checked = !!get(LKEY + '-ok', false);
+$('lernOk').addEventListener('change', function(){ put(LKEY + '-ok', this.checked); toast(this.checked ? (hermesReady() ? 'Danke. Nur Zählungen, einmal am Tag.' : 'Gemerkt. Ohne Verbindung bleibt alles hier.') : 'Keine Weitergabe'); if (this.checked) lernSenden(); });
+function lernSenden(){
+  var heute = new Date().toISOString().slice(0, 10);
+  if (!get(LKEY + '-ok', false) || !hermesReady() || get(LKEY + '-gesendet', '') === heute) return;
+  var zahlen = {}; Object.keys(lern).forEach(function(k){ if (typeof lern[k] === 'number') zahlen[k] = lern[k]; });
+  fetch(hAddr() + '/erfahrung', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + get(HKEYS.key, '') },
+    body: JSON.stringify({ app: 'Transkript', art: 'lernen', frage: JSON.stringify(zahlen), antwort: '' }) })
+    .then(function(r){ if (r.ok) put(LKEY + '-gesendet', heute); }).catch(function(){});
+}
+setTimeout(lernSenden, 4000);
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>
-<script src="../nova/nova.js" data-nova-app="Transkript" data-nova-knopf="0" defer></script>
+<script src="../nova/nova.js" data-nova-app="Transkript" data-nova-bild="../fompa/icon-192.png" defer></script>
+<script src="../fompa/feedback.js" data-app="Fompa Transkript" defer></script>
 </body>
 </html>

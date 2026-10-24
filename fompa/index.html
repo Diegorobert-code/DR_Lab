@@ -2,47 +2,66 @@
 <html lang="de-CH">
 <head>
 <meta charset="utf-8">
+<script src="ton-ios.js"></script>
+<script src="nda-sperre.js" data-app="Fompa"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Fompa – Buchhaltung und Steuern</title>
-<meta name="theme-color" content="#14213d">
+<meta name="theme-color" content="#f5f6f8">
+<meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Fompa">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-96.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
-:root{--bg:#f6f2e9;--card:#fff;--ink:#1c2233;--muted:#626a7a;--accent:#14213d;--gold:#b8862b;--goldsoft:#f3e6c8;--line:#e4dccb;--ok:#3d7a4a;--warn:#a2581b;--f:-apple-system,system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root{--bg:#0f1527;--card:#18203a;--ink:#ecebe6;--muted:#9aa3b6;--accent:#e2b552;--gold:#e2b552;--goldsoft:#2a2a2a;--line:#283252;--ok:#7fc28c;--warn:#e6a066}}
+/* Nachtplatz: Nachtblau + Gold, eine Welt für alle DR-Lab-Figuren */
+:root{--bg:#0b1636;--bg2:#13235a;--card:rgba(19,31,72,.88);--card2:rgba(28,44,96,.9);--ink:#f3ece4;--muted:#aeb7d0;--accent:#f2c14e;--gold:#f2c14e;--goldsoft:rgba(242,193,78,.13);--line:rgba(242,193,78,.24);--ok:#86d39a;--warn:#ffa36e;--blue:#8fb3e8;--f:-apple-system,system-ui,sans-serif;--serif:ui-rounded,'SF Pro Rounded',-apple-system,system-ui,sans-serif;color-scheme:dark}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink)}
-body{font:400 17px/1.5 var(--f);padding:max(16px,env(safe-area-inset-top)) 16px max(28px,env(safe-area-inset-bottom))}
-.w{max-width:640px;margin:0 auto;display:grid;gap:14px}
+html{background:var(--bg)}
+body{margin:0;color:var(--ink);font:400 17px/1.5 var(--f);padding:max(16px,env(safe-area-inset-top)) 16px max(28px,env(safe-area-inset-bottom));background:radial-gradient(120% 60% at 50% 0%,#1d3278 0%,var(--bg) 60%) fixed;overflow-x:hidden;min-height:100vh}
+/* Sternenhimmel mit Mond */
+.himmel{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.himmel i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.5;animation:funkeln 4s ease-in-out infinite}
+.himmel .mond{position:absolute;top:46vh;left:-46px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff6d8,#f2d58a 60%,#d9b55d);box-shadow:0 0 60px 18px rgba(242,193,78,.18);opacity:.55}
+.himmel .mond::after{content:'';position:absolute;inset:-6px -30px 6px 30px;border-radius:50%;background:var(--bg);opacity:.0}
+@keyframes funkeln{50%{opacity:1;transform:scale(1.6)}}
+.w{position:relative;z-index:1;max-width:640px;margin:0 auto;display:grid;gap:14px}
 header{display:flex;gap:14px;align-items:center}
-header img{width:72px;height:72px;border-radius:20px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
-h1{font-size:24px;margin:0}
-h2{font-size:19px;margin:0 0 8px}
-.sub{color:var(--muted);margin:0;font-size:15px}
-.bubble{background:var(--goldsoft);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:16px;position:relative}
+header img{width:64px;height:64px;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 0 2px var(--line)}
+header > div{flex:1;min-width:0}
+h1{font:700 28px/1.1 var(--serif);margin:0;color:var(--gold);letter-spacing:.3px}
+h2{font:700 19px/1.25 var(--serif);margin:0 0 8px;color:var(--gold)}
+.sub{color:var(--muted);margin:2px 0 0;font-size:14px}
+.sub a{color:var(--muted)}
+a{color:var(--gold)}
+.bubble{background:var(--goldsoft);border:1px solid var(--line);border-radius:18px;padding:12px 14px;font-size:16px;position:relative}
 .bubble b{color:var(--gold)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.bubble .bk{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);min-width:0}
 .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .tab{min-height:48px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 16px var(--f);cursor:pointer}
-.tab.on{background:var(--accent);border-color:var(--accent);color:var(--bg)}
-.btn{min-height:52px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 16px var(--f);cursor:pointer;padding:0 16px}
-.btn.main{background:var(--accent);border-color:var(--accent);color:var(--bg)}
-.btn.small{min-height:44px;font-size:14px}
+.tab.on{background:var(--gold);border-color:var(--gold);color:#2a1d00}
+.btn{min-height:52px;border-radius:14px;border:1px solid var(--line);background:var(--card2);color:var(--ink);font:600 16px var(--f);cursor:pointer;padding:0 16px}
+.btn:active,.tab:active,.chip:active{transform:scale(.97)}
+.btn.main{background:linear-gradient(180deg,#f7d47a,#e9b23a);border-color:#f2c14e;color:#2a1d00;box-shadow:0 8px 22px -8px rgba(242,193,78,.6)}
+.btn.small{min-height:44px;font-size:14px;padding:0 12px}
 .btn.del{color:var(--warn)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-label{display:grid;gap:4px;font-size:14px;color:var(--muted)}
-input,select,textarea{width:100%;min-height:48px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:400 17px var(--f);padding:10px 12px}
-textarea{min-height:120px;font-size:15px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+label{display:grid;gap:4px;font-size:14px;color:var(--muted);min-width:0}
+input,select,textarea{width:100%;min-width:0;min-height:48px;border:1px solid var(--line);border-radius:12px;background:rgba(6,12,34,.65);color:var(--ink);font:400 17px var(--f);padding:10px 12px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:1px}
+input[type=checkbox]{width:22px;height:22px;min-height:0;accent-color:var(--gold)}
+textarea{min-height:110px;font-size:15px}
 .form{display:grid;gap:10px}
-.shot{display:grid;place-items:center;min-height:150px;border:2px dashed var(--line);border-radius:16px;color:var(--muted);cursor:pointer;overflow:hidden;text-align:center;padding:10px}
+.betrag{display:grid;grid-template-columns:1fr 84px;gap:6px}
+.shot{display:grid;place-items:center;min-height:130px;border:2px dashed var(--line);border-radius:16px;color:var(--muted);cursor:pointer;overflow:hidden;text-align:center;padding:10px}
 .shot img{max-width:100%;max-height:260px;border-radius:10px}
 .hint{color:var(--muted);font-size:14px;margin:0}
-.total{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;color:var(--muted)}
-.total strong{font-size:24px;color:var(--ink)}
+.total{display:flex;flex-direction:column;align-items:flex-start;gap:0;font-size:14px;color:var(--muted);min-width:0}
+.total strong{font-size:22px;line-height:1.2;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
 .cats{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .cats li{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
 .cats .head{display:flex;justify-content:space-between;gap:10px;cursor:pointer}
@@ -50,73 +69,249 @@ textarea{min-height:120px;font-size:15px}
 .cats .sum{white-space:nowrap;font-variant-numeric:tabular-nums}
 .cats .empty{color:var(--muted);font-size:14px}
 .belege{display:grid;gap:8px;margin-top:8px}
-.beleg{display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;border-top:1px solid var(--line);padding-top:8px}
-.beleg img,.beleg .noimg{width:64px;height:64px;object-fit:cover;border-radius:10px;background:var(--bg)}
+.beleg{display:grid;grid-template-columns:56px 1fr auto;gap:10px;align-items:center;border-top:1px solid var(--line);padding-top:8px}
+.beleg > div{min-width:0;overflow-wrap:anywhere}
+.beleg img,.beleg .noimg{width:56px;height:56px;object-fit:cover;border-radius:10px;background:rgba(6,12,34,.6)}
 .beleg small{display:block;color:var(--muted);font-size:13px}
 .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--line)}
 .dot.ok{background:var(--ok)}
 .hidden{display:none!important}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px;background:var(--card);color:var(--ink);cursor:pointer;min-height:36px}
-.foot{color:var(--muted);font-size:13px;text-align:center;margin-bottom:160px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px;background:var(--card2);color:var(--ink);cursor:pointer;min-height:38px}
+.chip.gold{background:var(--gold);color:#2a1d00;border-color:var(--gold)}
+.foot{color:var(--muted);font-size:13px;text-align:center;margin-bottom:8px}
+.fuss-links{margin-bottom:170px}
 .foot a{color:var(--muted)}
-.toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ok);color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center;z-index:9999}
+.toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);background:#1f6b3a;color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center;z-index:9999}
 .toast.show{opacity:1}
-.mode{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:4px}
-.mode button{min-height:46px;border:0;border-radius:12px;background:transparent;color:var(--ink);font:600 16px var(--f);cursor:pointer}
-.mode button.on{background:var(--gold);color:#fff}
-.glas{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:center}
-.glas svg{width:110px;height:130px}
-.glas p{margin:0}
-.glas .big{font-size:22px;font-weight:700}
+.mode{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:4px}
+.mode button{min-height:46px;border:0;border-radius:14px;background:transparent;color:var(--ink);font:600 15px var(--f);cursor:pointer;padding:0 4px}
+.mode button.on{background:var(--gold);color:#2a1d00}
+/* Fompas Bühne: Figur in Posen + Glas mit Sternen */
+.szene{display:grid;grid-template-columns:1fr;gap:10px;align-items:center;justify-items:center;text-align:center}
+@media (min-width:520px){.szene{grid-template-columns:auto 1fr;justify-items:start;text-align:left}}
+.duo{position:relative;width:220px;height:138px}
+.figur{position:absolute;left:0;bottom:0;width:112px;height:112px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 3px var(--gold),0 10px 26px rgba(0,0,0,.5),0 0 34px rgba(242,193,78,.25);cursor:pointer;transform-origin:50% 95%;animation:atmen 4.5s ease-in-out infinite;background:#1d3278}
+.figur img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .7s cubic-bezier(.3,1.4,.5,1);transform-origin:52% 32%}
+.figur .glanz{position:absolute;top:22%;left:-60%;width:45%;height:22%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.85),transparent);transform:skewX(-20deg);opacity:0}
+.duo .zeichen{position:absolute;left:78px;top:0;font:700 26px var(--serif);color:var(--gold);opacity:0;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.duo .funken{position:absolute;left:0;bottom:0;width:112px;height:112px;pointer-events:none}
+.duo .funken b{position:absolute;left:50%;top:50%;width:8px;height:8px;background:var(--gold);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);opacity:0}
+.duo svg.glasbild{position:absolute;right:0;bottom:0;width:96px;height:114px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.45))}
+@keyframes atmen{50%{transform:translateY(-3px) scale(1.015)}}
+.figur.freut{animation:hops .7s cubic-bezier(.3,1.6,.5,1) 2}
+@keyframes hops{35%{transform:translateY(-22px) scale(1.04,.96) rotate(-4deg)}60%{transform:translateY(0) scale(1.06,.92)}80%{transform:scale(.98,1.03)}}
+.figur.denkt{animation:wiegen 1.8s ease-in-out infinite}
+@keyframes wiegen{25%{transform:rotate(-7deg)}75%{transform:rotate(5deg)}}
+.figur.rechnet img{transform:scale(1.75)}
+.figur.rechnet .glanz{animation:glanz 1.2s ease-in-out .35s 2}
+@keyframes glanz{0%{left:-60%;opacity:0}20%{opacity:1}100%{left:120%;opacity:0}}
+.figur.staunt{animation:staunen .9s ease}
+@keyframes staunen{30%{transform:scale(1.12)}60%{transform:scale(.97)}}
+.figur.schlaeft{animation:schlafen 5s ease-in-out infinite;filter:saturate(.7) brightness(.8)}
+@keyframes schlafen{50%{transform:rotate(4deg) translateY(2px)}}
+.duo .zeichen.an{animation:zeichen 1.6s ease forwards}
+@keyframes zeichen{15%{opacity:1;transform:translateY(-6px)}80%{opacity:1}100%{opacity:0;transform:translateY(-16px)}}
+.duo .zeichen.zzz{animation:zzz 3s ease-in-out infinite}
+@keyframes zzz{0%{opacity:0;transform:translate(0,6px) scale(.7)}40%{opacity:1}100%{opacity:0;transform:translate(14px,-14px) scale(1.1)}}
+.funken.an b{animation:funke .9s ease-out forwards}
+@keyframes funke{0%{opacity:1;transform:translate(-50%,-50%) scale(.4)}100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1.2) rotate(90deg)}}
+.flieg{position:fixed;z-index:9998;width:26px;height:26px;margin:-13px 0 0 -13px;background:var(--gold);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);filter:drop-shadow(0 0 8px rgba(242,193,78,.9));pointer-events:none}
+.muenze{position:fixed;top:-30px;z-index:9997;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3c4,#f2c14e 55%,#b8862b);box-shadow:0 0 0 2px #b8862b inset;pointer-events:none}
+.glastext p{margin:0}
+.glastext .big{font:700 24px/1.15 var(--serif);color:var(--gold)}
 .star{transform-box:fill-box;transform-origin:center}
 .star.neu{animation:fall .9s ease-out both}
 @keyframes fall{from{transform:translateY(-60px) scale(.4);opacity:0}}
-@media (prefers-reduced-motion:reduce){.star.neu{animation:none}}
+.star.blink{animation:blink 3.5s ease-in-out infinite}
+@keyframes blink{50%{opacity:.55}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .sum3{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .sum3 .card{display:grid;gap:2px}
 .sum3 small{color:var(--muted)}
 .sum3 strong{font-size:22px;font-variant-numeric:tabular-nums}
-.kat{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:6px 0;font-size:15px}
-.kat span:last-child{font-variant-numeric:tabular-nums}
-pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px;font-size:12px;max-height:240px;overflow:auto;margin:10px 0 0}
+.kat{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding:7px 0;font-size:15px}
+.kat span:first-child{min-width:0;overflow-wrap:anywhere}
+.kat span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+.kat.gross{font-weight:700;color:var(--gold)}
+.balken{height:14px;border-radius:99px;background:rgba(6,12,34,.7);border:1px solid var(--line);overflow:hidden;margin:8px 0 4px}
+.balken i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#e9b23a,#f7d47a);transition:width .8s cubic-bezier(.3,1.2,.5,1)}
+.balken.ueber i{background:linear-gradient(90deg,#d9673a,#ffa36e)}
+.zahl{font:700 34px/1.1 var(--serif);color:var(--gold);font-variant-numeric:tabular-nums}
+.zahl.minus{color:var(--warn)}
+.liste{display:grid;gap:0}
+.eintrag{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;border-top:1px solid var(--line);padding:9px 0}
+.eintrag > div{min-width:0;overflow-wrap:anywhere}
+.eintrag small{display:block;color:var(--muted);font-size:13px}
+.eintrag .knoepfe{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.konto{display:grid;grid-template-columns:1fr 104px;gap:6px;border-top:1px solid var(--line);padding:8px 0}
+.konto select{grid-column:1/2}
+.konto .x{grid-column:2/3}
+pre{white-space:pre-wrap;word-break:break-word;background:rgba(6,12,34,.65);border:1px solid var(--line);border-radius:12px;padding:10px;font-size:12px;max-height:240px;overflow:auto;margin:10px 0 0}
+details > summary{cursor:pointer}
+details.card > summary{font-weight:600}
+.check{display:flex;gap:10px;align-items:flex-start;color:var(--ink);font-size:15px}
+.check input{flex:none;margin-top:2px}
+.antwort{white-space:pre-wrap;background:var(--goldsoft);border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px;font-size:15px}
+.vorlesen{justify-self:start;margin-top:-6px;border:1px solid var(--line);border-radius:999px;background:var(--card2);color:var(--ink);font:600 14px var(--f);min-height:40px;padding:0 14px;cursor:pointer}
+.stepper{display:grid;grid-template-columns:56px 1fr 56px;gap:10px;align-items:center;text-align:center;margin-top:8px}
+.onb{position:fixed;inset:0;z-index:2147483000;background:rgba(5,10,30,.82);display:grid;place-items:center;padding:16px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.onbKarte{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px 18px;display:grid;gap:12px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.onbKarte h2{margin:0;font:700 24px var(--serif);color:var(--gold)}
+.onbKarte p{margin:0}
+.onbKarte .form{text-align:left}
+.figur.onbFigur{position:relative;margin:0 auto;width:120px;height:120px}
+.onbPunkte{display:flex;gap:6px;justify-content:center}
+.onbPunkte i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.onbPunkte i.on{background:var(--gold)}
+.figur.echt img{transform:none!important}
+#rechnungen .eintrag,#verkauf .eintrag,#proKuerzel .eintrag,#faellig .eintrag{grid-template-columns:1fr}
+#rechnungen .knoepfe,#verkauf .knoepfe,#proKuerzel .knoepfe,#faellig .knoepfe{justify-content:flex-start}
+
+/* ---------- Runde 3: erster Eindruck (HIG/Material: 8-px-Raster, Safe Areas, Tap-Feedback, ruhige Bewegung) ---------- */
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right));-webkit-tap-highlight-color:transparent}
+.w{gap:16px}
+.card{padding:16px;border-radius:20px}
+h1{font-size:30px;font-weight:800;letter-spacing:-.2px}
+h2{font-size:20px;font-weight:700;letter-spacing:-.1px}
+.sub{font-size:16px;line-height:1.35;margin-top:4px}
+.hint{font-size:16px;line-height:1.45}
+label{font-size:15px;gap:6px}
+.chip{font-size:15px;min-height:44px;padding:8px 14px}
+.btn.small{font-size:15px}
+.beleg small,.eintrag small{font-size:14px}
+.foot{font-size:14px;line-height:1.5}
+button,.chip,.tab,.shot,[role=button],a{touch-action:manipulation}
+.btn,.tab,.chip,.mode button,.vorlesen,.shot{transition:transform .14s cubic-bezier(.3,.7,.4,1),background-color .2s,box-shadow .2s,opacity .2s}
+.btn:active,.tab:active,.chip:active,.mode button:active,.vorlesen:active{transform:scale(.96)}
+.btn.main:active{box-shadow:0 4px 12px -6px rgba(242,193,78,.6)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.himmel .mond{top:auto;bottom:24vh;left:12px;width:40px;height:40px;opacity:.5;background:transparent;box-shadow:inset -12px 6px 0 2px #f2d58a,0 0 40px 6px rgba(242,193,78,.12)}
+/* Bühne: kompakter, Platz reserviert (kein Layout-Sprung), runde Schrift, zwei klare Knöpfe */
+#buehnePlatz{aspect-ratio:1/1;border-radius:26px;border:1px solid var(--line);background:linear-gradient(110deg,rgba(28,44,96,.6) 30%,rgba(242,193,78,.10) 50%,rgba(28,44,96,.6) 70%) 0 0/300% 100%;animation:schimmer 1.6s linear infinite;margin:0}
+@keyframes schimmer{to{background-position:-150% 0}}
+.nb-buehne + #buehnePlatz{display:none}
+.w > .nb-buehne{margin:0!important}
+.nb-unten{padding:110px 16px 16px!important;gap:8px!important}
+.nb-unten b{font:800 28px/1.15 var(--serif)!important;letter-spacing:-.2px}
+.nb-unten span{font-size:16px!important;line-height:1.4!important;max-width:320px!important}
+.held-knoepfe{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.held-knoepfe .btn{min-height:52px;border-radius:999px;padding:0 20px;font-size:17px}
+.nb-buehne .nb-reden{margin-top:0!important;padding:0 20px!important;min-height:52px;background:rgba(11,22,54,.55)!important;color:var(--ink)!important;border:1px solid rgba(242,193,78,.55);box-shadow:none!important;font-size:17px!important;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.nb-buehne .neu-gruss{animation:auftauchen .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes auftauchen{from{opacity:0;transform:translateY(10px)}}
+/* Glas + Fortschritt nebeneinander, Sprechblase mit Zipfel */
+.szene{grid-template-columns:auto 1fr!important;justify-items:start!important;text-align:left!important;gap:16px}
+.duo{width:178px;height:120px}
+.figur,.duo .funken{width:96px;height:96px}
+.duo .zeichen{left:66px}
+.duo svg.glasbild{width:84px;height:100px}
+.glastext{display:grid;gap:4px;min-width:0}
+.glastext .big{font-size:26px}
+.ziel{display:grid;gap:4px;margin-top:4px}
+.ziel .balken{height:10px;margin:2px 0 0}
+.ziel small{color:var(--muted);font-size:14px}
+@media (max-width:370px){.duo{width:150px}.figur,.duo .funken{width:80px;height:80px}.duo svg.glasbild{width:72px;height:88px}.glastext .big{font-size:22px}}
+.sprech.still{display:none}
+.sprech{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start}
+.sprech .bubble{padding:14px 16px;border-radius:20px 20px 20px 6px}
+.sprech .vorlesen{margin:0;width:48px;height:48px;min-height:48px;padding:0;border-radius:50%;font-size:20px;display:grid;place-items:center}
+/* Formular: erst das Nötigste */
+.shot{min-height:144px;gap:8px;border-radius:20px;background:rgba(242,193,78,.05)}
+.shot:active{transform:scale(.98);background:rgba(242,193,78,.1)}
+.shot .kamera{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#f7d47a,#e9b23a);color:#2a1d00;font-size:28px;box-shadow:0 8px 22px -8px rgba(242,193,78,.7)}
+.shot b{color:var(--ink);font-size:17px}
+.shot small{font-size:14px}
+details > summary{min-height:44px;display:flex;align-items:center;gap:8px;list-style:none}
+details > summary::-webkit-details-marker{display:none}
+details.mehr{border-top:1px solid var(--line);padding-top:8px}
+details.mehr > summary{min-height:44px;display:flex;align-items:center;gap:8px;color:var(--muted);font-weight:600;list-style:none}
+details.mehr > summary::-webkit-details-marker{display:none}
+details > summary::before{flex:none;content:'';width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .2s;margin:0 4px}
+details[open] > summary::before{transform:rotate(45deg)}
+details.mehr .form{margin-top:8px}
+/* Toast: gleitet von unten, über den runden Knöpfen */
+.toast{bottom:calc(env(safe-area-inset-bottom) + 160px);background:rgba(16,28,66,.94);color:var(--ink);border:1px solid rgba(242,193,78,.5);box-shadow:0 12px 30px rgba(0,0,0,.4);padding:12px 20px;font-size:16px;transform:translate(-50%,12px);transition:opacity .25s,transform .35s cubic-bezier(.2,.9,.3,1.2);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.toast.show{transform:translate(-50%,0)}
+/* Einführung: über allen Knöpfen, sanft herein */
+.onb{z-index:2147483600;animation:einblenden .3s ease both}
+.onbKarte{animation:hoch .45s cubic-bezier(.2,.9,.3,1.1) both;padding:24px 20px}
+.onbKarte h2{font-size:26px}
+.onbKarte p{font-size:17px;line-height:1.45}
+.onbKarte .wechsel{animation:auftauchen .35s ease both}
+@keyframes einblenden{from{opacity:0}}
+@keyframes hoch{from{opacity:0;transform:translateY(24px) scale(.97)}}
+.onbPunkte i{transition:width .25s,background-color .25s}
+.onbPunkte i.on{width:22px;border-radius:99px}
+/* Unten rechts nur ein runder Knopf (Nova). Sprechen sitzt oben im Kopf, Reden in der Bühne. */
+.sp-knopf,.nova-pille{display:none!important}
+header{gap:8px}
+.kopf-mic{flex:none;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--card2);color:var(--ink);font-size:22px;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.3);transition:transform .14s cubic-bezier(.3,.7,.4,1),background-color .2s}
+.kopf-mic:active{transform:scale(.94)}
+.kopf-mic.hoert{background:var(--gold);color:#2a1d00;animation:kopfPuls 1.1s ease-in-out infinite}
+@keyframes kopfPuls{50%{box-shadow:0 0 0 10px rgba(242,193,78,0),0 0 0 0 rgba(242,193,78,.5)}}
+.fuss-links{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
+/* Feier: Funken aus der Mitte */
+.feier{position:fixed;z-index:9996;width:10px;height:10px;pointer-events:none;background:var(--gold);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+.tabs .tab{font-size:16px}
+section{animation:auftauchen .3s ease both}
+@media (prefers-reduced-motion:reduce){#buehnePlatz{animation:none}}
 </style>
+<link rel="stylesheet" href="../nova/puppe.css">
 </head>
 <body>
-<script src="../nova/intro.js" data-art="funken" data-bild="../nova/figuren/fompa.jpg" data-text="Fompa sammelt deine Zettel"></script>
+<div class="himmel" id="himmel" aria-hidden="true"><span class="mond"></span></div>
+<script src="../nova/intro.js" data-art="funken" data-bild="held.jpg" data-text="Fompa sammelt deine Zettel"></script>
 <div class="w">
   <header>
     <img src="icon-180.png" alt="Fompa, der Löwenaffe mit Brille">
     <div>
       <h1>Fompa</h1>
-      <p class="sub">Buchhaltung und Steuern. Fompa sammelt deine Zettel, damit keiner verloren geht. Alles bleibt auf deinem Handy. <a href="../apps/">Alle Apps</a></p>
+      <p class="sub">Deine Zettel, sicher auf deinem Handy.</p>
     </div>
+    <button type="button" class="kopf-mic" id="kopfSprechen" aria-label="Fompa sagen, was du bezahlt hast" title="Sprechen">🎙</button>
+    <span data-feedback-slot></span>
   </header>
 
   <div class="mode" role="tablist">
     <button data-mode="buch" class="on">Buchhaltung</button>
     <button data-mode="steuer">Steuern</button>
+    <button data-mode="plan">Woche + Ziele</button>
   </div>
 
-  <div class="card glas">
-    <svg viewBox="0 0 110 130" aria-hidden="true">
-      <defs><clipPath id="glasInnen"><path d="M22 34 Q18 40 18 52 L18 112 Q18 122 30 122 L80 122 Q92 122 92 112 L92 52 Q92 40 88 34 Z"/></clipPath></defs>
-      <rect x="30" y="12" width="50" height="14" rx="4" fill="var(--gold)" opacity=".85"/>
-      <path d="M26 26 L84 26 L88 34 L22 34 Z" fill="var(--gold)" opacity=".45"/>
-      <g id="sterne" clip-path="url(#glasInnen)"></g>
-      <path d="M22 34 Q18 40 18 52 L18 112 Q18 122 30 122 L80 122 Q92 122 92 112 L92 52 Q92 40 88 34 Z" fill="none" stroke="var(--muted)" stroke-width="2.5" opacity=".7"/>
-      <path d="M26 50 L26 100" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".35"/>
-    </svg>
-    <div>
+  <div id="buehnePlatz" aria-hidden="true"></div>
+  <div class="card szene" id="szene">
+    <div class="duo">
+      <div class="figur" id="figur" role="button" tabindex="0" aria-label="Fompa antippen">
+        <img src="fompa-posen.jpg" alt="" width="360" height="360"><span class="glanz"></span>
+      </div>
+      <div class="funken" id="funken"></div>
+      <span class="zeichen" id="zeichen"></span>
+      <svg class="glasbild" id="glasbild" viewBox="0 0 110 130" aria-hidden="true">
+        <defs><clipPath id="glasInnen"><path d="M22 34 Q18 40 18 52 L18 112 Q18 122 30 122 L80 122 Q92 122 92 112 L92 52 Q92 40 88 34 Z"/></clipPath>
+        <linearGradient id="glasFuell" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fb3e8" stop-opacity=".08"/><stop offset="1" stop-color="#f2c14e" stop-opacity=".22"/></linearGradient></defs>
+        <rect x="30" y="12" width="50" height="14" rx="4" fill="#f2c14e" opacity=".9"/>
+        <path d="M26 26 L84 26 L88 34 L22 34 Z" fill="#f2c14e" opacity=".5"/>
+        <path d="M22 34 Q18 40 18 52 L18 112 Q18 122 30 122 L80 122 Q92 122 92 112 L92 52 Q92 40 88 34 Z" fill="url(#glasFuell)"/>
+        <g id="sterne" clip-path="url(#glasInnen)"></g>
+        <path d="M22 34 Q18 40 18 52 L18 112 Q18 122 30 122 L80 122 Q92 122 92 112 L92 52 Q92 40 88 34 Z" fill="none" stroke="#dfe7ff" stroke-width="2.5" opacity=".55"/>
+        <path d="M26 50 L26 100" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".35"/>
+      </svg>
+    </div>
+    <div class="glastext">
       <p class="big" id="glasZahl">0 Zettel</p>
-      <p class="hint" id="glasText">Jede Quittung wird ein Stern in Fompas Glas. Am Jahresende wird daraus die Liste für den Steuerberater.</p>
+      <p class="hint" id="glasText">Jeder Zettel wird ein Stern.</p>
+      <div class="ziel" id="ziel"><div class="balken"><i id="zielBalken" style="width:0"></i></div><small id="zielText">Erster Stern wartet</small></div>
     </div>
   </div>
 
-  <div class="bubble" id="bubble"></div>
+  <div class="sprech">
+    <div class="bubble" id="bubble" aria-live="polite"></div>
+    <button class="vorlesen" id="vorlesen" aria-label="Fompa liest vor" title="Fompa liest vor">🔊</button>
+  </div>
 
-  <div class="row">
+  <div class="row" id="jahrRow">
     <label>Jahr
       <select id="year"></select>
     </label>
@@ -132,8 +327,8 @@ pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px s
   <!-- Zettel erfassen (Buchhaltung und Steuern) -->
   <section id="neu" class="card form">
     <h2 id="formTitle">Neuer Zettel</h2>
-    <p class="hint" id="sprechHint">Tipp auf das kleine Fompa-Bild rechts unten und sag zum Beispiel: «Kaffee 4.80 mit Twint» oder «Migros 23.50 mit Karte». Fompa füllt alles aus, auch für alles, was du im Alltag kaufst.</p>
-    <div class="shot" id="shot">📷 Quittung fotografieren<br><small>oder Bild/PDF auswählen (freiwillig)</small></div>
+    <div class="shot" id="shot" role="button" tabindex="0" aria-label="Quittung fotografieren"><span class="kamera" aria-hidden="true">📷</span><b>Quittung fotografieren</b><small>oder Bild/PDF wählen, freiwillig</small></div>
+    <p class="hint" id="sprechHint">Oder tipp oben auf 🎙 und sag: «Kaffee 4.80 mit Twint».</p>
     <input type="file" id="file" accept="image/*,application/pdf" capture="environment" class="hidden">
     <label><span id="fromLabel">Wofür</span>
       <input id="from" list="fromList" placeholder="z. B. Server, Praxismiete, Krankenkasse" autocomplete="off">
@@ -142,7 +337,7 @@ pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px s
     <div class="chips" id="suggest"></div>
     <div class="row nurBuch">
       <label>Kategorie
-        <select id="haupt"><option>Privat</option><option>Ferien</option><option>Praxis</option><option>DR Lab</option><option>Unklar</option></select>
+        <select id="haupt"><option>Privat</option><option>Ferien</option><option>Praxis</option><option>DR Lab</option><option>Umbuchung</option><option>Unklar</option></select>
       </label>
       <label>Genauer (freiwillig)
         <input id="unter" list="unterList" placeholder="z. B. Kaffee" autocomplete="off">
@@ -150,31 +345,46 @@ pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px s
       </label>
     </div>
     <div class="row">
-      <label>Betrag CHF
-        <input id="amount" inputmode="decimal" placeholder="0.00">
+      <label>Betrag
+        <span class="betrag"><input id="amount" inputmode="decimal" placeholder="0.00"><select id="waehrung" aria-label="Währung"><option>CHF</option><option>EUR</option><option>USD</option></select></span>
       </label>
       <label>Datum
         <input id="date" type="date">
       </label>
     </div>
+    <p class="hint hidden" id="umrechnung"></p>
+    <details class="mehr" id="mehrBox"><summary>Mehr Angaben (freiwillig)</summary><div class="form">
     <div class="row nurBuch">
       <label>Bezahlt mit
         <input id="paid" list="paidList" placeholder="Karte" autocomplete="off">
         <datalist id="paidList"><option value="Karte"><option value="Kreditkarte"><option value="Debitkarte Geschaeftskonto"><option value="Twint"><option value="Bar"><option value="E-Banking"></datalist>
       </label>
       <label>Fixkosten
-        <input id="fix" placeholder="z. B. monatlich" autocomplete="off">
+        <input id="fix" list="fixList" placeholder="z. B. monatlich" autocomplete="off">
+        <datalist id="fixList"><option value="monatlich"><option value="vierteljaehrlich"><option value="jaehrlich"><option value="einmalig"></datalist>
       </label>
     </div>
+    <p class="hint nurBuch hidden" id="umbuchHint">Umbuchung heisst: Geld wechselt nur das Konto (z. B. Karte aufladen). Das ist kein Verlust und zählt nicht als Ausgabe.</p>
     <label id="catRow"><span id="catLabel">Steuer-Ordner</span>
       <select id="cat"></select>
     </label>
-    <label>Notiz (freiwillig)
+    <label>Notiz
       <input id="note" placeholder="z. B. Frage an den Steuerberater">
     </label>
+    </div></details>
     <button class="btn main" id="save">Ins Glas legen</button>
     <button class="btn hidden" id="cancel">Abbrechen</button>
     <button class="btn del hidden" id="delOne">Zettel löschen</button>
+    <details id="vieleBox" class="nurBuch">
+      <summary><b>Mehrere Zettel auf einmal</b></summary>
+      <p class="hint" style="margin-top:6px">Ein Zettel pro Zeile oder mit Komma getrennt, z. B. «Kaffee 4.80 Twint, Migros 23.50 Karte». Kommt auch aus dem Transkript mit «An Fompa».</p>
+      <textarea id="vieleText" placeholder="Kaffee 4.80 Twint&#10;Migros 23.50 Karte&#10;Zug 8.80"></textarea>
+      <div id="vieleVorschau" class="liste"></div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="vielePruef">Prüfen</button>
+        <button class="btn main" id="vieleSave">Alle ins Glas</button>
+      </div>
+    </details>
   </section>
 
   <!-- Buchhaltung: Monat -->
@@ -183,10 +393,11 @@ pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px s
       <select id="monatSel"></select>
     </label>
     <div class="sum3">
-      <div class="card"><small>Privat diese Woche</small><strong id="sumWoche">0.00</strong><small id="wocheBudget">Budget 138</small></div>
-      <div class="card"><small id="sumMonatLabel">Monat</small><strong id="sumMonat">0.00</strong></div>
+      <div class="card"><small>Diese Woche übrig</small><strong id="sumWoche">–</strong><small id="wocheBudget">Wochengeld unter «Woche + Ziele» festlegen</small></div>
+      <div class="card"><small id="sumMonatLabel">Monat</small><strong id="sumMonat">0.00</strong><small id="sumMonatSitz"></small></div>
     </div>
     <div class="card"><h2>Nach Kategorie</h2><div id="katSum"></div></div>
+    <div class="card"><h2>Fixkosten</h2><p class="hint">Aus deinen Zetteln mit «Fixkosten». Einmaliges ist aufs Jahr verteilt.</p><div id="fixSum"></div></div>
     <div class="card"><h2>Zettel</h2><div class="belege" id="monatListe"></div></div>
   </section>
 
@@ -228,8 +439,34 @@ pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px s
       <p class="hint" id="missing" style="margin-top:10px"></p>
     </div>
     <div class="card">
+      <h2>Jahres-Check</h2>
+      <p class="hint">Hochrechnung aus deinen Zetteln. Einnahmen kommen aus Ordner 3000 oder aus dem Feld unten. Alles Schätzungen, der Steuerberater entscheidet.</p>
+      <div class="liste" id="jahrCheck"></div>
+      <details style="margin-top:8px">
+        <summary><b>Werte eintragen</b></summary>
+        <div class="form" style="margin-top:8px">
+          <div class="row">
+            <label>Einnahmen bis heute CHF<input id="jUmsatz" inputmode="decimal" placeholder="leer = aus 3000"></label>
+            <label>Ziel 3a dieses Jahr CHF<input id="j3a" inputmode="decimal" placeholder="z. B. Höchstbetrag"></label>
+          </div>
+          <label>Steuer-Rücklage in % vom Gewinn<input id="jProzent" inputmode="decimal" placeholder="z. B. 12"></label>
+          <button class="btn" id="jSave">Rechnen</button>
+        </div>
+      </details>
+    </div>
+    <div class="card">
+      <h2>Beleg-Check</h2>
+      <p class="hint">Fompa schaut, was dem Steuerberater auffallen würde.</p>
+      <div class="liste" id="belegCheck"></div>
+    </div>
+    <div class="card">
+      <h2>Steuer-Fahrplan</h2>
+      <div class="liste" id="fahrplan"></div>
+      <p class="hint" style="margin-top:8px">Fristen sind übliche Richtwerte für den Kanton Zürich. Was genau gilt, steht auf deiner Steuererklärung oder sagt dein Steuerberater.</p>
+    </div>
+    <div class="card">
       <h2>Eigene Nummern</h2>
-      <p class="hint">Vorgabe: die Konten aus deiner Erfolgsrechnung (3000–6640, 1500, 1520) und private Ordner P1–P9. Eine Zeile pro Ordner, <code>Nummer;Bezeichnung</code>. Bestehende Zettel behalten ihre Nummer.</p>
+      <p class="hint">Vorgabe: die Konten aus der Erfolgsrechnung (3000–6640, 1500, 1520) und private Ordner P1–P9. Eine Zeile pro Ordner, <code>Nummer;Bezeichnung</code>. Bestehende Zettel behalten ihre Nummer.</p>
       <textarea id="catText" spellcheck="false"></textarea>
       <div class="row" style="margin-top:8px">
         <button class="btn" id="catSave">Speichern</button>
@@ -237,27 +474,218 @@ pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px s
       </div>
     </div>
     <details class="card">
-      <summary><b>Was Fompa sich merkt</b></summary>
-      <p class="hint">Fompa merkt sich, wohin ein Zettel gehört (Kategorie und Steuer-Ordner), und schlägt es beim nächsten Mal vor. Nur auf diesem Handy, nichts wird gesendet.</p>
-      <ul id="memory" class="hint"></ul>
-      <button class="btn small del" id="forget">Vergessen</button>
-    </details>
-    <details class="card">
       <summary><b>Alles löschen</b></summary>
       <p class="hint">Löscht alle Zettel dieses Jahres auf diesem Handy, auch die der Buchhaltung. Vorher ZIP und Export sichern.</p>
       <button class="btn del" id="wipe">Jahr löschen</button>
     </details>
   </section>
 
-  <p class="foot">Fompa ordnet und rechnet, ist aber keine Steuerberatung. Ob etwas abziehbar ist, entscheidet dein Steuerberater oder das Steueramt. Bei Kundinnen und Kunden nur Kürzel verwenden.<br>Zettel bleiben auf deinem Gerät (kein Server, kein Konto).</p>
+  <!-- Plan: Woche -->
+  <section id="woche" class="hidden" style="display:grid;gap:12px">
+    <div class="card">
+      <h2>Heute für dich</h2>
+      <div class="liste" id="heute"></div>
+    </div>
+    <div class="card">
+      <h2>Diese Woche</h2>
+      <p class="hint" id="wocheVonBis"></p>
+      <div class="zahl" id="wocheRest">–</div>
+      <p class="hint" id="wocheRestText">übrig bis Sonntag</p>
+      <div class="balken" id="wocheBalken"><i style="width:0"></i></div>
+      <div id="wocheZeilen"></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn main" id="abschluss">Woche abschliessen</button>
+        <button class="btn" id="rueckblick">Fompas Rückblick</button>
+      </div>
+      <div class="antwort hidden" id="rueckText"></div>
+    </div>
+    <details class="card" id="wocheEinst">
+      <summary><b>Wochengeld und Ferien</b></summary>
+      <div class="form" style="margin-top:10px">
+        <div class="row">
+          <label>Wochengeld CHF<input id="eWoche" inputmode="decimal" placeholder="z. B. 300"></label>
+          <label>Preis pro Sitzung CHF<input id="ePreis" inputmode="decimal" placeholder="z. B. 120"></label>
+        </div>
+        <label class="check"><input type="checkbox" id="eFerien"> <span>Diese Woche ist Ferienwoche: Wochengeld und Feriengeld zählen zusammen.</span></label>
+        <label>Feriengeld für diese Woche CHF<input id="eFeriengeld" inputmode="decimal" placeholder="z. B. 500"></label>
+        <div class="row">
+          <label>Kurs EUR → CHF<input id="eEur" inputmode="decimal" placeholder="0.94"></label>
+          <label>Kurs USD → CHF<input id="eUsd" inputmode="decimal" placeholder="0.80"></label>
+        </div>
+        <p class="hint">Fremdwährung rechnet Fompa mit diesem Kurs als Schätzung. Mit dem Beleg kannst du den Betrag später korrigieren. In die Woche zählen Privat, Ferien und Unklar. Praxis und DR Lab laufen übers Projektbudget.</p>
+        <button class="btn" id="eSave">Speichern</button>
+      </div>
+    </details>
+    <div class="card">
+      <h2>Wochenabschlüsse</h2>
+      <p class="hint">Was vom Budget übrig bleibt, ist Gewinn. Der Rest kann in Werbung oder ins Sparen.</p>
+      <div class="liste" id="abschlussListe"></div>
+    </div>
+  </section>
+
+  <!-- Plan: Kapital -->
+  <section id="kapital" class="hidden" style="display:grid;gap:12px">
+    <div class="card">
+      <h2>Grundkapital</h2>
+      <div class="sum3">
+        <div><small class="hint">Rest (beweglich)</small><div class="zahl" id="kapRest">0</div></div>
+        <div><small class="hint">Dritte Säule</small><div class="zahl" id="kapS3" style="color:var(--blue)">0</div></div>
+      </div>
+      <p class="hint" id="kapGewinn" style="margin-top:8px"></p>
+      <div class="row" style="margin-top:10px">
+        <button class="btn main" id="kapStand">Stand speichern</button>
+        <button class="btn" id="kapStart">Heute als Start</button>
+      </div>
+      <div class="liste" id="kapVerlauf" style="margin-top:8px"></div>
+    </div>
+    <div class="card">
+      <h2>Konten</h2>
+      <p class="hint">Trag Namen und Stand ein, wie in deiner Bank-App. Kreditkarte: den verfügbaren Betrag. Geld, das jemand anderem gehört, zählt nie. Offene Klientenrechnungen kommen von «Offen» dazu. Nur auf diesem Handy.</p>
+      <div id="konten"></div>
+      <button class="btn" id="kontoNeu" style="width:100%;margin-top:8px">+ Konto</button>
+    </div>
+    <div class="card">
+      <h2>Ziele in Sitzungen</h2>
+      <p class="hint">Monatsbeträge eintragen. Fompa rechnet sie in Sitzungen um, mit dem Preis pro Sitzung von «Woche».</p>
+      <div class="form" style="margin-top:8px">
+        <div class="row">
+          <label>Break-even pro Monat<input id="zKosten" inputmode="decimal" placeholder="alle Kosten"></label>
+          <label>Mit Dritter Säule<input id="z3a" inputmode="decimal" placeholder="Kosten + 3a"></label>
+        </div>
+        <div class="row">
+          <label>Sparziel pro Monat<input id="zSpar" inputmode="decimal" placeholder="mit Sparen"></label>
+          <label>Arbeitswochen pro Jahr<input id="zWochen" inputmode="numeric" placeholder="46"></label>
+        </div>
+        <label>Sitzungen diesen Monat (gebucht)<input id="zIst" inputmode="numeric" placeholder="0"></label>
+        <button class="btn" id="zSave">Rechnen</button>
+      </div>
+      <div class="liste" id="ziele" style="margin-top:8px"></div>
+    </div>
+  </section>
+
+  <!-- Plan: Offen -->
+  <section id="offen" class="hidden" style="display:grid;gap:12px">
+    <div class="card" id="unklarCard">
+      <h2>Fompa fragt</h2>
+      <div class="liste" id="unklar"></div>
+    </div>
+    <div class="card">
+      <h2>Fälligkeiten</h2>
+      <p class="hint">So, wie du zahlen musst. «Bezahlt» legt gleich einen Zettel ins Glas.</p>
+      <div class="liste" id="faellig"></div>
+      <div id="faelligSumme"></div>
+      <details style="margin-top:8px">
+        <summary><b>+ Fälligkeit</b></summary>
+        <div class="form" style="margin-top:8px">
+          <label>Was<input id="fWas" placeholder="z. B. Krankenkasse, Markenschutz" autocomplete="off"></label>
+          <div class="row">
+            <label>Betrag CHF<input id="fBetrag" inputmode="decimal" placeholder="0.00"></label>
+            <label>Fällig am<input id="fDatum" type="date"></label>
+          </div>
+          <div class="row">
+            <label>Rhythmus<select id="fRhythmus"><option value="einmal">einmalig</option><option value="monat">monatlich</option><option value="quartal">vierteljährlich</option><option value="jahr">jährlich</option></select></label>
+            <label>Kategorie<select id="fKat"><option>Privat</option><option>Praxis</option><option>DR Lab</option><option>Ferien</option></select></label>
+          </div>
+          <button class="btn main" id="fAdd">Hinzufügen</button>
+        </div>
+      </details>
+    </div>
+    <div class="card">
+      <h2>Offene Rechnungen</h2>
+      <p class="hint">Was Klientinnen und Klienten dir schulden. Nur Kürzel, keine Namen. Fompa schickt nichts, er erinnert nur.</p>
+      <div class="liste" id="rechnungen"></div>
+      <div id="rechnungSumme"></div>
+      <details style="margin-top:8px">
+        <summary><b>+ Rechnung</b></summary>
+        <div class="form" style="margin-top:8px">
+          <div class="row3">
+            <label>Kürzel<input id="rKuerzel" maxlength="6" placeholder="AB" autocomplete="off" style="text-transform:uppercase"></label>
+            <label>Betrag<input id="rBetrag" inputmode="decimal" placeholder="0.00"></label>
+            <label>Datum<input id="rDatum" type="date"></label>
+          </div>
+          <label>Rechnungs-Nr. (freiwillig)<input id="rNr" inputmode="numeric" placeholder="z. B. 1001" autocomplete="off"></label>
+          <button class="btn main" id="rAdd">Hinzufügen</button>
+        </div>
+      </details>
+    </div>
+    <div class="card" id="kuerzelCard">
+      <h2>Pro Kürzel</h2>
+      <p class="hint">Wer wie viel offen hat, was überfällig ist und was als Nächstes kommt.</p>
+      <div class="liste" id="proKuerzel"></div>
+      <div class="antwort hidden" id="mahnBox" aria-live="polite"></div>
+      <details style="margin-top:8px">
+        <summary><b>Absender, Fristen, Betreibungssatz</b></summary>
+        <div class="form" style="margin-top:8px">
+          <label>Absender (erscheint unter dem Gruss)<textarea id="mAbsender" placeholder="Debitorenmanagement&#10;Praxis …, Vorname Name&#10;Strasse, PLZ Ort" style="min-height:96px"></textarea></label>
+          <div class="row">
+            <label>Zahlungsfrist Rechnung (Tage)<input id="mZiel" inputmode="numeric" placeholder="30"></label>
+            <label>Frist Mahnung (Tage)<input id="mFrist" inputmode="numeric" placeholder="10"></label>
+          </div>
+          <label>Satz in der 2. Mahnung<input id="mBetreib" placeholder="Ohne Zahlung bis zur Frist leiten wir die Betreibung ein."></label>
+          <button class="btn" id="mSave">Speichern</button>
+          <p class="hint">Gegenüber Klientinnen und Klienten tritt nur die Praxis auf. Fompa schreibt den Text, schicken tust du selbst.</p>
+        </div>
+      </details>
+    </div>
+    <div class="card">
+      <h2>Noch nicht verrechnet</h2>
+      <p class="hint">Sitzungen, für die es noch keine Rechnung gibt. Erst als Rechnung erstellen, dann erscheinen sie oben.</p>
+      <div class="stepper"><button class="btn small" id="uvMinus" aria-label="Eine weniger">−</button><div><div class="zahl" id="uvZahl">0</div><small class="hint" id="uvBetrag"></small></div><button class="btn small" id="uvPlus" aria-label="Eine mehr">+</button></div>
+    </div>
+    <div class="card">
+      <h2>Dinge verkaufen</h2>
+      <p class="hint">Was zu Hause weg kann. Fompa schreibt das Inserat für Tutti oder Ricardo, inserieren tust du selbst.</p>
+      <div class="liste" id="verkauf"></div>
+      <div id="verkaufSumme"></div>
+      <div class="antwort hidden" id="inseratBox"></div>
+      <details style="margin-top:8px">
+        <summary><b>+ Ding</b></summary>
+        <div class="form" style="margin-top:8px">
+          <label>Was<input id="vWas" placeholder="z. B. Velo, Lampe, Stuhl" autocomplete="off"></label>
+          <div class="row">
+            <label>Wunschpreis CHF<input id="vPreis" inputmode="decimal" placeholder="0"></label>
+            <label>Zustand<select id="vZustand"><option>wie neu</option><option>gut</option><option>gebraucht</option><option>defekt</option></select></label>
+          </div>
+          <button class="btn main" id="vAdd">Hinzufügen</button>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <details class="card" id="lernBox">
+    <summary><b>Was Fompa sich merkt</b></summary>
+    <p class="hint" style="margin-top:6px">Fompa merkt sich, wohin ein Zettel gehört, und schlägt es beim nächsten Mal vor. Dazu zählt er, wie du Zettel ablegst. Alles nur auf diesem Handy.</p>
+    <div id="lernZahlen" class="liste"></div>
+    <ul id="memory" class="hint"></ul>
+    <label class="check" style="margin:8px 0"><input type="checkbox" id="lernOk"> <span>Lern-Zahlen an meinen App-Server weitergeben (nur Zählungen, keine Beträge, keine Namen, nie Bild oder Stimme). Ohne Server-Verbindung teilst du sie als Text.</span></label>
+    <button class="btn small hidden" id="lernTeilen" style="margin-bottom:8px">Lern-Zahlen als Text teilen</button>
+    <button class="btn small del" id="forget">Vergessen</button>
+  </details>
+
+  <p class="foot">Fompa ordnet und rechnet, ist aber keine Steuer- oder Finanzberatung. Ob etwas abziehbar ist, entscheidet dein Steuerberater oder das Steueramt. Bei Klientinnen und Klienten nur Kürzel verwenden.<br>Zettel bleiben auf deinem Gerät (kein Konto). Ein Server bekommt nur etwas, wenn du es antippst.</p>
+  <div class="fuss-links"><a class="btn small" href="../transkript/" style="display:inline-flex;align-items:center;text-decoration:none">🎙 Transkript</a><a class="btn small" href="#" id="einfuehrung" style="display:inline-flex;align-items:center;text-decoration:none">Einführung</a><a class="btn small" href="../apps/" style="display:inline-flex;align-items:center;text-decoration:none">Alle Apps</a></div>
 </div>
 <div class="toast" id="toast"></div>
+<div class="onb hidden" id="onb" role="dialog" aria-modal="true" aria-labelledby="onbTitel">
+  <div class="onbKarte">
+    <div class="figur onbFigur" id="onbFigur"><img src="fompa-posen.jpg" alt="Fompa" width="360" height="360"><span class="glanz"></span></div>
+    <h2 id="onbTitel"></h2>
+    <p id="onbText"></p>
+    <div id="onbFeld"></div>
+    <div class="onbPunkte" id="onbPunkte"></div>
+    <div class="row">
+      <button class="btn" id="onbSkip">Überspringen</button>
+      <button class="btn main" id="onbWeiter">Weiter</button>
+    </div>
+  </div>
+</div>
 
 <script>
-// Fompa – Buchhaltung und Steuern. Speicher: nur IndexedDB auf dem Gerät.
+// Fompa – Buchhaltung, Steuern, Woche und Ziele. Speicher: nur IndexedDB auf dem Gerät.
 // Ein Zettel = ein Eintrag in «belege». kind 'ausgabe' = Buchhaltung, sonst Steuer-Beleg. cat = Steuer-Ordner ('' = keiner).
+// Keine echten Finanzzahlen im Code: Wochengeld, Konten, Ziele trägt man in der App ein.
 const $ = s => document.querySelector(s);
-// Nummern wie in Diegos Erfolgsrechnung (Konten) plus private Steuer-Ordner P1–P10
+// Nummern nach Kontenrahmen einer Erfolgsrechnung plus private Steuer-Ordner P1–P9
 const DEFAULT_CATS = `3000;Einnahmen Praxis
 4000;Materialaufwand und Verbrauchsmaterial
 5700;AHV und Personenversicherungen
@@ -294,9 +722,11 @@ P7;Spenden privat
 P8;Schuldzinsen
 P9;Diverses`;
 // Kategorien wie im Buchhaltung-Thread: nur Praxis und DR Lab bekommen einen Steuer-Ordner
-const HAUPT = ['Privat','Ferien','Praxis','DR Lab','Unklar'];
-const UNTER = {Privat:['Essen','Kaffee und Snacks','Lebensmittel','Restaurant','Ausgang','Mila','Kleider','Haushalt','Mobilität','Gesundheit'], Ferien:['Essen','Hotel','Reise'], Praxis:['Miete','Material','Versicherungen','Weiterbildung','Telefon Internet','Werbung'], 'DR Lab':['Software','Programmierer','App-Produktion','Nova'], Unklar:[]};
+const HAUPT = ['Privat','Ferien','Praxis','DR Lab','Umbuchung','Unklar'];
+const UNTER = {Privat:['Essen','Kaffee und Snacks','Lebensmittel','Restaurant','Ausgang','Kind','Kleider','Haushalt','Mobilität','Gesundheit'], Ferien:['Essen','Hotel','Reise'], Praxis:['Miete','Material','Versicherungen','Weiterbildung','Telefon Internet','Werbung'], 'DR Lab':['Software','Programmierer','App-Produktion','Nova'], Umbuchung:['Karte aufladen','Konto zu Konto','Anlage'], Unklar:[]};
 const MIT_ORDNER = h => h === 'Praxis' || h === 'DR Lab';
+const IN_WOCHE = h => h === 'Privat' || h === 'Ferien' || h === 'Unklar';
+const ZAEHLT = z => splitKat(z.kat).h !== 'Umbuchung';
 // Konto-Vorschlag aus Kategorie (nur ein Vorschlag, der Steuerberater entscheidet)
 const KONTO = {'Praxis Miete':'6000','Praxis Material':'4000','Praxis Versicherungen':'6300','Praxis Weiterbildung':'6550','Praxis Telefon Internet':'6510','Praxis Werbung':'6600',
   'DR Lab Software':'6570','DR Lab Programmierer':'6590','DR Lab App-Produktion':'6590','DR Lab Nova':'6580'};
@@ -305,34 +735,41 @@ function kontoVorschlag(){
   const k = KONTO[getKat()] || ($('#haupt').value === 'DR Lab' ? '6590' : '');
   if (k && [...$('#cat').options].some(o => o.value === k)) $('#cat').value = k;
 }
-const WOCHE_PRIVAT = 138;
 const splitKat = k => { k = String(k||''); const h = HAUPT.find(x => k === x || k.startsWith(x + ' ')); return h ? {h, u: k.slice(h.length).trim()} : {h: k ? 'Unklar' : 'Privat', u: k}; };
 const getKat = () => ($('#haupt').value + ' ' + $('#unter').value.trim()).trim();
 function setKat(k){ const {h,u} = splitKat(k); $('#haupt').value = h; $('#unter').value = u; katChanged(); }
 function katChanged(){
   const h = $('#haupt').value;
   $('#unterList').innerHTML = (UNTER[h]||[]).map(x => `<option value="${esc(x)}">`).join('');
-  const zeig = mode !== 'buch' || MIT_ORDNER(h);
+  const zeig = mode === 'steuer' || MIT_ORDNER(h);
   $('#catRow').classList.toggle('hidden', !zeig);
+  $('#umbuchHint').classList.toggle('hidden', mode !== 'buch' || h !== 'Umbuchung');
   if (!zeig) $('#cat').value = ''; else if (!$('#cat').value) kontoVorschlag();
 }
 
 const TIPS = {
   buch: [
-    'Ich bin <b>Fompa</b>. Verlorene Zettel sind mein Lieblingsfund. Fotografier die Quittung oder sag mir einfach, was du bezahlt hast.',
+    'Hoi, ich bin <b>Fompa</b>. Fotografier eine Quittung oder sag mir, was du bezahlt hast.',
     'Jeder Zettel wird ein Stern in meinem Glas. Ein volles Glas heisst: Nichts ist verloren gegangen.',
-    'Gib einem Zettel einen Steuer-Ordner, dann liegt er am Jahresende schon richtig für den Steuerberater.',
-    'Am Sonntag schaue ich gern mit dir auf die Woche. Unter «Monat» siehst du, was zusammenkommt.'
+    'Karte aufgeladen? Wähl «Umbuchung». Das ist kein Verlust, nur ein Konto-Wechsel.',
+    'Unter «Monat» siehst du deine Fixkosten als Endzahl pro Monat und pro Jahr.'
   ],
   steuer: [
-    'Ich bin <b>Fompa</b>. Du fotografierst, ich ordne und zähle. Ob etwas abziehbar ist, sagt dein Steuerberater.',
+    'Du fotografierst, ich ordne und zähle. Ob etwas abziehbar ist, sagt dein Steuerberater.',
     'Unleserliche Zahl? Lass den Betrag leer, ich markiere den Zettel als «Betrag fehlt».',
-    'Im Kanton Zürich ist die Frist meist der 31. März. Verlängern geht online.',
-    'Leere Ordner sind kein Fehler. Sie zeigen nur, was noch fehlt.'
+    'Leere Ordner sind kein Fehler. Sie zeigen nur, was noch fehlt.',
+    'Unter «Paket» steht der Steuer-Fahrplan: was wann dran ist.'
+  ],
+  plan: [
+    'Hier rechne ich in Sitzungen. So siehst du gleich, was eine Ausgabe bedeutet.',
+    'Am Sonntag schliessen wir die Woche ab. Was übrig bleibt, ist Gewinn.',
+    'Grundkapital zeige ich immer in zwei Teilen: Dritte Säule und Rest.',
+    'Fälligkeiten zeige ich so, wie du zahlen musst, nicht verteilt.'
   ]
 };
 
-let db, year, cats = [], zettel = [], editId = null, photo = null, memory = {}, mode = 'buch', neuId = null;
+let db, year, cats = [], zettel = [], editId = null, photo = null, memory = {}, mode = 'buch', neuId = null, quelle = 'tippen';
+let einst = {}, abschluesse = [], konten = [], staende = [], faellig = [], rechnungen = [], lern = {}, vieleListe = [];
 const isBuch = z => z.kind === 'ausgabe';
 const steuerZettel = () => zettel.filter(z => z.cat);
 
@@ -358,16 +795,28 @@ function tx(store, m, fn){
 const kvGet = k => tx('kv','readonly', s => s.get(k));
 const kvSet = (k,v) => tx('kv','readwrite', s => s.put(v,k));
 
-function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2400); }
+let toastT;
+function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(()=>el.classList.remove('show'),2600); }
 const chf = n => (Math.round(n*100)/100).toLocaleString('de-CH',{minimumFractionDigits:2,maximumFractionDigits:2});
-const parseAmt = s => { const n = parseFloat(String(s).replace(/['\s]/g,'').replace(',','.')); return isFinite(n) ? n : null; };
+const chf0 = n => Math.round(n).toLocaleString('de-CH');
+const parseAmt = s => { const n = parseFloat(String(s).replace(/['’\s]/g,'').replace(',','.')); return isFinite(n) ? n : null; };
+const num = (v, d = 0) => { const n = parseAmt(v); return n == null ? d : n; };
 const safe = s => String(s||'').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/Ä/g,'Ae').replace(/Ö/g,'Oe').replace(/Ü/g,'Ue').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w.-]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
-const esc = s => String(s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const ascii = s => String(s||'').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/Ä/g,'Ae').replace(/Ö/g,'Oe').replace(/Ü/g,'Ue').replace(/;/g,',');
 const ymd = d => new Date(d.getTime() - d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
 const sum = list => list.reduce((s,z) => s + (z.amount||0), 0);
 const MONATE = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 const monatName = m => MONATE[+m.slice(5,7)-1] + ' ' + m.slice(0,4);
+const neueId = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const datumCH = s => s ? s.slice(8,10) + '.' + s.slice(5,7) + '.' + s.slice(0,4) : '';
+const tageBis = s => Math.round((new Date(s + 'T12:00') - new Date(ymd(new Date()) + 'T12:00')) / 864e5);
+function montag(d = new Date()){ const m = new Date(d); m.setDate(d.getDate() - ((d.getDay()+6)%7)); return ymd(m); }
+function plusTage(s, n){ const d = new Date(s + 'T12:00'); d.setDate(d.getDate() + n); return ymd(d); }
+function plusMonate(s, n){ const d = new Date(s + 'T12:00'); const tag = d.getDate(); d.setDate(1); d.setMonth(d.getMonth() + n); const max = new Date(d.getFullYear(), d.getMonth()+1, 0).getDate(); d.setDate(Math.min(tag, max)); return ymd(d); }
+const preis = () => num(einst.preis);
+const sitz = betrag => preis() > 0 ? Math.round(betrag / preis() * 10) / 10 : null;
+const sitzText = betrag => { const s = sitz(betrag); return s == null ? '' : `≈ ${s.toLocaleString('de-CH')} ${Math.abs(s) === 1 ? 'Sitzung' : 'Sitzungen'}`; };
 
 function parseCats(txt){
   return txt.split('\n').map(l => l.trim()).filter(Boolean).map(l => {
@@ -386,23 +835,89 @@ async function loadYear(){
   zettel.sort((a,b) => (a.date||'').localeCompare(b.date||''));
   renderAll();
 }
+// Für die Woche braucht es auch Zettel aus dem Vorjahr (Woche über Neujahr)
+async function wochenZettel(){
+  const von = montag(), jahre = [...new Set([+von.slice(0,4), new Date().getFullYear()])];
+  if (jahre.length === 1 && jahre[0] === year) return zettel;
+  const out = [];
+  for (const y of jahre) await new Promise(ok => {
+    const r = db.transaction('belege').objectStore('belege').index('year').openCursor(IDBKeyRange.only(y));
+    r.onsuccess = () => { const c = r.result; if (c){ out.push(c.value); c.continue(); } else ok(); };
+  });
+  return out;
+}
 
 function renderAll(){
-  const leer = mode === 'buch' ? '<option value="">– kein Steuer-Ordner –</option>' : '';
+  const leer = mode !== 'steuer' ? '<option value="">– kein Steuer-Ordner –</option>' : '';
   const keep = $('#cat').value;
   $('#cat').innerHTML = leer + cats.map(c => `<option value="${esc(c.nr)}">${esc(c.nr)} · ${esc(c.name)}</option>`).join('');
   if ([...$('#cat').options].some(o => o.value === keep)) $('#cat').value = keep;
   $('#catText').value = cats.map(c => c.nr+';'+c.name).join('\n');
   $('#fromList').innerHTML = Object.keys(memory).map(f => `<option value="${esc(f)}">`).join('');
-  if (mode === 'buch'){
-    const m = ymd(new Date()).slice(0,7);
-    $('#totalLabel').textContent = String(year) === m.slice(0,4) ? MONATE[+m.slice(5)-1] : 'Jahr';
-    $('#total').textContent = chf(sum(zettel.filter(z => isBuch(z) && (String(year) !== m.slice(0,4) || (z.date||'').startsWith(m)))));
-  } else {
+  if (mode === 'steuer'){
     $('#totalLabel').textContent = 'Steuer-Total';
     $('#total').textContent = chf(sum(steuerZettel()));
+  } else {
+    const m = ymd(new Date()).slice(0,7);
+    $('#totalLabel').textContent = String(year) === m.slice(0,4) ? MONATE[+m.slice(5)-1] : 'Jahr';
+    $('#total').textContent = chf(sum(zettel.filter(z => isBuch(z) && ZAEHLT(z) && (String(year) !== m.slice(0,4) || (z.date||'').startsWith(m)))));
   }
   renderGlas(); renderCats(); renderMemory(); renderMissing(); renderMonate(); renderMonat(); renderExport();
+  renderFahrplan(); renderWoche(); renderKapital(); renderZiele(); renderOffen(); renderLern(); renderBubble();
+  renderProKuerzel(); jahresCheck(); belegCheck(); renderVerkauf(); renderHeute();
+}
+
+/* ---------- Fompa in Posen ---------- */
+let poseT;
+function pose(name, zeichen, ms = 1800){
+  const f = $('#figur'), z = $('#zeichen');
+  f.classList.remove('freut','denkt','rechnet','staunt','schlaeft','nickt'); void f.offsetWidth;
+  z.className = 'zeichen'; z.textContent = '';
+  clearTimeout(poseT);
+  if (name) f.classList.add(name);
+  if (zeichen){ z.textContent = zeichen; void z.offsetWidth; z.classList.add('an'); }
+  if (name === 'freut') funken();
+  poseBild(name);
+  poseT = setTimeout(ruhe, ms);
+}
+function ruhe(){
+  const f = $('#figur'), z = $('#zeichen'), h = new Date().getHours();
+  f.classList.remove('freut','denkt','rechnet','staunt');
+  z.className = 'zeichen'; z.textContent = '';
+  if (h >= 23 || h < 6){ f.classList.add('schlaeft'); z.textContent = 'z'; z.classList.add('zzz'); }
+  else f.classList.remove('schlaeft');
+  if (typeof poseBild === 'function') poseBild(null);
+}
+function funken(){
+  const box = $('#funken'); box.classList.remove('an');
+  box.innerHTML = Array.from({length:10}, (_, i) => { const a = i / 10 * Math.PI * 2, r = 60 + (i % 3) * 14; return `<b style="--x:${(Math.cos(a)*r).toFixed(0)}px;--y:${(Math.sin(a)*r).toFixed(0)}px"></b>`; }).join('');
+  void box.offsetWidth; box.classList.add('an');
+}
+function sterneFliegen(){
+  const ziel = $('#glasbild').getBoundingClientRect();
+  if (ziel.bottom < 0 || ziel.top > innerHeight) return;
+  const s = document.createElement('div'); s.className = 'flieg'; document.body.appendChild(s);
+  const x0 = innerWidth / 2, y0 = innerHeight - 90, x1 = ziel.left + ziel.width / 2, y1 = ziel.top + ziel.height * .45;
+  const anim = s.animate([
+    {transform:`translate(${x0}px,${y0}px) scale(.6) rotate(0)`, opacity:0},
+    {transform:`translate(${(x0+x1)/2}px,${Math.min(y0,y1)-80}px) scale(1.3) rotate(180deg)`, opacity:1, offset:.5},
+    {transform:`translate(${x1}px,${y1}px) scale(.5) rotate(360deg)`, opacity:.9}
+  ], {duration:900, easing:'cubic-bezier(.4,0,.2,1)'});
+  s.style.left = '0'; s.style.top = '0';
+  anim.onfinish = () => s.remove();
+}
+function muenzRegen(n = 18){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  for (let i = 0; i < n; i++){
+    const m = document.createElement('div'); m.className = 'muenze'; m.style.left = (Math.random() * 92 + 2) + 'vw';
+    document.body.appendChild(m);
+    m.animate([{transform:'translateY(0) rotateY(0)'},{transform:`translateY(${innerHeight + 60}px) rotateY(${720 + Math.random()*360}deg)`}], {duration:1400 + Math.random()*900, delay:Math.random()*500, easing:'cubic-bezier(.5,0,.8,.6)'}).onfinish = () => m.remove();
+  }
+}
+function himmel(){
+  const h = $('#himmel'); let s = '';
+  for (let i = 0; i < 46; i++){ const x = Math.random()*100, y = Math.random()*100, d = (Math.random()*4).toFixed(1), g = Math.random() < .2 ? 3 : 2; s += `<i style="left:${x}%;top:${y}%;width:${g}px;height:${g}px;animation-delay:${d}s"></i>`; }
+  h.insertAdjacentHTML('beforeend', s);
 }
 
 /* ---------- Fompas Glas ---------- */
@@ -414,19 +929,44 @@ function renderGlas(){
     const h = hash(z.id), row = Math.floor(i / cols), col = i % cols;
     const x = 22 + w/2 + col * w + (h % 5) - 2, y = 116 - gr - row * gr * 1.7 - ((h >> 4) % 3);
     const r = gr * (.85 + ((h >> 8) % 4) * .08), rot = (h >> 12) % 72;
-    const fill = z.cat ? (isBuch(z) ? 'var(--gold)' : '#8fb3e8') : '#e8c97a';
-    return `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot})"><path class="star${z.id === neuId ? ' neu' : ''}" d="${starPath(r)}" fill="${fill}" stroke="rgba(0,0,0,.15)" stroke-width=".4"/></g>`;
+    const fill = z.cat ? (isBuch(z) ? '#f2c14e' : '#8fb3e8') : (splitKat(z.kat).h === 'Umbuchung' ? '#b9c3dc' : '#f7dc93');
+    const cls = z.id === neuId ? ' neu' : (h % 4 === 0 ? ' blink' : '');
+    return `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot})"><path class="star${cls}" style="animation-delay:${(h%30)/10}s" d="${starPath(r)}" fill="${fill}" stroke="rgba(0,0,0,.2)" stroke-width=".4"/></g>`;
   });
   $('#sterne').innerHTML = pts.join('');
   neuId = null;
   $('#glasZahl').textContent = n === 1 ? '1 Zettel' : n + ' Zettel';
   $('#glasText').textContent = n
-    ? `${mitOrdner} davon liegen schon in einem Steuer-Ordner. Am Jahresende wird daraus die Liste für den Steuerberater.`
-    : 'Jede Quittung wird ein Stern in Fompas Glas. Am Jahresende wird daraus die Liste für den Steuerberater.';
+    ? (mitOrdner ? `${mitOrdner} davon im Steuer-Ordner.` : 'Nichts geht verloren.')
+    : 'Jeder Zettel wird ein Stern.';
+  const zi = zielStufe(n);
+  $('#zielBalken').style.width = Math.round(zi.anteil * 100) + '%';
+  $('#zielText').textContent = n ? `Noch ${zi.naechste - n} bis ${zi.naechste} Sterne` : 'Dein erster Stern wartet';
 }
 function starPath(r){
   let d = ''; for (let i = 0; i < 10; i++){ const a = Math.PI/5*i - Math.PI/2, rr = i % 2 ? r*.45 : r; d += (i ? 'L' : 'M') + (Math.cos(a)*rr).toFixed(2) + ' ' + (Math.sin(a)*rr).toFixed(2); }
   return d + 'Z';
+}
+
+/* ---------- Fompas Sprechblase: das Wichtigste zuerst ---------- */
+function hinweise(){
+  const out = [];
+  const bald = faellig.filter(f => tageBis(f.datum) <= 3).sort((a,b) => a.datum.localeCompare(b.datum));
+  if (bald.length){ const f = bald[0], t = tageBis(f.datum); out.push(`<b>${esc(f.was)}</b> (CHF ${chf(f.betrag)}) ist ${t < 0 ? 'seit ' + (-t) + ' Tagen fällig' : t === 0 ? 'heute fällig' : 'in ' + t + (t === 1 ? ' Tag' : ' Tagen') + ' fällig'}.<div class="bk"><button class="chip gold" data-go="offen">Ansehen</button></div>`); }
+  const erinnern = rechnungen.filter(r => r.status === 'abgeschrieben' && r.erinnern && tageBis(r.erinnern) <= 0);
+  if (erinnern.length) out.push(`Bei <b>${erinnern.map(r => esc(r.kuerzel)).join(', ')}</b> wolltest du entscheiden, ob du betreibst. Ich schicke nichts, ich erinnere nur.<div class="bk"><button class="chip gold" data-go="offen">Ansehen</button></div>`);
+  const unk = zettel.filter(z => isBuch(z) && splitKat(z.kat).h === 'Unklar');
+  if (unk.length) out.push(`${unk.length === 1 ? 'Ein Zettel ist' : unk.length + ' Zettel sind'} noch «Unklar». Sagst du mir, wofür?<div class="bk"><button class="chip gold" data-go="offen">Kurz klären</button></div>`);
+  const tag = new Date().getDay();
+  if ((tag === 0 || tag === 1) && !abschluesse.some(a => a.woche === montag(new Date(Date.now() - (tag === 1 ? 864e5 : 0))))) out.push('Zeit für den Wochenabschluss. Was übrig bleibt, ist Gewinn.<div class="bk"><button class="chip gold" data-go="woche">Abschliessen</button></div>');
+  return out;
+}
+function renderBubble(){
+  const h = hinweise();
+  const neuling = !zettel.length && !Object.keys(lern).some(k => k.startsWith('weg-'));
+  document.querySelector('.sprech').classList.toggle('still', neuling && !faellig.length && !rechnungen.length);
+  if (h.length && mode === 'plan' || h.length && Math.floor(Date.now()/36e5) % 2 === 0) { $('#bubble').innerHTML = h[0]; return; }
+  const t = TIPS[mode]; $('#bubble').innerHTML = t[Math.floor(Date.now()/864e5) % t.length];
 }
 
 /* ---------- Steuern: Ordner ---------- */
@@ -434,8 +974,9 @@ const urls = [];
 function imgURL(z){ if(!z.blob || !(z.type||'').startsWith('image/')) return ''; const u = URL.createObjectURL(z.blob); urls.push(u); return u; }
 function zeile(z){
   const u = imgURL(z);
+  const orig = z.waehrung && z.waehrung !== 'CHF' && z.betragOrig != null ? ` (${z.waehrung} ${chf(z.betragOrig)})` : '';
   return `<div class="beleg">${u ? `<img src="${u}" alt="">` : `<div class="noimg" style="display:grid;place-items:center">${z.blob ? '📄' : '⭐'}</div>`}
-    <div>${esc(z.from)||'ohne Angabe'}<small>${z.date||'ohne Datum'} · ${z.amount==null?'<b style="color:var(--warn)">Betrag fehlt</b>':'CHF '+chf(z.amount)}${isBuch(z)&&z.kat?' · '+esc(z.kat):''}${z.cat&&mode==='buch'?' · Ordner '+esc(z.cat):''}${z.note?' · '+esc(z.note):''}</small></div>
+    <div>${esc(z.from)||'ohne Angabe'}<small>${datumCH(z.date)||'ohne Datum'} · ${z.amount==null?'<b style="color:var(--warn)">Betrag fehlt</b>':'CHF '+chf(z.amount)+orig}${isBuch(z)&&z.kat?' · '+esc(z.kat):''}${z.cat&&mode!=='steuer'?' · Ordner '+esc(z.cat):''}${z.note?' · '+esc(z.note):''}</small></div>
     <button class="btn small" data-edit="${z.id}">Ändern</button></div>`;
 }
 function renderCats(){
@@ -451,13 +992,27 @@ function renderCats(){
 }
 function renderMemory(){
   const e = Object.keys(memory);
-  $('#memory').innerHTML = e.length ? e.map(f => { const m = merk(f); return `<li>${esc(f)} → ${[m.kat, m.cat && 'Ordner '+m.cat].filter(Boolean).map(esc).join(', ')}</li>`; }).join('') : '<li>Noch nichts. Nach den ersten Zetteln steht hier, was Fompa gelernt hat.</li>';
+  $('#memory').innerHTML = e.length ? e.slice(-30).map(f => { const m = merk(f); return `<li>${esc(f)} → ${[m.kat, m.cat && 'Ordner '+m.cat].filter(Boolean).map(esc).join(', ')}</li>`; }).join('') : '<li>Noch nichts. Nach den ersten Zetteln steht hier, was Fompa gelernt hat.</li>';
 }
 function renderMissing(){
   const st = steuerZettel();
   const empty = cats.filter(c => !st.some(b => b.cat === c.nr));
   const noAmt = st.filter(b => b.amount == null).length;
   $('#missing').textContent = (empty.length ? 'Noch leer: ' + empty.map(c => c.nr).join(', ') + '. ' : 'Alle Ordner haben Zettel. ') + (noAmt ? noAmt + ' Zettel ohne Betrag.' : '');
+}
+// Steuer-Fahrplan: übliche Richtwerte Kanton Zürich, ohne persönliche Zahlen
+function renderFahrplan(){
+  const j = year, heute = ymd(new Date());
+  const punkte = [
+    [`${j}-12-31`, 'Säule 3a einzahlen', 'Nur was bis 31.12. eingezahlt ist, zählt für dieses Jahr.'],
+    [`${j+1}-01-31`, 'Lohnausweis und Bankauszüge sammeln', 'Ordner P1 und P6. Kommen meist im Januar.'],
+    [`${j+1}-02-15`, 'Paket für den Steuerberater', 'ZIP erstellen, wenn die Ordner voll sind.'],
+    [`${j+1}-03-31`, 'Steuererklärung einreichen', 'Üblicher Termin. Verlängern geht online beim Steueramt.']
+  ];
+  $('#fahrplan').innerHTML = punkte.map(([d, was, txt]) => {
+    const t = tageBis(d), vorbei = d < heute;
+    return `<div class="eintrag"><div>${vorbei ? '✓ ' : ''}<b>${esc(was)}</b><small>${datumCH(d)} · ${esc(txt)}</small></div><span class="hint">${vorbei ? 'vorbei' : 'in ' + t + ' T.'}</span></div>`;
+  }).join('');
 }
 
 /* ---------- Buchhaltung: Monat und Export ---------- */
@@ -475,19 +1030,23 @@ function renderMonate(){
     else if (alle && ms[0]) $(sel).value = ms[0];
   }
 }
+const FIX_TEILER = f => { f = String(f||'').toLowerCase(); if (/monat/.test(f)) return 1; if (/quart|viertel/.test(f)) return 3; if (/jahr|jähr|jaehr/.test(f)) return 12; if (/einmal/.test(f)) return 12; return 0; };
 function renderMonat(){
   const m = $('#monatSel').value || '';
   const list = zettel.filter(z => isBuch(z) && m && (z.date||'').startsWith(m));
-  const heute = new Date(), mo = new Date(heute); mo.setDate(heute.getDate() - ((heute.getDay()+6)%7));
-  const von = ymd(mo), bis = ymd(heute);
-  const privat = sum(zettel.filter(z => isBuch(z) && splitKat(z.kat).h === 'Privat' && z.date >= von && z.date <= bis));
-  $('#sumWoche').textContent = chf(privat);
-  $('#sumWoche').style.color = privat > WOCHE_PRIVAT ? 'var(--warn)' : '';
-  $('#wocheBudget').textContent = privat > WOCHE_PRIVAT ? `${chf(privat - WOCHE_PRIVAT)} über Budget ${WOCHE_PRIVAT}` : `noch ${chf(WOCHE_PRIVAT - privat)} von ${WOCHE_PRIVAT}`;
+  const zaehlt = list.filter(ZAEHLT);
   $('#sumMonatLabel').textContent = m ? monatName(m) : 'Monat';
-  $('#sumMonat').textContent = chf(sum(list));
+  $('#sumMonat').textContent = chf(sum(zaehlt));
+  $('#sumMonatSitz').textContent = sitzText(sum(zaehlt));
   const k = {}; list.forEach(z => { const n = z.kat || 'ohne Kategorie'; k[n] = (k[n]||0) + (z.amount||0); });
-  $('#katSum').innerHTML = Object.entries(k).sort((a,b) => b[1]-a[1]).map(([n,v]) => `<div class="kat"><span>${esc(n)}</span><span>${chf(v)}</span></div>`).join('') || '<p class="hint">Noch keine Ausgaben in diesem Monat.</p>';
+  $('#katSum').innerHTML = Object.entries(k).sort((a,b) => b[1]-a[1]).map(([n,v]) => `<div class="kat"><span>${esc(n)}${splitKat(n).h === 'Umbuchung' ? ' <small class="hint">(zählt nicht)</small>' : ''}</span><span>${chf(v)}</span></div>`).join('') || '<p class="hint">Noch keine Ausgaben in diesem Monat.</p>';
+  // Fixkosten: je «Wofür» der neueste Zettel, Endzahl pro Monat und Jahr
+  const fx = {}; zettel.filter(z => isBuch(z) && FIX_TEILER(z.fix) && ZAEHLT(z)).forEach(z => { fx[(z.from||'').toLowerCase()] = z; });
+  const fl = Object.values(fx).map(z => ({z, mt: (z.amount||0) / FIX_TEILER(z.fix)})).sort((a,b) => b.mt - a.mt);
+  const tot = fl.reduce((s,x) => s + x.mt, 0);
+  $('#fixSum').innerHTML = fl.length ? fl.map(x => `<div class="kat"><span>${esc(x.z.from)} <small class="hint">${esc(x.z.fix)}</small></span><span>${chf(x.mt)}/Mt</span></div>`).join('')
+    + `<div class="kat gross"><span>Total pro Monat</span><span>${chf(tot)}</span></div><div class="kat gross"><span>Total pro Jahr</span><span>${chf(tot*12)}</span></div>`
+    : '<p class="hint">Noch keine Fixkosten. Schreib beim Zettel «monatlich» oder «jaehrlich» ins Feld Fixkosten.</p>';
   $('#monatListe').innerHTML = list.slice().reverse().map(zeile).join('') || '<p class="hint">Noch kein Zettel.</p>';
 }
 function exportZeilen(){
@@ -508,16 +1067,263 @@ async function importieren(){
     const c = l.split(';'); const amt = parseAmt(c[3]);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(c[0]||'') || amt == null){ fehler++; continue; }
     const {h,u} = splitKat(c[2]);
-    const z = {id: Date.now().toString(36) + Math.random().toString(36).slice(2,8), year: +c[0].slice(0,4), kind:'ausgabe',
+    const z = {id: neueId(), year: +c[0].slice(0,4), kind:'ausgabe',
       date:c[0], from:(c[1]||'').trim(), kat:(h + ' ' + u).trim(), amount:amt, paid:(c[4]||'').trim(), fix:(c[6]||'').trim(),
-      note:(c[5]||'').trim() ? 'Beleg: ' + c[5].trim() : '', cat: MIT_ORDNER(h) ? (c[7]||'').trim() : '', blob:null, type:''};
+      note:(c[5]||'').trim() ? 'Beleg: ' + c[5].trim() : '', cat: MIT_ORDNER(h) ? (c[7]||'').trim() : '', blob:null, type:'', weg:'import'};
     if (bekannt.has(schluessel(z))){ doppelt++; continue; }
     bekannt.add(schluessel(z)); liste.push(z); neu++;
   }
   if (liste.length) await tx('belege','readwrite', s => liste.forEach(z => s.put(z)));
   $('#impText').value = '';
   toast(`${neu} eingelesen` + (doppelt ? `, ${doppelt} doppelt` : '') + (fehler ? `, ${fehler} unlesbar` : ''));
+  if (neu) pose('freut', '★');
   await loadYear();
+}
+
+/* ---------- Woche: Wochengeld, Ferien, Abschluss ---------- */
+let wocheStand = null;
+async function rechneWoche(){
+  const von = montag(), bis = plusTage(von, 6);
+  const alle = await wochenZettel();
+  const list = alle.filter(z => isBuch(z) && z.date >= von && z.date <= bis && IN_WOCHE(splitKat(z.kat).h));
+  const aus = sum(list), wg = num(einst.wochengeld), fer = einst.ferienWoche === von ? num(einst.feriengeld) : 0;
+  const budget = wg + fer, rest = budget - aus;
+  const heute = ymd(new Date()), tage = Math.max(1, tageBis(bis) + 1);
+  const proKat = {}; list.forEach(z => { const h = splitKat(z.kat).h; proKat[h] = (proKat[h]||0) + (z.amount||0); });
+  const projekt = sum(alle.filter(z => isBuch(z) && z.date >= von && z.date <= bis && MIT_ORDNER(splitKat(z.kat).h)));
+  return {von, bis, aus, wg, fer, budget, rest, tage, proKat, projekt, heute, n: list.length};
+}
+async function renderWoche(){
+  const w = wocheStand = await rechneWoche();
+  $('#wocheVonBis').textContent = `${datumCH(w.von)} bis ${datumCH(w.bis)}${w.fer ? ' · Ferienwoche' : ''}`;
+  if (!w.budget){
+    $('#wocheRest').textContent = chf(w.aus); $('#wocheRest').classList.remove('minus');
+    $('#wocheRestText').textContent = 'ausgegeben. Leg dein Wochengeld fest, dann rechne ich, was übrig ist.';
+    $('#wocheBalken').classList.add('hidden');
+    $('#wocheEinst').open = true;
+  } else {
+    $('#wocheBalken').classList.remove('hidden');
+    $('#wocheRest').textContent = chf(w.rest);
+    $('#wocheRest').classList.toggle('minus', w.rest < 0);
+    $('#wocheRestText').textContent = w.rest >= 0 ? `übrig bis Sonntag, etwa ${chf(w.rest / w.tage)} pro Tag ${sitzText(w.rest) ? '· ' + sitzText(w.rest) : ''}` : `über dem Budget ${sitzText(-w.rest) ? '· ' + sitzText(-w.rest) : ''}`;
+    const p = Math.min(100, w.aus / w.budget * 100);
+    $('#wocheBalken').classList.toggle('ueber', w.rest < 0);
+    $('#wocheBalken i').style.width = p.toFixed(0) + '%';
+  }
+  $('#wocheZeilen').innerHTML = [
+    ['Wochengeld', w.wg], w.fer ? ['Feriengeld', w.fer] : null, ['Budget', w.budget],
+    ...Object.entries(w.proKat).map(([k,v]) => ['Ausgegeben ' + k, -v]),
+    w.projekt ? ['Praxis und DR Lab (Projektbudget, zählt nicht)', -w.projekt] : null
+  ].filter(Boolean).map(([k,v]) => `<div class="kat"><span>${esc(k)}</span><span>${chf(v)}</span></div>`).join('');
+  $('#sumWoche').textContent = w.budget ? chf(w.rest) : chf(w.aus);
+  $('#sumWoche').style.color = w.budget && w.rest < 0 ? 'var(--warn)' : '';
+  $('#wocheBudget').textContent = w.budget ? (w.rest >= 0 ? `von ${chf(w.budget)} Budget` : 'über dem Budget') : 'ausgegeben · Wochengeld unter «Woche + Ziele»';
+  // Abschlüsse
+  const ges = abschluesse.reduce((s,a) => s + a.rest, 0);
+  $('#abschlussListe').innerHTML = abschluesse.length ? abschluesse.slice().reverse().slice(0, 12).map(a =>
+    `<div class="eintrag"><div>Woche ab ${datumCH(a.woche)}<small>Budget ${chf(a.budget)} · ausgegeben ${chf(a.aus)}</small></div><b style="color:${a.rest >= 0 ? 'var(--ok)' : 'var(--warn)'}">${a.rest >= 0 ? '+' : ''}${chf(a.rest)}</b></div>`).join('')
+    + `<div class="kat gross"><span>Gewinn aus Wochen</span><span>${chf(ges)}</span></div>` : '<p class="hint">Noch kein Abschluss.</p>';
+  $('#eWoche').value = einst.wochengeld || ''; $('#ePreis').value = einst.preis || '';
+  $('#eFerien').checked = einst.ferienWoche === w.von; $('#eFeriengeld').value = einst.feriengeld || '';
+  $('#eEur').value = einst.eur || ''; $('#eUsd').value = einst.usd || '';
+}
+async function wocheAbschliessen(){
+  const w = await rechneWoche();
+  if (!w.budget){ toast('Zuerst Wochengeld festlegen'); $('#wocheEinst').open = true; return; }
+  // Am Montag gilt der Abschluss für die Woche davor
+  let woche = w.von, a = w;
+  if (new Date().getDay() === 1 && !abschluesse.some(x => x.woche === plusTage(w.von, -7))){
+    const vor = plusTage(w.von, -7), bis = plusTage(vor, 6), alle = await wochenZettel();
+    const aus = sum(alle.filter(z => isBuch(z) && z.date >= vor && z.date <= bis && IN_WOCHE(splitKat(z.kat).h)));
+    const fer = einst.ferienWoche === vor ? num(einst.feriengeld) : 0;
+    woche = vor; a = {budget: num(einst.wochengeld) + fer, aus}; a.rest = a.budget - a.aus;
+  }
+  abschluesse = abschluesse.filter(x => x.woche !== woche).concat([{woche, budget:a.budget, aus:a.aus, rest:a.rest, am: ymd(new Date())}]).sort((x,y) => x.woche.localeCompare(y.woche));
+  await kvSet('abschluesse', abschluesse);
+  if (a.rest >= 0){ pose('freut', '+', 2200); muenzRegen(); toast(`Woche abgeschlossen: +${chf(a.rest)} Gewinn`); }
+  else { pose('denkt', '…', 2200); toast(`Woche abgeschlossen: ${chf(a.rest)}. Kein Drama, die neue Woche ist frisch.`); }
+  zaehle('abschluss');
+  renderAll();
+}
+function serverBereit(){
+  try { const a = JSON.parse(localStorage.getItem('drlab-hermes-adresse') || '""'), k = JSON.parse(localStorage.getItem('drlab-hermes-passwort') || '""'); return /^https:\/\//.test(a || '') && k ? {a: String(a).replace(/\/+$/, ''), k} : null; } catch { return null; }
+}
+function rueckblickLokal(w){
+  const top = Object.entries(w.proKat).sort((a,b) => b[1]-a[1])[0];
+  const teile = [];
+  teile.push(w.n ? `Diese Woche hast du ${w.n} ${w.n === 1 ? 'Zettel' : 'Zettel'} ins Glas gelegt.` : 'Diese Woche ist das Glas noch ruhig.');
+  if (top) teile.push(`Am meisten ging in «${top[0]}»: CHF ${chf(top[1])}.`);
+  if (w.budget) teile.push(w.rest >= 0 ? `Vom Budget sind noch CHF ${chf(w.rest)} da${sitz(w.rest) ? ', das sind etwa ' + sitz(w.rest) + ' Sitzungen' : ''}. Schön ruhig.` : `Du liegst CHF ${chf(-w.rest)} über dem Budget. Das holen wir in Ruhe wieder auf.`);
+  const unk = zettel.filter(z => isBuch(z) && splitKat(z.kat).h === 'Unklar').length;
+  if (unk) teile.push(`${unk} ${unk === 1 ? 'Zettel ist' : 'Zettel sind'} noch unklar. Magst du sie unter «Offen» kurz einordnen?`);
+  return teile.join(' ');
+}
+async function rueckblick(){
+  const w = await rechneWoche(), box = $('#rueckText');
+  pose('rechnet', null, 2600);
+  box.classList.remove('hidden'); box.textContent = rueckblickLokal(w);
+  const s = serverBereit();
+  if (!s) return;
+  // Mit Server: Fompa formuliert den Rückblick selbst. Es gehen nur Summen pro Kategorie mit, keine Namen.
+  box.textContent += '\n\nFompa denkt noch etwas nach …';
+  const daten = {woche: w.von, budget: w.budget, ausgegeben: Math.round(w.aus), proKategorie: Object.fromEntries(Object.entries(w.proKat).map(([k,v]) => [k, Math.round(v)])), preisProSitzung: preis() || null};
+  try {
+    const seele = (window.NOVA_SEELEN || {})['Fompa'] || '';
+    const r = await fetch(s.a + '/v1/chat/completions', {method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + s.k,'X-Nova-App':'Fompa'},
+      body: JSON.stringify({model:'sense-engine', messages:[{role:'system', content: seele + ' Schreib einen warmen Wochenrückblick in höchstens vier kurzen Sätzen, Schweizer Schreibweise ohne ß, keine Finanzberatung, in Sitzungen gedacht, wenn ein Preis da ist.'},{role:'user', content: JSON.stringify(daten)}]})});
+    if (!r.ok) throw new Error(r.status);
+    const j = await r.json(), t = j && j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
+    if (t){ box.textContent = t; if (window.NovaStimme && NovaStimme.aktiv && NovaStimme.aktiv()) NovaStimme.sprich(t); }
+    else box.textContent = rueckblickLokal(w);
+  } catch { box.textContent = rueckblickLokal(w) + '\n\n(Server gerade nicht erreichbar, das war Fompas eigener Rückblick.)'; }
+}
+
+/* ---------- Kapital: Konten, Stand, Start ---------- */
+const ARTEN = [['fluessig','Konto oder Bar'],['karte','Kreditkarte (verfügbar)'],['anlage','Anlage, verkaufbar'],['saeule3','Dritte Säule / Freizügigkeit'],['fremd','Gehört jemand anderem']];
+function kapital(){
+  const offen = rechnungen.filter(r => r.status === 'offen').reduce((s,r) => s + (r.betrag||0), 0);
+  let rest = offen, s3 = 0;
+  konten.forEach(k => { const b = num(k.betrag); if (k.art === 'saeule3') s3 += b; else if (k.art !== 'fremd') rest += b; });
+  return {rest, s3, offen};
+}
+function renderKapital(){
+  const k = kapital();
+  $('#kapRest').textContent = chf0(k.rest); $('#kapS3').textContent = chf0(k.s3);
+  const st = einst.start;
+  $('#kapGewinn').innerHTML = (k.offen ? `Darin offene Rechnungen: ${chf0(k.offen)}. ` : '') + (st ? `Seit Start am ${datumCH(st.datum)}: <b style="color:${k.rest - st.rest >= 0 ? 'var(--ok)' : 'var(--warn)'}">${k.rest - st.rest >= 0 ? '+' : ''}${chf0(k.rest - st.rest)}</b> Gewinn. ` : 'Tipp auf «Heute als Start», dann rechne ich ab jetzt den Gewinn: Rest heute minus Rest beim Start. ') + (st && Math.abs(k.rest - st.rest) >= 1 ? sitzText(k.rest - st.rest) : '');
+  $('#konten').innerHTML = konten.map(x => `<div class="konto" data-konto="${x.id}">
+      <input data-f="name" value="${esc(x.name)}" placeholder="Name, z. B. Konto Bank" aria-label="Kontoname">
+      <input data-f="betrag" value="${esc(x.betrag)}" inputmode="decimal" placeholder="0" aria-label="Betrag">
+      <select data-f="art" aria-label="Art">${ARTEN.map(([v,t]) => `<option value="${v}" ${x.art === v ? 'selected' : ''}>${t}</option>`).join('')}</select>
+      <button class="btn small del x" data-konto-weg="${x.id}" aria-label="Konto entfernen">Entfernen</button></div>`).join('') || '<p class="hint">Noch keine Konten.</p>';
+  const v = staende.slice(-8).reverse();
+  $('#kapVerlauf').innerHTML = v.map((s, i) => { const vor = staende[staende.length - 2 - i]; const d = vor ? s.rest - vor.rest : null;
+    return `<div class="eintrag"><div>${datumCH(s.datum)}<small>Rest ${chf0(s.rest)} · Dritte Säule ${chf0(s.s3)}</small></div>${d == null ? '' : `<b style="color:${d >= 0 ? 'var(--ok)' : 'var(--warn)'}">${d >= 0 ? '+' : ''}${chf0(d)}</b>`}</div>`; }).join('');
+}
+async function kontoAendern(e){
+  const row = e.target.closest('[data-konto]'); if (!row) return;
+  const k = konten.find(x => x.id === row.dataset.konto); if (!k) return;
+  k[e.target.dataset.f] = e.target.value; k.stand = ymd(new Date());
+  await kvSet('konten', konten); renderKapital(); renderZiele();
+}
+async function standSpeichern(){
+  const k = kapital(), heute = ymd(new Date());
+  const vor = staende.filter(s => s.datum !== heute).slice(-1)[0];
+  staende = staende.filter(s => s.datum !== heute).concat([{datum: heute, rest: Math.round(k.rest), s3: Math.round(k.s3)}]);
+  await kvSet('staende', staende);
+  const d = vor ? k.rest - vor.rest : 0;
+  if (vor && d > 0){ pose('freut', '+'); muenzRegen(10); } else pose('rechnet');
+  toast(vor ? `Stand gespeichert: ${d >= 0 ? '+' : ''}${chf0(d)} seit ${datumCH(vor.datum)}` : 'Stand gespeichert');
+  renderKapital();
+}
+
+/* ---------- Ziele in Sitzungen ---------- */
+function renderZiele(){
+  const z = einst.ziele || {}, p = preis(), wochen = num(z.wochen, 46) || 46, ist = num(z.ist);
+  $('#zKosten').value = z.kosten || ''; $('#z3a').value = z.s3 || ''; $('#zSpar').value = z.spar || ''; $('#zWochen').value = z.wochen || ''; $('#zIst').value = z.ist || '';
+  const stufen = [['Break-even', num(z.kosten)], ['Mit Dritter Säule', num(z.s3)], ['Sparziel', num(z.spar)]].filter(s => s[1] > 0);
+  if (!stufen.length){ $('#ziele').innerHTML = '<p class="hint">Noch keine Ziele eingetragen.</p>'; return; }
+  if (!p){ $('#ziele').innerHTML = '<p class="hint">Für Sitzungen brauche ich den Preis pro Sitzung (unter «Woche»).</p>' + stufen.map(([n,b]) => `<div class="kat"><span>${n}</span><span>${chf0(b)}/Mt · ${chf0(b*12)}/J</span></div>`).join(''); return; }
+  $('#ziele').innerHTML = stufen.map(([n, b]) => {
+    const mt = Math.ceil(b / p), wo = Math.ceil(b * 12 / wochen / p), fehlt = Math.max(0, mt - ist), pr = Math.min(100, ist / mt * 100);
+    return `<div style="border-top:1px solid var(--line);padding:9px 0"><div class="kat" style="border:0;padding:0"><span><b>${n}</b></span><span>${mt} pro Monat · ${wo} pro Woche</span></div>
+      <div class="balken"><i style="width:${pr.toFixed(0)}%"></i></div>
+      <small class="hint">${chf0(b)} pro Monat · ${chf0(b*12)} pro Jahr · ${ist ? (fehlt ? `es fehlen ${fehlt} Sitzungen` : 'erreicht ✓') : 'Sitzungen diesen Monat eintragen'}</small></div>`;
+  }).join('');
+}
+
+/* ---------- Offen: Fompa fragt, Fälligkeiten, Rechnungen ---------- */
+function renderOffen(){
+  const unk = zettel.filter(z => isBuch(z) && splitKat(z.kat).h === 'Unklar').slice(-8);
+  $('#unklarCard').classList.toggle('hidden', !unk.length);
+  $('#unklar').innerHTML = unk.map(z => `<div style="border-top:1px solid var(--line);padding:9px 0">Wofür war <b>${esc(z.from) || 'dieser Zettel'}</b>, CHF ${z.amount == null ? '?' : chf(z.amount)} am ${datumCH(z.date)}?
+    <div class="chips" style="margin-top:6px">${['Privat','Ferien','Praxis','DR Lab','Umbuchung'].map(h => `<button class="chip" data-klaer="${z.id}" data-h="${h}">${h}</button>`).join('')}</div></div>`).join('');
+  // Fälligkeiten
+  const f = faellig.slice().sort((a,b) => a.datum.localeCompare(b.datum));
+  $('#faellig').innerHTML = f.map(x => { const t = tageBis(x.datum);
+    return `<div class="eintrag"><div><b>${esc(x.was)}</b> · CHF ${chf(x.betrag)}<small>${datumCH(x.datum)} · ${t < 0 ? `<span style="color:var(--warn)">seit ${-t} Tagen fällig</span>` : t === 0 ? '<span style="color:var(--warn)">heute</span>' : 'in ' + t + ' Tagen'} · ${({einmal:'einmalig',monat:'monatlich',quartal:'vierteljährlich',jahr:'jährlich'})[x.rhythmus]} · ${esc(x.kat)}</small></div>
+      <div class="knoepfe"><button class="btn small" data-bezahlt="${x.id}">Bezahlt</button><button class="btn small del" data-fweg="${x.id}" aria-label="Entfernen">✕</button></div></div>`; }).join('') || '<p class="hint">Noch keine Fälligkeiten.</p>';
+  const mt = faellig.reduce((s,x) => s + (x.rhythmus === 'monat' ? x.betrag : x.rhythmus === 'quartal' ? x.betrag/3 : x.rhythmus === 'jahr' ? x.betrag/12 : (tageBis(x.datum) <= 365 ? x.betrag/12 : 0)), 0);
+  const in30 = faellig.filter(x => tageBis(x.datum) <= 30).reduce((s,x) => s + x.betrag, 0);
+  $('#faelligSumme').innerHTML = faellig.length ? `<div class="kat gross"><span>Nächste 30 Tage</span><span>${chf(in30)}</span></div><div class="kat"><span>Endzahl pro Monat</span><span>${chf(mt)}</span></div><div class="kat"><span>Endzahl pro Jahr</span><span>${chf(mt*12)}</span></div>` : '';
+  // Rechnungen
+  const MAHN = STUFE;
+  const r = rechnungen.slice().sort((a,b) => (a.status === 'offen' ? 0 : 1) - (b.status === 'offen' ? 0 : 1) || a.datum.localeCompare(b.datum));
+  $('#rechnungen').innerHTML = r.map(x => { const alt = -tageBis(x.datum);
+    const st = x.status === 'offen' ? `${x.nr ? 'Nr. ' + esc(x.nr) + ' · ' : ''}${MAHN[x.mahn||0]} · ${ueberfaellig(x) ? '<span style="color:var(--warn)">überfällig seit ' + (-tageBis(faelligAm(x))) + ' Tagen</span>' : 'fällig ' + datumCH(faelligAm(x))}` : x.status === 'bezahlt' ? '✓ bezahlt' + (x.ueberraschung ? ' (Überraschung!)' : '') : `abgeschrieben${x.erinnern ? ' · Betreibung prüfen ab ' + datumCH(x.erinnern) : ''}`;
+    const kn = x.status === 'offen'
+      ? `<button class="btn small" data-mahn="${x.id}">${(x.mahn||0) < 3 ? '+ Mahnstufe' : 'Mahnstufe'}</button><button class="btn small" data-rbez="${x.id}">Bezahlt</button><button class="btn small del" data-rab="${x.id}">Abschreiben</button>`
+      : x.status === 'abgeschrieben' ? `<button class="btn small" data-rbez="${x.id}">Doch bezahlt</button><button class="btn small del" data-rweg="${x.id}" aria-label="Entfernen">✕</button>` : `<button class="btn small del" data-rweg="${x.id}" aria-label="Entfernen">✕</button>`;
+    return `<div class="eintrag"><div><b>${esc(x.kuerzel)}</b> · CHF ${chf(x.betrag)}<small>${datumCH(x.datum)} · ${st}</small></div><div class="knoepfe">${kn}</div></div>`; }).join('') || '<p class="hint">Keine offenen Rechnungen erfasst.</p>';
+  const sumOffen = rechnungen.filter(x => x.status === 'offen').reduce((s,x) => s + x.betrag, 0);
+  $('#rechnungSumme').innerHTML = rechnungen.length ? `<div class="kat gross"><span>Offen total</span><span>${chf(sumOffen)}</span></div>${sumOffen > 0 && sitzText(sumOffen) ? `<p class="hint">${sitzText(sumOffen)}</p>` : ''}` : '';
+}
+async function klaeren(id, h){
+  const z = zettel.find(x => x.id === id); if (!z) return;
+  z.kat = h; if (!MIT_ORDNER(h)) z.cat = ''; else if (!z.cat && h === 'DR Lab') z.cat = '6590';
+  await tx('belege','readwrite', s => s.put(z));
+  if (z.from){ memory[z.from] = {kat: h, cat: z.cat}; await kvSet('memory', memory); }
+  pose('freut', '✓'); toast(`${z.from || 'Zettel'} → ${h}`); zaehle('geklaert');
+  await loadYear();
+}
+async function faelligBezahlt(id){
+  const f = faellig.find(x => x.id === id); if (!f) return;
+  const heute = ymd(new Date());
+  const z = {id: neueId(), year: +heute.slice(0,4), kind:'ausgabe', date: heute, from: f.was, kat: f.kat, amount: f.betrag, paid:'', fix: ({monat:'monatlich',quartal:'vierteljaehrlich',jahr:'jaehrlich',einmal:'einmalig'})[f.rhythmus], note:'Fälligkeit ' + datumCH(f.datum), cat: f.kat === 'DR Lab' ? (merk(f.was)||{}).cat || '6590' : f.kat === 'Praxis' ? (merk(f.was)||{}).cat || '' : '', blob:null, type:'', weg:'faellig'};
+  await tx('belege','readwrite', s => s.put(z));
+  if (f.rhythmus === 'einmal') faellig = faellig.filter(x => x !== f);
+  else f.datum = plusMonate(f.datum, f.rhythmus === 'monat' ? 1 : f.rhythmus === 'quartal' ? 3 : 12);
+  await kvSet('faellig', faellig);
+  neuId = z.id; pose('freut', '★'); toast(`${f.was} bezahlt, Zettel im Glas`);
+  if (z.year === year) await loadYear(); else renderAll();
+}
+async function rechnungAendern(id, was){
+  const r = rechnungen.find(x => x.id === id); if (!r) return;
+  if (was === 'mahn'){ r.mahn = Math.min(3, (r.mahn||0) + 1); toast(STUFE[r.mahn] + ' notiert. Senden machst du selbst.'); pose('denkt', '!'); }
+  if (was === 'bez'){ r.ueberraschung = r.status === 'abgeschrieben'; r.status = 'bezahlt'; r.bezahlt = ymd(new Date());
+    if (r.ueberraschung){ pose('staunt', '!', 2400); muenzRegen(26); toast(`Überraschung: ${r.kuerzel} hat bezahlt, CHF ${chf(r.betrag)} Gewinn`); } else { pose('freut', '✓'); toast(`${r.kuerzel} bezahlt`); } }
+  if (was === 'ab'){ if (!confirm(`Rechnung ${r.kuerzel} abschreiben? Zahlt jemand doch, ist es eine Überraschung.`)) return; r.status = 'abgeschrieben'; r.erinnern = plusMonate(ymd(new Date()), 6); toast('Abgeschrieben. In einem halben Jahr erinnere ich dich an den Entscheid.'); }
+  if (was === 'weg'){ if (!confirm('Eintrag entfernen?')) return; rechnungen = rechnungen.filter(x => x !== r); }
+  await kvSet('rechnungen', rechnungen); renderAll();
+}
+
+/* ---------- Lernen: nur Zählungen auf dem Gerät ---------- */
+async function zaehle(was){ lern[was] = (lern[was]||0) + 1; await kvSet('lern', lern); }
+function renderLern(){
+  const buch = zettel.filter(isBuch), k = {};
+  buch.forEach(z => { const h = splitKat(z.kat).h; k[h] = (k[h]||0) + 1; });
+  const top = Object.entries(k).sort((a,b) => b[1]-a[1])[0];
+  const wege = [['foto','mit Foto'],['stimme','mit Stimme'],['tippen','getippt'],['viele','mehrere auf einmal'],['import','eingelesen'],['faellig','aus Fälligkeit']].filter(([w]) => lern['weg-' + w]);
+  $('#lernZahlen').innerHTML = [
+    `<div class="kat"><span>Zettel abgelegt</span><span>${wege.reduce((s,[w]) => s + lern['weg-' + w], 0)}</span></div>`,
+    ...wege.map(([w,t]) => `<div class="kat"><span>${t}</span><span>${lern['weg-' + w]}</span></div>`),
+    top ? `<div class="kat"><span>Häufigste Kategorie ${year}</span><span>${esc(top[0])}</span></div>` : '',
+    lern.abschluss ? `<div class="kat"><span>Wochenabschlüsse</span><span>${lern.abschluss}</span></div>` : '',
+    lern.geklaert ? `<div class="kat"><span>Unklare Zettel geklärt</span><span>${lern.geklaert}</span></div>` : ''
+  ].join('');
+  $('#lernOk').checked = !!lern.einwilligung;
+  $('#lernTeilen').classList.toggle('hidden', !lern.einwilligung);
+}
+// Ohne Server: Lern-Zahlen als Text über das Teilen-Menü oder kopieren. Nur Zählungen, nur mit Häkchen.
+function lernText(){
+  const zahlen = Object.entries(lern).filter(([k,v]) => typeof v === 'number').map(([k,v]) => `${k}: ${v}`);
+  return `Fompa · Lern-Zahlen (nur Zählungen, keine Beträge, keine Namen, nie Bild oder Stimme)\n${zahlen.join('\n') || 'noch keine Zählungen'}\nStand: ${datumCH(ymd(new Date()))}`;
+}
+async function lernTeilen(){
+  if (!lern.einwilligung){ toast('Erst das Häkchen setzen'); return; }
+  const t = lernText();
+  if (navigator.share){ try { await navigator.share({title:'Fompa · Lern-Zahlen', text:t}); } catch {} return; }
+  try { await navigator.clipboard.writeText(t); toast('Lern-Zahlen kopiert'); pose('freut', '✓'); } catch { toast('Teilen geht auf diesem Gerät nicht'); }
+}
+async function lernWeitergeben(){
+  // Höchstens einmal am Tag, nur mit Häkchen und Server-Verbindung, nur Zählungen
+  const s = serverBereit(), heute = ymd(new Date());
+  if (!lern.einwilligung || !s || lern.gesendet === heute) return;
+  const zahlen = Object.fromEntries(Object.entries(lern).filter(([k,v]) => typeof v === 'number'));
+  try {
+    const r = await fetch(s.a + '/erfahrung', {method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + s.k}, body: JSON.stringify({app:'Fompa', art:'lernen', frage: JSON.stringify(zahlen), antwort:''})});
+    if (r.ok){ lern.gesendet = heute; await kvSet('lern', lern); }
+  } catch {}
 }
 
 /* ---------- Formular ---------- */
@@ -540,97 +1346,156 @@ async function shrink(file){
   } catch { return file; }
 }
 function showPhoto(blob){
-  if (!blob){ $('#shot').innerHTML = '📷 Quittung fotografieren<br><small>oder Bild/PDF auswählen (freiwillig)</small>'; return; }
-  $('#shot').innerHTML = blob.type.startsWith('image/') ? `<img src="${URL.createObjectURL(blob)}" alt="Quittung">` : '📄 PDF ausgewählt';
+  if (!blob){ $('#shot').innerHTML = '<span class="kamera" aria-hidden="true">📷</span><b>Quittung fotografieren</b><small>oder Bild/PDF wählen, freiwillig</small>'; return; }
+  $('#shot').innerHTML = blob.type.startsWith('image/') ? `<img src="${URL.createObjectURL(blob)}" alt="Quittung"><small>Tippen für ein anderes Foto</small>` : '<span class="kamera" aria-hidden="true">📄</span><b>PDF ausgewählt</b>';
+}
+const kurs = w => w === 'EUR' ? num(einst.eur, .94) || .94 : w === 'USD' ? num(einst.usd, .8) || .8 : 1;
+function umrechnung(){
+  const w = $('#waehrung').value, b = parseAmt($('#amount').value);
+  $('#umrechnung').classList.toggle('hidden', w === 'CHF' || b == null);
+  if (w !== 'CHF' && b != null) $('#umrechnung').textContent = `≈ CHF ${chf(b * kurs(w))} (Kurs ${kurs(w)}, Schätzung, mit Beleg korrigieren)`;
 }
 function defaultDate(){ const t = ymd(new Date()); return t.startsWith(String(year)) ? t : year + '-12-31'; }
 function resetForm(){
-  editId = null; photo = null; showPhoto(null);
+  editId = null; photo = null; quelle = 'tippen'; showPhoto(null);
   ['#from','#amount','#note','#unter','#paid','#fix'].forEach(s => $(s).value = '');
+  $('#waehrung').value = 'CHF'; umrechnung();
   $('#haupt').value = 'Privat'; katChanged();
-  if (mode === 'buch') $('#cat').value = '';
+  if (mode !== 'steuer') $('#cat').value = '';
   $('#date').value = defaultDate();
   $('#formTitle').textContent = 'Neuer Zettel'; $('#save').textContent = 'Ins Glas legen';
   $('#cancel').classList.add('hidden'); $('#delOne').classList.add('hidden'); $('#suggest').innerHTML = '';
 }
 async function save(){
-  const amt = $('#amount').value.trim() ? parseAmt($('#amount').value) : null;
-  if ($('#amount').value.trim() && amt == null){ toast('Betrag bitte als Zahl, z. B. 123.45'); return; }
+  const roh = $('#amount').value.trim() ? parseAmt($('#amount').value) : null;
+  if ($('#amount').value.trim() && roh == null){ toast('Betrag bitte als Zahl, z. B. 123.45'); return; }
+  const w = $('#waehrung').value, amt = roh == null ? null : Math.round(roh * kurs(w) * 100) / 100;
   const old = editId ? zettel.find(b => b.id === editId) : null;
-  const kind = old ? old.kind : (mode === 'buch' ? 'ausgabe' : 'steuer');
-  if (!photo && !old && !$('#from').value.trim() && amt == null){ toast('Foto, Wofür oder Betrag eintragen'); return; }
+  const kind = old ? old.kind : (mode === 'steuer' ? 'steuer' : 'ausgabe');
+  if (!photo && !old && !$('#from').value.trim() && amt == null){ toast('Foto, Wofür oder Betrag eintragen'); pose('denkt', '?'); return; }
   if (kind === 'ausgabe' && !MIT_ORDNER($('#haupt').value)) $('#cat').value = '';
-  if (kind !== 'ausgabe' && !$('#cat').value){ toast('Bitte einen Steuer-Ordner wählen'); return; }
+  if (kind !== 'ausgabe' && !$('#cat').value){ toast('Bitte einen Steuer-Ordner wählen'); pose('denkt', '?'); return; }
   const blob = photo || (old && old.blob) || null;
   const z = {
-    id: editId || (Date.now().toString(36) + Math.random().toString(36).slice(2,6)),
+    id: editId || neueId(),
     year: +String($('#date').value || defaultDate()).slice(0,4) || year, kind,
     cat: $('#cat').value, from: $('#from').value.trim(), amount: amt,
+    waehrung: w, betragOrig: w !== 'CHF' ? roh : null,
     date: $('#date').value, note: $('#note').value.trim(),
     kat: kind === 'ausgabe' ? getKat() : '', paid: $('#paid').value.trim(), fix: $('#fix').value.trim(),
-    blob, type: blob ? (blob.type || 'image/jpeg') : ''
+    blob, type: blob ? (blob.type || 'image/jpeg') : '', weg: old ? old.weg : (photo ? 'foto' : quelle)
   };
   await tx('belege','readwrite', s => s.put(z));
   if (z.from){ memory[z.from] = {kat: z.kat || (merk(z.from)||{}).kat || '', cat: z.cat}; await kvSet('memory', memory); }
-  if (!old) neuId = z.id;
+  if (!old){ neuId = z.id; await zaehle('weg-' + z.weg); }
   toast(old ? 'Geändert' : (z.cat ? 'Im Glas und in Ordner ' + z.cat : 'Im Glas ⭐'));
   if (z.year !== year){ year = z.year; await kvSet('year', year); fillYears(); }
   resetForm(); await loadYear();
+  if (!old){
+    summ([12, 40, 18]);
+    const n = zettel.length, st = STUFEN.includes(n);
+    $('#szene').scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(sterneFliegen, 380);
+    setTimeout(() => { pose('freut', '★'); feier($('#glasbild'), st ? 26 : 12); if (st){ muenzRegen(); summ([20, 60, 20, 60, 40]); toast(n === 1 ? 'Dein erster Stern! Fompa freut sich.' : n + ' Sterne im Glas. Stark!'); } }, 1100);
+    heldGruss();
+  }
 }
 function edit(id){
   const z = zettel.find(x => x.id === id); if (!z) return;
   setMode(isBuch(z) ? 'buch' : 'steuer', true);
   editId = id; photo = null; showPhoto(z.blob);
-  $('#from').value = z.from||''; $('#cat').value = z.cat||''; $('#amount').value = z.amount==null ? '' : z.amount;
+  $('#from').value = z.from||''; $('#cat').value = z.cat||'';
+  if (z.waehrung && z.waehrung !== 'CHF' && z.betragOrig != null){ $('#waehrung').value = z.waehrung; $('#amount').value = z.betragOrig; } else { $('#waehrung').value = 'CHF'; $('#amount').value = z.amount==null ? '' : z.amount; }
+  umrechnung();
   $('#date').value = z.date||''; $('#note').value = z.note||''; setKat(z.kat||''); $('#paid').value = z.paid||''; $('#fix').value = z.fix||'';
   $('#formTitle').textContent = 'Zettel ändern'; $('#save').textContent = 'Speichern';
+  $('#mehrBox').open = !!(z.paid || z.fix || z.note);
   $('#cancel').classList.remove('hidden'); $('#delOne').classList.remove('hidden');
   tab('neu');
 }
 
 /* ---------- Modus und Tabs ---------- */
-const TABS = {buch: [['neu','Zettel'],['monat','Monat'],['export','Export']], steuer: [['neu','Zettel'],['liste','Ordner'],['paket','Paket']]};
+const TABS = {buch: [['neu','Zettel'],['monat','Monat'],['export','Export']], steuer: [['neu','Zettel'],['liste','Ordner'],['paket','Paket']], plan: [['woche','Woche'],['kapital','Kapital'],['offen','Offen']]};
+const SECTIONS = ['neu','monat','export','liste','paket','woche','kapital','offen'];
 function setMode(m, still){
+  if (!TABS[m]) m = 'buch';
   mode = m;
   document.querySelectorAll('.mode button').forEach(b => b.classList.toggle('on', b.dataset.mode === m));
   document.querySelectorAll('.tab').forEach((t,i) => { t.dataset.tab = TABS[m][i][0]; t.textContent = TABS[m][i][1]; });
-  document.querySelectorAll('.nurBuch').forEach(el => el.classList.toggle('hidden', m !== 'buch'));
-  $('#fromLabel').textContent = m === 'buch' ? 'Wofür' : 'Aussteller';
-  $('#catLabel').textContent = m === 'buch' ? 'Steuer-Ordner (freiwillig)' : 'Steuer-Ordner';
-  const t = TIPS[m]; $('#bubble').innerHTML = t[Math.floor(Date.now()/864e5) % t.length];
+  document.querySelectorAll('.nurBuch').forEach(el => el.classList.toggle('hidden', m === 'steuer'));
+  $('#jahrRow').classList.toggle('hidden', m === 'plan');
+  $('#fromLabel').textContent = m !== 'steuer' ? 'Wofür' : 'Aussteller';
+  $('#catLabel').textContent = m !== 'steuer' ? 'Steuer-Ordner (freiwillig)' : 'Steuer-Ordner';
   try { localStorage.setItem('fompa-mode', m); } catch {}
   katChanged();
-  if (!still){ resetForm(); tab('neu'); }
+  if (!still){ resetForm(); tab(TABS[m][0][0]); }
   renderAll();
 }
 function tab(name){
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === name));
-  ['neu','monat','export','liste','paket'].forEach(n => $('#'+n).classList.toggle('hidden', n !== name));
-  window.scrollTo({top:0, behavior:'smooth'});
+  SECTIONS.forEach(n => $('#'+n).classList.toggle('hidden', n !== name));
+  if (name === 'kapital' || name === 'woche') pose('rechnet');
+}
+function gehZu(name){
+  const m = Object.keys(TABS).find(k => TABS[k].some(t => t[0] === name));
+  if (m && m !== mode) setMode(m, true);
+  tab(name);
+  document.querySelector('.tabs').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 /* ---------- Reden mit Fompa (Sprech-Baustein) ---------- */
-// Sagt man einen Betrag, füllt Fompa den Zettel aus. Sonst antwortet der Baustein normal.
-function verstehe(t){
-  let s = ' ' + t.toLowerCase().replace(/(\d)\s*[.,]\s*(\d)/g, '$1.$2') + ' ';
+// Ein Satz → Zettel-Daten. Wird von Stimme, «Mehrere auf einmal» und dem Transkript benutzt.
+function parseSatz(t){
+  let s = ' ' + String(t).toLowerCase().replace(/(\d)\s*[.,]\s*(\d)/g, '$1.$2') + ' ';
   let betrag = null, m;
-  if ((m = s.match(/(\d+)\s*(?:franken|fr\.?|chf|stutz)\s*(?:und\s*)?(\d{1,2})\b/))) betrag = +m[1] + (+m[2])/100;
-  else if ((m = s.match(/(\d+(?:\.\d{1,2})?)\s*(?:franken|fr\.?|chf|stutz)/)) || (m = s.match(/(?:chf|fr\.?)\s*(\d+(?:\.\d{1,2})?)/))) betrag = +m[1];
+  if ((m = s.match(/(\d+)\s*(?:franken|fr\.?|chf|stutz|euro|eur|dollar|usd)\s*(?:und\s*)?(\d{1,2})\b/))) betrag = +m[1] + (+m[2])/100;
+  else if ((m = s.match(/(\d+(?:\.\d{1,2})?)\s*(?:franken|fr\.?|chf|stutz|euro|eur|€|dollar|usd|\$)/)) || (m = s.match(/(?:chf|fr\.?|eur|€|usd|\$)\s*(\d+(?:\.\d{1,2})?)/))) betrag = +m[1];
   else { const all = [...s.matchAll(/\b\d+(?:\.\d{1,2})?\b/g)].map(x => x[0]); const dez = all.find(x => x.includes('.')); if (dez || all.length) betrag = +(dez || all[all.length-1]); }
   if (betrag == null || !isFinite(betrag)) return null;
+  const waehrung = /\b(euro|eur)\b|€/.test(s) ? 'EUR' : /\b(dollar|usd)\b|\$/.test(s) ? 'USD' : 'CHF';
   const zahl = [['kreditkarte','Kreditkarte'],['debitkarte','Debitkarte Geschaeftskonto'],['twint','Twint'],['karte','Karte'],['bar','Bar'],['e-banking','E-Banking'],['ebanking','E-Banking'],['rechnung','E-Banking']].find(([w]) => new RegExp('\\b' + w + '\\b').test(s));
   const d = new Date(); if (/\bgestern\b/.test(s)) d.setDate(d.getDate()-1); if (/\bvorgestern\b/.test(s)) d.setDate(d.getDate()-1);
-  let was = s.replace(/(\d+)\s*(franken|fr\.?|chf|stutz)\s*(und\s*)?\d{0,2}/g, ' ').replace(/(chf|fr\.?)\s*\d+(\.\d+)?/g, ' ').replace(/\b\d+(\.\d+)?\b/g, ' ')
-    .replace(/\b(mit|per|bezahlt|habe|hab|ich|heute|gestern|vorgestern|für|fuer|von|der|die|das|ein|eine|einen|beleg|quittung|zettel|kreditkarte|debitkarte|karte|twint|bar|e-banking|ebanking|rechnung|ausgegeben|gekauft|und)\b/g, ' ')
-    .replace(/\s+/g, ' ').trim();
+  let was = s.replace(/(\d+)\s*(franken|fr\.?|chf|stutz|euro|eur|dollar|usd)\s*(und\s*)?\d{0,2}/g, ' ').replace(/(chf|fr\.?|eur|usd)\s*\d+(\.\d+)?/g, ' ').replace(/[€$]/g, ' ').replace(/\b\d+(\.\d+)?\b/g, ' ')
+    .replace(/\b(mit|per|bezahlt|habe|hab|ich|heute|gestern|vorgestern|für|fuer|von|der|die|das|ein|eine|einen|beleg|quittung|zettel|kreditkarte|debitkarte|karte|twint|bar|e-banking|ebanking|rechnung|ausgegeben|gekauft|und|euro|eur|dollar|usd|franken|stutz|fompa)\b/g, ' ')
+    .replace(/[,;.!?]/g, ' ').replace(/\s+/g, ' ').trim();
   was = was ? was.charAt(0).toUpperCase() + was.slice(1) : '';
+  const kw = KONSUM.find(([re]) => re.test(s));
+  let kat = kw ? kw[1] : '';
+  const mk = was && Object.keys(memory).find(k => k.toLowerCase() === was.toLowerCase());
+  if (mk && merk(mk).kat) kat = merk(mk).kat;
+  if (/\b(aufladen|aufgeladen|umbuchung|überweisung an mich|umgebucht)\b/.test(s)) kat = 'Umbuchung Karte aufladen';
+  if (waehrung !== 'CHF' && !kat) kat = 'Ferien';
+  return {was, betrag, waehrung, paid: zahl ? zahl[1] : '', date: ymd(d), kat};
+}
+function verstehe(t){
+  const s = String(t).toLowerCase();
+  // Fragen an Fompa ohne Betrag
+  if (!/\d/.test(s)){
+    if (/(schuld|mahn|offene rechnung|überfällig|ueberfaellig|wer hat .*bezahlt)/.test(s)){
+      gehZu('offen'); const g = proKuerzel(); pose('rechnet');
+      if (!g.length) return 'Es sind keine offenen Klientenrechnungen eingetragen. Schön.';
+      const ueber = g.filter(x => x.ueberSum), tot = g.reduce((a,x) => a + x.offen, 0), ue = ueber.reduce((a,x) => a + x.ueberSum, 0);
+      return `${g.length} ${g.length === 1 ? 'Kürzel hat' : 'Kürzel haben'} zusammen ${chf(tot)} Franken offen${ue ? ', davon ' + chf(ue) + ' überfällig' : ''}.` + (ueber.length ? ` Am meisten überfällig ist ${ueber[0].k} mit ${chf(ueber[0].ueberSum)}. Die Mahntexte liegen unter «Pro Kürzel» bereit, schicken tust du selbst.` : '');
+    }
+    if (/(verkauf|inserat)/.test(s)){ gehZu('offen'); return verkauf.length ? `Auf deiner Verkaufsliste stehen ${verkauf.length} Dinge. Tipp auf «Inserat», dann schreibe ich den Text.` : 'Deine Verkaufsliste ist noch leer. Unter «Dinge verkaufen» trägst du ein, was weg kann.'; }
+    if (/(steuer|mwst|3a|rücklage|ruecklage)/.test(s)){ setMode('steuer'); tab('paket'); return 'Unter «Paket» findest du den Jahres-Check: Hochrechnung, MWST-Hinweis, 3a und Steuer-Rücklage. Ich bin keine Steuerberatung, ich rechne nur.'; }
+    if (/(übrig|uebrig|noch|budget|ausgeben|woche)/.test(s) && wocheStand){
+      const w = wocheStand; pose('rechnet');
+      if (!w.budget) return 'Du hast noch kein Wochengeld festgelegt. Unter «Woche und Ziele» trägst du es ein, dann rechne ich für dich.';
+      return w.rest >= 0 ? `Diese Woche hast du noch ${chf(w.rest)} Franken, etwa ${chf(w.rest / w.tage)} pro Tag bis Sonntag.${sitz(w.rest) ? ' Das sind etwa ' + sitz(w.rest) + ' Sitzungen.' : ''}` : `Du liegst diese Woche ${chf(-w.rest)} Franken über dem Budget. Kein Drama, wir holen das in Ruhe auf.`;
+    }
+    if (/(abschluss|abschliessen)/.test(s)){ gehZu('woche'); return 'Unter «Woche» tippst du auf «Woche abschliessen». Was übrig bleibt, ist Gewinn.'; }
+    if (/(fällig|faellig|zahlen|rechnung)/.test(s)){ gehZu('offen'); const f = faellig.slice().sort((a,b) => a.datum.localeCompare(b.datum))[0]; return f ? `Als Nächstes ist ${f.was} fällig, am ${datumCH(f.datum)}, ${chf(f.betrag)} Franken.` : 'Es sind keine Fälligkeiten eingetragen.'; }
+    if (/(kapital|vermögen|vermoegen|gewinn)/.test(s)){ gehZu('kapital'); const k = kapital(); return `Der Rest liegt bei ${chf0(k.rest)} Franken, die Dritte Säule bei ${chf0(k.s3)}.` + (einst.start ? ` Seit dem Start sind das ${chf0(k.rest - einst.start.rest)} Franken Gewinn.` : ''); }
+    return null;
+  }
+  const p = parseSatz(t); if (!p) return null;
   if (mode !== 'buch') setMode('buch');
-  resetForm(); tab('neu');
-  $('#from').value = was; $('#amount').value = betrag.toFixed(2); $('#date').value = ymd(d);
-  if (zahl) $('#paid').value = zahl[1];
-  const kw = KONSUM.find(([re]) => re.test(s)); if (kw) setKat(kw[1]);
-  suggest();
-  return `Notiert: ${was || 'ohne Namen'}, CHF ${chf(betrag)}${zahl ? ', ' + zahl[1] : ''}. Schau kurz drüber und tipp auf «Ins Glas legen», dann kommt der Zettel zu den anderen.`;
+  resetForm(); tab('neu'); quelle = 'stimme';
+  $('#from').value = p.was; $('#amount').value = p.betrag.toFixed(2); $('#date').value = p.date; $('#waehrung').value = p.waehrung; umrechnung();
+  if (p.paid){ $('#paid').value = p.paid; $('#mehrBox').open = true; }
+  if (p.kat) setKat(p.kat);
+  suggest(); pose('rechnet', null, 1400);
+  return `Notiert: ${p.was || 'ohne Namen'}, ${p.waehrung === 'CHF' ? 'CHF' : p.waehrung} ${chf(p.betrag)}${p.paid ? ', ' + p.paid : ''}. Schau kurz drüber und tipp auf «Ins Glas legen», dann kommt der Zettel zu den anderen.`;
 }
 window.SPRECHEN_EINGABE = verstehe;
 // Konsum: Kategorie aus dem Gesagten erraten (Fompas Gedächtnis hat Vorrang)
@@ -642,9 +1507,51 @@ const KONSUM = [
   [/\b(sbb|zvv|tram|bus|zug|taxi|uber|benzin|parkieren|velo)\b/, 'Privat Mobilität'],
   [/\b(apotheke|arzt|zahnarzt|drogerie)\b/, 'Privat Gesundheit'],
   [/\b(kleider|schuhe|zara|h&m)\b/, 'Privat Kleider'],
+  [/\b(hotel|flug|airbnb)\b/, 'Ferien Hotel'],
   [/\b(server|software|abo|app|domain|hosting)\b/, 'DR Lab Software'],
   [/\b(miete)\b/, 'Praxis Miete']
 ];
+
+/* ---------- Mehrere Zettel auf einmal (auch aus dem Transkript) ---------- */
+function vielePruefen(){
+  const teile = $('#vieleText').value.split(/\n|,(?!\d)|;/).map(x => x.trim()).filter(Boolean);
+  vieleListe = teile.map(t => ({t, p: parseSatz(t)}));
+  $('#vieleVorschau').innerHTML = vieleListe.map((x,i) => x.p
+    ? `<label class="check eintrag" style="grid-template-columns:auto 1fr"><input type="checkbox" data-viele="${i}" checked><span>${esc(x.p.was || 'ohne Namen')} · ${x.p.waehrung} ${chf(x.p.betrag)}<small>${esc(x.p.kat || 'Privat')}${x.p.paid ? ' · ' + esc(x.p.paid) : ''} · ${datumCH(x.p.date)}</small></span></label>`
+    : `<div class="eintrag"><div><s>${esc(x.t)}</s><small>Kein Betrag gefunden, wird übersprungen</small></div></div>`).join('');
+  const n = vieleListe.filter(x => x.p).length;
+  $('#vieleSave').textContent = n ? `${n} ins Glas` : 'Alle ins Glas';
+  return n;
+}
+async function vieleSpeichern(){
+  if (!vieleListe.length && !vielePruefen()) { toast('Keine Beträge gefunden'); return; }
+  const an = new Set([...document.querySelectorAll('[data-viele]')].filter(c => c.checked).map(c => +c.dataset.viele));
+  const neu = vieleListe.filter((x,i) => x.p && an.has(i)).map(({p}) => {
+    const {h} = splitKat(p.kat || 'Privat'), m = p.was && merk(Object.keys(memory).find(k => k.toLowerCase() === p.was.toLowerCase()) || '');
+    const amt = Math.round(p.betrag * kurs(p.waehrung) * 100) / 100;
+    return {id: neueId(), year: +p.date.slice(0,4), kind:'ausgabe', date: p.date, from: p.was, kat: p.kat || 'Privat', amount: amt, waehrung: p.waehrung, betragOrig: p.waehrung !== 'CHF' ? p.betrag : null,
+      paid: p.paid, fix:'', note:'', cat: MIT_ORDNER(h) ? ((m && m.cat) || KONTO[p.kat] || (h === 'DR Lab' ? '6590' : '')) : '', blob:null, type:'', weg:'viele'};
+  });
+  if (!neu.length){ toast('Nichts ausgewählt'); return; }
+  await tx('belege','readwrite', s => neu.forEach(z => s.put(z)));
+  lern['weg-viele'] = (lern['weg-viele']||0) + neu.length; await kvSet('lern', lern);
+  $('#vieleText').value = ''; $('#vieleVorschau').innerHTML = ''; vieleListe = []; $('#vieleSave').textContent = 'Alle ins Glas';
+  await loadYear();
+  window.scrollTo({top:0, behavior:'smooth'});
+  neu.slice(0, 5).forEach((_, i) => setTimeout(sterneFliegen, 380 + i * 180));
+  setTimeout(() => pose('freut', '★', 2200), 1200);
+  toast(`${neu.length} Zettel im Glas`);
+}
+async function eingangAusTranskript(){
+  let t = ''; try { t = localStorage.getItem('fompa-eingang') || ''; localStorage.removeItem('fompa-eingang'); } catch {}
+  if (!t) return;
+  setMode('buch'); tab('neu');
+  $('#vieleBox').open = true; $('#vieleText').value = t;
+  const n = vielePruefen();
+  $('#vieleBox').scrollIntoView({behavior:'smooth', block:'start'});
+  pose('staunt', '!');
+  toast(n ? `Aus dem Transkript: ${n} Zettel gefunden. Prüfen und «ins Glas».` : 'Aus dem Transkript: keine Beträge gefunden');
+}
 
 /* ---------- Export Steuern: CSV + ZIP (ohne Bibliothek, unkomprimiert) ---------- */
 function fileName(b, i){
@@ -659,7 +1566,7 @@ function csvText(){
   cats.forEach(c => {
     const list = st.filter(b => b.cat === c.nr);
     if (!list.length) rows.push([c.nr, c.name, '', '', '', '', 'fehlt', '']);
-    list.forEach(b => rows.push([c.nr, c.name, b.blob ? fileName(b, st.indexOf(b)+1).split('/')[1] : '(kein Foto)', b.date, b.from, b.amount==null?'':b.amount.toFixed(2), b.amount==null?'Betrag fehlt':'vorhanden', b.note]));
+    list.forEach(b => rows.push([c.nr, c.name, b.blob ? fileName(b, st.indexOf(b)+1).split('/')[1] : '(kein Foto)', b.date, b.from, b.amount==null?'':b.amount.toFixed(2), b.amount==null?'Betrag fehlt':'vorhanden', [b.note, b.waehrung && b.waehrung !== 'CHF' && b.betragOrig != null ? `${b.waehrung} ${b.betragOrig} (Kurs geschätzt)` : ''].filter(Boolean).join(' · ')]));
   });
   rows.push(['','Total','','','', sum(st).toFixed(2), '', '']);
   return '﻿' + rows.map(r => r.map(q).join(';')).join('\r\n');
@@ -691,6 +1598,14 @@ async function deliver(blob, name){
   if (navigator.canShare && navigator.canShare({files:[file]})){
     try { await navigator.share({files:[file], title:name}); return; } catch(e){ if (e.name === 'AbortError') return; }
   }
+  // Runde 8: im Artefakt/der Vorschau startet oft kein Download – dann Inhalt zum Kopieren zeigen.
+  if (window.R8K){
+    const istText = /csv|text/.test(blob.type || '');
+    const text = istText ? (await blob.text()).replace(/^\uFEFF/, '') : csvText();
+    R8K.datei(blob, name, { text, titel: istText ? 'Tabelle sichern' : 'Paket sichern',
+      hinweis: istText ? 'Kopiere die Tabelle und füge sie in Excel, Numbers oder eine Mail ein.' : 'Das ZIP mit Belegfotos braucht die installierte App oder einen Browser-Tab. Hier ist die Übersicht als Tabelle zum Kopieren.' });
+    return;
+  }
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
 }
@@ -701,40 +1616,366 @@ function fillYears(){
   const ys = [...new Set([now-2, now-1, now, now+1, year])].sort();
   $('#year').innerHTML = ys.map(y => `<option ${y==year?'selected':''}>${y}</option>`).join('');
 }
+/* ---------- Runde 2: Posen-Bilder, Vorlesen, Mahntexte, Jahres-Check, Verkaufen, Heute, Einführung ---------- */
+// Tinko-Posen: liegt posen/<pose>.jpg im App-Ordner und steht in posen/posen.json, nimmt Fompa das echte Bild.
+// Sonst bleibt es beim einen Bild mit CSS-Animation.
+let POSEN = [];
+fetch('posen/posen.json', {cache:'no-cache'}).then(r => r.ok ? r.json() : null).then(j => { if (j && Array.isArray(j.posen)) POSEN = j.posen.map(String); }).catch(() => {});
+function poseBild(name){
+  const img = $('#figur img'); if (!img) return;
+  const n = name || (new Date().getHours() >= 23 || new Date().getHours() < 6 ? 'schlaeft' : 'ruhe');
+  const echt = POSEN.includes(n);
+  const src = echt ? 'posen/' + n + '.jpg' : 'fompa-posen.jpg';
+  if (img.getAttribute('src') !== src) img.setAttribute('src', src);
+  $('#figur').classList.toggle('echt', echt);
+}
+// Fompa liest vor: Figurenstimme über nova.js, sonst Gerätestimme
+function vorlesen(text){
+  const t = String(text || '').replace(/\s+/g, ' ').trim(); if (!t) return;
+  pose('freut', '♪', 2200);
+  if (window.NovaStimme && NovaStimme.sprich){ NovaStimme.sprich(t); return; }
+  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'de-CH'; u.rate = .95; speechSynthesis.speak(u); } catch { toast('Vorlesen geht auf diesem Gerät nicht'); }
+}
+function bubbleText(){ const c = $('#bubble').cloneNode(true); c.querySelectorAll('.bk').forEach(b => b.remove()); return c.textContent; }
+
+/* Offene Rechnungen: fällig nach Zahlungsfrist, Übersicht pro Kürzel, Mahntext zum Kopieren */
+const zielTage = () => num(einst.mZiel, 30) || 30;
+const mahnFrist = () => num(einst.mFrist, 10) || 10;
+const faelligAm = r => plusTage(r.datum, zielTage());
+const ueberfaellig = r => r.status === 'offen' && tageBis(faelligAm(r)) < 0;
+const STUFE = ['offen','Zahlungserinnerung','1. Mahnung','2. Mahnung'];
+function proKuerzel(){
+  const g = {};
+  rechnungen.filter(r => r.status === 'offen').forEach(r => { (g[r.kuerzel] = g[r.kuerzel] || []).push(r); });
+  return Object.entries(g).map(([k, list]) => {
+    const ueber = list.filter(ueberfaellig), stufe = Math.max(0, ...ueber.map(r => r.mahn || 0));
+    const letzte = ueber.map(r => r.mahnDatum || '').sort().pop() || '';
+    const wartenBis = letzte && stufe > 0 ? plusTage(letzte, mahnFrist()) : '';
+    const alt = Math.max(...list.map(r => -tageBis(r.datum)));
+    let schritt, bereit = false;
+    if (!ueber.length){ const n = list.map(faelligAm).sort()[0]; schritt = 'warten, fällig ' + datumCH(n); }
+    else if (wartenBis && tageBis(wartenBis) >= 0) schritt = `${STUFE[stufe]} läuft bis ${datumCH(wartenBis)}`;
+    else if (stufe >= 3) schritt = 'Betreibung prüfen (dein Entscheid)';
+    else { schritt = STUFE[stufe + 1]; bereit = true; }
+    return {k, list, ueber, stufe, alt, schritt, bereit, offen: list.reduce((s,r) => s + r.betrag, 0), ueberSum: ueber.reduce((s,r) => s + r.betrag, 0)};
+  }).sort((a,b) => b.ueberSum - a.ueberSum || b.offen - a.offen);
+}
+function renderProKuerzel(){
+  const g = proKuerzel();
+  $('#kuerzelCard').classList.toggle('hidden', !rechnungen.length);
+  $('#proKuerzel').innerHTML = g.map(x => `<div class="eintrag"><div><b>${esc(x.k)}</b> · ${x.list.length} ${x.list.length === 1 ? 'Rechnung' : 'Rechnungen'} · CHF ${chf(x.offen)}<small>${x.ueberSum ? `<span style="color:var(--warn)">überfällig ${chf(x.ueberSum)}</span> · ` : ''}älteste ${x.alt} Tage · nächster Schritt: ${esc(x.schritt)}</small></div>
+    <div class="knoepfe">${x.bereit ? `<button class="btn small" data-mahntext="${esc(x.k)}">Text schreiben</button>` : ''}</div></div>`).join('') || '<p class="hint">Alle Rechnungen sind bezahlt. Schön.</p>';
+  $('#mAbsender').value = einst.mAbsender || ''; $('#mZiel').value = einst.mZiel || ''; $('#mFrist').value = einst.mFrist || ''; $('#mBetreib').value = einst.mBetreib || '';
+  const uv = Math.max(0, Math.round(num(einst.unverrechnet))); $('#uvZahl').textContent = uv;
+  $('#uvBetrag').textContent = uv ? (preis() ? `≈ CHF ${chf(uv * preis())} noch verrechnen` : 'Preis pro Sitzung unter «Woche» eintragen') : 'Alles verrechnet';
+}
+function mahnText(k){
+  const x = proKuerzel().find(g => g.k === k); if (!x) return '';
+  const st = x.stufe + 1, titel = STUFE[st].toUpperCase(), heute = ymd(new Date()), frist = plusTage(heute, mahnFrist());
+  const ab = (einst.mAbsender || 'Debitorenmanagement\nPraxis').trim();
+  const zeilen = x.ueber.slice().sort((a,b) => a.datum.localeCompare(b.datum)).map(r => `${String(r.nr || '–').padEnd(8)} ${datumCH(r.datum).padEnd(16)} ${chf(r.betrag).padStart(10)}`);
+  const total = x.ueberSum, mehr = x.ueber.length > 1;
+  const schluss = st === 3 ? (einst.mBetreib || 'Ohne Zahlung bis zur Frist leiten wir die Betreibung ein.') : st === 2 ? 'Ohne Zahlungseingang bis zur Frist folgt die 2. Mahnung.' : 'Ohne Zahlungseingang bis zur Frist folgt die 1. Mahnung.';
+  return `Betreff: ${STUFE[st]} – Ref. ${k} – offener Betrag CHF ${chf(total)}
+
+${ab}
+
+Referenz: ${k}
+Datum: ${datumCH(heute)}
+
+${titel}
+
+Guten Tag
+
+Gemäss unserer Buchhaltung ${mehr ? 'sind folgende Rechnungen' : 'ist folgende Rechnung'} nach Ablauf der Zahlungsfrist offen:
+
+Rg-Nr.   Rechnungsdatum      Betrag CHF
+${zeilen.join('\n')}
+---------------------------------------
+Total offen                CHF ${chf(total)}
+
+Zahlungsfrist: ${datumCH(frist)} (${mahnFrist()} Tage)
+Zahlungsart: mit dem QR-Einzahlungsschein der Originalrechnung, Kopie auf Anfrage.
+
+${schluss}
+Hat sich Ihre Zahlung mit diesem Schreiben gekreuzt, ist es gegenstandslos.
+Rückfragen: Antwort auf diese Mail unter Angabe der Referenz.
+
+Freundliche Grüsse
+${ab}`;
+}
+function zeigeMahnText(k){
+  const t = mahnText(k), box = $('#mahnBox'); if (!t) return;
+  const x = proKuerzel().find(g => g.k === k);
+  box.classList.remove('hidden');
+  box.innerHTML = `<b>${esc(STUFE[x.stufe + 1])} für ${esc(k)}</b> · Anrede und Text kannst du hier anpassen.<textarea id="mahnText" spellcheck="false" style="min-height:280px;margin-top:8px;font:14px/1.4 ui-monospace,Menlo,monospace">${esc(t)}</textarea>
+    <div class="chips" style="margin-top:8px"><button class="chip gold" data-mahn-copy="1">Kopieren</button><button class="chip" data-mahn-mail="1">Als Mail-Entwurf</button><button class="chip" data-mahn-notiz="${esc(k)}">${esc(STUFE[x.stufe + 1])} notieren</button><button class="chip" data-mahn-zu="1">Schliessen</button></div>
+    <p class="hint" style="margin-top:6px">Fompa schickt nichts. Mail-Entwurf öffnet dein Mailprogramm ohne Adresse.</p>`;
+  pose('rechnet', null, 2000);
+  box.scrollIntoView({behavior:'smooth', block:'start'});
+}
+async function mahnNotieren(k){
+  const x = proKuerzel().find(g => g.k === k); if (!x) return;
+  const st = Math.min(3, x.stufe + 1), heute = ymd(new Date());
+  x.ueber.forEach(r => { r.mahn = st; r.mahnDatum = heute; });
+  await kvSet('rechnungen', rechnungen); zaehle('mahntext');
+  $('#mahnBox').classList.add('hidden');
+  toast(`${STUFE[st]} für ${k} notiert. Frist bis ${datumCH(plusTage(heute, mahnFrist()))}.`); pose('denkt', '!');
+  renderAll();
+}
+
+/* Steuern: Jahres-Check und Beleg-Check */
+function jahresCheck(){
+  const jetzt = new Date(), dieses = year === jetzt.getFullYear();
+  const tage = dieses ? Math.max(1, Math.round((jetzt - new Date(year, 0, 1)) / 864e5) + 1) : 365, jahrTage = 365;
+  const ein3000 = sum(zettel.filter(z => z.cat === '3000'));
+  const ein = einst.jUmsatz ? num(einst.jUmsatz) : ein3000;
+  const aufwand = sum(zettel.filter(z => z.cat && /^\d/.test(z.cat) && z.cat !== '3000'));
+  const f = jahrTage / tage, hoch = ein * f, gewinn = ein - aufwand, gewinnHoch = (ein - aufwand) * f;
+  const p3a = sum(zettel.filter(z => z.cat === 'P4')), ziel3a = num(einst.j3a), proz = num(einst.jProzent);
+  const bisSilvester = dieses ? tageBis(year + '-12-31') : 0;
+  const out = [];
+  out.push(`<div class="kat"><span>Einnahmen bis ${dieses ? 'heute' : 'Jahresende'}${einst.jUmsatz ? '' : ' (Ordner 3000)'}</span><span>${chf(ein)}</span></div>`);
+  if (dieses && ein) out.push(`<div class="kat"><span>Hochgerechnet aufs Jahr</span><span>≈ ${chf0(hoch)}</span></div>`);
+  out.push(`<div class="kat"><span>Aufwand mit Konto-Ordner</span><span>${chf(aufwand)}</span></div>`);
+  if (ein) out.push(`<div class="kat gross"><span>Gewinn ${dieses ? 'hochgerechnet' : ''}</span><span>≈ ${chf0(dieses ? gewinnHoch : gewinn)}</span></div>`);
+  if (ein && !aufwand) out.push('<p class="hint">Noch kein Aufwand mit Konto erfasst. Ohne Ausgaben sieht es aus, als wäre alles Gewinn.</p>');
+  if (hoch >= 100000) out.push('<p class="hint" style="color:var(--warn)">Umsatz über CHF 100\'000: Bitte mit dem Treuhand klären, ob eine MWST-Pflicht besteht. Heilbehandlungen können ausgenommen sein.</p>');
+  else if (hoch >= 85000) out.push('<p class="hint">Der Umsatz nähert sich CHF 100\'000. Ab dort die MWST-Frage mit dem Treuhand klären.</p>');
+  out.push(`<div class="kat"><span>3a einbezahlt (Ordner P4)</span><span>${chf(p3a)}${ziel3a ? ' von ' + chf(ziel3a) : ''}</span></div>`);
+  if (ziel3a > p3a && dieses) out.push(`<p class="hint">Noch CHF ${chf(ziel3a - p3a)} bis zum 3a-Ziel, ${bisSilvester} Tage bis 31.12. Einzahlung muss bis dahin auf dem Konto sein.</p>`);
+  if (proz && ein){ const r = Math.max(0, (dieses ? gewinnHoch : gewinn) * proz / 100); out.push(`<div class="kat"><span>Steuer-Rücklage ${proz} %</span><span>≈ ${chf0(r)}</span></div><div class="kat"><span>pro Monat zurücklegen</span><span>≈ ${chf0(r / 12)}</span></div>`); }
+  else out.push('<p class="hint">Trag unter «Werte eintragen» einen Prozentsatz ein, dann rechnet Fompa die Steuer-Rücklage.</p>');
+  $('#jahrCheck').innerHTML = out.join('');
+  $('#jUmsatz').value = einst.jUmsatz || ''; $('#j3a').value = einst.j3a || ''; $('#jProzent').value = einst.jProzent || '';
+}
+function belegCheck(){
+  const st = zettel.filter(z => z.cat), out = [];
+  const ohneBild = st.filter(z => !z.blob), ohneBetrag = zettel.filter(z => z.amount == null);
+  const gesehen = {}, doppelt = [];
+  zettel.forEach(z => { const k = [z.date, z.amount, (z.from||'').toLowerCase()].join('|'); if (z.amount != null && gesehen[k]) doppelt.push(z); else gesehen[k] = 1; });
+  const unk = zettel.filter(z => isBuch(z) && splitKat(z.kat).h === 'Unklar');
+  const z3 = (list) => list.slice(0, 4).map(z => `<button class="chip" data-edit="${z.id}">${esc(z.from || 'Zettel')} ${z.amount == null ? '' : chf(z.amount)}</button>`).join('');
+  if (ohneBild.length) out.push(`<div style="border-top:1px solid var(--line);padding:8px 0">📷 ${ohneBild.length} ${ohneBild.length === 1 ? 'Zettel' : 'Zettel'} mit Steuer-Ordner ohne Foto. Beleg nachfotografieren, wenn er noch da ist.<div class="chips" style="margin-top:6px">${z3(ohneBild)}</div></div>`);
+  if (ohneBetrag.length) out.push(`<div style="border-top:1px solid var(--line);padding:8px 0">✎ ${ohneBetrag.length} ohne Betrag.<div class="chips" style="margin-top:6px">${z3(ohneBetrag)}</div></div>`);
+  if (doppelt.length) out.push(`<div style="border-top:1px solid var(--line);padding:8px 0">⧉ ${doppelt.length} vielleicht doppelt (gleiches Datum, Betrag und Wofür).<div class="chips" style="margin-top:6px">${z3(doppelt)}</div></div>`);
+  if (unk.length) out.push(`<div style="border-top:1px solid var(--line);padding:8px 0">? ${unk.length} noch unklar.<div class="chips" style="margin-top:6px"><button class="chip gold" data-go="offen">Klären</button></div></div>`);
+  $('#belegCheck').innerHTML = out.join('') || `<p class="hint">${zettel.length ? 'Alles sauber. Fompa findet nichts, was auffällt.' : 'Noch keine Zettel. Sobald welche da sind, schaut Fompa sie durch.'}</p>`;
+}
+
+/* Dinge verkaufen */
+let verkauf = [];
+function renderVerkauf(){
+  const v = verkauf.slice().sort((a,b) => (a.status === 'verkauft') - (b.status === 'verkauft'));
+  $('#verkauf').innerHTML = v.map(x => `<div class="eintrag"><div><b>${esc(x.was)}</b> · CHF ${chf0(x.status === 'verkauft' ? x.erloes : x.preis)}<small>${esc(x.zustand)} · ${x.status === 'verkauft' ? '✓ verkauft ' + datumCH(x.am) : x.status === 'inseriert' ? 'inseriert' : 'Idee'}</small></div>
+    <div class="knoepfe">${x.status !== 'verkauft' ? `<button class="btn small" data-inserat="${x.id}">Inserat</button>${x.status === 'idee' ? `<button class="btn small" data-vinser="${x.id}">Inseriert</button>` : ''}<button class="btn small" data-vverk="${x.id}">Verkauft</button>` : ''}<button class="btn small del" data-vweg="${x.id}" aria-label="Entfernen">✕</button></div></div>`).join('') || '<p class="hint">Noch nichts auf der Liste. Was du nicht mehr brauchst, wird hier Geld.</p>';
+  const verk = verkauf.filter(x => x.status === 'verkauft').reduce((s,x) => s + (x.erloes||0), 0), noch = verkauf.filter(x => x.status !== 'verkauft').reduce((s,x) => s + (x.preis||0), 0);
+  $('#verkaufSumme').innerHTML = verkauf.length ? `<div class="kat gross"><span>Schon verkauft</span><span>${chf0(verk)}</span></div><div class="kat"><span>Noch möglich</span><span>${chf0(noch)}</span></div>` : '';
+}
+function inseratText(x){
+  return `${x.was} (${x.zustand})\n\nPreis: CHF ${chf0(x.preis)}, Verhandlungsbasis\nZustand: ${x.zustand}\nAbholung nach Absprache, Bezahlung bar oder Twint.\n\nBei Interesse einfach melden.`;
+}
+async function verkaufAendern(id, was){
+  const x = verkauf.find(v => v.id === id); if (!x) return;
+  if (was === 'inserat'){ const b = $('#inseratBox'); b.classList.remove('hidden'); b.innerHTML = `<b>Inserat für ${esc(x.was)}</b><textarea id="inseratText" style="min-height:150px;margin-top:8px">${esc(inseratText(x))}</textarea><div class="chips" style="margin-top:8px"><button class="chip gold" data-ins-copy="1">Kopieren</button><button class="chip" data-ins-zu="1">Schliessen</button></div>`; pose('denkt', '✎'); return; }
+  if (was === 'inser'){ x.status = 'inseriert'; toast('Inseriert, viel Glück'); }
+  if (was === 'verk'){ const p = prompt(`Für wie viel CHF verkauft?`, String(x.preis || '')); if (p === null) return; x.erloes = num(p, x.preis); x.status = 'verkauft'; x.am = ymd(new Date()); muenzRegen(20); pose('staunt', '!', 2400); toast(`${x.was} verkauft: CHF ${chf0(x.erloes)}. Trag es unter Konten ein.`); zaehle('verkauft'); }
+  if (was === 'weg'){ if (!confirm('Eintrag entfernen?')) return; verkauf = verkauf.filter(v => v !== x); }
+  await kvSet('verkauf', verkauf); renderVerkauf();
+}
+
+/* Heute für dich: das Wichtigste des Tages in einer Liste */
+function renderHeute(){
+  const out = hinweise().slice();
+  const heute = ymd(new Date());
+  const bereit = proKuerzel().filter(g => g.bereit);
+  if (bereit.length) out.push(`${bereit.length === 1 ? 'Bei <b>' + esc(bereit[0].k) + '</b> ist' : 'Bei <b>' + bereit.length + ' Kürzeln</b> ist'} die nächste Mahnstufe fällig. Der Text ist bereit.<div class="bk"><button class="chip gold" data-go="offen">Ansehen</button></div>`);
+  const uv = Math.round(num(einst.unverrechnet)); if (uv > 0) out.push(`${uv} ${uv === 1 ? 'Sitzung ist' : 'Sitzungen sind'} noch nicht verrechnet.<div class="bk"><button class="chip gold" data-go="offen">Ansehen</button></div>`);
+  if (konten.length && !staende.some(s => s.datum === heute)) out.push('Magst du heute den Stand speichern? So siehst du den Tagesgewinn.<div class="bk"><button class="chip gold" data-go="kapital">Kapital</button></div>');
+  const idee = verkauf.filter(v => v.status === 'idee'); if (idee.length) out.push(`${idee.length} ${idee.length === 1 ? 'Ding wartet' : 'Dinge warten'} aufs Inserat.<div class="bk"><button class="chip gold" data-go="offen">Inserat schreiben</button></div>`);
+  $('#heute').innerHTML = out.map(t => `<div style="border-top:1px solid var(--line);padding:9px 0">${t}</div>`).join('') || '<p class="hint">Alles ruhig heute. Leg einfach jeden Zettel ins Glas, den Rest rechne ich.</p>';
+}
+
+/* Einführung beim ersten Start */
+const ONB = [
+  {t:'Hoi, ich bin Fompa', x:'Ich sammle deine Zettel und rechne für dich. Alles bleibt auf deinem Handy.', p:'freut'},
+  {t:'Dein Wochengeld', x:'Wie viel möchtest du pro Woche privat ausgeben? Geht auch später.', p:'rechnet', feld:true},
+  {t:'Zettel ins Glas', x:'Foto machen oder mir sagen: «Kaffee 4.80 mit Twint». Jeder Zettel wird ein Stern.', p:'staunt'},
+  {t:'Ich ordne, du entscheidest', x:'Buchhaltung, Steuern, Woche + Ziele. Ob etwas abziehbar ist, sagt dein Steuerberater.', p:'denkt'}
+];
+let onbI = 0;
+function onbZeigen(i){
+  onbI = i; const s = ONB[i];
+  $('#onb').classList.remove('hidden'); $('#onbTitel').textContent = s.t; $('#onbText').textContent = s.x;
+  ['#onbTitel','#onbText'].forEach(q => { const e = $(q); e.classList.remove('wechsel'); void e.offsetWidth; e.classList.add('wechsel'); });
+  $('#onbFeld').innerHTML = s.feld ? `<div class="form"><div class="row"><label>Wochengeld CHF<input id="oWoche" inputmode="decimal" placeholder="z. B. 300" value="${esc(einst.wochengeld||'')}"></label><label>Preis pro Sitzung<input id="oPreis" inputmode="decimal" placeholder="z. B. 120" value="${esc(einst.preis||'')}"></label></div></div>` : '';
+  $('#onbPunkte').innerHTML = ONB.map((_, n) => `<i class="${n === i ? 'on' : ''}"></i>`).join('');
+  $('#onbWeiter').textContent = i === ONB.length - 1 ? 'Los geht\'s' : 'Weiter';
+  const f = $('#onbFigur'); f.classList.remove('freut','denkt','rechnet','staunt'); void f.offsetWidth; f.classList.add(s.p);
+  const img = f.querySelector('img'); img.src = POSEN.includes(s.p) ? 'posen/' + s.p + '.jpg' : 'fompa-posen.jpg';
+}
+async function onbWeiter(ende){
+  if ($('#oWoche')){ const w = $('#oWoche').value.trim(), p = $('#oPreis').value.trim(); if (w) einst.wochengeld = w; if (p) einst.preis = p; }
+  if (!ende && onbI < ONB.length - 1){ onbZeigen(onbI + 1); return; }
+  $('#onb').classList.add('hidden'); await kvSet('onboard', 1); await einstSpeichern(); pose('freut', '♪');
+  summ(15); heldGruss(); setTimeout(() => { const k = document.querySelector('.held-knoepfe .btn.main'); if (k) feier(k, 14); }, 350);
+}
+
+/* ---------- Runde 3: Begrüssung, Fortschritt, kleine Feiern ---------- */
+const STUFEN = [1, 5, 10, 25, 50, 100, 160, 250, 500, 1000];
+function zielStufe(n){
+  const naechste = STUFEN.find(x => x > n) || (Math.ceil((n + 1) / 500) * 500);
+  return {naechste, anteil: Math.min(1, n / naechste)};
+}
+const ruhig = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+function summ(muster){ try { if (navigator.vibrate) navigator.vibrate(muster); } catch {} }
+function feier(el, n = 14){
+  if (!el || ruhig()) return;
+  const r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+  for (let i = 0; i < n; i++){
+    const f = document.createElement('i'); f.className = 'feier'; document.body.appendChild(f);
+    const a = Math.PI * 2 * i / n + Math.random() * .4, d = 50 + Math.random() * 70, g = .6 + Math.random() * .9;
+    f.style.left = (x - 5) + 'px'; f.style.top = (y - 5) + 'px';
+    f.animate([{transform:'translate(0,0) scale(.3) rotate(0)', opacity:1},
+      {transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d + 30}px) scale(${g}) rotate(${180 + Math.random()*180}deg)`, opacity:0}],
+      {duration:700 + Math.random()*400, easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish = () => f.remove();
+  }
+}
+function tagesGruss(){
+  const h = new Date().getHours();
+  return h < 5 ? 'Noch wach?' : h < 11 ? 'Guten Morgen!' : h < 14 ? 'Hoi!' : h < 18 ? 'Schön, dass du da bist.' : h < 23 ? 'Guten Abend!' : 'Noch wach?';
+}
+function heldGruss(){
+  const b = document.querySelector('.nb-buehne'); if (!b || !db) return;
+  const titel = b.querySelector('.nb-unten b'), satz = b.querySelector('.nb-unten span');
+  const n = zettel.length, gesamt = Object.keys(lern).filter(k => k.startsWith('weg-')).reduce((s, k) => s + lern[k], 0);
+  if (titel) titel.textContent = gesamt ? tagesGruss() : 'Hoi, ich bin Fompa.';
+  if (satz){
+    satz.textContent = !gesamt ? 'Leg deinen ersten Zettel ins Glas. Den Rest mache ich.'
+      : n ? `${n} ${n === 1 ? 'Stern' : 'Sterne'} im Glas. Was kommt heute dazu?` : 'Neues Jahr, leeres Glas. Los gehts.';
+    satz.classList.remove('neu-gruss'); void satz.offsetWidth; satz.classList.add('neu-gruss');
+  }
+}
+function heldBauen(){
+  const b = document.querySelector('.nb-buehne'); if (!b || b.dataset.r3) return !!b;
+  b.dataset.r3 = '1';
+  const img = b.querySelector('img'); if (img){ img.decoding = 'async'; img.fetchPriority = 'high'; }
+  const unten = b.querySelector('.nb-unten'), reden = b.querySelector('.nb-reden');
+  const box = document.createElement('div'); box.className = 'held-knoepfe';
+  const los = document.createElement('button'); los.className = 'btn main'; los.type = 'button'; los.textContent = '📷 Zettel ablegen';
+  los.onclick = () => {
+    summ(10);
+    if (mode === 'plan') setMode('buch'); else tab('neu');
+    $('#neu').scrollIntoView({behavior:'smooth', block:'start'});
+    $('#file').click();
+  };
+  box.appendChild(los);
+  if (reden){ reden.textContent = '📞 Reden'; box.appendChild(reden); }
+  unten.appendChild(box);
+  heldGruss();
+  if (img && !ruhig()) setTimeout(() => img.click(), 900);
+  return true;
+}
+(function heldWarten(t = 0){ if (!heldBauen() && t < 600) requestAnimationFrame(() => heldWarten(t + 1)); else if (t >= 600){ const p = $('#buehnePlatz'); if (p) p.remove(); } })();
+$('#kopfSprechen').onclick = () => { summ(10); const k = document.querySelector('.sp-knopf'); if (k) k.click(); else toast('Sprechen geht in diesem Browser nicht. Tipp ins Feld «Wofür».'); };
+(function spiegeln(t = 0){
+  const k = document.querySelector('.sp-knopf');
+  if (!k){ if (t < 300) requestAnimationFrame(() => spiegeln(t + 1)); return; }
+  new MutationObserver(() => $('#kopfSprechen').classList.toggle('hoert', k.classList.contains('hoert'))).observe(k, {attributes:true, attributeFilter:['class']});
+})();
+$('#shot').onkeydown = e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); $('#file').click(); } };
+
+async function einstSpeichern(){ await kvSet('einst', einst); renderAll(); }
 (async () => {
+  himmel(); ruhe();
   db = await openDB();
   memory = (await kvGet('memory')) || {};
   year = (await kvGet('year')) || new Date().getFullYear();
+  einst = (await kvGet('einst')) || {};
+  abschluesse = (await kvGet('abschluesse')) || [];
+  konten = (await kvGet('konten')) || [];
+  staende = (await kvGet('staende')) || [];
+  faellig = (await kvGet('faellig')) || [];
+  rechnungen = (await kvGet('rechnungen')) || [];
+  lern = (await kvGet('lern')) || {};
+  verkauf = (await kvGet('verkauf')) || [];
   fillYears();
   let m = 'buch'; try { m = localStorage.getItem('fompa-mode') || 'buch'; } catch {}
-  await loadYear(); setMode(m);
+  await loadYear(); setMode(m); heldGruss();
+  $('#fDatum').value = ymd(new Date()); $('#rDatum').value = ymd(new Date());
 
   document.querySelectorAll('.mode button').forEach(b => b.onclick = () => setMode(b.dataset.mode));
   $('#year').onchange = async e => { year = +e.target.value; await kvSet('year', year); await loadYear(); resetForm(); };
   document.querySelectorAll('.tab').forEach(t => t.onclick = () => tab(t.dataset.tab));
+  $('#figur').onclick = () => { const p = ['freut','staunt','rechnet','denkt'][Math.floor(Math.random()*4)]; pose(p, p === 'denkt' ? '?' : p === 'staunt' ? '!' : p === 'freut' ? '♪' : null); };
+  $('#figur').onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') $('#figur').click(); };
   $('#shot').onclick = () => $('#file').click();
-  $('#file').onchange = async e => { const f = e.target.files[0]; if (!f) return; photo = await shrink(f); showPhoto(photo); e.target.value=''; };
+  $('#file').onchange = async e => { const f = e.target.files[0]; if (!f) return; photo = await shrink(f); showPhoto(photo); e.target.value=''; pose('staunt', '📷'); };
   $('#from').oninput = suggest;
+  $('#amount').oninput = umrechnung; $('#waehrung').onchange = umrechnung;
   $('#haupt').onchange = () => { $('#cat').value = ''; katChanged(); };
   $('#unter').onchange = () => { $('#cat').value = ''; kontoVorschlag(); };
   $('#imp').onclick = importieren;
   $('#save').onclick = save;
   $('#cancel').onclick = resetForm;
   $('#delOne').onclick = async () => { if (!confirm('Diesen Zettel löschen?')) return; await tx('belege','readwrite', s => s.delete(editId)); resetForm(); await loadYear(); toast('Gelöscht'); };
-  document.querySelector('.w').addEventListener('click', e => {
+  $('#vielePruef').onclick = () => { if (!vielePruefen()) toast('Keine Beträge gefunden'); };
+  $('#vieleSave').onclick = vieleSpeichern;
+  $('#vieleText').oninput = () => { vieleListe = []; };
+  document.body.addEventListener('click', e => {
+    const go = e.target.closest('[data-go]'); if (go){ gehZu(go.dataset.go); return; }
     const ed = e.target.closest('[data-edit]'); if (ed){ edit(ed.dataset.edit); return; }
-    const h = e.target.closest('[data-open]'); if (h) document.querySelector(`[data-body="${CSS.escape(h.dataset.open)}"]`).classList.toggle('hidden');
+    const h = e.target.closest('[data-open]'); if (h){ document.querySelector(`[data-body="${CSS.escape(h.dataset.open)}"]`).classList.toggle('hidden'); return; }
+    const kl = e.target.closest('[data-klaer]'); if (kl){ klaeren(kl.dataset.klaer, kl.dataset.h); return; }
+    const bz = e.target.closest('[data-bezahlt]'); if (bz){ faelligBezahlt(bz.dataset.bezahlt); return; }
+    const fw = e.target.closest('[data-fweg]'); if (fw){ if (confirm('Fälligkeit entfernen?')){ faellig = faellig.filter(x => x.id !== fw.dataset.fweg); kvSet('faellig', faellig).then(renderAll); } return; }
+    for (const [attr, was] of [['data-mahn','mahn'],['data-rbez','bez'],['data-rab','ab'],['data-rweg','weg']]){ const b = e.target.closest('[' + attr + ']'); if (b){ rechnungAendern(b.getAttribute(attr), was); return; } }
+    const mt = e.target.closest('[data-mahntext]'); if (mt){ zeigeMahnText(mt.dataset.mahntext); return; }
+    if (e.target.closest('[data-mahn-copy]')){ const t = $('#mahnText').value; navigator.clipboard.writeText(t).then(() => { toast('Mahnung kopiert'); pose('freut', '✓'); }, () => { $('#mahnText').select(); toast('Bitte lange drücken und kopieren'); }); return; }
+    if (e.target.closest('[data-mahn-mail]')){ const t = $('#mahnText').value, m = t.match(/^Betreff: (.*)\n+/); location.href = 'mailto:?subject=' + encodeURIComponent(m ? m[1] : 'Mahnung') + '&body=' + encodeURIComponent(m ? t.slice(m[0].length) : t); return; }
+    const mn = e.target.closest('[data-mahn-notiz]'); if (mn){ mahnNotieren(mn.dataset.mahnNotiz); return; }
+    if (e.target.closest('[data-mahn-zu]')){ $('#mahnBox').classList.add('hidden'); return; }
+    for (const [attr, was] of [['data-inserat','inserat'],['data-vinser','inser'],['data-vverk','verk'],['data-vweg','weg']]){ const b = e.target.closest('[' + attr + ']'); if (b){ verkaufAendern(b.getAttribute(attr), was); return; } }
+    if (e.target.closest('[data-ins-copy]')){ navigator.clipboard.writeText($('#inseratText').value).then(() => toast('Inserat kopiert'), () => toast('Bitte lange drücken und kopieren')); return; }
+    if (e.target.closest('[data-ins-zu]')){ $('#inseratBox').classList.add('hidden'); return; }
+    const kw = e.target.closest('[data-konto-weg]'); if (kw){ if (confirm('Konto entfernen?')){ konten = konten.filter(x => x.id !== kw.dataset.kontoWeg); kvSet('konten', konten).then(renderAll); } return; }
   });
+  $('#konten').addEventListener('change', kontoAendern);
+  $('#kontoNeu').onclick = async () => { konten.push({id: neueId(), name:'', betrag:'', art:'fluessig'}); await kvSet('konten', konten); renderKapital(); const n = document.querySelectorAll('#konten [data-f="name"]'); if (n.length) n[n.length-1].focus(); };
+  $('#kapStand').onclick = standSpeichern;
+  $('#kapStart').onclick = async () => { const k = kapital(); if (einst.start && !confirm('Neuen Startwert setzen? Der Gewinn zählt dann ab heute.')) return; einst.start = {datum: ymd(new Date()), rest: Math.round(k.rest)}; await einstSpeichern(); pose('freut', '✓'); toast('Start gesetzt: ' + chf0(k.rest)); };
+  $('#zSave').onclick = async () => { einst.ziele = {kosten: $('#zKosten').value.trim(), s3: $('#z3a').value.trim(), spar: $('#zSpar').value.trim(), wochen: $('#zWochen').value.trim(), ist: $('#zIst').value.trim()}; await einstSpeichern(); pose('rechnet'); toast('Gerechnet'); };
+  $('#eSave').onclick = async () => {
+    einst.wochengeld = $('#eWoche').value.trim(); einst.preis = $('#ePreis').value.trim(); einst.feriengeld = $('#eFeriengeld').value.trim();
+    einst.eur = $('#eEur').value.trim(); einst.usd = $('#eUsd').value.trim();
+    einst.ferienWoche = $('#eFerien').checked ? montag() : (einst.ferienWoche === montag() ? '' : einst.ferienWoche || '');
+    await einstSpeichern(); $('#wocheEinst').open = false; toast('Gespeichert'); pose('freut', '✓');
+  };
+  $('#abschluss').onclick = wocheAbschliessen;
+  $('#rueckblick').onclick = rueckblick;
+  $('#fAdd').onclick = async () => {
+    const was = $('#fWas').value.trim(), b = parseAmt($('#fBetrag').value), d = $('#fDatum').value;
+    if (!was || b == null || !d){ toast('Was, Betrag und Datum eintragen'); pose('denkt', '?'); return; }
+    faellig.push({id: neueId(), was, betrag: b, datum: d, rhythmus: $('#fRhythmus').value, kat: $('#fKat').value});
+    await kvSet('faellig', faellig); $('#fWas').value = ''; $('#fBetrag').value = ''; toast('Fälligkeit notiert'); pose('rechnet'); renderAll();
+  };
+  $('#rAdd').onclick = async () => {
+    const k = $('#rKuerzel').value.trim().toUpperCase().replace(/[^A-ZÄÖÜ0-9.]/g, '').slice(0,6), b = parseAmt($('#rBetrag').value), d = $('#rDatum').value;
+    if (!k || b == null || !d){ toast('Kürzel, Betrag und Datum eintragen'); pose('denkt', '?'); return; }
+    rechnungen.push({id: neueId(), kuerzel: k, betrag: b, datum: d, mahn: 0, status: 'offen', nr: $('#rNr').value.trim().slice(0,12)});
+    await kvSet('rechnungen', rechnungen); $('#rKuerzel').value = ''; $('#rBetrag').value = ''; $('#rNr').value = ''; toast('Rechnung notiert'); renderAll();
+  };
   $('#monatSel').onchange = renderMonat;
   $('#exSel').onchange = renderExport;
   $('#exCopy').onclick = async () => {
     const z = exportZeilen(); if (!z.length){ toast('Noch keine Ausgaben'); return; }
-    try { await navigator.clipboard.writeText(z.join('\n')); toast(z.length + ' Zeilen kopiert'); } catch { toast('Kopieren ging nicht, bitte «Als CSV teilen»'); }
+    try { await navigator.clipboard.writeText(z.join('\n')); toast(z.length + ' Zeilen kopiert'); pose('freut'); } catch { toast('Kopieren ging nicht, bitte «Als CSV teilen»'); }
   };
   $('#exShare').onclick = () => { const z = exportZeilen(); deliver(new Blob(['﻿' + EX_KOPF + '\r\n' + z.join('\r\n')], {type:'text/csv'}), `Ausgaben-${$('#exSel').value || year}.csv`); };
   $('#catSave').onclick = async () => { const t = $('#catText').value; if (!parseCats(t).length) return; await kvSet('cats-'+year, t); await kvSet('cats-last', t); await loadYear(); toast('Nummern gespeichert'); };
   $('#catReset').onclick = () => { $('#catText').value = DEFAULT_CATS; toast('Vorschlag geladen, noch speichern'); };
-  $('#forget').onclick = async () => { memory = {}; await kvSet('memory', memory); renderAll(); toast('Vergessen'); };
+  $('#forget').onclick = async () => { if (!confirm('Alles vergessen, was Fompa gelernt hat?')) return; memory = {}; const e = lern.einwilligung; lern = {einwilligung: e}; await kvSet('memory', memory); await kvSet('lern', lern); renderAll(); toast('Vergessen'); };
+  $('#lernOk').onchange = async e => { lern.einwilligung = e.target.checked; await kvSet('lern', lern); $('#lernTeilen').classList.toggle('hidden', !e.target.checked); if (e.target.checked) lernWeitergeben(); toast(e.target.checked ? (serverBereit() ? 'Danke. Nur Zählungen, einmal am Tag.' : 'Gemerkt. Ohne Server kannst du die Zahlen als Text teilen.') : 'Keine Weitergabe'); };
   $('#wipe').onclick = async () => {
     if (!confirm(`Alle ${zettel.length} Zettel von ${year} auf diesem Handy löschen?`)) return;
     await tx('belege','readwrite', s => zettel.forEach(b => s.delete(b.id))); await loadYear(); toast('Gelöscht');
@@ -743,19 +1984,52 @@ function fillYears(){
   $('#zip').onclick = async () => {
     const st = steuerZettel();
     if (!st.length){ toast('Noch keine Zettel mit Steuer-Ordner'); return; }
-    toast('ZIP wird erstellt …');
+    toast('ZIP wird erstellt …'); pose('rechnet', null, 3000);
     const root = `Steuern-${year}`;
     const files = [{name:`${root}/00_Uebersicht.csv`, data:new TextEncoder().encode(csvText())}];
     cats.forEach(c => { if (!st.some(b => b.cat === c.nr)) files.push({name:`${root}/${safe(c.nr)}_${safe(c.name)}/.leer`, data:new Uint8Array(0)}); });
     st.forEach((b,i) => { if (b.blob) files.push({name:`${root}/${fileName(b, i+1)}`, data:b.blob}); });
     await deliver(await makeZip(files), `${root}.zip`);
   };
+  if (/eingang/.test(location.hash)){ history.replaceState(null, '', location.pathname); eingangAusTranskript(); }
+  addEventListener('hashchange', () => { if (/eingang/.test(location.hash)){ history.replaceState(null, '', location.pathname); eingangAusTranskript(); } });
+  $('#vorlesen').onclick = () => vorlesen(bubbleText());
+  $('#lernTeilen').onclick = lernTeilen;
+  $('#mSave').onclick = async () => { einst.mAbsender = $('#mAbsender').value.trim(); einst.mZiel = $('#mZiel').value.trim(); einst.mFrist = $('#mFrist').value.trim(); einst.mBetreib = $('#mBetreib').value.trim(); await einstSpeichern(); toast('Gespeichert'); pose('freut', '✓'); };
+  const uvSetzen = async d => { einst.unverrechnet = Math.max(0, Math.round(num(einst.unverrechnet)) + d); await einstSpeichern(); pose(d > 0 ? 'denkt' : 'freut', d > 0 ? '+' : '✓', 1000); };
+  $('#uvPlus').onclick = () => uvSetzen(1); $('#uvMinus').onclick = () => uvSetzen(-1);
+  $('#vAdd').onclick = async () => { const was = $('#vWas').value.trim(); if (!was){ toast('Was möchtest du verkaufen?'); pose('denkt', '?'); return; } verkauf.push({id: neueId(), was, preis: num($('#vPreis').value), zustand: $('#vZustand').value, status: 'idee'}); await kvSet('verkauf', verkauf); $('#vWas').value = ''; $('#vPreis').value = ''; toast('Auf der Liste'); pose('freut', '✓'); renderVerkauf(); renderHeute(); };
+  $('#jSave').onclick = async () => { einst.jUmsatz = $('#jUmsatz').value.trim(); einst.j3a = $('#j3a').value.trim(); einst.jProzent = $('#jProzent').value.trim(); await einstSpeichern(); pose('rechnet'); toast('Gerechnet'); };
+  $('#onbWeiter').onclick = () => onbWeiter(false); $('#onbSkip').onclick = () => onbWeiter(true);
+  $('#einfuehrung').onclick = e => { e.preventDefault(); onbZeigen(0); };
+  if (!(await kvGet('onboard')) && !zettel.length) setTimeout(() => onbZeigen(0), 600);
+  setTimeout(() => pose('freut', '♪', 1600), 900);
+  setTimeout(lernWeitergeben, 4000);
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
 </script>
-<script src="../apps/sprechen/sprechen.js" data-figur="fompa" data-name="Fompa" data-bild="figur.jpg" data-stimme-handy="mann" data-unten="84" data-saetze='{"gruss":["Hallo, ich bin Fompa. Sag mir, was du bezahlt hast, zum Beispiel: Migros Büromaterial 23.50 mit Karte. Dann fülle ich den Zettel für dich aus."],"lob":["Wunderbar, wieder ein Zettel gerettet. Mein Glas glitzert schon."],"mut":["Keine Sorge, wir machen das Zettel für Zettel. Nichts geht verloren."],"frage":["Sag mir einfach Wofür, Betrag und womit bezahlt. Ob etwas abziehbar ist, entscheidet dein Steuerberater, ich ordne nur."],"abschied":["Bis bald. Ich passe auf deine Zettel auf."]}' defer></script>
+<script src="../apps/sprechen/sprechen.js" data-figur="fompa" data-name="Fompa" data-bild="figur.jpg" data-stimme-handy="mann" data-unten="16" data-saetze='{"gruss":["Hallo, ich bin Fompa. Sag mir, was du bezahlt hast, zum Beispiel: Migros Büromaterial 23.50 mit Karte. Oder frag mich: Wie viel habe ich diese Woche noch?"],"lob":["Wunderbar, wieder ein Zettel gerettet. Mein Glas glitzert schon."],"mut":["Keine Sorge, wir machen das Zettel für Zettel. Nichts geht verloren."],"frage":["Sag mir einfach Wofür, Betrag und womit bezahlt. Ob etwas abziehbar ist, entscheidet dein Steuerberater, ich ordne nur."],"abschied":["Bis bald. Ich passe auf deine Zettel auf."]}' defer></script>
+<script src="../nova/puppe.js"></script>
 <script src="../nova/seelen.js" defer></script>
-<script src="../nova/buehne.js" data-figur="fompa" data-name="Fompa" data-bild="../nova/figuren/fompa.jpg" data-satz="Ich sammle deine Zettel und rechne alles zusammen." defer></script>
+<script src="../nova/buehne.js" data-figur="fompa" data-name="Fompa" data-bild="held.jpg" data-satz="Ich sammle deine Zettel, rechne in Sitzungen und erinnere dich an alles, was fällig ist." data-vor="#buehnePlatz" defer></script>
 <script src="../nova/nova.js" data-nova-bild="icon-192.png" data-nova-app="Fompa" defer></script>
+<script src="feedback.js" data-app="Fompa" defer></script>
+<script src="runde4.js" defer></script>
+<script src="runde6.js" defer></script>
+<script src="runde7.js" defer></script>
+<script src="fahrten.js" defer></script>
+<script src="runde8.js" defer></script>
+<link rel="stylesheet" href="markt.css">
+<link rel="stylesheet" href="feinschliff.css">
+<script src="feinschliff.js" defer></script>
+<script src="lernen.js" data-app="Fompa" data-figur="fompa" data-name="Fompa" data-kind="0" data-unten="16" defer></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<link rel="stylesheet" href="design.css">
+<link rel="stylesheet" href="schoen.css">
+<script src="schoen.js" defer></script>
+<script src="inhalt/daten.js" defer></script>
+<script src="inhalt/bibliothek.js" defer></script>
+<script src="inhalt/installieren.js" defer></script>
+<link rel="stylesheet" href="inhalt/wischen.css"><script src="inhalt/wischen.js" defer></script><script src="inhalt/wischen-app.js" defer></script>
 </body>
 </html>
