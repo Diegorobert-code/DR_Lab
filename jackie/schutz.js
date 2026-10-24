@@ -1,4 +1,4 @@
-/* Jackie's Advice · Schutzraum «Wenn es zuhause nicht sicher ist»
+/* Jacky Roberts · Schutzraum «Wenn es zuhause nicht sicher ist»
    Grundsatz: Die gefährlichste Person sieht vielleicht das Handy.
    - Ohne Konto, ohne Anmeldung, ohne Netz (feste Texte, keine KI, keine Server-Anfrage).
    - Speichert NICHTS: kein localStorage, kein Verlauf, keine Lern-Zahlen. Eingaben leben nur im Arbeitsspeicher.
@@ -29,7 +29,7 @@
       titel: 'Wenn es zuhause nicht sicher ist', exit: 'Verlassen ✕', exitAria: 'Seite sofort verlassen', weiter: 'Weiter',
       akut: 'Akute Gefahr?', akutRuf: '117 anrufen', sprache: 'Sprache',
       satz: 'Ich bin da. Du entscheidest, was du tust. Meine Schuhe bringen dich nicht weg von allem, sondern zur nächsten sicheren Tür.',
-      fuss: 'Ohne Konto. Ohne Anmeldung. Diese Seiten speichern nichts und funktionieren auch ohne Internet.<br>Jackie ersetzt keine Beratung. Die Fachstellen gehen den Weg mit dir.',
+      fuss: 'Ohne Konto. Ohne Anmeldung. Diese Seiten speichern nichts und funktionieren auch ohne Internet.<br>Jacky ersetzt keine Beratung. Die Fachstellen gehen den Weg mit dir.',
       zurueck: 'Zurück zum Familienalltag',
       tabs: { sofort: 'Sofort', check: 'Bin ich betroffen?', hilfe: 'Hilfe finden', plan: 'Sicherheitsplan', tasche: 'Notfalltasche', rechte: 'Deine Rechte', kinder: 'Kinder', angehoerige: 'Für Angehörige', selbst: 'Angst, selbst zu schlagen', ausland: 'Nicht in der Schweiz?' },
       anrufliste: 'Der Anruf steht danach in deiner Anrufliste. Lösche ihn, wenn das für dich sicherer ist.',
@@ -103,7 +103,7 @@
       titel: 'Quand la maison n’est pas sûre', exit: 'Quitter ✕', exitAria: 'Quitter la page tout de suite', weiter: 'Continuer',
       akut: 'Danger immédiat ?', akutRuf: 'Appeler le 117', sprache: 'Langue',
       satz: 'Je suis là. C’est toi qui décides. Mes chaussures ne t’emmènent pas loin de tout, mais vers la prochaine porte sûre.',
-      fuss: 'Sans compte. Sans inscription. Ces pages n’enregistrent rien et fonctionnent aussi sans internet.<br>Jackie ne remplace pas une consultation. Les services spécialisés font le chemin avec toi.',
+      fuss: 'Sans compte. Sans inscription. Ces pages n’enregistrent rien et fonctionnent aussi sans internet.<br>Jacky ne remplace pas une consultation. Les services spécialisés font le chemin avec toi.',
       zurueck: 'Retour au quotidien',
       tabs: { sofort: 'Tout de suite', check: 'Suis-je concernée ?', hilfe: 'Trouver de l’aide', plan: 'Plan de sécurité', tasche: 'Sac d’urgence', rechte: 'Tes droits', kinder: 'Enfants', angehoerige: 'Pour les proches', selbst: 'Peur de frapper moi-même', ausland: 'Pas en Suisse ?' },
       anrufliste: 'L’appel reste ensuite dans ta liste d’appels. Efface-le si c’est plus sûr pour toi.',
@@ -177,7 +177,7 @@
       titel: 'Quando a casa non sei al sicuro', exit: 'Esci ✕', exitAria: 'Lascia subito la pagina', weiter: 'Avanti',
       akut: 'Pericolo immediato?', akutRuf: 'Chiama il 117', sprache: 'Lingua',
       satz: 'Sono qui. Decidi tu cosa fare. Le mie scarpe non ti portano lontano da tutto, ma alla prossima porta sicura.',
-      fuss: 'Senza account. Senza registrazione. Queste pagine non salvano niente e funzionano anche senza internet.<br>Jackie non sostituisce una consulenza. I servizi specializzati fanno la strada con te.',
+      fuss: 'Senza account. Senza registrazione. Queste pagine non salvano niente e funzionano anche senza internet.<br>Jacky non sostituisce una consulenza. I servizi specializzati fanno la strada con te.',
       zurueck: 'Torna alla vita di tutti i giorni',
       tabs: { sofort: 'Subito', check: 'Mi riguarda?', hilfe: 'Trovare aiuto', plan: 'Piano di sicurezza', tasche: 'Borsa d’emergenza', rechte: 'I tuoi diritti', kinder: 'Bambini', angehoerige: 'Per familiari e amici', selbst: 'Paura di colpire io', ausland: 'Non in Svizzera?' },
       anrufliste: 'Dopo, la chiamata resta nell’elenco delle chiamate. Cancellala, se per te è più sicuro.',
@@ -251,7 +251,7 @@
       titel: 'When home is not safe', exit: 'Exit ✕', exitAria: 'Leave this page right now', weiter: 'Continue',
       akut: 'In danger right now?', akutRuf: 'Call 117', sprache: 'Language',
       satz: 'I am here. You decide what to do. My shoes do not take you away from everything, but to the next safe door.',
-      fuss: 'No account. No sign-up. These pages save nothing and also work without internet.<br>Jackie does not replace counselling. The support services walk the way with you.',
+      fuss: 'No account. No sign-up. These pages save nothing and also work without internet.<br>Jacky does not replace counselling. The support services walk the way with you.',
       zurueck: 'Back to family life',
       tabs: { sofort: 'Right now', check: 'Is this me?', hilfe: 'Find help', plan: 'Safety plan', tasche: 'Emergency bag', rechte: 'Your rights', kinder: 'Children', angehoerige: 'For friends & family', selbst: 'Afraid I might hurt someone', ausland: 'Not in Switzerland?' },
       anrufliste: 'The call will stay in your call list. Delete it if that is safer for you.',
@@ -329,7 +329,7 @@
     try { if (window.NovaStimme) NovaStimme.stopp(); } catch (e) {}
     // Inhalt sofort weg (nicht nur verstecken), dann harmlose Seite ohne neuen Verlaufseintrag.
     var s = $('vSchutz'); if (s) s.innerHTML = '';
-    document.title = "Jackie's Advice – Rezepte";
+    document.title = "Jacky Roberts – Rezepte";
     document.body.className = 'jk-weg';
     document.body.innerHTML = '<div style="min-height:100vh;background:#fffaf2"></div>';
     try { location.replace('rezept.html'); } catch (e) { location.href = 'rezept.html'; }

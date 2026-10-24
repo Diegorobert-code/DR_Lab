@@ -1,9 +1,9 @@
-/* Jackie: Sicherheit zuerst. Die Karte liegt unter «Für dich», die Notrufnummern bleiben oben. */
+/* Jacky: Sicherheit zuerst. Die Karte liegt unter «Für dich», die Notrufnummern bleiben oben. */
 window.R6 = {
-  kuerzel: 'ja', figur: 'Jackie', bild: 'posen/winkt.jpg',
+  kuerzel: 'ja', figur: 'Jacky', bild: 'posen/winkt.jpg',
   ort: '#jkSchuhe', wo: 'vor',
   css: 'html.r6-gross .jk-notruf .nr{min-width:0}html.r6-gross .jk-notruf .nr small{font-size:12px}',
-  nameFragen: false, // Jackie fragt schon selbst nach dem Namen
+  nameFragen: false, // Jacky fragt schon selbst nach dem Namen
   nameLesen: function () { try { return JSON.parse(localStorage.getItem('ja_name') || '""'); } catch (e) { return ''; } },
   grussText: function (n, tz) { return tz + (n ? ', ' + n : '') + '. Schön, bist du da.'; },
   saetze: [
@@ -31,7 +31,7 @@ window.R6 = {
     herbst: 'Die Abende werden früher dunkel. «Sicher unterwegs» begleitet dich heim.',
     winter: 'Kalt draussen. Warm ums Herz bleibt erlaubt.'
   },
-  ueTitel: 'Jackies Tagesstich', einsammeln: 'Ins Schuhregal',
+  ueTitel: 'Jackys Tagesstich', einsammeln: 'Ins Schuhregal',
   ueberraschungen: [
     { e: '💛', art: 'Spruch', t: 'Du musst nicht stark sein. Du darfst einfach da sein.' },
     { e: '🫖', art: 'Mini-Aufgabe', t: 'Trink heute ein Glas Wasser ganz langsam. Nur für dich.' },
@@ -56,7 +56,7 @@ window.R6 = {
   feierEmoji: ['✨', '👟', '💛'],
   danke: 'Danke. Das lege ich in dein Schuhregal.',
   wocheVoll: 'Eine ganze Woche! Meine Schuhe klacken für dich.',
-  advent24: 'Jackie wünscht dir frohe Weihnachten. Du bist nicht allein. Die Nummern oben gelten auch an Festtagen.',
+  advent24: 'Jacky wünscht dir frohe Weihnachten. Du bist nicht allein. Die Nummern oben gelten auch an Festtagen.',
   fein: 'Alles bleibt auf deinem Handy. Die Notrufnummern stehen immer oben.'
 };
 
@@ -413,7 +413,7 @@ window.R6 = {
    Antippen bringt die lebendige Figur zurück; nach einer ruhigen Weile kommt das Saison-Bild wieder. */
 (function () {
   'use strict';
-  var ZIELE = ['#jkBild'], ALT = {'halloweenTag': 'Jackie mit einer lachenden Kürbislaterne an Halloween', 'advent': 'Jackie bei Kerzenlicht im Advent'};
+  var ZIELE = ['#jkBild'], ALT = {'halloweenTag': 'Jacky mit einer lachenden Kürbislaterne an Halloween', 'advent': 'Jacky bei Kerzenlicht im Advent'};
   function setze(im, s) {
     if (im.getAttribute('data-r6b')) return;
     im.setAttribute('data-r6b', '1');

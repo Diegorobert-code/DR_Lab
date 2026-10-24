@@ -485,12 +485,12 @@
   nach(spielSek, rechner); nach(rechner, jk); nach(jk, wk);
   var footer = document.querySelector('.wrap footer');
   if (footer) { footer.parentNode.insertBefore(lex, footer); footer.parentNode.insertBefore(merkt, footer); }
-  // Pause-Hinweis mit Jackie im Spieltopf
+  // Pause-Hinweis mit Jacky im Spieltopf
   var pauseBox = document.createElement('div'); pauseBox.id = 'mpPause';
   var alarm = $('topfAlarm'); if (alarm) nach(alarm, pauseBox);
   function renderPause() {
     var t = topfStand();
-    pauseBox.innerHTML = t.ein && t.diff <= -25 ? '<div class="mp-pause"><img src="../jackie/figur.jpg" alt="Jackie"><span><b>Jackie:</b> Zeit für eine Pause. Keine neuen Käufe bis nächsten Monat. Atme durch, die Regeln halten dich.</span></div>' : '';
+    pauseBox.innerHTML = t.ein && t.diff <= -25 ? '<div class="mp-pause"><img src="../jackie/figur.jpg" alt="Jacky"><span><b>Jacky:</b> Zeit für eine Pause. Keine neuen Käufe bis nächsten Monat. Atme durch, die Regeln halten dich.</span></div>' : '';
   }
 
   /* ---------- Ereignisse ---------- */

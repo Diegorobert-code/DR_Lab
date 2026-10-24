@@ -1,4 +1,4 @@
-/* diskret.js – «Diskreter Modus» für Jackie's Advice (22.10.2026)
+/* diskret.js – «Diskreter Modus» für Jacky Roberts (22.10.2026)
    - Freiwillig, in «Verlauf» einschaltbar.
    - App-Code mit 4 Ziffern beim Öffnen (und nach mehr als 1 Minute im Hintergrund).
    - Gespeichert wird nur ein Hash (SHA-256 mit Zufalls-Salz), nie der Code selbst. Alles lokal, ohne Server.
@@ -34,7 +34,7 @@
   function titel() {
     var an = !!lies(), m = d.querySelector('meta[name="apple-mobile-web-app-title"]');
     if (an) { if (echterTitel === null && d.title && d.title !== NEUTRAL) echterTitel = d.title; if (d.title !== NEUTRAL) d.title = NEUTRAL; if (m) m.setAttribute('content', NEUTRAL); }
-    else if (d.title === NEUTRAL) { d.title = echterTitel || "Jackie's Advice"; echterTitel = null; if (m) m.setAttribute('content', "Jackie's Advice"); }
+    else if (d.title === NEUTRAL) { d.title = echterTitel || "Jacky Roberts"; echterTitel = null; if (m) m.setAttribute('content', "Jacky Roberts"); }
   }
 
   /* ---------- Stil (Magazin-Look, hell und dunkel) ---------- */

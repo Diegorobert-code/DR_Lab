@@ -1,21 +1,21 @@
-/* Jackie · Inhalte für die Bibliothek («Jackies Wissen»).
+/* Jacky · Inhalte für die Bibliothek («Jackys Wissen»).
    Allgemeine Informationen, keine Diagnose und keine Rechtsberatung. Bei Gefahr immer 117, 144, 142.
    Neue Beiträge einfach unten anhängen: { id, b (Bereich), t (Titel), k (kurz), x: [Absätze], s: [Schritte] } */
 window.INHALT = {
   app: 'jackie',
-  figur: 'Jackie',
+  figur: 'Jacky',
   live: '../nova/reden.html?f=jackie',
-  gruss: 'Hallo, ich bin Jackie. Erzähl mir, was dich beschäftigt.',
+  gruss: 'Hallo, ich bin Jacky. Erzähl mir, was dich beschäftigt.',
   notfallText: 'Das klingt ernst. Bist du in Gefahr, ruf sofort an: 117 Polizei, 144 Sanität, 142 Opferhilfe. Die Dargebotene Hand hört zu: 143.',
-  sprichGrenze: 'Jackie antwortet aus ihrem Wissen in dieser App. Keine Diagnose, keine Rechtsberatung. Alles bleibt auf deinem Handy.',
+  sprichGrenze: 'Jacky antwortet aus ihrem Wissen in dieser App. Keine Diagnose, keine Rechtsberatung. Alles bleibt auf deinem Handy.',
   beispielFragen: ['Meine Kinder streiten dauernd', 'Ich verstehe einen Amtsbrief nicht', 'Ich schlafe schlecht'],
   grenzen: [
     { w: /(diagnose|medikament|tablette|fieber|krankheit|bin ich krank)/, a: 'Eine Diagnose kann ich nicht stellen und keine Medikamente empfehlen. Das gehört zur Hausärztin oder Frauenärztin. Im Notfall: 144.', weiter: true },
     { w: /(anwalt|klage|gericht|scheidung|rechtlich|sorgerecht)/, a: 'Rechtsberatung kann ich nicht geben. Die Opferhilfe (142) und Beratungsstellen helfen gratis weiter.', weiter: true }
   ],
-  titel: 'Jackies Wissen',
+  titel: 'Jackys Wissen',
   titelKurz: 'Alle Beiträge',
-  heuteLabel: 'Heute bei Jackie',
+  heuteLabel: 'Heute bei Jacky',
   anker: '#vHome .jk-unterwegs',
   lage: 'after',
   hinweis: 'Allgemeine Information, keine Diagnose und keine Rechtsberatung. Bei Gefahr: 117 Polizei, 144 Sanität, 142 Opferhilfe.',
@@ -188,7 +188,7 @@ window.INHALT = {
       x: ['Manchmal wird das Handy zur Überwachung genutzt. Ein paar Einstellungen schützen dich.', 'Prüfe, mit wem du deinen Standort teilst und wer dein Handy entsperren kann.'],
       s: ['Ändere deinen Entsperrcode und behalte ihn für dich.', 'Prüfe in den Einstellungen die Standortfreigabe.', 'Mach bei Unsicherheit eine Beratung, zum Beispiel bei der Opferhilfe.'] },
     { id: 'si-unterwegs', b: 'sicher', t: 'Sicher nach Hause', k: 'Plane den Weg und sag jemandem Bescheid.',
-      x: ['Am Abend allein unterwegs fühlen sich viele unsicher. Das ist verständlich.', 'Jackie hat dafür «Sicher unterwegs»: Scheinanruf, Begleit-Timer und deinen Standort, alles nur auf deinem Handy.'],
+      x: ['Am Abend allein unterwegs fühlen sich viele unsicher. Das ist verständlich.', 'Jacky hat dafür «Sicher unterwegs»: Scheinanruf, Begleit-Timer und deinen Standort, alles nur auf deinem Handy.'],
       s: ['Sag jemandem, wann du ungefähr ankommst.', 'Nutze beleuchtete Wege und bleib in der Nähe von Menschen.', 'Wenn du dich bedroht fühlst: 117.'] },
     { id: 'si-zeugin', b: 'sicher', t: 'Wenn du Gewalt bemerkst', k: 'Hinschauen hilft. Dich selbst schützen auch.',
       x: ['Wenn du bei Nachbarn Schreie hörst oder siehst, dass jemand bedroht wird, darfst und sollst du reagieren.', 'Bring dich nicht selbst in Gefahr. Ein Anruf bei der Polizei ist der wichtigste Schritt.'],
@@ -197,7 +197,7 @@ window.INHALT = {
   quiz: [
     { f: 'Welche Nummer wählst du in der Schweiz für die Polizei?', a: ['117', '118', '144'], r: 0, e: '117 ist die Polizei. 118 die Feuerwehr, 144 die Sanität.' },
     { f: 'Was ist die 144?', a: ['Feuerwehr', 'Sanität / Rettungsdienst', 'Auskunft'], r: 1, e: '144 ruft die Sanität, wenn jemand dringend medizinische Hilfe braucht.' },
-    { f: 'Wofür steht in Jackie die 142?', a: ['Opferhilfe bei Gewalt', 'Wetterbericht', 'Zahnarzt-Notfall'], r: 0, e: 'Die 142 verbindet dich mit der Opferhilfe. Sie berät gratis und vertraulich.' },
+    { f: 'Wofür steht in Jacky die 142?', a: ['Opferhilfe bei Gewalt', 'Wetterbericht', 'Zahnarzt-Notfall'], r: 0, e: 'Die 142 verbindet dich mit der Opferhilfe. Sie berät gratis und vertraulich.' },
     { f: 'Wer kann bei Pro Juventute gratis die 147 anrufen?', a: ['Nur Eltern', 'Kinder und Jugendliche', 'Nur Lehrpersonen'], r: 1, e: 'Die 147 ist für Kinder und Jugendliche da, rund um die Uhr.' },
     { f: 'Die Dargebotene Hand erreichst du unter …', a: ['143', '145', '112'], r: 0, e: '143: jemand hört zu, anonym und rund um die Uhr.' },
     { f: 'Was ist ein Ich-Satz?', a: ['«Du machst nie etwas!»', '«Ich bin müde und brauche Hilfe.»', '«Alle sind gegen mich.»'], r: 1, e: 'Ein Ich-Satz sagt, wie es dir geht, ohne anzuklagen.' },

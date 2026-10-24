@@ -1,4 +1,4 @@
-/* zyklus.js – «Muster pro Zyklusphase» für Jackie's Advice (22.10.2026)
+/* zyklus.js – «Muster pro Zyklusphase» für Jacky Roberts (22.10.2026)
    - Stimmung, Energie und Beschwerden täglich mit Chips antippen.
    - Zyklusbeginn selbst eintragen; die Phasen (Menstruation, Follikel, Eisprung, Luteal) werden daraus
      grob geschätzt. Ansicht: pro Phase die häufigsten Einträge und ein ruhiger Hinweis
@@ -190,7 +190,7 @@
   function muster(jetzt) {
     var html = '';
     if (!D.starts.length) {
-      html += '<p class="zy-leer">Trag unten den ersten Tag deiner letzten Periode ein. Dann ordnet Jackie deine Einträge den Phasen zu.</p>';
+      html += '<p class="zy-leer">Trag unten den ersten Tag deiner letzten Periode ein. Dann ordnet Jacky deine Einträge den Phasen zu.</p>';
     } else {
       var proPhase = { mens: [], foll: [], eis: [], lut: [] }, tage = { mens: 0, foll: 0, eis: 0, lut: 0 };
       Object.keys(D.tage).forEach(function (k) {

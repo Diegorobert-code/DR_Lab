@@ -1,8 +1,8 @@
-/* Jackie · Runde 8 (22.10.2026): Polieren und Mitmachen. Notruf 117 · 144 · 142 bleibt überall sichtbar.
+/* Jacky · Runde 8 (22.10.2026): Polieren und Mitmachen. Notruf 117 · 144 · 142 bleibt überall sichtbar.
    1. «Heute für dich»-Karte im Stil der App-Store-«Heute»-Karten: jeden Tag ein kleiner Gedanke als ruhige Geschichte in drei Blättern,
       weicher Übergang mit der View Transitions API (Vorbild: App Store «Heute», Instagram-Story-Blätter).
    2. «Atem-Knopf»: gedrückt halten = einatmen, loslassen = ausatmen, fünf Atemzüge (Vorbild: Apple Watch «Atmen», Breathwrk).
-   3. Jackie lange drücken: Kontextmenü mit Atmen, Mut-Satz, Notruf (Vorbild: iOS-Kontextmenü auf App-Symbolen).
+   3. Jacky lange drücken: Kontextmenü mit Atmen, Mut-Satz, Notruf (Vorbild: iOS-Kontextmenü auf App-Symbolen).
    4. Offline-Hinweis: «Notrufe gehen trotzdem übers Telefon» (Vorbild: Offline-Banner in Google Docs).
    5. Alle Blätter mit Raststufen und Wischen zum Schliessen (Vorbild: iOS-Sheets).
    Kein Arzt, keine Diagnose, keine Heilversprechen. Nichts geht ins Netz. */
@@ -61,7 +61,7 @@ window.R8 = {
         { bild: 'wm/maskottchen.jpg', oben: 'Wenn es zu viel wird', titel: 'Du bist nicht allein', text: 'Bei Gefahr ruf sofort an. Die Nummern sind gratis, rund um die Uhr. Opferhilfe 142 berät nach Gewalt, vertraulich.',
           html: '<button type="button" class="r7-knopf leise" data-r8a="atem">Erst einmal atmen</button>',
           auf: function (s) { s.querySelector('[data-r8a=atem]').addEventListener('click', function () { st.zu(); setTimeout(atem, 280); }); } }
-      ], { titel: 'Jackie · Heute für dich', bild: 'wm/maskottchen.jpg', held: held, zusatz: notruf(), ende: 'Fertig' });
+      ], { titel: 'Jacky · Heute für dich', bild: 'wm/maskottchen.jpg', held: held, zusatz: notruf(), ende: 'Fertig' });
     }
     var st = { zu: function () {} };
     function oeffneHeute(img) { E.wechsel(function () { if (img) img.style.viewTransitionName = ''; heuteStory(true); }); }
@@ -91,7 +91,7 @@ window.R8 = {
       k.addEventListener('click', function (e) { e.preventDefault(); });
     }
 
-    /* Jackie lange drücken → Kontextmenü */
+    /* Jacky lange drücken → Kontextmenü */
     var SAETZE = ['Du musst nicht stark sein. Du darfst einfach da sein.', 'Ein Schritt nach dem anderen. Das reicht.', 'Du bist wichtig. Auch heute.', 'Es ist nicht deine Schuld, wenn jemand dir weh tut.', 'Ruhe ist auch ein Weg.'];
     function mut() { var s = SAETZE[Math.floor(Math.random() * SAETZE.length)]; var b = document.getElementById('jkBlaseText'); if (b) b.textContent = s; R.feier(s, false); }
     var menue = [
@@ -104,11 +104,11 @@ window.R8 = {
       { e: '🚑', text: '144 Sanität', href: 'tel:144' },
       { e: '🤝', text: '142 Opferhilfe', href: 'tel:142' }
     ];
-    E.menue(document.getElementById('jkBild'), menue, 'Jackie');
+    E.menue(document.getElementById('jkBild'), menue, 'Jacky');
 
 
     /* Wächst mit dir (Finch): Mutlichter, 5 Stufen, täglicher Ausflug */
-    E.waechst({ ort: '#jkBuehne', wo: 'nach', figur: 'Jackie', bild: 'wm/maskottchen.jpg', stufenBilder: ['wm/stufe-1.jpg', 'wm/stufe-2.jpg', 'wm/stufe-3.jpg', 'wm/stufe-4.jpg', 'wm/stufe-5.jpg'], ausflugBild: 'wm/ausflug.jpg', licht: 'Mutlichter', licht1: 'Mutlicht',
+    E.waechst({ ort: '#jkBuehne', wo: 'nach', figur: 'Jacky', bild: 'wm/maskottchen.jpg', stufenBilder: ['wm/stufe-1.jpg', 'wm/stufe-2.jpg', 'wm/stufe-3.jpg', 'wm/stufe-4.jpg', 'wm/stufe-5.jpg'], ausflugBild: 'wm/ausflug.jpg', licht: 'Mutlichter', licht1: 'Mutlicht',
       stufen: ['Kerzenlicht', 'Laternenlicht', 'Morgenlicht', 'Sonnenlicht', 'Leuchtturm'],
       wie: 'Ein kleiner Schritt für dich: Atem-Knopf, SOS-Minute, «Heute für dich» ausprobiert, eine Übung bei «Neu».',
       extraHtml: notruf(),
@@ -128,16 +128,16 @@ window.R8 = {
       ] });
 
     /* SOS: ein Knopf, sofort 1 Minute ruhig (Headspace SOS). Notruf bleibt im SOS sichtbar. */
-    function sosLos() { E.sos({ figur: 'Jackie', bild: 'wm/atem.jpg', zusatz: notruf(), ende: 'Gut gemacht. Du bist hier, im Jetzt.' }); }
+    function sosLos() { E.sos({ figur: 'Jacky', bild: 'wm/atem.jpg', zusatz: notruf(), ende: 'Gut gemacht. Du bist hier, im Jetzt.' }); }
     var nr = document.querySelector('.jk-notruf');
     if (nr) {
       var sb = document.createElement('button'); sb.type = 'button'; sb.className = 'r8-sos-knopf'; sb.id = 'r8Sos';
-      sb.innerHTML = '<span aria-hidden="true">🫧</span><b>SOS: 1 Minute ruhig werden</b><small>Atmen mit Jackie, sofort</small>';
+      sb.innerHTML = '<span aria-hidden="true">🫧</span><b>SOS: 1 Minute ruhig werden</b><small>Atmen mit Jacky, sofort</small>';
       sb.addEventListener('click', sosLos);
       nr.parentNode.insertBefore(sb, nr.nextSibling);
     }
 
-    /* Magazin-Look: Begrüssung, Satz und Jackie als Hero direkt unter dem Notruf (nur Anordnung, Funktionen gleich) */
+    /* Magazin-Look: Begrüssung, Satz und Jacky als Hero direkt unter dem Notruf (nur Anordnung, Funktionen gleich) */
     (function () {
       var vh = document.getElementById('vHome'), h = document.getElementById('greet');
       if (!vh || !h || document.getElementById('jkHero')) return;

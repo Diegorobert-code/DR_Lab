@@ -1,10 +1,10 @@
-# Jackie's Advice – App Store Texte (Deutsch)
+# Jacky Roberts – App Store Texte (Deutsch)
 
 **Name** (max. 30)
 ```
-Jackie's Advice
+Jacky Roberts
 ```
-Falls vergeben: `Jackie's Advice – Familie`
+Falls vergeben: `Jacky Roberts – Familie`
 
 **Untertitel** (max. 30)
 ```
@@ -13,12 +13,12 @@ Begleiterin im Familienalltag
 
 **Werbetext** (max. 170)
 ```
-Streit zuhause, Schule, Behörden oder einfach zu viel? Erzähl Jackie, was los ist, und bekomm kleine, konkrete nächste Schritte. Warm wie eine Freundin.
+Streit zuhause, Schule, Behörden oder einfach zu viel? Erzähl Jacky, was los ist, und bekomm kleine, konkrete nächste Schritte. Warm wie eine Freundin.
 ```
 
 **Beschreibung**
 ```
-Jackie's Advice ist deine Begleiterin im Familienalltag. Erzähl, was dich gerade beschäftigt, gesprochen oder getippt, ohne Fachwörter. Jackie hilft dir, die Lage zu sortieren, und schlägt kleine, machbare nächste Schritte vor.
+Jacky Roberts ist deine Begleiterin im Familienalltag. Erzähl, was dich gerade beschäftigt, gesprochen oder getippt, ohne Fachwörter. Jacky hilft dir, die Lage zu sortieren, und schlägt kleine, machbare nächste Schritte vor.
 
 THEMEN
 Streit zuhause, Schule, Behörden, Teenager, Gesundheit und Pausen für dich. Ein paar kurze Fragen, dann ein Vorschlag, der passt.
@@ -35,7 +35,7 @@ Alle wichtigen Nummern mit einem Tipp: 144 Sanität, 117 Polizei, 112 Euronotruf
 DEINE DATEN
 Alles bleibt auf deinem iPhone. Kein Konto, keine Werbung. Du kannst alles jederzeit löschen.
 
-Jackie's Advice ersetzt keine Fachperson, keine Rechtsberatung und keine Diagnose.
+Jacky Roberts ersetzt keine Fachperson, keine Rechtsberatung und keine Diagnose.
 
 Ein Projekt von DR Lab, Zürich.
 ```
@@ -59,9 +59,9 @@ Familie,Eltern,Erziehung,Kinder,Schule,Streit,Alltag,Mama,Notfall,Beratung
 Erwartetes Ergebnis: **13+** (Apple rechnet es aus den Antworten aus).
 
 ## App-Datenschutz
-**Nein, wir erfassen keine Daten.** Was du Jackie erzählst, bleibt auf dem iPhone. Die Umwandlung von Sprache in Text macht Apple.
+**Nein, wir erfassen keine Daten.** Was du Jacky erzählst, bleibt auf dem iPhone. Die Umwandlung von Sprache in Text macht Apple.
 
 ## Hinweise für die Prüfung
 ```
-Jackie's Advice is a German-language family support app for parents in Switzerland. Users describe a situation by voice or text, choose a topic and get short, practical next steps generated locally from templates. It includes a Swiss emergency numbers page (tel: links). No account, no network requests, all data stays on the device.
+Jacky Roberts is a German-language family support app for parents in Switzerland. Users describe a situation by voice or text, choose a topic and get short, practical next steps generated locally from templates. It includes a Swiss emergency numbers page (tel: links). No account, no network requests, all data stays on the device.
 ```

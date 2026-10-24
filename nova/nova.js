@@ -28,6 +28,7 @@
   };
   var FIGUR = String(attr('data-nova-figur', FIGUREN[APP] || 'nova')).toLowerCase();
   var NAME = FIGUR.replace(/(^|[\s.])([a-zäöü])/g, function (m, a, b) { return a + b.toUpperCase(); });
+  if (FIGUR === 'jackie') NAME = 'Jacky'; // Name mit Y (Diego 24.10.), Serverschlüssel bleibt 'jackie'
   // Kinder-Apps: keine Verbindungs-Einstellungen und keine Bauwünsche sichtbar.
   var KIND = attr('data-nova-kind', '') === '1';
   var KNOPF = attr('data-nova-knopf', '1') !== '0';
