@@ -2,7 +2,7 @@
    Startbild: warme Bühne (Küche mit Fenster, sobald Tinkos Szene da ist), Rosa atmet, winkt zur Begrüssung,
    freut sich beim Antippen. Auf der Bühne der App zeigt #gfig die Aura-Posen, sobald AURA_DA gesetzt ist;
    bis dahin bleibt das bisherige Bild. */
-window.AURA_DA = false;   /* auf true, sobald aura/idle.webp, winkt.webp, freut.webp, schlaeft.webp und szene.webp im Ordner liegen */
+window.AURA_DA = true;    /* auf true, sobald aura/idle.webp, winkt.webp, freut.webp, schlaeft.webp und szene.webp im Ordner liegen */
 window.AURA_LIDER = false;
 (function () {
   "use strict";
@@ -15,7 +15,7 @@ window.AURA_LIDER = false;
     b.className = "aura-buehne aura-start";
     b.setAttribute("role", "img");
     b.setAttribute("aria-label", "Rosa, eine freundliche Grossmutter mit roter Brille, winkt dir zu");
-    if (window.AURA_DA) { b.classList.add("mit-szene"); b.style.setProperty("--aura-szene", 'url("aura/szene.webp")'); }
+    if (window.AURA_DA) { b.classList.add("mit-szene"); b.style.setProperty("--aura-szene", 'url("' + new URL("aura/szene.webp", d.baseURI).href + '")'); }
     bild.parentNode.insertBefore(b, bild);
     var f = Aura.baue(b, { ersatz: bild.getAttribute("src") });
     setTimeout(function () { f.pose("winkt", 2400); }, 700);
