@@ -1,16 +1,21 @@
 <!doctype html>
-<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<html lang="de"><head><meta charset="utf-8">
+<script src="ton-ios.js"></script>
+<script src="nda-sperre.js" data-app="Coin Maker"></script><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Coin Maker Werkstatt</title>
-<link rel="apple-touch-icon" href="icon-180.png"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="Coin Maker"><meta property="og:title" content="Coin Maker Werkstatt"><meta property="og:description" content="Ideen rein, Geld raus."><meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/coinmaker/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://diegorobert-code.github.io/DR_Lab/coinmaker/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="icon-180.png"><link rel="apple-touch-icon" href="icon-180.png"><meta name="theme-color" content="#0E382C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="Coin Maker"><meta property="og:title" content="Coin Maker Werkstatt"><meta property="og:description" content="Ideen rein, Geld raus."><meta property="og:image" content="https://diegorobert-code.github.io/DR_Lab/coinmaker/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="https://diegorobert-code.github.io/DR_Lab/coinmaker/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Nunito:wght@400;600;800&family=VT323&display=swap">
 <style>
 /* Layout: eine Werkbank-Spalte (max 560px) – Figur spricht oben, Automat in der Mitte, Kassenbuch und Regeln darunter. Bewusst eine dunkle Werkstatt-Welt. */
 :root{
-  --night:#16112a; --night-2:#211a3a; --panel:#2a2247;
+  --night:#0f1638; --night-2:#18214d; --panel:#1d2758;
   --brass:#d9a441; --gold:#f2c14e; --gold-hi:#fff0a8; --brass-dk:#6b4312;
   --petrol:#2f6e6a; --screen:#3ff0c8; --screen-dk:#0b4a42; --lever:#d6413b;
-  --ink:#f3ecff; --ink-2:#b9acd8; --line:#3b3160; --good:#7fe0a8; --warn:#ffb86b;
+  --ink:#f6f0ff; --ink-2:#b8bde0; --line:#33407a; --good:#7fe0a8; --warn:#ffb86b;
   --f-display:"Alfa Slab One",Rockwell,"Roboto Slab",Georgia,serif;
   --f-body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-screen:"VT323","Courier New",monospace;
@@ -21,7 +26,7 @@
 .wrap>*{min-width:0}
 .data-grid input[type=range]{min-width:0}
 .controls,.machine{min-width:0}
-body{background:radial-gradient(120% 60% at 50% 0%,#3a2a5e 0%,var(--night) 60%) var(--night);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;margin:0}
+body{background:radial-gradient(120% 60% at 50% 0%,#24348a 0%,var(--night) 60%) var(--night);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;margin:0}
 .wrap{max-width:560px;margin:0 auto;padding:20px 16px 48px;display:flex;flex-direction:column;gap:22px}
 h1,h2{font-family:var(--f-display);font-weight:400;letter-spacing:.01em;text-wrap:balance;margin:0}
 h1{font-size:2rem;color:var(--gold);line-height:1.1}
@@ -34,7 +39,7 @@ h2{font-size:1.15rem;color:var(--gold)}
 .tag{display:inline-block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
 
 /* Automat */
-.machine{position:relative;background:linear-gradient(90deg,#7a4f1a,#d9a441 30%,#f6d27a 55%,#8a5a1e);border:4px solid var(--brass-dk);border-radius:40px 40px 28px 28px;padding:22px 18px 18px;color:#2a1a08;box-shadow:0 18px 40px #0008}
+.machine{margin-top:18px;position:relative;background:linear-gradient(90deg,#7a4f1a,#d9a441 30%,#f6d27a 55%,#8a5a1e);border:4px solid var(--brass-dk);border-radius:40px 40px 28px 28px;padding:22px 18px 18px;color:#2a1a08;box-shadow:0 18px 40px #0008}
 .dome{position:absolute;left:50%;top:-34px;transform:translateX(-50%);width:120px;height:60px;border-radius:60px 60px 0 0;background:radial-gradient(circle at 40% 30%,#ffffffaa,#9fd8e855 50%,#9fd8e822);border:3px solid var(--brass-dk);border-bottom:none}
 .sign{font-family:var(--f-display);text-align:center;font-size:1.05rem;letter-spacing:.06em;margin:0}
 .slot{height:16px;border-radius:8px;background:#2a1a08;margin:6px auto 12px;width:62%;position:relative;overflow:visible}
@@ -119,14 +124,37 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
 @media (prefers-reduced-motion:reduce){*{animation-duration:1ms!important;transition:none!important}}
 </style>
 
-<script src="../nova/intro.js" data-art="funken" data-bild="../nova/figuren/coinmaker.jpg" data-text="Willkommen in der Werkstatt"></script>
+<script src="../nova/intro.js" data-art="funken" data-bild="posen/freude.jpg" data-text="Willkommen in der Werkstatt"></script>
 <div class="wrap">
-  <header class="hero">
-    <img src="data:image/webp;base64,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" alt="The Coin Maker, kleiner alter Münzmacher mit Goldbrille, hält eine Münze hoch" width="120" height="133">
-    <div>
-      <span class="tag">DR Lab · Prototyp</span>
-      <h1>The Coin Maker</h1>
+  <header class="werk" id="werk">
+    <div class="werk-kopf">
+      <div><span class="tag">Ideen-Werkstatt</span><h1>The Coin Maker</h1></div>
+      <span data-feedback-slot></span>
+    </div>
+    <div class="werk-buehne" id="buehne" aria-label="Die Werkstatt des Coin Maker">
+      <div class="werk-himmel" aria-hidden="true"><i class="mond"></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b>
+        <svg class="werk-daecher" viewBox="0 0 400 90" preserveAspectRatio="none"><path d="M0 90V52l26-20 26 20v-8h18V24l30-20 30 20v24h20V38l22-16 22 16v12h26V30l34-24 34 24v20h18V40l24-18 24 18v50z" fill="#0b1330"/><g fill="#f2c14e"><rect x="88" y="40" width="7" height="9" rx="1"/><rect x="104" y="40" width="7" height="9" rx="1" opacity=".55"/><rect x="232" y="42" width="7" height="9" rx="1"/><rect x="262" y="58" width="7" height="9" rx="1" opacity=".7"/><rect x="330" y="56" width="7" height="9" rx="1"/><rect x="18" y="60" width="7" height="9" rx="1" opacity=".6"/></g></svg>
+      </div>
+      <div class="werk-fenster" aria-hidden="true"></div>
+      <div class="werk-tisch" aria-hidden="true"></div>
+      <div class="cm-fig" id="cmfig" data-pose="ruhig">
+        <img src="figur.jpg" alt="The Coin Maker, ein gütiger alter Münzmacher mit Goldbrille und Uhrmacher-Lupe, hält eine D-Münze hoch" class="figur-logo" width="480" height="480">
+        <span class="cm-lupe" aria-hidden="true">🔍</span>
+        <span class="cm-req" id="cmreq" aria-hidden="true"></span>
+        <span class="cm-funken" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+      </div>
+      <div class="werk-muenzen" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><span>⚖️</span></div>
+      <div class="cm-film" id="filmBild" hidden aria-hidden="true"></div>
       <div class="bubble" id="say">Jede Idee hat ihren Wert. Ich sage dir, welchen.<small>Leg etwas in den Automaten und zieh am Hebel.</small></div>
+    </div>
+    <div class="werk-knoepfe">
+      <button class="wk" id="filmBtn" type="button">▶ Film «Zahlen mit Daten»</button>
+      <button class="wk hell" id="tippBtn" type="button" aria-label="Tipp vom Coin Maker">💡 Tipp</button>
+    </div>
+    <div class="film-leiste" id="filmLeiste" hidden>
+      <span id="filmNr">Szene 1 / 9</span>
+      <div class="film-punkte" id="filmPunkte"></div>
+      <button class="del" id="filmStopp" type="button">Stopp</button>
     </div>
   </header>
 
@@ -147,7 +175,7 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
         <button class="chip" id="t-rueck" aria-pressed="false" data-type="rueck">💬 Rückmeldung</button>
       </div>
       <div id="textBox">
-        <label for="txt" id="txtLabel">Deine Idee</label>
+        <label for="txt" id="txtLabel">Deine Idee</label><button class="del mic" id="mic" type="button" hidden>🎙 Sprechen</button>
         <textarea id="txt" placeholder="Was fehlt? Wie könnte man es lösen? Wem hilft es?">Viele Eltern vergessen das Zähneputzen-Ritual am Abend. Idee: Otti erinnert um 19 Uhr mit einem 2-Minuten-Lied in der Mondschein-App, damit Kinder gerne putzen. Test mit 10 Familien, danach Preis festlegen.</textarea>
       </div>
       <div id="dataBox" class="data-grid" hidden>
@@ -166,7 +194,7 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
       <p class="err" id="err" role="alert"></p>
     </div>
     <div class="chute">
-      <p class="sign">GELD RAUS</p>
+      <p class="sign">COINS RAUS</p>
       <div class="chute-hole" id="chute" aria-hidden="true"></div>
     </div>
   </section>
@@ -181,11 +209,11 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
 
   <section class="card" id="kunden">
     <div class="result-head"><h2>Kleinunternehmen</h2><span class="tag">Zahlen mit Ideen</span></div>
-    <p class="muted">DR Lab baut Konzept und Social Media. Bezahlt wird mit Ideen: gute Idee für die App CHF 2, Idee für DR Lab CHF 5, Standard-Ideen 0. Keine Auszahlung.</p>
+    <p class="muted">Wir bauen Konzept und Social Media. Bezahlt wird mit Ideen: gute Idee für die App CHF 2, Idee für die Werkstatt CHF 5, Standard-Ideen 0. Keine Auszahlung.</p>
     <div class="result-head"><b>Food and Flow · Flo</b><span class="big" style="font-size:1.5rem">CHF 31 / 200</span></div>
     <div class="bar" role="img" aria-label="16 Prozent erreicht"><i style="width:16%"></i></div>
     <div class="kv">
-      <span>Business-Ideen für DR Lab 3 × CHF 5</span><span>CHF 15</span>
+      <span>Business-Ideen für die Werkstatt 3 × CHF 5</span><span>CHF 15</span>
       <span>Gute Ideen für die App 8 × CHF 2</span><span>CHF 16</span>
       <span>Standard-Ideen 13 × CHF 0</span><span>CHF 0</span>
       <span>Es fehlen</span><span>CHF 169</span>
@@ -193,9 +221,58 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
     <p class="muted">Stand 14.10.2026 · Quelle: Ideen-Zähler im Thread Food and Flow</p>
   </section>
 
+  <section class="card" id="waage">
+    <div class="result-head"><h2>Ideen-Waage</h2><span class="tag">5 · 2 · 0</span></div>
+    <p class="muted">Für Kleinunternehmen, die mit Ideen bezahlen. Der Coin Maker legt jede Idee auf die Waage. Das ist ein interner Ideenwert, kein Geld und keine Auszahlung. Er schlägt vor, Diego kann umstufen.</p>
+    <label for="kuName">Name des Unternehmens (ein Kürzel reicht)</label>
+    <input id="kuName" class="feld" maxlength="40" placeholder="z. B. Mein Café" autocomplete="off">
+    <label for="wIdee">Die Idee</label>
+    <button class="del mic" id="micW" type="button" hidden>🎙 Sprechen</button>
+    <textarea id="wIdee" class="feld" placeholder="Was soll die App können? Wem hilft es?"></textarea>
+    <div class="fragen">
+      <label class="consent"><input type="checkbox" id="wDr"> Hilft das auch anderen Apps (z. B. Sprache, Sense Engine, Nova)?</label>
+      <label class="consent"><input type="checkbox" id="wApp"> Macht es die App dieses Unternehmens wirklich besser?</label>
+      <label class="consent"><input type="checkbox" id="wStd"> Hat das fast jede App schon, oder ist es doppelt?</label>
+    </div>
+    <div class="waage-reihe">
+      <button class="pull klein" id="wiegen" type="button">Auf die Waage</button>
+      <div class="waage" aria-hidden="true"><span class="wm g" data-w="5">5</span><span class="wm t" data-w="2">2</span><span class="wm x" data-w="0">0</span></div>
+    </div>
+    <p id="wErg" class="werg" aria-live="polite"></p>
+    <div class="result-head"><b id="kuTitel">Mein Unternehmen</b><span class="big sm" id="kuStand">CHF 0 / 200</span></div>
+    <div class="bar"><i id="kuBar" style="width:0%"></i></div>
+    <p class="muted" id="kuHinweis">Ziel: CHF 200 Ideenwert, das sind etwa 6 Gespräche. Keine Garantie.</p>
+    <ul class="ledger" id="kuListe"></ul>
+  </section>
+
+  <section class="card" id="teilung">
+    <div class="result-head"><h2>Wenn die App läuft</h2><span class="tag">80 · 20 · Entwurf</span></div>
+    <p class="muted">Nach der Ideenphase bleiben 80 % vom Netto-Umsatz beim Unternehmen. 20 % gehen an die Werkstatt, weil sie baut, betreibt und Werbung macht. Das ist ein Entwurf, der Vertrag wird vorher von einer Fachperson geprüft.</p>
+    <label for="umsatz">Beispiel: Einnahmen pro Monat</label>
+    <div class="regler"><input id="umsatz" type="range" min="0" max="5000" step="50" value="1000"><output id="oUmsatz">CHF 1'000</output></div>
+    <div class="seg" role="group" aria-label="Store-Gebühr">
+      <button type="button" class="segb" data-fee="15" aria-pressed="true">Store 15 %</button>
+      <button type="button" class="segb" data-fee="30" aria-pressed="false">Store 30 %</button>
+    </div>
+    <div class="teil-reihe">
+      <div class="kuchen" id="kuchen" role="img" aria-label="Kuchen: 80 Prozent Unternehmen, 20 Prozent Werkstatt"><span>80 · 20</span></div>
+      <div class="kv" id="teilKv"></div>
+    </div>
+    <p class="muted">Netto = Einnahmen minus Store-Gebühr minus MWST (8,1 %). Nur eine Beispielrechnung, keine Umsatzgarantie.</p>
+  </section>
+
+  <section class="card" id="kosten">
+    <div class="result-head"><h2>Was kostet eine App?</h2><span class="tag">Schätzung Jahr 1</span></div>
+    <p class="muted">Am Beispiel Food and Flow. Die Kreation (Konzept und Auftritt, CHF 200) wird mit Ideen bezahlt. Der Rest sind Kosten, die die Werkstatt trägt.</p>
+    <label for="werbung">Werbung pro Monat</label>
+    <div class="regler"><input id="werbung" type="range" min="0" max="240" step="20" value="240"><output id="oWerbung">CHF 240</output></div>
+    <div class="kv" id="kostenKv"></div>
+    <p class="muted">Ohne Markenanmeldung, Fotos und Druck. Anwalt nur nach Diegos Go und mit Offerte vorher.</p>
+  </section>
+
   <section class="card" id="laden">
     <div class="result-head"><h2>Münzladen</h2><span class="tag">Ideen gegen Ding</span></div>
-    <p class="muted" id="shopMsg">Coins einlösen, nur bei DR Lab. Coins kann man nicht kaufen und nicht in Franken wechseln.</p>
+    <p class="muted" id="shopMsg">Coins einlösen, nur in der Werkstatt. Coins kann man nicht kaufen und nicht in Franken wechseln.</p>
     <div class="shop" id="shop"></div>
   </section>
 
@@ -209,6 +286,20 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
     <ul class="ledger" id="ledger"></ul>
   </section>
 
+  <section class="card" id="kursWoche">
+    <div class="result-head"><h2>Wechselkurs diese Woche</h2><span class="tag" id="kursHeute">heute</span></div>
+    <div class="kurs-bars" id="kursBars" role="img" aria-label="Wechselkurs der letzten 7 Tage"></div>
+    <p class="muted">Gesuchte Themen steigen, volle Themen sinken. Jede Änderung hat einen Grund. Coins bleiben Punkte ohne Geldwert.</p>
+  </section>
+
+  <section class="card" id="merkt">
+    <div class="result-head"><h2>Was der Coin Maker sich merkt</h2><span class="tag">nur auf diesem Gerät</span></div>
+    <div class="kv" id="merkKv"></div>
+    <p class="muted" id="merkSatz"></p>
+    <label class="consent"><input type="checkbox" id="merkTeilen"> Ich bin einverstanden, dass einmal pro Tag nur diese Zahlen an den App-Server gehen, damit der Coin Maker besser wird. Nie Ideen-Texte, nie Stimme, nie Bilder. Nur wenn ein Server eingerichtet ist.</label>
+    <button class="del" id="merkWeg" type="button">Gemerkte Zahlen löschen</button>
+  </section>
+
   <details open>
     <summary>So rechnet der Coin Maker</summary>
     <ul>
@@ -216,6 +307,8 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
       <li>Qualität 0,5 bis 2,0 aus vier Punkten je 0–3: Klarheit, Neuheit, Umsetzbarkeit, Vollständigkeit.</li>
       <li>Wechselkurs zwischen 0,80 und 1,50, ändert einmal pro Tag, der Grund steht auf dem Bildschirm.</li>
       <li>Coins = Grundwert × Qualität × Kurs, gerundet.</li>
+      <li>Nicht einverstanden? Unter der Bewertung gibt es «Einspruch». Mit Server gibt es eine zweite Meinung mit Begründung.</li>
+      <li>Vorgemerkt, noch nicht gebaut: Ideen-Börse im KI-Verse für einen natürlichen Kurs. Coins bleiben ohne Geldwert.</li>
     </ul>
   </details>
   <details>
@@ -225,20 +318,23 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
       <li>Gleiche oder fast gleiche Beiträge geben 0 Coins.</li>
       <li>Coins kann man nicht kaufen, verkaufen oder weitergeben. Sie haben keinen Geldwert.</li>
       <li>Jeder Beitrag braucht deine Einwilligung und ist jederzeit löschbar.</li>
-      <li>Deine Idee bleibt deine Idee. DR Lab setzt sie nur um, wenn du extra zustimmst.</li>
-      <li>Dieser Prototyp speichert nur in diesem Browser. Nichts geht an einen Server.</li>
+      <li>Deine Idee bleibt deine Idee. Wir setzen sie nur um, wenn du extra zustimmst.</li>
+      <li>Alles bleibt in diesem Browser. Ohne Server geht nichts weg.</li>
+      <li>Mit App-Server: Die zweite Meinung schickt den Text nur, wenn du den Knopf drückst. Daten-Beiträge gehen nie an den Server.</li>
+      <li>Lernzahlen gehen nur mit Häkchen an den Server, einmal pro Tag. Nie Ideen-Texte, nie Stimme, nie Bilder.</li>
+      <li>Deine Daten sollen sicher in der Schweiz liegen, verschlüsselt. Das «sollen» bleibt, bis es technisch bestätigt ist.</li>
       <li>Ab 16 Jahren.</li>
     </ul>
   </details>
-  <p class="foot">DR Lab · The Coin Maker · Prototyp v1.4 · 14.10.2026</p>
+  <p class="foot">The Coin Maker · Prototyp v2.0 · 19.10.2026</p>
 </div>
 
 <script>
 (function(){
   var KEY='coinmaker.v1', BASE={idee:10,daten:5,rueck:3}, NAMES={idee:'Idee',daten:'Daten',rueck:'Rückmeldung'};
   var DAY_COINS=200, DAY_IDEAS=5;
-  NAMES.laden='Münzladen';
-  var SHOP=[['kost','Figuren-Kostüm (Otti, Nova oder Coin Maker)',50],['gesch','Neue Otti-Geschichte',80],['stimme','Stimme bei der nächsten App-Idee',100],['prem','1 Monat Premium in einer DR-Lab-App',150],['comic','Gedruckter Otti-Comic (Versand)',400],['nova','Rabatt Vorbestellung Nova-Gerät',1000]];
+  NAMES.laden='Münzladen';NAMES.bonus='Bonus';
+  var SHOP=[['kost','Figuren-Kostüm (Otti, Nova oder Coin Maker)',50],['gesch','Neue Otti-Geschichte',80],['stimme','Stimme bei der nächsten App-Idee',100],['prem','1 Monat Premium in einer Partner-App',150],['comic','Gedruckter Otti-Comic (Versand)',400],['nova','Rabatt Vorbestellung Nova-Gerät',1000]];
   var type='idee', busy=false;
   var $=function(id){return document.getElementById(id)};
   function today(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
@@ -286,7 +382,7 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
 
   function setType(t){type=t;['idee','daten','rueck'].forEach(function(k){$('t-'+k).setAttribute('aria-pressed',String(k===t))});
     $('dataBox').hidden=t!=='daten';$('textBox').hidden=t==='daten';
-    $('txtLabel').textContent=t==='idee'?'Deine Idee':'Deine Rückmeldung zu einer DR-Lab-App';
+    $('txtLabel').textContent=t==='idee'?'Deine Idee':'Deine Rückmeldung zu einer App';
     $('txt').placeholder=t==='idee'?'Was fehlt? Wie könnte man es lösen? Wem hilft es?':'Welche App? Was soll besser werden?';
     if(t!=='idee'&&$('txt').value.indexOf('Zähneputzen')>=0)$('txt').value='';
     $('consentLabel').textContent=t==='daten'?'Ich bin einverstanden, dass diese Gesundheitsangaben für die Bewertung genutzt werden. Nur auf diesem Gerät, jederzeit löschbar.':'Ich bin einverstanden, dass der Coin Maker diesen Beitrag bewertet. Er bleibt meiner und nur auf diesem Gerät.';
@@ -294,7 +390,7 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
   ['idee','daten','rueck'].forEach(function(k){$('t-'+k).addEventListener('click',function(){setType(k)})});
   [['d-mood','o-mood'],['d-sleep','o-sleep'],['d-move','o-move']].forEach(function(p){$(p[0]).addEventListener('input',function(){$(p[1]).textContent=$(p[0]).value})});
 
-  function todayItems(){return state.items.filter(function(i){return i.day===today()&&!i.ex&&i.type!=='laden'})}
+  function todayItems(){return state.items.filter(function(i){return i.day===today()&&!i.ex&&i.type!=='laden'&&i.type!=='bonus'})}
   function balance(){var t=0;state.items.forEach(function(i){t+=i.coins});return t}
   function render(){
     var total=balance();
@@ -306,7 +402,7 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
       var li=document.createElement('li');
       var t=document.createElement('div');t.className='t';
       var p=document.createElement('p');p.textContent=i.text;
-      var s=document.createElement('small');s.textContent=i.day.split('-').reverse().join('.')+' · '+NAMES[i.type]+' · '+(i.type==='laden'?'eingelöst':'Qualität '+i.q.toFixed(2)+' · Kurs '+i.rate.toFixed(2));
+      var s=document.createElement('small');s.textContent=i.day.split('-').reverse().join('.')+' · '+NAMES[i.type]+' · '+(i.type==='laden'?'eingelöst':i.type==='bonus'?'geschenkt':'Qualität '+i.q.toFixed(2)+' · Kurs '+i.rate.toFixed(2));
       if(i.ex){var e=document.createElement('span');e.className='ex';e.textContent='Beispiel';s.appendChild(e)}
       t.appendChild(p);t.appendChild(s);
       var c=document.createElement('span');c.className='c'+(i.coins<0?' neg':'');c.textContent=(i.coins<0?'':'+')+i.coins;
@@ -324,7 +420,7 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
       btn.addEventListener('click',function(){if(balance()<it[2])return;
         state.items.push({id:String(Date.now()),day:today(),type:'laden',text:it[1],q:0,rate:0,coins:-it[2]});save();render();
         $('shopMsg').textContent='Eingelöst: '+it[1]+'. Im Prototyp nur angezeigt, nichts wird verschickt.';
-        $('say').firstChild.textContent='Gut gewählt. Eine Idee ist zu etwas geworden.';});
+        $('say').firstChild.textContent='Gut gewählt. Eine Idee ist zu etwas geworden.';if(window.CMPlus)CMPlus.eingeloest(it);});
       box.appendChild(b);box.appendChild(p);box.appendChild(btn);sh.appendChild(box);
     });
   }
@@ -363,6 +459,7 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
     var note=sc.dup?'Fast gleich wie ein früherer Beitrag, darum 0 Coins.':'Geprüft mit der Lupe.';
     if(tc+coins>DAY_COINS){coins=Math.max(0,DAY_COINS-tc);note='Tagesdeckel 200 Coins erreicht.'}
     busy=true;$('pull').disabled=true;
+    if(window.CMPlus)CMPlus.hebelStart();
     $('bulb').classList.remove('fly');void $('bulb').offsetWidth;$('bulb').classList.add('fly');
     $('lever').classList.add('down');
     setTimeout(function(){$('screen').classList.add('flash');$('rateBig').textContent=BASE[type]+' × '+q.toFixed(2)+' × '+R.rate.toFixed(2);},500);
@@ -372,6 +469,7 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
       state.items.push({id:String(Date.now()),day:today(),type:type,text:text,q:q,rate:R.rate,coins:coins});save();render();
       $('say').firstChild.textContent=coins>=15?'Das ist eine schöne Münze. Gut gemacht.':coins>0?'Ehrlicher Wert. Mit mehr Details wird sie schwerer.':'Diese kenne ich schon. Bring mir etwas Neues.';
       $('consent').checked=false;
+      if(window.CMPlus)CMPlus.bewertet({type:type,q:q,coins:coins,text:text,dup:sc.dup});
     },1100);
     setTimeout(function(){$('lever').classList.remove('down');$('screen').classList.remove('flash');busy=false;$('pull').disabled=false;
       $('rateBig').textContent='1 💡 = '+Math.round(10*R.rate)+' 🪙';},2600);
@@ -381,9 +479,33 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
   var s0=scoreText($('txt').value),sum0=0;s0.crit.forEach(function(k){sum0+=k[1]});var q0=Math.round((0.5+sum0/12*1.5)*100)/100;
   showResult('idee',s0.crit,q0,Math.round(10*q0*R.rate),'Beispiel: so würde die Idee oben bewertet');
   $('resType').textContent='Beispiel';
+  // Für irgendwann.js: Coins als Belohnung (z. B. Sonntags-Rückblick), zählen nicht zum Tagesdeckel
+  window.CMKasse={bonus:function(text,coins){coins=Math.max(0,Math.min(50,Math.round(+coins||0)));if(!coins)return false;state.items.push({id:String(Date.now()),day:today(),type:'bonus',text:String(text||'Bonus').slice(0,140),q:0,rate:0,coins:coins});save();render();return true}};
   render();
 })();
 </script>
+<link rel="stylesheet" href="../nova/puppe.css">
+<script src="../nova/puppe.js"></script>
 <script src="../nova/seelen.js" defer></script>
-<script src="../nova/buehne.js" data-figur="coin maker" data-name="Coin Maker" data-bild="../nova/figuren/coinmaker.jpg" data-satz="Bring mir deine Idee, ich präge eine App daraus." defer></script>
-<script src="../nova/nova.js" data-nova-app="Coin Maker" data-nova-bild="icon-192.png" defer></script>
+<script src="posen.js" defer></script>
+<script src="werkstatt.js" defer></script>
+<script src="glanz.js" defer></script>
+<script src="trickfilm.js" defer></script>
+<script src="ziele.js" defer></script>
+<script src="feedback.js" data-app="Coin Maker" defer></script>
+<script src="../nova/nova.js" data-nova-app="Coin Maker" data-nova-bild="figur-klein.jpg" defer></script>
+<script src="runde6.js" defer></script>
+<script src="runde7.js" defer></script>
+<script src="runde8.js" defer></script>
+<script src="irgendwann.js" defer></script>
+<link rel="stylesheet" href="markt.css"><link rel="stylesheet" href="feinschliff.css">
+<script src="feinschliff.js" defer></script>
+<script src="lernen.js" data-app="Coin Maker" data-figur="coinmaker" data-name="Coin Maker" data-kind="0" data-unten="16" defer></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="design.css">
+<link rel="stylesheet" href="schoen.css">
+<script src="schoen.js" defer></script><script src="inhalt/daten.js" defer></script>
+<script src="inhalt/bibliothek.js" defer></script>
+<script src="inhalt/installieren.js" defer></script>
+
+<link rel="stylesheet" href="inhalt/wischen.css"><script src="inhalt/wischen.js" defer></script><script src="inhalt/wischen-app.js" defer></script>
