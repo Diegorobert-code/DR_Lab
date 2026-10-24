@@ -101,12 +101,36 @@ ul.ueb{padding-left:18px;margin:6px 0}
 .handgelenk div{border:1px solid var(--linie);border-radius:14px;padding:10px 6px;background:rgba(255,255,255,.04)}
 .handgelenk b{display:block;color:var(--gold2)}
 
+/* Sofort-Ruhe */
+.kachel.breit{grid-column:1/-1;min-height:0;display:flex;gap:12px;align-items:center;
+  background:linear-gradient(135deg,rgba(111,168,255,.28),rgba(180,140,255,.22));border-color:rgba(140,190,255,.45)}
+.kachel.breit .ic{margin:0;font-size:1.9rem}
+.held{background:linear-gradient(160deg,rgba(111,168,255,.30),rgba(30,38,92,.75));border-color:rgba(140,190,255,.5)}
+.held .marke{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#10224a;background:var(--wasser);border-radius:999px;padding:3px 10px;margin-bottom:8px}
+.gruppe{margin:20px 0 6px;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--violett2)}
+details.hilfe{background:var(--karte);border:1px solid var(--linie);border-radius:18px;margin:10px 0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+details.hilfe summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;gap:12px;align-items:center}
+details.hilfe summary::-webkit-details-marker{display:none}
+details.hilfe summary .ic{font-size:1.4rem;width:1.6em;text-align:center;flex:none}
+details.hilfe summary small{display:block;color:var(--leise);font-size:.82rem}
+details.hilfe summary .zeit{margin-left:auto;font-size:.8rem;color:var(--gold2);white-space:nowrap}
+details.hilfe[open] summary{border-bottom:1px solid var(--linie)}
+.hilfe .innen,.held .innen{padding:12px 16px 16px}
+.hilfe ol,.held ol{margin:6px 0;padding-left:20px}
+.hilfe ol li,.held ol li{margin:3px 0}
+.uhr{display:flex;align-items:center;gap:12px;margin-top:12px}
+.uhr .ring{width:54px;height:54px;flex:none;border-radius:50%;display:grid;place-items:center;font-weight:700;color:var(--gold2);
+  background:conic-gradient(var(--wasser) calc(var(--p,0)*1%),rgba(255,255,255,.1) 0)}
+.uhr .ring span{width:44px;height:44px;border-radius:50%;background:var(--nacht2);display:grid;place-items:center;font-size:.9rem}
+.uhr .schritt{color:var(--violett2);font-size:.95rem}
+.vorsicht{font-size:.82rem;color:var(--leise);margin-top:8px}
+
 .banner{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:20px;margin:4px 0 14px;box-shadow:0 10px 40px rgba(120,90,255,.25);animation:schweben 7s ease-in-out infinite}
 .hinweis{font-size:.82rem;color:var(--leise);border-top:1px solid var(--linie);margin-top:22px;padding-top:12px}
 
 nav{position:fixed;z-index:5;left:0;right:0;bottom:0;padding:8px 10px calc(8px + env(safe-area-inset-bottom));
   background:rgba(13,18,51,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--linie)}
-nav .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
+nav .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr);gap:2px}
 nav button{appearance:none;border:0;background:none;color:var(--leise);font:inherit;font-size:.72rem;padding:6px 2px;border-radius:12px;cursor:pointer}
 nav button span{display:block;font-size:1.3rem;line-height:1.2}
 nav button.an{color:var(--gold2);background:rgba(242,196,107,.1)}
@@ -138,6 +162,7 @@ nav button.an{color:var(--gold2);background:rgba(242,196,107,.1)}
   <p class="leise">Dein Körper und der Himmel erzählen die gleiche Geschichte. Aura und Nova begleiten dich.</p>
   <div class="entwickelt">✦ <span>Körperkosmos, entwickelt von <b>Corinna und Diego</b></span></div>
   <div class="kacheln">
+    <button class="kachel breit" data-geh="ruhe"><span class="ic">💧</span><span>Sofort-Ruhe<small>Wenn alles zu viel ist: in einer Minute ruhiger</small></span></button>
     <button class="kachel" data-geh="geburt"><span class="ic">✶</span>Dein Geburtsbild<small>Zeichen, Körperzone, Übungen</small></button>
     <button class="kachel" data-geh="elemente"><span class="ic">◎</span>Fünf Elemente<small>Was gerade Saison hat</small></button>
     <button class="kachel" data-geh="augen"><span class="ic">◐</span>Augen zu<small>Spüren mit Aura</small></button>
@@ -192,6 +217,16 @@ nav button.an{color:var(--gold2);background:rgba(242,196,107,.1)}
   <p class="klein leise">Die ausführliche Übung für Behandlerinnen und Behandler: <a class="gold" href="https://claude.ai/artifact/4waFUFz6sBmfVZfff7qaAE" target="_blank" rel="noopener">Augen zu, mit Notiz</a>.</p>
 </section>
 
+<!-- SOFORT-RUHE -->
+<section class="seite" id="s-ruhe">
+  <h2>Sofort-Ruhe</h2>
+  <p class="leise">Kleine Griffe für den Moment, in dem alles zu viel ist. Eins reicht. Nimm, was gerade geht.</p>
+  <div class="karte held" id="ruhe-held"></div>
+  <div class="reihe" style="justify-content:center;margin:6px 0 4px"><button class="knopf zart" id="ruhe-zufall">✦ Gib mir eins</button></div>
+  <div id="ruhe-liste"></div>
+  <p class="klein leise" style="margin-top:14px">Kälte nur kurz und angenehm kühl, nie schmerzhaft. Bei Herzproblemen, Raynaud oder offener Haut keine Kälte ins Gesicht oder auf die Haut. Diese Griffe beruhigen, sie ersetzen keine Behandlung. Wenn es nicht besser wird: Die Dargebotene Hand 143, Notfall 144.</p>
+</section>
+
 <!-- ATEM -->
 <section class="seite" id="s-atem">
   <h2>Atem und Puls</h2>
@@ -227,6 +262,7 @@ nav button.an{color:var(--gold2);background:rgba(242,196,107,.1)}
 
 <nav><div class="in">
   <button data-geh="start" class="an"><span>✦</span>Start</button>
+  <button data-geh="ruhe"><span>💧</span>Ruhe</button>
   <button data-geh="geburt"><span>✶</span>Geburt</button>
   <button data-geh="elemente"><span>◎</span>Elemente</button>
   <button data-geh="augen"><span>◐</span>Augen zu</button>
@@ -342,7 +378,7 @@ zeigEl(saison);
 /* Geführte Übungen */
 function chips(sel){let min=+$(sel+' .chip.an').dataset.min;$$(sel+' .chip').forEach(c=>c.onclick=()=>{$$(sel+' .chip').forEach(x=>x.classList.remove('an'));c.classList.add('an');min=+c.dataset.min;});return()=>min;}
 const augenMin=chips('#augendauer'), atemMin=chips('#atemdauer');
-function stopAlles(){ if(laufend){clearInterval(laufend.iv);laufend.knopf.textContent='Starten';laufend.kreis.classList.remove('ein');laufend.wort.textContent='Bereit?';laufend.balken.style.width='0';laufend=null;} if(window.speechSynthesis)speechSynthesis.cancel(); }
+function stopAlles(){ ruheStopp(); if(laufend){clearInterval(laufend.iv);laufend.knopf.textContent='Starten';laufend.kreis.classList.remove('ein');laufend.wort.textContent='Bereit?';laufend.balken.style.width='0';laufend=null;} if(window.speechSynthesis)speechSynthesis.cancel(); }
 
 const AUGEN=['Setz dich bequem hin. Schliess die Augen.','Spüre deine Füsse am Boden.','Spüre, wo dein Körper aufliegt.','Wandere mit der Aufmerksamkeit zum Bauch. Wie bewegt sich der Atem?','Spüre deine Hände. Warm oder kühl?','Wo in deinem Körper ist es gerade am ruhigsten?','Bleib dort ein paar Atemzüge.','Öffne langsam die Augen. Was hast du gespürt?'];
 $('#augenstart').onclick=()=>{ if(laufend){stopAlles();return;}
@@ -362,6 +398,82 @@ $('#atemstart').onclick=()=>{ if(laufend){stopAlles();return;}
     laufend.balken.style.width=(t/ms*100)+'%';};
   tick(); laufend.iv=setInterval(tick,200);
 };
+
+/* Sofort-Ruhe: schnelle Griffe fürs Nervensystem. Jeder Griff hat Schritte, die Aura während der Uhr ansagt. */
+const RUHE=[
+  {id:'handgelenk',g:'Kälte',ic:'💧',t:'Kaltes Wasser über die Handgelenke',k:'Wasserhahn auf, Handgelenke drunter',s:60,
+   schritte:['Dreh das kalte Wasser auf, angenehm kühl.','Halte beide Handgelenke darunter, die Innenseite nach oben.','Atme langsam aus, länger als ein.','Spür, wie die Kühle in die Arme steigt.','Zum Schluss: nasse Hände kurz in den Nacken oder aufs Gesicht.']},
+  {id:'waschlappen',g:'Kälte',ic:'🧊',t:'Kalter Waschlappen aufs Gesicht',k:'Stirn, Augen, Wangen kühlen',s:30,
+   schritte:['Mach einen Waschlappen kalt nass und drück ihn aus.','Leg ihn auf Stirn, Augen und Wangen.','Atme ruhig durch die Nase aus.','Lass ihn liegen, bis er warm wird.']},
+  {id:'eis',g:'Kälte',ic:'❄️',t:'Eiswürfel in der Hand',k:'Kälte holt dich ins Jetzt',s:30,
+   schritte:['Nimm einen Eiswürfel in die Hand.','Spür die Kälte, das Nasse, das Schmelzen.','Wechsel die Hand, wenn es zu kalt wird.','Leg ihn weg, sobald es unangenehm wird.']},
+  {id:'schluck',g:'Kälte',ic:'🥛',t:'Kaltes Wasser in kleinen Schlucken',k:'Langsam trinken, jeden Schluck spüren',s:45,
+   schritte:['Nimm ein Glas kaltes Wasser.','Trink einen kleinen Schluck. Spür ihn im Hals.','Atme aus. Dann der nächste Schluck.','Zehn kleine Schlucke, ganz langsam.']},
+
+  {id:'seufzer',g:'Atem und Stimme',ic:'🌬️',t:'Doppel-Einatmen',k:'Zweimal ein durch die Nase, lang aus durch den Mund',s:60,
+   schritte:['Atme durch die Nase ein.','Oben drauf noch ein kleines zweites Einatmen.','Jetzt lang und langsam durch den Mund aus, wie ein Seufzer.','Noch einmal: zweimal ein, lang aus.','Drei bis fünf Mal reichen.']},
+  {id:'lang-aus',g:'Atem und Stimme',ic:'〰️',t:'Lange Ausatmung',k:'Vier ein, acht aus',s:60,
+   schritte:['Atme vier Zählzeiten durch die Nase ein.','Atme acht Zählzeiten aus, wie durch einen Strohhalm.','Wieder vier ein.','Und acht aus. Die Ausatmung beruhigt.']},
+  {id:'summen',g:'Atem und Stimme',ic:'🎵',t:'Summen',k:'Mmm mit geschlossenem Mund, lang ausatmen',s:60,
+   schritte:['Mund zu, Zähne locker auseinander.','Summ ein langes Mmm, so tief es angenehm ist.','Spür das Vibrieren in Brust, Hals und Gesicht.','Einatmen, wieder summen.']},
+  {id:'voo',g:'Atem und Stimme',ic:'🐘',t:'Tiefes Vuuu',k:'Ein tiefer Ton aus dem Bauch, wie ein Nebelhorn',s:60,
+   schritte:['Atme ein.','Lass beim Ausatmen ein tiefes Vuuu klingen, aus dem Bauch.','So tief und lang, wie es geht, ohne zu drücken.','Pause. Spür nach. Dann noch einmal.']},
+  {id:'gaehnen',g:'Atem und Stimme',ic:'😮‍💨',t:'Gähnen und Seufzen',k:'Absichtlich gähnen, bis ein echtes kommt',s:30,
+   schritte:['Öffne den Mund weit, wie zum Gähnen.','Streck dich dabei, wenn du magst.','Lass einen hörbaren Seufzer raus.','Meist kommt nach dem dritten ein echtes Gähnen.']},
+
+  {id:'schuetteln',g:'Körper',ic:'🫨',t:'Ausschütteln',k:'Hände, Arme, Beine, ganzer Körper',s:60,
+   schritte:['Schüttel die Hände aus, ganz locker.','Dazu die Arme und die Schultern.','Jetzt federn die Knie mit, der ganze Körper schüttelt.','Langsamer werden.','Stehen bleiben und nachspüren.']},
+  {id:'wand',g:'Körper',ic:'🧱',t:'Wand wegdrücken',k:'Zehn Sekunden mit aller Kraft, dann loslassen',s:45,
+   schritte:['Stell dich vor eine Wand, Hände auf Schulterhöhe.','Drück, als wolltest du die Wand wegschieben. Zehn Sekunden.','Loslassen. Arme hängen lassen, spüren.','Noch einmal drücken.','Und los. Spür, wie Spannung abfliesst.']},
+  {id:'fuesse',g:'Körper',ic:'🦶',t:'Füsse in den Boden',k:'Boden spüren, Gewicht abgeben',s:45,
+   schritte:['Stell beide Füsse flach auf den Boden.','Drück die Fersen in den Boden, dann die Ballen.','Spür, wie der Boden dich trägt.','Lass das Gewicht nach unten sinken.']},
+  {id:'umarmung',g:'Körper',ic:'🦋',t:'Schmetterlings-Umarmung',k:'Arme kreuzen, abwechselnd klopfen',s:60,
+   schritte:['Kreuz die Arme vor der Brust, Hände unter den Schlüsselbeinen.','Klopf abwechselnd links, rechts, ganz langsam.','Atme ruhig dazu.','Werde noch langsamer.']},
+  {id:'herz',g:'Körper',ic:'🤲',t:'Hand aufs Herz, Hand auf den Bauch',k:'Warme Hände, ruhiger Atem',s:60,
+   schritte:['Leg eine Hand aufs Herz, eine auf den Bauch.','Spür die Wärme deiner Hände.','Atme so, dass die untere Hand sich hebt.','Sag dir innerlich: Ich bin da.']},
+  {id:'kiefer',g:'Körper',ic:'😌',t:'Kiefer loslassen',k:'Zunge an den Gaumen, Unterkiefer hängen lassen',s:45,
+   schritte:['Leg die Zungenspitze hinter die oberen Zähne.','Lass den Unterkiefer locker hängen, Lippen dürfen zu sein.','Streich mit den Fingern sanft vom Ohr zum Kinn.','Spür, wie das Gesicht weich wird.']},
+  {id:'stirn',g:'Körper',ic:'✋',t:'Stirnpunkte halten',k:'Aus der Kinesiologie: Hand auf die Stirn',s:60,
+   schritte:['Leg die Fingerspitzen sanft auf die zwei Höcker der Stirn, über den Augenbrauen.','Halte ganz leicht, ohne Druck.','Denk an das, was dich gerade stresst.','Bleib, bis es ruhiger wird oder ein tiefer Atemzug kommt.']},
+  {id:'ohren',g:'Körper',ic:'👂',t:'Ohren ausstreichen',k:'Ohrmuscheln von oben nach unten ausrollen',s:30,
+   schritte:['Nimm die Ohrränder zwischen Daumen und Zeigefinger.','Roll sie sanft nach aussen, von oben bis zum Ohrläppchen.','Zieh die Ohrläppchen leicht nach unten.','Noch zwei Mal.']},
+
+  {id:'seitenblick',g:'Sinne',ic:'👀',t:'Seitenblick',k:'Kopf still, nur die Augen schauen zur Seite',s:60,
+   schritte:['Verschränk die Hände hinter dem Kopf, Kopf bleibt gerade.','Schau nur mit den Augen nach rechts. Bleib dort.','Warte, bis ein Seufzer, Schlucken oder Gähnen kommt.','Jetzt die Augen nach links. Wieder warten.']},
+  {id:'umschauen',g:'Sinne',ic:'🔭',t:'Langsam umschauen',k:'Den Raum mit Kopf und Augen abtasten',s:45,
+   schritte:['Dreh langsam den Kopf und schau dich im Raum um.','Lass den Blick bei etwas Angenehmem verweilen.','Schau auch nach hinten, über die Schulter.','Spür: Hier bin ich, hier ist es sicher genug.']},
+  {id:'sinne',g:'Sinne',ic:'🖐️',t:'5, 4, 3, 2, 1',k:'Fünf Dinge sehen, vier hören, drei spüren',s:90,
+   schritte:['Nenn fünf Dinge, die du siehst.','Vier Dinge, die du hörst.','Drei Dinge, die du spürst.','Zwei Dinge, die du riechst.','Ein Ding, das du schmeckst.']},
+  {id:'duft',g:'Sinne',ic:'🌿',t:'An etwas riechen',k:'Pfefferminz, Zitrone, Lavendel, Kaffee',s:30,
+   schritte:['Nimm etwas mit Duft: Minze, Zitrone, Kaffee, eine Hautcreme.','Riech langsam daran.','Atme lang aus.','Noch einmal riechen und nachspüren.']}
+];
+const ruheEsc=esc;
+function ruheInnen(r){return `<ol>${r.schritte.map(x=>`<li>${ruheEsc(x)}</li>`).join('')}</ol>
+  <div class="uhr"><button class="knopf" data-ruhe="${r.id}">Mit Aura starten</button><div class="ring" style="--p:0"><span>${r.s}s</span></div><div class="schritt"></div></div>`;}
+const held=RUHE[0];
+$('#ruhe-held').innerHTML=`<span class="marke">Der Schnellste</span><h3>${held.ic} ${ruheEsc(held.t)}</h3><p class="leise">${ruheEsc(held.k)}. 30 bis 60 Sekunden reichen oft.</p><div class="innen" style="padding:0">${ruheInnen(held)}</div>
+  <p class="vorsicht">Kühl, nicht eiskalt. Funktioniert überall, wo es einen Wasserhahn gibt, auch auf der Arbeit.</p>`;
+let gruppe='', liste='';
+for(const r of RUHE.slice(1)){ if(r.g!==gruppe){gruppe=r.g;liste+=`<div class="gruppe">${ruheEsc(gruppe)}</div>`;}
+  liste+=`<details class="hilfe" id="hilfe-${r.id}"><summary><span class="ic">${r.ic}</span><span>${ruheEsc(r.t)}<small>${ruheEsc(r.k)}</small></span><span class="zeit">${r.s}s</span></summary><div class="innen">${ruheInnen(r)}</div></details>`;}
+$('#ruhe-liste').innerHTML=liste;
+
+let ruheLauf=null;
+function ruheStopp(){ if(!ruheLauf) return; clearInterval(ruheLauf.iv); const u=ruheLauf.uhr; u.querySelector('.knopf').textContent='Mit Aura starten';
+  u.querySelector('.ring').style.setProperty('--p',0); u.querySelector('.ring span').textContent=ruheLauf.r.s+'s'; ruheLauf=null; }
+document.addEventListener('click',e=>{const b=e.target.closest('[data-ruhe]'); if(!b) return;
+  const war=ruheLauf&&ruheLauf.r.id===b.dataset.ruhe; stopAlles(); if(war) return;
+  const r=RUHE.find(x=>x.id===b.dataset.ruhe), uhr=b.closest('.uhr'), ms=r.s*1000, teil=ms/r.schritte.length, t0=Date.now(); let schritt=-1;
+  ruheLauf={r,uhr}; b.textContent='Stopp';
+  const tick=()=>{const t=Date.now()-t0;
+    if(t>=ms){gong();sag('Gut gemacht. Spür kurz nach. Wenn du magst, nimm noch einen Griff.');const l=ruheLauf;ruheStopp();l.uhr.querySelector('.schritt').textContent='Fertig ✦ Spür nach.';return;}
+    const s=Math.floor(t/teil); if(s!==schritt){schritt=s;uhr.querySelector('.schritt').textContent=r.schritte[s];sag(r.schritte[s]);}
+    uhr.querySelector('.ring').style.setProperty('--p',t/ms*100); uhr.querySelector('.ring span').textContent=Math.ceil((ms-t)/1000)+'s';};
+  tick(); ruheLauf.iv=setInterval(tick,250);
+});
+$('#ruhe-zufall').onclick=()=>{ $$('details.hilfe').forEach(d=>d.open=false);
+  const r=RUHE[1+Math.floor(Math.random()*(RUHE.length-1))], d=$('#hilfe-'+r.id); d.open=true;
+  d.scrollIntoView({behavior:'smooth',block:'center'}); sag(r.t+'. '+r.k+'.'); };
 })();
 </script>
 </body>
