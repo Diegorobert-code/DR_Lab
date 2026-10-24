@@ -126,6 +126,18 @@ button.big{font-size:2rem;padding:.6em 1.8em}
 .mirroron #mouth,.mirroron #mouth3d,.mirroron .zonehint{display:none}
 .playbig{font-size:1.4rem;padding:18px 30px}
 
+/* Böcklein-Biss: Kiefer-Ritual nach dem Putzen, ruhig, ohne Heilversprechen */
+button.biss{background:#ffc2d8;box-shadow:0 6px 0 #d98aa8,0 10px 24px rgba(0,0,0,.35);font-size:1.3rem}
+button.biss small{display:block;font-family:var(--body);font-size:.85rem;font-weight:700;opacity:.8}
+#biss h1{margin:0}
+.bissimg{width:min(64vw,260px);aspect-ratio:1;border-radius:30px;object-fit:cover;box-shadow:0 12px 30px rgba(0,0,0,.4);border:4px solid rgba(255,194,216,.55)}
+.bisswahl{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.bisswahl button{font-size:1.05rem;background:rgba(255,255,255,.1);color:inherit;box-shadow:none;border:2px solid rgba(255,194,216,.45)}
+.bisswahl button[aria-pressed="true"]{background:#ffc2d8;color:var(--night);border-color:#ffc2d8}
+.bissball{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe3ee,#ff9fc4 70%);box-shadow:0 0 40px rgba(255,159,196,.5);transform:scale(.7);transition:transform 3s ease-in-out}
+.bissball.press{transform:scale(1)}
+.bissball.weich{transform:scale(.62);transition-duration:4s}
+
 /* Für die Kleinsten (0–3 Jahre) */
 button.baby{background:#cdb8ff;box-shadow:0 6px 0 #9a83d6,0 10px 24px rgba(0,0,0,.35);font-size:1.3rem}
 button.baby small{display:block;font-family:var(--body);font-size:.85rem;font-weight:700;opacity:.8}
@@ -222,6 +234,7 @@ button.ghost{min-height:48px}
   <div class="mehrwege">
     <button id="go2" class="alt" type="button">✨ Putzparty<small>5 Minuten · tanzen</small></button>
     <button id="babyGo" class="baby" type="button">🍼 Für die Kleinsten<small>0 bis 3 Jahre</small></button>
+    <button id="bissGo" class="biss" type="button">🦷 Böcklein-Biss<small>nach dem Putzen · Mund entspannen</small></button>
   </div>
   <section class="extras" aria-label="Lieder und Filme">
     <div class="songs" id="songs"><b>🎵 Welches Lied?</b></div>
@@ -301,6 +314,32 @@ button.ghost{min-height:48px}
   <div class="bview" id="bView" hidden></div>
   <button class="ghost" id="bBack" type="button">‹ Zurück</button>
 </main>
+<main id="biss" class="stage" hidden>
+  <img class="bissimg" id="bissImg" src="bilder/biss/zahnboecklein-schiene.jpg" alt="Zahnböcklein mit der Böcklein-Schiene">
+  <h1>Böcklein-Biss</h1>
+  <p id="bissText">Sanft beissen, loslassen, gähnen. Ein kleines Ritual nach dem Putzen.</p>
+  <div class="bview" id="bissEltern" hidden>
+    <div class="btip"><b>Liebe Eltern</b><br>Der Böcklein-Biss ist ein spielerisches Abendritual: sanft beissen, loslassen, gähnen. Er ist keine Therapie und ersetzt keine zahnärztliche Beratung. Bitte begleiten Sie Ihr Kind. Bei Kieferbeschwerden, Schmerzen oder Zahnspange fragen Sie vorher Ihre Zahnärztin. Gespeichert wird nur auf diesem Gerät.</div>
+    <button type="button" id="bissOk">Ich begleite mein Kind</button>
+  </div>
+  <div class="bview" id="bissWahl">
+    <div class="bisswahl" role="group" aria-label="Mit oder ohne Schiene">
+      <button type="button" id="bissOhne" aria-pressed="true">Ohne Schiene</button>
+      <button type="button" id="bissMit" aria-pressed="false">Mit Böcklein-Schiene</button>
+    </div>
+    <button type="button" class="big" id="bissStart">Los geht's</button>
+  </div>
+  <div class="bview" id="bissRun" hidden>
+    <div class="bsteps" id="bissSteps"></div>
+    <div class="bissball" id="bissBall" aria-hidden="true"></div>
+    <div class="bsay" id="bissSay" aria-live="polite"></div>
+  </div>
+  <div class="bview" id="bissDone" hidden>
+    <div class="bsay">Super! Dein Mund ist jetzt müde und bereit fürs Bett.</div>
+    <div class="row"><button type="button" id="bissNacht">Gute Nacht</button><button class="ghost" type="button" id="bissNochmal">Nochmal</button></div>
+  </div>
+  <button class="ghost" id="bissBack" type="button">‹ Zurück</button>
+</main>
 <main id="kino" class="stage" hidden>
   <h1 id="kinoTitle" style="font-size:2rem">Film</h1>
   <div class="vidwrap"><video id="vid" controls playsinline preload="metadata"></video><div class="laed" id="kinoLaed" hidden><span class="laedpunkte" aria-hidden="true"><b></b><b></b><b></b></span>Film lädt …</div></div>
@@ -321,6 +360,7 @@ button.ghost{min-height:48px}
   <div class="stars" id="starCount2"></div>
   <div class="row">
     <button id="night" type="button">Gute Nacht</button>
+    <button class="biss" id="doneBiss" type="button">🦷 Böcklein-Biss</button>
     <button class="ghost" id="again" type="button">Nochmal</button>
   </div>
 </main>
@@ -455,7 +495,7 @@ function showTrip(n){const step=((n-1)%30)+1;$("tripStep").textContent="Etappe "
 /* Ablauf */
 let midDone={},running=false,paused=false,elapsed=0,last=0,lastLine=-1,lastPhase=-1;
 function fmt(s){s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
-function show(id){if(id!=="brush"&&typeof danceVidOff==="function")danceVidOff();if(id!=="baby"&&typeof babyStop==="function")babyStop();for(const k of ["start","brush","done","kino","baby"])$(k).hidden=k!==id;$("topBack").hidden=id==="start";document.body.classList.toggle("sub",id!=="start");window.scrollTo(0,0)}
+function show(id){if(id!=="brush"&&typeof danceVidOff==="function")danceVidOff();if(id!=="baby"&&typeof babyStop==="function")babyStop();if(id!=="biss"&&typeof bissStop==="function")bissStop();for(const k of ["start","brush","done","kino","baby","biss"])$(k).hidden=k!==id;$("topBack").hidden=id==="start";document.body.classList.toggle("sub",id!=="start");window.scrollTo(0,0)}
 function begin(m){if(m)setMode(m);ensureAC();preload(PH.map(p=>p.clip).concat(PH.map(p=>p.mid).filter(Boolean),["fertig","party_fertig"],MODE==="party"?["k_kreise","k_hinten","k_vorne","k_innen","k_tanz","k_super","k_atmen","k_noch10"]:[]));midDone={};makeMonsters();elapsed=0;lastLine=-1;lastPhase=-1;paused=false;$("pause").textContent="Pause";show("brush");musicStart();running=true;last=performance.now();lastCoach=-99;coachI=0;noch10={};zoneT={};try{navigator.wakeLock&&navigator.wakeLock.request("screen").catch(()=>{})}catch(e){}}
 function finish(){running=false;musicStop();const tipp=camOn?putzTipp():"";if(camOn)merkeZeiten();camStop();fanfare();const n=getStars()+(MODE==="party"?2:1);setStars(n);showStars();$("doneText").textContent=MODE==="party"?"Glitzer-Putzparty geschafft! Zähne, Zahnfleisch und Zunge glänzen. Dafür gibt es zwei Sterne!":(n===1?"Alle Zuckermonster sind weg. Hier ist dein erster Stern!":"Alle Zuckermonster sind weg. Das ist Stern Nummer "+n+".");if(tipp)$("doneText").textContent+=" "+tipp;showTrip(n);show("done");say(MODE==="party"?"party_fertig":"fertig",true);say(TRIPKEY(((n-1)%30)+1))}
 let curP=null,curIn=0;
@@ -607,10 +647,39 @@ function bTagebuch(){const V=$("bView"),Z=bGet("zb-baby-zaehne",{});const n=Obje
  V.querySelectorAll(".jaw button").forEach(b=>b.addEventListener("click",()=>{const id=b.dataset.z;if(Z[id]){if(!confirm("Zähnchen wieder austragen?"))return;delete Z[id]}else{Z[id]=new Date().toISOString().slice(0,10);pop();if(!n)say("lob1",true)}bSet("zb-baby-zaehne",Z);bTagebuch()}))}
 function bZahnen(){const V=$("bView");V.innerHTML='<img class="bimg breathe" src="bilder/tanz/wiegen-4.jpg" alt="Zahnböcklein schläft"><button type="button" id="bzLied">🌙 Schlaflied starten</button><div class="btip"><b>Was oft gut tut</b><ul class="blist"><li>Ein kühler Beissring aus dem Kühlschrank (nicht aus dem Tiefkühler)</li><li>Das Zahnfleisch mit sauberem Finger sanft massieren</li><li>Viel Nähe: kuscheln, tragen, leise singen</li><li>Sabber sanft abtupfen, damit die Haut ruhig bleibt</li></ul></div><div class="btip">Bei Fieber, Durchfall, grossem Unwohlsein oder wenn du unsicher bist: bitte die Kinderärztin fragen. Diese App ersetzt keine Beratung.</div>';
  $("bzLied").addEventListener("click",()=>{babyMusic();bSleep=document.createElement("div");bSleep.className="sleep";bSleep.innerHTML='<img class="breathe" src="bilder/tanz/wiegen-4.jpg" alt=""><div class="bsay">Schlaf gut, kleine Zähnchen.</div><button class="ghost" type="button">Lied aus</button>';document.body.appendChild(bSleep);bSleep.querySelector("button").addEventListener("click",()=>{babyStop()})})}
+
+/* Böcklein-Biss: 5 Runden sanft beissen (3 s) und loslassen (5 s), dann Lippen-Küsschen und Gähnen.
+   Keine Therapie: Eltern bestätigen einmal, dass sie begleiten (nur lokal gespeichert). */
+let bissT=[],bissMit=false;
+function bissStop(){bissT.forEach(clearTimeout);bissT=[];$("bissBall").className="bissball"}
+function bissAt(ms,f){bissT.push(setTimeout(f,ms))}
+function bissZeige(v){for(const k of ["bissEltern","bissWahl","bissRun","bissDone"])$(k).hidden=k!==v}
+function bissOpen(){bissStop();let ok=false;try{ok=localStorage.getItem("zb-biss-ok")==="1"}catch(e){}bissZeige(ok?"bissWahl":"bissEltern");$("bissText").hidden=false}
+function bissWahl(mit){bissMit=mit;$("bissImg").src=mit?"bilder/biss/boecklein-schiene.jpg":"bilder/biss/zahnboecklein-schiene.jpg";$("bissMit").setAttribute("aria-pressed",String(mit));$("bissOhne").setAttribute("aria-pressed",String(!mit))}
+function bissRun(){bissStop();bissZeige("bissRun");$("bissText").hidden=true;const ball=$("bissBall"),sayEl=$("bissSay"),R=5;
+ const steps=d=>{$("bissSteps").innerHTML=Array.from({length:R},(_,k)=>'<b class="'+(k<d?"ok":"")+(k===d?" on":"")+'">'+(k<d?"★":k+1)+'</b>').join("")};
+ steps(0);sayEl.textContent=bissMit?"Nimm deine Böcklein-Hörnchen in den Mund. Grrr!":"Zähne sind blitzeblank? Dann komm zum Böcklein-Biss!";say(bissMit?"biss_mit":"biss_start",true);
+ let t=4500;
+ for(let r=0;r<R;r++){
+  bissAt(t,()=>{steps(r);ball.className="bissball press";sayEl.textContent=bissMit?"Ganz sanft auf die Hörnchen beissen …":"Zähne ganz sanft zusammen …";if(r<2)say("biss_beiss",true)});t+=r<2?3800:3000;
+  bissAt(t,()=>{ball.className="bissball weich";sayEl.textContent="… und alles weich, wie ein Wackelpudding.";if(r<2)say("biss_los",true)});t+=r<2?5000:4000}
+ bissAt(t,()=>{steps(R);ball.className="bissball press";sayEl.textContent="Lippen zu, wie ein Küsschen. Halten.";say("biss_lippen",true)});t+=4500;
+ bissAt(t,()=>{ball.className="bissball weich";sayEl.textContent="Einmal ganz gross gähnen. Schultern runter.";say("biss_gaehn",true)});t+=5000;
+ bissAt(t,()=>{bissZeige("bissDone");say("biss_fertig",true)})}
+$("bissGo").addEventListener("click",()=>{show("biss");bissOpen()});
+$("doneBiss").addEventListener("click",()=>{show("biss");bissOpen()});
+$("bissOk").addEventListener("click",()=>{try{localStorage.setItem("zb-biss-ok","1")}catch(e){}bissZeige("bissWahl")});
+$("bissOhne").addEventListener("click",()=>bissWahl(false));
+$("bissMit").addEventListener("click",()=>bissWahl(true));
+$("bissStart").addEventListener("click",bissRun);
+$("bissNochmal").addEventListener("click",bissRun);
+$("bissNacht").addEventListener("click",()=>{say("nacht",true);show("start")});
+$("bissBack").addEventListener("click",()=>{if(!$("bissRun").hidden||!$("bissDone").hidden)bissOpen();else show("start")});
 $("babyGo").addEventListener("click",()=>{show("baby");bOpen(null)});
 $("bMenu").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>bOpen(b.dataset.v)));
 $("bBack").addEventListener("click",()=>{if(!$("bView").hidden)bOpen(null);else show("start")});
-$("topBack").addEventListener("click",()=>{const now=["brush","kino","done","baby"].find(k=>!$(k).hidden);
+$("topBack").addEventListener("click",()=>{const now=["brush","kino","done","baby","biss"].find(k=>!$(k).hidden);
+ if(now==="biss"){$("bissBack").click();return}
  if(now==="kino"){$("kinoBack").click();return}
  if(now==="baby"){$("bBack").click();return}
  if(now==="brush"){running=false;paused=false;$("pause").textContent="Pause";musicStop();hush();camStop()}
