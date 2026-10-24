@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-23-09">
+<meta name="stand" content="2026-10-24-15">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -81,6 +81,8 @@
   .hoeren { margin-top:10px; border:1px solid var(--leise); border-radius:999px; background:none; color:inherit; font:15px system-ui, sans-serif; padding:7px 14px; cursor:pointer; }
   body.hoermodus #hoeren { background:#1f6f5c; border-color:#1f6f5c; color:#fff; }
   body.musikmodus #musik { background:#6b3fa0; border-color:#6b3fa0; color:#fff; }
+  .merkt { width:min(92vw, 460px); max-height:30vh; overflow-y:auto; margin:6px auto 0; padding:10px 12px; border-radius:14px; background:rgba(255,255,255,.07); font:13px/1.4 system-ui, sans-serif; color:var(--leise); text-align:left; }
+  .merkt p { margin:0 0 6px; } .merkt small { opacity:.7; }
   .vergessen { margin-top:6px; background:none; border:0; color:var(--leise); font:13px system-ui, sans-serif; text-decoration:underline; cursor:pointer; opacity:.8; }
   @media (prefers-reduced-motion: reduce) { .atmen { animation:none; } }
   /* Nur Otti (Kinder-Figur): lebendige Puppe statt Standbild, ruhige grosse Karten darunter */
@@ -199,7 +201,9 @@
 <button class="hoeren" id="hoeren" type="button" hidden aria-pressed="false">👂 Nur zuhören</button>
 <button class="hoeren" id="musik" type="button" hidden aria-pressed="false">🎵 Musik-Spiegel</button>
 <div class="hinweis" id="hinweis"></div>
-<label class="lernen" id="lernenBox"><input type="checkbox" id="lernen"> Nova darf aus diesem Gespräch lernen <small>(nur Diego und Team, auf unserem Server in der Schweiz)</small></label>
+<label class="lernen" id="lernenBox"><input type="checkbox" id="lernen"> <span id="lernenText">Nova darf aus diesem Gespräch lernen</span> <small>(nur Diego und Team, auf unserem Server in der Schweiz)</small></label>
+<button class="vergessen" id="merktKnopf" type="button" hidden>📒 Was <span id="mname">Otti</span> sich merkt</button>
+<div class="merkt" id="merkt" hidden></div>
 <button class="vergessen" id="vergessen" type="button" hidden><span id="vname">Otti</span> vergisst alles</button>
 <nav class="ottimenu" id="ottiMenu" hidden aria-label="Mehr mit Otti">
   <a href="../otti/#spiele"><span aria-hidden="true">🎲</span>Spiele</a>
@@ -220,23 +224,23 @@
   var FIGUREN = {
     otti: { name: 'Otti', agent: 'agent_4801m55hqwdpeq0ry4awvx45rz5t', bild: '../otti/otti-3d.jpg', gedaechtnis: true,
       mund: { linie: [[446, 786], [470, 797], [510, 805], [600, 805], [645, 797], [678, 776]], lippe: 858, kinn: 945, max: 30 } },
-    jackie: { name: 'Jackie', agent: 'agent_7501m55rzxb0fdv9j4n97jtnbk08', bild: '../jackie/jackie-3d.jpg',
+    jackie: { name: 'Jackie', agent: 'agent_7501m55rzxb0fdv9j4n97jtnbk08', bild: '../jackie/jackie-3d.jpg', gedaechtnis: true,
       mund: { linie: [[420, 662], [440, 702], [470, 720], [510, 736], [550, 746], [590, 746], [624, 731]], lippe: 774, kinn: 835, max: 26 } },
-    'mr. ping': { name: 'Mr. Ping', agent: 'agent_5601m55s9kdcebzrh23262ytezm2', bild: '../tradeping/ping-3d.jpg', positionen: true,
+    'mr. ping': { name: 'Mr. Ping', agent: 'agent_5601m55s9kdcebzrh23262ytezm2', bild: '../tradeping/ping-3d.jpg', positionen: true, gedaechtnis: true,
       mund: { linie: [[318, 388], [335, 402], [360, 410], [400, 412], [430, 408], [448, 400]], lippe: 426, kinn: 500, max: 22 } },
     nova: { name: 'Nova', agent: 'agent_4201m55seyhdexd96tkaxt72hmaq', bild: 'nova-3d.jpg', gedaechtnis: true, welt: true,
       mund: { linie: [[520, 684], [545, 694], [580, 700], [620, 700], [660, 690], [690, 668], [705, 636]], lippe: 738, kinn: 792, max: 22 } },
     sparky: { name: 'Sparky', agent: 'agent_7401m55j20jwek69gsh3gkfhaa77', bild: 'figuren/sparky.jpg', gedaechtnis: true, messwerte: true,
       mund: { linie: [[440, 790], [470, 808], [500, 820], [560, 832], [600, 824], [640, 804], [690, 780]], lippe: 852, kinn: 905, max: 18, innen: [90, 28, 34] } },
-    'coin maker': { name: 'Coin Maker', agent: 'agent_2001m55ss61fe5wb1qct4b8bqkz3', bild: 'figuren/coinmaker.jpg',
+    'coin maker': { name: 'Coin Maker', agent: 'agent_2001m55ss61fe5wb1qct4b8bqkz3', bild: 'figuren/coinmaker.jpg', gedaechtnis: true,
       mund: { linie: [[464, 446], [484, 480], [520, 488], [560, 498], [590, 506], [614, 512]], lippe: 526, kinn: 600, max: 20 } },
     flo: { name: 'Flo', agent: 'agent_0001m55ss8s7eb0vnzr6f1vz1tf0', bild: 'figuren/flo.jpg',
       mund: { linie: [[404, 564], [432, 604], [460, 623], [500, 630], [540, 626], [570, 619], [598, 609]], lippe: 656, kinn: 702, max: 22 } },
-    fompa: { name: 'Fompa', agent: 'agent_5401m55ssbdheqwtyw4131dqya8w', bild: 'figuren/fompa.jpg',
+    fompa: { name: 'Fompa', agent: 'agent_5401m55ssbdheqwtyw4131dqya8w', bild: 'figuren/fompa.jpg', gedaechtnis: true,
       mund: { linie: [[420, 398], [448, 438], [480, 444], [520, 452], [550, 456], [586, 448]], lippe: 480, kinn: 530, max: 20 } },
     sunny: { name: 'Sunny', agent: 'agent_4201m55ssdr3fksaey0x2yh1vpmh', bild: 'figuren/sunny.jpg',
       mund: { linie: [[416, 488], [440, 523], [480, 532], [520, 546], [560, 559], [592, 562], [646, 540]], lippe: 586, kinn: 640, max: 22 } },
-    kiki: { name: 'Kiki', agent: 'agent_0401m55r02rvf96a1xrxv1njqbh3', bild: '../kiki/kiki-3d.jpg', ruhe: -0.4,
+    kiki: { name: 'Kiki', agent: 'agent_0401m55r02rvf96a1xrxv1njqbh3', bild: '../kiki/kiki-3d.jpg', ruhe: -0.4, gedaechtnis: true,
       mund: { linie: [[372, 652], [400, 700], [440, 708], [480, 718], [520, 722], [560, 722], [600, 722], [614, 724]], lippe: 795, kinn: 865, max: 22 } },
     tropfi: { name: 'Tropfi', agent: 'agent_0201m5e5qk98fwf9akjpcfjtn73c', bild: 'figuren/tropfi.jpg', gedaechtnis: true,
       mund: { linie: [[438, 648], [460, 660], [490, 666], [520, 660], [540, 648]], lippe: 684, kinn: 724, max: 16, innen: [24, 40, 96] } },
@@ -244,15 +248,15 @@
       mund: { linie: [[528, 516], [552, 542], [576, 564], [602, 582], [630, 592], [656, 590]], lippe: 616, kinn: 652, max: 18 } },
     ava: { name: 'Ava', agent: 'agent_6301m5ez7tqkf8fre9vvprktpzby', bild: 'figuren/ava.jpg',
       mund: { linie: [[394, 578], [420, 587], [450, 591], [480, 587], [504, 578]], lippe: 606, kinn: 640, max: 14, innen: [92, 36, 40] } },
-    'mama affe': { name: 'Mama Affe', agent: 'agent_6601m5jvastdem8s9n0ha2d9cpr6', bild: 'figuren/mamaaffe.jpg',
+    'mama affe': { name: 'Mama Affe', agent: 'agent_6601m5jvastdem8s9n0ha2d9cpr6', bild: 'figuren/mamaaffe.jpg', gedaechtnis: true,
       mund: { linie: [[350, 636], [420, 700], [500, 744], [580, 764], [660, 750], [740, 710], [816, 660]], lippe: 800, kinn: 900, max: 24, innen: [70, 30, 28] } },
     lumo: { name: 'Lumo', agent: 'agent_2801m5jwgs8reptvpjpkjjpwswfn', bild: 'figuren/lumo.jpg',
       mund: { linie: [[446, 488], [470, 496], [494, 488]], lippe: 506, kinn: 522, max: 10, innen: [60, 25, 20] } },
-    granny: { name: 'Rosa', agent: 'agent_3601m5jv6vcpetpsnckmvqtgs1s2', bild: 'figuren/granny.jpg',
+    granny: { name: 'Rosa', agent: 'agent_3601m5jv6vcpetpsnckmvqtgs1s2', bild: 'figuren/granny.jpg', gedaechtnis: true,
       mund: { linie: [[372, 612], [400, 642], [430, 668], [490, 692], [540, 696], [590, 688], [630, 666]], lippe: 730, kinn: 800, max: 20, innen: [110, 40, 45] } },
-    fia: { name: 'Fia', agent: 'agent_3601m5n1x1nqexnb952z9qbakq23', bild: 'figuren/fia.jpg' },
-    zahnboecklein: { name: 'Zahnböcklein', agent: 'agent_6701m5n1x4ejeprvkg1tg4n8qy3z', bild: 'figuren/zahnboecklein.jpg' },
-    waefwaef: { name: 'Wäf Wäf', agent: 'agent_3201m5n1x70rfcsbbm8b1me8r5wx', bild: 'figuren/waefwaef.jpg' }
+    fia: { name: 'Fia', agent: 'agent_3601m5n1x1nqexnb952z9qbakq23', bild: 'figuren/fia.jpg', gedaechtnis: true },
+    zahnboecklein: { name: 'Zahnböcklein', agent: 'agent_6701m5n1x4ejeprvkg1tg4n8qy3z', bild: 'figuren/zahnboecklein.jpg', gedaechtnis: true },
+    waefwaef: { name: 'Wäf Wäf', agent: 'agent_3201m5n1x70rfcsbbm8b1me8r5wx', bild: 'figuren/waefwaef.jpg', gedaechtnis: true }
   };
   var BILDCHEN = { nova: 'nova-3d.jpg', tropfi: 'figuren/tropfi-klein.jpg', otti: '../otti/icon-180.png', kiki: '../kiki/icon-180.png', jackie: '../jackie/icon-180.png', 'mr. ping': '../tradeping/icon-180.png',
     sparky: 'figuren/sparky-klein.jpg', 'coin maker': 'figuren/coinmaker-klein.jpg', flo: 'figuren/flo-klein.jpg', fompa: 'figuren/fompa-klein.jpg', sunny: 'figuren/sunny-klein.jpg',
@@ -278,7 +282,7 @@
     a.addEventListener('click', function (e) { e.preventDefault(); vonHand = true; if (conv) { var c = conv; ende(); c.endSession().catch(function () {}); } location.replace(a.href); });
     $('wahl').appendChild(a);
   });
-  $('name').textContent = NAME; $('vname').textContent = NAME;
+  $('name').textContent = NAME; $('vname').textContent = NAME; $('mname').textContent = NAME;
   // Bei Nova keine Figurenreihe: sonst landet man aus Versehen bei Otti und findet nicht zurück.
   if (KEY === 'nova') $('wahl').style.display = 'none';
   // In der Zentrale (zentrale.html) wischt man zwischen den KIs: dort keine eigene Figurenreihe und kein Zurück.
@@ -299,6 +303,10 @@
   // Otti (Kinder-Figur) lebt als Puppe (nova/puppe.js): atmet, blinzelt, winkt beim Antippen zurück,
   // hört beim Mikrofon zu und bewegt beim Sprechen den Mund. Alle anderen Figuren bleiben wie bisher.
   var puppe = null, OTTI = KEY === 'otti';
+  // Kinder-Figuren: Eltern-Ja vor dem ersten Live-Gespräch, Gespräche bleiben nur auf diesem Handy.
+  var KIND = ['otti', 'kiki', 'zahnboecklein', 'waefwaef', 'mama affe'].indexOf(KEY) >= 0;
+  if (KIND) $('lernenBox').style.display = 'none';
+  else if (KEY !== 'nova') $('lernenText').textContent = NAME + ' darf mit Nova teilen, was ihr besprecht';
   if (OTTI && window.Puppe) {
     try {
       var pd = document.createElement('div'); buehne.insertBefore(pd, buehne.firstChild);
@@ -341,7 +349,7 @@
     var t = jetztGesagt.join('\n'); var gross = KEY === 'nova' || KEY === 'tropfi'; var max = gross ? 2500 : 900; if (t.length > max) t = t.slice(-max);
     var g = gedaechtnis(); g.push({ d: new Date().toLocaleDateString('de-CH'), t: t });
     try { localStorage.setItem(GED, JSON.stringify(g.slice(gross ? -12 : -4))); } catch (e) {}
-    if (lernenAn() && !OTTI) zuNova(t); // Kinder-Figur: Gespräche verlassen das Handy nie als Text
+    if (lernenAn() && !KIND) zuNova(t); // Kinder-Figur: Gespräche verlassen das Handy nie als Text
     jetztGesagt = []; vergessenZeigen();
   }
   // Nova lernt: mit Einwilligung geht jedes Gespräch als Erfahrung in die Sense Engine.
@@ -363,7 +371,14 @@
     return g.length ? g.map(function (x) { return 'Am ' + x.d + ':\n' + x.t; }).join('\n\n') : 'Noch nichts. Ihr redet zum ersten Mal.';
   }
   var vergessen = $('vergessen');
-  function vergessenZeigen() { vergessen.hidden = !gedaechtnis().length; }
+  function vergessenZeigen() { var leer = !gedaechtnis().length; vergessen.hidden = leer; $('merktKnopf').hidden = leer || !F.gedaechtnis; if (leer) $('merkt').hidden = true; }
+  // «Was X sich merkt»: zeigt ehrlich, was auf diesem Handy gespeichert ist (die letzten Gespräche).
+  $('merktKnopf').addEventListener('click', function () {
+    var m = $('merkt'); m.hidden = !m.hidden; if (m.hidden) return;
+    m.textContent = '';
+    gedaechtnis().slice().reverse().forEach(function (x) { var p = document.createElement('p'); var b = document.createElement('b'); b.textContent = x.d + ': '; p.appendChild(b); p.appendChild(document.createTextNode(String(x.t).slice(-280))); m.appendChild(p); });
+    var k = document.createElement('small'); k.textContent = 'Nur auf diesem Handy gespeichert' + (KIND ? ', geht nie weg.' : (lernenAn() ? ', mit deinem Häkchen auch bei Nova.' : '.')); m.appendChild(k);
+  });
   vergessen.addEventListener('click', function () {
     try { localStorage.removeItem(GED); } catch (e) {}
     vergessenZeigen(); status.textContent = 'Erledigt. ' + NAME + ' fängt neu an.';
@@ -1253,7 +1268,7 @@
     if (conv || startet) vonHand = true;
     if (conv) { BUEHNE.aktiv = false; aufgelegt = false; var c = conv; ende('Aufgelegt.'); c.endSession().catch(function () {}); if (BUEHNE.an) $('vorhang').style.display = ''; }
     else if (BUEHNE.an) $('vorhang').click();
-    else if (OTTI && !elternJa()) { $('ottiOk').hidden = false; status.textContent = 'Zuerst einmal kurz die Eltern fragen.'; }
+    else if (KIND && !elternJa()) { $('ottiOk').hidden = false; status.textContent = 'Zuerst einmal kurz die Eltern fragen.'; }
     else starten();
   });
   // Kinder-Figur: vor dem ersten Live-Gespräch einmal das Eltern-Ja (gleich wie in der Otti-App).
@@ -1315,12 +1330,13 @@
   if (KEY === 'nova' && !BUEHNE.an) { $('hoeren').hidden = false; $('hoeren').addEventListener('click', function () { hoerSetzen(!HOER.an); }); }
   // Auf Otti tippen: er hüpft vor Freude.
   // Sparky: App öffnen, irgendwo hintippen, er hört zu (ein Tipp reicht, das Handy verlangt ihn fürs Mikrofon).
-  if (KEY === 'sparky') {
-    status.textContent = 'Tipp irgendwo hin, dann hört Sparky zu.';
+  if (KEY === 'sparky' || (FIGUREN[KEY] && KEY !== 'nova' && !EINGEBETTET && !BUEHNE.an)) {
+    status.textContent = 'Tipp irgendwo hin, dann hört ' + NAME + ' zu.';
     document.addEventListener('click', function los(ev) {
-      if (ev.target.closest && ev.target.closest('a, button, input, label, form')) return;
-      document.removeEventListener('click', los, true);
-      if (!conv && !startet) starten(false);
+      if (ev.target.closest && ev.target.closest('a, button, input, label, form, .merkt, .ottiok, .ansicht')) return;
+      if (conv || startet || vonHand) return; // nach dem Auflegen nur noch über den Knopf
+      if (KIND && !elternJa()) { $('ottiOk').hidden = false; status.textContent = 'Zuerst einmal kurz die Eltern fragen.'; return; }
+      starten(false);
     }, true);
   }
 
