@@ -10,6 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="puppe.css">
 <style>
   :root { --nacht:#0b1a3a; --nacht2:#16306b; --gold:#f5c542; --text:#f4f1e8; --leise:#b9c3e0; }
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -83,10 +84,28 @@
   body.musikmodus #musik { background:#6b3fa0; border-color:#6b3fa0; color:#fff; }
   .vergessen { margin-top:6px; background:none; border:0; color:var(--leise); font:13px system-ui, sans-serif; text-decoration:underline; cursor:pointer; opacity:.8; }
   @media (prefers-reduced-motion: reduce) { .atmen { animation:none; } }
+  /* Nur Otti (Kinder-Figur): lebendige Puppe statt Standbild, ruhige grosse Karten darunter */
+  body.otti .buehne { width:min(64vw, 300px, 34vh); background:radial-gradient(16% 13% at 82% 14%, #fff3b0 0 55%, #f5c54255 60%, transparent 75%), radial-gradient(90% 60% at 50% 25%, #1b2c66 0%, #0f1b44 55%, #070d24 100%); cursor:pointer; }
+  body.otti .buehne canvas, body.otti .buehne .glanz { display:none; }
+  body.otti .buehne .puppe-buehne { position:absolute; inset:0; width:100%; height:100%; max-width:none; aspect-ratio:auto; margin:0; border-radius:0; background:transparent; box-shadow:none; }
+  body.otti .text { margin-top:8px; min-height:48px; }
+  body.otti .knopf { margin-top:8px; width:76px; height:76px; font-size:30px; }
+  .ottimenu { display:grid; grid-template-columns:1fr 1fr; gap:8px; width:min(92vw, 420px); margin-top:12px; flex:none; }
+  .ottimenu[hidden] { display:none; }
+  .ottimenu a { display:flex; align-items:center; gap:12px; min-height:64px; padding:8px 14px; border-radius:20px; text-decoration:none; color:var(--text);
+    background:linear-gradient(160deg, #ffffff17, #ffffff08); border:1px solid #f5c54255; font-weight:800; font-size:16px; white-space:nowrap; transition:transform .12s; }
+  .ottimenu a:active { transform:scale(.96); }
+  .ottimenu a span { font-size:28px; width:40px; height:40px; flex:none; display:grid; place-items:center; border-radius:50%; background:#ffffff14; }
+  .ottiok { width:min(92vw, 420px); background:#13265a; border:2px solid var(--gold); border-radius:20px; padding:12px 16px; margin-top:8px; font-size:15px; line-height:1.4; }
+  .ottiok[hidden] { display:none; }
+  .ottiok button { position:relative; overflow:hidden; width:100%; min-height:48px; margin-top:8px; border:0; border-radius:14px; background:var(--gold); color:#2a1d00; font:inherit; font-weight:800; font-size:16px; touch-action:none; -webkit-user-select:none; user-select:none; }
+  .ottiok button::before { content:''; position:absolute; inset:0; transform-origin:0 50%; transform:scaleX(var(--p, 0)); background:#ffffff66; }
+  .ottiok button span { position:relative; }
 .buehne .leinwand{position:absolute;inset:0;width:100%;height:100%;display:none;z-index:2;background:#f6efe0}.buehne.malt .leinwand{display:block}.buehne .gemalt{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:1}.buehne.zeigt .gemalt{display:block}
 .schreiben{display:flex;gap:8px;width:min(92vw,460px);margin-top:10px;flex:none}.schreiben input{flex:1;min-width:0;border:0;border-radius:22px;padding:11px 16px;font:16px system-ui,sans-serif;background:#f4f1e8;color:#22201a}.z.bild{padding:4px;background:#f4f1e8;max-width:78%}.z.bild img{display:block;width:100%;border-radius:11px}.z.bild small{display:block;color:#22201a;font-size:12px;padding:4px 6px 2px}
 .schreiben button.malen{background:#f4f1e8;font-size:19px}
 .schreiben button{width:44px;height:44px;border-radius:50%;border:0;background:var(--gold);color:#2a1d00;font-size:20px;cursor:pointer;flex:none}
+  body.otti .schreiben { display:none; } /* Kinder 3–7: reden statt tippen */
 .lernen{display:block;margin:10px auto 0;max-width:340px;font-size:13px;line-height:1.35;color:#d9d2c3;text-align:center}.lernen input{width:18px;height:18px;vertical-align:-3px;accent-color:#f2c14e}.lernen small{display:block;color:#a9a294}
   /* Bühne (?buehne=1): Präsentation am Beamer. Der Film füllt das Bild, Nova sitzt unten rechts und bedient alles per Stimme. */
   .kino, .vorhang, .untertitel { display:none; }
@@ -172,6 +191,10 @@
 <div class="text" id="text" aria-live="polite"></div>
 <div class="chips" id="chips"></div>
 
+<div class="ottiok" id="ottiOk" hidden role="dialog" aria-label="Für Eltern">
+  <b>Für Eltern, einmal kurz:</b> Im Live-Gespräch geht die Stimme deines Kindes über das Internet an den Sprachdienst ElevenLabs (USA). Bitte sei dabei.
+  <button type="button" id="ottiOkHalten"><span>Einverstanden: 3 Sekunden halten</span></button>
+</div>
 <form class="schreiben" id="schreiben" autocomplete="off"><input id="eingabe" type="text" enterkeyhint="send" placeholder="Schreiben …" aria-label="Nachricht schreiben"><button type="button" class="malen" id="foto" aria-label="Foto an Nova schicken">📷</button><input id="fotoWahl" type="file" accept="image/*" hidden><button type="button" class="malen" id="malen" aria-label="Nova zeichnet">🎨</button><button type="submit" aria-label="Senden">➤</button></form>
 <button class="knopf" id="knopf" type="button" aria-label="Gespräch starten">🎙</button>
 <button class="hoeren" id="hoeren" type="button" hidden aria-pressed="false">👂 Nur zuhören</button>
@@ -180,9 +203,16 @@
 <div class="hinweis" id="hinweis"></div>
 <label class="lernen" id="lernenBox"><input type="checkbox" id="lernen"> Nova darf aus diesem Gespräch lernen <small>(nur Diego und Team, auf unserem Server in der Schweiz)</small></label>
 <button class="vergessen" id="vergessen" type="button" hidden><span id="vname">Otti</span> vergisst alles</button>
+<nav class="ottimenu" id="ottiMenu" hidden aria-label="Mehr mit Otti">
+  <a href="../otti/#spiele"><span aria-hidden="true">🎲</span>Spiele</a>
+  <a href="../mondschein/"><span aria-hidden="true">📖</span>Geschichten</a>
+  <a href="../mondschein/#hoeren"><span aria-hidden="true">🎧</span>Nur hören</a>
+  <a href="../otti/#abend"><span aria-hidden="true">🌙</span>Gute Nacht</a>
+</nav>
 
 <script src="elevenlabs-client-1.26.0.js"></script>
 <script src="mund.js"></script>
+<script src="puppe.js"></script>
 <script src="beats.js"></script>
 <script>
 (function () {
@@ -221,14 +251,19 @@
     lumo: { name: 'Lumo', agent: 'agent_2801m5jwgs8reptvpjpkjjpwswfn', bild: 'figuren/lumo.jpg',
       mund: { linie: [[446, 488], [470, 496], [494, 488]], lippe: 506, kinn: 522, max: 10, innen: [60, 25, 20] } },
     granny: { name: 'Rosa', agent: 'agent_3601m5jv6vcpetpsnckmvqtgs1s2', bild: 'figuren/granny.jpg',
-      mund: { linie: [[372, 612], [400, 642], [430, 668], [490, 692], [540, 696], [590, 688], [630, 666]], lippe: 730, kinn: 800, max: 20, innen: [110, 40, 45] } }
+      mund: { linie: [[372, 612], [400, 642], [430, 668], [490, 692], [540, 696], [590, 688], [630, 666]], lippe: 730, kinn: 800, max: 20, innen: [110, 40, 45] } },
+    fia: { name: 'Fia', agent: 'agent_3601m5n1x1nqexnb952z9qbakq23', bild: 'figuren/fia.jpg' },
+    zahnboecklein: { name: 'Zahnböcklein', agent: 'agent_6701m5n1x4ejeprvkg1tg4n8qy3z', bild: 'figuren/zahnboecklein.jpg' },
+    waefwaef: { name: 'Wäf Wäf', agent: 'agent_3201m5n1x70rfcsbbm8b1me8r5wx', bild: 'figuren/waefwaef.jpg' }
   };
   var BILDCHEN = { nova: 'nova-3d.jpg', tropfi: 'figuren/tropfi-klein.jpg', otti: '../otti/icon-180.png', kiki: '../kiki/icon-180.png', jackie: '../jackie/icon-180.png', 'mr. ping': '../tradeping/icon-180.png',
     sparky: 'figuren/sparky-klein.jpg', 'coin maker': 'figuren/coinmaker-klein.jpg', flo: 'figuren/flo-klein.jpg', fompa: 'figuren/fompa-klein.jpg', sunny: 'figuren/sunny-klein.jpg',
     carmencita: 'figuren/carmencita-klein.jpg', ava: 'figuren/ava-klein.jpg',
-    'mama affe': 'figuren/mamaaffe-klein.jpg', lumo: 'figuren/lumo-klein.jpg', granny: 'figuren/granny-klein.jpg' };
+    'mama affe': 'figuren/mamaaffe-klein.jpg', lumo: 'figuren/lumo-klein.jpg', granny: 'figuren/granny-klein.jpg',
+    fia: 'figuren/fia-klein.jpg', zahnboecklein: 'figuren/zahnboecklein-klein.jpg', waefwaef: 'figuren/waefwaef-klein.jpg' };
   var KEY = (new URLSearchParams(location.search).get('f') || 'otti').toLowerCase();
   if (KEY === 'rosa') KEY = 'granny'; // Granny heisst seit 23.10. Rosa, alte Links bleiben gültig.
+  KEY = { 'zahnböcklein': 'zahnboecklein', 'wäf wäf': 'waefwaef', 'waef waef': 'waefwaef', 'wäf': 'waefwaef' }[KEY] || KEY;
   var F = FIGUREN[KEY] || FIGUREN.otti, NAME = F.name, AGENT = F.agent, RUHE = F.ruhe || 0;
   document.title = NAME;
   // Home-Bildschirm-Symbol: das Gesicht der Figur, die gerade spricht.
@@ -263,9 +298,23 @@
   })();
   $('zurueck').addEventListener('click', function (e) { e.preventDefault(); if (history.length > 1) history.back(); else location.href = '../apps/'; });
 
+  // Otti (Kinder-Figur) lebt als Puppe (nova/puppe.js): atmet, blinzelt, winkt beim Antippen zurück,
+  // hört beim Mikrofon zu und bewegt beim Sprechen den Mund. Alle anderen Figuren bleiben wie bisher.
+  var puppe = null, OTTI = KEY === 'otti';
+  if (OTTI && window.Puppe) {
+    try {
+      var pd = document.createElement('div'); buehne.insertBefore(pd, buehne.firstChild);
+      puppe = Puppe.erstelle(pd, { figur: 'otti', bild: '../otti/otti-3d.jpg', ordner: 'puppe/otti/', neigenKnopf: false, ruhig: true });
+      document.body.classList.add('otti'); buehne.classList.remove('atmen');
+      buehne.setAttribute('role', 'button'); buehne.setAttribute('aria-label', 'Otti antippen, er winkt zurück');
+      $('ottiMenu').hidden = false; $('lernenBox').style.display = 'none';
+    } catch (e) { puppe = null; }
+  }
+  function pz(z) { if (puppe) puppe.zustand(z); }
   // Ottis Gesicht: Mund bewegt sich im Takt seiner Stimme (nova/mund.js).
   var bild = new Image();
   bild.onload = function () {
+    if (puppe) return;
     try {
       mund = NovaMund(figur, bild, F.mund); mund.setze(RUHE);
     } catch (e) { figur.getContext('2d').drawImage(bild, 0, 0); }
@@ -294,7 +343,7 @@
     var t = jetztGesagt.join('\n'); var gross = KEY === 'nova' || KEY === 'tropfi'; var max = gross ? 2500 : 900; if (t.length > max) t = t.slice(-max);
     var g = gedaechtnis(); g.push({ d: new Date().toLocaleDateString('de-CH'), t: t });
     try { localStorage.setItem(GED, JSON.stringify(g.slice(gross ? -12 : -4))); } catch (e) {}
-    if (lernenAn()) zuNova(t);
+    if (lernenAn() && !OTTI) zuNova(t); // Kinder-Figur: Gespräche verlassen das Handy nie als Text
     jetztGesagt = []; vergessenZeigen();
   }
   // Nova lernt: mit Einwilligung geht jedes Gespräch als Erfahrung in die Sense Engine.
@@ -561,7 +610,7 @@
   // Schreiben kostet fast nichts: ohne Mikrofon, ohne Stimme, gleiches Wissen und gleicher Server-Zugang.
   async function starten(nurText) {
     if (startet || conv) return;
-    startet = true; knopfZeigen();
+    startet = true; knopfZeigen(); pz('hoert');
     var nr = ++sitzung, weg = nurText ? null : kurzWeg();
     vonHand = false;
     status.textContent = NAME + ' wacht auf …'; hinweis.textContent = '';
@@ -586,7 +635,7 @@
         // Auf der Bühne nimmt Nova ab wie am Telefon; nach einer abgerissenen Verbindung ist sie still wieder da, bis Diego sie anspricht (nach 30 Min. verbindet sie still neu, siehe unten).
         overrides: BUEHNE.an && !nurText ? { agent: { firstMessage: begruessung() } } : weg ? { agent: { firstMessage: weiterBegr() } } : undefined,
         onConnect: function () { if (BUEHNE.an) abgenommen = true;
-          if (weg) setTimeout(function () { if (conv) try { conv.sendContextualUpdate('Diego war nur kurz weg (' + Math.max(1, Math.round((Date.now() - weg.zeit) / 60000)) + ' Min.). Kein neues Hallo, keine Vorstellung: einfach weitermachen, wo ihr wart. Zuletzt gesagt:\n' + weg.zeilen.join('\n')); } catch (x) {} }, 300); status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); hopsen();
+          if (weg) setTimeout(function () { if (conv) try { conv.sendContextualUpdate('Diego war nur kurz weg (' + Math.max(1, Math.round((Date.now() - weg.zeit) / 60000)) + ' Min.). Kein neues Hallo, keine Vorstellung: einfach weitermachen, wo ihr wart. Zuletzt gesagt:\n' + weg.zeilen.join('\n')); } catch (x) {} }, 300); status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); if (puppe) { if (puppe.gruesse) puppe.gruesse('winken', { blase: false, ton: false }); else pz('winkt'); setTimeout(function () { if (conv && !conv.__spricht) pz('hoert'); }, 2200); } else hopsen();
           if (HOER.an) setTimeout(function () { hoerLaut(false); ansichtSagen(HOER_AN); }, 400);
           if (SAG) setTimeout(sagNova, 500);
           if (MUSIK.an) setTimeout(function () { ansichtSagen(MUSIK_AN); musikNaechster(); }, 400); },
@@ -608,6 +657,7 @@
           if (HOER.an && m && m.message) hoerMit(m.source === 'user' ? 'Diego' : 'Nova', m.message);
           if (MUSIK.an && m && m.message) musikMit(m.source === 'user' ? 'Diego' : 'Nova', m.message);
           if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message);
+          if (puppe && m && m.message && m.source !== 'user' && !puppe.audio) puppe.sprich(m.message);
           if (BUEHNE.an && m && m.message && m.source !== 'user') BUEHNE.untertitel(m.message);
           if (BUEHNE.an && m && m.source === 'user' && LEBT) LEBT.geste('nicken'); },
         onModeChange: function (m) {
@@ -616,6 +666,7 @@
           if (BUEHNE.an) BUEHNE.spricht(sp);
           zentrale({ typ: 'spricht', ja: sp });
           buehne.classList.toggle('spricht', sp); buehne.classList.toggle('hoert', !sp);
+          if (puppe) { puppe.audio = sp ? { el: null } : null; pz(sp ? 'redet' : 'hoert'); }
           if (MUSIK.an) musikSpricht(sp);
           status.textContent = NAME + (sp ? ' spricht …' : ' hört zu.');
         }
@@ -625,7 +676,7 @@
       pannen = 0;
       c.__text = !!nurText;
       conv = c; startet = false; knopfZeigen();
-      if (!nurText) buehne.classList.add('hoert');
+      if (!nurText) buehne.classList.add('hoert'); pz('hoert');
     } catch (e) {
       startet = false; knopfZeigen();
       if (versuch) versuch.then(function (x) { x.endSession().catch(function () {}); }).catch(function () {});
@@ -661,6 +712,7 @@
     if (conv) merken();
     conv = null; startet = false;
     buehne.classList.remove('hoert', 'spricht');
+    if (puppe) { puppe.audio = null; pz('ruhig'); }
     knopfZeigen();
     if (t) status.textContent = t;
   }
@@ -1204,8 +1256,29 @@
     if (conv || startet) vonHand = true;
     if (conv) { BUEHNE.aktiv = false; aufgelegt = false; var c = conv; ende('Aufgelegt.'); c.endSession().catch(function () {}); if (BUEHNE.an) $('vorhang').style.display = ''; }
     else if (BUEHNE.an) $('vorhang').click();
+    else if (OTTI && !elternJa()) { $('ottiOk').hidden = false; status.textContent = 'Zuerst einmal kurz die Eltern fragen.'; }
     else starten();
   });
+  // Kinder-Figur: vor dem ersten Live-Gespräch einmal das Eltern-Ja (gleich wie in der Otti-App).
+  function elternJa() { try { return localStorage.getItem('otti_eltern_ok') === '1'; } catch (e) { return false; } }
+  (function () {
+    var b = $('ottiOkHalten'), t0 = 0, raf = 0;
+    function tick() { var p = Math.min(1, (performance.now() - t0) / 3000); b.style.setProperty('--p', p.toFixed(3)); if (p >= 1) { t0 = 0; try { localStorage.setItem('otti_eltern_ok', '1'); } catch (e) {} $('ottiOk').hidden = true; starten(); return; } raf = requestAnimationFrame(tick); }
+    function stop() { t0 = 0; cancelAnimationFrame(raf); b.style.setProperty('--p', 0); }
+    b.addEventListener('pointerdown', function (e) { try { b.setPointerCapture(e.pointerId); } catch (x) {} t0 = performance.now(); raf = requestAnimationFrame(tick); });
+    b.addEventListener('pointerup', stop); b.addEventListener('pointercancel', stop); b.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  })();
+  // Auf die Figur tippen: Otti winkt zurück (Puppe), die anderen hüpfen vor Freude.
+  buehne.addEventListener('click', function () {
+    if (buehne.classList.contains('zeigt')) { buehne.classList.remove('zeigt'); return; }
+    if (!puppe) { hopsen(); return; }
+    if (conv) return; // im Gespräch hört Otti zu
+    var gs = ['Hallo! Ich winke dir zurück!', 'Huhu! Schön, dass du da bist.', 'Winke, winke!'][Math.floor(Math.random() * 3)];
+    if (puppe.gruesse) puppe.gruesse('winken+reden', { satz: gs, blase: false, ton: false });
+    else { pz('winkt'); clearTimeout(buehne._w); buehne._w = setTimeout(function () { if (!conv) pz('ruhig'); }, 2600); }
+    status.textContent = gs;
+  });
+  if (puppe) status.textContent = 'Tipp mich an, oder tipp auf das Mikrofon und rede mit mir.';
   // Die Zentrale meldet: diese KI ist jetzt vorne (gleich anrufen) oder weggewischt (auflegen).
   if (EINGEBETTET) window.addEventListener('message', function (e) {
     if (e.origin !== location.origin || !e.data || !e.data.zentrale) return;
@@ -1287,7 +1360,6 @@
   if (KEY === 'nova' && !BUEHNE.an && window.NovaBeats) { $('musik').hidden = false; $('musik').addEventListener('click', function () { musikSetzen(!MUSIK.an); }); }
   if (KEY === 'nova' && !BUEHNE.an) { $('hoeren').hidden = false; $('hoeren').addEventListener('click', function () { hoerSetzen(!HOER.an); }); }
   // Auf Otti tippen: er hüpft vor Freude.
-  buehne.addEventListener('click', function () { if (buehne.classList.contains('zeigt')) buehne.classList.remove('zeigt'); else hopsen(); });
   // Sparky: App öffnen, irgendwo hintippen, er hört zu (ein Tipp reicht, das Handy verlangt ihn fürs Mikrofon).
   if (KEY === 'sparky') {
     status.textContent = 'Tipp irgendwo hin, dann hört Sparky zu.';
