@@ -2,11 +2,12 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-23-09">
+<meta name="stand" content="2026-10-24-15">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
 <link rel="apple-touch-icon" id="symbol" href="icon-nova-180.png">
+<link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="stylesheet" href="puppe.css">
@@ -197,6 +198,7 @@
 <form class="schreiben" id="schreiben" autocomplete="off"><input id="eingabe" type="text" enterkeyhint="send" placeholder="Schreiben …" aria-label="Nachricht schreiben"><button type="button" class="malen" id="foto" aria-label="Foto an Nova schicken">📷</button><input id="fotoWahl" type="file" accept="image/*" hidden><button type="button" class="malen" id="malen" aria-label="Nova zeichnet">🎨</button><button type="submit" aria-label="Senden">➤</button></form>
 <button class="knopf" id="knopf" type="button" aria-label="Gespräch starten">🎙</button>
 <button class="hoeren" id="hoeren" type="button" hidden aria-pressed="false">👂 Nur zuhören</button>
+<button class="hoeren" id="glocke" type="button" hidden>🔔 Nachrichten von Nova</button>
 <button class="hoeren" id="musik" type="button" hidden aria-pressed="false">🎵 Musik-Spiegel</button>
 <div class="hinweis" id="hinweis"></div>
 <label class="lernen" id="lernenBox"><input type="checkbox" id="lernen"> Nova darf aus diesem Gespräch lernen <small>(nur Diego und Team, auf unserem Server in der Schweiz)</small></label>
@@ -635,6 +637,7 @@
         onConnect: function () { if (BUEHNE.an) abgenommen = true;
           if (weg) setTimeout(function () { if (conv) try { conv.sendContextualUpdate('Diego war nur kurz weg (' + Math.max(1, Math.round((Date.now() - weg.zeit) / 60000)) + ' Min.). Kein neues Hallo, keine Vorstellung: einfach weitermachen, wo ihr wart. Zuletzt gesagt:\n' + weg.zeilen.join('\n')); } catch (x) {} }, 300); status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); if (puppe) { if (puppe.gruesse) puppe.gruesse('winken', { blase: false, ton: false }); else pz('winkt'); setTimeout(function () { if (conv && !conv.__spricht) pz('hoert'); }, 2200); } else hopsen();
           if (HOER.an) setTimeout(function () { hoerLaut(false); ansichtSagen(HOER_AN); }, 400);
+          if (SAG) setTimeout(sagNova, 500);
           if (MUSIK.an) setTimeout(function () { ansichtSagen(MUSIK_AN); musikNaechster(); }, 400); },
         onDisconnect: function () {
           if (nr === sitzung && maltSeit) { maltSeit = 0; ende('Verbindung weg, das Bild kam nicht an. Nochmal 🎨'); return; }
@@ -1282,6 +1285,49 @@
     if (e.data.typ === 'start' && !conv && !startet) starten();
     if (e.data.typ === 'stopp') { vonHand = true; if (conv) { var c = conv; ende('Bis gleich.'); c.endSession().catch(function () {}); } }
   });
+  // Push mit Novas Gesicht: Tippt Diego auf die Mitteilung, öffnet sich Nova mit ?sag= und sagt den Satz, sobald sie verbunden ist.
+  var SAG = new URLSearchParams(location.search).get('sag') || '';
+  if (SAG) history.replaceState(null, '', location.pathname + '?f=' + KEY);
+  function sagNova() {
+    if (!SAG || !conv) return;
+    ansichtSagen('Du hast Diego eben eine Mitteilung aufs Handy geschickt, und er hat sie geöffnet. Sag ihm jetzt sofort, kurz und warm, in deinen Worten: «' + SAG.slice(0, 400) + '». Kein Hallo davor.');
+    SAG = '';
+  }
+  function pushServer() {
+    try { var q = new URL(localStorage.getItem('zentrale.quelle') || ''); return { basis: q.origin, l: q.searchParams.get('l') || '' }; } catch (e) { return null; }
+  }
+  function schluessel(b64) {
+    var s = (b64 + '='.repeat((4 - b64.length % 4) % 4)).replace(/-/g, '+').replace(/_/g, '/'), r = atob(s), a = new Uint8Array(r.length);
+    for (var i = 0; i < r.length; i++) a[i] = r.charCodeAt(i);
+    return a;
+  }
+  async function glockeAn() {
+    var g = $('glocke'), sv = pushServer();
+    if (!sv || !sv.l) { hinweis.textContent = 'Öffne zuerst einmal die Schaltzentrale, dann klappt das.'; return; }
+    if (!window.navigator.standalone && /iPhone|iPad/.test(navigator.userAgent)) { hinweis.textContent = 'Auf dem iPhone geht das nur aus der Nova-App vom Home-Bildschirm.'; return; }
+    g.disabled = true;
+    try {
+      var reg = await navigator.serviceWorker.register('sw.js');
+      if (await Notification.requestPermission() !== 'granted') throw new Error('nicht erlaubt');
+      var k = await fetch(sv.basis + '/api/push/schluessel').then(function (r) { if (!r.ok) throw new Error('Server'); return r.json(); });
+      var abo = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: schluessel(k.publicKey || k.schluessel) });
+      var r = await fetch(sv.basis + '/api/push/abo?l=' + encodeURIComponent(sv.l), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(abo) });
+      if (!r.ok) throw new Error('Server');
+      try { localStorage.setItem('nova.push', '1'); } catch (e) {}
+      g.textContent = '🔔 Nova darf schreiben'; hinweis.textContent = 'Fertig. Nova kann dir jetzt Mitteilungen mit ihrem Gesicht schicken.';
+    } catch (e) {
+      g.disabled = false;
+      hinweis.textContent = /erlaubt/.test(e.message) ? 'Mitteilungen sind aus. Einstellungen › Mitteilungen › Nova erlauben.' : 'Der Server-Teil ist noch nicht bereit. Ich sag dir, wenn es geht.';
+    }
+  }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('message', function (e) { if (e.data && e.data.sag) { SAG = e.data.sag; sagNova(); } });
+    if (KEY === 'nova' && !BUEHNE.an && 'PushManager' in window) {
+      $('glocke').hidden = false; $('glocke').addEventListener('click', glockeAn);
+      try { if (localStorage.getItem('nova.push')) $('glocke').textContent = '🔔 Nova darf schreiben'; } catch (e) {}
+    }
+  }
+  if (SAG && KEY === 'nova') status.textContent = 'Tipp auf mich, ich hab dir was zu sagen.';
   // Bühne: Nova lebt als Video (nova/clips/). Zuhören und Sprechen laufen als Schleife, dazu ab und zu eine Geste.
   // Die Schleife folgt der Klasse «spricht» auf der Bühne, so klappt es auch am Beamer, wenn Nova übers Telefon spricht.
   var LEBT = BUEHNE.an ? (function () {
