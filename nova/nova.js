@@ -24,10 +24,11 @@
     'Erinnerung': 'nova', 'Fotowissen': 'nova', 'Sense Engine': 'nova', 'Transkript': 'fompa',
     'Fompa': 'fompa', 'Food and Flow': 'flo', 'Kiki': 'kiki', 'Fias Nest': 'fia', 'Mama Affe': 'mama affe',
     'Wäf Wäf': 'wäf wäf', 'KI-Verse': 'sunny', 'Sunny': 'sunny', 'Coin Maker': 'coin maker',
-    'Granny': 'granny', 'Rosa': 'granny', 'Carmencita': 'carmencita'
+    'Granny': 'granny', 'Rosa': 'granny', 'Carmencita': 'carmencita', 'Zahnböcklein': 'zahnböcklein'
   };
   var FIGUR = String(attr('data-nova-figur', FIGUREN[APP] || 'nova')).toLowerCase();
   var NAME = FIGUR.replace(/(^|[\s.])([a-zäöü])/g, function (m, a, b) { return a + b.toUpperCase(); });
+  if (FIGUR === 'granny') NAME = 'Rosa'; // Granny heisst seit 23.10. Rosa
   // Kinder-Apps: keine Verbindungs-Einstellungen und keine Bauwünsche sichtbar.
   var KIND = attr('data-nova-kind', '') === '1';
   var KNOPF = attr('data-nova-knopf', '1') !== '0';
@@ -52,7 +53,12 @@
     'coin maker': 'agent_2001m55ss61fe5wb1qct4b8bqkz3',
     'flo': 'agent_0001m55ss8s7eb0vnzr6f1vz1tf0',
     'fompa': 'agent_5401m55ssbdheqwtyw4131dqya8w',
-    'sunny': 'agent_4201m55ssdr3fksaey0x2yh1vpmh'
+    'sunny': 'agent_4201m55ssdr3fksaey0x2yh1vpmh',
+    'fia': 'agent_3601m5n1x1nqexnb952z9qbakq23',
+    'wäf wäf': 'agent_3201m5n1x70rfcsbbm8b1me8r5wx',
+    'granny': 'agent_3601m5jv6vcpetpsnckmvqtgs1s2',
+    'mama affe': 'agent_6601m5jvastdem8s9n0ha2d9cpr6',
+    'zahnböcklein': 'agent_6701m5n1x4ejeprvkg1tg4n8qy3z'
   };
   var AGENT = AGENTEN[FIGUR] || '';
   // Figuren mit Gesicht, das mitspricht: Live-Gespräch auf der grossen Bühne (nova/reden.html).
