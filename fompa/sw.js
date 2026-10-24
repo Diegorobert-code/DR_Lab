@@ -1,6 +1,6 @@
 // Fompa – Offline-Cache (nur eigene Dateien, keine Belege)
-const CACHE = 'fompa-v1';
-const FILES = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-96.png'];
+const CACHE = 'fompa-v2';
+const FILES = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-96.png', './figur.jpg', '../apps/sprechen/sprechen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
 });

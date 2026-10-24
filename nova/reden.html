@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="stand" content="2026-10-23-07">
+<meta name="stand" content="2026-10-24-01">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reden</title>
 <meta name="theme-color" content="#0b1a3a">
@@ -79,7 +79,8 @@
   .knopf:focus-visible { outline:3px solid #fff; outline-offset:4px; }
   .hinweis { color:var(--leise); font-size:13px; margin-top:8px; text-align:center; min-height:18px; }
   .hoeren { margin-top:10px; border:1px solid var(--leise); border-radius:999px; background:none; color:inherit; font:15px system-ui, sans-serif; padding:7px 14px; cursor:pointer; }
-  body.hoermodus .hoeren { background:#1f6f5c; border-color:#1f6f5c; color:#fff; }
+  body.hoermodus #hoeren { background:#1f6f5c; border-color:#1f6f5c; color:#fff; }
+  body.musikmodus #musik { background:#6b3fa0; border-color:#6b3fa0; color:#fff; }
   .vergessen { margin-top:6px; background:none; border:0; color:var(--leise); font:13px system-ui, sans-serif; text-decoration:underline; cursor:pointer; opacity:.8; }
   @media (prefers-reduced-motion: reduce) { .atmen { animation:none; } }
 .buehne .leinwand{position:absolute;inset:0;width:100%;height:100%;display:none;z-index:2;background:#f6efe0}.buehne.malt .leinwand{display:block}.buehne .gemalt{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:1}.buehne.zeigt .gemalt{display:block}
@@ -95,6 +96,9 @@
   body.bmodus .buehne { width:min(58vh, 46vw); z-index:3; transition:width .6s ease, right .6s ease, bottom .6s ease; }
   body.bmodus.film .buehne { position:fixed; right:2.5vw; bottom:3vh; width:min(24vh, 18vw); box-shadow:0 10px 30px #000a, 0 0 0 3px #f5c54255; }
   body.bmodus.film .buehne.spricht { box-shadow:0 10px 30px #000a, 0 0 0 4px var(--gold), 0 0 34px #f5c54288; }
+  /* Bühne: Nova lebt als Video (clips/), Schleifen und Gesten blenden weich ineinander. */
+  .buehne video.lebt { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .35s; pointer-events:none; }
+  .buehne video.lebt.zeigt { opacity:1; }
   body.bmodus .status { position:fixed; left:2.5vw; bottom:2vh; margin:0; font-size:14px; opacity:.55; z-index:3; text-align:left; }
   body.bmodus .knopf { position:fixed; left:2.5vw; top:3vh; width:44px; height:44px; font-size:18px; margin:0; opacity:.35; z-index:4; cursor:pointer; }
   body.bmodus .hinweis { position:fixed; left:0; right:0; top:2vh; z-index:4; }
@@ -172,12 +176,14 @@
 <button class="knopf" id="knopf" type="button" aria-label="Gespräch starten">🎙</button>
 <button class="hoeren" id="hoeren" type="button" hidden aria-pressed="false">👂 Nur zuhören</button>
 <button class="hoeren" id="glocke" type="button" hidden>🔔 Nachrichten von Nova</button>
+<button class="hoeren" id="musik" type="button" hidden aria-pressed="false">🎵 Musik-Spiegel</button>
 <div class="hinweis" id="hinweis"></div>
 <label class="lernen" id="lernenBox"><input type="checkbox" id="lernen"> Nova darf aus diesem Gespräch lernen <small>(nur Diego und Team, auf unserem Server in der Schweiz)</small></label>
 <button class="vergessen" id="vergessen" type="button" hidden><span id="vname">Otti</span> vergisst alles</button>
 
 <script src="elevenlabs-client-1.26.0.js"></script>
 <script src="mund.js"></script>
+<script src="beats.js"></script>
 <script>
 (function () {
   // Live-Gespräch mit einer Figur (reden.html?f=jackie): ElevenLabs Agent hört zu, denkt mit Claude
@@ -192,7 +198,7 @@
       mund: { linie: [[318, 388], [335, 402], [360, 410], [400, 412], [430, 408], [448, 400]], lippe: 426, kinn: 500, max: 22 } },
     nova: { name: 'Nova', agent: 'agent_4201m55seyhdexd96tkaxt72hmaq', bild: 'nova-3d.jpg', gedaechtnis: true, welt: true,
       mund: { linie: [[520, 684], [545, 694], [580, 700], [620, 700], [660, 690], [690, 668], [705, 636]], lippe: 738, kinn: 792, max: 22 } },
-    sparky: { name: 'Sparky', agent: 'agent_7401m55j20jwek69gsh3gkfhaa77', bild: 'figuren/sparky.jpg',
+    sparky: { name: 'Sparky', agent: 'agent_7401m55j20jwek69gsh3gkfhaa77', bild: 'figuren/sparky.jpg', gedaechtnis: true, messwerte: true,
       mund: { linie: [[440, 790], [470, 808], [500, 820], [560, 832], [600, 824], [640, 804], [690, 780]], lippe: 852, kinn: 905, max: 18, innen: [90, 28, 34] } },
     'coin maker': { name: 'Coin Maker', agent: 'agent_2001m55ss61fe5wb1qct4b8bqkz3', bild: 'figuren/coinmaker.jpg',
       mund: { linie: [[464, 446], [484, 480], [520, 488], [560, 498], [590, 506], [614, 512]], lippe: 526, kinn: 600, max: 20 } },
@@ -384,9 +390,53 @@
     if (F.gedaechtnis) v.letztes_mal = erinnerung();
     if (F.positionen) v.positionen = positionen();
     if (F.welt) v.welt = welt();
+    if (F.messwerte) v.messwerte = messwerte();
     if (KEY === 'nova') v.buehne = BUEHNE.an ? BUEHNE.variable() : 'aus';
     return Object.keys(v).length ? v : undefined;
   }
+
+  // Sparky sieht die letzten Messungen aus Human Sparks (gleiches Handy, gleiche Adresse); neue kommen während dem Gespräch dazu.
+  function messZeile(e) {
+    var d = new Date(e.t), z = d.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' });
+    var a = e.type === 'sitzung' ? (e.start || {}) : e, b = e.type === 'sitzung' ? (e.end || {}) : null;
+    if (e.type === 'musik') return z + ' Musik «' + (e.song || 'Song') + '» ' + Math.round((e.dur || 0) / 60) + ' Min, Gefühle mit Song-Minute: ' + ((e.stamps || []).map(function (x) { return (x.b ? x.b + ' ' : '') + Math.floor(x.t / 60) + ':' + String(x.t % 60).padStart(2, '0') + ' ' + (x.k || '«' + String(x.text).slice(0, 120) + '»'); }).join(', ') || 'keine');
+    var t = z + ' ' + ({ messung: 'Messung', sitzung: 'Sitzung', pulsbild: 'Pulsbild', sensor: 'Sensor', eintrag: 'Notiz' }[e.type] || e.type) + (e.demo ? ' (Demo)' : '');
+    if (a.bpm) t += ': Puls ' + Math.round(a.bpm) + (a.rmssd != null ? ', HRV ' + Math.round(a.rmssd) + ' ms' : '');
+    if (b && b.bpm) t += ' → Ende Puls ' + Math.round(b.bpm) + (b.rmssd != null ? ', HRV ' + Math.round(b.rmssd) + ' ms' : '');
+    if (e.gefuehl) t += ', Gefühl ' + e.gefuehl + '/5';
+    if (e.befVor != null && e.befNach != null) t += ', Befinden ' + e.befVor + '→' + e.befNach;
+    var w = e.text || e.schluss; if (w) t += ', «' + String(w).slice(0, 160) + '»';
+    return t;
+  }
+  function messListe() {
+    var l = hol('hs_entries') || [];
+    return l.filter(function (e) { return e && e.t && /^(messung|sitzung|pulsbild|sensor|eintrag|musik)$/.test(e.type); }).slice(-6);
+  }
+  function liveZeile() {
+    var x = hol('hs_live'); if (!x || Date.now() - x.t > 15 * 60000) return '';
+    return 'Jetzt läuft in Human Sparks: ' + (x.stueck ? '«' + x.stueck + '» (' + x.farbe + ')' + (x.praxis ? ', Praxis-Musik' : ', Beat-Reise') : '«' + (x.song || 'ein Song') + '»') + ', Minute ' + x.min +
+      (x.wer === 'klient' ? '. Gerade tippt die Klientin oder der Klient selbst (anonym).' : x.praxis ? '. Diego tippt, was er bei der Person beobachtet (anonym).' : '.') +
+      (x.zuletzt && x.zuletzt.length ? '\nZuletzt angetippt: ' + x.zuletzt.join(', ') : '\nNoch nichts angetippt.') +
+      (x.messung && x.messung.length ? '\nKörper-Messung pro Stück (1 eng/flach bis 5 weit/tief, erster→letzter Wert): ' + x.messung.join(' | ') : '');
+  }
+  function messwerte() {
+    var l = messListe(), live = liveZeile();
+    return (live ? live + '\n\n' : '') + (l.length ? l.map(messZeile).join('\n') + '\nSchätzwerte vom Handy, keine Diagnose.' : 'Noch keine Messung auf diesem Handy.');
+  }
+  var liveZuletzt = '';
+  if (F.messwerte) window.addEventListener('storage', function (ev) {
+    if (ev.key !== 'hs_live' || !conv) return;
+    var z = liveZeile(); if (!z || z === liveZuletzt) return; liveZuletzt = z;
+    try { conv.sendContextualUpdate(z + '\nNimm das still auf. Sprich nur darüber, wenn Diego etwas sagt oder fragt, und dann kurz und warm.'); } catch (x) {}
+  });
+  var messZuletzt = (messListe().slice(-1)[0] || {}).t || 0;
+  if (F.messwerte) window.addEventListener('storage', function (ev) {
+    if (ev.key !== 'hs_entries' || !conv) return;
+    var neu = messListe().filter(function (e) { return e.t > messZuletzt; });
+    if (!neu.length) return;
+    messZuletzt = neu[neu.length - 1].t;
+    try { conv.sendContextualUpdate('Neue Messung aus Human Sparks:\n' + neu.map(messZeile).join('\n')); } catch (x) {}
+  });
 
   function zeile(wer, t) {
     jetztGesagt.push((wer === 'du' ? 'Gegenüber: ' : NAME + ': ') + t);
@@ -538,7 +588,8 @@
         onConnect: function () { if (BUEHNE.an) abgenommen = true;
           if (weg) setTimeout(function () { if (conv) try { conv.sendContextualUpdate('Diego war nur kurz weg (' + Math.max(1, Math.round((Date.now() - weg.zeit) / 60000)) + ' Min.). Kein neues Hallo, keine Vorstellung: einfach weitermachen, wo ihr wart. Zuletzt gesagt:\n' + weg.zeilen.join('\n')); } catch (x) {} }, 300); status.textContent = NAME + (nurText ? ' liest mit.' : ' hört zu.'); hopsen();
           if (HOER.an) setTimeout(function () { hoerLaut(false); ansichtSagen(HOER_AN); }, 400);
-          if (SAG) setTimeout(sagNova, 500); },
+          if (SAG) setTimeout(sagNova, 500);
+          if (MUSIK.an) setTimeout(function () { ansichtSagen(MUSIK_AN); musikNaechster(); }, 400); },
         onDisconnect: function () {
           if (nr === sitzung && maltSeit) { maltSeit = 0; ende('Verbindung weg, das Bild kam nicht an. Nochmal 🎨'); return; }
           // Bühne: reisst die Verbindung, ist Nova nach zwei Sekunden still wieder da. Der Film läuft weiter.
@@ -553,16 +604,19 @@
         onError: function (m) { hinweis.textContent = 'Fehler: ' + (m || 'unbekannt'); },
         onMessage: function (m) {
           if (m && m.source === 'user' && eigene.indexOf(m.message) >= 0) { eigene.splice(eigene.indexOf(m.message), 1); return; }
-          if (m && m.source === 'user') { $('chips').innerHTML = ''; weiterVersuche = 0; if (!hoerBefehl(m.message)) ansichtBefehl(m.message); }
+          if (m && m.source === 'user') { $('chips').innerHTML = ''; weiterVersuche = 0; if (!musikBefehl(m.message) && !hoerBefehl(m.message)) ansichtBefehl(m.message); }
           if (HOER.an && m && m.message) hoerMit(m.source === 'user' ? 'Diego' : 'Nova', m.message);
+          if (MUSIK.an && m && m.message) musikMit(m.source === 'user' ? 'Diego' : 'Nova', m.message);
           if (m && m.message) zeile(m.source === 'user' ? 'du' : 'otti', m.message);
-          if (BUEHNE.an && m && m.message && m.source !== 'user') BUEHNE.untertitel(m.message); },
+          if (BUEHNE.an && m && m.message && m.source !== 'user') BUEHNE.untertitel(m.message);
+          if (BUEHNE.an && m && m.source === 'user' && LEBT) LEBT.geste('nicken'); },
         onModeChange: function (m) {
           var sp = m && m.mode === 'speaking';
           if (conv) conv.__spricht = sp;
           if (BUEHNE.an) BUEHNE.spricht(sp);
           zentrale({ typ: 'spricht', ja: sp });
           buehne.classList.toggle('spricht', sp); buehne.classList.toggle('hoert', !sp);
+          if (MUSIK.an) musikSpricht(sp);
           status.textContent = NAME + (sp ? ' spricht …' : ' hört zu.');
         }
       });
@@ -742,6 +796,47 @@
     return false;
   }
 
+  // Musik-Spiegel (23.10.): Nova spielt Diego möglichst viele verschiedene Beats (beats.js), Diego sagt, was sie bei ihm auslösen.
+  // So lernt Nova ihn kennen; dieselbe Idee kommt in Human Sparks. Gefühle bleiben intern: die Mitschrift geht nur an Claude.
+  var MUSIK = { an: false, nr: 0, beat: null, reagiert: false, zeilen: [], uhr: 0 };
+  var MUSIK_AN = 'MUSIK-SPIEGEL AN. Die App spielt Diego jetzt einen Beat nach dem anderen, ganz verschiedene Musik. Du lernst ihn so kennen. Zu jedem neuen Beat sagst du höchstens einen kurzen Satz (zum Beispiel den Stil nennen und «Was macht das mit dir?»). Erzählt Diego, was der Beat bei ihm auslöst, spiegelst du das in einem kurzen, warmen Satz: keine Deutung, keine Warum-Fragen, keine Diagnose. Danach kommt der nächste Beat von selbst. Sagt er «nächster», kommt sofort ein neuer. Merk dir still, was welche Musik bei ihm auslöst. Das gilt, bis «MUSIK-SPIEGEL AUS» kommt.';
+  function musikMit(wer, text) { if (wer === 'Diego' && /^\s*(nova,?\s*)?(n(ä|ae)chste[rns]?|weiter|anderer?( beat)?|skip)\s*[.!]?\s*$/i.test(text)) return; MUSIK.zeilen.push(wer + ': ' + text); if (MUSIK.zeilen.length > 600) MUSIK.zeilen.shift(); if (wer === 'Diego') MUSIK.reagiert = true; }
+  function musikNaechster() {
+    if (!MUSIK.an || !window.NovaBeats) return;
+    clearTimeout(MUSIK.uhr);
+    var b = NovaBeats.spielen(); MUSIK.nr++; MUSIK.beat = b; MUSIK.reagiert = false;
+    MUSIK.zeilen.push('— Beat ' + MUSIK.nr + ': ' + b.stil + ', ' + b.bpm + ' BPM, ' + b.tonart);
+    $('musik').textContent = '🎵 ' + b.stil + ' · tippen = aus';
+    ansichtSagen('Jetzt läuft Beat ' + MUSIK.nr + ': ' + b.stil + ' (' + b.bpm + ' BPM, ' + b.tonart + ', klingt ' + b.stimmung + '). Ein kurzer Satz, dann hörst du zu.');
+  }
+  // Nova spricht: Musik leiser. Hat Diego zum Beat etwas gesagt und Nova ist fertig, kommt nach kurzer Pause der nächste.
+  function musikSpricht(sp) {
+    if (window.NovaBeats) NovaBeats.leise(sp);
+    clearTimeout(MUSIK.uhr);
+    if (!sp && MUSIK.reagiert) MUSIK.uhr = setTimeout(musikNaechster, 2500);
+  }
+  function musikSetzen(an) {
+    if (KEY !== 'nova' || BUEHNE.an || MUSIK.an === an || !window.NovaBeats) return;
+    if (an && HOER.an) hoerSetzen(false);
+    MUSIK.an = an;
+    document.body.classList.toggle('musikmodus', an);
+    $('musik').setAttribute('aria-pressed', String(an));
+    if (an) { NovaBeats.start(); MUSIK.zeilen = []; MUSIK.nr = 0; if (conv) { ansichtSagen(MUSIK_AN); musikNaechster(); } else { $('musik').textContent = '🎵 Musik-Spiegel'; if (!startet) starten(false); } return; }
+    clearTimeout(MUSIK.uhr); NovaBeats.stopp(); NovaBeats.leise(false);
+    $('musik').textContent = '🎵 Musik-Spiegel';
+    var mit = MUSIK.zeilen.join('\n'); if (mit.length > 3500) mit = mit.slice(-3500);
+    ansichtSagen('MUSIK-SPIEGEL AUS. Du sprichst wieder normal.' + (MUSIK.nr ? ' Gib die Mitschrift jetzt still an Claude: nova_server, was = auftrag, text = «Musik-Spiegel-Mitschrift (intern) für Nova-Wissen und Human Sparks:» und darunter die Mitschrift. Dann sag nur kurz «Danke, ich hab mir alles gemerkt.». Mitschrift:\n' + mit : ''));
+  }
+  // true, wenn der Satz ein Musik-Befehl war.
+  function musikBefehl(text) {
+    if (KEY !== 'nova' || BUEHNE.an) return false;
+    var t = String(text || '').toLowerCase();
+    if (MUSIK.an && /musik\s*-?\s*(spiegel\s*)?(aus|stopp|stop|fertig|beenden)|genug musik|keine musik mehr/.test(t)) { musikSetzen(false); return true; }
+    if (!MUSIK.an && /musik\s*-?\s*spiegel|zeig mir (musik|beats)|spiel mir (musik|beats|was vor)|beats zeigen/.test(t)) { musikSetzen(true); return true; }
+    if (MUSIK.an && /^\s*(nova,?\s*)?(n(ä|ae)chste[rns]?|weiter|anderer?( beat)?|skip)\s*[.!]?\s*$/.test(t)) { musikNaechster(); return true; }
+    return false;
+  }
+
   var BUEHNE = (function () {
     var an = new URLSearchParams(location.search).get('buehne') === '1' && KEY === 'nova';
     var video = $('film'), kino = $('kino'), ut = $('untertitel'), liste = [], jetzt = -1, laut = 1, utUhr = 0, aktiv = false;
@@ -863,6 +958,7 @@
     function spricht(ja) { if (rolle === 'telefon' && beamerDa) return; video.volume = ja ? laut * 0.2 : laut; }
     function untertitel(t) {
       if (rolle === 'telefon' && beamerDa) { funk({ typ: 'text', t: String(t) }); return; }
+      if (LEBT) LEBT.text(t);
       ut.textContent = t; ut.classList.add('an'); clearTimeout(utUhr);
       utUhr = setTimeout(function () { ut.classList.remove('an'); }, Math.min(12000, 2500 + t.length * 70));
     }
@@ -1159,9 +1255,48 @@
     }
   }
   if (SAG && KEY === 'nova') status.textContent = 'Tipp auf mich, ich hab dir was zu sagen.';
+  // Bühne: Nova lebt als Video (nova/clips/). Zuhören und Sprechen laufen als Schleife, dazu ab und zu eine Geste.
+  // Die Schleife folgt der Klasse «spricht» auf der Bühne, so klappt es auch am Beamer, wenn Nova übers Telefon spricht.
+  var LEBT = BUEHNE.an ? (function () {
+    var v = {}, jetzt = '', geste = '', zuletzt = 0;
+    ['zuhoeren', 'sprechen', 'winken', 'nicken', 'staunen', 'freuen'].forEach(function (n) {
+      var e = document.createElement('video');
+      e.className = 'lebt'; e.muted = true; e.playsInline = true; e.setAttribute('playsinline', ''); e.preload = 'auto';
+      e.loop = n === 'zuhoeren' || n === 'sprechen'; e.src = 'clips/' + n + '.mp4';
+      if (!e.loop) e.addEventListener('ended', function () { geste = ''; zeigen(schleife()); });
+      buehne.insertBefore(e, buehne.querySelector('.glanz')); v[n] = e;
+    });
+    function schleife() { return buehne.classList.contains('spricht') ? 'sprechen' : 'zuhoeren'; }
+    function zeigen(n) {
+      if (n === jetzt) return;
+      var neu = v[n], alt = v[jetzt];
+      if (!neu.loop) neu.currentTime = 0;
+      neu.play().catch(function () {});
+      neu.classList.add('zeigt'); jetzt = n;
+      if (alt) { alt.classList.remove('zeigt'); setTimeout(function () { if (!alt.classList.contains('zeigt')) alt.pause(); }, 400); }
+    }
+    new MutationObserver(function () { if (!geste) zeigen(schleife()); }).observe(buehne, { attributes: true, attributeFilter: ['class'] });
+    zeigen('zuhoeren');
+    // Gesten nicht zu oft: höchstens alle 12 Sekunden eine.
+    function machGeste(n) { if (!v[n] || geste || Date.now() - zuletzt < 12000) return; zuletzt = Date.now(); geste = n; zeigen(n); }
+    var REGELN = [[/\b(hallo|hoi|grüezi|willkommen|tschüss|tschau|ciao|bis bald)\b/i, 'winken'], [/\b(wow|unglaublich|stell dir vor|wahnsinn|krass)\b/i, 'staunen'],
+      [/(freu|super|toll|wunderbar|danke|juhu|bravo)/i, 'freuen'], [/^(ja|genau|richtig|stimmt|klar)\b/i, 'nicken']];
+    function text(t) { t = String(t || ''); for (var i = 0; i < REGELN.length; i++) if (REGELN[i][0].test(t)) { machGeste(REGELN[i][1]); return; } }
+    return { geste: machGeste, text: text };
+  })() : null;
+  if (KEY === 'nova' && !BUEHNE.an && window.NovaBeats) { $('musik').hidden = false; $('musik').addEventListener('click', function () { musikSetzen(!MUSIK.an); }); }
   if (KEY === 'nova' && !BUEHNE.an) { $('hoeren').hidden = false; $('hoeren').addEventListener('click', function () { hoerSetzen(!HOER.an); }); }
   // Auf Otti tippen: er hüpft vor Freude.
   buehne.addEventListener('click', function () { if (buehne.classList.contains('zeigt')) buehne.classList.remove('zeigt'); else hopsen(); });
+  // Sparky: App öffnen, irgendwo hintippen, er hört zu (ein Tipp reicht, das Handy verlangt ihn fürs Mikrofon).
+  if (KEY === 'sparky') {
+    status.textContent = 'Tipp irgendwo hin, dann hört Sparky zu.';
+    document.addEventListener('click', function los(ev) {
+      if (ev.target.closest && ev.target.closest('a, button, input, label, form')) return;
+      document.removeEventListener('click', los, true);
+      if (!conv && !startet) starten(false);
+    }, true);
+  }
 
 })();
 </script>
