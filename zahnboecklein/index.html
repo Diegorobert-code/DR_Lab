@@ -206,6 +206,41 @@ button.ghost{min-height:48px}
   @keyframes plopp{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
 }
 @media (orientation:landscape) and (max-height:500px){.stage{gap:12px}.goat{width:min(34vh,200px)}button.haupt{min-height:72px}}
+
+/* Erwachsene und Zusammen: ruhiger Look, Mint statt Gold */
+button.erw{background:#9fb4d8;box-shadow:0 6px 0 #6f84a8,0 10px 24px rgba(0,0,0,.35)}
+button.fam{background:#f7a8c4;box-shadow:0 6px 0 #c97a96,0 10px 24px rgba(0,0,0,.35)}
+body.erwmode{background:radial-gradient(120% 80% at 50% 0%,#1d2633,#10141b 70%);background-color:#10141b}
+body.erwmode #sky{opacity:.25}
+body.erwmode h1{color:var(--mint)}
+.emenu button{border-color:rgba(143,227,200,.4)}
+.duo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1rem}
+.duo input{width:24px;height:24px;accent-color:var(--mint)}
+.eview{width:min(92vw,520px);display:flex;flex-direction:column;align-items:center;gap:14px}
+.ezone{font-family:var(--display);font-weight:800;font-size:clamp(1.8rem,8vw,2.6rem);color:var(--mint);text-align:center;line-height:1.1}
+.etime{font-family:var(--display);font-weight:800;font-size:1.3rem;font-variant-numeric:tabular-nums;opacity:.85}
+.ebar{width:100%;height:12px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden}
+.ebar i{display:block;height:100%;width:0;background:var(--mint);border-radius:999px;transition:width .3s linear}
+.arches{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+.arch{display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:700}
+.arch svg{width:min(40vw,190px);height:auto}
+.arch.solo svg{width:min(70vw,280px)}
+.arch path{fill:none;stroke-width:26;stroke-linecap:round}
+.arch .base{stroke:#f4efe4}
+.arch .film{stroke:#d9c27a;transition:opacity .4s linear}
+.arch .on{stroke:var(--mint);opacity:.35}
+.ehint{font-size:1rem;opacity:.85;text-align:center;max-width:36ch;line-height:1.4}
+.estep{background:rgba(255,255,255,.07);border:1px solid rgba(143,227,200,.3);border-radius:22px;padding:16px 18px;font-size:1.15rem;line-height:1.45;text-align:left;width:100%;box-sizing:border-box}
+.estep b{display:block;font-family:var(--display);color:var(--mint);font-size:1.3rem;margin-bottom:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chips button{font-size:1rem;padding:.45em .9em;background:rgba(255,255,255,.1);color:inherit;box-shadow:none;border:2px solid rgba(247,168,196,.45)}
+.chips button[aria-pressed="true"]{background:var(--pink,#f7a8c4);color:#141838;border-color:transparent}
+.wgroup{width:100%;display:flex;flex-direction:column;gap:8px;align-items:center}
+.wgroup h3{margin:6px 0 0;font-family:var(--display);font-size:1.15rem}
+.wname{font:inherit;font-size:1.1rem;padding:10px 14px;border-radius:16px;border:2px solid rgba(247,168,196,.45);background:rgba(255,255,255,.08);color:inherit;width:100%;box-sizing:border-box;text-align:center}
+.rcard{background:linear-gradient(160deg,rgba(247,168,196,.18),rgba(143,227,200,.12));border:2px solid rgba(247,168,196,.5);border-radius:26px;padding:18px 20px;width:100%;box-sizing:border-box;text-align:left;font-size:1.1rem;line-height:1.5}
+.rcard h2{margin:0 0 6px;font-family:var(--display);font-size:1.5rem;color:#f7a8c4}
+.idea{font-family:var(--display);font-weight:800;font-size:clamp(1.3rem,5.6vw,1.7rem);line-height:1.3;text-align:center;text-wrap:balance;min-height:5.2em;display:flex;align-items:center}
 </style>
 
 <canvas id="sky" aria-hidden="true"></canvas>
@@ -222,6 +257,8 @@ button.ghost{min-height:48px}
   <div class="mehrwege">
     <button id="go2" class="alt" type="button">✨ Putzparty<small>5 Minuten · tanzen</small></button>
     <button id="babyGo" class="baby" type="button">🍼 Für die Kleinsten<small>0 bis 3 Jahre</small></button>
+    <button id="erwGo" class="erw" type="button">🎧 Für Erwachsene<small>Beat, Spiel, Kiefer locker</small></button>
+    <button id="famGo" class="fam" type="button">👨‍👧 Zusammen<small>Mit Mama, Papa, Oma</small></button>
   </div>
   <section class="extras" aria-label="Lieder und Filme">
     <div class="songs" id="songs"><b>🎵 Welches Lied?</b></div>
@@ -300,6 +337,29 @@ button.ghost{min-height:48px}
   </div>
   <div class="bview" id="bView" hidden></div>
   <button class="ghost" id="bBack" type="button">‹ Zurück</button>
+</main>
+<main id="erw" class="stage" hidden>
+  <h1>Für Erwachsene</h1>
+  <p id="eIntro">Zwei Minuten mit gutem Sound. Allein oder zusammen mit deinem Kind.</p>
+  <label class="duo" for="eDuo"><input id="eDuo" type="checkbox"> Zu zweit, mit Kind</label>
+  <div class="bmenu emenu" id="eMenu">
+    <button type="button" data-v="beat"><span>🎧</span><div>Beat-Putzen<small>2 Minuten, der Sound wechselt mit jeder Zone</small></div></button>
+    <button type="button" data-v="belag"><span>🦷</span><div>Belag-Jagd<small>Zone für Zone sauber, mit Wochen-Serie</small></div></button>
+    <button type="button" data-v="kiefer"><span>🌿</span><div>Kiefer locker<small>3 ruhige Übungen nach dem Putzen</small></div></button>
+  </div>
+  <div class="eview" id="eView" hidden></div>
+  <button class="ghost" id="eBack" type="button">‹ Zurück</button>
+</main>
+<main id="fam" class="stage" hidden>
+  <h1>Zusammen</h1>
+  <p id="fIntro">Kind und Mama, Papa oder Oma: zusammen putzen und ein eigenes Ritual erfinden.</p>
+  <div class="bmenu emenu" id="fMenu">
+    <button type="button" data-v="spielen"><span>🎮</span><div>Zusammen spielen<small>Die Erwachsenen-Spiele zu zweit</small></div></button>
+    <button type="button" data-v="werkstatt"><span>🛠️</span><div>Ritual-Werkstatt<small>Euer eigenes Zahnputz-Ritual erfinden</small></div></button>
+    <button type="button" data-v="ohne"><span>📵</span><div>Ritual ohne Handy<small>Nur Ideen. Lesen, Handy weg, los.</small></div></button>
+  </div>
+  <div class="eview" id="fView" hidden></div>
+  <button class="ghost" id="fBack" type="button">‹ Zurück</button>
 </main>
 <main id="kino" class="stage" hidden>
   <h1 id="kinoTitle" style="font-size:2rem">Film</h1>
@@ -455,7 +515,7 @@ function showTrip(n){const step=((n-1)%30)+1;$("tripStep").textContent="Etappe "
 /* Ablauf */
 let midDone={},running=false,paused=false,elapsed=0,last=0,lastLine=-1,lastPhase=-1;
 function fmt(s){s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
-function show(id){if(id!=="brush"&&typeof danceVidOff==="function")danceVidOff();if(id!=="baby"&&typeof babyStop==="function")babyStop();for(const k of ["start","brush","done","kino","baby"])$(k).hidden=k!==id;$("topBack").hidden=id==="start";document.body.classList.toggle("sub",id!=="start");window.scrollTo(0,0)}
+function show(id){if(id!=="brush"&&typeof danceVidOff==="function")danceVidOff();if(id!=="baby"&&typeof babyStop==="function")babyStop();if(id!=="erw"&&id!=="fam"&&typeof eStop==="function")eStop();for(const k of ["start","brush","done","kino","baby","erw","fam"])$(k).hidden=k!==id;document.body.classList.toggle("erwmode",id==="erw"||id==="fam");$("topBack").hidden=id==="start";document.body.classList.toggle("sub",id!=="start");window.scrollTo(0,0)}
 function begin(m){if(m)setMode(m);ensureAC();preload(PH.map(p=>p.clip).concat(PH.map(p=>p.mid).filter(Boolean),["fertig","party_fertig"],MODE==="party"?["k_kreise","k_hinten","k_vorne","k_innen","k_tanz","k_super","k_atmen","k_noch10"]:[]));midDone={};makeMonsters();elapsed=0;lastLine=-1;lastPhase=-1;paused=false;$("pause").textContent="Pause";show("brush");musicStart();running=true;last=performance.now();lastCoach=-99;coachI=0;noch10={};zoneT={};try{navigator.wakeLock&&navigator.wakeLock.request("screen").catch(()=>{})}catch(e){}}
 function finish(){running=false;musicStop();const tipp=camOn?putzTipp():"";if(camOn)merkeZeiten();camStop();fanfare();const n=getStars()+(MODE==="party"?2:1);setStars(n);showStars();$("doneText").textContent=MODE==="party"?"Glitzer-Putzparty geschafft! Zähne, Zahnfleisch und Zunge glänzen. Dafür gibt es zwei Sterne!":(n===1?"Alle Zuckermonster sind weg. Hier ist dein erster Stern!":"Alle Zuckermonster sind weg. Das ist Stern Nummer "+n+".");if(tipp)$("doneText").textContent+=" "+tipp;showTrip(n);show("done");say(MODE==="party"?"party_fertig":"fertig",true);say(TRIPKEY(((n-1)%30)+1))}
 let curP=null,curIn=0;
@@ -610,11 +670,111 @@ function bZahnen(){const V=$("bView");V.innerHTML='<img class="bimg breathe" src
 $("babyGo").addEventListener("click",()=>{show("baby");bOpen(null)});
 $("bMenu").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>bOpen(b.dataset.v)));
 $("bBack").addEventListener("click",()=>{if(!$("bView").hidden)bOpen(null);else show("start")});
-$("topBack").addEventListener("click",()=>{const now=["brush","kino","done","baby"].find(k=>!$(k).hidden);
+$("topBack").addEventListener("click",()=>{const now=["brush","kino","done","baby","erw","fam"].find(k=>!$(k).hidden);
+ if(now==="erw"){$("eBack").click();return}
+ if(now==="fam"){$("fBack").click();return}
  if(now==="kino"){$("kinoBack").click();return}
  if(now==="baby"){$("bBack").click();return}
  if(now==="brush"){running=false;paused=false;$("pause").textContent="Pause";musicStop();hush();camStop()}
  show("start")});
+
+/* ===== Erwachsene und Zusammen ===== */
+const EZONEN=["Oben rechts","Oben links","Unten links","Unten rechts"];
+const EZEIT=30;
+let eTimer=null,eBeat=null,eNext=0,eStep=0,eT0=0,eGen=0;
+function eStop(){eGen++;clearInterval(eTimer);eTimer=null;clearInterval(eBeat);eBeat=null}
+function eNoise(t,d,vol,hp){const n=Math.floor(ac.sampleRate*d),b=ac.createBuffer(1,n,ac.sampleRate),x=b.getChannelData(0);for(let i=0;i<n;i++)x[i]=(Math.random()*2-1)*(1-i/n);const s=ac.createBufferSource();s.buffer=b;const f=ac.createBiquadFilter();f.type="highpass";f.frequency.value=hp;const g=ac.createGain();g.gain.value=vol;s.connect(f);f.connect(g);g.connect(master);s.start(t)}
+function eKick(t){const o=ac.createOscillator(),g=ac.createGain();o.frequency.setValueAtTime(140,t);o.frequency.exponentialRampToValueAtTime(45,t+0.14);g.gain.setValueAtTime(0.55,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.3);o.connect(g);g.connect(master);o.start(t);o.stop(t+0.32)}
+const EBASS=[[55,55,65.4,49],[58.3,58.3,69.3,52],[49,49,61.7,43.7],[55,65.4,73.4,49]];
+const ECHORD=[[220,261.6,329.6],[233.1,277.2,349.2],[196,246.9,293.7],[220,277.2,329.6]];
+function eBeatStart(getZone){ensureAC();const spb=60/92/2;eStep=0;eNext=ac.currentTime+0.08;clearInterval(eBeat);
+ eBeat=setInterval(()=>{while(eNext<ac.currentTime+0.25){const z=getZone(),st=eStep%16,t=eNext;
+  if(st%4===0)eKick(t);
+  eNoise(t,0.04,st%2?0.05:0.08,7000);
+  if(z>=1&&(st===4||st===12))eNoise(t,0.18,0.22,1500);
+  if(z>=2&&st%4===2)tone(EBASS[z][(eStep>>4)%4]*2,t,0.28,0.16,"triangle");
+  if(z>=3&&(st===0||st===6||st===10))ECHORD[(eStep>>4)%4].forEach(f=>tone(f,t,0.5,0.05,"sine"));
+  if(z===0&&st%8===4)tone(440,t,0.4,0.05,"sine");
+  eStep++;eNext+=spb}},60)}
+function eArch(label,solo){return '<div class="arch'+(solo?' solo':'')+'"><svg viewBox="0 0 220 150" aria-hidden="true">'+
+ [["M30 70 A80 60 0 0 1 110 15",0],["M110 15 A80 60 0 0 1 190 70",1],["M190 82 A80 60 0 0 1 110 137",2],["M110 137 A80 60 0 0 1 30 82",3]].map(([d,i])=>
+ '<path class="base" d="'+d+'"/><path class="film" data-z="'+i+'" d="'+d+'"/><path class="on" data-o="'+i+'" d="'+d+'" style="opacity:0"/>').join("")+
+ '</svg>'+(label?'<span>'+label+'</span>':'')+'</div>'}
+function eSerie(){try{return JSON.parse(localStorage.getItem("zb-erw-tage")||"[]")}catch(e){return[]}}
+function eSerieAdd(){const d=new Date().toISOString().slice(0,10);const a=eSerie();a.push(d);const w=Date.now()-7*864e5;const b=a.filter(x=>Date.parse(x)>=w);try{localStorage.setItem("zb-erw-tage",JSON.stringify(b))}catch(e){}return b.length}
+function eSerieText(){const w=Date.now()-7*864e5;const n=eSerie().filter(x=>Date.parse(x)>=w).length;return "Diese Woche: "+n+" von 14 Mal"}
+function eRun(mode){const v=$("eView"),duo=$("eDuo").checked,g=++eGen;
+ v.innerHTML='<div class="ezone" id="eZ">Bereit?</div><div class="etime" id="eTm">2:00</div><div class="ebar"><i id="eBar"></i></div>'+
+  (mode==="belag"?'<div class="arches">'+(duo?eArch("Gross")+eArch("Klein"):eArch("",true))+'</div><div class="ehint">'+eSerieText()+'</div>':
+   '<div class="ehint">'+(duo?"Ihr putzt gleichzeitig. Wechselt die Zone, wenn der Sound wechselt.":"Hör auf den Sound: Bei jedem Wechsel kommt die nächste Zone.")+'</div>')+
+  '<button type="button" id="eStart" class="alt">▶ Start</button>';
+ $("eStart").onclick=()=>{ensureAC();$("eStart").hidden=true;eT0=performance.now();let last=-1;
+  eBeatStart(()=>Math.max(0,Math.min(3,Math.floor((performance.now()-eT0)/1000/EZEIT))));
+  eTimer=setInterval(()=>{if(g!==eGen)return;const el=(performance.now()-eT0)/1000,z=Math.min(3,Math.floor(el/EZEIT)),r=Math.max(0,120-el);
+   $("eTm").textContent=Math.floor(r/60)+":"+String(Math.floor(r%60)).padStart(2,"0");$("eBar").style.width=Math.min(100,el/1.2)+"%";
+   if(z!==last){last=z;$("eZ").textContent=EZONEN[z];if(z>0)pop();v.querySelectorAll("[data-o]").forEach(p=>p.style.opacity=+p.dataset.o===z?.35:0)}
+   v.querySelectorAll("[data-z]").forEach(p=>{const i=+p.dataset.z;p.style.opacity=i<z?0:i>z?1:Math.max(0,1-(el-z*EZEIT)/EZEIT)});
+   if(el>=120){eStop();const n=eSerieAdd();$("eZ").textContent="Sauber. Gut gemacht.";$("eTm").textContent="";
+    const h=v.querySelector(".ehint");if(h)h.textContent="Diese Woche: "+n+" von 14 Mal"+(duo?". Ihr wart ein Team.":".");
+    const b=document.createElement("button");b.type="button";b.className="alt";b.textContent="Nochmal";b.onclick=()=>eRun(mode);v.append(b)}},200)}}
+const KIEFER=[["Ankommen","Zunge locker an den Gaumen, Zähne leicht auseinander, Lippen weich. Ruhig durch die Nase atmen."],
+ ["Sanft öffnen","Den Unterkiefer langsam ein kleines Stück öffnen und wieder schliessen. Ohne Kraft, ohne Knacken."],
+ ["Wangen lockern","Mit den Fingerspitzen vor den Ohren kleine, sanfte Kreise machen. Die Schultern sinken lassen."]];
+function eKiefer(){const v=$("eView"),g=++eGen;let i=0;
+ function step(){if(g!==eGen)return;if(i>=KIEFER.length){v.innerHTML='<div class="ezone">Fertig. Gute Nacht.</div><div class="ehint">Bei Schmerzen aufhören und die Zahnärztin oder den Zahnarzt fragen.</div>';return}
+  const [t,x]=KIEFER[i];let r=30;v.innerHTML='<div class="etime">Übung '+(i+1)+' von 3</div><div class="estep"><b>'+t+'</b>'+x+'</div><div class="ezone" id="kR">0:30</div>';
+  ensureAC();tone(523,ac.currentTime,0.8,0.08,"sine");
+  clearInterval(eTimer);eTimer=setInterval(()=>{if(g!==eGen)return;r--;$("kR").textContent="0:"+String(Math.max(0,r)).padStart(2,"0");if(r<=0){clearInterval(eTimer);i++;step()}},1000)}
+ v.innerHTML='<div class="ehint">Drei ruhige Übungen, je 30 Sekunden. Kind und Erwachsene können zusammen mitmachen.</div><button type="button" class="alt" id="kGo">▶ Start</button>';
+ $("kGo").onclick=step}
+function eOpen(m){eStop();$("eMenu").hidden=!!m;$("eIntro").hidden=!!m;$("eDuo").parentNode.hidden=!!m;$("eView").hidden=!m;if(m)(m==="kiefer"?eKiefer:()=>eRun(m))();window.scrollTo(0,0)}
+$("erwGo").addEventListener("click",()=>{show("erw");eOpen(null)});
+$("eMenu").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>eOpen(b.dataset.v)));
+$("eBack").addEventListener("click",()=>{if(!$("eView").hidden)eOpen(null);else show("start")});
+
+/* Ritual-Werkstatt: alles bleibt auf dem Gerät */
+const WERK=[["musik","Musik",["Unser Lied","Eigene Playlist","Zahnböcklein-Beat","Zusammen summen"]],
+ ["start","Wer beginnt?",["Das Kind","Die Grossen","Gleichzeitig","Jeden Tag abwechselnd"]],
+ ["reihe","Reihenfolge",["Oben zuerst","Unten zuerst","Spiegel-Spiel: einer macht vor"]],
+ ["spruch","Spruch zum Schluss",["Blitzblank, gute Nacht!","Zähne sauber, Herz warm.","Monster weg, Traum her.","Eigener Spruch"]],
+ ["lohn","Belohnung ohne Süsses",["Gute-Nacht-Geschichte","Eine Runde Kitzeln","Stern an die Wand","Lieblingslied tanzen"]]];
+function rGet(){try{return JSON.parse(localStorage.getItem("zb-ritual")||"null")}catch(e){return null}}
+function rSet(r){try{localStorage.setItem("zb-ritual",JSON.stringify(r))}catch(e){}}
+function rCard(r){const v=$("fView");v.innerHTML='';const c=document.createElement("div");c.className="rcard";
+ const h=document.createElement("h2");h.textContent=r.name||"Unser Ritual";c.append(h);
+ WERK.forEach(([k,t])=>{if(!r[k])return;const p=document.createElement("div");p.textContent=t.replace(/\?$/,"")+": "+(k==="spruch"&&r.eigen?r.eigen:r[k]);c.append(p)});
+ const hint=document.createElement("div");hint.className="ehint";hint.textContent="Euer Ritual bleibt nur auf diesem Gerät. Ihr könnt es jede Woche anpassen.";
+ const b=document.createElement("button");b.type="button";b.className="alt";b.textContent="Anpassen";b.onclick=()=>rWerk(r);
+ v.append(c,hint,b)}
+function rWerk(r){r=Object.assign({},r||{});const v=$("fView");v.innerHTML='';
+ let own=null;const n=document.createElement("input");n.className="wname";n.placeholder="Name eures Rituals";n.value=r.name||"";n.maxLength=40;v.append(n);
+ WERK.forEach(([k,t,opts])=>{const g=document.createElement("div");g.className="wgroup";const h=document.createElement("h3");h.textContent=t;const c=document.createElement("div");c.className="chips";
+  opts.forEach(o=>{const b=document.createElement("button");b.type="button";b.textContent=o;b.setAttribute("aria-pressed",String(r[k]===o));
+   b.onclick=()=>{r[k]=o;c.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));if(k==="spruch")own.hidden=o!=="Eigener Spruch"};c.append(b)});
+  g.append(h,c);v.append(g);
+  if(k==="spruch"){own=document.createElement("input");own.className="wname";own.placeholder="Euer Spruch";own.maxLength=60;own.value=r.eigen||"";own.hidden=r.spruch!=="Eigener Spruch";g.append(own)}});
+ const s=document.createElement("button");s.type="button";s.className="alt";s.textContent="Ritual speichern";
+ s.onclick=()=>{r.name=n.value.trim();r.eigen=r.spruch==="Eigener Spruch"&&own?own.value.trim():"";rSet(r);rCard(r)};
+ v.append(s)}
+const IDEEN=["Spiegel-Duell: Einer putzt vor, der andere macht genau nach. Nach jeder Zone wird getauscht.",
+ "Zählt die Zähne beim Putzen laut mit. Wer kennt die Zahl am Schluss?",
+ "Erfindet zusammen ein Putz-Lied mit vier Strophen, eine für jede Zone.",
+ "Taschenlampen-Kontrolle: Nach dem Putzen leuchtet das Kind bei den Grossen in den Mund. Glänzt alles?",
+ "Bei jedem Zonenwechsel einmal in die Hände klatschen.",
+ "Lieblingsmusik an, ein ganzes Lied lang putzen. Das sind etwa zwei Minuten.",
+ "Gute-Nacht-Satz: Jeder sagt nach dem Ausspucken etwas Schönes über den Tag.",
+ "Rollentausch beim Erzählen: Das Kind erklärt den Grossen, wie man richtig putzt."];
+let iIdx=0;
+function fOhne(){const v=$("fView");iIdx=Math.floor(Math.random()*IDEEN.length);
+ v.innerHTML='<div class="ehint">Lest die Idee, legt das Handy weg und putzt mit eurer eigenen Musik. Was ihr daraus macht, bekommt niemand mit.</div><div class="idea" id="fIdea"></div><button type="button" class="alt" id="fNeu">Andere Idee</button>';
+ $("fIdea").textContent=IDEEN[iIdx];$("fNeu").onclick=()=>{iIdx=(iIdx+1+Math.floor(Math.random()*(IDEEN.length-1)))%IDEEN.length;$("fIdea").textContent=IDEEN[iIdx]}}
+function fOpen(m){$("fMenu").hidden=!!m;$("fIntro").hidden=!!m;$("fView").hidden=!m;
+ if(m==="spielen"){$("eDuo").checked=true;show("erw");eOpen(null);return}
+ if(m==="werkstatt"){const r=rGet();r?rCard(r):rWerk(null)}
+ if(m==="ohne")fOhne();window.scrollTo(0,0)}
+$("famGo").addEventListener("click",()=>{show("fam");fOpen(null)});
+$("fMenu").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>fOpen(b.dataset.v)));
+$("fBack").addEventListener("click",()=>{if(!$("fView").hidden)fOpen(null);else show("start")});
 $("film1").addEventListener("click",()=>kino("film/zahnfee.mp4","Das Zahnböcklein und die Zahnfee","bilder/poster-fee.jpg"));
 $("film2").addEventListener("click",()=>kino("film/tanzfilm.mp4","Putz-Tanz mit dem Zahnböcklein","bilder/poster-tanz.jpg"));
 $("kinoBack").addEventListener("click",()=>{const v=$("vid");v.pause();if(intro){introEnd();return}show("start")});
