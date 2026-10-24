@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Körperkosmos</title>
+<meta name="theme-color" content="#0d1233">
+<style>
+/* Aura-Stil: tiefes Nachtblau, warmes Gold, violettes Leuchten. Die App ist bewusst immer nachtfarben. */
+:root{
+  --nacht:#0d1233; --nacht2:#161d4d; --karte:rgba(30,38,92,.72); --linie:rgba(201,170,255,.22);
+  --text:#f3efff; --leise:#b9b3dc; --gold:#f2c46b; --gold2:#ffdf9e; --violett:#b48cff; --violett2:#d9c4ff;
+  --holz:#6fcf8e; --feuer:#ff7a6b; --erde:#f2c46b; --metall:#e9ecf5; --wasser:#6fa8ff;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){color-scheme:dark}}
+:root[data-theme="dark"]{color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--nacht);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+#himmel{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(120% 70% at 50% 0%,#24307a 0%,var(--nacht2) 45%,var(--nacht) 100%)}
+#sterne{position:fixed;inset:0;z-index:0;pointer-events:none}
+main{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:18px 16px calc(96px + env(safe-area-inset-bottom))}
+h1,h2,h3{margin:0;font-weight:650;letter-spacing:.01em;text-wrap:balance}
+h1{font-size:1.7rem} h2{font-size:1.3rem} h3{font-size:1.05rem}
+p{margin:.4em 0}
+.leise{color:var(--leise)}
+.klein{font-size:.85rem}
+.gold{color:var(--gold2)}
+.seite{display:none;animation:auf .5s ease both}
+.seite.an{display:block}
+@keyframes auf{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.karte{background:var(--karte);border:1px solid var(--linie);border-radius:20px;padding:16px;margin:14px 0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.knopf{appearance:none;border:0;border-radius:999px;padding:12px 20px;font:inherit;font-weight:600;cursor:pointer;
+  background:linear-gradient(180deg,var(--gold2),var(--gold));color:#2a1d05;box-shadow:0 6px 24px rgba(242,196,107,.28)}
+.knopf.zart{background:rgba(255,255,255,.08);color:var(--text);box-shadow:none;border:1px solid var(--linie)}
+.knopf:active{transform:scale(.97)}
+.reihe{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chip{border:1px solid var(--linie);background:rgba(255,255,255,.05);color:var(--text);border-radius:999px;padding:8px 14px;font:inherit;cursor:pointer}
+.chip.an{background:var(--violett);color:#1a1040;border-color:transparent;font-weight:600}
+
+/* Figuren: lebendig durch Schweben, Leuchten, Neigen, Hüpfen beim Antippen */
+.buehne{position:relative;height:330px;margin:4px -16px 0;overflow:hidden;border-radius:0 0 28px 28px}
+.buehne .hg{position:absolute;inset:0;background-size:cover;background-position:center 30%;filter:blur(9px) brightness(.55) saturate(1.2);transform:scale(1.25)}
+.buehne::after{content:"";position:absolute;inset:auto 0 0 0;height:90px;background:linear-gradient(transparent,var(--nacht))}
+.figur{position:absolute;bottom:18px;cursor:pointer;border:0;padding:0;background:none;touch-action:manipulation;transform-style:preserve-3d}
+.figur img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%;
+  -webkit-mask:radial-gradient(closest-side,#000 72%,transparent 100%);mask:radial-gradient(closest-side,#000 72%,transparent 100%)}
+.figur .schein{position:absolute;inset:-14%;border-radius:50%;background:radial-gradient(closest-side,rgba(180,140,255,.55),transparent 70%);animation:schein 3.2s ease-in-out infinite;z-index:-1}
+.figur.nova .schein{background:radial-gradient(closest-side,rgba(140,190,255,.45),transparent 70%)}
+.figur .koerper{width:100%;height:100%;animation:schweben 4.5s ease-in-out infinite;transition:transform .25s ease}
+.figur.nova .koerper{animation-duration:3.6s;animation-delay:-1.2s}
+.figur.hupf .koerper{animation:hupf .7s cubic-bezier(.3,1.6,.5,1) 1}
+@keyframes schweben{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-10px) rotate(1.2deg)}}
+@keyframes schein{0%,100%{opacity:.65;transform:scale(1)}50%{opacity:1;transform:scale(1.07)}}
+@keyframes hupf{0%{transform:translateY(0) scale(1)}35%{transform:translateY(-34px) scale(1.05,0.96)}70%{transform:translateY(0) scale(.97,1.04)}100%{transform:none}}
+.blase{position:absolute;z-index:3;max-width:230px;background:#fffaf0;color:#2b2350;border-radius:18px;padding:10px 14px;font-size:.95rem;box-shadow:0 8px 30px rgba(0,0,0,.35);
+  opacity:0;transform:translateY(8px) scale(.96);transition:.3s;pointer-events:none}
+.blase.an{opacity:1;transform:none}
+.funken{position:absolute;inset:0;pointer-events:none;z-index:2}
+.funke{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--gold2);box-shadow:0 0 10px var(--gold);animation:funke 1.1s ease-out forwards}
+@keyframes funke{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+
+.entwickelt{display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--leise);margin-top:8px}
+.entwickelt b{color:var(--gold2);font-weight:600}
+.kacheln{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.kachel{border:1px solid var(--linie);background:var(--karte);border-radius:18px;padding:14px;text-align:left;color:var(--text);font:inherit;cursor:pointer;min-height:96px}
+.kachel .ic{font-size:1.5rem;display:block;margin-bottom:4px}
+.kachel small{display:block;color:var(--leise);font-size:.8rem;margin-top:2px}
+
+/* Geburtsbild */
+label{display:block;font-size:.9rem;color:var(--leise);margin-bottom:6px}
+.eingabe{display:grid;grid-template-columns:1fr 1.4fr;gap:10px}
+select{width:100%;font:inherit;padding:12px;border-radius:14px;border:1px solid var(--linie);background:#1b2360;color:var(--text)}
+.zeichenkopf{display:flex;gap:14px;align-items:center}
+.glyph{width:64px;height:64px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:2rem;color:var(--gold2);
+  background:radial-gradient(circle,rgba(242,196,107,.25),rgba(242,196,107,.04));border:1px solid rgba(242,196,107,.35)}
+dl{margin:10px 0 0;display:grid;grid-template-columns:auto 1fr;gap:6px 12px}
+dt{color:var(--leise);font-size:.88rem}
+dd{margin:0}
+.zitat{font-style:italic;color:var(--violett2);border-left:2px solid var(--violett);padding-left:12px;margin:10px 0}
+ul.ueb{padding-left:18px;margin:6px 0}
+
+/* Elemente */
+.kreis{width:100%;max-width:360px;display:block;margin:6px auto}
+.kreis .el{cursor:pointer}
+.kreis .el circle{transition:r .3s,filter .3s}
+.kreis .el.an circle{filter:url(#glow)}
+.kreis text{font:600 13px system-ui,sans-serif;fill:#1a1040;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+
+/* Atem */
+.atemkreis{width:220px;height:220px;margin:18px auto 8px;border-radius:50%;display:grid;place-items:center;position:relative;
+  background:radial-gradient(circle,rgba(140,190,255,.35),rgba(140,190,255,.05) 70%);transform:scale(.72);transition:transform 5s ease-in-out}
+.atemkreis.ein{transform:scale(1)}
+.atemkreis img{width:62%;height:62%;object-fit:cover;border-radius:50%;-webkit-mask:radial-gradient(closest-side,#000 70%,transparent);mask:radial-gradient(closest-side,#000 70%,transparent)}
+.atemwort{text-align:center;font-size:1.3rem;font-weight:600;min-height:2em;color:var(--violett2)}
+.fortschritt{height:6px;border-radius:6px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:10px}
+.fortschritt i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--violett),var(--gold));transition:width .5s linear}
+.handgelenk{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;text-align:center}
+.handgelenk div{border:1px solid var(--linie);border-radius:14px;padding:10px 6px;background:rgba(255,255,255,.04)}
+.handgelenk b{display:block;color:var(--gold2)}
+
+.banner{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:20px;margin:4px 0 14px;box-shadow:0 10px 40px rgba(120,90,255,.25);animation:schweben 7s ease-in-out infinite}
+.hinweis{font-size:.82rem;color:var(--leise);border-top:1px solid var(--linie);margin-top:22px;padding-top:12px}
+
+nav{position:fixed;z-index:5;left:0;right:0;bottom:0;padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+  background:rgba(13,18,51,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--linie)}
+nav .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
+nav button{appearance:none;border:0;background:none;color:var(--leise);font:inherit;font-size:.72rem;padding:6px 2px;border-radius:12px;cursor:pointer}
+nav button span{display:block;font-size:1.3rem;line-height:1.2}
+nav button.an{color:var(--gold2);background:rgba(242,196,107,.1)}
+.ton{position:fixed;z-index:6;top:calc(10px + env(safe-area-inset-top));right:12px;border:1px solid var(--linie);background:rgba(13,18,51,.7);color:var(--text);
+  width:42px;height:42px;border-radius:50%;font-size:1.1rem;cursor:pointer}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="himmel"></div>
+<canvas id="sterne"></canvas>
+<button class="ton" id="ton" aria-pressed="true" aria-label="Stimme ein oder aus">🔊</button>
+
+<main>
+<!-- START -->
+<section class="seite an" id="s-start">
+  <div class="buehne" id="buehne">
+    <div class="hg" style="background-image:url(bild/aura-c.webp)"></div>
+    <div class="funken" id="funken"></div>
+    <button class="figur aura" data-figur="aura" style="left:6%;width:210px;height:210px" aria-label="Aura antippen">
+      <div class="koerper"><div class="schein"></div><img src="bild/aura-a.webp" alt="Aura, eine violett leuchtende Figur"></div>
+    </button>
+    <button class="figur nova" data-figur="nova" style="right:6%;width:140px;height:140px" aria-label="Nova antippen">
+      <div class="koerper"><div class="schein"></div><img src="bild/nova-hallo.webp" alt="Nova, eine kleine weisse Figur mit blauem Haar"></div>
+    </button>
+    <div class="blase" id="blase"></div>
+  </div>
+  <h1>Körperkosmos</h1>
+  <p class="leise">Dein Körper und der Himmel erzählen die gleiche Geschichte. Aura und Nova begleiten dich.</p>
+  <div class="entwickelt">✦ <span>Körperkosmos, entwickelt von <b>Corinna und Diego</b></span></div>
+  <div class="kacheln">
+    <button class="kachel" data-geh="geburt"><span class="ic">✶</span>Dein Geburtsbild<small>Zeichen, Körperzone, Übungen</small></button>
+    <button class="kachel" data-geh="elemente"><span class="ic">◎</span>Fünf Elemente<small>Was gerade Saison hat</small></button>
+    <button class="kachel" data-geh="augen"><span class="ic">◐</span>Augen zu<small>Spüren mit Aura</small></button>
+    <button class="kachel" data-geh="atem"><span class="ic">∿</span>Atem und Puls<small>Ruhig werden mit Nova</small></button>
+  </div>
+  <p class="klein leise" style="margin-top:14px">Tipp: Tippe Aura oder Nova an.</p>
+</section>
+
+<!-- GEBURTSBILD -->
+<section class="seite" id="s-geburt">
+  <img class="banner" src="bild/aura-nova-sterne.webp" alt="Aura und Nova schauen zu den Sternbildern">
+  <h2>Dein Geburtsbild</h2>
+  <p class="leise">Wähle deinen Geburtstag. Aura zeigt dir dein Sonnenzeichen und was es im Körper spiegelt. Nichts wird gespeichert.</p>
+  <div class="karte">
+    <div class="eingabe">
+      <div><label for="tag">Tag</label><select id="tag"></select></div>
+      <div><label for="monat">Monat</label><select id="monat"></select></div>
+    </div>
+    <div class="reihe" style="margin-top:12px"><button class="knopf" id="zeigen">Zeigen</button></div>
+  </div>
+  <div id="ergebnis"></div>
+  <p class="klein leise">Das Sonnenzeichen ist hier nach Datum gerechnet. An Grenztagen und für Mond, Aszendent und Häuser hilft der genaue <a class="gold" href="https://claude.ai/artifact/Aykrh2qBBuAPd8ads5cUpY" target="_blank" rel="noopener">Körperkosmos-Rechner</a>.</p>
+</section>
+
+<!-- ELEMENTE -->
+<section class="seite" id="s-elemente">
+  <img class="banner" src="bild/aura-elemente.webp" alt="Aura mit leuchtenden Element-Kugeln">
+  <h2>Fünf Elemente</h2>
+  <p class="leise">Jede Kraft nährt die nächste. Tippe ein Element an.</p>
+  <svg class="kreis" viewBox="0 0 320 320" id="kreis" role="img" aria-label="Kreis der fünf Elemente">
+    <defs><filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <g id="pfeile" fill="none" stroke="rgba(242,196,107,.45)" stroke-width="1.5"></g>
+    <g id="els"></g>
+  </svg>
+  <div class="karte" id="elinfo"></div>
+</section>
+
+<!-- AUGEN ZU -->
+<section class="seite" id="s-augen">
+  <h2>Augen zu</h2>
+  <p class="leise">Mit geschlossenen Augen spürst du mehr. Aura spricht dich leise durch. Ein Gong sagt dir, wann du weitergehst.</p>
+  <div class="karte">
+    <label>Dauer</label>
+    <div class="reihe" id="augendauer">
+      <button class="chip" data-min="2">2 Min.</button><button class="chip an" data-min="3">3 Min.</button><button class="chip" data-min="5">5 Min.</button>
+    </div>
+    <div class="atemkreis" id="augenkreis" style="transition-duration:4s"><img src="bild/aura-augen-zu.webp" alt=""></div>
+    <div class="atemwort" id="augenwort">Bereit?</div>
+    <div class="fortschritt"><i id="augenbalken"></i></div>
+    <div class="reihe" style="margin-top:14px;justify-content:center"><button class="knopf" id="augenstart">Starten</button></div>
+  </div>
+  <p class="klein leise">Die ausführliche Übung für Behandlerinnen und Behandler: <a class="gold" href="https://claude.ai/artifact/4waFUFz6sBmfVZfff7qaAE" target="_blank" rel="noopener">Augen zu, mit Notiz</a>.</p>
+</section>
+
+<!-- ATEM -->
+<section class="seite" id="s-atem">
+  <h2>Atem und Puls</h2>
+  <p class="leise">Sechs ruhige Atemzüge pro Minute. Nova atmet mit dir: fünf Sekunden ein, fünf Sekunden aus.</p>
+  <div class="karte">
+    <div class="reihe" id="atemdauer">
+      <button class="chip" data-min="1">1 Min.</button><button class="chip an" data-min="3">3 Min.</button><button class="chip" data-min="5">5 Min.</button>
+    </div>
+    <div class="atemkreis" id="atemkreis"><img src="bild/nova-atmet.webp" alt=""></div>
+    <div class="atemwort" id="atemwort">Bereit?</div>
+    <div class="fortschritt"><i id="atembalken"></i></div>
+    <div class="reihe" style="margin-top:14px;justify-content:center"><button class="knopf" id="atemstart">Starten</button></div>
+  </div>
+  <div class="karte">
+    <img class="banner" src="bild/nova-puls.webp" alt="Nova mit einem kleinen Herzlicht" style="margin:0 0 12px">
+    <h3>Den Puls spüren, wie in der chinesischen Medizin</h3>
+    <p class="leise">Drei Finger sanft an die Innenseite des Handgelenks, unterhalb vom Daumen. Erst leicht, dann mittel, dann etwas tiefer drücken.</p>
+    <div class="handgelenk">
+      <div><b>Cun</b>nah an der Hand</div>
+      <div><b>Guan</b>Mitte, am Knöchel</div>
+      <div><b>Chi</b>Richtung Ellbogen</div>
+    </div>
+    <p class="leise" style="margin-top:10px">Zähle die Schläge während eines ruhigen Atemzugs. Die alte Lehre nennt vier bis fünf als ruhiges Mass. Spüre auch: tief oder oberflächlich, weich oder gespannt.</p>
+    <p class="klein leise">Ein Spiegel für dich, keine Diagnose. Herzstolpern, Aussetzer, sehr schneller oder sehr langsamer Puls: bitte ärztlich abklären. Notfall 144.</p>
+  </div>
+</section>
+
+<div class="hinweis">
+  <b class="gold">Körperkosmos, entwickelt von Corinna und Diego.</b><br>
+  Körperkosmos ist ein Spiegel für Körper und Zeit. Er ersetzt keine ärztliche oder psychologische Behandlung und stellt keine Diagnose. Notfall 144 · Die Dargebotene Hand 143 · Pro Juventute 147.
+</div>
+</main>
+
+<nav><div class="in">
+  <button data-geh="start" class="an"><span>✦</span>Start</button>
+  <button data-geh="geburt"><span>✶</span>Geburt</button>
+  <button data-geh="elemente"><span>◎</span>Elemente</button>
+  <button data-geh="augen"><span>◐</span>Augen zu</button>
+  <button data-geh="atem"><span>∿</span>Atem</button>
+</div></nav>
+
+<script src="daten.js"></script>
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+
+/* Sternenhimmel */
+const cv=$('#sterne'), cx=cv.getContext('2d'); let st=[];
+function himmel(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;
+  st=Array.from({length:90},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height*.8,r:(Math.random()*1.3+.3)*devicePixelRatio,p:Math.random()*6}));}
+function funkeln(t){cx.clearRect(0,0,cv.width,cv.height);
+  for(const s of st){cx.globalAlpha=.35+.65*Math.abs(Math.sin(t/1400+s.p));cx.fillStyle='#fff6dd';cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fill();}
+  if(!matchMedia('(prefers-reduced-motion:reduce)').matches) requestAnimationFrame(funkeln);}
+himmel(); addEventListener('resize',himmel); requestAnimationFrame(funkeln);
+
+/* Stimme */
+let stimmeAn=true;
+function sag(t){ if(!stimmeAn||!('speechSynthesis' in window)) return; speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t); u.lang='de-CH'; u.rate=.92; u.pitch=1.1;
+  const v=speechSynthesis.getVoices().find(v=>/de-CH/i.test(v.lang))||speechSynthesis.getVoices().find(v=>/^de/i.test(v.lang)); if(v) u.voice=v;
+  speechSynthesis.speak(u);}
+$('#ton').onclick=e=>{stimmeAn=!stimmeAn;e.currentTarget.textContent=stimmeAn?'🔊':'🔈';e.currentTarget.setAttribute('aria-pressed',stimmeAn);if(!stimmeAn&&window.speechSynthesis)speechSynthesis.cancel();};
+
+/* Gong (Web Audio, kein Download) */
+let ac;
+function gong(){ try{ ac=ac||new (window.AudioContext||window.webkitAudioContext)(); const t=ac.currentTime;
+  [196,392,588].forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.type='sine';
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.22/(i+1),t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+4);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+4.1);});
+}catch(e){} }
+
+/* Navigation */
+let laufend=null;
+function geh(id){ stopAlles(); $$('.seite').forEach(s=>s.classList.toggle('an',s.id==='s-'+id)); $$('nav button').forEach(b=>b.classList.toggle('an',b.dataset.geh===id)); scrollTo({top:0,behavior:'smooth'}); }
+$$('[data-geh]').forEach(b=>b.addEventListener('click',()=>geh(b.dataset.geh)));
+
+/* Figuren: antippen, neigen, sprechen */
+const SAETZE={
+  aura:['Hallo, ich bin Aura. Ich zeige dir, wie Körper und Himmel zusammenklingen.','Schliess kurz die Augen. Was spürst du gerade in deinen Füssen?','Jedes Sternzeichen hat eine Körperzone. Schau in dein Geburtsbild.','Wasser nährt Holz, Holz nährt Feuer. Alles hängt zusammen.'],
+  nova:['Ich bin Nova. Atmest du mit mir?','Fünf Sekunden ein, fünf Sekunden aus. Ganz ruhig.','Leg drei Finger an dein Handgelenk. Spürst du deinen Puls?','Ich verbinde alles: dich, Aura und den Himmel.']
+};
+const zaehler={aura:0,nova:0}, blase=$('#blase'); let blaseT;
+function funken(x,y){const f=$('#funken');for(let i=0;i<14;i++){const s=document.createElement('i');s.className='funke';s.style.left=x+'px';s.style.top=y+'px';
+  const a=Math.random()*6.28,d=40+Math.random()*60;s.style.setProperty('--dx',Math.cos(a)*d+'px');s.style.setProperty('--dy',Math.sin(a)*d-20+'px');f.appendChild(s);setTimeout(()=>s.remove(),1200);}}
+$$('.figur').forEach(f=>{
+  f.addEventListener('click',()=>{const k=f.dataset.figur, t=SAETZE[k][zaehler[k]++%SAETZE[k].length];
+    f.classList.remove('hupf');void f.offsetWidth;f.classList.add('hupf');
+    const b=$('#buehne').getBoundingClientRect(), r=f.getBoundingClientRect();
+    funken(r.left-b.left+r.width/2,r.top-b.top+r.height/3);
+    blase.textContent=t; blase.style.top='62px'; blase.style.left=(k==='aura'?Math.min(r.right-b.left-30,b.width-240):Math.max(8,r.left-b.left-150))+'px';
+    blase.classList.add('an'); clearTimeout(blaseT); blaseT=setTimeout(()=>blase.classList.remove('an'),5200); sag(t);});
+});
+const buehne=$('#buehne');
+buehne.addEventListener('pointermove',e=>{const r=buehne.getBoundingClientRect(),dx=(e.clientX-r.left)/r.width-.5,dy=(e.clientY-r.top)/r.height-.5;
+  $$('.figur .koerper').forEach((k,i)=>k.style.transform=`perspective(600px) rotateY(${dx*(i?14:10)}deg) rotateX(${-dy*8}deg)`);});
+buehne.addEventListener('pointerleave',()=>$$('.figur .koerper').forEach(k=>k.style.transform=''));
+setTimeout(()=>{blase.textContent='Willkommen im Körperkosmos. Tipp mich an!';blase.style.top='62px';blase.style.left='150px';blase.classList.add('an');blaseT=setTimeout(()=>blase.classList.remove('an'),4500);},900);
+
+/* Geburtsbild */
+const MON=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+const tagS=$('#tag'), monS=$('#monat');
+for(let d=1;d<=31;d++) tagS.add(new Option(d,d)); MON.forEach((m,i)=>monS.add(new Option(m,i+1)));
+const heute=new Date(); tagS.value=heute.getDate(); monS.value=heute.getMonth()+1;
+// Sonnenzeichen nach Datum (Starttag je Monat, ungefähr)
+const GRENZE=[[1,20,'Wassermann'],[2,19,'Fische'],[3,21,'Widder'],[4,20,'Stier'],[5,21,'Zwillinge'],[6,21,'Krebs'],[7,23,'Löwe'],[8,23,'Jungfrau'],[9,23,'Waage'],[10,23,'Skorpion'],[11,22,'Schütze'],[12,22,'Steinbock']];
+const VOR={Wassermann:'Steinbock',Fische:'Wassermann',Widder:'Fische',Stier:'Widder',Zwillinge:'Stier',Krebs:'Zwillinge',Löwe:'Krebs',Jungfrau:'Löwe',Waage:'Jungfrau',Skorpion:'Waage',Schütze:'Skorpion',Steinbock:'Schütze'};
+const GLYPH={Widder:'♈',Stier:'♉',Zwillinge:'♊',Krebs:'♋',Löwe:'♌',Jungfrau:'♍',Waage:'♎',Skorpion:'♏',Schütze:'♐',Steinbock:'♑',Wassermann:'♒',Fische:'♓'};
+function zeichen(d,m){const g=GRENZE[m-1];return d>=g[1]?g[2]:VOR[g[2]];}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+$('#zeigen').onclick=()=>{
+  const d=+tagS.value,m=+monS.value, z=zeichen(d,m), w=(window.KK_DATEN||{})[z]; if(!w) return;
+  const nah=Math.abs(d-GRENZE[m-1][1])<=1;
+  $('#ergebnis').innerHTML=`<div class="karte">
+    <div class="zeichenkopf"><div class="glyph">${GLYPH[z]}</div><div><h3>${esc(z)}</h3><p class="leise">${esc(w.formel)}</p></div></div>
+    ${nah?'<p class="klein gold">Du bist an einer Grenze geboren. Der genaue Rechner sagt sicher, welches Zeichen.</p>':''}
+    <dl><dt>Körperzone</dt><dd>${esc(w['Körperzone'])}</dd><dt>Meridian</dt><dd>${esc(w.Meridian)}</dd><dt>Element</dt><dd>${esc(w['Element · Spiegel'])}</dd>
+    <dt>Stärken</dt><dd>${esc(w['Stärken'])}</dd><dt>Schatten</dt><dd>${esc(w.Schatten)}</dd><dt>Aufgabe</dt><dd>${esc(w.Lernaufgabe)}</dd></dl>
+    <p class="zitat">${esc(w.wort)}</p>
+    <p><b>Gedanke:</b> ${esc(w.gedanke)}</p></div>
+    <div class="karte"><h3>Für deinen Körper</h3>
+    <ul class="ueb">${(w.uebungen||[]).map(u=>`<li><b>${esc(u[0])}</b> <span class="leise">(${esc(u[1])})</span>: ${esc(u[2])}</li>`).join('')}</ul>
+    <p><b>Laut:</b> ${esc(w.laut)}</p><p><b>Essen:</b> ${esc(w.essen)}</p>
+    <p class="klein leise">Übungen sanft und ohne Schmerz. Bei Beschwerden zuerst ärztlich abklären.</p></div>`;
+  sag(`Dein Sonnenzeichen ist ${z}. ${w.formel}. Deine Körperzone: ${w['Körperzone']}.`);
+  $('#ergebnis').scrollIntoView({behavior:'smooth',block:'start'});
+};
+
+/* Fünf Elemente */
+const EL=[
+  {k:'Holz',f:'var(--holz)',org:'Leber und Gallenblase',zeit:'Frühling',gef:'Ärger wird zu Freundlichkeit',ges:'sauer',puls:'leicht saitenförmig',tun:'Strecken, Seitenlinie, Wachstum',mon:[3,4]},
+  {k:'Feuer',f:'var(--feuer)',org:'Herz und Dünndarm',zeit:'Sommer',gef:'Freude, Verbindung',ges:'bitter',puls:'flutend, voll',tun:'Lachen, Begegnung, Herz öffnen',mon:[5,6,7]},
+  {k:'Erde',f:'var(--erde)',org:'Milz und Magen',zeit:'Spätsommer',gef:'Grübeln wird zu Mitgefühl',ges:'süss',puls:'weich, ausgeglichen',tun:'Boden, Mitte, warmes Essen',mon:[8,9]},
+  {k:'Metall',f:'var(--metall)',org:'Lunge und Dickdarm',zeit:'Herbst',gef:'Trauer, Loslassen',ges:'scharf',puls:'oberflächlich, leicht wie eine Feder',tun:'Atmen, ausmisten, Klarheit',mon:[10,11]},
+  {k:'Wasser',f:'var(--wasser)',org:'Niere und Blase',zeit:'Winter',gef:'Angst wird zu Vertrauen',ges:'salzig',puls:'tief, wie ein Stein',tun:'Ruhe, Wärme, Schlaf',mon:[12,1,2]}
+];
+const jetzt=heute.getMonth()+1, saison=EL.findIndex(e=>e.mon.includes(jetzt));
+const C=160,R=112,pos=EL.map((e,i)=>{const a=-Math.PI/2+i*2*Math.PI/5;return[C+R*Math.cos(a),C+R*Math.sin(a)];});
+let pf='';for(let i=0;i<5;i++){const[a,b]=pos[i],[c,d]=pos[(i+1)%5];const mx=(a+c)/2,my=(b+d)/2;const ox=C+(mx-C)*1.28,oy=C+(my-C)*1.28;pf+=`<path d="M${a},${b} Q${ox},${oy} ${c},${d}"/>`;}
+$('#pfeile').innerHTML=pf;
+$('#els').innerHTML=EL.map((e,i)=>`<g class="el" data-i="${i}" tabindex="0" role="button" aria-label="${e.k}"><circle cx="${pos[i][0]}" cy="${pos[i][1]}" r="${i===saison?36:30}" fill="${e.f}"/><text x="${pos[i][0]}" y="${pos[i][1]}">${e.k}</text></g>`).join('')
+  +`<text x="${C}" y="${C-8}" style="fill:var(--leise);font-weight:500">jetzt</text><text x="${C}" y="${C+12}" style="fill:var(--gold2)">${EL[saison].k}</text>`;
+function zeigEl(i){const e=EL[i];$$('#els .el').forEach(g=>g.classList.toggle('an',+g.dataset.i===i));
+  $('#elinfo').innerHTML=`<h3 style="color:${e.f}">${e.k}${i===saison?' <span class="klein gold">· jetzt Saison</span>':''}</h3>
+  <dl><dt>Organe</dt><dd>${e.org}</dd><dt>Zeit</dt><dd>${e.zeit}</dd><dt>Gefühl</dt><dd>${e.gef}</dd><dt>Geschmack</dt><dd>${e.ges}</dd><dt>Puls</dt><dd>${e.puls}</dd><dt>Was guttut</dt><dd>${e.tun}</dd></dl>
+  <p class="klein leise">${e.k} nährt ${EL[(i+1)%5].k} und hält ${EL[(i+2)%5].k} im Mass.</p>`;}
+$$('#els .el').forEach(g=>{g.addEventListener('click',()=>{zeigEl(+g.dataset.i);sag(EL[+g.dataset.i].k);});g.addEventListener('keydown',ev=>{if(ev.key==='Enter')zeigEl(+g.dataset.i);});});
+zeigEl(saison);
+
+/* Geführte Übungen */
+function chips(sel){let min=+$(sel+' .chip.an').dataset.min;$$(sel+' .chip').forEach(c=>c.onclick=()=>{$$(sel+' .chip').forEach(x=>x.classList.remove('an'));c.classList.add('an');min=+c.dataset.min;});return()=>min;}
+const augenMin=chips('#augendauer'), atemMin=chips('#atemdauer');
+function stopAlles(){ if(laufend){clearInterval(laufend.iv);laufend.knopf.textContent='Starten';laufend.kreis.classList.remove('ein');laufend.wort.textContent='Bereit?';laufend.balken.style.width='0';laufend=null;} if(window.speechSynthesis)speechSynthesis.cancel(); }
+
+const AUGEN=['Setz dich bequem hin. Schliess die Augen.','Spüre deine Füsse am Boden.','Spüre, wo dein Körper aufliegt.','Wandere mit der Aufmerksamkeit zum Bauch. Wie bewegt sich der Atem?','Spüre deine Hände. Warm oder kühl?','Wo in deinem Körper ist es gerade am ruhigsten?','Bleib dort ein paar Atemzüge.','Öffne langsam die Augen. Was hast du gespürt?'];
+$('#augenstart').onclick=()=>{ if(laufend){stopAlles();return;}
+  const ms=augenMin()*60000,teil=ms/AUGEN.length,t0=Date.now(); let schritt=-1;
+  laufend={knopf:$('#augenstart'),kreis:$('#augenkreis'),wort:$('#augenwort'),balken:$('#augenbalken')}; laufend.knopf.textContent='Stopp';
+  const tick=()=>{const t=Date.now()-t0;if(t>=ms){gong();sag('Schön. Danke dir.');const l=laufend;stopAlles();l.wort.textContent='Fertig ✦';return;}
+    const s=Math.floor(t/teil);if(s!==schritt){schritt=s;gong();laufend.wort.textContent=AUGEN[s];sag(AUGEN[s]);}
+    laufend.kreis.classList.toggle('ein',Math.floor(t/4000)%2===0);laufend.balken.style.width=(t/ms*100)+'%';};
+  tick(); laufend.iv=setInterval(tick,250);
+};
+$('#atemstart').onclick=()=>{ if(laufend){stopAlles();return;}
+  const ms=atemMin()*60000,t0=Date.now(); let phase=-1;
+  laufend={knopf:$('#atemstart'),kreis:$('#atemkreis'),wort:$('#atemwort'),balken:$('#atembalken')}; laufend.knopf.textContent='Stopp';
+  sag('Atme mit Nova.');
+  const tick=()=>{const t=Date.now()-t0;if(t>=ms){gong();const l=laufend;stopAlles();l.wort.textContent='Fertig ✦';sag('Gut gemacht. Spür nach, wie dein Puls jetzt ist.');return;}
+    const p=Math.floor(t/5000);if(p!==phase){phase=p;const ein=p%2===0;laufend.kreis.classList.toggle('ein',ein);laufend.wort.textContent=ein?'Einatmen …':'Ausatmen …';}
+    laufend.balken.style.width=(t/ms*100)+'%';};
+  tick(); laufend.iv=setInterval(tick,200);
+};
+})();
+</script>
+</body>
+</html>
