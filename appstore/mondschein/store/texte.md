@@ -26,7 +26,7 @@ GESCHICHTEN ZUM HÖREN UND ERFINDEN
 Otti liest Gutenachtgeschichten vor, zum Beispiel «Milou und die fünf Elemente» oder «Nova kann nicht einschlafen». Bei manchen Geschichten entscheidet dein Kind, wie es weitergeht. Mit «Meine Geschichte» fängt dein Kind an, und Otti erzählt weiter.
 
 REDEN MIT OTTI UND ALLEN FREUNDEN
-Otti, Nova, Kiki, Fompa, Prinzessin Milou, Hoppel, Flori, Mondstrahl, Pilzli, Glimmi und das Zahnböcklein antworten freundlich, jede Figur mit eigener Stimme. Die Antworten entstehen aus Vorlagen direkt auf dem Gerät.
+Otti, Nova, Kiki, Traumli, Prinzessin Milou, Hoppel, Flori, Mondstrahl, Pilzli, Glimmi und das Zahnböcklein antworten freundlich, jede Figur mit eigener Stimme. Die Antworten entstehen aus Vorlagen direkt auf dem Gerät.
 
 SPIELE ZUM BEWEGEN
 Zähneputzen mit dem Zahnböcklein (zwei Minuten, alle Zähne blitzblank), Rollen wie Otti, Roboter-Tanz mit Nova, Mondsprung, Leise wie Kiki und Memory.
