@@ -41,6 +41,9 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:10p
 .back[hidden]{display:none}
 .brand{font-weight:600;font-size:20px;letter-spacing:.01em}
 .brand span{color:var(--gold)}
+/* Unterseiten: neben «Zurück» nur «Kiki», damit der Titel auf einer Zeile bleibt */
+.brand{white-space:nowrap;min-width:0}
+.back:not([hidden])+.brand span{display:none}
 .stars{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:99px;background:var(--gold-l);color:var(--gold);font-weight:600;font-size:18px}
 .kiki-foto-wrap{display:flex;justify-content:center;margin:6px 0 4px}
 .kiki-foto{width:min(62vw,250px);height:min(62vw,250px);border-radius:28%;border:3px solid #F2C14E;object-fit:cover;box-shadow:0 0 0 6px rgba(242,193,78,.1),0 0 50px rgba(143,211,168,.45),0 18px 50px rgba(0,0,0,.4);animation:filmSchweben 4.6s ease-in-out infinite;cursor:pointer}
@@ -300,9 +303,10 @@ details.mehr[open] .grid{animation:fade .35s var(--ease)}
 @media (prefers-reduced-motion:reduce){.bubble.pop{opacity:1;transform:none}.hero-note{display:none}}
 @media (max-width:380px){.ladder{flex-basis:96px;height:300px}.kiki{width:190px;height:190px}h1{font-size:27px}}
 </style>
+<link rel="stylesheet" href="inhalt/inhalt.css">
 </head>
 <body>
-<script src="../nova/intro.js" data-art="funken" data-bild="kiki-3d.jpg" data-text="Bühne frei für Kiki!"></script>
+<script src="../trickfilmwelt/trickfilmwelt.js" data-app="kiki" data-stil="aura" data-szene="aura/nacht.webp" data-welt="aura/welt.webp" data-figur="aura/figur-idle.webp" data-posen="aura/figur-winkt.webp;aura/figur-lacht.webp" data-css="aura/aura.css" data-text="Bühne frei für Kiki!" data-karten=".card:not(.eltern)" data-knoepfe=".kimu"></script>
 <canvas id="sky" aria-hidden="true"></canvas>
 
 <!-- Kiki als Vorlage -->
@@ -392,6 +396,8 @@ details.mehr[open] .grid{animation:fade .35s var(--ease)}
     </div>
     <button class="card wide heute" data-go="heute"><span class="ic">🌞</span><span><b>Heute mit Kiki</b><small id="planSub">Aufwärmen, 3 Töne, Lied des Tages</small><span class="plan" id="planDots"></span></span><span class="los" aria-hidden="true">▶</span></button>
     <button class="card wide zusammen" data-go="duo"><img class="zus-bild" src="posen/zusammen.jpg" alt="" width="72" height="72" loading="lazy"><span><b>Zusammen singen</b><small>Kind und Mama oder Papa, abwechselnd im Duett</small></span></button>
+    <button class="card wide heute kiste" type="button" data-inhalt=""><span class="ic">🎁</span><span><b>Musik-Kiste</b><small data-inhalt-heute>Sing-Spiele, Rätsel, Instrumente sammeln</small></span><span class="los" aria-hidden="true">▶</span></button>
+    <button class="card wide sprichkarte" type="button" data-sprich=""><span class="ic">💬</span><span><b>Sprich mit Kiki</b><small>Tippen oder schreiben, alles bleibt hier</small></span><span class="los" aria-hidden="true">▶</span></button>
     <h2 class="cat-h">Spielen</h2>
     <div class="grid">
       <button class="card" data-go="tone"><span class="ic">🎯</span><span><b>Ton treffen</b><small>Kiki singt vor, du singst nach</small></span></button>
@@ -790,6 +796,9 @@ function showMicError(e){
   box.hidden = false;
   if (!navigator.mediaDevices || !window.isSecureContext) box.innerHTML = '<b>🙉 Hier darf Kiki nicht zuhören.</b><br>Bitte die Seite in Safari öffnen.';
   else box.innerHTML = '<b>🙉 Oh, Kiki hört dich noch nicht.</b><br>Bitte das Mikrofon erlauben: iPhone <b>Einstellungen › Apps › Safari › Mikrofon</b> auf «Fragen» stellen, dann nochmal auf «Los, wir singen!» tippen.';
+  // Ohne Mikrofon nicht festsitzen: Lieder hören, Lied erfinden und Sternenweg gehen auch so
+  box.insertAdjacentHTML('beforeend', '<br><button class="btn soft small" type="button" id="ohneMic" style="margin-top:10px">Ohne Mikrofon weiter</button>');
+  $('ohneMic').onclick = () => { box.hidden = true; go('menu'); };
   go('home');
 }
 const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -1226,6 +1235,8 @@ function twinkle(lines){
   lines.forEach((ln, li) => sylls(ln).forEach((s, k) => out.push([mel[li][k], s, k === 6 ? 2 : 1, k === 6 && li < 5 ? 1 : 0])));
   return out;
 }
+// Weitere Lieder (inhalt/lieder.js) hängen sich hier an; die Liste baut sich beim Öffnen neu.
+window.KikiLieder = { songs: SONGS, twinkle: twinkle };
 function verseOk(lines){ return lines && lines.length === 6 && lines.every(l => sylls(l).length === 7); }
 function mySongs(){ return (mem.mySongs || []).map((x, i) => ({id: 'my' + x.t, cat: 'eigen', title: x.title, sub: 'Von Kiki erfunden · ' + x.theme, ic: '✨', bpm: 100, notes: twinkle(x.lines)})); }
 function songSeq(song){
@@ -2122,5 +2133,14 @@ button{transition:transform .15s,box-shadow .3s}button:active{transform:scale(.9
 <script src="../nova/seelen.js" defer></script>
 <script src="../nova/buehne.js" data-vor="#micErr" data-figur="kiki" data-name="Kiki" data-bild="kiki-3d.jpg" data-satz="Komm, wir singen zusammen. Ich höre dir zu." defer></script>
 <script src="../nova/nova.js" data-nova-app="Kiki" data-nova-bild="figur.jpg" data-nova-kind="1" data-nova-unten="90" defer></script>
+<script src="musik.js" data-app="kiki" defer></script>
+<script src="inhalt/lieder.js" defer></script>
+<script src="inhalt/daten.js" defer></script>
+<script src="inhalt/inhalt.js" defer></script>
+<link rel="stylesheet" href="inhalt/sprich.css">
+<script src="inhalt/sprich-daten.js" defer></script>
+<script src="inhalt/sprich.js" defer></script>
+<script src="inhalt/homescreen.js" defer></script>
+<link rel="stylesheet" href="inhalt/wischen.css"><script src="inhalt/wischen.js" defer></script><script src="inhalt/wischen-app.js" defer></script>
 </body>
 </html>
