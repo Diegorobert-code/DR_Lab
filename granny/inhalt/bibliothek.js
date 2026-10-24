@@ -634,7 +634,12 @@
   }
 
   /* Öffentlich, damit andere Teile der App die Bibliothek öffnen können. */
-  window.DRLAB_INHALT = { oeffne: oeffne, schliesse: schliesse, heute: heuteArtikel, sprich: sprich, antwort: antwort, stufe: stufe };
+  window.DRLAB_INHALT = { oeffne: oeffne, schliesse: schliesse, heute: heuteArtikel, sprich: sprich, antwort: antwort, stufe: stufe,
+    /* Für die Wisch-Karten (inhalt/wischen.js): gleiche Daten, gleiches Lern-Profil. */
+    daten: function () { return D; }, vorschlag: vorschlag,
+    merken: function (id, an) { if (!ART[id]) return; if (an) D.gemerkt[id] = 1; else delete D.gemerkt[id]; D.zuletzt = id; markiereTag(); sichern(); neueAbzeichen(); karteFuellen(); },
+    geoeffnet: function (id) { if (!ART[id]) return; D.offen[id] = (D.offen[id] || 0) + 1; D.zuletzt = id; sichern(); },
+    gelesen: function (id) { if (!ART[id] || D.gelesen[id]) return; D.gelesen[id] = iso(); markiereTag(); sichern(); toast(C.wortDanke || 'Schön, gelesen ✓'); neueAbzeichen(); karteFuellen(); } };
 
   function los() {
     karteBauen();
