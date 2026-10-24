@@ -832,6 +832,7 @@ window.R8_CFG = {"k":"granny","offlineText":"Kein Internet. Rosa ist trotzdem da
     if (neu) { karte.classList.remove('r8m-ruf'); void karte.offsetWidth; karte.classList.add('r8m-ruf'); }
   }
 
+  window.R8M = { neu: zeigen };
   function los() {
     var ring = document.querySelector('.r8-tag'), h = document.getElementById('heute');
     var vor = ring || h;

@@ -1,6 +1,6 @@
 // Rosa – Offline-Cache (nur eigene Dateien, keine Daten, keine Stimmen)
-const CACHE = 'granny-v31';
-const FILES = ['./inhalt/wischen.js', './inhalt/wischen.css', './inhalt/wischen-app.js', './inhalt/daten.js', './inhalt/bibliothek.js', './inhalt/installieren.js', './icon-maskable-512.png', './schoen.css', './aura/idle.webp', './aura/winkt.webp', './aura/freut.webp', './aura/schlaeft.webp', './aura/szene.webp', './schoen.js', './aura/aura.css', './aura/aura.js', './design.css', './design.js', './feinschliff.css', './feinschliff.js', './schrift.js', './ton-ios.js', './nda-sperre.js', './runde8.js', './runde7.js', './runde6.js', './saison/advent.jpg', './besuch/waefwaef.jpg', './besuch/jackie.jpg', './besuch/mama-affe.jpg', './besuch/flo.jpg', './', './index.html', './lernen.js', './granny-plus.js', './posen.js', './glanz.js', './runde4.js', './feedback.js', './figur.jpg', './figur-gross.jpg', './posen/suchen.jpg', './posen/nicken.jpg', './posen/lachen.jpg', './posen/winken.jpg', './posen/herz.jpg', './posen/trinken.jpg', './posen/kerze.jpg', './icon-180.png', './icon-192.png', './manifest.webmanifest', '../nova/nova.js', '../nova/puppe.js', '../nova/puppe.css', '../nova/seelen.js'];
+const CACHE = 'granny-v32';
+const FILES = ['./inhalt/tabletten.js', './inhalt/wischen.js', './inhalt/wischen.css', './inhalt/wischen-app.js', './inhalt/daten.js', './inhalt/bibliothek.js', './inhalt/installieren.js', './icon-maskable-512.png', './schoen.css', './aura/idle.webp', './aura/winkt.webp', './aura/freut.webp', './aura/schlaeft.webp', './aura/szene.webp', './schoen.js', './aura/aura.css', './aura/aura.js', './design.css', './design.js', './feinschliff.css', './feinschliff.js', './schrift.js', './ton-ios.js', './nda-sperre.js', './runde8.js', './runde7.js', './runde6.js', './saison/advent.jpg', './besuch/waefwaef.jpg', './besuch/jackie.jpg', './besuch/mama-affe.jpg', './besuch/flo.jpg', './', './index.html', './lernen.js', './granny-plus.js', './posen.js', './glanz.js', './runde4.js', './feedback.js', './figur.jpg', './figur-gross.jpg', './posen/suchen.jpg', './posen/nicken.jpg', './posen/lachen.jpg', './posen/winken.jpg', './posen/herz.jpg', './posen/trinken.jpg', './posen/kerze.jpg', './icon-180.png', './icon-192.png', './manifest.webmanifest', '../nova/nova.js', '../nova/puppe.js', '../nova/puppe.css', '../nova/seelen.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(FILES.map(f => c.add(f).catch(() => {})))).then(() => self.skipWaiting()));
 });
@@ -16,4 +16,14 @@ self.addEventListener('fetch', e => {
       return res;
     }).catch(() => caches.match(r).then(x => x || (r.mode === 'navigate' ? caches.match('./index.html') : Response.error())))
   );
+});
+// «Meine Tabletten»: Tipp auf die Mitteilung öffnet Rosa und das Tabletten-Fenster
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const id = e.notification.data && e.notification.data.tabl;
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => {
+    const c = cs[0];
+    if (c) { c.postMessage({ tabl: id || 1 }); return c.focus(); }
+    return self.clients.openWindow('./?tabletten');
+  }));
 });
