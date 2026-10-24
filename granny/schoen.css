@@ -1,0 +1,33 @@
+/* schoen.css – Rosa, Schön-Runde (23.10.2026). Warm und ruhig im Design «Bilderrahmen» (Rosé, Holz, Lexend):
+   Rosa im Aura-Licht ist das Herz vom Startbild. Grosse Schrift und Kontrast-Modus bleiben, wie sie sind.
+   Raster 8 px. Nur Darstellung, als letztes Stylesheet geladen. */
+html:root{--aura-licht:rgba(255,190,140,.55);--aura-licht2:rgba(255,150,160,.18);--aura-rand:rgba(255,200,160,.5)}
+html body :where(h1,h2,h3){text-wrap:balance}
+html body :where(p,li){text-wrap:pretty}
+
+/* ── Startbild ── */
+html.rosa-aura #figurStart{gap:16px!important;padding:max(24px,calc(env(safe-area-inset-top,0px) + 16px)) 24px max(32px,calc(env(safe-area-inset-bottom,0px) + 24px))!important;
+  background:radial-gradient(90% 40% at 50% 0%,#FFF1E6,transparent 70%),linear-gradient(180deg,#FBF4EF,#F7EFE9)!important;justify-content:center!important}
+html.rosa-aura #figurStart>img{display:none!important}
+html body #figurStart .aura-figur img.aura-pose{width:auto!important;height:100%!important;max-width:none!important;border:0!important;border-radius:0!important;object-fit:contain!important;box-shadow:none!important;animation:none!important;cursor:inherit}
+html body #figurStart .aura-figur.aura-ersatz img.aura-pose{width:var(--aura-rund,62%)!important;height:auto!important;border:4px solid rgba(255,255,255,.92)!important;border-radius:50%!important;object-fit:cover!important}
+html.rosa-aura #figurStart .aura-buehne{width:100%;max-width:392px;aspect-ratio:1/1;max-height:50svh;border-radius:32px;flex:none;--aura-rund:60%}
+html.rosa-aura #figurStart .aura-buehne:not(.mit-szene){
+  background:radial-gradient(60% 46% at 50% 64%,rgba(255,196,140,.5),transparent 72%),
+    radial-gradient(30% 22% at 80% 20%,rgba(255,226,170,.5),transparent 70%),
+    linear-gradient(180deg,#2B2244,#57364F 55%,#9A5B55)}
+html.rosa-aura #figurStart .aura-buehne .aura-figur{top:6%;bottom:6%}
+html.rosa-aura #figurStart .gl-hallo{font-family:var(--dz-f)!important;font-size:1.25rem!important;font-weight:600!important;color:#8A4632!important;margin:0!important}
+html.rosa-aura #figurStart h1{font-family:var(--dz-f)!important;font-weight:700!important;font-size:clamp(2.5rem,11vw,3rem)!important;line-height:1.05!important;margin:8px 0 0!important;color:#3D2B22!important;-webkit-text-fill-color:#3D2B22}
+html.rosa-aura #figurStart p:not(.gl-hallo){font-size:1.1875rem!important;line-height:1.5!important;color:#6B5247!important;max-width:28ch!important}
+html.rosa-aura #figurStart button{width:100%;max-width:340px;min-height:60px!important;margin-top:8px!important;border-radius:999px!important;font-family:var(--dz-f)!important;font-weight:600!important;
+  box-shadow:0 12px 24px -12px rgba(31,111,74,.7)!important}
+
+/* ── Rosa auf der Bühne der App (erst wenn die Aura-Posen da sind) ── */
+html.rosa-aura-fig .granny-fig,html.rosa-aura-fig .granny-fig img{width:112px!important;height:128px!important}
+html.rosa-aura-fig .granny-fig img{border:0!important;border-radius:0!important;object-fit:contain;object-position:50% 100%;background:none!important;
+  box-shadow:none!important;filter:drop-shadow(0 0 10px rgba(255,200,160,.55)) drop-shadow(0 8px 10px rgba(61,43,34,.25))}
+
+/* ── Schwebende Knöpfe: Nova-Pille steht über Novas Knopf, nie über «Lernen» ── */
+html body .nova-pille{right:16px!important;bottom:calc(16px + 60px + 12px + env(safe-area-inset-bottom,0px))!important;max-width:calc(100vw - 32px);padding:10px 16px!important;font-size:15px!important}
+html body main{padding-bottom:calc(176px + env(safe-area-inset-bottom,0px))!important}

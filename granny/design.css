@@ -1,0 +1,56 @@
+/* design.css – Rosa im Look «Bilderrahmen» (Design-Umbau 23.10.2026).
+   Herzlich, ein Familienfoto im Zentrum, Holz und Rosé. Nur Optik: alle Funktionen, Texte und
+   Speicher bleiben. Wird als letztes Stylesheet geladen. Grosse Schrift (A/A+/A++) und Kontrast
+   bleiben oben sichtbar und funktionieren wie vorher; im Kontrast-Modus gilt Schwarz auf Weiss. */
+:root:root{
+  --dz-bg:#F7EFE9;--dz-s:#FFFFFF;--dz-i:#3D2B22;--dz-m:#6B5247;--dz-a:#B9705A;--dz-a2:#9A5440;--dz-at:#8A4632;
+  --dz-weich:#F6E3DA;--dz-rand:#ECDCD2;--dz-rand2:#B8978A;--dz-r:22px;
+  --dz-f:"Lexend","Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --bg:#F7EFE9;--card:#FFFFFF;--gold:#9A5440;--gold2:#8A4632;--text:#3D2B22;--soft:#6B5247;
+  --fs-accent:#9A5440;--fs-accent-ink:#8A4632;--fs-focus:#8A4632;--fs-ink:#3D2B22;--fs-ink2:#6B5247;--fs-ink3:#6B5247;
+  --fs-line:#EFE2D9;--fs-line2:#DCC6B9;--fs-surface:#FFFFFF;--fs-surface2:#FBF4F0;--fs-sk1:#F4E8E1;--fs-sk2:#EADBD1;
+  --fs-r-l:22px;--fs-r-m:16px;
+  --gs-rand:#B8978A;
+}
+html:not(.gk),html:not(.gk) body{background:var(--dz-bg)!important;color:var(--dz-i)}
+body,button,input,select,textarea,.blase,.reden,.hilfe,.klemmt,.person,.heute{font-family:var(--dz-f)!important}
+
+/* ---------- Kopf: Datum + Bilderrahmen auf warmem Rosé ---------- */
+html:not(.gk) .zeit{background:linear-gradient(180deg,#A86250,#A35D48);border-radius:var(--dz-r) var(--dz-r) 0 0;padding:18px 16px 4px;color:#fff}
+html:not(.gk) .zeit .tag{color:#fff!important;font-weight:700;letter-spacing:-.01em;line-height:1.1}
+html:not(.gk) .zeit .uhr{color:#fff!important;opacity:1;font-weight:500}
+.dz-hero{margin-top:-16px;padding:10px 16px 46px;border-radius:0 0 var(--dz-r) var(--dz-r);background:linear-gradient(180deg,#A35D48,#8E4B38);display:flex;justify-content:center}
+.dz-rahmen{position:relative;width:min(78%,300px);aspect-ratio:4/3;margin:0;border:10px solid #FFFFFF;border-radius:8px;
+  background:linear-gradient(160deg,#F3D9CC,#E2B5A2 55%,#C98C76);box-shadow:0 0 0 1px rgba(61,43,34,.12),0 14px 30px -12px rgba(40,20,12,.55);overflow:hidden}
+.dz-rahmen img{display:block;width:100%;height:100%;object-fit:cover}
+.dz-rahmen .dz-leer{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;text-align:center;color:#5A3426}
+.dz-rahmen .dz-leer svg{width:46%;max-width:120px;height:auto;opacity:.9}
+.dz-rahmen .dz-leer span{font-size:15px;line-height:1.25;font-weight:500}
+.dz-rahmen figcaption{position:absolute;left:0;right:0;bottom:0;padding:18px 10px 6px;background:linear-gradient(transparent,rgba(30,15,8,.62));color:#fff;font-size:16px;font-weight:600;text-align:center}
+/* Gruss liegt wie ein Blatt über dem Rahmen */
+html:not(.gk) .r6-gruss{margin-top:-46px;position:relative;z-index:1;border-radius:var(--dz-r)!important;border:1px solid var(--dz-rand)!important;box-shadow:0 1px 2px rgba(61,43,34,.06),0 14px 30px -18px rgba(61,43,34,.45)!important}
+
+/* ---------- Kacheln, Karten, Knöpfe ---------- */
+html:not(.gk) :is(.r6-karte,.r7-karte,.r4-karte,.heute,.merk,.album,.erzaehl,.start,.blase,.person,.klemmt){border-radius:var(--dz-r)!important}
+html:not(.gk) :is(.r6-karte,.r7-karte,.r4-karte,.heute,.merk,.album,.start){box-shadow:0 1px 2px rgba(61,43,34,.05),0 10px 26px -18px rgba(61,43,34,.4)!important}
+html:not(.gk) .person .bild{background:var(--dz-weich)!important;color:var(--dz-at)!important}
+html:not(.gk) :is(.r6-btn,.r6-k,.r7-btn,.r4-knopf){border-radius:999px!important}
+html:not(.gk) .reden{border-radius:var(--dz-r)!important}
+html:not(.gk) .hilfe{border-radius:var(--dz-r)!important}
+html:not(.gk) .angeh{color:var(--dz-m)!important}
+/* Rosa bleibt kleines Markenzeichen */
+.granny-fig,.granny-fig img{width:92px!important;height:92px!important}
+html:not(.gk) .granny-fig img{border-color:#fff!important;box-shadow:0 0 0 3px var(--dz-a),0 6px 16px rgba(61,43,34,.2)!important}
+
+/* ---------- Leiste A / A+ / A++ und Kontrast: gross und deutlich ---------- */
+html:not(.gk) .gs-seg,html:not(.gk) .gs-kontrast{border-color:var(--dz-a2)!important;background:#fff!important}
+html:not(.gk) .gs-seg button+button{border-left-color:var(--dz-a2)}
+html:not(.gk) .gs-seg button[aria-pressed="true"]{background:var(--dz-a2);color:#fff}
+.gs-leiste button{min-height:52px}
+
+/* ---------- Kontrast-Modus: Rahmen schwarz-weiss ---------- */
+html.gk .zeit{background:#fff;border:3px solid #000;border-bottom:0;border-radius:var(--dz-r) var(--dz-r) 0 0;padding:16px 16px 4px}
+html.gk .dz-hero{background:#fff;border:3px solid #000;border-top:0;padding-bottom:16px}
+html.gk .dz-rahmen{border-color:#000;box-shadow:none}
+html.gk .dz-rahmen .dz-leer{color:#000;background:#fff}
+html.gk main :is(.r6-gruss,.r6-karte,.r7-karte,.r4-karte) :is(h2,h3,b,strong,p,span,div,li){color:#000!important}
