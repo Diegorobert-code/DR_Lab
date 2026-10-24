@@ -3589,7 +3589,7 @@ window.MS_TEXTE = () => {
   $('#homeHoeren').addEventListener('click', () => oeffnen(true));
   $('#listHoeren').addEventListener('click', () => oeffnen(true));
   document.addEventListener('keydown', e => { if (H.on && e.key === 'Escape') zu(); });
-  window.MS_HOEREN = { oeffnen, zu, pause, zustand: () => ({ on:H.on, pause:H.pause, si:H.si, pi:H.pi, titel:H.st && H.st.title }),
+  window.MS_HOEREN = { oeffnen, zu, pause, springe, zustand: () => ({ on:H.on, pause:H.pause, si:H.si, pi:H.pi, titel:H.st && H.st.title }),
     leser: () => ({ idx:R.idx, reading:R.reading, seq:R.seq.map(p => p.fq ? 'F' : p.q ? 'Q' : 't').join('') }) };
   // Aus der Otti-App: ../mondschein/#hoeren öffnet gleich den Hörmodus (Start mit einem Tipp, das Handy verlangt das).
   if (location.hash === '#hoeren') setTimeout(() => { try { $('#figurStart').hidden = true; } catch(e){} oeffnen(false); }, 300);
@@ -3647,6 +3647,8 @@ window.MS_TEXTE = () => {
 })();
 /* Runde 9: Griffe für den Schlaf-Timer (runde9.js) */
 try { window.MS_TON = { S, TTS, MUSIK }; } catch(e){}
+/* Sperrbildschirm (sperrbildschirm.js): Vorlesen von aussen lesen und steuern */
+try { window.MS_LESER = { R, nav, buildSeq: st => buildSeq(st), stories: () => STORIES, aktuell: () => current }; } catch(e){}
 })();
 </script>
 <script src="../nova/seelen.js" defer></script>
@@ -3878,6 +3880,7 @@ html.hoermodus .nova-btn,html.hoermodus .nova-pille,html.hoermodus .nova-panel,h
 </style>
 <script src="lernen.js" data-app="Mondschein" data-figur="otti" data-name="Mondschein" data-kind="1" data-unten="16" defer></script>
 <script src="musik.js" data-app="mondschein" defer></script>
+<script src="sperrbildschirm.js" defer></script>
 <script src="inhalt/welten-daten.js" defer></script>
 <script src="inhalt/welten.js" data-app="mondschein" defer></script>
 </body>
