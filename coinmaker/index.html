@@ -333,7 +333,7 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
 (function(){
   var KEY='coinmaker.v1', BASE={idee:10,daten:5,rueck:3}, NAMES={idee:'Idee',daten:'Daten',rueck:'Rückmeldung'};
   var DAY_COINS=200, DAY_IDEAS=5;
-  NAMES.laden='Münzladen';
+  NAMES.laden='Münzladen';NAMES.bonus='Bonus';
   var SHOP=[['kost','Figuren-Kostüm (Otti, Nova oder Coin Maker)',50],['gesch','Neue Otti-Geschichte',80],['stimme','Stimme bei der nächsten App-Idee',100],['prem','1 Monat Premium in einer Partner-App',150],['comic','Gedruckter Otti-Comic (Versand)',400],['nova','Rabatt Vorbestellung Nova-Gerät',1000]];
   var type='idee', busy=false;
   var $=function(id){return document.getElementById(id)};
@@ -390,7 +390,7 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
   ['idee','daten','rueck'].forEach(function(k){$('t-'+k).addEventListener('click',function(){setType(k)})});
   [['d-mood','o-mood'],['d-sleep','o-sleep'],['d-move','o-move']].forEach(function(p){$(p[0]).addEventListener('input',function(){$(p[1]).textContent=$(p[0]).value})});
 
-  function todayItems(){return state.items.filter(function(i){return i.day===today()&&!i.ex&&i.type!=='laden'})}
+  function todayItems(){return state.items.filter(function(i){return i.day===today()&&!i.ex&&i.type!=='laden'&&i.type!=='bonus'})}
   function balance(){var t=0;state.items.forEach(function(i){t+=i.coins});return t}
   function render(){
     var total=balance();
@@ -402,7 +402,7 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
       var li=document.createElement('li');
       var t=document.createElement('div');t.className='t';
       var p=document.createElement('p');p.textContent=i.text;
-      var s=document.createElement('small');s.textContent=i.day.split('-').reverse().join('.')+' · '+NAMES[i.type]+' · '+(i.type==='laden'?'eingelöst':'Qualität '+i.q.toFixed(2)+' · Kurs '+i.rate.toFixed(2));
+      var s=document.createElement('small');s.textContent=i.day.split('-').reverse().join('.')+' · '+NAMES[i.type]+' · '+(i.type==='laden'?'eingelöst':i.type==='bonus'?'geschenkt':'Qualität '+i.q.toFixed(2)+' · Kurs '+i.rate.toFixed(2));
       if(i.ex){var e=document.createElement('span');e.className='ex';e.textContent='Beispiel';s.appendChild(e)}
       t.appendChild(p);t.appendChild(s);
       var c=document.createElement('span');c.className='c'+(i.coins<0?' neg':'');c.textContent=(i.coins<0?'':'+')+i.coins;
@@ -479,6 +479,8 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--ink-2);font-size:.9rem;d
   var s0=scoreText($('txt').value),sum0=0;s0.crit.forEach(function(k){sum0+=k[1]});var q0=Math.round((0.5+sum0/12*1.5)*100)/100;
   showResult('idee',s0.crit,q0,Math.round(10*q0*R.rate),'Beispiel: so würde die Idee oben bewertet');
   $('resType').textContent='Beispiel';
+  // Für irgendwann.js: Coins als Belohnung (z. B. Sonntags-Rückblick), zählen nicht zum Tagesdeckel
+  window.CMKasse={bonus:function(text,coins){coins=Math.max(0,Math.min(50,Math.round(+coins||0)));if(!coins)return false;state.items.push({id:String(Date.now()),day:today(),type:'bonus',text:String(text||'Bonus').slice(0,140),q:0,rate:0,coins:coins});save();render();return true}};
   render();
 })();
 </script>
