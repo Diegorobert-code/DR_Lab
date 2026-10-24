@@ -1,0 +1,38 @@
+/* aura.css – Stil «Aura» der Trickfilmwelt (zu trickfilmwelt.js mit data-stil="aura"):
+   3D-Trickfilm-Nacht, weiches leuchtendes Licht, warme Nachtszene, violetter Schein. Animiert wird nur transform und opacity. */
+html.tfw-aura{color-scheme:dark;--aura-violett:178,132,255;--aura-gold:255,214,140}
+#tfw-welt{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;
+  background:var(--tfw-welt-bild,none) center top/cover no-repeat,#0b1636}
+#tfw-welt .tfw-schein{position:absolute;left:-20%;right:-20%;top:-10%;height:70%;
+  background:radial-gradient(40% 45% at 50% 30%,rgba(var(--aura-gold),.16),transparent 70%),radial-gradient(60% 60% at 50% 60%,rgba(var(--aura-violett),.10),transparent 75%);
+  animation:auraSchein 7s ease-in-out infinite alternate}
+@keyframes auraSchein{from{opacity:.65;transform:scale(1)}to{opacity:1;transform:scale(1.06)}}
+#tfw-welt .tfw-licht{position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);border-radius:50%;
+  background:radial-gradient(rgba(255,240,200,1),rgba(var(--aura-gold),.7) 45%,transparent 72%);
+  box-shadow:0 0 10px 3px rgba(var(--aura-gold),.35);opacity:0;animation:auraLicht var(--d) ease-in-out var(--v) infinite}
+#tfw-welt .tfw-licht:nth-child(4n){background:radial-gradient(#fff,rgba(var(--aura-violett),.8) 45%,transparent 72%);box-shadow:0 0 10px 3px rgba(var(--aura-violett),.35)}
+@keyframes auraLicht{0%{opacity:0;transform:translate(0,0)}25%{opacity:.9}50%{opacity:.35;transform:translate(10px,-34px)}75%{opacity:.85}100%{opacity:0;transform:translate(-6px,-70px)}}
+/* Karten: weiches Leuchten statt Bleistiftrahmen */
+.tfw-karte{box-shadow:0 0 0 1px rgba(var(--aura-gold),.28),0 18px 44px rgba(2,4,18,.55),0 0 46px rgba(var(--aura-violett),.22)!important}
+/* Fenster schweben weich herein */
+.tfw-blaettern{animation:auraAuf .5s cubic-bezier(.2,.8,.2,1) both!important}
+@keyframes auraAuf{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+/* Eingang */
+#tfw-eingang{position:fixed;inset:0;z-index:2147482900;cursor:pointer;-webkit-user-select:none;user-select:none}
+#tfw-eingang canvas{position:absolute;inset:0;display:block}
+#tfw-eingang .tfw-text{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 6%);padding:0 24px;text-align:center;
+  font:700 26px/1.25 ui-rounded,"SF Pro Rounded",system-ui,-apple-system,sans-serif;color:#fff4d6;letter-spacing:.2px;
+  text-shadow:0 0 18px rgba(var(--aura-gold),.65),0 0 42px rgba(var(--aura-violett),.55);
+  opacity:0;transform:translateY(8px);transition:opacity 1s ease,transform 1s ease}
+#tfw-eingang .tfw-text.an{opacity:1;transform:none}
+#tfw-eingang.tfw-weg-licht{transition:opacity .75s ease;opacity:0;pointer-events:none}
+#tfw-eingang.tfw-weg-sanft{transition:opacity .4s ease;opacity:0;pointer-events:none}
+/* ruhigere Nacht (data-ruhe="1") */
+html.tfw-ruhe #tfw-welt .tfw-schein{opacity:.6;animation-duration:11s}
+html.tfw-ruhe #tfw-welt .tfw-licht{animation-duration:calc(var(--d) * 1.6)}
+@media (prefers-reduced-motion:reduce){
+  #tfw-welt .tfw-schein,#tfw-welt .tfw-licht{animation:none}
+  #tfw-welt .tfw-licht{opacity:.5}
+  .tfw-blaettern{animation:auraRuhig .3s ease both!important}
+  @keyframes auraRuhig{from{opacity:0}to{opacity:1}}
+}
