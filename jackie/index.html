@@ -108,6 +108,8 @@ textarea::placeholder,input::placeholder{color:#b3a59c}
 .tile small{display:block;font-size:13px;color:var(--muted);margin-top:2px;line-height:1.35}
 .t-streit .ic{background:var(--accent-l);color:var(--accent-d)} .t-schule .ic{background:var(--sky-l);color:#4f6478} .t-behoerden .ic{background:var(--plum-l);color:#7a5a72} .t-teen .ic{background:var(--sand-l);color:#8a6a35}
 .t-gesundheit .ic{background:#e3eeec;color:#3f716a}
+.t-pause{grid-column:1/-1}
+.t-freunde .ic{background:var(--sky-l);color:#4f6478}
 .t-pause{background:linear-gradient(140deg,var(--sage-l),#eef3ee)}
 .t-pause .ic{background:rgba(255,255,255,.7);color:var(--sage-d)}
 .tile{min-width:0}
@@ -572,6 +574,7 @@ body.im-schutz .wrap{padding-top:calc(130px + var(--sat))}
       <button class="tile t-behoerden stag" data-topic="behoerden"><span class="ic"><svg class="i"><use href="#i-doc"/></svg></span><span><b>Behörden &amp; Formulare</b><small>Briefe, Fristen, Geld</small></span></button>
       <button class="tile t-teen stag" data-topic="teen"><span class="ic"><svg class="i"><use href="#i-head"/></svg></span><span><b>Teenager</b><small>Rückzug, Handy, Ausgang</small></span></button>
       <button class="tile t-gesundheit stag" data-topic="gesundheit"><span class="ic"><svg class="i"><use href="#i-plus"/></svg></span><span><b>Gesundheit (allgemein)</b><small>Fieber, Schlaf, Essen, Arzt</small></span></button>
+      <button class="tile t-freunde stag" data-topic="freunde"><span class="ic"><svg class="i"><use href="#i-heart"/></svg></span><span><b>Freunde finden</b><small>Für dich oder dein Kind</small></span></button>
       <button class="tile t-pause stag" data-topic="pause"><span class="ic"><svg class="i"><use href="#i-leaf"/></svg></span><span><b>Ich brauche eine Pause</b><small>Zwei Minuten nur atmen</small></span></button>
     </div>
 
@@ -858,6 +861,7 @@ const TOPICS = {
   behoerden:{name:'Behörden & Formulare', icon:'doc'},
   teen:     {name:'Teenager', icon:'head'},
   gesundheit:{name:'Gesundheit (allgemein)', icon:'plus'},
+  freunde:  {name:'Freunde finden', icon:'heart'},
   pause:    {name:'Ich brauche eine Pause', icon:'leaf'}
 };
 
@@ -882,6 +886,11 @@ const MODS = {
     {id:'wut', label:'Ich bin wütend', tip:'Wut ist okay – sie zeigt, dass dir etwas wichtig ist. Klär die Sache erst, wenn du wieder bei 5 von 10 bist. Bis dahin darfst du sagen: «Ich brauch kurz.»'},
     {id:'traurig', label:'Traurig oder hilflos', tip:'So fühlen sich viele Mütter in dieser Phase. Dein Teenager braucht dich noch – nur anders. Sei sanft mit dir.'},
     {id:'sorge', label:'Ich mache mir Sorgen', tip:'Sorgen sind ein gutes Frühwarnsystem. Hör darauf, ohne in Panik zu geraten – und hol dir Unterstützung, wenn das Gefühl bleibt.'}
+  ]},
+  freunde:{ q:'Was fällt dir am schwersten?', opts:[
+    {id:'anfang', label:'Den ersten Schritt machen', tip:'Der erste Schritt muss nicht gross sein. Ein Lächeln, eine Frage, ein «Hallo» reicht. Die meisten Menschen freuen sich, angesprochen zu werden, sie trauen sich nur selbst nicht.'},
+    {id:'zeit', label:'Zeit dafür finden', tip:'Freundschaft braucht keine freien Abende. Sie wächst auch nebenbei: auf dem Spielplatz, beim Abholen, beim Einkaufen. Kleine, regelmässige Momente zählen mehr als seltene grosse.'},
+    {id:'vertrauen', label:'Mich öffnen und vertrauen', tip:'Du darfst langsam sein. Erzähl erst Kleines von dir und schau, wie es zurückkommt. Vertrauen wächst Schritt für Schritt, nicht auf einmal.'}
   ]},
   gesundheit:{ q:'Wie alt ist dein Kind ungefähr?', opts:[
     {id:'baby', label:'Baby (unter 1 Jahr)', tip:'Bei Babys lieber früher als später anrufen – besonders bei Fieber unter 3 Monaten, wenn es schlecht trinkt oder schlapp wirkt. Niemand findet das übertrieben.'},
@@ -1016,6 +1025,34 @@ const SITS = [
  alts:['Auf 147 hinweisen – Jugendliche können dort anonym anrufen, chatten oder schreiben.','Für dich selbst: die Elternberatung von Pro Juventute oder die Dargebotene Hand (143), wenn es dir zu viel wird.']}
 ];
 
+/* ===== FREUNDE FINDEN ===== */
+const FR_INFO = 'In Zürich zum Beispiel: Women4Women vom SRK Kanton Zürich (kostenloser Frauentreff, kreativ und gemütlich) · ZIWA (internationale Frauengruppen: Bücher, Sport, Wandern, Sprachen) · Checkin breaks out (monatlicher Apéro, um neue Leute kennenzulernen) · Gemeinschaftszentren GZ (Töpfern und Kurse im Quartier) · Habi-Art in Altstetten (Malen und Zeichnen) · LOKI Studio (Keramikkurse) · Timeleft (Abendessen zu sechst mit Fremden, per App) · Meetup-Gruppe «Zürich Girlfriends connecting» (Frauen 33–45). Daten und Preise bitte direkt beim Angebot nachschauen, sie ändern sich.';
+SITS.push(
+{id:'einsam', topic:'freunde', title:'Ich fühle mich als Mama oft allein',
+ kw:['einsam','allein mit','niemanden','keine freundin','keine freundinnen','keine freunde mehr','niemand zum reden','fühle mich allein','isoliert'],
+ intro:'Viele Mütter kennen dieses Gefühl, auch wenn kaum jemand darüber spricht. Den ganzen Tag mit Kindern und trotzdem allein: Das ist kein persönliches Versagen, das ist eine Phase, die du verändern kannst.',
+ step:{t:'Diese Woche eine Person kurz kontaktieren', x:'Denk an eine Person, mit der es früher schön war oder die dir sympathisch ist. Schreib ihr heute eine kurze Nachricht: «Ich habe an dich gedacht. Hast du Lust auf einen Kaffee oder einen Spaziergang mit den Kindern?» Mehr braucht es nicht für den Anfang.'},
+ alts:['Einen festen Wochentag für dich einplanen, an dem du etwas mit anderen Erwachsenen machst, auch wenn es nur eine Stunde ist.','Die Mütter- und Väterberatung oder das Familienzentrum deiner Gemeinde fragen: Dort gibt es oft Treffs für Eltern.'],
+ info:FR_INFO},
+{id:'neu', topic:'freunde', title:'Neu hier, ich kenne noch niemanden',
+ kw:['neu hier','zugezogen','umgezogen','neue stadt','neuer ort','kenne niemanden','kenne noch niemanden','fremd hier','anschluss finden','anschluss'],
+ intro:'Neu anfangen ist mutig, und es braucht Zeit. Freundschaften an einem neuen Ort wachsen meist über das, was du sowieso tust.',
+ step:{t:'Einen Ort finden, an dem du regelmässig bist', x:'Such dir einen Ort, wo du jede Woche zur gleichen Zeit bist: ein Elterncafé, ein Kurs, ein Chor, ein Sportverein, eine Spielgruppe. Wer sich immer wieder sieht, kommt ganz von selbst ins Gespräch.'},
+ alts:['Bei der Gemeinde nach einem Begrüssungsanlass oder Quartiertreff für Neuzugezogene fragen.','Nachbarn grüssen und kurz vorstellen. Ein kleiner Zettel im Treppenhaus («Wir sind neu hier») öffnet oft Türen.'],
+ info:FR_INFO},
+{id:'muetter', topic:'freunde', title:'Andere Mütter kennenlernen',
+ kw:['andere mütter','andere mamis','mamis','mütter kennenlernen','spielplatz','elternabend','krabbelgruppe','spielgruppe','eltern kennenlernen','mamifreundin'],
+ intro:'Auf dem Spielplatz stehen oft viele Mütter, die genau dasselbe denken wie du: «Ich würde gerne reden, aber wie anfangen?»',
+ step:{t:'Über die Kinder ins Gespräch kommen', x:'Die Kinder sind der einfachste Einstieg: «Wie alt ist Ihre Kleine?» oder «Kommt ihr oft hierher?» Wenn es sich gut anfühlt, schlag beim nächsten Mal vor: «Sollen wir uns nächste Woche wieder hier treffen?»'},
+ alts:['Beim Elternabend oder Abholen Nummern austauschen, zum Beispiel für eine Klassen- oder Spielgruppen-Chatgruppe.','Selbst zu einem einfachen Treffen einladen: Zvieri im Park, jede bringt etwas mit.'],
+ info:FR_INFO},
+{id:'kindfreunde', topic:'freunde', title:'Mein Kind findet keine Freunde',
+ kw:['findet keine freunde','hat keine freunde','keine gspänli','keine gspändli','kein gspänli','spielt allein','spielt immer allein','schüchtern','findet keinen anschluss','neue klasse','kein freund'],
+ intro:'Wenn dein Kind allein ist, tut das auch dir weh. Viele Kinder brauchen einfach etwas mehr Zeit oder einen kleinen Anstoss, und ein einziger guter Freund reicht oft schon.',
+ step:{t:'Ein Kind zum Spielen einladen', x:'Frag dein Kind: «Mit wem spielst du gern, auch nur ein bisschen?» Lade genau dieses eine Kind zu euch ein, kurz und einfach: eine Stunde, ein Spiel, ein Zvieri. Zu zweit fällt es schüchternen Kindern viel leichter als in der Gruppe.'},
+ alts:['Ein Hobby mit anderen Kindern suchen, das dein Kind wirklich mag: Fussball, Zeichnen, Pfadi, Musik.','Wird dein Kind ausgeschlossen oder geplagt: die Lehrperson oder Schulsozialarbeit informieren.']}
+);
+
 /* ===== GESUNDHEIT ===== */
 const GES_INFO = 'Keine Diagnose: Bitte lass Beschwerden ärztlich abklären – bei deiner Kinderärztin oder deinem Hausarzt. Ausserhalb der Praxiszeiten: Ärztefon Zürich 0800 33 66 55. Notfall 144, Vergiftung Tox Info 145.';
 SITS.push(
@@ -1067,6 +1104,7 @@ function analyse(text){
   if(/(schule|klasse|lehr)/.test(t)) scores.schule=(scores.schule||0)+1;
   if(/( amt|behörde|gemeinde|kanton|formular)/.test(t)) scores.behoerden=(scores.behoerden||0)+1;
   if(/(gesund|krank(?!enkass)|arzt|ärzt|medikament|schmerz|fieber|schlaf)/.test(t)) scores.gesundheit=(scores.gesundheit||0)+1;
+  if(/(freund|freundschaft|kontakte|anschluss|einsam)/.test(t)) scores.freunde=(scores.freunde||0)+1;
   let pause=0; PAUSE_KW.forEach(k=>{ if(hasKw(t,k)) pause++; });
   let topic=null, best=0;
   Object.keys(scores).forEach(k=>{ if(scores[k]>best){best=scores[k];topic=k;} });
@@ -1165,7 +1203,7 @@ function askTopic(){
   $('askQ').textContent='Ich möchte dich richtig verstehen. Was passt am ehesten?';
   $('askSub').textContent='Tipp einfach an, was am nächsten dran ist – dann bekommst du gleich deinen nächsten Schritt.';
   const list=[];
-  ['streit','schule','behoerden','teen','gesundheit'].forEach(k=>{
+  ['streit','schule','behoerden','teen','gesundheit','freunde'].forEach(k=>{
     list.push({group:TOPICS[k].name});
     SITS.filter(s=>s.topic===k).forEach(s=>list.push({label:s.title, onClick:()=>{ flow.topic=k; flow.sitId=s.id; finish(); }}));
   });
