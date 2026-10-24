@@ -548,7 +548,7 @@
 
 <div class="aktionen">
   <button class="aktion" id="spielKnopf" type="button"><span class="rund" aria-hidden="true">🎲</span><span id="spielT">Spielen</span></button>
-  <button class="aktion knopf" id="knopf" type="button" aria-label="Mit Otti reden"><span class="rund" id="knopfIc" aria-hidden="true">🎙</span><span id="knopfT">Reden</span></button>
+  <button class="aktion knopf" id="knopf" type="button" aria-label="Mit Otti reden"><span class="rund" id="knopfIc" aria-hidden="true">💬</span><span id="knopfT">Reden</span></button>
   <button class="aktion" id="winkKnopf" type="button"><span class="rund" aria-hidden="true">👋</span><span>Winken</span></button>
 </div>
 <button class="sprich-pille" type="button" data-sprich=""><span aria-hidden="true">💬</span> Sprich mit Otti <small>· tippen, bleibt hier</small></button>
@@ -1307,13 +1307,11 @@
   halteKnopf($('elternOk'), function () { schreib(OK, '1'); eltern.hidden = true; starten(); }, function () { hinweis.textContent = 'Für Eltern: 3 Sekunden gedrückt halten.'; });
   $('elternNein').addEventListener('click', function () { eltern.hidden = true; spielWahl(); });
 
+  // Reden geht über «Sprich mit Otti» (inhalt/sprich.js): alles bleibt auf dem Gerät, die Kinderstimme geht nie ins Internet (Diego 24.10.).
   function redenTippen() {
     spielBeenden(); tippWeg();
-    if (conv) { var c = conv; ende('Bis bald!'); c.endSession().catch(function () {}); }
-    else if (startet) return;
-    else if (!navigator.onLine) { statusSetzen('Ohne Internet hört Otti nicht live zu.'); hinweis.textContent = 'Wir spielen stattdessen zusammen.'; spielWahl(); }
-    else if (!elternOk()) eltern.hidden = false;
-    else starten();
+    if (conv) { var c = conv; ende('Bis bald!'); c.endSession().catch(function () {}); return; }
+    if (window.Sprich && Sprich.oeffnen) Sprich.oeffnen();
   }
   knopf.addEventListener('click', redenTippen);
   // Nova-Knopf unten rechts wie in allen Apps. Live-Reden geht hier immer über Ottis Bühne und das Eltern-Ja.
