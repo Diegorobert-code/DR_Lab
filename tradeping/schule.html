@@ -1,0 +1,865 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3f4f6">
+<link rel="icon" href="icon.svg">
+<script>try{var t=localStorage.getItem("tp_thema");if(t)document.documentElement.dataset.thema=t}catch(e){}</script>
+<!-- Quelle: trading/aktienschule/mrping-schule.html (Inhalt unverändert; nur Kopf, Bildpfade und Rückweg ergänzt) -->
+<title>Mr. Pings Aktienschule</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: eine Handy-Spalte im TradePing-Look (Nachtblau + Gold), Schritte: Start → Fragen → Dein Weg → Lektion */
+:root{
+  --bg:#060d1c; --card:#101e3c; --card2:#16284e; --ink:#eaf0fb; --ink2:#b8c6e0; --muted:#8597ba;
+  --line:rgba(120,160,230,.2); --gold:#f2c14e; --gold-l:rgba(242,193,78,.14); --green:#5fdc9a; --red:#ff7b72;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  color-scheme:dark;
+}
+body{background:radial-gradient(90% 40% at 50% 0%,#132a5a 0%,rgba(19,42,90,0) 70%),var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5}
+.wrap{max-width:560px;margin:0 auto;padding-block:16px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:16px}
+h1,h2,h3{margin:0;text-wrap:balance;line-height:1.2;letter-spacing:-.01em}
+h1{font-size:26px;font-weight:800} h2{font-size:20px;font-weight:700} h3{font-size:17px;font-weight:700}
+p{margin:0}
+.muted{color:var(--muted);font-size:14px}
+.hero{position:relative;border-radius:24px;overflow:hidden;border:1px solid rgba(242,193,78,.45)}
+.hero img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:50% 22%}
+.hero .unten{position:absolute;inset:auto 0 0 0;padding:56px 16px 16px;background:linear-gradient(transparent,rgba(5,11,31,.94) 55%);display:grid;gap:4px}
+.hero b{font-size:22px;color:var(--gold)}
+.bubble{background:var(--card);border:1px solid var(--line);border-radius:18px 18px 18px 6px;padding:14px 16px;display:grid;gap:8px;color:var(--ink2)}
+.bubble strong{color:var(--ink)}
+.btn{min-height:52px;border-radius:16px;border:1px solid var(--line);background:var(--card2);color:var(--ink);font:600 16px var(--sans);padding:0 18px;cursor:pointer}
+.btn.gold{background:var(--gold);border-color:transparent;color:#2a1d00;font-weight:700}
+.btn:focus-visible,.opt:focus-visible,.les:focus-visible,.chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row .btn{flex:1 1 140px}
+.prog{height:6px;border-radius:99px;background:var(--line);overflow:hidden}.prog i{display:block;height:100%;background:var(--gold);transition:width .3s}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;min-height:56px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:500 16px var(--sans);padding:12px 14px;cursor:pointer;display:flex;gap:12px;align-items:center}
+.opt span.e{font-size:24px;flex:none}
+.opt small{display:block;color:var(--muted);font-size:13px}
+.opt[aria-pressed="true"]{border-color:var(--gold);background:var(--gold-l)}
+.weg{background:linear-gradient(160deg,#1c2e60,#0c1834);border:1px solid rgba(242,193,78,.4);border-radius:22px;padding:16px;display:grid;gap:10px}
+.weg .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.hinweis{border-radius:14px;padding:12px 14px;background:rgba(255,123,114,.12);color:#ffc2bc;font-size:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:none;color:var(--ink2);border-radius:999px;padding:8px 12px;font:600 13px var(--sans);min-height:40px;cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);background:var(--gold-l)}
+.lessons{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.les{width:100%;text-align:left;display:flex;gap:12px;align-items:center;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 12px;min-height:56px;font:500 15px var(--sans);cursor:pointer}
+.les .n{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--card2);font-size:13px;font-weight:700;color:var(--ink2)}
+.les.done .n{background:var(--green);color:#03210f}
+.les.next .n{background:var(--gold);color:#2a1d00}
+.les small{display:block;color:var(--muted);font-size:12.5px}
+.les .bald{margin-left:auto;font-size:11px;color:var(--muted);flex:none}
+.lesson{display:grid;gap:14px}
+.lesson ul{margin:0;padding-left:20px;display:grid;gap:6px;color:var(--ink2)}
+.lesson b{color:var(--ink)}
+.merk{border-left:3px solid var(--gold);padding:4px 0 4px 12px;font-size:18px;font-weight:600}
+.box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;gap:10px}
+details{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--card)}
+summary{cursor:pointer;font-weight:600}
+details p{margin-top:8px;color:var(--ink2)}
+.scale{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.scale button{min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink2);font:700 14px var(--sans);cursor:pointer;padding:0}
+.scale button[aria-pressed="true"]{background:var(--gold);color:#2a1d00;border-color:transparent}
+.pose{display:flex;gap:12px;align-items:center}
+.pose img{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);flex:none}
+footer{font-size:13px;color:var(--muted);text-align:center}
+footer b{color:var(--ink2)}
+[data-view]{display:grid;gap:16px}
+@media (prefers-reduced-motion:reduce){.prog i{transition:none}}
+body{margin:0}
+[data-view][hidden]{display:none}
+.zurapp{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--line);color:var(--ink2);text-decoration:none;font:600 14px var(--sans);justify-self:start}
+.zurapp:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <a class="zurapp" href="index.html">‹ Zurück zu TradePing</a>
+  <!-- START -->
+  <section data-view="start">
+    <div class="hero">
+      <img src="posen/ping.jpg" alt="Mr. Ping mit seiner goldenen Glocke">
+      <div class="unten"><b>Mr. Pings Aktienschule</b><span class="muted" style="color:#e9e3d6">Für alle, die ihr Geld selbst verstehen wollen.</span></div>
+    </div>
+    <div class="bubble">
+      <p><strong>Hallo, ich bin Mr. Ping.</strong> Börse fühlt sich oft an wie ein Sturm: alles zappelt, alle reden laut, und du sollst entscheiden.</p>
+      <p>Ich erkläre dir Schritt für Schritt, worum es geht. In 5 Minuten am Tag, in deinem Tempo, ohne Fachchinesisch.</p>
+      <p>Ich sage dir nie, was du kaufen sollst. Ich helfe dir, es selbst zu verstehen.</p>
+    </div>
+    <div class="row">
+      <button class="btn gold" id="los" type="button">Was brauchst du? (6 Fragen)</button>
+    </div>
+    <div class="row">
+      <button class="btn" id="alleWege" type="button">Alle Wege ansehen</button>
+      <button class="btn" id="weiter" type="button" hidden>Weiter lernen</button>
+    </div>
+  </section>
+
+  <!-- FRAGEN -->
+  <section data-view="fragen" hidden>
+    <div class="prog" aria-hidden="true"><i id="progBar" style="width:0"></i></div>
+    <p class="muted" id="qNr">Frage 1 von 6</p>
+    <h2 id="qText"></h2>
+    <p class="muted" id="qHilfe"></p>
+    <div class="opts" id="qOpts" role="group"></div>
+    <div class="row"><button class="btn" id="zurueck" type="button">Zurück</button></div>
+  </section>
+
+  <!-- WEG -->
+  <section data-view="weg" hidden>
+    <div class="pose"><img src="posen/jubel.jpg" alt=""><p id="wegGruss"><strong>Dein Weg steht.</strong></p></div>
+    <div class="weg">
+      <span class="tag">Dein Weg</span>
+      <h2 id="wegName"></h2>
+      <p id="wegText" style="color:var(--ink2)"></p>
+      <p class="muted" id="wegTon"></p>
+    </div>
+    <div id="wegHinweis"></div>
+    <div class="box">
+      <h3>Wie fühlst du dich gerade beim Thema Geld?</h3>
+      <p class="muted">1 = ganz ruhig, 10 = sehr gestresst. Mr. Ping schaut mit dir, ob es mit der Zeit ruhiger wird.</p>
+      <div class="scale" id="stress" role="group" aria-label="Stress von 1 bis 10"></div>
+      <p class="muted" id="stressInfo"></p>
+    </div>
+    <h3>Deine Lektionen</h3>
+    <ul class="lessons" id="lesList"></ul>
+    <h3>Anderen Weg anschauen</h3>
+    <div class="chips" id="wegChips" role="group" aria-label="Wege"></div>
+    <div class="row"><button class="btn" id="neuFragen" type="button">Fragen nochmal machen</button></div>
+  </section>
+
+  <!-- LEKTION -->
+  <section data-view="lektion" hidden>
+    <button class="btn" id="zumWeg" type="button" style="justify-self:start;min-height:44px">‹ Zurück zum Weg</button>
+    <article class="lesson" id="lesBody"></article>
+  </section>
+
+  <footer><b>Lernen, keine Anlageberatung.</b><br>Mr. Ping empfiehlt keine Titel und keine Produkte. Entscheiden und das Risiko tragen tust du selbst.</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+/* ---------- Die 5 Wege (nach Bedürfnis, nicht nach Anfänger/Profi) ---------- */
+var KERN=[
+ {id:'k1',t:'Warum zappelt der Kurs?',s:'Was eine Aktie ist und warum ±1–3 % pro Tag normal sind'},
+ {id:'k2',t:'Aktie, Obligation, Fonds, ETF',s:'Die 4 Grundbausteine in einfachen Worten'},
+ {id:'k3',t:'Risiko und Rendite',s:'Was 5 % oder 8 % pro Jahr wirklich heissen'}
+];
+var WEGE={
+ ruhig:{e:'🌿',name:'Ruhig anlegen',kurz:'Ich will mein Erspartes anlegen, ohne es zu verlieren.',
+  text:'Für alle, die Geld haben (gespart oder geerbt) und es in Ruhe wachsen lassen wollen. Ziel: verstehen, wie man breit streut, Kosten tief hält und bei Schwankungen ruhig bleibt.',
+  les:[['Zuerst der Notgroschen','Wie viel auf dem Konto bleiben soll'],['Zeit ist dein Freund','Geld, das du 10 Jahre nicht brauchst'],['Der Weltindex einfach erklärt','Tausende Firmen mit einem Kauf'],['Gebühren fressen Rendite','Was 1 % Kosten über 20 Jahre ausmacht'],['Monatlich anlegen','Der Sparplan und warum er Nerven schont'],['Säule 3a mit Wertschriften','Steuern sparen und anlegen'],['Wenn alles 20 % fällt','Was in früheren Krisen passiert ist'],['Dein Plan auf einer Seite','Aufschreiben, damit du ruhig bleibst']]},
+ bank:{e:'🏦',name:'Mit der Bank reden',kurz:'Ich will genug wissen, um mit der Bank auf Augenhöhe zu reden.',
+  text:'Für alle, die nicht selbst handeln wollen, aber verstehen möchten, was die Bank vorschlägt. Ziel: die richtigen Fragen stellen, Kosten erkennen, das passende Produkt selbst wählen.',
+  les:[['Wie eine Bank an dir verdient','Gebühren, Produktkosten, Retrozessionen'],['Beratung, Mandat oder selbst?','Die 3 Arten, mit einer Bank anzulegen'],['Dein Risikoprofil','Was der Fragebogen der Bank misst'],['Die 10 Fragen an den Berater','Zum Mitnehmen ins Gespräch'],['Gesamtkosten in Prozent','Ein Angebot richtig lesen'],['Strukturierte Produkte erkennen','Wenn es kompliziert klingt'],['Nein sagen dürfen','Bedenkzeit ist dein Recht'],['Checkliste fürs Gespräch','Eine Seite, alles drauf']]},
+ selbst:{e:'🧭',name:'Selbst verwalten',kurz:'Ich will mein Geld selbst anlegen und verwalten.',
+  text:'Für alle, die ihr eigenes Depot führen wollen, unabhängig und günstig. Ziel: eine einfache Aufteilung bauen, sie einmal im Jahr prüfen und typische Fehler vermeiden.',
+  les:[['Das richtige Depot','Bank, Neobank, Kosten, Sicherheit'],['Deine Aufteilung','Aktien, Obligationen, Bargeld'],['Welt und Schweiz','Wie viel Heimat im Depot?'],['Einmal im Jahr ausgleichen','Rebalancing in 10 Minuten'],['Steuern in der Schweiz','Vermögen, Dividenden, Rückforderung'],['Dollar und Franken','Was die Währung mit deiner Rendite macht'],['Der teuerste Fehler','Zu oft handeln'],['Dein Jahres-Check','Eine Liste für jeden Januar']]},
+ kick:{e:'⚡',name:'Nervenkitzel mit Spielgeld',kurz:'Ich will ein bisschen Spannung und mit Einzeltiteln spielen.',
+  text:'Für alle, die Freude am Auf und Ab haben. Ziel: mit einem kleinen Spieltopf lernen, feste Grenzen setzen und den Kopf behalten. Nur mit Geld, das weg sein darf.',
+  les:[['Die Spielgeld-Regel','Nur ein kleiner Teil, der weg sein darf'],['Grenzen vor dem Kauf','Verlustgrenze und Gewinnmarke festlegen'],['Quartalszahlen-Tage','Warum Kurse dann springen'],['Charts lesen','Trend, Hoch und Tief'],['Hype erkennen','Krypto, KI und Modetitel'],['Angst und Gier','Die zwei Gefühle, die Geld kosten'],['Das Trading-Journal','Aus jedem Trade lernen'],['Gewinne abschöpfen','Wann und wie viel']]},
+ verstehen:{e:'🔭',name:'Verstehen, was passiert',kurz:'Ich will Börsen-News verstehen, ohne Stress.',
+  text:'Für alle, die mitreden und verstehen wollen, warum Märkte steigen und fallen. Ziel: News einordnen statt sich treiben lassen.',
+  les:[['Börse und Handelszeiten','Warum in Zürich ab 15:30 Uhr mehr passiert'],['Was ist ein Index?','SMI, S&P 500, Nasdaq'],['Zinsen und Notenbank','Warum ein Zinsentscheid alles bewegt'],['Quartalszahlen lesen','Umsatz, Gewinn, Ausblick'],['Ist eine Aktie teuer?','Das KGV einfach erklärt'],['News filtern','Was zählt und was nur Lärm ist'],['Der Burggraben','Warum manche Firmen so stark sind'],['Dein Wochenrückblick','5 Minuten am Freitag']]}
+};
+
+/* ---------- Fragen zur Person ---------- */
+var FRAGEN=[
+ {id:'ziel',t:'Was möchtest du am liebsten?',h:'Es gibt kein Richtig oder Falsch. Das bestimmt deinen Weg.',
+  o:Object.keys(WEGE).map(function(k){return {v:k,e:WEGE[k].e,l:WEGE[k].kurz};})},
+ {id:'zeit',t:'Wann brauchst du das Geld voraussichtlich?',h:'Je länger, desto ruhiger kannst du Schwankungen aussitzen.',
+  o:[{v:'kurz',e:'⏱️',l:'In weniger als 2 Jahren'},{v:'mittel',e:'📅',l:'In 2 bis 10 Jahren'},{v:'lang',e:'🌳',l:'In mehr als 10 Jahren'},{v:'weiss',e:'🤷',l:'Weiss ich noch nicht'}]},
+ {id:'fall',t:'Dein Geld ist plötzlich 20 % weniger wert. Was machst du?',h:'Sei ehrlich. Das sagt mehr über dich als jede Tabelle.',
+  o:[{v:'verkauf',e:'😰',l:'Ich verkaufe sofort',s:'Ich halte das nicht aus'},{v:'warte',e:'😐',l:'Ich warte ab',s:'Unruhig, aber ich bleibe'},{v:'nach',e:'😎',l:'Ich kaufe nach',s:'Jetzt ist es günstiger'}]},
+ {id:'stress',t:'Was stresst dich beim Thema Geld am meisten?',h:'Mr. Ping nimmt das in jede Lektion mit.',
+  o:[{v:'verlieren',e:'💸',l:'Geld zu verlieren'},{v:'verstehen',e:'🌀',l:'Nicht zu verstehen, was passiert'},{v:'bank',e:'🏦',l:'Der Bank ausgeliefert zu sein'},{v:'verpassen',e:'🚀',l:'Etwas zu verpassen'}]},
+ {id:'minuten',t:'Wie viel Zeit hast du pro Woche?',h:'Die Lektionen dauern je 5 Minuten.',
+  o:[{v:'5',e:'☕',l:'5 Minuten'},{v:'30',e:'📖',l:'Etwa 30 Minuten'},{v:'mehr',e:'🎓',l:'Mehr, ich will es richtig können'}]},
+ {id:'erfahrung',t:'Wie viel hast du schon mit Anlegen zu tun gehabt?',h:'Damit Mr. Ping weiss, wo er anfangen kann.',
+  o:[{v:'nie',e:'🌱',l:'Noch gar nicht'},{v:'bank',e:'📄',l:'Ich habe Fonds über die Bank'},{v:'selbst',e:'📈',l:'Ich habe schon selbst gekauft'}]}
+];
+
+var st=load('mps.state',{a:{},weg:null,done:{},stress:[]});
+if(!st.a)st.a={}; if(!st.done)st.done={}; if(!st.stress)st.stress=[];
+var qi=0;
+
+function show(v){document.querySelectorAll('[data-view]').forEach(function(s){s.hidden=s.getAttribute('data-view')!==v;});window.scrollTo(0,0);}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+/* ---------- Fragen ---------- */
+function frage(){
+  var f=FRAGEN[qi];
+  $('qNr').textContent='Frage '+(qi+1)+' von '+FRAGEN.length;
+  $('progBar').style.width=(qi/FRAGEN.length*100)+'%';
+  $('qText').textContent=f.t; $('qHilfe').textContent=f.h;
+  $('qOpts').innerHTML=f.o.map(function(o){
+    return '<button type="button" class="opt" data-v="'+o.v+'" aria-pressed="'+(st.a[f.id]===o.v)+'"><span class="e" aria-hidden="true">'+o.e+'</span><span>'+esc(o.l)+(o.s?'<small>'+esc(o.s)+'</small>':'')+'</span></button>';
+  }).join('');
+  $('zurueck').textContent=qi===0?'Abbrechen':'Zurück';
+}
+$('qOpts').addEventListener('click',function(e){
+  var b=e.target.closest('.opt'); if(!b)return;
+  st.a[FRAGEN[qi].id]=b.getAttribute('data-v'); save('mps.state',st);
+  if(qi<FRAGEN.length-1){qi++;frage();}
+  else{st.weg=st.a.ziel; save('mps.state',st); weg();}
+});
+$('zurueck').addEventListener('click',function(){ if(qi===0){show('start');return;} qi--; frage(); });
+$('los').addEventListener('click',function(){qi=0;frage();show('fragen');});
+$('neuFragen').addEventListener('click',function(){qi=0;frage();show('fragen');});
+$('alleWege').addEventListener('click',function(){ if(!st.weg)st.weg='verstehen'; weg(true); });
+$('weiter').addEventListener('click',function(){weg();});
+
+/* ---------- Dein Weg ---------- */
+function lektionen(k){
+  return KERN.map(function(l,i){return {id:l.id,t:l.t,s:l.s,n:i+1,kern:true};})
+   .concat(WEGE[k].les.map(function(l,i){return {id:k+(i+1),t:l[0],s:l[1],n:i+4};}));
+}
+function ton(){
+  var a=st.a, t=[];
+  if(a.stress==='verlieren') t.push('Mr. Ping zeigt dir in jeder Lektion zuerst, wie du dich vor grossen Verlusten schützt.');
+  if(a.stress==='verstehen') t.push('Mr. Ping erklärt jedes neue Wort und fasst am Schluss in einem Satz zusammen.');
+  if(a.stress==='bank') t.push('Mr. Ping gibt dir zu jeder Lektion eine Frage mit, die du der Bank stellen kannst.');
+  if(a.stress==='verpassen') t.push('Mr. Ping zeigt dir, warum Ruhe meist mehr bringt als Tempo.');
+  if(a.minuten==='5') t.push('Eine Lektion pro Woche reicht. In 11 Wochen bist du durch.');
+  else if(a.minuten==='mehr') t.push('Du kannst jeden Tag eine Lektion machen. In gut 2 Wochen bist du durch.');
+  else if(a.minuten) t.push('Zwei bis drei Lektionen pro Woche, in etwa 4 Wochen bist du durch.');
+  return t.join(' ');
+}
+function hinweis(){
+  var a=st.a, h=[];
+  if(a.zeit==='kurz') h.push('Du brauchst das Geld in weniger als 2 Jahren. Für so kurze Zeit gelten Aktien als sehr unsicher, Mr. Ping zeigt dir in Lektion 3 warum.');
+  if(a.fall==='verkauf' && st.weg==='kick') h.push('Du hast gesagt, du würdest bei −20 % sofort verkaufen. Beim Nervenkitzel-Weg fällt ein Titel manchmal so schnell. Halte den Spieltopf darum klein.');
+  if(a.fall==='verkauf' && st.weg!=='kick') h.push('Schwankungen fühlen sich für dich schwer an. Das ist häufig und ganz normal. Lektion 1 und «Wenn alles 20 % fällt» helfen dabei.');
+  return h.map(function(x){return '<p class="hinweis">'+esc(x)+'</p>';}).join('');
+}
+function weg(alle){
+  var k=st.weg||'verstehen', w=WEGE[k];
+  $('wegName').textContent=w.e+' '+w.name;
+  $('wegText').textContent=w.text;
+  $('wegTon').textContent=ton();
+  $('wegHinweis').innerHTML=alle?'':hinweis();
+  $('wegGruss').innerHTML=alle?'<strong>Alle 5 Wege.</strong> Tippe unten auf einen Weg, um seine Lektionen zu sehen.':'<strong>Dein Weg steht.</strong> Die ersten 3 Lektionen sind für alle gleich, dann geht es um dein Bedürfnis.';
+  var arr=lektionen(k), next=null;
+  arr.forEach(function(l){ if(!next && !st.done[l.id]) next=l.id; });
+  $('lesList').innerHTML=arr.map(function(l){
+    var cls=st.done[l.id]?' done':(l.id===next?' next':'');
+    var bald=INHALT[l.id]?'':'<span class="bald">kommt bald</span>';
+    return '<li><button type="button" class="les'+cls+'" data-id="'+l.id+'"><span class="n">'+(st.done[l.id]?'✓':l.n)+'</span><span>'+esc(l.t)+'<small>'+esc(l.s)+'</small></span>'+bald+'</button></li>';
+  }).join('');
+  $('wegChips').innerHTML=Object.keys(WEGE).map(function(x){return '<button type="button" class="chip" data-w="'+x+'" aria-pressed="'+(x===k)+'">'+WEGE[x].e+' '+WEGE[x].name+'</button>';}).join('');
+  stressRender();
+  $('weiter').hidden=false;
+  show('weg');
+}
+$('wegChips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;st.weg=b.getAttribute('data-w');save('mps.state',st);weg(true);});
+$('lesList').addEventListener('click',function(e){var b=e.target.closest('.les');if(b)lektion(b.getAttribute('data-id'));});
+$('zumWeg').addEventListener('click',function(){weg();});
+
+/* ---------- Stress 1–10 ---------- */
+function stressRender(){
+  var last=st.stress.length?st.stress[st.stress.length-1].v:null;
+  var h='';for(var i=1;i<=10;i++)h+='<button type="button" data-s="'+i+'" aria-pressed="'+(i===last)+'">'+i+'</button>';
+  $('stress').innerHTML=h;
+  var f=st.stress[0];
+  $('stressInfo').textContent=st.stress.length>1?('Am Anfang '+f.v+', jetzt '+last+'.'+(last<f.v?' Es wird ruhiger.':'')):(last?'Gespeichert. Nach ein paar Lektionen fragt Mr. Ping wieder.':'');
+}
+$('stress').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;st.stress.push({v:+b.getAttribute('data-s'),d:new Date().toISOString().slice(0,10)});save('mps.state',st);stressRender();});
+
+/* ---------- Lektionen mit Inhalt ---------- */
+var INHALT={
+ k1:{t:'Warum zappelt der Kurs?',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 1 · 5 Minuten</b><br><span class="muted">Was eine Aktie ist und warum Bewegung kein Notfall ist.</span></p></div>'+
+  '<h3>Was eine Aktie ist</h3><ul><li>Eine Aktie ist ein kleines Stück einer Firma. Wer eine Nestlé-Aktie kauft, ist Miteigentümer von Nestlé.</li><li>Der Kurs ist der Preis, zu dem gerade jemand kauft und jemand verkauft.</li><li>Dieser Preis wird jede Sekunde neu ausgehandelt. Darum zappelt er.</li></ul>'+
+  '<h3>Was den Kurs bewegt</h3><ul><li><b>News:</b> neues Produkt, Klage, neuer Chef.</li><li><b>Zahlen:</b> 4-mal im Jahr berichten Firmen über Umsatz und Gewinn. Dann springt der Kurs oft 5–10 %.</li><li><b>Zinsen:</b> Steigen die Zinsen, werden Aktien oft billiger.</li><li><b>Stimmung:</b> Hype oder Angst, zum Beispiel rund um KI.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du hast <b>CHF 1000</b> in einer grossen Tech-Aktie.</p><ul><li>Ein normaler Tag mit −2 % kostet dich <b>CHF 20</b>.</li><li>Am nächsten Tag +1,5 % bringen <b>CHF 15</b> zurück.</li><li>Bei grossen Firmen sind ±1–3 % an einem Tag üblich. Das nennt man Rauschen.</li></ul></div>'+
+  '<p class="merk">Bewegung ist kein Notfall. Sie ist der Preis dafür, dass Aktien langfristig mehr bringen können als ein Sparkonto.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Wenn dein Bauch bei −2 % schon zieht: Das geht fast allen so am Anfang.</li><li>Hilfe Nr. 1: nicht jede Stunde schauen. Einmal am Tag reicht, einmal pro Woche ist noch besser.</li><li>Mr. Ping meldet sich in TradePing nur, wenn sich wirklich etwas Grosses bewegt.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Such dir eine Firma aus, die du kennst, und schau ihren Kurs heute und morgen an.</li><li>Wie viel Prozent hat sie sich bewegt? Wie viele Franken wären das bei CHF 1000?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Eine grosse Aktie fällt heute 2 %. Notfall?</summary><p>Nein. ±1–3 % pro Tag sind bei grossen Firmen normal.</p></details>'+
+  '<details><summary>Wann springt ein Kurs besonders stark?</summary><p>An Tagen mit Quartalszahlen oder grossen News, dann sind 5–10 % möglich.</p></details>'+
+  '<details><summary>Was hilft gegen Börsen-Stress am meisten?</summary><p>Weniger oft schauen und vorher wissen, was normal ist.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Kurs:</b> aktueller Preis einer Aktie</li><li><b>Volatilität:</b> wie stark ein Kurs schwankt</li><li><b>Rauschen:</b> normale kleine Bewegung ohne Bedeutung</li></ul>'},
+ k2:{t:'Aktie, Obligation, Fonds, ETF',html:
+  '<div class="pose"><img src="posen/denk.jpg" alt=""><p><b>Lektion 2 · 5 Minuten</b><br><span class="muted">Die 4 Grundbausteine in einfachen Worten.</span></p></div>'+
+  '<h3>Die Aktie: du bist Miteigentümer</h3><ul><li>Du kaufst ein kleines Stück einer Firma.</li><li>Läuft die Firma gut, kann der Kurs steigen, und oft zahlt sie eine <b>Dividende</b>, einen Teil vom Gewinn.</li><li>Läuft sie schlecht, kann der Kurs stark fallen. Im schlimmsten Fall ist das Geld weg.</li></ul>'+
+  '<h3>Die Obligation: du leihst Geld aus</h3><ul><li>Du leihst einer Firma oder einem Staat Geld für eine feste Zeit, zum Beispiel 5 Jahre.</li><li>Dafür bekommst du jedes Jahr einen festen Zins und am Schluss dein Geld zurück.</li><li>Das Risiko: Der Schuldner kann nicht zahlen. Darum gibt es bei unsicheren Schuldnern mehr Zins.</li></ul>'+
+  '<h3>Der Fonds: ein Korb voller Titel</h3><ul><li>Viele Leute legen ihr Geld zusammen. Eine Fondsleitung kauft damit viele Aktien oder Obligationen.</li><li>Mit einem Kauf hast du ein Stück vom ganzen Korb. Fällt ein Titel, trifft es dich nur ein wenig.</li><li>Die Fondsleitung will dafür Gebühren, jedes Jahr.</li></ul>'+
+  '<h3>Der ETF: ein Korb, der einer Liste folgt</h3><ul><li>Ein ETF ist ein Fonds, der an der Börse gehandelt wird.</li><li>Meist bildet er einfach einen <b>Index</b> nach, also eine feste Liste, zum Beispiel die 20 grössten Schweizer Firmen im SMI.</li><li>Weil niemand auswählen muss, sind die Gebühren oft tiefer als bei anderen Fonds.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du hast <b>CHF 1000</b>.</p><ul><li>Alles in <b>einer Aktie</b>: Fällt diese Firma um 50 %, fehlen dir <b>CHF 500</b>.</li><li>In einem <b>Korb mit 100 Firmen</b>: Fällt eine davon um 50 %, fehlen dir rund <b>CHF 5</b>.</li></ul></div>'+
+  '<p class="merk">Eine Aktie ist ein Teil einer Firma. Ein Fonds oder ETF ist ein Korb mit vielen Teilen. Eine Obligation ist ein Darlehen.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Die vielen Namen klingen kompliziert. Fast alles ist eine Mischung aus diesen 4 Bausteinen.</li><li>Wenn du ein Produkt nicht in einem Satz erklären kannst: Frag nach, bis du es kannst.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Nimm eine Firma, die du kennst. Gibt es sie als Aktie an der Börse?</li><li>Ist sie Teil des SMI? Dann steckt sie auch in jedem ETF auf den SMI.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Du leihst einem Staat Geld und bekommst Zins. Was ist das?</summary><p>Eine Obligation.</p></details>'+
+  '<details><summary>Warum schwankt ein Korb mit vielen Firmen meist weniger als eine einzelne Aktie?</summary><p>Fällt eine Firma, trifft es nur einen kleinen Teil vom Korb.</p></details>'+
+  '<details><summary>Was macht ein ETF meistens?</summary><p>Er folgt einem Index, also einer festen Liste von Firmen.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Dividende:</b> Teil vom Gewinn, den eine Firma ihren Aktionären zahlt</li><li><b>Obligation:</b> ein Darlehen mit festem Zins</li><li><b>Index:</b> eine feste Liste von Firmen, zum Beispiel der SMI</li></ul>'},
+ k3:{t:'Risiko und Rendite',html:
+  '<div class="pose"><img src="posen/warn.jpg" alt=""><p><b>Lektion 3 · 5 Minuten</b><br><span class="muted">Was 5 % oder 8 % pro Jahr wirklich heissen.</span></p></div>'+
+  '<h3>Was Rendite ist</h3><ul><li>Rendite ist, was dein Geld in einem Jahr dazu gewinnt oder verliert, in Prozent.</li><li>Wenn du «im Schnitt 5 % pro Jahr» liest, ist das ein Durchschnitt über viele Jahre. Kein Versprechen.</li><li>Ein Jahr kann +20 % bringen, das nächste −15 %.</li></ul>'+
+  '<h3>Der Zinseszins</h3><ul><li>Gewinne, die liegen bleiben, bringen selbst wieder Gewinn.</li><li>Darum wächst Geld über lange Zeit schneller, als man denkt.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du legst <b>CHF 1000</b> an und rührst sie nicht an. So sähe es aus, wenn es jedes Jahr genau gleich liefe:</p><ul><li>Mit <b>5 %</b> pro Jahr: nach 10 Jahren rund <b>CHF 1630</b>, nach 20 Jahren rund <b>CHF 2650</b>.</li><li>Mit <b>8 %</b> pro Jahr: nach 10 Jahren rund <b>CHF 2160</b>, nach 20 Jahren rund <b>CHF 4660</b>.</li><li>In Wirklichkeit geht es im Zickzack hoch oder runter. Die Zahlen zeigen nur die Idee.</li></ul></div>'+
+  '<h3>Mehr Rendite heisst mehr Risiko</h3><ul><li>Wer mehr Rendite erwartet, muss stärkere Schwankungen aushalten.</li><li>Ein Verlust wiegt schwerer, als er aussieht: Nach −50 % braucht es <b>+100 %</b>, um wieder bei null zu sein.</li><li>Darum spielt die Zeit eine grosse Rolle. Wer das Geld in 1–2 Jahren braucht, kann einen Absturz kaum aussitzen.</li></ul>'+
+  '<p class="merk">Rendite gibt es nie ohne Risiko. Und Zeit ist das, was Schwankungen erträglich macht.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Wenn dir jemand hohe Rendite ohne Risiko verspricht: Vorsicht, das gibt es nicht.</li><li>Frag dich zuerst: Wann brauche ich dieses Geld? Und wie viel Minus halte ich aus, ohne schlecht zu schlafen?</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Rechne selbst: Wie viele Franken sind −20 % von deinem Ersparten?</li><li>Schreib auf, wie sich das anfühlen würde. Das ist wichtiger als jede Prozentzahl.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>«Im Schnitt 8 % pro Jahr». Gibt es dann jedes Jahr 8 %?</summary><p>Nein. Das ist ein Durchschnitt. Einzelne Jahre können stark im Minus sein.</p></details>'+
+  '<details><summary>Ein Titel fällt 50 %. Wie viel muss er steigen, damit du wieder bei null bist?</summary><p>100 %. Aus CHF 500 müssen wieder CHF 1000 werden.</p></details>'+
+  '<details><summary>Warum hilft viel Zeit beim Anlegen?</summary><p>Weil du schlechte Jahre aussitzen kannst und der Zinseszins länger wirkt.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Rendite:</b> Gewinn oder Verlust pro Jahr in Prozent</li><li><b>Zinseszins:</b> Gewinn auf früheren Gewinnen</li><li><b>Anlagehorizont:</b> wie lange du das Geld nicht brauchst</li></ul>'},
+ verstehen1:{t:'Wann die Börse wach ist',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 4 · 5 Minuten</b><br><span class="muted">Öffnungszeiten, Zeitumstellung und warum Kurse über Nacht springen.</span></p></div>'+
+  '<h3>Die Börse hat Öffnungszeiten</h3><ul><li>Eine Börse ist ein Marktplatz für Aktien. Wie ein Laden hat sie Öffnungszeiten.</li><li><b>Zürich (SIX):</b> 9:00 bis 17:30. Hier laufen Nestlé, Novartis, UBS.</li><li><b>New York:</b> 9:30 bis 16:00 Ortszeit, bei uns meist <b>15:30 bis 22:00</b>. Hier laufen Apple, Nvidia, Microsoft.</li></ul>'+
+  '<h3>Zeitumstellung</h3><ul><li>Europa und die USA stellen die Uhr nicht am selben Sonntag um.</li><li>In diesen 1–3 Wochen im Frühling und Herbst öffnet New York bei uns eine Stunde früher, um 14:30.</li></ul>'+
+  '<h3>Vor- und nachbörslich</h3><ul><li>Auch vor und nach den Öffnungszeiten wird ein wenig gehandelt.</li><li>Dann handeln nur wenige, die Kurse springen leichter.</li><li>Viele Firmen melden ihre Zahlen nach Börsenschluss. Öffnet der Kurs am nächsten Tag deutlich anders, heisst das <b>Kurslücke</b>.</li></ul>'+
+  '<p class="merk">Wenn die Börse schläft, musst du nichts tun. Deine Aktien schlafen mit.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Wer am Morgen nervös aufs Handy schaut, sieht bei US-Aktien oft nur alte Kurse.</li><li>Leg dir eine feste Zeit fest, zum Beispiel einmal am Abend. Das spart viel Unruhe.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Such dir eine Schweizer und eine US-Firma aus.</li><li>Schau beide um 10 Uhr und um 16 Uhr an: Welche hat sich wann bewegt?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Wann ist New York bei uns meistens offen?</summary><p>Von 15:30 bis 22:00 Uhr Schweizer Zeit.</p></details>'+
+  '<details><summary>Warum springen Kurse oft über Nacht?</summary><p>Viele Firmen melden ihre Zahlen nach Börsenschluss.</p></details>'+
+  '<details><summary>Sind nachbörsliche Kurse verlässlich?</summary><p>Nur bedingt. Es handeln wenige, darum springen sie leichter.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>SIX:</b> die Schweizer Börse in Zürich</li><li><b>Nachbörslich:</b> Handel nach Börsenschluss</li><li><b>Kurslücke:</b> Sprung zwischen Schluss- und Eröffnungskurs</li></ul>'},
+ ruhig1:{t:'Zuerst der Notgroschen',html:
+  '<div class="pose"><img src="posen/winkt.jpg" alt=""><p><b>Lektion 4 · 5 Minuten</b><br><span class="muted">Wie viel auf dem Konto bleiben soll.</span></p></div>'+
+  '<h3>Warum zuerst ein Polster</h3><ul><li>Unerwartetes kommt: eine Zahnarztrechnung, eine kaputte Waschmaschine, eine Kündigung.</li><li>Wer dann Aktien verkaufen muss, verkauft vielleicht genau im Tief.</li><li>Ein Notgroschen auf dem Konto verhindert das.</li></ul>'+
+  '<h3>Wie viel ist genug?</h3><ul><li>Eine verbreitete Faustregel: <b>3 bis 6 Monatsausgaben</b>.</li><li>Wer allein verdient, Kinder hat oder unsicher angestellt ist, nimmt eher mehr.</li><li>Das Geld liegt auf einem Sparkonto. Es bringt wenig Zins, ist aber jederzeit da.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du brauchst im Monat <b>CHF 3500</b> zum Leben.</p><ul><li>3 Monate: <b>CHF 10 500</b> als Polster.</li><li>6 Monate: <b>CHF 21 000</b> als Polster.</li><li>Was darüber hinaus da ist und lange nicht gebraucht wird, kann man anlegen.</li></ul></div>'+
+  '<p class="merk">Zuerst das Polster, dann das Anlegen. So musst du nie im falschen Moment verkaufen.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Ein Polster gibt Ruhe. Viele schlafen besser, wenn sie wissen: Die nächsten Monate sind sicher.</li><li>Es ist kein verlorenes Geld, nur weil es kaum Zins bringt. Es ist deine Versicherung.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Rechne deine festen Ausgaben pro Monat zusammen: Miete, Krankenkasse, Essen, Verkehr.</li><li>Mal 3 und mal 6: Wo liegt dein Notgroschen heute?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Warum soll der Notgroschen nicht in Aktien liegen?</summary><p>Weil du ihn vielleicht genau dann brauchst, wenn die Kurse tief sind.</p></details>'+
+  '<details><summary>Was sagt die Faustregel zur Höhe?</summary><p>Etwa 3 bis 6 Monatsausgaben.</p></details>'+
+  '<details><summary>Wer nimmt eher mehr als 3 Monate?</summary><p>Wer allein verdient, Kinder hat oder eine unsichere Stelle.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Notgroschen:</b> Geld für Unerwartetes, sofort verfügbar</li><li><b>Liquidität:</b> wie schnell Geld verfügbar ist</li><li><b>Sparkonto:</b> Konto mit kleinem Zins, jederzeit abhebbar</li></ul>'},
+ ruhig2:{t:'Zeit ist dein Freund',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 5 · 5 Minuten</b><br><span class="muted">Geld, das du 10 Jahre nicht brauchst.</span></p></div>'+
+  '<h3>Kurz gegen lang</h3><ul><li>Über 1 Jahr kann ein Aktienmarkt stark im Minus sein.</li><li>Über 10 oder 20 Jahre war das Minus in der Vergangenheit viel seltener.</li><li>Das ist keine Garantie, aber ein Muster, das sich oft gezeigt hat.</li></ul>'+
+  '<h3>Geld in Töpfe teilen</h3><ul><li><b>Bald gebraucht</b> (unter 2 Jahren): Konto.</li><li><b>Mittelfristig</b> (2 bis 10 Jahre): eher vorsichtig.</li><li><b>Lange nicht gebraucht</b> (über 10 Jahre): Hier haben Schwankungen Zeit, sich auszugleichen.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du hast <b>CHF 20 000</b> Erspartes.</p><ul><li>CHF 8000 brauchst du in 1 Jahr für eine Weiterbildung: Die gehören nicht an die Börse.</li><li>CHF 12 000 brauchst du frühestens in 15 Jahren: Nur dieser Teil hat genug Zeit für Auf und Ab.</li></ul></div>'+
+  '<p class="merk">Die wichtigste Frage beim Anlegen ist nicht «was?», sondern «wie lange?».</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Ein langer Zeitraum nimmt Druck weg. Ein schlechtes Jahr ist dann nur ein Kapitel, nicht das Ende.</li><li>Wenn du nicht weisst, wann du das Geld brauchst: Behandle es als kurzfristig.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Schreib drei Töpfe auf: bald, mittel, lang.</li><li>Verteile dein Erspartes in Gedanken auf diese Töpfe.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Gehört Geld, das du in 1 Jahr brauchst, an die Börse?</summary><p>Eher nicht. In einem Jahr kann der Markt stark im Minus sein.</p></details>'+
+  '<details><summary>Ist ein Gewinn über 10 Jahre garantiert?</summary><p>Nein. Es war in der Vergangenheit oft so, aber nie sicher.</p></details>'+
+  '<details><summary>Was tun, wenn du nicht weisst, wann du das Geld brauchst?</summary><p>Behandle es als kurzfristig und bleib vorsichtig.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Anlagehorizont:</b> wie lange du das Geld nicht brauchst</li><li><b>Kurzfristig:</b> unter etwa 2 Jahren</li><li><b>Langfristig:</b> über etwa 10 Jahre</li></ul>'},
+ ruhig3:{t:'Der Weltindex einfach erklärt',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 6 · 5 Minuten</b><br><span class="muted">Tausende Firmen mit einem Kauf.</span></p></div>'+
+  '<h3>Was ein Weltindex ist</h3><ul><li>Ein Weltindex ist eine Liste mit grossen Firmen aus vielen Ländern.</li><li>Je nach Index sind es über 1000 bis mehrere tausend Firmen.</li><li>Grosse Firmen haben mehr Gewicht als kleine.</li></ul>'+
+  '<h3>Warum das beruhigt</h3><ul><li>Geht eine Firma pleite, ist das nur ein winziger Teil des Ganzen.</li><li>Du setzt nicht auf eine Firma oder ein Land, sondern auf die Weltwirtschaft als Ganzes.</li><li>Ein Fonds oder ETF auf so einen Index heisst oft <b>breit gestreut</b>.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du legst <b>CHF 1000</b> in einen Korb, der einem Weltindex folgt.</p><ul><li>Eine Firma mit 0,5 % Anteil fällt um 50 %.</li><li>Dein Korb verliert dadurch nur rund <b>CHF 2.50</b>.</li><li>Achtung: Fällt die ganze Welt, fällt auch dein Korb. Streuung schützt vor Einzelpech, nicht vor Krisen.</li></ul></div>'+
+  '<p class="merk">Viele Firmen in einem Korb schützen vor Einzelpech. Vor dem Auf und Ab der ganzen Welt schützen sie nicht.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Ein Weltindex ist langweilig. Für ruhiges Anlegen ist das ein gutes Zeichen.</li><li>Du musst nicht wissen, welche Firma gewinnt. Das entlastet.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Such im Internet einen Weltindex und schau dir die 10 grössten Firmen darin an.</li><li>Wie viele davon kennst du? Aus welchen Ländern kommen sie?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was schützt Streuung?</summary><p>Sie schützt vor dem Pech einer einzelnen Firma, nicht vor einer weltweiten Krise.</p></details>'+
+  '<details><summary>Haben alle Firmen im Index gleich viel Gewicht?</summary><p>Meist nicht. Grosse Firmen zählen mehr.</p></details>'+
+  '<details><summary>Muss man beim Weltindex die besten Firmen auswählen?</summary><p>Nein. Der Index nimmt alle nach festen Regeln.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Weltindex:</b> Liste mit grossen Firmen aus vielen Ländern</li><li><b>Streuung:</b> Geld auf viele Titel verteilen</li><li><b>Gewichtung:</b> wie viel Anteil eine Firma im Index hat</li></ul>'},
+ ruhig4:{t:'Gebühren fressen Rendite',html:
+  '<div class="pose"><img src="posen/warn.jpg" alt=""><p><b>Lektion 7 · 5 Minuten</b><br><span class="muted">Was 1 % Kosten über 20 Jahre ausmacht.</span></p></div>'+
+  '<h3>Kosten sind sicher, Rendite nicht</h3><ul><li>Ob ein Markt steigt, weiss niemand. Die Kosten zahlst du sicher, jedes Jahr.</li><li>Darum lohnt es sich, Kosten genau anzuschauen.</li></ul>'+
+  '<h3>Welche Kosten es gibt</h3><ul><li><b>Produktkosten:</b> jährliche Gebühr eines Fonds, oft als TER angegeben.</li><li><b>Depotgebühr:</b> was die Bank fürs Aufbewahren verlangt.</li><li><b>Courtage:</b> Gebühr pro Kauf oder Verkauf.</li><li><b>Stempelsteuer:</b> eine kleine Abgabe des Bundes beim Handel.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du legst <b>CHF 10 000</b> an, 20 Jahre lang. Angenommen, der Markt bringt 5 % pro Jahr:</p><ul><li>Mit fast keinen Kosten: rund <b>CHF 26 500</b>.</li><li>Mit 1 % Kosten pro Jahr (also 4 %): rund <b>CHF 21 900</b>.</li><li>Der Unterschied: rund <b>CHF 4600</b>, nur wegen 1 % Gebühren.</li></ul></div>'+
+  '<p class="merk">Ein Prozent klingt klein. Über viele Jahre wird es zu viel Geld.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Du musst nicht das billigste Angebot der Welt finden. Aber du darfst fragen, was alles zusammen kostet.</li><li>Wer die Kosten kennt, fühlt sich weniger ausgeliefert.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Wenn du schon ein Depot oder einen Fonds hast: Such die jährlichen Kosten in Prozent.</li><li>Rechne: Wie viele Franken sind das bei deinem Betrag pro Jahr?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was ist sicher: die Rendite oder die Kosten?</summary><p>Die Kosten. Die zahlst du jedes Jahr.</p></details>'+
+  '<details><summary>Was heisst TER ungefähr?</summary><p>Die jährlichen Kosten eines Fonds in Prozent.</p></details>'+
+  '<details><summary>Wie viel machen 1 % Kosten bei CHF 10 000 über 20 Jahre etwa aus?</summary><p>Rund CHF 4600 weniger am Schluss, wenn der Markt 5 % pro Jahr bringt.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>TER:</b> jährliche Gesamtkosten eines Fonds in Prozent</li><li><b>Depotgebühr:</b> Gebühr für das Aufbewahren von Wertschriften</li><li><b>Courtage:</b> Gebühr pro Kauf oder Verkauf</li></ul>'},
+ ruhig5:{t:'Monatlich anlegen',html:
+  '<div class="pose"><img src="posen/winkt.jpg" alt=""><p><b>Lektion 8 · 5 Minuten</b><br><span class="muted">Der Sparplan und warum er Nerven schont.</span></p></div>'+
+  '<h3>Was ein Sparplan ist</h3><ul><li>Du legst jeden Monat einen festen Betrag an, zum Beispiel CHF 200.</li><li>Das läuft automatisch, du musst nicht jedes Mal entscheiden.</li><li>Viele Banken bieten das für Fonds und ETF an.</li></ul>'+
+  '<h3>Warum das beruhigt</h3><ul><li>Du musst nicht den «richtigen Moment» finden. Den kennt niemand.</li><li>Bei tiefen Kursen kaufst du automatisch mehr Anteile, bei hohen weniger.</li><li>Das nennt man <b>Durchschnittskosten-Effekt</b>.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du legst jeden Monat <b>CHF 200</b> an.</p><ul><li>Monat 1: Ein Anteil kostet CHF 100, du bekommst 2 Anteile.</li><li>Monat 2: Ein Anteil kostet CHF 50, du bekommst 4 Anteile.</li><li>Nach 2 Monaten: CHF 400 bezahlt, 6 Anteile, im Schnitt rund <b>CHF 67</b> pro Anteil.</li></ul></div>'+
+  '<p class="merk">Regelmässig statt perfekt. Der Sparplan nimmt dir die Entscheidung ab, wann.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Fallende Kurse fühlen sich mit einem Sparplan weniger schlimm an: Du bekommst mehr für dein Geld.</li><li>Achte auf die Kosten pro Kauf. Bei kleinen Beträgen können sie viel ausmachen.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Überlege: Welcher Betrag pro Monat würde dir nicht weh tun?</li><li>Rechne: Wie viel wäre das in einem Jahr?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Musst du beim Sparplan den richtigen Moment finden?</summary><p>Nein. Du legst jeden Monat gleich viel an.</p></details>'+
+  '<details><summary>Was passiert bei tiefen Kursen?</summary><p>Du bekommst für den gleichen Betrag mehr Anteile.</p></details>'+
+  '<details><summary>Worauf solltest du bei kleinen Beträgen achten?</summary><p>Auf die Kosten pro Kauf.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Sparplan:</b> regelmässiger, fester Betrag, der automatisch angelegt wird</li><li><b>Anteil:</b> ein Stück eines Fonds oder ETF</li><li><b>Durchschnittskosten-Effekt:</b> bei tiefen Kursen mehr, bei hohen weniger Anteile kaufen</li></ul>'},
+ ruhig6:{t:'Säule 3a mit Wertschriften',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 9 · 5 Minuten</b><br><span class="muted">Das Prinzip der gebundenen Vorsorge.</span></p></div>'+
+  '<h3>Was die Säule 3a ist</h3><ul><li>Die Schweiz hat 3 Säulen für die Vorsorge: AHV, Pensionskasse und das private Sparen.</li><li>Die Säule 3a ist private Vorsorge mit Steuervorteil.</li><li>Einzahlungen bis zu einem jährlichen Höchstbetrag kannst du vom steuerbaren Einkommen abziehen.</li></ul>'+
+  '<h3>Konto oder Wertschriften</h3><ul><li>Das Geld kann auf einem 3a-Konto liegen oder in 3a-Fonds angelegt werden.</li><li>Das Geld ist <b>gebunden</b>: Normalerweise kommst du erst kurz vor der Pensionierung dran. Ausnahmen sind zum Beispiel Wohneigentum oder Selbstständigkeit.</li><li>Weil es lange gebunden ist, passt der Gedanke aus Lektion «Zeit ist dein Freund» hier gut.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Ein einfaches Rechenbeispiel, keine Steuerberatung:</p><ul><li>Du zahlst <b>CHF 3000</b> in die Säule 3a ein.</li><li>Liegt dein Grenzsteuersatz bei 20 %, sparst du dafür rund <b>CHF 600</b> Steuern.</li><li>Wie viel es bei dir genau ist, hängt von Kanton, Gemeinde und Einkommen ab.</li></ul></div>'+
+  '<p class="merk">Die Säule 3a verbindet Vorsorge und Steuervorteil. Das Geld ist dafür lange gebunden.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Viele schieben die 3a auf. Schon kleine Beträge sind ein Anfang.</li><li>Den aktuellen Höchstbetrag und die Regeln findest du bei der Bank oder der Steuerverwaltung. Mr. Ping gibt keine Steuerberatung.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Finde heraus: Hast du schon ein 3a-Konto? Liegt das Geld auf einem Konto oder in Fonds?</li><li>Notiere eine Frage, die du deiner Bank dazu stellen willst.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Wofür steht die Säule 3a?</summary><p>Für private Vorsorge mit Steuervorteil.</p></details>'+
+  '<details><summary>Kommst du jederzeit an das 3a-Geld?</summary><p>Nein. Es ist gebunden, mit wenigen Ausnahmen.</p></details>'+
+  '<details><summary>Wovon hängt die Steuerersparnis ab?</summary><p>Von Kanton, Gemeinde und Einkommen.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Säule 3a:</b> gebundene private Vorsorge mit Steuerabzug</li><li><b>Gebunden:</b> Geld, an das man lange nicht herankommt</li><li><b>Grenzsteuersatz:</b> Steuer auf den letzten verdienten Franken</li></ul>'},
+ ruhig7:{t:'Wenn alles 20 % fällt',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 10 · 5 Minuten</b><br><span class="muted">Was in früheren Krisen passiert ist.</span></p></div>'+
+  '<h3>Krisen gehören dazu</h3><ul><li>Rückgänge von 20 % und mehr gab es immer wieder: 2000, 2008, 2020, 2022.</li><li>2008 fielen die Aktien weltweit um rund die Hälfte. Es dauerte mehrere Jahre, bis der Stand von vorher wieder erreicht war.</li><li>2020 fiel der Markt in wenigen Wochen um rund ein Drittel und erholte sich innerhalb von Monaten.</li></ul>'+
+  '<h3>Was das heisst</h3><ul><li>Niemand weiss vorher, wie tief und wie lang eine Krise wird.</li><li>Wer im Tief verkauft, macht den Verlust endgültig.</li><li>Wer einen langen Horizont und einen Notgroschen hat, kann eher abwarten.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du hast <b>CHF 10 000</b> angelegt.</p><ul><li>Bei −20 % stehen auf dem Auszug noch <b>CHF 8000</b>.</li><li>Bei −50 % noch <b>CHF 5000</b>.</li><li>Frage dich vorher: Bei welcher Zahl würdest du nicht mehr schlafen? Das zeigt, wie viel Risiko zu dir passt.</li></ul></div>'+
+  '<p class="merk">Krisen kommen. Wichtig ist, vorher zu wissen, was du dann tust.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Angst bei fallenden Kursen ist normal. Sie ist kein Zeichen, dass du etwas falsch machst.</li><li>Hilfreich: einen Plan aufschreiben, solange alles ruhig ist (Lektion 8).</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Rechne mit deinem Betrag: Was steht bei −20 % und −50 % auf dem Auszug?</li><li>Schreib einen Satz auf, was du in so einem Moment tun willst.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Waren frühere Krisen nach kurzer Zeit immer vorbei?</summary><p>Nein. Manche dauerten Monate, andere mehrere Jahre.</p></details>'+
+  '<details><summary>Was macht einen Verlust endgültig?</summary><p>Verkaufen im Tief.</p></details>'+
+  '<details><summary>Wann solltest du deinen Krisenplan machen?</summary><p>Vorher, solange es ruhig ist.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Crash:</b> schneller, starker Kurssturz</li><li><b>Bärenmarkt:</b> Rückgang von 20 % oder mehr</li><li><b>Erholung:</b> Weg zurück zum Stand vor der Krise</li></ul>'},
+ ruhig8:{t:'Dein Plan auf einer Seite',html:
+  '<div class="pose"><img src="posen/warn.jpg" alt=""><p><b>Lektion 11 · 5 Minuten</b><br><span class="muted">Aufschreiben, damit du ruhig bleibst.</span></p></div>'+
+  '<h3>Warum aufschreiben</h3><ul><li>In ruhigen Zeiten denkt man klar. In Krisen entscheidet oft der Bauch.</li><li>Ein Plan auf Papier ist dein ruhiges Ich, das mit deinem nervösen Ich spricht.</li></ul>'+
+  '<h3>Was draufgehört</h3><ul><li><b>Ziel:</b> Wofür ist das Geld?</li><li><b>Horizont:</b> Wann brauche ich es frühestens?</li><li><b>Notgroschen:</b> Wie viel bleibt auf dem Konto?</li><li><b>Aufteilung:</b> Wie viel in Aktien, wie viel sicher?</li><li><b>Krisenregel:</b> Was tue ich bei −20 %?</li><li><b>Kontrolle:</b> Wann schaue ich wieder drauf, zum Beispiel einmal im Jahr?</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>So könnte ein Plan aussehen (nur ein Muster):</p><ul><li>Ziel: Reserve fürs Alter. Horizont: 20 Jahre.</li><li>Notgroschen: CHF 15 000 auf dem Konto. Monatlich CHF 300 im Sparplan.</li><li>Bei −20 %: nichts verkaufen, Plan lesen, Sparplan weiterlaufen lassen. Kontrolle jeden Januar.</li></ul></div>'+
+  '<p class="merk">Ein Plan auf einer Seite ist stärker als jede Prognose.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Du musst den Plan nicht perfekt machen. Ein erster Entwurf ist besser als keiner.</li><li>Leg ihn an einen Ort, an dem du ihn in einer Krise findest.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Nimm ein Blatt und schreib die 6 Punkte auf.</li><li>Fülle jeden Punkt mit einem Satz.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Wann entscheidet oft der Bauch statt der Kopf?</summary><p>In Krisen, wenn die Kurse stark fallen.</p></details>'+
+  '<details><summary>Was gehört in den Plan?</summary><p>Ziel, Horizont, Notgroschen, Aufteilung, Krisenregel und Kontrolle.</p></details>'+
+  '<details><summary>Muss der Plan perfekt sein?</summary><p>Nein. Ein erster Entwurf hilft schon.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Anlageplan:</b> deine Regeln fürs Anlegen auf einer Seite</li><li><b>Aufteilung:</b> wie viel in welche Anlage geht</li><li><b>Krisenregel:</b> was du bei starken Rückgängen tust</li></ul>'},
+ bank1:{t:'Wie eine Bank an dir verdient',html:
+  '<div class="pose"><img src="posen/winkt.jpg" alt=""><p><b>Lektion 4 · 5 Minuten</b><br><span class="muted">Gebühren, Produktkosten, Retrozessionen.</span></p></div>'+
+  '<h3>Die Bank ist ein Geschäft</h3><ul><li>Das ist nichts Schlechtes. Aber es hilft zu wissen, wo das Geld herkommt.</li><li><b>Depotgebühr:</b> fürs Aufbewahren deiner Wertschriften.</li><li><b>Courtage:</b> bei jedem Kauf und Verkauf.</li><li><b>Produktkosten:</b> in Fonds eingebaut, du siehst sie nicht auf dem Auszug.</li></ul>'+
+  '<h3>Retrozessionen</h3><ul><li>Manche Fondsanbieter zahlen der Bank etwas zurück, wenn sie ihre Fonds verkauft.</li><li>Das kann beeinflussen, was dir empfohlen wird.</li><li>Du darfst fragen, ob die Bank Retrozessionen bekommt und wie sie damit umgeht.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du hast <b>CHF 50 000</b> bei einer Bank angelegt.</p><ul><li>Depotgebühr 0,3 %: <b>CHF 150</b> pro Jahr.</li><li>Fonds mit 1,2 % Kosten: <b>CHF 600</b> pro Jahr.</li><li>Zusammen: <b>CHF 750</b> pro Jahr, ob der Markt steigt oder fällt.</li></ul></div>'+
+  '<p class="merk">Wer weiss, wie die Bank verdient, kann bessere Fragen stellen.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Es ist nicht unhöflich, nach Kosten zu fragen. Es ist dein Geld.</li><li>Eine gute Beraterin erklärt die Kosten gerne und klar.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Such in deinen Bankunterlagen die Depotgebühr.</li><li>Notiere: Was weisst du schon, was fehlt dir noch?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Siehst du Fondskosten direkt auf dem Auszug?</summary><p>Meist nicht. Sie sind im Fonds eingebaut.</p></details>'+
+  '<details><summary>Was sind Retrozessionen?</summary><p>Zahlungen von Fondsanbietern an die Bank für den Vertrieb.</p></details>'+
+  '<details><summary>Darfst du nach den Kosten fragen?</summary><p>Ja, immer.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Retrozession:</b> Rückzahlung eines Anbieters an die Bank</li><li><b>Depotgebühr:</b> Gebühr für das Aufbewahren</li><li><b>Produktkosten:</b> laufende Kosten, die im Produkt stecken</li></ul>'},
+ bank2:{t:'Beratung, Mandat oder selbst?',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 5 · 5 Minuten</b><br><span class="muted">Die 3 Arten, mit einer Bank anzulegen.</span></p></div>'+
+  '<h3>Die 3 Arten</h3><ul><li><b>Selbst (Execution only):</b> Du entscheidest alles, die Bank führt nur aus. Meist am günstigsten.</li><li><b>Beratung:</b> Die Bank schlägt vor, du entscheidest.</li><li><b>Vermögensverwaltung (Mandat):</b> Du gibst den Rahmen vor, die Bank entscheidet im Alltag. Meist am teuersten.</li></ul>'+
+  '<h3>Was zu dir passt</h3><ul><li>Wie viel Zeit willst du investieren?</li><li>Wie viel Freude hast du am Thema?</li><li>Wie viel bist du bereit, für Hilfe zu zahlen?</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du hast <b>CHF 100 000</b>. Nur als Idee für die Grössenordnung:</p><ul><li>Selbst: oft wenige hundert Franken pro Jahr an Gebühren.</li><li>Mandat mit 1,5 % Gesamtkosten: rund <b>CHF 1500</b> pro Jahr.</li><li>Die Frage ist: Ist dir die Hilfe diesen Unterschied wert?</li></ul></div>'+
+  '<p class="merk">Keine Art ist richtig oder falsch. Wichtig ist, dass du weisst, was du bekommst und was es kostet.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Viele fühlen sich unter Druck, «es selbst können» zu müssen. Musst du nicht.</li><li>Hilfe zu kaufen ist in Ordnung, wenn du den Preis kennst.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Kreuze an: Wie viel Zeit pro Monat willst du für dein Geld aufwenden?</li><li>Welche der 3 Arten passt zu dieser Antwort?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Bei welcher Art entscheidet die Bank im Alltag?</summary><p>Bei der Vermögensverwaltung (Mandat).</p></details>'+
+  '<details><summary>Welche Art ist meist am günstigsten?</summary><p>Selbst anlegen, Execution only.</p></details>'+
+  '<details><summary>Bei der Beratung: Wer entscheidet am Schluss?</summary><p>Du.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Execution only:</b> die Bank führt nur aus, was du sagst</li><li><b>Anlageberatung:</b> die Bank schlägt vor, du entscheidest</li><li><b>Mandat:</b> die Bank verwaltet im vereinbarten Rahmen</li></ul>'},
+ bank3:{t:'Dein Risikoprofil',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 6 · 5 Minuten</b><br><span class="muted">Was der Fragebogen der Bank misst.</span></p></div>'+
+  '<h3>Warum die Bank fragt</h3><ul><li>Schweizer Banken müssen vor einer Beratung prüfen, ob ein Produkt zu dir passt.</li><li>Dafür gibt es einen Fragebogen: das Risikoprofil.</li></ul>'+
+  '<h3>Was gemessen wird</h3><ul><li><b>Risikofähigkeit:</b> Wie viel Verlust kannst du dir leisten? Einkommen, Vermögen, Horizont.</li><li><b>Risikobereitschaft:</b> Wie viel Verlust hältst du aus, ohne Panik?</li><li><b>Erfahrung:</b> Was kennst du schon?</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Zwei Personen mit je <b>CHF 30 000</b>:</p><ul><li>Anna, 30, sicherer Job, braucht das Geld in 25 Jahren: hohe Risikofähigkeit.</li><li>Beat, 60, braucht das Geld in 3 Jahren: tiefe Risikofähigkeit.</li><li>Auch wenn beide gleich mutig sind, passt nicht das gleiche Risiko.</li></ul></div>'+
+  '<p class="merk">Dein Profil ist nur so gut wie deine ehrlichen Antworten.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Es ist verlockend, mutiger zu antworten, als man ist. Das rächt sich in der nächsten Krise.</li><li>Du darfst dein Profil anpassen lassen, wenn sich dein Leben ändert.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Erinnere dich an Lektion 3: Bei welchem Minus würdest du schlecht schlafen?</li><li>Wäre dieses Minus in deinem Profil drin?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was ist der Unterschied zwischen Risikofähigkeit und Risikobereitschaft?</summary><p>Fähigkeit: was du dir leisten kannst. Bereitschaft: was du aushältst.</p></details>'+
+  '<details><summary>Warum fragt die Bank das?</summary><p>Sie muss prüfen, ob ein Produkt zu dir passt.</p></details>'+
+  '<details><summary>Lohnt es sich, mutiger zu antworten?</summary><p>Nein. Ehrliche Antworten schützen dich.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Risikoprofil:</b> Einschätzung, wie viel Risiko zu dir passt</li><li><b>Risikofähigkeit:</b> wie viel Verlust du dir leisten kannst</li><li><b>Risikobereitschaft:</b> wie viel Verlust du aushältst</li></ul>'},
+ bank4:{t:'Die 10 Fragen an den Berater',html:
+  '<div class="pose"><img src="posen/warn.jpg" alt=""><p><b>Lektion 7 · 5 Minuten</b><br><span class="muted">Zum Mitnehmen ins Gespräch.</span></p></div>'+
+  '<h3>Fragen zu Kosten und Produkt</h3><ul><li>1. Was kostet das pro Jahr, alles zusammen, in Prozent und in Franken?</li><li>2. Bekommt die Bank Retrozessionen dafür?</li><li>3. Können Sie mir das Produkt in zwei Sätzen erklären?</li><li>4. Wie viel kann ich im schlechtesten Fall verlieren?</li><li>5. Wie schnell komme ich an mein Geld?</li></ul>'+
+  '<h3>Fragen zu dir und zur Beratung</h3><ul><li>6. Warum passt das zu meinem Profil?</li><li>7. Gibt es eine günstigere Alternative?</li><li>8. Was passiert, wenn ich es in 2 Jahren verkaufe?</li><li>9. Wie oft sprechen wir wieder darüber?</li><li>10. Kann ich das schriftlich mitnehmen und in Ruhe lesen?</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>So kann ein Gespräch klingen:</p><ul><li>Du: «Was kostet mich dieses Produkt pro Jahr in Franken, bei CHF 20 000?»</li><li>Antwort: «Rund 1,1 %, also etwa CHF 220.»</li><li>Du: «Gibt es etwas Ähnliches, das weniger kostet?»</li></ul></div>'+
+  '<p class="merk">Wer gute Fragen stellt, bekommt bessere Antworten.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Du musst nicht alle 10 Fragen stellen. Schon 3 davon ändern das Gespräch.</li><li>Diese Fragen richtest du an die Bank. Darum stehen sie in der Sie-Form.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Wähle die 3 Fragen, die dir am wichtigsten sind.</li><li>Schreib sie auf dein Handy, damit du sie im Gespräch dabeihast.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Welche Frage zeigt dir die Kosten in Franken?</summary><p>Frage 1: Was kostet das pro Jahr, alles zusammen?</p></details>'+
+  '<details><summary>Darfst du Unterlagen mitnehmen und später entscheiden?</summary><p>Ja. Das ist immer möglich.</p></details>'+
+  '<details><summary>Warum nach einer Alternative fragen?</summary><p>Damit du vergleichen kannst und siehst, ob es günstiger geht.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Gesamtkosten:</b> alle Kosten zusammen pro Jahr</li><li><b>Alternative:</b> ein anderes Produkt, das ähnlich wirkt</li><li><b>Liquidität:</b> wie schnell du an dein Geld kommst</li></ul>'},
+ bank5:{t:'Gesamtkosten in Prozent',html:
+  '<div class="pose"><img src="posen/winkt.jpg" alt=""><p><b>Lektion 8 · 5 Minuten</b><br><span class="muted">Ein Angebot richtig lesen.</span></p></div>'+
+  '<h3>Alles zusammenzählen</h3><ul><li>Ein Angebot nennt oft mehrere kleine Prozentzahlen.</li><li>Zusammengezählt ergeben sie die Gesamtkosten pro Jahr.</li><li>Erst diese Zahl sagt dir, was du wirklich zahlst.</li></ul>'+
+  '<h3>Wo die Zahlen stehen</h3><ul><li>Im Angebot oder im Gebührenblatt der Bank.</li><li>Für viele Produkte gibt es ein <b>Basisinformationsblatt</b>. Darin stehen Kosten und Risiken in einheitlicher Form.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Ein Angebot über <b>CHF 40 000</b>:</p><ul><li>Verwaltungsgebühr 0,8 % = CHF 320.</li><li>Produktkosten der Fonds 0,6 % = CHF 240.</li><li>Depotgebühr 0,2 % = CHF 80.</li><li>Zusammen <b>1,6 %</b>, also <b>CHF 640</b> pro Jahr.</li></ul></div>'+
+  '<p class="merk">Nicht die einzelnen Zahlen zählen, sondern die Summe.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Viele kleine Zahlen wirken harmlos. Darum hilft das Zusammenzählen.</li><li>Wenn du die Summe nicht findest: Frag danach, bis du sie hast.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Nimm ein Angebot oder einen Auszug und such alle Prozentzahlen.</li><li>Zähl sie zusammen und rechne sie in Franken um.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was sagt dir die Gesamtkostenquote?</summary><p>Was du pro Jahr wirklich zahlst, alles zusammen.</p></details>'+
+  '<details><summary>Wo stehen Kosten und Risiken einheitlich?</summary><p>Im Basisinformationsblatt.</p></details>'+
+  '<details><summary>1,6 % von CHF 40 000 sind wie viel?</summary><p>CHF 640 pro Jahr.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Gesamtkosten:</b> alle Gebühren zusammen pro Jahr</li><li><b>Basisinformationsblatt:</b> kurzes Blatt mit Kosten und Risiken</li><li><b>Gebührenblatt:</b> Preisliste der Bank</li></ul>'},
+ bank6:{t:'Strukturierte Produkte erkennen',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 9 · 5 Minuten</b><br><span class="muted">Wenn es kompliziert klingt.</span></p></div>'+
+  '<h3>Was das ist</h3><ul><li>Ein strukturiertes Produkt ist eine Mischung aus mehreren Bausteinen, oft mit Optionen.</li><li>Es hat oft verlockende Namen und einen festen Zins, zum Beispiel 6 % pro Jahr.</li><li>Dafür trägst du Risiken, die nicht auf den ersten Blick sichtbar sind.</li></ul>'+
+  '<h3>Woran du sie erkennst</h3><ul><li>Begriffe wie <b>Barriere</b>, <b>Kapitalschutz</b>, <b>Coupon</b> oder <b>Basiswert</b>.</li><li>Mehrere Aktien, an die das Produkt gekoppelt ist.</li><li>Eine feste Laufzeit und ein Herausgeber, der zahlen muss.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Ein Beispiel, stark vereinfacht. Du legst <b>CHF 10 000</b> an:</p><ul><li>Versprochen sind 6 % Zins pro Jahr, solange keine der 3 Aktien um mehr als 40 % fällt.</li><li>Fällt eine davon stärker, bekommst du am Schluss vielleicht nur noch rund <b>CHF 5000</b> in Form dieser Aktien.</li><li>Hoher Zins heisst hier: Du übernimmst ein verstecktes Risiko.</li></ul></div>'+
+  '<p class="merk">Wenn du ein Produkt nicht in zwei Sätzen erklären kannst, kauf es nicht, bevor du es verstehst.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Es ist keine Schande zu sagen: «Das verstehe ich nicht.» Das ist klug.</li><li>Lass dir das Basisinformationsblatt geben und lies, was im schlechtesten Fall passiert.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Erklär einem Freund in zwei Sätzen, was eine Barriere ist.</li><li>Wenn das nicht geht: Lies die Lektion nochmals oder frag nach.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was heisst ein hoher fester Zins bei einem strukturierten Produkt oft?</summary><p>Dass du dafür ein verstecktes Risiko trägst.</p></details>'+
+  '<details><summary>Was ist eine Barriere?</summary><p>Eine Kursgrenze. Wird sie unterschritten, ändern sich die Regeln zu deinem Nachteil.</p></details>'+
+  '<details><summary>Wie heisst die Firma, die am Schluss zahlen muss?</summary><p>Der Herausgeber oder Emittent.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Strukturiertes Produkt:</b> Mischung aus mehreren Bausteinen mit festen Regeln</li><li><b>Barriere:</b> Kursgrenze, ab der sich die Regeln ändern</li><li><b>Emittent:</b> Herausgeber, der das Produkt zahlen muss</li></ul>'},
+ bank7:{t:'Nein sagen dürfen',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 10 · 5 Minuten</b><br><span class="muted">Bedenkzeit gehört dir.</span></p></div>'+
+  '<h3>Druck erkennen</h3><ul><li>«Das Angebot gilt nur bis Freitag.»</li><li>«Alle unsere Kunden machen das.»</li><li>«Jetzt ist der beste Moment.»</li><li>Solche Sätze machen Druck. Gute Entscheide brauchen keinen Zeitdruck.</li></ul>'+
+  '<h3>Wie du Nein sagst</h3><ul><li>«Ich nehme die Unterlagen mit und melde mich.»</li><li>«Ich möchte zuerst die Gesamtkosten sehen.»</li><li>«Danke, das passt nicht zu mir.»</li><li>Du musst dich nicht rechtfertigen.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Ein Angebot für <b>CHF 25 000</b> verspricht viel und muss «heute» unterschrieben werden.</p><ul><li>Wenn du eine Woche wartest, verpasst du vielleicht ein paar Franken.</li><li>Wenn du falsch unterschreibst, kann es dich Jahre und viel Geld kosten.</li><li>Abwarten ist fast immer die kleinere Gefahr.</li></ul></div>'+
+  '<p class="merk">Niemand kann dich zwingen, sofort zu unterschreiben. Zeit zum Nachdenken nimmst du dir einfach.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Nein sagen fühlt sich unhöflich an. Es ist aber nur ehrlich.</li><li>Ein guter Berater respektiert ein Nein und bleibt freundlich.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Übe einen Satz laut: «Ich überlege es mir und melde mich.»</li><li>Merk dir diesen Satz für das nächste Gespräch.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>«Nur heute gültig» ist ein Zeichen wofür?</summary><p>Für Zeitdruck. Gute Angebote brauchen keinen.</p></details>'+
+  '<details><summary>Musst du dich für ein Nein rechtfertigen?</summary><p>Nein.</p></details>'+
+  '<details><summary>Was ist meist die kleinere Gefahr: abwarten oder vorschnell unterschreiben?</summary><p>Abwarten.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Bedenkzeit:</b> Zeit, die du dir vor einem Entscheid nimmst</li><li><b>Zeitdruck:</b> künstliche Eile, damit du schnell entscheidest</li><li><b>Unterschrift:</b> macht ein Angebot verbindlich</li></ul>'},
+ bank8:{t:'Checkliste fürs Gespräch',html:
+  '<div class="pose"><img src="posen/warn.jpg" alt=""><p><b>Lektion 11 · 5 Minuten</b><br><span class="muted">Eine Seite, alles drauf.</span></p></div>'+
+  '<h3>Vor dem Gespräch</h3><ul><li>Ziel und Horizont aufschreiben: Wofür, wie lange?</li><li>Notgroschen klären: Was bleibt sicher auf dem Konto?</li><li>Deine 3 wichtigsten Fragen aus Lektion «Die 10 Fragen» bereitlegen.</li></ul>'+
+  '<h3>Im und nach dem Gespräch</h3><ul><li>Gesamtkosten in Prozent und Franken notieren.</li><li>Schlechtester Fall: Wie viel kann ich verlieren?</li><li>Unterlagen mitnehmen und nichts sofort unterschreiben.</li><li>Zu Hause in Ruhe vergleichen.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Deine Checkliste könnte so beginnen:</p><ul><li>Ziel: Reserve für die Kinder, Horizont 15 Jahre, Betrag CHF 30 000.</li><li>Fragen: Gesamtkosten? Retrozessionen? Günstigere Alternative?</li><li>Nach dem Gespräch: Basisinformationsblatt lesen, 1 Woche warten, dann entscheiden.</li></ul></div>'+
+  '<p class="merk">Mit einer Checkliste gehst du vorbereitet hin und kommst ruhig zurück.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Gespräche mit der Bank fühlen sich ungleich an. Die Checkliste macht sie gleicher.</li><li>Nimm gerne eine zweite Person mit. Vier Ohren hören mehr.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Schreib deine Checkliste auf eine Seite.</li><li>Speichere sie im Handy, damit du sie beim nächsten Termin dabeihast.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was gehört vor das Gespräch?</summary><p>Ziel, Horizont, Notgroschen und deine wichtigsten Fragen.</p></details>'+
+  '<details><summary>Was tust du direkt nach dem Gespräch?</summary><p>Unterlagen mitnehmen, nichts sofort unterschreiben, zu Hause vergleichen.</p></details>'+
+  '<details><summary>Warum eine zweite Person mitnehmen?</summary><p>Vier Ohren hören mehr und du fühlst dich sicherer.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Checkliste:</b> Liste zum Abhaken</li><li><b>Horizont:</b> wie lange du das Geld nicht brauchst</li><li><b>Vergleich:</b> zwei Angebote nebeneinander anschauen</li></ul>'},
+ selbst1:{t:'Das richtige Depot',html:
+  '<div class="pose"><img src="posen/winkt.jpg" alt=""><p><b>Lektion 4 · 5 Minuten</b><br><span class="muted">Bank, Neobank, Kosten, Sicherheit.</span></p></div>'+
+  '<h3>Was ein Depot ist</h3><ul><li>Ein Depot ist wie ein Konto, aber für Wertschriften: Aktien, Fonds, ETF.</li><li>Du kannst es bei einer klassischen Bank oder bei einer Online-Bank (Neobank) eröffnen.</li></ul>'+
+  '<h3>Worauf achten</h3><ul><li><b>Kosten:</b> Depotgebühr, Gebühr pro Kauf, Währungswechsel.</li><li><b>Sicherheit:</b> Sitz in der Schweiz oder im Ausland? Unter welcher Aufsicht?</li><li><b>Bedienung:</b> Verstehst du die App? Erreichst du jemanden, wenn etwas klemmt?</li><li>Wertschriften im Depot gehören dir. Geht eine Bank pleite, werden sie in der Regel getrennt von der Bank behandelt.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du kaufst 4-mal im Jahr für je <b>CHF 1000</b>:</p><ul><li>Depot A: CHF 40 pro Kauf und CHF 100 Depotgebühr = <b>CHF 260</b> pro Jahr.</li><li>Depot B: CHF 5 pro Kauf, keine Depotgebühr = <b>CHF 20</b> pro Jahr.</li><li>Bei kleinen Beträgen machen Gebühren viel aus.</li></ul></div>'+
+  '<p class="merk">Ein gutes Depot ist günstig, sicher und so einfach, dass du es gerne öffnest.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Die Auswahl wirkt riesig. Drei Kriterien reichen: Kosten, Sicherheit, Bedienung.</li><li>Du kannst ein Depot später auch wechseln. Der erste Entscheid muss nicht für immer sein.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Schau dir zwei Depot-Anbieter an und notiere die Kosten pro Kauf und pro Jahr.</li><li>Rechne mit deinen eigenen Beträgen.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was gehört in ein Depot?</summary><p>Wertschriften wie Aktien, Fonds und ETF.</p></details>'+
+  '<details><summary>Welche drei Kriterien helfen bei der Wahl?</summary><p>Kosten, Sicherheit und Bedienung.</p></details>'+
+  '<details><summary>Gehören die Wertschriften im Depot der Bank?</summary><p>Nein, sie gehören dir.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Depot:</b> Konto für Wertschriften</li><li><b>Neobank:</b> Online-Bank, meist nur per App</li><li><b>Aufsicht:</b> Behörde, die Banken kontrolliert, in der Schweiz die FINMA</li></ul>'},
+ selbst2:{t:'Deine Aufteilung',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 5 · 5 Minuten</b><br><span class="muted">Aktien, Obligationen, Bargeld.</span></p></div>'+
+  '<h3>Die drei Grundbausteine</h3><ul><li><b>Aktien:</b> mehr Wachstum möglich, starke Schwankungen.</li><li><b>Obligationen:</b> meist ruhiger, weniger Rendite.</li><li><b>Bargeld:</b> sicher und verfügbar, aber kaum Zins.</li></ul>'+
+  '<h3>Die Mischung macht es</h3><ul><li>Die Aufteilung bestimmt mehr über dein Auf und Ab als die Wahl einzelner Titel.</li><li>Mehr Aktien heisst: mehr Schwankung, mehr Chance.</li><li>Welche Mischung passt, hängt von Horizont und Nerven ab, nicht von Prognosen.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Zwei Beispiele mit <b>CHF 10 000</b>, nur zur Idee. Angenommen, Aktien fallen um 30 %, Obligationen bleiben gleich:</p><ul><li>Mischung 80 % Aktien, 20 % Obligationen: Minus rund <b>CHF 2400</b>.</li><li>Mischung 40 % Aktien, 60 % Obligationen: Minus rund <b>CHF 1200</b>.</li></ul></div>'+
+  '<p class="merk">Deine Aufteilung ist dein wichtigster Entscheid. Sie bestimmt, wie stark es dich durchschüttelt.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Es gibt keine perfekte Mischung. Es gibt eine, mit der du ruhig bleibst.</li><li>Lieber etwas vorsichtiger und dabeibleiben als zu mutig und in der Krise verkaufen.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Rechne: Wie viel würde deine Wunschmischung bei −30 % Aktien verlieren?</li><li>Fühlt sich diese Zahl aushaltbar an?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was bestimmt dein Auf und Ab am stärksten?</summary><p>Die Aufteilung zwischen Aktien, Obligationen und Bargeld.</p></details>'+
+  '<details><summary>Mehr Aktien heisst?</summary><p>Mehr Schwankung und mehr Chance.</p></details>'+
+  '<details><summary>Gibt es eine perfekte Mischung für alle?</summary><p>Nein. Sie hängt von Horizont und Nerven ab.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Aufteilung:</b> wie dein Geld auf die Bausteine verteilt ist</li><li><b>Obligation:</b> Darlehen mit festem Zins</li><li><b>Bargeld:</b> Geld auf dem Konto, sofort verfügbar</li></ul>'},
+ selbst3:{t:'Welt und Schweiz',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 6 · 5 Minuten</b><br><span class="muted">Wie viel Heimat im Depot?</span></p></div>'+
+  '<h3>Der Heimvorteil</h3><ul><li>Viele Menschen halten vor allem Aktien aus dem eigenen Land. Das nennt man <b>Heimatneigung</b>.</li><li>Die Schweiz ist nur ein kleiner Teil der Weltwirtschaft, weniger als 3 % des Weltaktienmarkts.</li><li>Der SMI wird von wenigen grossen Firmen stark geprägt.</li></ul>'+
+  '<h3>Gründe für etwas Schweiz</h3><ul><li>Keine Währungsschwankung, alles in Franken.</li><li>Du kennst die Firmen.</li><li>Gründe für mehr Welt: mehr Streuung über Länder und Branchen.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du hast <b>CHF 10 000</b> in Aktien, zwei Beispiele zur Idee:</p><ul><li>Alles Schweiz: Die drei grössten Firmen machen einen grossen Teil deines Geldes aus.</li><li>Zum Beispiel 30 % Schweiz und 70 % Welt: Dein Geld ist auf viel mehr Firmen und Länder verteilt.</li><li>Welche Mischung du wählst, entscheidest du.</li></ul></div>'+
+  '<p class="merk">Heimat gibt Vertrautheit. Die Welt gibt Streuung. Beides hat seinen Platz.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Es ist normal, Bekanntem mehr zu vertrauen. Es lohnt sich, das bewusst zu entscheiden.</li><li>Es gibt hier kein Richtig, nur ein bewusst oder unbewusst.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Schau dir die Zusammensetzung des SMI an: Wie viel machen die 3 grössten Firmen aus?</li><li>Überlege, wie viel Schweiz du in deinem Depot willst.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was heisst Heimatneigung?</summary><p>Mehr Aktien aus dem eigenen Land halten, als es der Welt entspricht.</p></details>'+
+  '<details><summary>Wie gross ist die Schweiz am Weltaktienmarkt etwa?</summary><p>Weniger als 3 %.</p></details>'+
+  '<details><summary>Ein Vorteil von Schweizer Aktien?</summary><p>Keine Währungsschwankung, alles in Franken.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Heimatneigung:</b> Vorliebe für Aktien aus dem eigenen Land</li><li><b>SMI:</b> Index der 20 grössten Schweizer Firmen</li><li><b>Streuung:</b> Geld auf viele Länder und Firmen verteilen</li></ul>'},
+ selbst4:{t:'Einmal im Jahr ausgleichen',html:
+  '<div class="pose"><img src="posen/warn.jpg" alt=""><p><b>Lektion 7 · 5 Minuten</b><br><span class="muted">Rebalancing in 10 Minuten.</span></p></div>'+
+  '<h3>Warum sich die Mischung verschiebt</h3><ul><li>Steigen Aktien stark, wird ihr Anteil grösser als geplant.</li><li>Dann trägst du mehr Risiko, als du wolltest, ohne es gemerkt zu haben.</li></ul>'+
+  '<h3>So gleichst du aus</h3><ul><li>Einmal im Jahr die aktuelle Aufteilung anschauen.</li><li>Weicht sie stark vom Plan ab, zurück auf die geplante Mischung bringen.</li><li>Am einfachsten: Neues Geld in den Teil stecken, der zu klein geworden ist.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Plan: <b>60 % Aktien, 40 % Obligationen</b> bei CHF 10 000.</p><ul><li>Nach einem guten Jahr: Aktien CHF 7000, Obligationen CHF 4000, total CHF 11 000.</li><li>Aktien sind jetzt bei 64 %.</li><li>Zurück auf 60 %: Aktien CHF 6600, Obligationen CHF 4400.</li></ul></div>'+
+  '<p class="merk">Ausgleichen heisst: zurück zu deinem Plan, nicht einer Prognose folgen.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Ausgleichen fühlt sich oft falsch an: Man verschiebt Geld von dem, was gut lief.</li><li>Genau darum hilft eine feste Regel, zum Beispiel jeden Januar.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Wenn du ein Depot hast: Rechne deine aktuelle Aufteilung in Prozent aus.</li><li>Wie weit ist sie von deinem Plan entfernt?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Warum verschiebt sich die Mischung?</summary><p>Weil Teile unterschiedlich stark steigen oder fallen.</p></details>'+
+  '<details><summary>Wie oft reicht das Ausgleichen?</summary><p>Für viele: einmal im Jahr.</p></details>'+
+  '<details><summary>Was ist ein einfacher Weg auszugleichen?</summary><p>Neues Geld in den Teil stecken, der zu klein geworden ist.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Rebalancing:</b> die Mischung zurück auf den Plan bringen</li><li><b>Zielaufteilung:</b> deine geplante Mischung</li><li><b>Abweichung:</b> wie weit die Mischung vom Plan entfernt ist</li></ul>'},
+ selbst5:{t:'Steuern in der Schweiz',html:
+  '<div class="pose"><img src="posen/winkt.jpg" alt=""><p><b>Lektion 8 · 5 Minuten</b><br><span class="muted">Vermögen, Dividenden, Rückforderung, ganz allgemein.</span></p></div>'+
+  '<h3>Was in die Steuererklärung gehört</h3><ul><li>Dein Depot gehört zum <b>Vermögen</b>. Darauf gibt es in der Schweiz eine Vermögenssteuer.</li><li><b>Dividenden und Zinsen</b> sind Einkommen und werden besteuert.</li><li><b>Kursgewinne</b> sind für Privatpersonen in der Regel steuerfrei. Wer sehr viel und sehr schnell handelt, kann aber als gewerbsmässiger Händler gelten.</li></ul>'+
+  '<h3>Die Verrechnungssteuer</h3><ul><li>Bei Schweizer Dividenden werden <b>35 %</b> direkt abgezogen.</li><li>Wer alles korrekt in der Steuererklärung angibt, bekommt diesen Betrag zurück.</li><li>Bei ausländischen Dividenden wird oft auch Steuer abgezogen. Ein Teil davon lässt sich je nach Land zurückfordern.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Eine Schweizer Firma zahlt dir <b>CHF 100</b> Dividende:</p><ul><li>Auf deinem Konto landen <b>CHF 65</b>.</li><li><b>CHF 35</b> gehen als Verrechnungssteuer an den Bund.</li><li>Deklarierst du alles, bekommst du die CHF 35 zurückerstattet oder angerechnet.</li></ul></div>'+
+  '<p class="merk">Alles deklarieren lohnt sich. Die Verrechnungssteuer ist ein Pfand, kein Verlust.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Steuern wirken kompliziert. Die meisten Banken liefern einen Steuerauszug, der viel abnimmt.</li><li>Mr. Ping gibt keine Steuerberatung. Bei Fragen hilft das Steueramt oder eine Fachperson.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Wenn du ein Depot hast: Frag deine Bank nach dem jährlichen Steuerauszug.</li><li>Schau in der letzten Steuererklärung nach, wo das Wertschriftenverzeichnis steht.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Sind Kursgewinne für Privatpersonen in der Schweiz meist steuerfrei?</summary><p>In der Regel ja. Wer sehr viel handelt, kann aber anders eingestuft werden.</p></details>'+
+  '<details><summary>Wie viel Verrechnungssteuer wird bei Schweizer Dividenden abgezogen?</summary><p>35 %.</p></details>'+
+  '<details><summary>Wie bekommst du sie zurück?</summary><p>Indem du alles korrekt in der Steuererklärung angibst.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Vermögenssteuer:</b> Steuer auf dein Vermögen, auch auf das Depot</li><li><b>Verrechnungssteuer:</b> 35 % Abzug auf Schweizer Dividenden, rückforderbar</li><li><b>Wertschriftenverzeichnis:</b> Liste deiner Wertschriften in der Steuererklärung</li></ul>'},
+ selbst6:{t:'Dollar und Franken',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 9 · 5 Minuten</b><br><span class="muted">Was die Währung mit deiner Rendite macht.</span></p></div>'+
+  '<h3>Zwei Bewegungen auf einmal</h3><ul><li>Kaufst du eine US-Aktie, bewegt sich der Kurs in Dollar.</li><li>Zusätzlich bewegt sich der Dollar gegenüber dem Franken.</li><li>Für dich zählt am Schluss das Ergebnis in Franken.</li></ul>'+
+  '<h3>Der starke Franken</h3><ul><li>Der Franken ist über lange Zeit oft stärker geworden.</li><li>Um das Jahr 2000 kostete ein Dollar über 1.50 Franken, heute deutlich weniger.</li><li>Das hat Renditen aus dem Ausland für Schweizer oft geschmälert. Für die Zukunft weiss das niemand.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du hast <b>CHF 1000</b> in einer US-Aktie:</p><ul><li>Die Aktie steigt um 10 % in Dollar.</li><li>Der Dollar fällt gleichzeitig um 5 % gegenüber dem Franken.</li><li>In Franken bleibt dir rund <b>+4,5 %</b>, also etwa CHF 45 statt CHF 100.</li></ul></div>'+
+  '<p class="merk">Bei ausländischen Anlagen zählen immer zwei Dinge: der Kurs und die Währung.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Währungen schwanken. Über viele Länder verteilt gleicht sich das teilweise aus.</li><li>Es gibt Fonds mit Währungsabsicherung. Die kostet aber auch etwas.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Schau nach, wie viele Franken ein Dollar und ein Euro heute kosten.</li><li>Rechne: Was wären CHF 1000 in Dollar?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was zählt für dich am Schluss?</summary><p>Das Ergebnis in Franken.</p></details>'+
+  '<details><summary>Aktie +10 % in Dollar, Dollar −5 %. Was bleibt in Franken ungefähr?</summary><p>Rund +4,5 %.</p></details>'+
+  '<details><summary>Ist eine Währungsabsicherung gratis?</summary><p>Nein, sie kostet auch etwas.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Währungsrisiko:</b> Gewinn oder Verlust durch Wechselkurse</li><li><b>Wechselkurs:</b> Preis einer Währung in einer anderen</li><li><b>Absicherung:</b> Schutz gegen Währungsschwankungen, gegen Gebühr</li></ul>'},
+ selbst7:{t:'Der teuerste Fehler',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 10 · 5 Minuten</b><br><span class="muted">Zu oft handeln.</span></p></div>'+
+  '<h3>Warum viel handeln teuer ist</h3><ul><li>Jeder Kauf und Verkauf kostet Gebühren und oft Stempelsteuer.</li><li>Wer oft hin und her wechselt, verpasst häufig die besten Tage.</li><li>Studien zeigen immer wieder: Wer weniger handelt, hat im Schnitt oft mehr am Schluss.</li></ul>'+
+  '<h3>Was hilft</h3><ul><li>Einen Plan haben und ihn selten ändern.</li><li>Neue Ideen 1 Woche liegen lassen, bevor du handelst.</li><li>Die App nicht täglich öffnen.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du handelst jeden Monat 2-mal mit je <b>CHF 2000</b>, Gebühr <b>CHF 10</b> pro Auftrag:</p><ul><li>24 Aufträge im Jahr = <b>CHF 240</b> Gebühren.</li><li>Bei einem Depot von CHF 10 000 sind das schon <b>2,4 %</b> pro Jahr.</li><li>Das muss der Markt erst einmal wieder hereinholen.</li></ul></div>'+
+  '<p class="merk">Oft ist Nichtstun die beste Handlung.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Der Drang, etwas zu tun, ist bei Unruhe sehr stark. Das ist menschlich.</li><li>Schreib dir auf, warum du etwas ändern willst. Oft verschwindet der Drang dabei.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Zähl, wie oft du im letzten Jahr gekauft oder verkauft hast.</li><li>Rechne die Gebühren zusammen.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was kostet jedes Handeln?</summary><p>Gebühren und oft Stempelsteuer.</p></details>'+
+  '<details><summary>Was hilft gegen zu viel Handeln?</summary><p>Ein Plan, eine Woche Wartezeit und seltener in die App schauen.</p></details>'+
+  '<details><summary>24 Aufträge à CHF 10: wie viel Gebühren?</summary><p>CHF 240 im Jahr.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Stempelsteuer:</b> kleine Abgabe des Bundes beim Handel mit Wertschriften</li><li><b>Auftrag:</b> ein Kauf oder Verkauf</li><li><b>Handelsfrequenz:</b> wie oft du kaufst oder verkaufst</li></ul>'},
+ selbst8:{t:'Dein Jahres-Check',html:
+  '<div class="pose"><img src="posen/warn.jpg" alt=""><p><b>Lektion 11 · 5 Minuten</b><br><span class="muted">Eine Liste für jeden Januar.</span></p></div>'+
+  '<h3>Die Liste</h3><ul><li>1. Hat sich mein Leben verändert? Job, Familie, Wohnung.</li><li>2. Passt mein Notgroschen noch?</li><li>3. Stimmt meine Aufteilung? Wenn nicht: ausgleichen.</li><li>4. Was habe ich an Gebühren bezahlt?</li><li>5. Steuerauszug bereitlegen.</li><li>6. Plan auf einer Seite lesen und anpassen.</li></ul>'+
+  '<h3>Warum einmal im Jahr</h3><ul><li>Oft genug, um auf Kurs zu bleiben.</li><li>Selten genug, damit das Auf und Ab des Alltags dich nicht treibt.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>So kann ein Jahres-Check aussehen:</p><ul><li>Depot <b>CHF 22 000</b>, geplant 70 % Aktien, jetzt 76 %.</li><li>Neues Geld geht dieses Jahr zuerst in Obligationen.</li><li>Gebühren: CHF 85. Notgroschen: passt. Dauer: 15 Minuten.</li></ul></div>'+
+  '<p class="merk">Ein Termin im Jahr genügt, um dein Geld im Griff zu haben.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Der Check ist kein Zeugnis. Er ist ein ruhiger Blick aufs Ganze.</li><li>Trag dir den Termin jetzt in den Kalender ein, zum Beispiel den ersten Sonntag im Januar.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Kopiere die 6 Punkte in deine Notizen.</li><li>Trag dir den nächsten Termin im Kalender ein.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Wie oft reicht ein Check für viele?</summary><p>Einmal im Jahr.</p></details>'+
+  '<details><summary>Was tun, wenn die Aufteilung nicht mehr stimmt?</summary><p>Ausgleichen, zum Beispiel mit neuem Geld.</p></details>'+
+  '<details><summary>Warum nicht jeden Tag prüfen?</summary><p>Damit das tägliche Auf und Ab dich nicht treibt.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Jahres-Check:</b> fester Termin, um alles zu prüfen</li><li><b>Steuerauszug:</b> Übersicht der Bank für die Steuererklärung</li><li><b>Notgroschen:</b> Geld für Unerwartetes</li></ul>'},
+ kick1:{t:'Die Spielgeld-Regel',html:
+  '<div class="pose"><img src="posen/winkt.jpg" alt=""><p><b>Lektion 4 · 5 Minuten</b><br><span class="muted">Nur ein kleiner Teil, der weg sein darf.</span></p></div>'+
+  '<h3>Was Spielgeld ist</h3><ul><li>Spielgeld ist Geld, dessen Verlust dein Leben nicht verändert.</li><li>Kein Notgroschen, kein Geld für Miete, keine Vorsorge.</li><li>Viele setzen sich eine feste Grenze, zum Beispiel einen kleinen Prozentsatz vom Ersparten.</li></ul>'+
+  '<h3>Warum ein fester Topf</h3><ul><li>Ein eigener Topf trennt Spass von Vorsorge.</li><li>Ist der Topf leer, ist Schluss. Kein Nachschiessen aus dem Ersparten.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du hast <b>CHF 20 000</b> Erspartes und setzt dir einen Spieltopf von <b>CHF 500</b>:</p><ul><li>Verlierst du alles, hast du noch CHF 19 500.</li><li>Das tut weh, ändert aber dein Leben nicht.</li><li>Würde dich der Verlust von CHF 500 nachts wachhalten? Dann ist der Topf zu gross.</li></ul></div>'+
+  '<p class="merk">Spiel nur mit Geld, das weg sein darf. Ist der Topf leer, ist die Runde vorbei.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Spannung ist schön. Sie darf aber nicht deine Ruhe oder deine Vorsorge kosten.</li><li>Wenn du merkst, dass du nachfüllen willst: Pause machen.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Leg die Grösse deines Spieltopfs in Franken fest.</li><li>Schreib dazu: «Wenn er leer ist, höre ich auf bis …»</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was gehört nie in den Spieltopf?</summary><p>Notgroschen, Mietgeld und Vorsorge.</p></details>'+
+  '<details><summary>Was tun, wenn der Topf leer ist?</summary><p>Aufhören. Nicht aus dem Ersparten nachfüllen.</p></details>'+
+  '<details><summary>Woran merkst du, dass der Topf zu gross ist?</summary><p>Wenn dich ein Totalverlust nachts wachhalten würde.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Spieltopf:</b> kleiner, fester Betrag für Spekulation</li><li><b>Spekulation:</b> auf schnelle Kursbewegungen setzen</li><li><b>Totalverlust:</b> das ganze Geld ist weg</li></ul>'},
+ kick2:{t:'Grenzen vor dem Kauf',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 5 · 5 Minuten</b><br><span class="muted">Verlustgrenze und Gewinnmarke festlegen.</span></p></div>'+
+  '<h3>Vorher entscheiden</h3><ul><li>Nach dem Kauf denkt der Bauch mit. Davor der Kopf.</li><li>Darum legst du vor jedem Kauf zwei Zahlen fest.</li><li><b>Verlustgrenze:</b> Bei welchem Minus steigst du aus?</li><li><b>Gewinnmarke:</b> Bei welchem Plus nimmst du etwas vom Tisch?</li></ul>'+
+  '<h3>Stop-Loss</h3><ul><li>Viele Apps bieten einen <b>Stop-Loss-Auftrag</b>: Er verkauft automatisch, wenn ein Kurs fällt.</li><li>Achtung: Bei grossen Sprüngen über Nacht kann der Verkauf tiefer ausgeführt werden als geplant.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du kaufst für <b>CHF 200</b> aus deinem Spieltopf:</p><ul><li>Verlustgrenze −15 %: Bei CHF 170 ist Schluss, Verlust CHF 30.</li><li>Gewinnmarke +30 %: Bei CHF 260 nimmst du einen Teil heraus.</li><li>Diese Zahlen sind nur ein Beispiel. Welche du wählst, entscheidest du.</li></ul></div>'+
+  '<p class="merk">Grenzen setzt man vor dem Kauf, nicht mitten im Sturm.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Eine Grenze zu verschieben, weil «er sicher wieder steigt», ist das häufigste Muster bei Verlusten.</li><li>Schreib deine Grenzen auf, bevor du kaufst.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Nimm einen erfundenen Kauf von CHF 200.</li><li>Leg Verlustgrenze und Gewinnmarke fest und rechne sie in Franken aus.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Wann legst du deine Grenzen fest?</summary><p>Vor dem Kauf.</p></details>'+
+  '<details><summary>Was macht ein Stop-Loss-Auftrag?</summary><p>Er verkauft automatisch, wenn der Kurs unter eine Grenze fällt.</p></details>'+
+  '<details><summary>Kann ein Stop-Loss tiefer ausgeführt werden als geplant?</summary><p>Ja, vor allem bei Sprüngen über Nacht.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Verlustgrenze:</b> Minus, bei dem du aussteigst</li><li><b>Gewinnmarke:</b> Plus, bei dem du etwas herausnimmst</li><li><b>Stop-Loss:</b> Auftrag, der bei einer Grenze automatisch verkauft</li></ul>'},
+ kick3:{t:'Quartalszahlen-Tage',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 6 · 5 Minuten</b><br><span class="muted">Warum Kurse dann springen.</span></p></div>'+
+  '<h3>Was an diesen Tagen passiert</h3><ul><li>Firmen melden 4-mal im Jahr Umsatz, Gewinn und einen <b>Ausblick</b>.</li><li>Der Markt hat vorher Erwartungen. Entscheidend ist, ob die Zahlen besser oder schlechter sind.</li><li>Darum kann ein Kurs auch nach guten Zahlen fallen, wenn mehr erwartet wurde.</li></ul>'+
+  '<h3>Was das für Spielgeld heisst</h3><ul><li>An Zahlen-Tagen sind Sprünge von 10 % und mehr möglich, in beide Richtungen.</li><li>Viele melden nach Börsenschluss. Der Sprung kommt dann am nächsten Morgen.</li><li>Ein Stop-Loss schützt bei solchen Sprüngen nur bedingt.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Du hast <b>CHF 200</b> in einer Aktie, die heute Abend Zahlen meldet:</p><ul><li>Morgen +12 %: <b>CHF 224</b>.</li><li>Morgen −15 %: <b>CHF 170</b>.</li><li>Beides ist möglich, und niemand weiss es vorher.</li></ul></div>'+
+  '<p class="merk">An Zahlen-Tagen zählt nicht nur, wie gut eine Firma ist, sondern wie gut man es erwartet hat.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Die Spannung vor Zahlen ist gross. Mach dir vorher klar, ob du sie aushalten willst.</li><li>TradePing zeigt dir, wann Zahlen kommen, damit du nicht überrascht wirst.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Such für eine bekannte Firma das nächste Datum der Quartalszahlen.</li><li>Schau dir am Tag danach an, wie stark der Kurs gesprungen ist.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Kann ein Kurs nach guten Zahlen fallen?</summary><p>Ja, wenn der Markt noch mehr erwartet hat.</p></details>'+
+  '<details><summary>Wann melden viele Firmen ihre Zahlen?</summary><p>Nach Börsenschluss, der Sprung kommt am nächsten Morgen.</p></details>'+
+  '<details><summary>Wie oft im Jahr gibt es Quartalszahlen?</summary><p>4-mal.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Quartalszahlen:</b> Bericht über Umsatz und Gewinn alle 3 Monate</li><li><b>Erwartung:</b> was der Markt vorher annimmt</li><li><b>Ausblick:</b> was die Firma für die Zukunft erwartet</li></ul>'},
+ kick4:{t:'Charts lesen',html:
+  '<div class="pose"><img src="posen/warn.jpg" alt=""><p><b>Lektion 7 · 5 Minuten</b><br><span class="muted">Trend, Hoch und Tief.</span></p></div>'+
+  '<h3>Was ein Chart zeigt</h3><ul><li>Ein Chart zeigt den Kurs über die Zeit.</li><li>Ein <b>Aufwärtstrend</b>: höhere Hochs und höhere Tiefs. Ein <b>Abwärtstrend</b>: tiefere Hochs und tiefere Tiefs.</li><li>Der Zeitraum ändert das Bild stark: 1 Tag sieht anders aus als 5 Jahre.</li></ul>'+
+  '<h3>Was ein Chart nicht kann</h3><ul><li>Ein Chart zeigt die Vergangenheit, nicht die Zukunft.</li><li>Muster helfen beim Ordnen, aber sie versprechen nichts.</li><li>Viele Muster sieht man erst hinterher klar.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Eine Aktie, Kurs in Franken über 6 Monate:</p><ul><li>Tiefs bei 80, 85, 90. Hochs bei 95, 100, 108.</li><li>Höhere Hochs und höhere Tiefs: ein Aufwärtstrend in diesem Zeitraum.</li><li>Ob er weitergeht, sagt der Chart nicht.</li></ul></div>'+
+  '<p class="merk">Ein Chart ist ein Rückspiegel. Er zeigt, wo der Kurs war, nicht wohin er geht.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Charts können süchtig machen, weil man ständig neue Muster sieht.</li><li>Leg einen festen Zeitraum fest, den du anschaust, zum Beispiel 1 Jahr.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Öffne den Chart einer bekannten Aktie für 1 Monat und für 5 Jahre.</li><li>Beschreib in einem Satz, wie unterschiedlich die beiden Bilder wirken.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was ist ein Aufwärtstrend?</summary><p>Höhere Hochs und höhere Tiefs.</p></details>'+
+  '<details><summary>Zeigt ein Chart die Zukunft?</summary><p>Nein, nur die Vergangenheit.</p></details>'+
+  '<details><summary>Warum den Zeitraum bewusst wählen?</summary><p>Weil 1 Tag und 5 Jahre ein ganz anderes Bild geben.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Chart:</b> Kursverlauf als Bild</li><li><b>Trend:</b> Grundrichtung eines Kurses über eine Zeit</li><li><b>Hoch und Tief:</b> Wendepunkte im Kursverlauf</li></ul>'},
+ kick5:{t:'Hype erkennen',html:
+  '<div class="pose"><img src="posen/winkt.jpg" alt=""><p><b>Lektion 8 · 5 Minuten</b><br><span class="muted">Krypto, KI und Modetitel.</span></p></div>'+
+  '<h3>Zeichen eines Hypes</h3><ul><li>Alle reden davon, auch Leute, die sich sonst nie für Börse interessieren.</li><li>Kurse steigen sehr schnell, ohne dass sich Umsatz oder Gewinn gleich schnell ändern.</li><li>Sätze wie «Diesmal ist alles anders» oder «Jetzt noch einsteigen».</li></ul>'+
+  '<h3>Was danach oft passiert</h3><ul><li>Nach starken Hypes kamen oft starke Rückgänge, zum Beispiel nach dem Internet-Boom um 2000.</li><li>Eine gute Idee kann trotzdem eine schlechte Anlage sein, wenn der Preis zu hoch ist.</li><li>Krypto schwankt besonders stark. Rückgänge von über 50 % gab es mehrfach.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Ein Modetitel im Spieltopf mit <b>CHF 200</b>:</p><ul><li>Er hat sich in 3 Monaten verdoppelt.</li><li>Ein Rückgang von 50 % danach bringt ihn wieder auf den Ausgangswert.</li><li>Wer erst am Hoch einsteigt, verliert dann die Hälfte: <b>CHF 100</b>.</li></ul></div>'+
+  '<p class="merk">Wenn alle von etwas schwärmen, ist Ruhe besonders wertvoll.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Das Gefühl, etwas zu verpassen, ist sehr stark. Es hat einen Namen: FOMO.</li><li>Frag dich: Würde ich das auch kaufen, wenn niemand davon reden würde?</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Denk an einen Hype der letzten Jahre. Was ist danach passiert?</li><li>Schreib 2 Zeichen auf, an denen du einen Hype künftig erkennst.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Ein Zeichen für Hype?</summary><p>Alle reden davon und der Kurs steigt viel schneller als Umsatz oder Gewinn.</p></details>'+
+  '<details><summary>Ist eine gute Idee immer eine gute Anlage?</summary><p>Nein. Der Preis kann zu hoch sein.</p></details>'+
+  '<details><summary>Was heisst FOMO?</summary><p>Die Angst, etwas zu verpassen.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Hype:</b> übertriebene Begeisterung für ein Thema</li><li><b>FOMO:</b> Angst, etwas zu verpassen</li><li><b>Blase:</b> Preise weit über dem, was eine Sache wert sein dürfte</li></ul>'},
+ kick6:{t:'Angst und Gier',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 9 · 5 Minuten</b><br><span class="muted">Die zwei Gefühle, die Geld kosten.</span></p></div>'+
+  '<h3>Die Gier</h3><ul><li>Wenn es gut läuft, will man mehr: mehr Geld rein, mehr Risiko.</li><li>Man vergisst die Grenzen, die man sich gesetzt hat.</li></ul>'+
+  '<h3>Die Angst</h3><ul><li>Wenn es schlecht läuft, will man nur noch raus, oft zum schlechtesten Moment.</li><li>Oder das Gegenteil: Man hält an einem Verlust fest, weil das Zugeben weh tut.</li><li>Beides sind normale Gefühle. Wichtig ist, sie zu bemerken.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Dein Spieltopf ist von <b>CHF 500</b> auf <b>CHF 700</b> gestiegen.</p><ul><li>Die Gier sagt: «Leg noch CHF 500 aus dem Ersparten nach.»</li><li>Die Regel sagt: «Der Topf bleibt bei seiner Grenze. Gewinne darf ich herausnehmen.»</li><li>Wer der Regel folgt, behält die Kontrolle.</li></ul></div>'+
+  '<p class="merk">Gefühle sind normal. Entscheiden sollte aber deine Regel, nicht dein Puls.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Merkst du Herzklopfen beim Blick auf den Kurs? Das ist ein Zeichen für eine Pause.</li><li>Eine Regel: Bei starkem Gefühl 24 Stunden warten, bevor du etwas tust.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Erinnere dich an einen Moment, in dem du Gier oder Angst beim Geld gespürt hast.</li><li>Was hättest du mit einer festen Regel anders gemacht?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was sagt die Gier oft?</summary><p>Mehr Geld rein, mehr Risiko.</p></details>'+
+  '<details><summary>Was macht die Angst oft?</summary><p>Sie lässt dich im schlechtesten Moment verkaufen oder an einem Verlust festhalten.</p></details>'+
+  '<details><summary>Was hilft bei starken Gefühlen?</summary><p>Eine feste Regel und 24 Stunden warten.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Gier:</b> Wunsch nach immer mehr, trotz Risiko</li><li><b>Verlustangst:</b> Verluste schmerzen stärker als gleich grosse Gewinne freuen</li><li><b>Regel:</b> vorher festgelegter Entscheid</li></ul>'},
+ kick7:{t:'Das Trading-Journal',html:
+  '<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Lektion 10 · 5 Minuten</b><br><span class="muted">Aus jedem Trade lernen.</span></p></div>'+
+  '<h3>Was ein Journal ist</h3><ul><li>Ein einfaches Heft oder eine Notiz für jeden Kauf und Verkauf.</li><li>Du schreibst nicht nur die Zahlen auf, sondern auch das <b>Warum</b>.</li><li>TradePing hat dafür das «Warum?»-Tagebuch.</li></ul>'+
+  '<h3>Was hineingehört</h3><ul><li>Datum, Titel, Betrag.</li><li>Warum kaufe ich? Welche Grenzen setze ich?</li><li>Wie fühle ich mich?</li><li>Später: Was ist passiert? Was lerne ich daraus?</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Ein Eintrag könnte so aussehen:</p><ul><li>Kauf CHF 200, Grund: «Quartalszahlen stark erwartet». Grenze −15 %, Ziel +25 %.</li><li>Ergebnis nach 2 Wochen: −10 %, CHF 180.</li><li>Gelernt: «Erwartungen waren schon im Kurs.»</li></ul></div>'+
+  '<p class="merk">Ein Journal macht aus Glück und Pech Erfahrung.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Schlechte Trades aufzuschreiben ist unangenehm. Gerade diese lehren am meisten.</li><li>Nach 10 Einträgen siehst du Muster bei dir selbst.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Öffne das «Warum?»-Tagebuch in TradePing und mach einen ersten Eintrag, auch für einen erfundenen Trade.</li><li>Schreib dazu, wie du dich fühlst.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was ist wichtiger als die Zahlen im Journal?</summary><p>Das Warum hinter dem Entscheid.</p></details>'+
+  '<details><summary>Welche Einträge lehren oft am meisten?</summary><p>Die schlechten Trades.</p></details>'+
+  '<details><summary>Wann siehst du Muster?</summary><p>Nach mehreren Einträgen, zum Beispiel 10.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Journal:</b> Tagebuch für deine Käufe und Verkäufe</li><li><b>Trade:</b> ein Kauf mit späterem Verkauf</li><li><b>Trefferquote:</b> Anteil der Trades mit Gewinn</li></ul>'},
+ kick8:{t:'Gewinne abschöpfen',html:
+  '<div class="pose"><img src="posen/warn.jpg" alt=""><p><b>Lektion 11 · 5 Minuten</b><br><span class="muted">Wann und wie viel, als Regel statt als Bauchentscheid.</span></p></div>'+
+  '<h3>Warum abschöpfen</h3><ul><li>Ein Gewinn auf dem Bildschirm ist noch nicht sicher.</li><li>Wer einen Teil herausnimmt, sichert ihn.</li><li>Das schützt den Spieltopf auch vor der Gier aus Lektion «Angst und Gier».</li></ul>'+
+  '<h3>Mögliche Regeln, du wählst</h3><ul><li>Ab einem bestimmten Plus einen Teil verkaufen, zum Beispiel die Hälfte.</li><li>Oder: Den ursprünglichen Einsatz herausnehmen, der Rest läuft weiter.</li><li>Oder: Gewinne über einer Topf-Grenze regelmässig auf das Sparkonto übertragen.</li><li>Wichtig ist nicht welche Regel, sondern dass du sie vorher festlegst.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Dein Titel ist von <b>CHF 200</b> auf <b>CHF 300</b> gestiegen:</p><ul><li>Du nimmst die ursprünglichen <b>CHF 200</b> heraus.</li><li>Die restlichen CHF 100 laufen weiter.</li><li>Fällt der Titel jetzt stark, ist dein Einsatz schon sicher.</li></ul></div>'+
+  '<p class="merk">Ein Gewinn gehört dir erst, wenn du ihn gesichert hast. Die Regel dafür legst du vorher fest.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Abschöpfen fühlt sich oft zu früh an. Das ist normal, und es ist trotzdem in Ordnung.</li><li>Steuern: Wer sehr viel handelt, kann steuerlich anders eingestuft werden. Bei Fragen hilft das Steueramt.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Wähle eine der Regeln oben oder schreib deine eigene.</li><li>Trag sie im «Warum?»-Tagebuch ein, bevor der nächste Trade startet.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Ist ein Gewinn auf dem Bildschirm schon sicher?</summary><p>Nein, erst wenn du ihn herausnimmst.</p></details>'+
+  '<details><summary>Was ist bei allen Regeln am wichtigsten?</summary><p>Dass du sie vorher festlegst.</p></details>'+
+  '<details><summary>Was bringt es, den Einsatz herauszunehmen?</summary><p>Dein ursprüngliches Geld ist gesichert, der Rest läuft weiter.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Abschöpfen:</b> einen Teil des Gewinns sichern</li><li><b>Einsatz:</b> das ursprünglich investierte Geld</li><li><b>Buchgewinn:</b> Gewinn, der nur auf dem Bildschirm steht</li></ul>'},
+ verstehen2:{t:'Was ist ein Index?',html:
+  '<div class="pose"><img src="posen/ping.jpg" alt=""><p><b>Lektion 5 · 5 Minuten</b><br><span class="muted">SMI, S&P 500, Nasdaq.</span></p></div>'+
+  '<h3>Ein Index ist ein Fieberthermometer</h3><ul><li>Ein Index fasst viele Aktien zu einer Zahl zusammen.</li><li>Steigt der Index, sind die Aktien darin im Schnitt gestiegen.</li><li>So weiss man mit einem Blick, wie der Markt läuft.</li></ul>'+
+  '<h3>Die wichtigsten</h3><ul><li><b>SMI:</b> die 20 grössten Schweizer Firmen.</li><li><b>S&amp;P 500:</b> rund 500 grosse US-Firmen.</li><li><b>Nasdaq:</b> eine US-Börse mit vielen Technologiefirmen; oft ist der Nasdaq-100-Index gemeint.</li><li>Grosse Firmen zählen im Index meist mehr als kleine.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Der SMI steht bei <b>12 000</b> und steigt heute um <b>1 %</b>:</p><ul><li>Das sind <b>120 Punkte</b> mehr.</li><li>Hast du CHF 1000 in einem Fonds, der dem SMI folgt, wären das rund <b>CHF 10</b> mehr.</li><li>Einzelne Firmen im SMI können trotzdem gefallen sein.</li></ul></div>'+
+  '<p class="merk">Ein Index sagt dir, wie es dem Markt im Schnitt geht, nicht jeder einzelnen Firma.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>In den News klingen Punkte dramatisch: «Der SMI verliert 150 Punkte». Rechne in Prozent, das beruhigt.</li><li>150 Punkte bei 12 000 sind nur rund 1,25 %.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Schau heute nach, wie SMI, S&amp;P 500 und Nasdaq stehen.</li><li>Rechne die Tagesveränderung in Prozent aus.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Wie viele Firmen sind im SMI?</summary><p>20.</p></details>'+
+  '<details><summary>Was ist der S&amp;P 500?</summary><p>Ein Index mit rund 500 grossen US-Firmen.</p></details>'+
+  '<details><summary>Warum besser in Prozent als in Punkten denken?</summary><p>Weil Punkte grösser wirken, als die Bewegung ist.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Index:</b> Zahl, die viele Aktien zusammenfasst</li><li><b>Punkte:</b> Stand eines Index</li><li><b>Gewichtung:</b> wie stark eine Firma im Index zählt</li></ul>'},
+ verstehen3:{t:'Zinsen und Notenbank',html:
+  '<div class="pose"><img src="posen/jubel.jpg" alt=""><p><b>Lektion 6 · 5 Minuten</b><br><span class="muted">Warum ein Zinsentscheid alles bewegt.</span></p></div>'+
+  '<h3>Was eine Notenbank tut</h3><ul><li>Die Notenbank sorgt dafür, dass das Geld seinen Wert behält.</li><li>In der Schweiz ist das die <b>SNB</b>, in den USA die <b>Fed</b>.</li><li>Ihr wichtigstes Werkzeug ist der <b>Leitzins</b>.</li></ul>'+
+  '<h3>Warum Zinsen die Börse bewegen</h3><ul><li>Steigen die Zinsen, bringt Sparen und Obligationen mehr. Aktien werden im Vergleich weniger attraktiv.</li><li>Kredite werden teurer. Das kann Firmen bremsen.</li><li>Sinken die Zinsen, gilt oft das Gegenteil.</li><li>Oft bewegt nicht der Entscheid selbst die Kurse, sondern die Überraschung.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Ein einfaches Beispiel mit <b>CHF 10 000</b>:</p><ul><li>Bei 0 % Zins bringt ein Sparkonto <b>CHF 0</b> pro Jahr.</li><li>Bei 3 % Zins bringt eine sichere Anlage <b>CHF 300</b> pro Jahr.</li><li>Je mehr sichere Anlagen bringen, desto mehr Rendite erwarten Anleger von Aktien.</li></ul></div>'+
+  '<p class="merk">Zinsen sind wie die Schwerkraft für die Börse. Wenn sie steigen, wird alles etwas schwerer.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>An Zinsentscheid-Tagen schwankt die Börse oft stärker. Das ist normal.</li><li>Du musst den nächsten Entscheid nicht erraten. Es reicht zu verstehen, warum es wackelt.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Such das Datum des nächsten Zinsentscheids der SNB.</li><li>Lies am Tag danach eine Nachricht dazu: War der Entscheid eine Überraschung?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Wie heisst die Schweizer Notenbank?</summary><p>Die SNB, die Schweizerische Nationalbank.</p></details>'+
+  '<details><summary>Steigende Zinsen machen Aktien oft …?</summary><p>Weniger attraktiv im Vergleich zu sicheren Anlagen.</p></details>'+
+  '<details><summary>Was bewegt die Kurse oft mehr: der Entscheid oder die Überraschung?</summary><p>Die Überraschung.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Leitzins:</b> wichtigster Zins der Notenbank</li><li><b>SNB:</b> Schweizerische Nationalbank</li><li><b>Inflation:</b> Geld verliert an Wert, Preise steigen</li></ul>'},
+ verstehen4:{t:'Quartalszahlen lesen',html:
+  '<div class="pose"><img src="posen/denk.jpg" alt=""><p><b>Lektion 7 · 5 Minuten</b><br><span class="muted">Umsatz, Gewinn, Ausblick.</span></p></div>'+
+  '<h3>Die drei wichtigsten Zahlen</h3><ul><li><b>Umsatz:</b> wie viel die Firma verkauft hat.</li><li><b>Gewinn:</b> was nach allen Kosten übrig bleibt.</li><li><b>Ausblick:</b> was die Firma für die nächsten Monate erwartet. Oft bewegt er den Kurs am stärksten.</li></ul>'+
+  '<h3>Vergleichen</h3><ul><li>Zahlen allein sagen wenig. Man vergleicht mit dem Vorjahr und mit den Erwartungen.</li><li>«Über den Erwartungen» heisst: besser als die Schätzungen der Analysten.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Eine Firma meldet:</p><ul><li>Umsatz <b>CHF 1,1 Mrd.</b>, Vorjahr CHF 1,0 Mrd.: <b>+10 %</b>.</li><li>Gewinn CHF 100 Mio., erwartet waren CHF 110 Mio.: unter den Erwartungen.</li><li>Der Kurs kann trotz Umsatzplus fallen.</li></ul></div>'+
+  '<p class="merk">Wichtig ist nicht nur, wie gut die Zahlen sind, sondern wie sie im Vergleich zur Erwartung ausfallen.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Zahlen-Berichte sind lang. Die ersten Zeilen der Medienmitteilung reichen für den Anfang.</li><li>Du musst nicht jede Kennzahl verstehen. Umsatz, Gewinn und Ausblick genügen.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Nimm eine Firma, die du kennst, und such die letzte Medienmitteilung zu den Zahlen.</li><li>Finde Umsatz, Gewinn und Ausblick.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Welche Zahl bewegt den Kurs oft am stärksten?</summary><p>Der Ausblick.</p></details>'+
+  '<details><summary>Womit vergleicht man die Zahlen?</summary><p>Mit dem Vorjahr und mit den Erwartungen.</p></details>'+
+  '<details><summary>Kann ein Kurs trotz mehr Umsatz fallen?</summary><p>Ja, wenn der Gewinn oder der Ausblick enttäuscht.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Umsatz:</b> Wert aller Verkäufe</li><li><b>Gewinn:</b> was nach allen Kosten übrig bleibt</li><li><b>Analyst:</b> Fachperson, die Firmen bewertet und Zahlen schätzt</li></ul>'},
+ verstehen5:{t:'Ist eine Aktie teuer?',html:
+  '<div class="pose"><img src="posen/jubel.jpg" alt=""><p><b>Lektion 8 · 5 Minuten</b><br><span class="muted">Das KGV einfach erklärt.</span></p></div>'+
+  '<h3>Der Preis allein sagt nichts</h3><ul><li>Eine Aktie für CHF 500 ist nicht automatisch teurer als eine für CHF 50.</li><li>Wichtig ist, was du für dein Geld bekommst: einen Teil vom Gewinn.</li></ul>'+
+  '<h3>Das KGV</h3><ul><li><b>KGV</b> heisst Kurs-Gewinn-Verhältnis: Kurs geteilt durch Gewinn pro Aktie.</li><li>Es sagt: Wie viele Jahre Gewinn zahlst du im Preis?</li><li>Ein hohes KGV heisst oft: Der Markt erwartet viel Wachstum. Ein tiefes: wenig Wachstum oder Probleme.</li><li>Es ist ein Hinweis, kein Urteil. Vergleiche nur ähnliche Firmen.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Zwei Firmen:</p><ul><li>Firma A: Kurs <b>CHF 100</b>, Gewinn pro Aktie CHF 5: KGV <b>20</b>.</li><li>Firma B: Kurs <b>CHF 300</b>, Gewinn pro Aktie CHF 30: KGV <b>10</b>.</li><li>Trotz höherem Preis ist B gemessen am Gewinn günstiger. Ob sie besser ist, sagt das KGV nicht.</li></ul></div>'+
+  '<p class="merk">Nicht der Preis einer Aktie zählt, sondern wie viel Gewinn du dafür bekommst.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Hohe KGV wirken bedrohlich. Manche Firmen wachsen tatsächlich so stark, andere nicht.</li><li>Das KGV ist ein Werkzeug zum Verstehen, nicht zum Kaufen oder Verkaufen.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Such das KGV von zwei Firmen aus derselben Branche.</li><li>Überlege: Warum könnte eines höher sein?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Wie berechnet man das KGV?</summary><p>Kurs geteilt durch Gewinn pro Aktie.</p></details>'+
+  '<details><summary>Ist eine Aktie für CHF 500 teurer als eine für CHF 50?</summary><p>Nicht unbedingt. Es kommt auf den Gewinn an.</p></details>'+
+  '<details><summary>Was heisst ein hohes KGV oft?</summary><p>Der Markt erwartet viel Wachstum.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>KGV:</b> Kurs-Gewinn-Verhältnis</li><li><b>Gewinn pro Aktie:</b> Gewinn geteilt durch die Zahl der Aktien</li><li><b>Bewertung:</b> Einschätzung, ob ein Preis hoch oder tief ist</li></ul>'},
+ verstehen6:{t:'News filtern',html:
+  '<div class="pose"><img src="posen/ping.jpg" alt=""><p><b>Lektion 9 · 5 Minuten</b><br><span class="muted">Was zählt und was nur Lärm ist.</span></p></div>'+
+  '<h3>Lärm erkennen</h3><ul><li>Viele Börsen-News erklären im Nachhinein, warum der Markt gestiegen oder gefallen ist.</li><li>Schlagzeilen wie «Börse im Sturzflug» meinen oft nur −2 %.</li><li>Prognosen für die nächste Woche treffen selten zuverlässig.</li></ul>'+
+  '<h3>Was eher zählt</h3><ul><li>Zinsentscheide der Notenbanken.</li><li>Quartalszahlen und Ausblick der Firmen, die dich interessieren.</li><li>Grosse Veränderungen in einer Branche, die über Jahre wirken.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Ein Morgen mit drei Schlagzeilen:</p><ul><li>«SMI stürzt ab»: Tatsächlich −1,8 %, rund CHF 18 bei CHF 1000. Lärm.</li><li>«SNB senkt Leitzins überraschend»: zählt.</li><li>«Experte sieht Crash kommen»: Solche Prognosen gibt es fast täglich. Lärm.</li></ul></div>'+
+  '<p class="merk">Frag bei jeder News: Ändert das in 5 Jahren noch etwas?</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Viele News sind so geschrieben, dass sie Gefühle wecken. Das ist ihr Geschäftsmodell.</li><li>Weniger News lesen heisst nicht, weniger zu wissen.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Nimm drei Börsen-Schlagzeilen von heute.</li><li>Ordne jede ein: zählt oder Lärm?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was meint «Börse im Sturzflug» oft?</summary><p>Eine kleine Bewegung wie −2 %.</p></details>'+
+  '<details><summary>Welche News zählen eher?</summary><p>Zinsentscheide, Quartalszahlen und langfristige Veränderungen.</p></details>'+
+  '<details><summary>Welche Frage hilft beim Filtern?</summary><p>Ändert das in 5 Jahren noch etwas?</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Lärm:</b> Nachrichten ohne bleibende Bedeutung</li><li><b>Schlagzeile:</b> Titel einer Nachricht</li><li><b>Prognose:</b> Vorhersage, die oft nicht eintrifft</li></ul>'},
+ verstehen7:{t:'Der Burggraben',html:
+  '<div class="pose"><img src="posen/jubel.jpg" alt=""><p><b>Lektion 10 · 5 Minuten</b><br><span class="muted">Warum manche Firmen so stark sind.</span></p></div>'+
+  '<h3>Was ein Burggraben ist</h3><ul><li>Wie ein Graben eine Burg schützt, schützen manche Vorteile eine Firma vor der Konkurrenz.</li><li>Der Begriff heisst auf Englisch <b>Moat</b>.</li></ul>'+
+  '<h3>Arten von Burggräben</h3><ul><li><b>Marke:</b> Leute zahlen mehr, weil sie dem Namen vertrauen.</li><li><b>Netzwerk:</b> Je mehr Leute etwas nutzen, desto wertvoller wird es.</li><li><b>Wechselkosten:</b> Wechseln ist mühsam oder teuer.</li><li><b>Kostenvorteil:</b> Eine Firma kann günstiger herstellen als andere.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>Ein Gedankenexperiment:</p><ul><li>Eine neue Kaffeemarke bietet den gleichen Kaffee <b>CHF 1</b> günstiger an.</li><li>Wechseln viele trotzdem nicht, hat die alte Marke einen Burggraben.</li><li>Wechseln alle sofort, hatte sie keinen.</li></ul></div>'+
+  '<p class="merk">Ein Burggraben erklärt, warum manche Firmen über Jahre stark bleiben. Ob die Aktie günstig ist, ist eine andere Frage.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Auch starke Burggräben können austrocknen, zum Beispiel durch neue Technik.</li><li>Das Wissen hilft beim Verstehen von News, nicht als Kauftipp.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Denk an eine Marke, der du treu bist. Warum wechselst du nicht?</li><li>Welche Art Burggraben ist das?</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Was ist ein Burggraben bei einer Firma?</summary><p>Ein Vorteil, der sie vor der Konkurrenz schützt.</p></details>'+
+  '<details><summary>Nenne eine Art Burggraben.</summary><p>Marke, Netzwerk, Wechselkosten oder Kostenvorteil.</p></details>'+
+  '<details><summary>Heisst ein Burggraben, dass die Aktie günstig ist?</summary><p>Nein. Das ist eine andere Frage.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Burggraben:</b> dauerhafter Vorteil gegenüber der Konkurrenz</li><li><b>Wechselkosten:</b> Aufwand oder Kosten beim Wechsel zu einem anderen Anbieter</li><li><b>Netzwerkeffekt:</b> Wert steigt, je mehr Leute etwas nutzen</li></ul>'},
+ verstehen8:{t:'Dein Wochenrückblick',html:
+  '<div class="pose"><img src="posen/denk.jpg" alt=""><p><b>Lektion 11 · 5 Minuten</b><br><span class="muted">5 Minuten am Freitag.</span></p></div>'+
+  '<h3>Warum einmal pro Woche</h3><ul><li>Wer täglich schaut, sieht vor allem Lärm.</li><li>Einmal pro Woche reicht, um zu verstehen, was passiert ist.</li></ul>'+
+  '<h3>Die 5 Fragen</h3><ul><li>1. Wie haben SMI und S&amp;P 500 die Woche beendet, in Prozent?</li><li>2. Gab es einen Zinsentscheid oder wichtige Zahlen?</li><li>3. Welche News hat mich beschäftigt? War sie Lärm?</li><li>4. Wie fühle ich mich auf der Skala von 1 bis 10?</li><li>5. Muss ich etwas tun? Meist lautet die Antwort: nein.</li></ul>'+
+  '<h3>Ein Beispiel mit Zahlen</h3><div class="box"><p>So kann ein Rückblick aussehen:</p><ul><li>SMI <b>−0,8 %</b>, S&amp;P 500 <b>+1,2 %</b>.</li><li>Zinsentscheid der Fed: wie erwartet. Lärm: «Crash-Gefahr steigt».</li><li>Gefühl: 3 von 10. Handlung: keine.</li></ul></div>'+
+  '<p class="merk">Fünf Minuten pro Woche reichen, um mitzureden und ruhig zu bleiben.</p>'+
+  '<h3>Und dein Gefühl?</h3><ul><li>Mit der Zeit wirst du merken, dass sich vieles wiederholt. Das nimmt Druck weg.</li><li>Trag dein Gefühl auch hier in der Schule auf der Skala ein. So siehst du, ob es ruhiger wird.</li></ul>'+
+  '<h3>Übung (2 Minuten)</h3><ul><li>Stell dir für Freitag eine Erinnerung im Handy.</li><li>Mach den ersten Rückblick mit den 5 Fragen.</li></ul>'+
+  '<h3>Quiz (antippen)</h3>'+
+  '<details><summary>Wie oft reicht ein Rückblick?</summary><p>Einmal pro Woche.</p></details>'+
+  '<details><summary>Was ist die häufigste Antwort auf die Frage «Muss ich etwas tun»?</summary><p>Nein.</p></details>'+
+  '<details><summary>Warum nicht täglich schauen?</summary><p>Weil man dann vor allem Lärm sieht.</p></details>'+
+  '<h3>Wörter von heute</h3><ul><li><b>Wochenrückblick:</b> kurzer Blick auf die vergangene Woche</li><li><b>Wochenschluss:</b> Kurs am Freitagabend</li><li><b>Gelassenheit:</b> ruhig bleiben, auch wenn es schwankt</li></ul>'}
+};
+function lektion(id){
+  var c=INHALT[id];
+  if(!c){
+    var l=null; Object.keys(WEGE).concat(['kern']).forEach(function(){});
+    $('lesBody').innerHTML='<div class="pose"><img src="posen/denkt.jpg" alt=""><p><b>Diese Lektion schreibt Mr. Ping gerade.</b><br><span class="muted">Jeden Tag kommt eine neue dazu. Fang mit Lektion 1 an.</span></p></div><button type="button" class="btn gold" id="zuL1">Zu Lektion 1</button>';
+    $('zuL1').addEventListener('click',function(){lektion('k1');});
+    show('lektion');return;
+  }
+  var fertig=st.done[id];
+  $('lesBody').innerHTML='<h1>'+esc(c.t)+'</h1>'+c.html+
+    '<button type="button" class="btn gold" id="gelesen">'+(fertig?'✓ Gelesen':'Gelesen')+'</button>';
+  $('gelesen').addEventListener('click',function(){st.done[id]=true;save('mps.state',st);weg();});
+  show('lektion');
+}
+
+if(st.weg){$('weiter').hidden=false;}
+})();
+</script>
+<link rel="stylesheet" href="markt.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Manrope:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="design.css">
+</body>
+</html>
