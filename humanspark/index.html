@@ -1821,27 +1821,44 @@ function stimmePulsHtml(e){
   if (e.source === 'keine') return '';
   var l = stimmePuls(e);
   var h = '<h3 class="sub">Stimme und Puls</h3>';
-  if (!l.length) return h + '<p class="muted">Kein Diktat in dieser Sitzung. Tipp während der Messung auf «🎙 Diktat» und sprich, dann steht hier jeder Satz mit deinem Puls.</p>';
+  if (!l.length) return h + '<p class="muted">Kein Diktat in dieser Sitzung. Tipp während der Messung auf «🎙 Diktat» und sprich, dann steht hier jeder Satz mit deinem Puls.</p>' + (!NOVA_SENDEN && novaBereit(e) ? novaBoxHtml(e) : '');
   h += '<div class="tl">' + l.map(function(x){
     var d = x.diff == null ? '' : ' <span class="badge">' + (x.diff > 0 ? '+' : '') + x.diff + '</span>';
     return '<div><b>' + fmtClock(x.t) + '</b>«' + esc(x.text) + '»<br><span class="muted">Puls ' + (x.bpm == null ? '– (Finger ruhig halten)' : x.bpm) + (x.rm != null ? ' · HRV ' + x.rm + ' ms' : '') + '</span>' + d + '</div>';
   }).join('') + '</div>';
   h += '<p class="muted" style="margin-top:6px">Zahl im Kästchen: Unterschied zum Ruhepuls am Anfang' + (e.start && e.start.bpm ? ' (' + e.start.bpm + ')' : '') + '. Beim Sprechen steigt der Puls oft leicht, das ist normal.</p>';
-  var verb = novaBereit();
-  h += '<div class="ex" id="novaBox"><b>An Nova schicken</b><p class="muted" style="margin:4px 0 8px">' + (verb ? 'Geht verschlüsselt an euren DR-Lab-Server (Sense Engine), nur mit Kürzel, ohne Namen. Nicht an Apple oder andere.' : 'Nova ist auf diesem Handy noch nicht verbunden. Öffne einmal die Seite «Handy verbinden», dann geht es hier mit einem Tipp.') + '</p>' +
-    (verb ? '<label class="chk"><input type="checkbox" id="novaOk"> Ich bin einverstanden, dass diese Sätze mit Puls an Nova gehen.</label><button class="btn primary" id="novaSend" disabled>An Nova schicken</button><div class="notice hidden" id="novaMsg"></div>' : '') + '<button class="btn ghost" id="spCopy">Als Text kopieren (für Claude)</button>' +
+  return h + novaBoxHtml(e);
+}
+function novaBoxHtml(e){
+  var verb = novaBereit(e), eig = !NOVA_SENDEN && verb;
+  return '<div class="ex" id="novaBox"><b>' + (eig ? 'An Sparky schicken (Zusammenfassung)' : 'An Nova schicken') + '</b><p class="muted" style="margin:4px 0 8px">' + (eig ? 'Nur deine eigene Sitzung (Kürzel ' + EIGEN_K + '): Datum, Puls und RMSSD Start/Ende, Marker, Musikstil. Keine Sätze, keine Kurven. Geht verschlüsselt an euren DR-Lab-Server (Sense Engine).' : verb ? 'Geht verschlüsselt an euren DR-Lab-Server (Sense Engine), nur mit Kürzel, ohne Namen. Nicht an Apple oder andere.' : !novaVerbunden() ? 'Nova ist auf diesem Handy noch nicht verbunden. Öffne einmal die Seite «Handy verbinden», dann geht es hier mit einem Tipp.' : 'An den Server gehen nur deine eigenen Sitzungen (Kürzel ' + EIGEN_K + '), nie Klientendaten.') + '</p>' +
+    (verb ? '<label class="chk"><input type="checkbox" id="novaOk"> Ich bin einverstanden, dass ' + (eig ? 'diese Zusammenfassung' : 'diese Sätze mit Puls') + ' an ' + (eig ? 'Sparky' : 'Nova') + ' gehen.</label><button class="btn primary" id="novaSend" disabled>' + (eig ? 'An Sparky schicken' : 'An Nova schicken') + '</button><div class="notice hidden" id="novaMsg"></div>' : '') + '<button class="btn ghost" id="spCopy">Als Text kopieren (für Claude)</button>' +
     '<button class="btn primary" id="spSparky">🦊 Mit Sparky besprechen</button><div class="muted" id="spSparkyNote">Nur beim Tippen: Diese Auswertung geht an Sparkys Stimme (ElevenLabs, USA).</div>' +
     '<button class="btn ghost hidden" id="spAbschrift">Gespräch als Text kopieren (für Claude)</button></div>';
-  return h;
 }
 function novaGet(k){ try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch(x){ return null; } }
 // Senden erst freischalten, wenn die Sprech-Nova Puls-Einträge nicht an ElevenLabs weitergibt
 var NOVA_SENDEN = false;
-function novaBereit(){ if (!NOVA_SENDEN) return false; var a = String(novaGet('drlab-hermes-adresse') || ''); return /^https:\/\//.test(a) && !!novaGet('drlab-hermes-passwort'); }
+// Ausnahme: Diegos eigene Sitzungen (Kürzel D) gehen als Zusammenfassung an Sparky, ohne Sätze und Rohkurven
+var EIGEN_K = 'D';
+function novaVerbunden(){ var a = String(novaGet('drlab-hermes-adresse') || ''); return /^https:\/\//.test(a) && !!novaGet('drlab-hermes-passwort'); }
+function eigeneSitzung(e){ return !!e && e.type === 'sitzung' && e.kuerzel === EIGEN_K && !e.demo; }
+function novaBereit(e){ return novaVerbunden() && (NOVA_SENDEN || eigeneSitzung(e)); }
+function novaInhalt(e){ return NOVA_SENDEN ? novaText(e) : novaZusammenfassung(e); }
+function novaZusammenfassung(e){
+  var bis = e.t + (e.dur || 0) * 1000 + 5 * 60000, songs = [];
+  load().forEach(function(x){ if (x.type === 'musik' && x.song && x.t >= e.t - 5 * 60000 && x.t <= bis && songs.indexOf(x.song) < 0) songs.push(x.song); });
+  var v = function(x, u){ return x == null ? '–' : x + (u || ''); };
+  return '[sparky-messung] HumanSpark · Sitzung D (eigene) · ' + fmtTime(e.t) + ' · ' + Math.round((e.dur || 0) / 60) + ' Min' +
+    '\nPuls Start ' + v(e.start && e.start.bpm) + ', Ende ' + v(e.end && e.end.bpm) +
+    '\nRMSSD Start ' + v(e.start && e.start.rmssd, ' ms') + ', Ende ' + v(e.end && e.end.rmssd, ' ms') +
+    e.events.filter(function(x){ return x.k === 'marker'; }).map(function(x){ return '\n[' + fmtClock(x.t) + '] Marker: ' + evLabel(x); }).join('') +
+    '\nMusik: ' + (songs.length ? songs.join(', ') : '–') + '\nSchätzwerte, keine Diagnose.';
+}
 // Laufend an Nova: jede neue Messung, jeder Eintrag, jede Sitzung (nach Einwilligung im Verlauf)
 var AUTO_K = 'hs-nova-auto';
 function novaAusEintrag(e){
-  if (e.type === 'sitzung') return novaText(e);
+  if (e.type === 'sitzung') return novaInhalt(e);
   var t = '[stimme-puls] HumanSpark · ' + (e.type === 'messung' ? 'Messung' : 'Eintrag') + ' · ' + fmtTime(e.t) + (e.demo ? ' · Demo' : '');
   if (e.text) t += '\n«' + e.text + '»';
   if (e.bpm) t += '\nPuls ' + e.bpm + (e.rmssd != null ? ' · HRV ' + e.rmssd + ' ms' : '') + (e.stage ? ' · Stufe ' + e.stage + ' ' + STAGES[e.stage - 1].name : '');
@@ -1853,14 +1870,14 @@ function novaAusEintrag(e){
 function novaPost(text){
   return fetch(String(novaGet('drlab-hermes-adresse')).replace(/\/+$/, '') + '/erfahrung', {method:'POST', keepalive:true,
     headers:{'Content-Type':'application/json', 'Authorization':'Bearer ' + novaGet('drlab-hermes-passwort')},
-    body:JSON.stringify({app:'HumanSpark', art:'nutzung', thema:'stimme-puls', frage:text, antwort:''})});
+    body:JSON.stringify({app:NOVA_SENDEN ? 'HumanSpark' : 'Sprech-Sparky', art:'nutzung', thema:NOVA_SENDEN ? 'stimme-puls' : 'messung-zusammenfassung', frage:text, antwort:''})});
 }
 window.novaAuto = function(e){
-  if (!novaBereit() || !loadObj(AUTO_K, false) || e.type === 'idee' || e.type === 'einwilligung') return;
+  if (!novaBereit(e) || !loadObj(AUTO_K, false) || e.type === 'idee' || e.type === 'einwilligung') return;
   novaPost(novaAusEintrag(e)).catch(function(){});
 };
 function autoUi(){
-  $('autoBox').classList.toggle('hidden', !novaBereit());
+  $('autoBox').classList.toggle('hidden', !NOVA_SENDEN);
   $('autoNova').checked = !!loadObj(AUTO_K, false);
   $('autoInfo').textContent = $('autoNova').checked ? 'Läuft: Neues geht automatisch an Nova.' : '';
 }
@@ -2245,9 +2262,10 @@ document.addEventListener('change', function(ev){ if (ev.target && ev.target.id 
 document.addEventListener('click', function(ev){
   if (!ev.target || ev.target.id !== 'novaSend' || !sLastOut) return;
   var b = ev.target, m = $('novaMsg'); b.disabled = true; b.textContent = 'Wird geschickt …';
-  novaPost(novaText(sLastOut))
-  .then(function(r){ if (!r.ok) throw new Error(r.status); m.className = 'notice'; m.textContent = 'Angekommen. Nova hat die Sätze mit deinem Puls.'; b.textContent = 'Geschickt ✓'; })
-  .catch(function(x){ m.className = 'notice warn'; m.textContent = 'Ging nicht (' + x.message + '). Server erreichbar? Nochmals versuchen.'; b.disabled = false; b.textContent = 'An Nova schicken'; });
+  if (!novaBereit(sLastOut)) return;
+  novaPost(novaInhalt(sLastOut))
+  .then(function(r){ if (!r.ok) throw new Error(r.status); m.className = 'notice'; m.textContent = NOVA_SENDEN ? 'Angekommen. Nova hat die Sätze mit deinem Puls.' : 'Angekommen. Sparky hat die Zusammenfassung.'; b.textContent = 'Geschickt ✓'; })
+  .catch(function(x){ m.className = 'notice warn'; m.textContent = 'Ging nicht (' + x.message + '). Server erreichbar? Nochmals versuchen.'; b.disabled = false; b.textContent = 'Nochmals schicken'; });
 });
 
 function sessionSvg(e){
