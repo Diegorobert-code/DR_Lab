@@ -6,6 +6,7 @@ Pages or browser JavaScript. Deploy behind HTTPS and configure via environment.
 """
 import json
 import os
+from pathlib import Path
 import re
 import time
 import threading
@@ -96,6 +97,20 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         origin = self.headers.get("Origin", "")
         parsed = urllib.parse.urlparse(self.path)
+        if parsed.path == "/dashboard":
+            try:
+                raw = (Path(__file__).parent / "mrping-dashboard.html").read_bytes()
+            except OSError:
+                return self.reply(503, {"error": "dashboard_unavailable"}, origin)
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Content-Security-Policy", "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; base-uri 'none'; form-action 'none'")
+            self.send_header("Content-Length", str(len(raw)))
+            self.end_headers()
+            self.wfile.write(raw)
+            return
         if parsed.path == "/health":
             return self.reply(200, {"service": "mrping-alpaca-readonly", "configured": bool(KEY and SECRET and ACCESS), "alpaca_test": dict(PROBE)})
         if parsed.path != "/v1/stock":
