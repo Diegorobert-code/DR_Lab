@@ -52,7 +52,7 @@ window.R6 = {
   ],
   besuch: [
     { name: 'Hasi', art: 'sie', still: true, bild: 'besuch/hasi.jpg', satz: 'Hasi hoppelt vorbei, zeigt auf das Geschenkpapier mit den Karotten und strahlt.', pfad: '../hasi/', url: 'https://claude.ai/artifact/2SKbQhHuHTraVABMumFidn' },
-    { name: 'Granny', art: 'sie', bild: 'besuch/granny.jpg', satz: 'Copa, mein Schatz, pack mir das schön ein. Es ist für meine Enkelin.', pfad: '../granny/', url: 'https://claude.ai/artifact/QQaX3suADctBhojdzgS9j6' },
+    { name: 'Rosa', art: 'sie', bild: 'besuch/granny.jpg', satz: 'Copa, mein Schatz, pack mir das schön ein. Es ist für meine Enkelin.', pfad: '../granny/', url: 'https://claude.ai/artifact/QQaX3suADctBhojdzgS9j6' },
     { name: 'Wäf Wäf', art: 'ihn', bild: 'besuch/waefwaef.jpg', satz: 'Wäf! Ich habe eine Schleife gefunden. Darf ich sie behalten?', pfad: '../waefwaef/', url: 'https://claude.ai/artifact/PtzB1smkoN459nFSSiLjwR' }
   ],
   feierEmoji: ['🎀', '🌺', '✨'],
