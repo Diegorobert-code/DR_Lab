@@ -275,7 +275,7 @@
     if (vk) vk.addEventListener('click', function () {
       if (!D.gelesen[a.id]) { D.gelesen[a.id] = iso(); markiereTag(); sichern(); neueAbzeichen(); }
       D.offen[a.id] = (D.offen[a.id] || 0) + 1; D.zuletzt = a.id; sichern();
-      if (!vorlesen([a.t, a.k].concat(a.x || [], a.s || []).join('. '), function () { karteFuellen(); })) oeffne('artikel', a.id);
+      if (!liesArtikel(a, function () { karteFuellen(); })) oeffne('artikel', a.id);
     });
     karte.querySelector('[data-ib=bib]').addEventListener('click', function () { oeffne('bibliothek'); });
     var sk = karte.querySelector('[data-ib=sprich]'); if (sk) sk.addEventListener('click', function () { sprich(); });
@@ -417,7 +417,7 @@
       '<div class="ib-zeile">' +
       '<button type="button" class="ib-k ib-voll" data-ok>' + (D.gelesen[a.id] ? esc(WORT.gelesen) + ' ✓' : 'Als ' + esc(WORT.gelesen.toLowerCase()) + ' markieren') + '</button>' +
       '<button type="button" class="ib-k" data-merk aria-pressed="' + !!D.gemerkt[a.id] + '">' + (D.gemerkt[a.id] ? '🔖 Gemerkt' : '🔖 Merken') + '</button>' +
-      (('speechSynthesis' in window) && C.vorlesen !== false ? '<button type="button" class="ib-k" data-vor>🔊 Vorlesen</button>' : '') +
+      ((('speechSynthesis' in window) || HAT[a.id]) && C.vorlesen !== false ? '<button type="button" class="ib-k" data-vor>🔊 Vorlesen</button>' : '') +
       '</div></div>' +
       '<button type="button" class="ib-fuer" style="margin:0 0 12px" data-auf="' + esc(next.id) + '"><small>' + esc(vs ? vs.warum : 'Als Nächstes') + ':</small><b>' + esc(emoji(next) + ' ' + next.t) + ' →</b></button>' +
       '<div class="ib-zeile"><button type="button" class="ib-k" data-gehe="bibliothek">← Alle ' + esc(WORT.beitraege) + '</button></div>';
@@ -435,11 +435,8 @@
     var vb = inhaltEl.querySelector('[data-vor]');
     if (vb) vb.addEventListener('click', function () {
       try {
-        if (speechSynthesis.speaking) { stumm(); vb.textContent = '🔊 Vorlesen'; return; }
-        var u = new SpeechSynthesisUtterance([a.t, a.k].concat(a.x || [], a.s || []).join('. '));
-        u.lang = C.sprache || 'de-CH'; u.rate = C.tempo || 0.95;
-        u.onend = function () { vb.textContent = '🔊 Vorlesen'; };
-        speechSynthesis.speak(u); vb.textContent = '⏹ Stopp';
+        if (spricht()) { stumm(); vb.textContent = '🔊 Vorlesen'; return; }
+        if (liesArtikel(a, function () { vb.textContent = '🔊 Vorlesen'; })) vb.textContent = '⏹ Stopp';
       } catch (e) {}
     });
   }
@@ -453,7 +450,57 @@
       speechSynthesis.speak(u); return true;
     } catch (e) { return false; }
   }
-  function stumm() { try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) {} }
+  function stumm() {
+    LAUF++;
+    try { if (OHR) { OHR.onended = null; OHR.pause(); OHR.removeAttribute('src'); OHR.load(); } } catch (e) {}
+    try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) {}
+  }
+
+  /* ---------- Echte Stimme: stimme/<id>.mp3, sonst Gerätestimme ----------
+     stimme/liste.json = { umfang: 'voll' | 'anfang', ids: [...] }. Fehlt die Liste, bleibt alles wie bisher.
+     Die mp3 wird beim ersten Abspielen ganz geladen (der Service Worker legt sie dabei in den Cache). */
+  var HAT = {}, UMFANG = 'voll', OHR = null, LAUF = 0;
+  try {
+    fetch('stimme/liste.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (!j || !j.ids) return;
+      UMFANG = j.umfang || 'voll';
+      j.ids.forEach(function (id) { HAT[id] = true; });
+    }).catch(function () {});
+  } catch (e) {}
+  function spricht() {
+    try { if (OHR && OHR.getAttribute('src') && !OHR.ended) return true; } catch (e) {}
+    try { return !!(window.speechSynthesis && speechSynthesis.speaking); } catch (e) { return false; }
+  }
+  function liesArtikel(a, fertig) {
+    var ganz = [a.t, a.k].concat(a.x || [], a.s || []).join('. ');
+    if (!HAT[a.id] || typeof Audio === 'undefined') return vorlesen(ganz, fertig);
+    stumm();
+    var lauf = LAUF;
+    if (!OHR) OHR = new Audio();
+    var ohr = OHR;
+    try { var p0 = ohr.play(); if (p0 && p0.catch) p0.catch(function () {}); } catch (e) {} /* im Klick freischalten (iOS) */
+    var weiter = function () {
+      if (lauf !== LAUF) return;
+      var rest = UMFANG === 'anfang' ? (a.x || []).concat(a.s || []).join('. ') : '';
+      if (rest && C.vorlesen !== false && vorlesen(rest, fertig)) return;
+      if (fertig) fertig();
+    };
+    var ersatz = function () { if (lauf !== LAUF) return; HAT[a.id] = false; if (!vorlesen(ganz, fertig) && fertig) fertig(); };
+    fetch('stimme/' + encodeURIComponent(a.id) + '.mp3').then(function (r) {
+      if (!r.ok) throw new Error('fehlt');
+      return r.blob();
+    }).then(function (b) {
+      if (lauf !== LAUF) return;
+      var alt = ohr.getAttribute('data-url'); if (alt) try { URL.revokeObjectURL(alt); } catch (e) {}
+      var url = URL.createObjectURL(b);
+      ohr.setAttribute('data-url', url);
+      ohr.onended = function () { ohr.onended = null; ohr.removeAttribute('src'); weiter(); };
+      ohr.src = url;
+      var p = ohr.play();
+      if (p && p.catch) p.catch(ersatz);
+    }).catch(ersatz);
+    return true;
+  }
 
   /* ---------- Quiz: Runden zu 5 Fragen ---------- */
   function reihe(n, d) { var r = []; for (var i = 0; i < n; i++) r.push((i + d) % n); return r; }
