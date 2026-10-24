@@ -3,7 +3,7 @@
    Tag-Kopf: Sind die Aura-Posen da (AURA_DA), zeigt #pup die freigestellte Figur und wechselt mit der Stimmung
    der App die Pose (hop/wiggle = freut, r4-wink = winkt, schlaf = schlaeft). Ohne Posen bleibt das bisherige Bild.
    Wäf Wäf bleibt die Figur der App: kein bestimmter echter Hund. */
-window.AURA_DA = false;   /* auf true, sobald aura/idle.webp, winkt.webp, freut.webp, schlaeft.webp und szene.webp im Ordner liegen */
+window.AURA_DA = true;    /* auf true, sobald aura/idle.webp, winkt.webp, freut.webp, schlaeft.webp und szene.webp im Ordner liegen */
 window.AURA_LIDER = false;
 if (window.AURA_DA) window.POSEN_DA = [];
 (function () {
@@ -18,7 +18,7 @@ if (window.AURA_DA) window.POSEN_DA = [];
     b.className = "aura-buehne aura-start";
     b.setAttribute("role", "img");
     b.setAttribute("aria-label", "Wäf Wäf, ein kleiner weisser Hund mit blauem Halstuch, freut sich auf dich");
-    if (window.AURA_DA) { b.classList.add("mit-szene"); b.style.setProperty("--aura-szene", 'url("aura/szene.webp")'); }
+    if (window.AURA_DA) { b.classList.add("mit-szene"); b.style.setProperty("--aura-szene", 'url("' + new URL("aura/szene.webp", d.baseURI).href + '")'); }
     ring.parentNode.insertBefore(b, ring);
     var f = Aura.baue(b, { ersatz: bild ? bild.getAttribute("src") : "figur.jpg" });
     setTimeout(function () { f.pose("winkt", 2400); }, 700);
