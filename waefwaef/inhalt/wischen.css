@@ -1,0 +1,208 @@
+/* wischen.css – DR Lab · Wisch-Karten. Farben und Schriften kommen von der App (--ws-*), Kinder-Apps mit .ws-aura.
+   Animiert werden nur transform und opacity. Tippflächen mindestens 44 px, bei .ws-gross (Rosa) deutlich grösser. */
+html.ws-offen, html.ws-offen body { overflow: hidden !important; }
+html.ws-offen .nova-btn, html.ws-offen .nova-pille, html.ws-offen .nova-panel, html.ws-offen .kimu, html.ws-offen .fb-btn, html.ws-offen .fb-knopf,
+html.ws-offen [data-drlab-lernen], html.ws-offen .sprich-pille { visibility: hidden !important; }
+html.ih-offen .ws-pille { visibility: hidden !important; }
+
+.ws, .ws-pille {
+  --ws-bg: #f7f4ef; --ws-k: #ffffff; --ws-k2: #f1ece4; --ws-i: #231d17; --ws-i2: #5d554c; --ws-l: rgba(0,0,0,.09);
+  --ws-a: #3d5a80; --ws-on: #fff; --ws-t: var(--ws-i); --ws-ft: Georgia, "Times New Roman", serif; --ws-fb: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ws-r: 24px; --ws-sh: 0 2px 4px rgba(0,0,0,.05), 0 14px 34px rgba(0,0,0,.12); --ws-kbg: var(--ws-k); --ws-bildbg: color-mix(in srgb, var(--c, var(--ws-a)) 16%, var(--ws-k));
+}
+.ws { position: fixed; inset: 0; z-index: 2147482800; background: var(--ws-bg); color: var(--ws-i); font-family: var(--ws-fb);
+  -webkit-tap-highlight-color: transparent; overscroll-behavior: contain; }
+.ws[hidden], .ws [hidden], .ws-pille[hidden] { display: none !important; }
+.ws *, .ws *::before, .ws *::after { box-sizing: border-box; }
+.ws button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; margin: 0; letter-spacing: normal; text-transform: none; text-shadow: none; }
+.ws button:focus-visible, .ws-pille:focus-visible { outline: 3px solid var(--ws-a); outline-offset: 3px; }
+.ws h2, .ws h3, .ws p, .ws ol, .ws li { background: none; border: 0; box-shadow: none; text-transform: none; letter-spacing: normal; padding: 0; }
+.ws *, .ws-pille { font-family: var(--ws-fb) !important; }
+.ws .ws-k-t, .ws h2, .ws h3 { font-family: var(--ws-ft) !important; color: var(--ws-t) !important; letter-spacing: normal !important; }
+.ws h2 small { font-family: var(--ws-fb) !important; }
+.ws-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: 0; }
+
+/* Ebenen */
+.ws-ebene { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; background: var(--ws-bg); transition: transform .26s ease, opacity .26s ease; }
+.ws-ebene.ws-rein { opacity: 0; transform: translateY(26px); }
+.ws-kopf { flex: none; display: flex; align-items: center; gap: 10px; padding: calc(env(safe-area-inset-top, 0px) + 10px) 16px 6px; min-height: 60px; }
+.ws-kopf h2 { flex: 1; min-width: 0; margin: 0; font: 600 20px/1.2 var(--ws-ft); color: var(--ws-t); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ws-kopf h2 small { display: block; font: 500 13px/1.3 var(--ws-fb); color: var(--ws-i2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ws-ava { flex: none; width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--ws-k2); }
+.ws-ava-e { display: grid; place-items: center; font-size: 22px; }
+.ws-rund { flex: none; min-width: 44px; height: 44px; border-radius: 22px; border: 1px solid var(--ws-l); background: var(--ws-k); color: var(--ws-i); font-size: 18px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 12px; box-shadow: none; }
+.ws-zaehler { flex: none; font-size: 14px; font-weight: 700; padding: 6px 10px; border-radius: 999px; background: var(--ws-k2); color: var(--ws-i); }
+.ws-zaehler.ws-puls { animation: wsPuls .5s ease-out; }
+@keyframes wsPuls { 40% { transform: scale(1.25); } }
+.ws-leiste { flex: none; display: flex; gap: 6px; padding: 0 16px 6px; }
+.ws-leiste a { flex: 1; min-height: 40px; display: flex; align-items: center; justify-content: center; gap: 5px; border-radius: 12px; background: #3a2236; color: #ffe3de;
+  text-decoration: none; font: 500 13.5px var(--ws-fb); white-space: nowrap; }
+.ws-leiste a b { color: #fff; font-size: 16px; }
+.ws-buehne { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 4px 0 calc(env(safe-area-inset-bottom, 0px) + 12px); }
+
+/* Karte (gemeinsam) */
+.ws-k { display: flex; flex-direction: column; width: 100%; height: 100%; padding: 0; overflow: hidden; text-align: left; border-radius: var(--ws-r);
+  background: var(--ws-kbg); color: var(--ws-i); border: 1px solid var(--ws-l); box-shadow: var(--ws-sh); user-select: none; -webkit-user-select: none; position: relative; }
+.ws-k-bild { flex: 1 1 46%; min-height: 96px; display: grid; place-items: center; position: relative; background: var(--ws-bildbg); overflow: hidden; }
+.ws-k-bild img, .ws-s-kopf img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.ws-k-e { font-size: clamp(64px, 18vh, 112px); line-height: 1; filter: drop-shadow(0 6px 12px rgba(0,0,0,.12)); }
+.ws-play { position: absolute; width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font-size: 26px; padding-left: 4px;
+  background: rgba(0,0,0,.55); color: #fff; box-shadow: 0 0 0 4px rgba(255,255,255,.65); }
+.ws-k-tx { flex: 0 1 auto; display: flex; flex-direction: column; gap: 6px; padding: 16px 18px 20px; min-height: 0; }
+.ws-chip { align-self: flex-start; max-width: 100%; display: inline-block; padding: 4px 10px; border-radius: 999px; background: var(--ws-k2); color: var(--ws-i2);
+  font: 600 12.5px/1.3 var(--ws-fb); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ws-k-t { font: 600 23px/1.2 var(--ws-ft); color: var(--ws-t); }
+.ws-k-p { font-size: 16px; line-height: 1.45; color: var(--ws-i2); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden; }
+.ws-gemocht { position: absolute; top: 12px; right: 12px; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--ws-k); font-size: 18px; box-shadow: var(--ws-sh); }
+
+/* Reihe mit scroll-snap */
+.ws-reihe-wrap { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.ws-reihe { flex: 1; min-height: 0; display: flex; gap: 12px; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none;
+  padding: 8px 9% 14px; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; outline: none; }
+.ws-reihe::-webkit-scrollbar { display: none; }
+.ws-reihe.ws-zieht { scroll-snap-type: none; cursor: grabbing; }
+.ws-r-k { flex: 0 0 82%; max-width: 460px; scroll-snap-align: center; scroll-snap-stop: always; display: flex; transition: transform .3s ease, opacity .3s ease; transform: scale(.94); opacity: .75; }
+.ws-r-k.ws-jetzt { transform: none; opacity: 1; }
+.ws-k-tap:active { transform: scale(.985); }
+.ws-r-hinweis { margin: 0 0 6px; text-align: center; font: 600 15px/1.3 var(--ws-fb); color: var(--ws-i2); transition: opacity .6s ease; }
+.ws-r-hinweis.ws-weg { opacity: 0; }
+.ws-r-nav, .ws-knoepfe { flex: none; display: flex; align-items: center; justify-content: center; gap: 22px; padding: 2px 16px 0; }
+.ws-zahl { min-width: 64px; text-align: center; font: 600 14px var(--ws-fb); color: var(--ws-i2); }
+.ws-kn { flex: none; display: inline-flex; flex-direction: column; align-items: center; gap: 2px; border: 0; background: none; padding: 0; min-width: 52px; }
+.ws-kn-i { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; font-size: 20px; background: var(--ws-k); color: var(--ws-i);
+  border: 1px solid var(--ws-l); box-shadow: 0 4px 12px rgba(0,0,0,.08); transition: transform .15s ease; }
+.ws-kn:active .ws-kn-i { transform: scale(.9); }
+.ws-kn small { font: 600 12.5px var(--ws-fb); color: var(--ws-i2); }
+.ws-kn:disabled { opacity: .35; cursor: default; }
+.ws-kn-mag .ws-kn-i { width: 64px; height: 64px; font-size: 26px; background: var(--ws-a); color: var(--ws-on); border-color: transparent; }
+.ws-kn-weiter .ws-kn-i { width: 64px; height: 64px; font-size: 24px; }
+
+/* Seiten */
+.ws-k-seite, .ws-k-ende { padding: 22px 20px 34px; overflow-y: auto; justify-content: center; gap: 10px; }
+.ws-s-kopf { display: grid; place-items: center; align-self: center; width: 92px; height: 92px; border-radius: 50%; background: var(--ws-bildbg); font-size: 50px; overflow: hidden; flex: none; }
+.ws-s-kopf.ws-mit-bild { width: 100%; height: 38%; border-radius: 16px; }
+.ws-s-kopf .ws-k-e { font-size: 50px; }
+.ws-k-seite h3, .ws-k-ende h3 { margin: 0; font: 600 23px/1.25 var(--ws-ft); color: var(--ws-t); }
+.ws-seitentext { margin: 0; font-size: 19px; line-height: 1.55; }
+.ws-liste { margin: 0; padding-left: 24px; font-size: 17px; line-height: 1.5; }
+.ws-liste li { margin: 0 0 8px; }
+.ws-klein { margin: 4px 0 0; font-size: 13.5px; line-height: 1.45; color: var(--ws-i2); }
+.ws-seitenzahl { position: absolute; right: 16px; bottom: 10px; font: 600 12.5px var(--ws-fb); color: var(--ws-i2); }
+.ws-k-ende { text-align: center; align-items: center; }
+.ws-ende-e { font-size: 64px; line-height: 1; animation: wsSchweb 3.5s ease-in-out infinite; }
+@keyframes wsSchweb { 50% { transform: translateY(-8px); } }
+.ws-k-ende p { margin: 0; font-size: 16.5px; line-height: 1.5; color: var(--ws-i2); }
+.ws-ende-k { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 320px; margin-top: 8px; }
+.ws-btn { min-height: 50px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--ws-l); background: var(--ws-k); color: var(--ws-i); font: 600 16px var(--ws-fb); }
+.ws-btn.ws-voll { background: var(--ws-a); color: var(--ws-on); border-color: transparent; }
+.ws-btn[aria-pressed="true"] { background: var(--ws-k2); }
+
+/* Stapel (Inhalte: rechts = Mag ich, links = weiter) */
+.ws-stapel { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 0 16px; outline: none; }
+.ws-deck { position: relative; flex: 1; min-height: 240px; margin: 6px 0 10px; }
+.ws-deck > .ws-k { position: absolute; inset: 0; transition: transform .34s cubic-bezier(.2,.9,.3,1.2), opacity .3s ease; will-change: transform; }
+.ws-k-zieh { touch-action: none; cursor: grab; }
+.ws-deck > .ws-p0 { z-index: 3; }
+.ws-deck > .ws-p1 { z-index: 2; transform: translateY(14px) scale(.95); opacity: .9; pointer-events: none; }
+.ws-deck > .ws-p2 { z-index: 1; transform: translateY(28px) scale(.9); opacity: .55; pointer-events: none; }
+.ws-deck > .ws-p3 { z-index: 0; transform: translateY(28px) scale(.9); opacity: 0; pointer-events: none; }
+.ws-stapel.ws-zieht .ws-k-zieh { cursor: grabbing; }
+.ws-st { position: absolute; top: 22px; z-index: 4; padding: 6px 12px; border: 3px solid; border-radius: 12px; font: 800 20px/1 var(--ws-fb); text-transform: uppercase; opacity: 0; background: rgba(255,255,255,.85); pointer-events: none; }
+.ws-st-mag { left: 18px; color: #1e8a4c; transform: rotate(-12deg); }
+.ws-st-weiter { right: 18px; color: #6b6f7a; transform: rotate(12deg); }
+.ws-herz { position: absolute; left: 50%; top: 42%; z-index: 9; font-size: 92px; line-height: 1; pointer-events: none; opacity: 0; transform: translate(-50%, -50%) scale(.4); }
+.ws-herz.ws-an { animation: wsHerz .65s ease-out; }
+@keyframes wsHerz { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.4); } 35% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); } 100% { opacity: 0; transform: translate(-50%, -80%) scale(1.35); } }
+.ws-hinweis { margin: 0 0 8px; text-align: center; font-size: 13.5px; color: var(--ws-i2); transition: opacity .5s ease; }
+.ws-hinweis.ws-blass { opacity: .55; }
+.ws-weg { opacity: 0; pointer-events: none; }
+.ws-knoepfe.ws-weg, .ws-hinweis.ws-weg { visibility: hidden; }
+
+/* Film */
+.ws-film { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 0 16px; }
+.ws-film video { width: 100%; max-height: 70vh; border-radius: 18px; background: #000; }
+.ws-film p { margin: 0; text-align: center; color: var(--ws-i2); }
+.ws-blatt { flex: 1; overflow-y: auto; padding: 0 16px; }
+
+/* Menü */
+.ws-menue { position: absolute; inset: 0; z-index: 20; background: rgba(10,10,20,.45); display: flex; align-items: flex-end; justify-content: center; }
+.ws-menue-in { width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; background: var(--ws-bg); border-radius: 22px 22px 0 0; padding: 18px 16px calc(env(safe-area-inset-bottom, 0px) + 18px);
+  display: flex; flex-direction: column; gap: 8px; animation: wsHoch .25s ease-out; }
+@keyframes wsHoch { from { transform: translateY(40px); opacity: 0; } }
+.ws-menue-in h3 { margin: 0 0 4px; font: 600 18px var(--ws-ft); color: var(--ws-t); }
+.ws-m { text-align: left; border-radius: 14px; display: flex; align-items: center; gap: 10px; }
+.ws-m-zu { margin-top: 4px; }
+
+/* Rückweg-Pille auf der ganzen Seite */
+.ws-pille { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 2147482950;
+  min-height: 46px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--ws-l); background: var(--ws-k); color: var(--ws-i);
+  font: 600 15px var(--ws-fb); box-shadow: 0 6px 18px rgba(0,0,0,.2); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; touch-action: manipulation; }
+
+/* Kinder-Apps: Aura-Trickfilm-Look (Nachtblau, Gold, weicher Schein) */
+.ws.ws-aura, .ws-pille.ws-aura {
+  --ws-bg: radial-gradient(120% 60% at 50% 0%, color-mix(in srgb, var(--ws-a) 22%, #1d2c66), #0d1630 65%) #0d1630;
+  --ws-k: #141a4a; --ws-k2: rgba(255,210,122,.16); --ws-i: #fff6e0; --ws-i2: #e6dcff; --ws-l: rgba(255,210,122,.55); --ws-t: #ffe2a0; --ws-on: #1d1f4a;
+  --ws-ft: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif; --ws-fb: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif;
+  --ws-r: 28px; --ws-sh: 0 0 26px rgba(255,210,122,.25);
+  --ws-kbg: linear-gradient(165deg, color-mix(in srgb, var(--ws-a) 34%, #24206a), #141a4a 70%);
+  --ws-bildbg: radial-gradient(circle at 50% 42%, rgba(255,243,194,.5), color-mix(in srgb, var(--c, var(--ws-a)) 30%, transparent) 45%, transparent 70%);
+}
+.ws.ws-aura { background: var(--ws-bg); }
+.ws-aura .ws-ebene { background: var(--ws-bg); }
+.ws-aura .ws-k { border: 2px solid var(--ws-l); }
+.ws-aura .ws-r-k.ws-jetzt .ws-k { border-color: #ffd27a; box-shadow: 0 0 30px rgba(255,210,122,.35); }
+.ws-aura .ws-kopf h2 { text-shadow: 0 0 14px rgba(255,210,122,.45); font-weight: 700; }
+.ws-aura .ws-k-t, .ws-aura .ws-k-seite h3, .ws-aura .ws-k-ende h3 { font-weight: 800; }
+.ws-aura .ws-chip { background: rgba(255,210,122,.18); color: #ffe2a0; }
+.ws-aura .ws-rund, .ws-aura .ws-kn-i, .ws-aura .ws-btn, .ws-pille.ws-aura { background: rgba(14,20,60,.85); border: 1.5px solid rgba(255,210,122,.6); color: #fff6e0; }
+.ws-aura .ws-kn-mag .ws-kn-i, .ws-aura .ws-btn.ws-voll { background: #ffd27a; color: #1d1f4a; border-color: #fff3c2; box-shadow: 0 0 18px rgba(255,210,122,.5); }
+.ws-aura .ws-k-e { filter: drop-shadow(0 0 16px rgba(255,210,122,.55)); }
+.ws-aura .ws-s-kopf { background: radial-gradient(circle at 40% 35%, #fff3c2, #ffd27a 55%, color-mix(in srgb, var(--ws-a) 80%, #b484ff)); }
+.ws-aura .ws-st { background: rgba(20,26,74,.9); }
+.ws-aura .ws-st-mag { color: #ffd27a; }
+.ws-aura .ws-st-weiter { color: #c9f0ff; }
+.ws-aura .ws-gemocht { background: #141a4a; }
+.ws-aura .ws-k-seite .ws-seitentext { font-size: 20px; }
+.ws-aura .ws-zaehler { background: rgba(255,210,122,.18); color: #ffe2a0; }
+
+/* Grosse Schrift und grosse Knöpfe (Rosa): man muss nicht wischen. */
+.ws.ws-gross .ws-kopf h2 { font-size: 26px; }
+.ws.ws-gross .ws-rund { height: 56px; min-width: 56px; font-size: 22px; padding: 0 16px; }
+.ws.ws-gross .ws-rund b { font-size: 19px; }
+.ws.ws-gross .ws-k-t { font-size: 30px; }
+.ws.ws-gross .ws-k-p { font-size: 20px; -webkit-line-clamp: 3; }
+.ws.ws-gross .ws-chip { font-size: 16px; }
+.ws.ws-gross .ws-seitentext { font-size: 24px; line-height: 1.5; }
+.ws.ws-gross .ws-liste { font-size: 21px; }
+.ws.ws-gross .ws-k-seite h3, .ws.ws-gross .ws-k-ende h3 { font-size: 28px; }
+.ws.ws-gross .ws-r-hinweis { font-size: 18px; }
+.ws.ws-gross .ws-r-nav { gap: 12px; }
+.ws.ws-gross .ws-r-nav .ws-kn, .ws.ws-gross .ws-knoepfe .ws-kn { flex: 1; flex-direction: row; justify-content: center; gap: 8px; min-height: 66px; border-radius: 18px;
+  background: var(--ws-k); border: 2px solid var(--ws-l); padding: 0 12px; max-width: 200px; }
+.ws.ws-gross .ws-r-nav .ws-r-nach, .ws.ws-gross .ws-knoepfe .ws-kn-mag { background: var(--ws-a); color: var(--ws-on); border-color: transparent; }
+.ws.ws-gross .ws-kn .ws-kn-i { width: auto; height: auto; background: none; border: 0; box-shadow: none; color: inherit; font-size: 22px; }
+.ws.ws-gross .ws-kn small { font-size: 21px; font-weight: 700; color: inherit; }
+.ws.ws-gross .ws-r-nach small, .ws.ws-gross .ws-kn-mag small { color: var(--ws-on); }
+.ws.ws-gross .ws-zahl { display: none; }
+.ws.ws-gross .ws-btn { min-height: 62px; font-size: 20px; }
+.ws-pille.ws-gross { min-height: 60px; font-size: 20px; padding: 0 24px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ws-ebene, .ws-r-k, .ws-deck > .ws-k, .ws-r-hinweis, .ws-hinweis { transition: opacity .15s ease !important; }
+  .ws-ebene.ws-rein { transform: none; }
+  .ws-ende-e, .ws-zaehler.ws-puls, .ws-menue-in { animation: none !important; }
+  .ws-herz.ws-an { animation: wsHerzRuhig .5s ease-out; }
+  @keyframes wsHerzRuhig { 30% { opacity: 1; } 100% { opacity: 0; } }
+  .ws-r-k { transform: none; }
+}
+@media (min-width: 700px) { .ws-r-k { flex-basis: 420px; } .ws-stapel { max-width: 520px; width: 100%; margin: 0 auto; } }
+@media (max-height: 640px) { .ws-k-p { -webkit-line-clamp: 2; } .ws-k-t { font-size: 20px; } .ws-kn-i { width: 46px; height: 46px; } .ws-kn-mag .ws-kn-i, .ws-kn-weiter .ws-kn-i { width: 54px; height: 54px; } }
+.ws .ws-reihe:focus, .ws .ws-stapel:focus, .ws .ws-reihe:focus-visible, .ws .ws-stapel:focus-visible { outline: none !important; box-shadow: none !important; }
+.ws .ws-k-e, .ws .ws-s-kopf, .ws .ws-ende-e, .ws .ws-ava-e, .ws .ws-herz, .ws .ws-gemocht { font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif !important; }
+/* Rosa: drei grosse Knöpfe im Stapel passen nebeneinander, ohne Umbruch. */
+.ws.ws-gross .ws-knoepfe { gap: 8px; }
+.ws.ws-gross .ws-knoepfe .ws-kn { min-width: 0; padding: 0 8px; gap: 6px; white-space: nowrap; }
+.ws.ws-gross .ws-knoepfe .ws-kn small { font-size: 19px; }
+.ws.ws-gross .ws-knoepfe .ws-kn .ws-kn-i { font-size: 20px; }
+.ws.ws-gross .ws-knoepfe .ws-kn-mag { flex: 1.15; }

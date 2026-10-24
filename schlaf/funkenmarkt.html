@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<script src="ton-ios.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0E1838">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Funkenmarkt · Fias Nest</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: eine Handy-Spalte im Fias-Nest-Look; oben Spruch des Tages, dann drei Reiter (Funken finden, Funken geben, Halt suchen) */
+:root{
+  --night:#0E1838; --sky:#1B2C6B; --gold:#F2C14E; --coral:#D97757; --ember:#FF8A3D; --violet:#6E5ADC;
+  --cream:#F5E6D3; --muted:#AEB8DA; --line:rgba(242,193,78,.22);
+  --display:"Newsreader",Georgia,serif; --body:"Figtree",system-ui,sans-serif;
+  color-scheme:dark;
+}
+html,body{min-height:100%}
+body{margin:0;background:var(--night);color:var(--cream);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;animation:twinkle 5s ease-in-out infinite alternate;
+  background:radial-gradient(1.5px 1.5px at 12% 18%,var(--gold),transparent),radial-gradient(1px 1px at 78% 9%,var(--cream),transparent),
+  radial-gradient(2px 2px at 88% 30%,var(--gold),transparent),radial-gradient(1px 1px at 30% 6%,var(--cream),transparent),
+  radial-gradient(1.5px 1.5px at 62% 22%,var(--gold),transparent),radial-gradient(1px 1px at 6% 44%,var(--cream),transparent),
+  radial-gradient(ellipse at 50% -10%,rgba(27,44,107,.75),transparent 60%)}
+@keyframes twinkle{to{opacity:.55}}
+.aurora{position:fixed;inset:-20%;z-index:0;pointer-events:none;filter:blur(60px);opacity:.45}
+.aurora i{position:absolute;border-radius:50%;animation:drift 20s ease-in-out infinite alternate}
+.aurora i:nth-child(1){width:55vmax;height:55vmax;left:-10%;top:50%;background:radial-gradient(circle,rgba(217,119,87,.55),transparent 65%)}
+.aurora i:nth-child(2){width:45vmax;height:45vmax;right:-15%;top:5%;background:radial-gradient(circle,rgba(242,193,78,.35),transparent 65%);animation-duration:26s}
+.aurora i:nth-child(3){width:50vmax;height:50vmax;left:25%;top:-20%;background:radial-gradient(circle,rgba(110,90,220,.35),transparent 65%);animation-duration:32s}
+@keyframes drift{to{transform:translate(8%,-6%) scale(1.12)}}
+main{position:relative;z-index:1;max-width:520px;margin:0 auto;padding-block:max(20px,env(safe-area-inset-top,0px)) 48px;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;align-items:center;gap:14px}
+.top img{width:64px;height:64px;border-radius:22%;border:2px solid var(--gold);box-shadow:0 8px 26px rgba(255,138,61,.3);animation:float 6s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-4px) rotate(-2deg)}}
+.top h1{font-family:var(--display);font-weight:400;font-size:2rem;line-height:1;margin:0;
+  background:linear-gradient(90deg,var(--ember),var(--gold) 45%,#FFE6A6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.top p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.back{color:var(--gold);text-decoration:none;font-size:.85rem;align-self:flex-start;border:1px solid var(--line);border-radius:99px;padding:5px 12px}
+.tag{display:inline-block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:rgba(217,119,87,.18);border:1px solid var(--line);border-radius:99px;padding:2px 9px}
+.quote{border-radius:22px;padding:18px;background:linear-gradient(150deg,rgba(217,119,87,.28),rgba(27,44,107,.6));border:1px solid var(--line)}
+.quote q{display:block;font-family:var(--display);font-style:italic;font-size:1.3rem;line-height:1.3;quotes:"«" "»";text-wrap:balance}
+.quote .who{margin-top:8px;color:var(--muted);font-size:.85rem;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.quote button{padding:5px 12px;font-size:.8rem}
+.tabs{display:flex;gap:6px;background:rgba(14,24,56,.7);border:1px solid var(--line);border-radius:99px;padding:4px}
+.tabs button{flex:1;background:transparent;color:var(--muted);box-shadow:none;padding:9px 6px;font-size:.9rem}
+.tabs button[aria-selected="true"]{background:linear-gradient(180deg,#F7D27A,var(--gold));color:var(--night)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:transparent;color:var(--cream);border:1px solid var(--line);box-shadow:none;padding:6px 12px;font-size:.85rem;font-weight:500}
+.chip[aria-pressed="true"]{background:rgba(242,193,78,.18);border-color:var(--gold);color:var(--gold)}
+.list{display:flex;flex-direction:column;gap:12px}
+.card{display:grid;grid-template-columns:52px 1fr;gap:12px;padding:16px;border-radius:20px;border:1px solid var(--line);
+  background:linear-gradient(160deg,rgba(27,44,107,.55),rgba(14,24,56,.8));box-shadow:0 8px 24px rgba(0,0,0,.25);animation:rise .6s ease both}
+@keyframes rise{from{opacity:.001;transform:translateY(10px)}}
+.av{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:1.5rem;font-family:var(--display);color:var(--night)}
+.card h3{margin:0;font-size:1.02rem}
+.card .meta{color:var(--muted);font-size:.82rem;margin:1px 0 6px}
+.card p{margin:0 0 10px;font-size:.93rem}
+.card .text{min-width:0}
+.pill{display:inline-block;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);border-radius:99px;padding:1px 8px;margin-right:4px}
+button{font:inherit;font-weight:600;color:var(--night);background:linear-gradient(180deg,#F7D27A,var(--gold));border:0;border-radius:99px;padding:9px 18px;cursor:pointer;box-shadow:0 4px 18px rgba(242,193,78,.3);transition:transform .15s}
+button:active{transform:scale(.96)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--cream);outline-offset:3px}
+.ghost{background:transparent;color:var(--gold);border:1px solid var(--line);box-shadow:none}
+form{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:20px;border:1px solid var(--line);background:rgba(14,24,56,.75)}
+label{display:flex;flex-direction:column;gap:5px;font-size:.9rem;color:var(--muted)}
+input,select,textarea{font:inherit;color:var(--cream);background:rgba(6,10,28,.7);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+textarea{min-height:84px;resize:vertical}
+.rules{font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:4px}
+.rules b{color:var(--cream);font-weight:600}
+.crisis{border-radius:16px;padding:12px 14px;border:1px solid rgba(255,138,61,.5);background:rgba(255,138,61,.1);font-size:.9rem}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:5;background:var(--cream);color:var(--night);
+  border-radius:99px;padding:10px 18px;font-weight:600;font-size:.9rem;box-shadow:0 8px 30px rgba(0,0,0,.4);max-width:calc(100% - 32px);text-align:center}
+.empty{color:var(--muted);text-align:center;font-size:.9rem}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<main>
+  <a class="back" href="./">‹ Fias Nest</a>
+  <div class="top">
+    <img src="icon-180.png" alt="">
+    <div>
+      <span class="tag">Entwurf · nur Team</span>
+      <h1>Funkenmarkt</h1>
+      <p>Menschen schenken einander Halt. Gratis, ohne Likes, ohne Werbung.</p>
+    </div>
+  </div>
+
+  <section class="quote" aria-label="Satz für heute">
+    <q id="q"></q>
+    <div class="who"><span id="qw"></span><button class="ghost" id="qn">Nächster Satz</button></div>
+  </section>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="t-find" aria-selected="true">Funken finden</button>
+    <button role="tab" id="t-give" aria-selected="false">Funken geben</button>
+    <button role="tab" id="t-need" aria-selected="false">Halt suchen</button>
+  </div>
+
+  <section id="p-find" class="list">
+    <div class="chips" id="chips"></div>
+    <div class="list" id="offers"></div>
+  </section>
+
+  <section id="p-give" hidden>
+    <form id="give">
+      <p style="margin:0">Was kannst du anderen schenken? Ein Funke ist klein: 20 Minuten zuhören, eine Körperübung zeigen, eine Erfahrung teilen.</p>
+      <label>Dein Name oder Spitzname<input id="g-name" required maxlength="40" placeholder="z. B. Mila"></label>
+      <label>Art des Funkens
+        <select id="g-kind"><option>Zuhören</option><option>Körper</option><option>Erfahrung</option><option>Nachts da</option><option>Gemeinsam ruhig</option></select></label>
+      <label>Was bietest du an?<input id="g-title" required maxlength="70" placeholder="z. B. 20 Minuten zuhören am Telefon"></label>
+      <label>Ein paar Worte dazu<textarea id="g-text" maxlength="300" placeholder="Wann, wie, was dir wichtig ist"></textarea></label>
+      <button type="submit">Funken anbieten</button>
+      <p class="rules" style="border:0;padding:0">Im Entwurf bleibt dein Funke nur auf diesem Gerät. Niemand sonst sieht ihn.</p>
+    </form>
+  </section>
+
+  <section id="p-need" hidden>
+    <form id="need">
+      <p style="margin:0">Was würde dir gerade guttun? Du musst nichts erklären.</p>
+      <div class="chips" id="needchips"></div>
+      <button type="submit">Passende Funken zeigen</button>
+    </form>
+    <div class="list" id="matches" style="margin-top:12px"></div>
+    <p class="crisis">Wenn es dir sehr schlecht geht: Die Dargebotene Hand <b>143</b> (rund um die Uhr), Jugendliche <b>147</b>, Notfall <b>144</b>. Der Funkenmarkt ersetzt keine Fachperson.</p>
+  </section>
+
+  <div class="rules">
+    <b>So funktioniert der Funkenmarkt</b>
+    <span>Alles ist gratis. Niemand verkauft hier etwas.</span>
+    <span>Freundschaftliche Unterstützung, keine Therapie, keine Diagnose, keine Heilversprechen.</span>
+    <span>Keine Likes-Zahlen, keine Rangliste, keine Werbung.</span>
+    <span>Du entscheidest, was du teilst. Gesundheitsdaten bleiben bei dir.</span>
+    <span>Die Beispiel-Funken unten sind von den Figuren aus unserer Welt, nicht von echten Personen.</span>
+  </div>
+</main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const QUOTES=[
+  ["Du musst heute nichts mehr lösen.","Fia"],
+  ["Ein kleiner Funke reicht, um es jemandem warm zu machen.","Fia"],
+  ["Erzähl mir, wir finden zusammen einen Weg.","Fia"],
+  ["Zuhören ist das leiseste Geschenk.","Brix"],
+  ["Spür deine Füsse. Du bist da.","Sparky"],
+  ["Wenn der Kopf laut ist, sing ihm etwas Leises vor.","Kiki"],
+  ["Auch Phönixe ruhen, bevor sie wieder aufstehen.","Fia"]
+];
+const OFFERS=[
+  {who:"Sparky",c:"#FF8A3D",kind:"Körper",title:"5 Minuten Füsse spüren",text:"Ich zeige dir eine kleine Übung, die dich in den Körper zurückholt. Gut nach einem vollen Tag.",when:"Abends"},
+  {who:"Brix",c:"#9DB4FF",kind:"Nachts da",title:"Zuhören, wenn es spät ist",text:"Ich halte Nachtwache. Schreib mir, was dich wach hält. Ich höre zu, ohne Ratschläge.",when:"Nachts"},
+  {who:"Kiki",c:"#B9E3A8",kind:"Gemeinsam ruhig",title:"Ein Gute-Nacht-Lied summen",text:"Wir summen zusammen ein leises Lied. Danach ist es meistens ruhiger im Kopf.",when:"Abends"},
+  {who:"Mama Affe",c:"#E8B07A",kind:"Erfahrung",title:"Eltern-Abende, die schwer sind",text:"Ich erzähle, was mir mit Kindern geholfen hat, die nicht schlafen wollen. Ohne Besserwissen.",when:"Abends"},
+  {who:"Fia",c:"#D97757",kind:"Gemeinsam ruhig",title:"Zusammen ausglühen",text:"Wir machen das Abendritual zusammen: Licht runter, fünf Seufzer, Handy weg.",when:"Abends"},
+  {who:"Otti",c:"#F2C14E",kind:"Zuhören",title:"Einfach erzählen dürfen",text:"Erzähl mir von deinem Tag. Ich frage nach, ich bewerte nicht.",when:"Tagsüber"}
+];
+const KINDS=["Alle","Zuhören","Körper","Erfahrung","Nachts da","Gemeinsam ruhig"];
+const load=()=>{try{return JSON.parse(localStorage.getItem('funken')||'[]')}catch(e){return[]}};
+const save=a=>{try{localStorage.setItem('funken',JSON.stringify(a))}catch(e){}};
+let mine=load(), kind="Alle", qi=new Date().getDate()%QUOTES.length;
+
+function toast(t){const el=$('toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2600)}
+function quote(){$('q').textContent=QUOTES[qi][0];$('qw').textContent='– '+QUOTES[qi][1]}
+$('qn').onclick=()=>{qi=(qi+1)%QUOTES.length;quote()};
+function card(o){
+  const d=document.createElement('article');d.className='card';
+  const av=document.createElement('div');av.className='av';av.style.background=o.c||'#F2C14E';av.textContent=o.who[0];
+  const t=document.createElement('div');t.className='text';
+  const h=document.createElement('h3');h.textContent=o.title;
+  const m=document.createElement('div');m.className='meta';m.innerHTML='<span class="pill"></span>';m.firstChild.textContent=o.kind;m.append(' '+o.who+(o.when?' · '+o.when:'')+(o.mine?' · von dir':''));
+  const p=document.createElement('p');p.textContent=o.text||'';
+  const b=document.createElement('button');b.textContent=o.mine?'Dein Funke':'Funken annehmen';
+  if(o.mine){b.className='ghost';b.onclick=()=>{mine=mine.filter(x=>x!==o);save(mine);render();toast('Funke entfernt')}}
+  else b.onclick=()=>toast('Entwurf: '+o.who+' bekäme jetzt deine Anfrage. Es wird nichts gesendet.');
+  t.append(h,m,p,b);d.append(av,t);return d;
+}
+function chips(box,sel,onpick){box.innerHTML='';KINDS.forEach(k=>{const c=document.createElement('button');c.type='button';c.className='chip';c.textContent=k;c.setAttribute('aria-pressed',k===sel);c.onclick=()=>onpick(k);box.append(c)})}
+function render(){
+  chips($('chips'),kind,k=>{kind=k;render()});
+  const all=[...mine,...OFFERS];
+  const list=all.filter(o=>kind==="Alle"||o.kind===kind);
+  $('offers').innerHTML='';
+  list.forEach(o=>$('offers').append(card(o)));
+  if(!list.length)$('offers').innerHTML='<p class="empty">Noch kein Funke in dieser Art. Vielleicht magst du einen geben?</p>';
+}
+let needKind="Zuhören";
+function renderNeed(){chips($('needchips'),needKind,k=>{needKind=k;renderNeed()})}
+$('need').onsubmit=e=>{e.preventDefault();const all=[...mine,...OFFERS];
+  const l=all.filter(o=>needKind==="Alle"||o.kind===needKind);$('matches').innerHTML='';l.forEach(o=>$('matches').append(card(o)));
+  if(!l.length)$('matches').innerHTML='<p class="empty">Gerade kein passender Funke. Fia ist trotzdem da: Abendritual im Nest.</p>'};
+$('give').onsubmit=e=>{e.preventDefault();mine.unshift({who:$('g-name').value.trim(),kind:$('g-kind').value,title:$('g-title').value.trim(),text:$('g-text').value.trim(),when:'',mine:true,c:'#F5E6D3'});
+  save(mine);e.target.reset();show('find');kind="Alle";render();toast('Danke für deinen Funken')};
+function show(t){['find','give','need'].forEach(x=>{$('p-'+x).hidden=x!==t;$('t-'+x).setAttribute('aria-selected',x===t)})}
+['find','give','need'].forEach(x=>$('t-'+x).onclick=()=>show(x));
+quote();render();renderNeed();
+</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+/* Grafik-Feinschliff (g9): nur Darstellung, keine Funktion. Kern + App-Teil. */
+/* ── Kern (für alle Apps gleich) ───────────────────────────── */
+:root{--g9-1:4px;--g9-2:8px;--g9-3:12px;--g9-4:16px;--g9-5:24px;--g9-6:32px;--g9-ease:cubic-bezier(.2,.8,.2,1)}
+html{-webkit-tap-highlight-color:transparent;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;accent-color:var(--g9-akzent)}
+:where(h1,h2,h3,h4){text-wrap:balance}
+:where(p,li,figcaption,small){text-wrap:pretty}
+::selection{background:var(--g9-auswahl)}
+:where(button,a,input,select,textarea,summary,[tabindex]):focus-visible{outline:2.5px solid var(--g9-fokus);outline-offset:2px}
+:where(button,[role="button"],summary){transition:scale .16s var(--g9-ease),background-color .2s ease,border-color .2s ease,box-shadow .25s ease,color .2s ease}
+:where(button,[role="button"]):where(:active):not(:disabled):not([aria-disabled="true"]){scale:.97}
+
+/* Auswahlfelder: eigener feiner Pfeil statt System-Pfeil */
+html.g9 body select:not([multiple]):not([size]){-webkit-appearance:none;appearance:none;background-image:var(--g9-chev)!important;background-repeat:no-repeat!important;background-position:right 12px center!important;background-size:16px 16px!important;padding-right:40px!important;max-width:100%;text-overflow:ellipsis}
+
+/* Icons in Titeln: feine Linie im weichen Rahmen */
+.g9-ico{display:inline-grid;place-items:center;flex:none;box-sizing:border-box;width:1.62em;height:1.62em;margin-right:.48em;border-radius:.58em;vertical-align:-.46em;background:var(--g9-ico-bg);color:var(--g9-ico-fg);box-shadow:inset 0 0 0 1px var(--g9-ico-rand,transparent);line-height:1;font-style:normal;font-weight:400;letter-spacing:0;text-transform:none}
+.g9-ico svg{display:block;width:.98em;height:.98em;overflow:visible}
+.g9-ico.g9-emo{font-size:1em}
+.g9-ico-k{width:2.1em;height:2.1em;margin-right:0;border-radius:.7em;vertical-align:middle}
+.g9-ico-k svg{width:1.2em;height:1.2em}
+.g9-ico-k.g9-emo{font-size:1em}
+.g9-weg{display:none!important}
+.g9-ico-inhalt svg{display:block;width:1em;height:1em;margin:auto;overflow:visible}
+
+/* Bilder: weicher Platzhalter beim Laden, sanftes Einblenden */
+:where(img.g9-laedt){background-color:var(--g9-lade-a);background-image:linear-gradient(100deg,transparent 30%,var(--g9-lade-b) 50%,transparent 70%);background-size:300% 100%;background-repeat:no-repeat;animation:g9Schimmer 1.5s linear infinite}
+:where(img.g9-da){animation:g9Ein .55s var(--g9-ease) both}
+@keyframes g9Schimmer{from{background-position:100% 0}to{background-position:0 0}}
+@keyframes g9Ein{from{opacity:0}to{opacity:1}}
+
+@media (prefers-reduced-motion:reduce){
+  :where(img.g9-laedt),:where(img.g9-da){animation:none}
+  :where(button,[role="button"],summary){transition:none}
+  :where(button,[role="button"]):where(:active){scale:none}
+}
+
+/* ── Fias Nest: Nachtblau und Glut-Gold, nur verfeinert ─────── */
+:root{--g9-akzent:#F2C14E;--g9-fokus:#FFE08A;--g9-auswahl:rgba(242,193,78,.35);--g9-ico-bg:linear-gradient(160deg,rgba(242,193,78,.2),rgba(255,138,61,.1));--g9-ico-fg:#FFD98A;--g9-ico-rand:rgba(242,193,78,.28);--g9-lade-a:rgba(27,44,107,.55);--g9-lade-b:rgba(242,193,78,.14);--g9-chev:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F2C14E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
+
+/* Eine Titel-Schrift: Newsreader in echtem Halbfett statt künstlich fett gerechnet */
+html.g9 .screen h2,html.g9 .r6-karte h2,html.g9 .r7-karte h2,html.g9 .r8-karte h2,html.g9 .r7-was h2{font-family:var(--display);font-weight:500;letter-spacing:-.005em;line-height:1.25}
+html.g9 .screen h2:not(.onb-box h2):not(.sheet h2){font-size:1.3rem}
+html.g9 .r7-was h2{font-size:1.2rem}
+html.g9 h2 .r7-neu,html.g9 h2 .r8-neu{font-family:var(--body);vertical-align:.18em;letter-spacing:.06em}
+
+/* Karten: gleicher Radius, feine Lichtkante oben, weicher Tiefenschatten */
+html.g9 .card,html.g9 .tile,html.g9 li.step,html.g9 .r6-karte,html.g9 .r7-karte,html.g9 .r8-karte{border-radius:20px}
+html.g9 .card,html.g9 .r6-karte,html.g9 .r7-karte,html.g9 .r8-karte{box-shadow:inset 0 1px 0 rgba(255,244,214,.07),0 14px 34px -18px rgba(0,0,0,.7)}
+html.g9 .tile{box-shadow:inset 0 1px 0 rgba(255,244,214,.06),0 10px 26px -16px rgba(0,0,0,.65)}
+html.g9 .tile.now{box-shadow:inset 0 1px 0 rgba(255,244,214,.08),0 0 0 1px rgba(242,193,78,.35),0 12px 30px -10px rgba(255,138,61,.35)}
+
+/* Kachel-Icons: feine Goldlinie im warmen Rahmen statt bunter Emojis */
+html.g9 .jetzt .ic.g9-ico-inhalt{font-size:24px;color:#FFE6A6;background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1px rgba(255,230,166,.3)}
+html.g9 .tile .ic.g9-ico-inhalt{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;font-size:22px;color:#FFD98A;background:linear-gradient(160deg,rgba(242,193,78,.2),rgba(255,138,61,.08));box-shadow:inset 0 0 0 1px rgba(242,193,78,.26)}
+html.g9 .tile.now .ic.g9-ico-inhalt{background:linear-gradient(160deg,rgba(242,193,78,.34),rgba(255,138,61,.16))}
+html.g9 .tile.wide .ic.g9-ico-inhalt{width:44px;height:44px}
+
+/* Neu-bei-Liste: Icons im gleichen Rahmen */
+html.g9 .r7-was li button .g9-ico{font-size:15px}
+
+/* Auswahlfelder passend zur Nacht statt grauem System-Look */
+html.g9 select{font:inherit;color:var(--cream);background-color:rgba(6,10,28,.6);border:1px solid var(--line);border-radius:14px;padding:10px 14px;min-height:44px}
+html.g9 select option{color:#0E1838;background:#F5E6D3}
+html.g9 input[type=time],html.g9 input[type=date]{color-scheme:dark;min-height:44px}
+html.g9 input::placeholder,html.g9 textarea::placeholder{color:rgba(174,184,218,.7)}
+
+/* Sammel-Raster: künftige Türchen lesbarer, aber leise */
+html.g9 .r6-sammel i{color:rgba(255,250,240,.5);border-color:rgba(255,250,240,.16)}
+
+/* Bilder: feiner Rahmen und Tiefe */
+html.g9 .r7-bild,html.g9 .geschichtenbild{box-shadow:0 10px 26px -14px rgba(0,0,0,.8)}
+html.g9 .r8-heute{box-shadow:0 16px 40px -18px rgba(0,0,0,.85),inset 0 0 0 1px rgba(242,193,78,.18)}

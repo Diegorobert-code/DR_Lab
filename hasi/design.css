@@ -1,0 +1,51 @@
+/* design.css – Hasis Laden im Look «Werkzeugkasten» (Design-Umbau 23.10.2026).
+   Praktisch und direkt: Orange auf Grau, IBM Plex Sans für Titel, IBM Plex Mono für Text und Etiketten,
+   Radius 6, Listen mit Pfeil wie in einer Werkzeug-App. Hasi bleibt kleines Markenzeichen und spricht nie.
+   Nur Optik: alle Funktionen, Texte und Speicher bleiben. Der 5-Fragen-Finder bleibt oben sichtbar. */
+:root:root{
+  --dz-bg:#F5F5F2;--dz-s:#FFFFFF;--dz-i:#1E1E1E;--dz-m:#55554F;--dz-a:#F26300;--dz-ad:#B84A00;--dz-at:#9A3F00;--dz-weich:#FDEBDD;
+  --dz-line:#E3E3DD;--dz-line2:#CFCFC7;--dz-r:6px;
+  --dz-fd:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --dz-fb:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --disp:var(--dz-fd);--body:var(--dz-fb);
+  --nacht:#FFFFFF;--nacht2:#FFFFFF;--nacht3:#E3E3DD;--gold:#B84A00;--gold2:#9A3F00;--cyan:#B84A00;--text:#1E1E1E;--mute:#55554F;--gruen:#B84A00;
+  --fs-accent:#B84A00;--fs-accent-ink:#9A3F00;--fs-focus:#9A3F00;--fs-ink:#1E1E1E;--fs-ink2:#55554F;--fs-ink3:#55554F;
+  --fs-line:#E3E3DD;--fs-line2:#CFCFC7;--fs-surface:#FFFFFF;--fs-surface2:#F7F7F4;--fs-sk1:#EEEEEA;--fs-sk2:#E3E3DD;
+  --fs-r-l:6px;--fs-r-m:6px;--fs-r-s:4px;--fs-sh-1:0 1px 0 rgba(30,30,30,.06);--fs-sh-2:0 1px 0 rgba(30,30,30,.06),0 8px 20px -14px rgba(30,30,30,.3);
+}
+html,html body{background:var(--dz-bg)!important;color:var(--dz-i)}
+body{font-family:var(--dz-fb)!important;font-size:15px;letter-spacing:-.005em}
+body :is(p,li,label,span,small,summary,footer,input,textarea,select,button,a){font-family:var(--dz-fb)}
+h1,h2,h3,.r7 h2,.r6 h2,.r6-hallo{font-family:var(--dz-fd)!important;font-weight:700!important;letter-spacing:-.02em;color:var(--dz-i)!important}
+h1{font-size:clamp(32px,9vw,52px)!important;line-height:1.02!important}
+.entwurf{background:var(--dz-i)!important;color:#fff!important;border-radius:3px!important;font-family:var(--dz-fb)!important;font-weight:600!important;font-size:12px!important}
+
+/* ---------- Karten: weiss, feine Linie, kleiner Radius ---------- */
+:is(.box,.r6-karte,.r7-karte,.r6-gruss,.r4-karte){border-radius:var(--dz-r)!important;border:1px solid var(--dz-line)!important;box-shadow:0 1px 0 rgba(30,30,30,.05)!important;background:var(--dz-s)!important}
+.box.holz{border:1px solid var(--dz-line)!important;border-top:4px solid var(--dz-i)!important}
+.r7-eb{font-family:var(--dz-fb)!important;letter-spacing:.1em!important;color:var(--dz-at)!important}
+.buehne{border-radius:var(--dz-r)!important;border-width:1px!important;max-height:150px}
+
+/* ---------- Knöpfe: eckig, Grossbuchstaben ---------- */
+:is(.btn,.r6-btn,.r7-btn,.r6-k,.r4-knopf,.r7-knopf,.r7-schalter){border-radius:var(--dz-r)!important;font-family:var(--dz-fb)!important;font-weight:600!important;letter-spacing:.04em}
+.btn.an,.r7-btn.voll,.r6-btn.voll{background:var(--dz-ad)!important;color:#fff!important;border-color:var(--dz-ad)!important;text-transform:uppercase;font-size:14px!important}
+.btn.zwei{background:var(--dz-s)!important;color:var(--dz-i)!important;border:1.5px solid var(--dz-i)!important}
+
+/* ---------- Schnell-Leiste als Werkzeug-Reiter ---------- */
+.r8-leiste{background:rgba(245,245,242,.94)!important;border-bottom:1px solid var(--dz-line2)!important}
+.r8-leiste a{border-radius:var(--dz-r)!important;font:600 13px/1 var(--dz-fb)!important;letter-spacing:.06em;text-transform:uppercase;color:var(--dz-i)!important;background:var(--dz-s)!important;border:1px solid var(--dz-line2)!important}
+.r8-leiste a[aria-current="true"]{background:var(--dz-i)!important;color:#fff!important;border-color:var(--dz-i)!important}
+
+/* ---------- 5-Fragen-Finder bleibt sichtbar: oranger Rand, Liste mit Pfeil ---------- */
+.r8-finder-k{border-left:4px solid var(--dz-a)!important}
+.kopf .btn,.kopf a.btn,.kopf button{border-radius:var(--dz-r)!important}
+.r8-finder-k :is(button,a){position:relative}
+
+/* ---------- Listen: Zeilen mit Pfeil (Werkzeugkasten) ---------- */
+:is(#berater,.r7-karte) :is(.wahl,.r7-liste,ul.liste)>:is(button,a,li){border-radius:0!important}
+#probleme>:is(button,a){display:flex!important;align-items:center;justify-content:space-between;gap:10px;text-align:left!important;width:100%;
+  background:var(--dz-s)!important;color:var(--dz-i)!important;border:0!important;border-bottom:1px solid var(--dz-line)!important;border-radius:0!important;padding:12px 6px!important;min-height:48px;box-shadow:none!important}
+#probleme>:is(button,a)::after{content:"›";font:400 22px/1 var(--dz-fd);color:var(--dz-m);flex:none}
+#probleme>:is(button,a):last-child{border-bottom:0!important}
+#probleme{display:flex!important;flex-direction:column!important;gap:0!important;border:1px solid var(--dz-line);border-radius:var(--dz-r);padding:0 10px;background:var(--dz-s)}
+#probleme>:is(button,a)[aria-pressed="true"],#probleme>:is(button,a).an{color:var(--dz-at)!important;font-weight:700}
