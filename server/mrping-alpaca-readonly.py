@@ -17,8 +17,8 @@ KEY = os.getenv("ALPACA_PAPER_KEY_ID", "")
 SECRET = os.getenv("ALPACA_PAPER_SECRET_KEY", "")
 ACCESS = os.getenv("MRPING_BRIDGE_TOKEN", "")
 ORIGIN = os.getenv("MRPING_ALLOWED_ORIGIN", "https://diegorobert-code.github.io")
-HOST = os.getenv("MRPING_HOST", "127.0.0.1")
-PORT = int(os.getenv("MRPING_PORT", "8672"))
+HOST = os.getenv("MRPING_HOST", "0.0.0.0" if os.getenv("RENDER") else "127.0.0.1")
+PORT = int(os.getenv("PORT", os.getenv("MRPING_PORT", "8672")))
 SYMBOL_RE = re.compile(r"^[A-Z][A-Z0-9.]{0,9}$")
 UPSTREAM = "https://data.alpaca.markets/v2/stocks"
 
@@ -95,7 +95,7 @@ class Handler(BaseHTTPRequestHandler):
             self.reply(502, {"error": "provider_unavailable"}, origin)
 
 if __name__ == "__main__":
-    if HOST not in ("127.0.0.1", "::1"):
-        raise SystemExit("Bind only to loopback; publish through authenticated HTTPS reverse proxy.")
+    if HOST not in ("127.0.0.1", "::1") and not (os.getenv("RENDER") and HOST == "0.0.0.0"):
+        raise SystemExit("Public binding is permitted only behind Render HTTPS; keep MRPING_BRIDGE_TOKEN secret.")
     print("Mr. Ping Alpaca read-only bridge listening on %s:%s" % (HOST, PORT))
     ThreadingHTTPServer((HOST, PORT), Handler).serve_forever()
